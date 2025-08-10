@@ -1,0 +1,12 @@
+{
+  "name": "component-playground",
+  "version": "1.0.0",
+  "description": "Web Components exploration with ClojureScript",
+  "private": true,
+  "devDependencies": {
+    "shadow-cljs": "^2.28.0"
+  },
+  "scripts": {
+    "dev": "shadow-cljs watch app"
+  }
+}

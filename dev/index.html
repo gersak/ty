@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty Components Library - Development</title>
+    <style>
+        :root {
+            /* Define CSS variables for theming */
+            --ty-primary-color: #3b82f6;
+            --ty-primary-hover: #2563eb;
+            --ty-success-color: #10b981;
+            --ty-success-hover: #059669;
+            --ty-danger-color: #ef4444;
+            --ty-danger-hover: #dc2626;
+            --ty-neutral-color: #6b7280;
+            --ty-neutral-hover: #4b5563;
+
+            /* Typography */
+            --ty-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --ty-font-size-base: 16px;
+
+            /* Spacing */
+            --ty-spacing-sm: 0.5rem;
+            --ty-spacing-md: 1rem;
+            --ty-spacing-lg: 1.5rem;
+            --ty-spacing-xl: 2rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--ty-font-family);
+            font-size: var(--ty-font-size-base);
+            line-height: 1.5;
+            color: #1f2937;
+            background-color: #f9fafb;
+            padding: var(--ty-spacing-xl);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: var(--ty-spacing-xl);
+            padding-bottom: var(--ty-spacing-xl);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: var(--ty-spacing-sm);
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: #6b7280;
+        }
+
+        .section {
+            background: white;
+            padding: var(--ty-spacing-xl);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--ty-spacing-xl);
+        }
+
+        h2 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: var(--ty-spacing-lg);
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: var(--ty-spacing-md);
+            margin-top: var(--ty-spacing-lg);
+        }
+
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--ty-spacing-xl);
+            margin-bottom: var(--ty-spacing-xl);
+        }
+
+        .component-card {
+            background: #f9fafb;
+            padding: var(--ty-spacing-lg);
+            border-radius: 0.375rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        .component-card h3 {
+            margin-top: 0;
+        }
+
+        .component-demo {
+            margin-bottom: var(--ty-spacing-md);
+        }
+
+        .quick-links {
+            display: flex;
+            gap: var(--ty-spacing-md);
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: var(--ty-spacing-lg);
+        }
+
+        .quick-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--ty-spacing-sm) var(--ty-spacing-lg);
+            background: var(--ty-primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .quick-links a:hover {
+            background: var(--ty-primary-hover);
+        }
+
+        .demo-row {
+            display: flex;
+            gap: var(--ty-spacing-md);
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: var(--ty-spacing-md);
+        }
+
+        code {
+            background: #f3f4f6;
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.875rem;
+        }
+
+        .code-block {
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: var(--ty-spacing-md);
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            margin: var(--ty-spacing-sm) 0;
+        }
+
+        .code-block code {
+            background: transparent;
+            color: inherit;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Ty Components</h1>
+            <p class="subtitle">A modern web components library built with ClojureScript</p>
+            <div class="quick-links">
+                <a href="button-demo.html">Button Demo</a>
+                <a href="https://github.com/yourusername/ty" target="_blank">GitHub</a>
+                <a href="#docs">Documentation</a>
+            </div>
+        </header>
+
+        <section class="section">
+            <h2>Available Components</h2>
+
+            <div class="component-grid">
+                <div class="component-card">
+                    <h3>Button</h3>
+                    <div class="component-demo">
+                        <div class="demo-row">
+                            <ty-button>Default</ty-button>
+                            <ty-button variant="positive">Positive</ty-button>
+                            <ty-button variant="negative">Negative</ty-button>
+                        </div>
+                    </div>
+                    <p>A versatile button component with multiple variants and states.</p>
+                    <div class="code-block">
+                        <code>&lt;ty-button variant="positive"&gt;Click me&lt;/ty-button&gt;</code>
+                    </div>
+                </div>
+
+                <div class="component-card">
+                    <h3>More Components</h3>
+                    <p>Coming soon...</p>
+                    <ul style="margin-top: 1rem; margin-left: 1.5rem; color: #6b7280;">
+                        <li>Input fields</li>
+                        <li>Dropdowns</li>
+                        <li>Modals</li>
+                        <li>Tables</li>
+                        <li>Cards</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Quick Start</h2>
+
+            <h3>1. Include the Library</h3>
+            <div class="code-block">
+                <code>&lt;script src="/js/main.js"&gt;&lt;/script&gt;</code>
+            </div>
+
+            <h3>2. Use Components</h3>
+            <div class="code-block">
+                <code>&lt;ty-button variant="positive"&gt;Save&lt;/ty-button&gt;</code>
+            </div>
+
+            <h3>3. Customize with CSS Variables</h3>
+            <div class="code-block">
+                <code>ty-button {
+                    --button-padding: 1rem 2rem;
+                    --button-font-size: 18px;
+                    }</code>
+            </div>
+        </section>
+
+        <section class="section" id="docs">
+            <h2>Development</h2>
+
+            <h3>Running Locally</h3>
+            <div class="code-block">
+                <code># Install dependencies
+                    npm install
+
+                    # Start development server
+                    npm run dev
+
+                    # Visit http://localhost:8000</code>
+            </div>
+
+            <h3>Building for Production</h3>
+            <div class="code-block">
+                <code># Build optimized bundle
+                    shadow-cljs release app</code>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>Interactive Examples</h2>
+
+            <h3>Dynamic Theme Switching</h3>
+            <div class="demo-row">
+                <ty-button id="theme-btn">Toggle Dark Mode</ty-button>
+                <ty-button id="counter-btn" variant="positive">Clicked: 0 times</ty-button>
+            </div>
+
+            <h3>Disabled States</h3>
+            <div class="demo-row">
+                <ty-button disabled>Disabled Default</ty-button>
+                <ty-button disabled variant="positive">Disabled Positive</ty-button>
+                <ty-button disabled variant="negative">Disabled Negative</ty-button>
+            </div>
+        </section>
+    </div>
+
+    <!-- Load the compiled ClojureScript -->
+    <script src="/js/main.js"></script>
+
+    <!-- Demo interactions -->
+    <script>
+        // Dark mode toggle
+        let darkMode = false;
+        const themeBtn = document.getElementById('theme-btn');
+
+        themeBtn.addEventListener('click', () => {
+            darkMode = !darkMode;
+            if (darkMode) {
+                document.documentElement.style.setProperty('--ty-primary-color', '#1e40af');
+                document.documentElement.style.setProperty('--ty-success-color', '#059669');
+                document.documentElement.style.setProperty('--ty-danger-color', '#dc2626');
+                document.body.style.backgroundColor = '#1f2937';
+                document.body.style.color = '#f3f4f6';
+                themeBtn.label = 'Toggle Light Mode';
+            } else {
+                document.documentElement.style.setProperty('--ty-primary-color', '#3b82f6');
+                document.documentElement.style.setProperty('--ty-success-color', '#10b981');
+                document.documentElement.style.setProperty('--ty-danger-color', '#ef4444');
+                document.body.style.backgroundColor = '#f9fafb';
+                document.body.style.color = '#1f2937';
+                themeBtn.label = 'Toggle Dark Mode';
+            }
+        });
+
+        // Counter demo
+        let count = 0;
+        const counterBtn = document.getElementById('counter-btn');
+
+        counterBtn.addEventListener('click', () => {
+            count++;
+            counterBtn.label = `Clicked: ${count} times`;
+        });
+    </script>
+</body>
+
+</html>

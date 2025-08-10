@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty Button Component Test</title>
+    <!-- Import the CSS variables -->
+    <link rel="stylesheet" href="css/ty.variables.css">
+    <style>
+        body {
+            font-family: var(--ty-font-sans);
+            padding: var(--ty-spacing-8);
+            background: var(--ty-background);
+            color: var(--ty-color-neutral-p3);
+        }
+        .demo-section {
+            background: var(--ty-background-m1);
+            padding: var(--ty-spacing-8);
+            border-radius: var(--ty-radius-lg);
+            box-shadow: var(--ty-shadow-base);
+            margin-bottom: var(--ty-spacing-8);
+            border: 1px solid var(--ty-border);
+        }
+        h1 {
+            font-size: var(--ty-font-size-3xl);
+            font-weight: var(--ty-font-weight-bold);
+            margin-bottom: var(--ty-spacing-2);
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: var(--ty-spacing-4);
+            font-size: var(--ty-font-size-2xl);
+            font-weight: var(--ty-font-weight-semibold);
+            color: var(--ty-color-neutral-p2);
+        }
+        h3 {
+            margin-top: var(--ty-spacing-6);
+            margin-bottom: var(--ty-spacing-2);
+            font-size: var(--ty-font-size-lg);
+            font-weight: var(--ty-font-weight-medium);
+            color: var(--ty-color-neutral-p1);
+        }
+        .button-group {
+            display: flex;
+            gap: var(--ty-spacing-4);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        code {
+            background: var(--ty-background-neutral);
+            padding: var(--ty-spacing-0_5) var(--ty-spacing-1);
+            border-radius: var(--ty-radius-sm);
+            font-size: var(--ty-font-size-sm);
+            font-family: var(--ty-font-mono);
+        }
+        pre {
+            background: var(--ty-color-neutral-p3);
+            color: var(--ty-background);
+            padding: var(--ty-spacing-4);
+            border-radius: var(--ty-radius-md);
+            overflow-x: auto;
+            margin: var(--ty-spacing-2) 0;
+            font-family: var(--ty-font-mono);
+        }
+        .theme-controls {
+            position: fixed;
+            top: var(--ty-spacing-4);
+            right: var(--ty-spacing-4);
+            display: flex;
+            gap: var(--ty-spacing-2);
+            padding: var(--ty-spacing-2);
+            background: var(--ty-background);
+            border-radius: var(--ty-radius-md);
+            box-shadow: var(--ty-shadow-lg);
+            border: 1px solid var(--ty-border);
+        }
+        .theme-btn {
+            padding: var(--ty-spacing-2) var(--ty-spacing-3);
+            background: var(--ty-background-neutral);
+            border: 1px solid var(--ty-border);
+            border-radius: var(--ty-radius-sm);
+            cursor: pointer;
+            font-size: var(--ty-font-size-sm);
+            font-weight: var(--ty-font-weight-medium);
+            transition: var(--ty-transition-all);
+        }
+        .theme-btn:hover {
+            background: var(--ty-background-neutral-p1);
+        }
+        .theme-btn.active {
+            background: var(--ty-background-important);
+            color: var(--ty-color-important);
+        }
+    </style>
+</head>
+<body>
+    <!-- Theme Switcher -->
+    <div class="theme-controls">
+        <button class="theme-btn active" onclick="setTheme('light')">Light</button>
+        <button class="theme-btn" onclick="setTheme('dark')">Dark</button>
+    </div>
+
+    <h1>Ty Button Component Demo</h1>
+    
+    <div class="demo-section">
+        <h2>Semantic Variants</h2>
+        
+        <h3>States</h3>
+        <div class="button-group">
+            <ty-button variant="important" label="Important Action"></ty-button>
+            <ty-button variant="positive" label="Confirm"></ty-button>
+            <ty-button variant="negative" label="Delete"></ty-button>
+            <ty-button variant="warning" label="Warning"></ty-button>
+            <ty-button variant="neutral" label="Cancel"></ty-button>
+        </div>
+        
+        <h3>Disabled States</h3>
+        <div class="button-group">
+            <ty-button variant="important" label="Disabled" disabled></ty-button>
+            <ty-button variant="positive" label="Disabled" disabled></ty-button>
+            <ty-button variant="negative" label="Disabled" disabled></ty-button>
+        </div>
+        
+        <h3>Content via innerHTML</h3>
+        <div class="button-group">
+            <ty-button variant="important">Primary Action</ty-button>
+            <ty-button variant="positive">Save Changes</ty-button>
+            <ty-button variant="negative">Remove Item</ty-button>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Interactive Demo</h2>
+        <p>Click the buttons to see events working:</p>
+        <div class="button-group">
+            <ty-button id="counter-btn" variant="important">Clicks: 0</ty-button>
+            <ty-button id="toggle-btn" variant="positive">Enable All</ty-button>
+        </div>
+        <p id="event-log" style="margin-top: var(--ty-spacing-4);">Event log will appear here...</p>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Dynamic Property Updates</h2>
+        <div class="button-group">
+            <ty-button id="dynamic-btn" label="Dynamic Button"></ty-button>
+        </div>
+        <div class="button-group" style="margin-top: var(--ty-spacing-4);">
+            <button onclick="updateVariant('important')">Important</button>
+            <button onclick="updateVariant('positive')">Positive</button>
+            <button onclick="updateVariant('negative')">Negative</button>
+            <button onclick="updateVariant('warning')">Warning</button>
+            <button onclick="updateVariant('neutral')">Neutral</button>
+            <button onclick="toggleDisabled()">Toggle Disabled</button>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Code Examples</h2>
+        <h3>Basic Usage</h3>
+        <pre>&lt;ty-button variant="important" label="Click Me"&gt;&lt;/ty-button&gt;
+&lt;ty-button variant="positive"&gt;Save&lt;/ty-button&gt;
+&lt;ty-button variant="negative" disabled&gt;Delete&lt;/ty-button&gt;</pre>
+        
+        <h3>JavaScript API</h3>
+        <pre>// Get element
+const btn = document.querySelector('ty-button');
+
+// Set properties
+btn.variant = 'positive';
+btn.disabled = true;
+btn.label = 'New Label';
+
+// Listen to events
+btn.addEventListener('click', (e) => {
+    console.log('Button clicked!', e.detail);
+});</pre>
+    </div>
+    
+    <script src="../public/js/main.js"></script>
+    <script>
+        // Theme switcher
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        // Counter button demo
+        let clickCount = 0;
+        const counterBtn = document.getElementById('counter-btn');
+        const eventLog = document.getElementById('event-log');
+        
+        counterBtn.addEventListener('click', (e) => {
+            clickCount++;
+            counterBtn.label = `Clicks: ${clickCount}`;
+            eventLog.textContent = `Button clicked ${clickCount} times`;
+        });
+        
+        // Toggle button demo
+        let allEnabled = true;
+        const toggleBtn = document.getElementById('toggle-btn');
+        
+        toggleBtn.addEventListener('click', () => {
+            allEnabled = !allEnabled;
+            const buttons = document.querySelectorAll('ty-button');
+            buttons.forEach(btn => {
+                if (btn !== toggleBtn) {
+                    btn.disabled = !allEnabled;
+                }
+            });
+            toggleBtn.label = allEnabled ? 'Disable All' : 'Enable All';
+            toggleBtn.variant = allEnabled ? 'negative' : 'positive';
+        });
+        
+        // Dynamic button demo
+        const dynamicBtn = document.getElementById('dynamic-btn');
+        
+        function updateVariant(variant) {
+            dynamicBtn.variant = variant;
+        }
+        
+        function toggleDisabled() {
+            dynamicBtn.disabled = !dynamicBtn.disabled;
+        }
+    </script>
+</body>
+</html>

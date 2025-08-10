@@ -1,0 +1,61 @@
+ty-button {
+  display: flex;
+  font-size: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0.5rem;
+  line-height: 2;
+  margin: 0.5rem;
+  font-weight: 600;
+  transition: all .2s ease-in;
+  border-radius: 0.25rem;
+  min-height: 2rem;
+  min-width: 80px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid #e5e5e5;
+  background: #f5f5f5;
+  color: #333;
+}
+
+/* Hover state */
+.ty-button:hover {
+  filter: brightness(0.9);
+  transform: translateY(-1px);
+}
+
+/* Active state */
+.ty-button:active {
+  transform: translateY(0);
+}
+
+/* Variants */
+.ty-button--positive {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+
+.ty-button--negative {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+}
+
+/* Disabled state */
+.ty-button:disabled,
+.ty-button--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Focus state for accessibility */
+.ty-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.ty-button:focus:not(:focus-visible) {
+  outline: none;
+}

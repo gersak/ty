@@ -40,7 +40,7 @@
                          (throw (ex-info (str "Cannot find CSS file: " full-path)
                                          {:path full-path
                                           :namespace current-ns}))))]
-     `(def ~name
+     `(defonce ~name
         ;; At runtime, create CSSStyleSheet if supported, otherwise return string
         (if (~'exists? js/CSSStyleSheet)
           (let [sheet# (js/CSSStyleSheet.)]

@@ -8,29 +8,41 @@
      SEMANTIC BASE COLORS
      Users customize these to match their brand
      ================================================================= */
-  
-  --ty-semantic-positive: #10b981;  /* Success, confirm, go */
-  --ty-semantic-negative: #ef4444;  /* Error, danger, stop */
-  --ty-semantic-exception: #f59e0b; /* Warning, caution */
-  --ty-semantic-important: #3b82f6; /* Primary, emphasis */
-  --ty-semantic-unique: #8b5cf6;    /* Special, branded */
-  --ty-semantic-neutral: #6b7280;   /* Default, standard */
-  
+
+  --ty-semantic-positive: #10b981;
+  /* Success, confirm, go */
+  --ty-semantic-negative: #ef4444;
+  /* Error, danger, stop */
+  --ty-semantic-exception: #f59e0b;
+  /* Warning, caution */
+  --ty-semantic-important: #3b82f6;
+  /* Primary, emphasis */
+  --ty-semantic-unique: #8b5cf6;
+  /* Special, branded */
+  --ty-semantic-neutral: #6b7280;
+  /* Default, standard */
+
   /* =================================================================
      COLOR VARIATIONS
      Manually defined for precise control
      p = plus (more emphasis), m = minus (less emphasis)
      ================================================================= */
-  
+
   /* Positive */
   --ty-color-positive: var(--ty-semantic-positive);
-  --ty-color-positive-p1: #059669;  /* Darker/stronger */
-  --ty-color-positive-p2: #047857;  /* Even darker/stronger */
-  --ty-color-positive-p3: #064e3b;  /* Maximum emphasis */
-  --ty-color-positive-m1: #34d399;  /* Lighter/weaker */
-  --ty-color-positive-m2: #6ee7b7;  /* Even lighter/weaker */
-  --ty-color-positive-m3: #a7f3d0;  /* Minimum emphasis */
-  
+  --ty-color-positive-p1: #059669;
+  /* Darker/stronger */
+  --ty-color-positive-p2: #047857;
+  /* Even darker/stronger */
+  --ty-color-positive-p3: #064e3b;
+  /* Maximum emphasis */
+  --ty-color-positive-m1: #34d399;
+  /* Lighter/weaker */
+  --ty-color-positive-m2: #6ee7b7;
+  /* Even lighter/weaker */
+  --ty-color-positive-m3: #a7f3d0;
+  /* Minimum emphasis */
+
   /* Negative */
   --ty-color-negative: var(--ty-semantic-negative);
   --ty-color-negative-p1: #dc2626;
@@ -39,7 +51,7 @@
   --ty-color-negative-m1: #f87171;
   --ty-color-negative-m2: #fca5a5;
   --ty-color-negative-m3: #fecaca;
-  
+
   /* Exception */
   --ty-color-exception: var(--ty-semantic-exception);
   --ty-color-exception-p1: #d97706;
@@ -48,7 +60,7 @@
   --ty-color-exception-m1: #fbbf24;
   --ty-color-exception-m2: #fcd34d;
   --ty-color-exception-m3: #fde68a;
-  
+
   /* Important */
   --ty-color-important: var(--ty-semantic-important);
   --ty-color-important-p1: #2563eb;
@@ -57,7 +69,7 @@
   --ty-color-important-m1: #60a5fa;
   --ty-color-important-m2: #93c5fd;
   --ty-color-important-m3: #bfdbfe;
-  
+
   /* Unique */
   --ty-color-unique: var(--ty-semantic-unique);
   --ty-color-unique-p1: #7c3aed;
@@ -66,7 +78,7 @@
   --ty-color-unique-m1: #a78bfa;
   --ty-color-unique-m2: #c4b5fd;
   --ty-color-unique-m3: #ddd6fe;
-  
+
   /* Neutral */
   --ty-color-neutral: var(--ty-semantic-neutral);
   --ty-color-neutral-p1: #4b5563;
@@ -75,49 +87,53 @@
   --ty-color-neutral-m1: #9ca3af;
   --ty-color-neutral-m2: #d1d5db;
   --ty-color-neutral-m3: #e5e7eb;
-  
+
   /* =================================================================
      BACKGROUND COLORS
      Usually lighter than text colors for contrast
      ================================================================= */
-  
-  --ty-background: #ffffff;
-  --ty-background-p1: #f9fafb;  /* Slightly darker */
-  --ty-background-p2: #f3f4f6;  /* More contrast */
-  --ty-background-p3: #e5e7eb;  /* Maximum contrast */
-  --ty-background-m1: #ffffff;  /* Pure white (no lighter in light theme) */
-  --ty-background-m2: #ffffff;
-  --ty-background-m3: #ffffff;
-  
-  /* Semantic backgrounds */
-  --ty-background-positive: #d1fae5;
-  --ty-background-positive-p1: #a7f3d0;
-  --ty-background-positive-m1: #ecfdf5;
-  
-  --ty-background-negative: #fee2e2;
-  --ty-background-negative-p1: #fecaca;
-  --ty-background-negative-m1: #fef2f2;
-  
-  --ty-background-exception: #fef3c7;
-  --ty-background-exception-p1: #fde68a;
-  --ty-background-exception-m1: #fffbeb;
-  
-  --ty-background-important: #dbeafe;
-  --ty-background-important-p1: #bfdbfe;
-  --ty-background-important-m1: #eff6ff;
-  
-  --ty-background-unique: #e9d5ff;
-  --ty-background-unique-p1: #ddd6fe;
-  --ty-background-unique-m1: #f3e8ff;
-  
-  --ty-background-neutral: #f3f4f6;
-  --ty-background-neutral-p1: #e5e7eb;
-  --ty-background-neutral-m1: #f9fafb;
-  
+
+  --ty-bg: #ffffff;
+  --ty-bg-p1: #f9fafb;
+  /* Slightly darker */
+  --ty-bg-p2: #f3f4f6;
+  /* More contrast */
+  --ty-bg-p3: #e5e7eb;
+  /* Maximum contrast */
+  --ty-bg-m1: #ffffff;
+  /* Pure white (no lighter in light theme) */
+  --ty-bg-m2: #ffffff;
+  --ty-bg-m3: #ffffff;
+
+  /* Semantic bgs */
+  --ty-bg-positive: #d1fae5;
+  --ty-bg-positive-p1: #a7f3d0;
+  --ty-bg-positive-m1: #ecfdf5;
+
+  --ty-bg-negative: #fee2e2;
+  --ty-bg-negative-p1: #fecaca;
+  --ty-bg-negative-m1: #fef2f2;
+
+  --ty-bg-exception: #fef3c7;
+  --ty-bg-exception-p1: #fde68a;
+  --ty-bg-exception-m1: #fffbeb;
+
+  --ty-bg-important: #dbeafe;
+  --ty-bg-important-p1: #bfdbfe;
+  --ty-bg-important-m1: #eff6ff;
+
+  --ty-bg-unique: #e9d5ff;
+  --ty-bg-unique-p1: #ddd6fe;
+  --ty-bg-unique-m1: #f3e8ff;
+
+  --ty-bg-neutral: #f3f4f6;
+  --ty-bg-neutral-p1: #e5e7eb;
+  --ty-bg-neutral-m1: #f9fafb;
+
   /* =================================================================
      BORDER COLORS
      ================================================================= */
-  
+
   --ty-border: #e5e7eb;
   --ty-border-p1: #d1d5db;
   --ty-border-p2: #9ca3af;
@@ -125,7 +141,7 @@
   --ty-border-m1: #f3f4f6;
   --ty-border-m2: #f9fafb;
   --ty-border-m3: #fafafa;
-  
+
   /* Semantic borders */
   --ty-border-positive: var(--ty-color-positive);
   --ty-border-negative: var(--ty-color-negative);
@@ -133,45 +149,70 @@
   --ty-border-important: var(--ty-color-important);
   --ty-border-unique: var(--ty-color-unique);
   --ty-border-neutral: var(--ty-color-neutral);
-  
+
   /* =================================================================
      NON-COLOR PROPERTIES
      Following best practices from Tailwind/Material
      ================================================================= */
-  
+
   /* Spacing Scale */
   --ty-spacing-0: 0;
   --ty-spacing-px: 1px;
-  --ty-spacing-0_5: 0.125rem;  /* 2px */
-  --ty-spacing-1: 0.25rem;     /* 4px */
-  --ty-spacing-1_5: 0.375rem;  /* 6px */
-  --ty-spacing-2: 0.5rem;      /* 8px */
-  --ty-spacing-2_5: 0.625rem;  /* 10px */
-  --ty-spacing-3: 0.75rem;     /* 12px */
-  --ty-spacing-3_5: 0.875rem;  /* 14px */
-  --ty-spacing-4: 1rem;        /* 16px */
-  --ty-spacing-5: 1.25rem;     /* 20px */
-  --ty-spacing-6: 1.5rem;      /* 24px */
-  --ty-spacing-7: 1.75rem;     /* 28px */
-  --ty-spacing-8: 2rem;        /* 32px */
-  --ty-spacing-9: 2.25rem;     /* 36px */
-  --ty-spacing-10: 2.5rem;     /* 40px */
-  --ty-spacing-12: 3rem;       /* 48px */
-  --ty-spacing-16: 4rem;       /* 64px */
-  --ty-spacing-20: 5rem;       /* 80px */
-  --ty-spacing-24: 6rem;       /* 96px */
-  
+  --ty-spacing-0_5: 0.125rem;
+  /* 2px */
+  --ty-spacing-1: 0.25rem;
+  /* 4px */
+  --ty-spacing-1_5: 0.375rem;
+  /* 6px */
+  --ty-spacing-2: 0.5rem;
+  /* 8px */
+  --ty-spacing-2_5: 0.625rem;
+  /* 10px */
+  --ty-spacing-3: 0.75rem;
+  /* 12px */
+  --ty-spacing-3_5: 0.875rem;
+  /* 14px */
+  --ty-spacing-4: 1rem;
+  /* 16px */
+  --ty-spacing-5: 1.25rem;
+  /* 20px */
+  --ty-spacing-6: 1.5rem;
+  /* 24px */
+  --ty-spacing-7: 1.75rem;
+  /* 28px */
+  --ty-spacing-8: 2rem;
+  /* 32px */
+  --ty-spacing-9: 2.25rem;
+  /* 36px */
+  --ty-spacing-10: 2.5rem;
+  /* 40px */
+  --ty-spacing-12: 3rem;
+  /* 48px */
+  --ty-spacing-16: 4rem;
+  /* 64px */
+  --ty-spacing-20: 5rem;
+  /* 80px */
+  --ty-spacing-24: 6rem;
+  /* 96px */
+
   /* Border Radius */
   --ty-radius-none: 0;
-  --ty-radius-sm: 0.125rem;    /* 2px */
-  --ty-radius-base: 0.25rem;   /* 4px */
-  --ty-radius-md: 0.375rem;    /* 6px */
-  --ty-radius-lg: 0.5rem;      /* 8px */
-  --ty-radius-xl: 0.75rem;     /* 12px */
-  --ty-radius-2xl: 1rem;       /* 16px */
-  --ty-radius-3xl: 1.5rem;     /* 24px */
+  --ty-radius-sm: 0.125rem;
+  /* 2px */
+  --ty-radius-base: 0.25rem;
+  /* 4px */
+  --ty-radius-md: 0.375rem;
+  /* 6px */
+  --ty-radius-lg: 0.5rem;
+  /* 8px */
+  --ty-radius-xl: 0.75rem;
+  /* 12px */
+  --ty-radius-2xl: 1rem;
+  /* 16px */
+  --ty-radius-3xl: 1.5rem;
+  /* 24px */
   --ty-radius-full: 9999px;
-  
+
   /* Shadows */
   --ty-shadow-none: none;
   --ty-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -180,42 +221,81 @@
   --ty-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
   --ty-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --ty-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  
+
   /* Typography */
   --ty-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --ty-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
-  
-  --ty-font-size-xs: 0.75rem;     /* 12px */
-  --ty-font-size-sm: 0.875rem;    /* 14px */
-  --ty-font-size-base: 1rem;      /* 16px */
-  --ty-font-size-lg: 1.125rem;    /* 18px */
-  --ty-font-size-xl: 1.25rem;     /* 20px */
-  --ty-font-size-2xl: 1.5rem;     /* 24px */
-  --ty-font-size-3xl: 1.875rem;   /* 30px */
-  --ty-font-size-4xl: 2.25rem;    /* 36px */
-  --ty-font-size-5xl: 3rem;       /* 48px */
-  
-  --ty-font-weight-thin: 100;
-  --ty-font-weight-light: 300;
-  --ty-font-weight-normal: 400;
-  --ty-font-weight-medium: 500;
-  --ty-font-weight-semibold: 600;
-  --ty-font-weight-bold: 700;
-  --ty-font-weight-extrabold: 800;
-  
+
+  --ty-font-xxs: 0.625rem;
+  /* 10px */
+  --ty-font-xs: 0.75rem;
+  /* 12px */
+  --ty-font-sm: 0.875rem;
+  /* 14px */
+  --ty-font-base: 1rem;
+  /* 16px */
+  --ty-font-lg: 1.125rem;
+  /* 18px */
+  --ty-font-xl: 1.25rem;
+  /* 20px */
+  --ty-font-2xl: 1.5rem;
+  /* 24px */
+  --ty-font-3xl: 1.875rem;
+  /* 30px */
+  --ty-font-4xl: 2.25rem;
+  /* 36px */
+  --ty-font-5xl: 3rem;
+  /* 48px */
+
+  --ty-font-thin: 100;
+  --ty-font-light: 300;
+  --ty-font-normal: 400;
+  --ty-font-medium: 500;
+  --ty-font-semibold: 600;
+  --ty-font-bold: 700;
+  --ty-font-extrabold: 800;
+
   --ty-line-height-none: 1;
   --ty-line-height-tight: 1.25;
   --ty-line-height-snug: 1.375;
   --ty-line-height-normal: 1.5;
   --ty-line-height-relaxed: 1.625;
   --ty-line-height-loose: 2;
-  
+
   /* Transitions */
   --ty-transition-none: none;
   --ty-transition-all: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --ty-transition-colors: background-color, border-color, color, fill, stroke 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ty-transition-colors: bg-color, border-color, color, fill, stroke 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --ty-transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --ty-transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Component Sizes */
+  --ty-size-xs: 1.5rem;
+  /* 24px */
+  --ty-size-sm: 2rem;
+  /* 32px */
+  --ty-size-md: 2.5rem;
+  /* 40px */
+  --ty-size-lg: 3rem;
+  /* 48px */
+  --ty-size-xl: 3.5rem;
+  /* 56px */
+
+  /* Z-Index Scale */
+  --ty-z-auto: auto;
+  --ty-z-0: 0;
+  --ty-z-10: 10;
+  --ty-z-20: 20;
+  --ty-z-30: 30;
+  --ty-z-40: 40;
+  --ty-z-50: 50;
+  --ty-z-dropdown: 1000;
+  --ty-z-sticky: 1020;
+  --ty-z-fixed: 1030;
+  --ty-z-modal-backdrop: 1040;
+  --ty-z-modal: 1050;
+  --ty-z-popover: 1060;
+  --ty-z-tooltip: 1070;
 }
 
 /* =================================================================
@@ -227,22 +307,27 @@ html[data-theme="dark"] {
   --ty-semantic-positive: #10b981;
   --ty-semantic-negative: #ef4444;
   --ty-semantic-exception: #f59e0b;
-  --ty-semantic-important: #60a5fa;  /* Lighter for dark mode */
-  --ty-semantic-unique: #a78bfa;     /* Lighter for dark mode */
-  --ty-semantic-neutral: #9ca3af;    /* Lighter for dark mode */
-  
+  --ty-semantic-important: #60a5fa;
+  /* Lighter for dark mode */
+  --ty-semantic-unique: #a78bfa;
+  /* Lighter for dark mode */
+  --ty-semantic-neutral: #9ca3af;
+  /* Lighter for dark mode */
+
   /* Color variations - emphasis inverted for dark mode */
   /* In dark mode, "more emphasis" often means lighter */
-  
+
   /* Positive */
   --ty-color-positive: var(--ty-semantic-positive);
-  --ty-color-positive-p1: #34d399;  /* Lighter = more emphasis */
+  --ty-color-positive-p1: #34d399;
+  /* Lighter = more emphasis */
   --ty-color-positive-p2: #6ee7b7;
   --ty-color-positive-p3: #a7f3d0;
-  --ty-color-positive-m1: #059669;  /* Darker = less emphasis */
+  --ty-color-positive-m1: #059669;
+  /* Darker = less emphasis */
   --ty-color-positive-m2: #047857;
   --ty-color-positive-m3: #064e3b;
-  
+
   /* Negative */
   --ty-color-negative: var(--ty-semantic-negative);
   --ty-color-negative-p1: #f87171;
@@ -251,7 +336,7 @@ html[data-theme="dark"] {
   --ty-color-negative-m1: #dc2626;
   --ty-color-negative-m2: #b91c1c;
   --ty-color-negative-m3: #991b1b;
-  
+
   /* Exception */
   --ty-color-exception: var(--ty-semantic-exception);
   --ty-color-exception-p1: #fbbf24;
@@ -260,7 +345,7 @@ html[data-theme="dark"] {
   --ty-color-exception-m1: #d97706;
   --ty-color-exception-m2: #b45309;
   --ty-color-exception-m3: #92400e;
-  
+
   /* Important */
   --ty-color-important: var(--ty-semantic-important);
   --ty-color-important-p1: #93c5fd;
@@ -269,7 +354,7 @@ html[data-theme="dark"] {
   --ty-color-important-m1: #3b82f6;
   --ty-color-important-m2: #2563eb;
   --ty-color-important-m3: #1d4ed8;
-  
+
   /* Unique */
   --ty-color-unique: var(--ty-semantic-unique);
   --ty-color-unique-p1: #c4b5fd;
@@ -278,7 +363,7 @@ html[data-theme="dark"] {
   --ty-color-unique-m1: #8b5cf6;
   --ty-color-unique-m2: #7c3aed;
   --ty-color-unique-m3: #6d28d9;
-  
+
   /* Neutral */
   --ty-color-neutral: var(--ty-semantic-neutral);
   --ty-color-neutral-p1: #d1d5db;
@@ -287,41 +372,41 @@ html[data-theme="dark"] {
   --ty-color-neutral-m1: #6b7280;
   --ty-color-neutral-m2: #4b5563;
   --ty-color-neutral-m3: #374151;
-  
-  /* Backgrounds for dark mode */
-  --ty-background: #111827;
-  --ty-background-p1: #1f2937;
-  --ty-background-p2: #374151;
-  --ty-background-p3: #4b5563;
-  --ty-background-m1: #0f172a;
-  --ty-background-m2: #020617;
-  --ty-background-m3: #000000;
-  
-  /* Semantic backgrounds - much darker in dark mode */
-  --ty-background-positive: #064e3b;
-  --ty-background-positive-p1: #047857;
-  --ty-background-positive-m1: #022c22;
-  
-  --ty-background-negative: #7f1d1d;
-  --ty-background-negative-p1: #991b1b;
-  --ty-background-negative-m1: #450a0a;
-  
-  --ty-background-exception: #78350f;
-  --ty-background-exception-p1: #92400e;
-  --ty-background-exception-m1: #451a03;
-  
-  --ty-background-important: #1e3a8a;
-  --ty-background-important-p1: #1e40af;
-  --ty-background-important-m1: #172554;
-  
-  --ty-background-unique: #4c1d95;
-  --ty-background-unique-p1: #5b21b6;
-  --ty-background-unique-m1: #2e1065;
-  
-  --ty-background-neutral: #1f2937;
-  --ty-background-neutral-p1: #374151;
-  --ty-background-neutral-m1: #111827;
-  
+
+  /* bgs for dark mode */
+  --ty-bg: #111827;
+  --ty-bg-p1: #1f2937;
+  --ty-bg-p2: #374151;
+  --ty-bg-p3: #4b5563;
+  --ty-bg-m1: #0f172a;
+  --ty-bg-m2: #020617;
+  --ty-bg-m3: #000000;
+
+  /* Semantic bgs - much darker in dark mode */
+  --ty-bg-positive: #064e3b;
+  --ty-bg-positive-p1: #047857;
+  --ty-bg-positive-m1: #022c22;
+
+  --ty-bg-negative: #7f1d1d;
+  --ty-bg-negative-p1: #991b1b;
+  --ty-bg-negative-m1: #450a0a;
+
+  --ty-bg-exception: #78350f;
+  --ty-bg-exception-p1: #92400e;
+  --ty-bg-exception-m1: #451a03;
+
+  --ty-bg-important: #1e3a8a;
+  --ty-bg-important-p1: #1e40af;
+  --ty-bg-important-m1: #172554;
+
+  --ty-bg-unique: #4c1d95;
+  --ty-bg-unique-p1: #5b21b6;
+  --ty-bg-unique-m1: #2e1065;
+
+  --ty-bg-neutral: #1f2937;
+  --ty-bg-neutral-p1: #374151;
+  --ty-bg-neutral-m1: #111827;
+
   /* Borders for dark mode */
   --ty-border: #374151;
   --ty-border-p1: #4b5563;
@@ -330,7 +415,7 @@ html[data-theme="dark"] {
   --ty-border-m1: #1f2937;
   --ty-border-m2: #111827;
   --ty-border-m3: #030712;
-  
+
   /* Shadows need to be darker/more prominent in dark mode */
   --ty-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
   --ty-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);

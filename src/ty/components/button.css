@@ -8,16 +8,16 @@ button {
   align-items: center;
   justify-content: center;
   /* Default styling (neutral) */
-  background: var(--ty-background-neutral);
+  background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral);
   border: 1px solid var(--ty-border-neutral);
   /* Spacing */
-  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  padding: var(--ty-spacing-0_5) var(--ty-spacing-2);
   min-height: var(--ty-spacing-10);
   min-width: var(--ty-spacing-20);
   /* Typography */
-  font-size: var(--ty-font-size-sm);
-  font-weight: var(--ty-font-weight-semibold);
+  font-size: var(--ty-font-xs);
+  font-weight: var(--ty-font-semibold);
   line-height: var(--ty-line-height-normal);
   /* Shape */
   border-radius: var(--ty-radius-md);
@@ -51,96 +51,96 @@ button:disabled {
 
 /* Important (primary) */
 button.important {
-  background: var(--ty-background-important);
+  background: var(--ty-bg-important);
   color: var(--ty-color-important);
   border-color: var(--ty-border-important);
 }
 
 button.important:hover:not(:disabled) {
-  background: var(--ty-background-important-p1);
+  background: var(--ty-bg-important-p1);
 }
 
 button.important:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-background),
+  box-shadow: 0 0 0 2px var(--ty-bg),
     0 0 0 4px var(--ty-color-important);
 }
 
 /* Positive */
 button.positive {
-  background: var(--ty-background-positive);
+  background: var(--ty-bg-positive);
   color: var(--ty-color-positive);
   border-color: var(--ty-border-positive);
 }
 
 button.positive:hover:not(:disabled) {
-  background: var(--ty-background-positive-p1);
+  background: var(--ty-bg-positive-p1);
 }
 
 button.positive:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-background),
+  box-shadow: 0 0 0 2px var(--ty-bg),
     0 0 0 4px var(--ty-color-positive);
 }
 
 /* Negative */
 button.negative {
-  background: var(--ty-background-negative);
+  background: var(--ty-bg-negative);
   color: var(--ty-color-negative);
   border-color: var(--ty-border-negative);
 }
 
 button.negative:hover:not(:disabled) {
-  background: var(--ty-background-negative-p1);
+  background: var(--ty-bg-negative-p1);
 }
 
 button.negative:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-background),
+  box-shadow: 0 0 0 2px var(--ty-bg),
     0 0 0 4px var(--ty-color-negative);
 }
 
 /* Exception (warning) */
 button.exception {
-  background: var(--ty-background-exception);
+  background: var(--ty-bg-exception);
   color: var(--ty-color-exception);
   border-color: var(--ty-border-exception);
 }
 
 button.exception:hover:not(:disabled) {
-  background: var(--ty-background-exception-p1);
+  background: var(--ty-bg-exception-p1);
 }
 
 button.exception:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-background),
+  box-shadow: 0 0 0 2px var(--ty-bg),
     0 0 0 4px var(--ty-color-exception);
 }
 
 /* Unique */
 button.unique {
-  background: var(--ty-background-unique);
+  background: var(--ty-bg-unique);
   color: var(--ty-color-unique);
   border-color: var(--ty-border-unique);
 }
 
 button.unique:hover:not(:disabled) {
-  background: var(--ty-background-unique-p1);
+  background: var(--ty-bg-unique-p1);
 }
 
 button.unique:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-background),
+  box-shadow: 0 0 0 2px var(--ty-bg),
     0 0 0 4px var(--ty-color-unique);
 }
 
 /* Neutral (explicit class, even though it's default) */
 button.neutral {
-  background: var(--ty-background-neutral);
+  background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral);
   border-color: var(--ty-border-neutral);
 }
 
 button.neutral:hover:not(:disabled) {
-  background: var(--ty-background-neutral-p1);
+  background: var(--ty-bg-neutral-p1);
 }
 
 button.neutral:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-background),
+  box-shadow: 0 0 0 2px var(--ty-bg),
     0 0 0 4px var(--ty-color-neutral);
 }

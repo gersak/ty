@@ -8,7 +8,7 @@
 (defstyles button-styles)
 
 (defn render! [el]
-  (let [{:keys [variant disabled label]
+  (let [{:keys [flavor disabled label]
          class-name :class
          :or {disabled false
               label ""}} (wcs/get-props el)
@@ -24,16 +24,16 @@
       ;; Update existing button
       (do
         (set! (.-disabled button-el) disabled)
-        ;; Set variant class and any additional classes
+        ;; Set flavor class and any additional classes
         (set! (.-className button-el)
-              (str/trim (str (or variant "neutral")
+              (str/trim (str (or flavor "neutral")
                              (when class-name (str " " class-name)))))
         (set! (.-textContent button-el) (or label (.-textContent el))))
       ;; Create new button
       (let [new-button (js/document.createElement "button")]
         (set! (.-disabled new-button) disabled)
         (set! (.-className new-button)
-              (str/trim (str (or variant "neutral")
+              (str/trim (str (or flavor "neutral")
                              (when class-name (str " " class-name)))))
         (set! (.-textContent new-button) (or label (.-textContent el)))
 
@@ -51,14 +51,14 @@
     el))
 
 (wcs/define! "ty-button"
-  {:observed [:variant :disabled :label :class]
-   :props {:variant nil
+  {:observed [:flavor :disabled :label :class]
+   :props {:flavor nil
            :disabled nil
            :label nil
            :class nil}
    :construct (fn [el]
                 ;; Hydrate props from attributes at construction
-                (let [p {:variant (wcs/attr el :variant)
+                (let [p {:flavor (wcs/attr el :flavor)
                          :disabled (wcs/parse-bool-attr el :disabled)
                          :label (wcs/attr el :label)
                          :class (wcs/attr el :class)}]
@@ -67,7 +67,7 @@
    :attr (fn [el name _old new]
            ;; Reflect attribute changes into props
            (case name
-             :variant (wcs/set-props! el {:variant new})
+             :flavor (wcs/set-props! el {:flavor new})
              :disabled (wcs/set-props! el {:disabled (wcs/parse-bool-attr el :disabled)})
              :label (wcs/set-props! el {:label new})
              :class (wcs/set-props! el {:class new})

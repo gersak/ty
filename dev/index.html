@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -172,6 +173,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -186,20 +188,20 @@
 
         <section class="section">
             <h2>Available Components</h2>
-            
+
             <div class="component-grid">
                 <div class="component-card">
                     <h3>Button</h3>
                     <div class="component-demo">
                         <div class="demo-row">
-                            <ty-button variant="important">Important</ty-button>
-                            <ty-button variant="positive">Positive</ty-button>
-                            <ty-button variant="negative">Negative</ty-button>
+                            <ty-button flavor="important">Important</ty-button>
+                            <ty-button flavor="positive">Positive</ty-button>
+                            <ty-button flavor="negative">Negative</ty-button>
                         </div>
                     </div>
-                    <p>A versatile button component with semantic variants and states.</p>
+                    <p>A versatile button component with semantic flavors and states.</p>
                     <div class="code-block">
-                        <code>&lt;ty-button variant="positive"&gt;Click me&lt;/ty-button&gt;</code>
+                        <code>&lt;ty-button flavor="positive"&gt;Click me&lt;/ty-button&gt;</code>
                     </div>
                 </div>
 
@@ -219,32 +221,32 @@
 
         <section class="section">
             <h2>Design System</h2>
-            
+
             <h3>Semantic Colors</h3>
             <p>Our design system uses semantic color naming:</p>
             <div class="demo-row">
-                <ty-button variant="important">Important</ty-button>
-                <ty-button variant="positive">Positive</ty-button>
-                <ty-button variant="negative">Negative</ty-button>
-                <ty-button variant="warning">Exception</ty-button>
-                <ty-button variant="neutral">Neutral</ty-button>
+                <ty-button flavor="important">Important</ty-button>
+                <ty-button flavor="positive">Positive</ty-button>
+                <ty-button flavor="negative">Negative</ty-button>
+                <ty-button flavor="exception">Exception</ty-button>
+                <ty-button flavor="neutral">Neutral</ty-button>
             </div>
-            
+
             <h3>CSS Variables</h3>
             <p>Everything is customizable through CSS variables:</p>
             <div class="code-block">
                 <code>:root {
-  --ty-semantic-important: #3b82f6;
-  --ty-semantic-positive: #10b981;
-  --ty-semantic-negative: #ef4444;
-  /* ... customize any semantic color */
-}</code>
+                    --ty-semantic-important: #3b82f6;
+                    --ty-semantic-positive: #10b981;
+                    --ty-semantic-negative: #ef4444;
+                    /* ... customize any semantic color */
+                    }</code>
             </div>
         </section>
 
         <section class="section" id="docs">
             <h2>Quick Start</h2>
-            
+
             <h3>1. Include the CSS Variables</h3>
             <div class="code-block">
                 <code>&lt;link rel="stylesheet" href="css/ty.variables.css"&gt;</code>
@@ -257,40 +259,40 @@
 
             <h3>3. Use Components</h3>
             <div class="code-block">
-                <code>&lt;ty-button variant="positive"&gt;Save&lt;/ty-button&gt;</code>
+                <code>&lt;ty-button flavor="positive"&gt;Save&lt;/ty-button&gt;</code>
             </div>
         </section>
 
         <section class="section">
             <h2>Development</h2>
-            
+
             <h3>Running Locally</h3>
             <div class="code-block">
                 <code># Install dependencies
-npm install
+                    npm install
 
-# Start development server
-npm run dev
+                    # Start development server
+                    npm run dev
 
-# Visit http://localhost:8000</code>
+                    # Visit http://localhost:8000</code>
             </div>
 
             <h3>Building for Production</h3>
             <div class="code-block">
                 <code># Build optimized bundle
-shadow-cljs release app</code>
+                    shadow-cljs release app</code>
             </div>
         </section>
     </div>
 
     <!-- Theme toggle button -->
     <div class="theme-toggle">
-        <ty-button variant="neutral" onclick="toggleTheme()">Toggle Theme</ty-button>
+        <ty-button flavor="neutral" onclick="toggleTheme()">Toggle Theme</ty-button>
     </div>
 
     <!-- Load the compiled ClojureScript -->
-    <script src="../public/js/main.js"></script>
-    
+    <script src="js/main.js"></script>
+
     <!-- Theme toggle -->
     <script>
         function toggleTheme() {
@@ -301,4 +303,5 @@ shadow-cljs release app</code>
         }
     </script>
 </body>
+
 </html>

@@ -116,29 +116,29 @@
     <h1>Ty Button Component Demo</h1>
 
     <div class="demo-section">
-        <h2>Semantic Variants</h2>
+        <h2>Semantic Flavors</h2>
 
         <h3>States</h3>
         <div class="button-group">
-            <ty-button variant="important" label="Important Action"></ty-button>
-            <ty-button variant="positive" label="Confirm"></ty-button>
-            <ty-button variant="negative" label="Delete"></ty-button>
-            <ty-button variant="warning" label="Warning"></ty-button>
-            <ty-button variant="neutral" label="Cancel"></ty-button>
+            <ty-button flavor="important" label="Important Action"></ty-button>
+            <ty-button flavor="positive" label="Confirm"></ty-button>
+            <ty-button flavor="negative" label="Delete"></ty-button>
+            <ty-button flavor="exception" label="Warning"></ty-button>
+            <ty-button flavor="neutral" label="Cancel"></ty-button>
         </div>
 
         <h3>Disabled States</h3>
         <div class="button-group">
-            <ty-button variant="important" label="Disabled" disabled></ty-button>
-            <ty-button variant="positive" label="Disabled" disabled></ty-button>
-            <ty-button variant="negative" label="Disabled" disabled></ty-button>
+            <ty-button flavor="important" label="Disabled" disabled></ty-button>
+            <ty-button flavor="positive" label="Disabled" disabled></ty-button>
+            <ty-button flavor="negative" label="Disabled" disabled></ty-button>
         </div>
 
         <h3>Content via innerHTML</h3>
         <div class="button-group">
-            <ty-button variant="important">Primary Action</ty-button>
-            <ty-button variant="positive">Save Changes</ty-button>
-            <ty-button variant="negative">Remove Item</ty-button>
+            <ty-button flavor="important">Primary Action</ty-button>
+            <ty-button flavor="positive">Save Changes</ty-button>
+            <ty-button flavor="negative">Remove Item</ty-button>
         </div>
     </div>
 
@@ -146,8 +146,8 @@
         <h2>Interactive Demo</h2>
         <p>Click the buttons to see events working:</p>
         <div class="button-group">
-            <ty-button id="counter-btn" variant="important">Clicks: 0</ty-button>
-            <ty-button id="toggle-btn" variant="positive">Enable All</ty-button>
+            <ty-button id="counter-btn" flavor="important">Clicks: 0</ty-button>
+            <ty-button id="toggle-btn" flavor="positive">Enable All</ty-button>
         </div>
         <p id="event-log" style="margin-top: var(--ty-spacing-4);">Event log will appear here...</p>
     </div>
@@ -158,11 +158,11 @@
             <ty-button id="dynamic-btn" label="Dynamic Button"></ty-button>
         </div>
         <div class="button-group" style="margin-top: var(--ty-spacing-4);">
-            <button onclick="updateVariant('important')">Important</button>
-            <button onclick="updateVariant('positive')">Positive</button>
-            <button onclick="updateVariant('negative')">Negative</button>
-            <button onclick="updateVariant('warning')">Warning</button>
-            <button onclick="updateVariant('neutral')">Neutral</button>
+            <button onclick="updateFlavor('important')">Important</button>
+            <button onclick="updateFlavor('positive')">Positive</button>
+            <button onclick="updateFlavor('negative')">Negative</button>
+            <button onclick="updateFlavor('exception')">Exception</button>
+            <button onclick="updateFlavor('neutral')">Neutral</button>
             <button onclick="toggleDisabled()">Toggle Disabled</button>
         </div>
     </div>
@@ -170,16 +170,16 @@
     <div class="demo-section">
         <h2>Code Examples</h2>
         <h3>Basic Usage</h3>
-        <pre>&lt;ty-button variant="important" label="Click Me"&gt;&lt;/ty-button&gt;
-            &lt;ty-button variant="positive"&gt;Save&lt;/ty-button&gt;
-            &lt;ty-button variant="negative" disabled&gt;Delete&lt;/ty-button&gt;</pre>
+        <pre>&lt;ty-button flavor="important" label="Click Me"&gt;&lt;/ty-button&gt;
+            &lt;ty-button flavor="positive"&gt;Save&lt;/ty-button&gt;
+            &lt;ty-button flavor="negative" disabled&gt;Delete&lt;/ty-button&gt;</pre>
 
         <h3>JavaScript API</h3>
         <pre>// Get element
             const btn = document.querySelector('ty-button');
 
             // Set properties
-            btn.variant = 'positive';
+            btn.flavor = 'positive';
             btn.disabled = true;
             btn.label = 'New Label';
 
@@ -189,7 +189,7 @@
             });</pre>
     </div>
 
-    <script src="/js/main.js"></script>
+    <script src="js/main.js"></script>
     <script>
         // Theme switcher
         function setTheme(theme) {
@@ -224,14 +224,14 @@
                 }
             });
             toggleBtn.label = allEnabled ? 'Disable All' : 'Enable All';
-            toggleBtn.variant = allEnabled ? 'negative' : 'positive';
+            toggleBtn.flavor = allEnabled ? 'negative' : 'positive';
         });
 
         // Dynamic button demo
         const dynamicBtn = document.getElementById('dynamic-btn');
 
-        function updateVariant(variant) {
-            dynamicBtn.variant = variant;
+        function updateFlavor(flavor) {
+            dynamicBtn.flavor = flavor;
         }
 
         function toggleDisabled() {

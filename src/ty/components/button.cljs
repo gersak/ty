@@ -9,7 +9,7 @@
 (defstyles button-styles)
 
 (defn render! [el]
-  (let [{:keys [flavor disabled label size]
+  (let [{:keys [flavor disabled label size appearance]
          class-name :class
          :or {disabled false
               label ""}} (wcs/get-props el)
@@ -25,9 +25,11 @@
       ;; Update existing button
       (do
         (set! (.-disabled button-el) disabled)
-        ;; Set flavor class, size class, and any additional classes
+        ;; Set appearance, flavor, size classes, and any additional classes
         (set! (.-className button-el)
-              (str/trim (str (or flavor "neutral")
+              (str/trim (str (or appearance "filled-outlined")
+                             " "
+                             (or flavor "neutral")
                              " "
                              (or size "md")
                              (when class-name (str " " class-name)))))
@@ -36,7 +38,9 @@
       (let [new-button (js/document.createElement "button")]
         (set! (.-disabled new-button) disabled)
         (set! (.-className new-button)
-              (str/trim (str (or flavor "neutral")
+              (str/trim (str (or appearance "filled-outlined")
+                             " "
+                             (or flavor "neutral")
                              " "
                              (or size "md")
                              (when class-name (str " " class-name)))))
@@ -56,19 +60,21 @@
     el))
 
 (wcs/define! "ty-button"
-  {:observed [:flavor :disabled :label :class :size]
+  {:observed [:flavor :disabled :label :class :size :appearance]
    :props {:flavor nil
            :disabled nil
            :label nil
            :class nil
-           :size nil}
+           :size nil
+           :appearance nil}
    :construct (fn [el]
                 ;; Hydrate props from attributes at construction
                 (let [p {:flavor (wcs/attr el :flavor)
                          :disabled (wcs/parse-bool-attr el :disabled)
                          :label (wcs/attr el :label)
                          :class (wcs/attr el :class)
-                         :size (wcs/attr el :size)}]
+                         :size (wcs/attr el :size)
+                         :appearance (wcs/attr el :appearance)}]
                   (wcs/set-props! el p)))
    :connected render!
    :attr (fn [el name _old new]
@@ -79,6 +85,7 @@
              :label (wcs/set-props! el {:label new})
              :class (wcs/set-props! el {:class new})
              :size (wcs/set-props! el {:size new})
+             :appearance (wcs/set-props! el {:appearance new})
              nil)
            (render! el))
    :prop (fn [el _k _old _new]

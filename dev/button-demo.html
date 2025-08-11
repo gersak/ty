@@ -53,6 +53,20 @@
             align-items: center;
         }
 
+        .appearance-grid {
+            display: grid;
+            grid-template-columns: 120px repeat(5, 1fr);
+            gap: var(--ty-spacing-3);
+            align-items: center;
+            margin-bottom: var(--ty-spacing-4);
+        }
+
+        .appearance-label {
+            font-size: var(--ty-font-sm);
+            font-weight: var(--ty-font-medium);
+            color: var(--ty-color-neutral-p1);
+        }
+
         code {
             background: var(--ty-background-neutral);
             padding: var(--ty-spacing-0_5) var(--ty-spacing-1);
@@ -185,6 +199,82 @@
     </div>
 
     <div class="demo-section">
+        <h2>Button Appearances</h2>
+        
+        <h3>Appearance Matrix</h3>
+        <p style="margin-bottom: var(--ty-spacing-4); color: var(--ty-color-neutral-p1);">
+            Each row shows the same flavor with different appearances
+        </p>
+        
+        <!-- Neutral -->
+        <div class="appearance-grid">
+            <div class="appearance-label">Neutral:</div>
+            <ty-button appearance="accent" flavor="neutral">Accent</ty-button>
+            <ty-button appearance="filled-outlined" flavor="neutral">Filled + Outlined</ty-button>
+            <ty-button appearance="filled" flavor="neutral">Filled</ty-button>
+            <ty-button appearance="outlined" flavor="neutral">Outlined</ty-button>
+            <ty-button appearance="plain" flavor="neutral">Plain</ty-button>
+        </div>
+
+        <!-- Important -->
+        <div class="appearance-grid">
+            <div class="appearance-label">Important:</div>
+            <ty-button appearance="accent" flavor="important">Accent</ty-button>
+            <ty-button appearance="filled-outlined" flavor="important">Filled + Outlined</ty-button>
+            <ty-button appearance="filled" flavor="important">Filled</ty-button>
+            <ty-button appearance="outlined" flavor="important">Outlined</ty-button>
+            <ty-button appearance="plain" flavor="important">Plain</ty-button>
+        </div>
+
+        <!-- Positive -->
+        <div class="appearance-grid">
+            <div class="appearance-label">Positive:</div>
+            <ty-button appearance="accent" flavor="positive">Accent</ty-button>
+            <ty-button appearance="filled-outlined" flavor="positive">Filled + Outlined</ty-button>
+            <ty-button appearance="filled" flavor="positive">Filled</ty-button>
+            <ty-button appearance="outlined" flavor="positive">Outlined</ty-button>
+            <ty-button appearance="plain" flavor="positive">Plain</ty-button>
+        </div>
+
+        <!-- Exception -->
+        <div class="appearance-grid">
+            <div class="appearance-label">Exception:</div>
+            <ty-button appearance="accent" flavor="exception">Accent</ty-button>
+            <ty-button appearance="filled-outlined" flavor="exception">Filled + Outlined</ty-button>
+            <ty-button appearance="filled" flavor="exception">Filled</ty-button>
+            <ty-button appearance="outlined" flavor="exception">Outlined</ty-button>
+            <ty-button appearance="plain" flavor="exception">Plain</ty-button>
+        </div>
+
+        <!-- Negative -->
+        <div class="appearance-grid">
+            <div class="appearance-label">Negative:</div>
+            <ty-button appearance="accent" flavor="negative">Accent</ty-button>
+            <ty-button appearance="filled-outlined" flavor="negative">Filled + Outlined</ty-button>
+            <ty-button appearance="filled" flavor="negative">Filled</ty-button>
+            <ty-button appearance="outlined" flavor="negative">Outlined</ty-button>
+            <ty-button appearance="plain" flavor="negative">Plain</ty-button>
+        </div>
+
+        <h3>Combined with Sizes</h3>
+        <div class="button-group">
+            <ty-button appearance="accent" flavor="important" size="xs">XS Accent</ty-button>
+            <ty-button appearance="filled" flavor="positive" size="sm">SM Filled</ty-button>
+            <ty-button appearance="outlined" flavor="negative" size="md">MD Outlined</ty-button>
+            <ty-button appearance="plain" flavor="exception" size="lg">LG Plain</ty-button>
+        </div>
+
+        <h3>Disabled Appearances</h3>
+        <div class="button-group">
+            <ty-button appearance="accent" flavor="important" disabled>Accent</ty-button>
+            <ty-button appearance="filled-outlined" flavor="important" disabled>Filled + Outlined</ty-button>
+            <ty-button appearance="filled" flavor="important" disabled>Filled</ty-button>
+            <ty-button appearance="outlined" flavor="important" disabled>Outlined</ty-button>
+            <ty-button appearance="plain" flavor="important" disabled>Plain</ty-button>
+        </div>
+    </div>
+
+    <div class="demo-section">
         <h2>Interactive Demo</h2>
         <p>Click the buttons to see events working:</p>
         <div class="button-group">
@@ -214,6 +304,13 @@
             <button onclick="updateSize('lg')">LG</button>
             <button onclick="updateSize('xl')">XL</button>
         </div>
+        <div class="button-group" style="margin-top: var(--ty-spacing-2);">
+            <button onclick="updateAppearance('accent')">Accent</button>
+            <button onclick="updateAppearance('filled-outlined')">Filled + Outlined</button>
+            <button onclick="updateAppearance('filled')">Filled</button>
+            <button onclick="updateAppearance('outlined')">Outlined</button>
+            <button onclick="updateAppearance('plain')">Plain</button>
+        </div>
     </div>
 
     <div class="demo-section">
@@ -230,6 +327,13 @@
 &lt;ty-button size="lg" flavor="exception"&gt;Large&lt;/ty-button&gt;
 &lt;ty-button size="xl" flavor="negative"&gt;Extra Large&lt;/ty-button&gt;</pre>
 
+        <h3>Appearance Variations</h3>
+        <pre>&lt;ty-button appearance="accent" flavor="important"&gt;Accent&lt;/ty-button&gt;
+&lt;ty-button appearance="filled-outlined" flavor="positive"&gt;Filled + Outlined (Default)&lt;/ty-button&gt;
+&lt;ty-button appearance="filled" flavor="negative"&gt;Filled&lt;/ty-button&gt;
+&lt;ty-button appearance="outlined" flavor="exception"&gt;Outlined&lt;/ty-button&gt;
+&lt;ty-button appearance="plain" flavor="unique"&gt;Plain&lt;/ty-button&gt;</pre>
+
         <h3>JavaScript API</h3>
         <pre>// Get element
 const btn = document.querySelector('ty-button');
@@ -239,6 +343,7 @@ btn.flavor = 'positive';
 btn.disabled = true;
 btn.label = 'New Label';
 btn.size = 'lg';
+btn.appearance = 'accent';
 
 // Listen to events
 btn.addEventListener('click', (e) => {
@@ -293,6 +398,10 @@ btn.addEventListener('click', (e) => {
 
         function updateSize(size) {
             dynamicBtn.size = size;
+        }
+
+        function updateAppearance(appearance) {
+            dynamicBtn.appearance = appearance;
         }
 
         function toggleDisabled() {

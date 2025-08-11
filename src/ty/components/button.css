@@ -7,26 +7,23 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Default styling (neutral) */
-  background: var(--ty-bg-neutral);
-  color: var(--ty-color-neutral);
-  border: 1px solid var(--ty-border-neutral);
-  /* Spacing - default to md size */
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  /* Base styles */
   min-height: var(--ty-size-md);
-  /* Typography - default to md size */
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
   font-size: var(--ty-font-base);
   font-weight: var(--ty-font-semibold);
   line-height: var(--ty-line-height-normal);
-  /* Shape */
   border-radius: var(--ty-radius-md);
-  /* Interaction */
   cursor: pointer;
   user-select: none;
   transition: var(--ty-transition-all);
+  /* Default appearance */
+  background: var(--ty-bg-neutral);
+  color: var(--ty-color-neutral);
+  border: 1px solid var(--ty-border-neutral);
 }
 
-/* Hover state (base) */
+/* Base interaction states */
 button:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow: var(--ty-shadow-sm);
@@ -51,132 +48,420 @@ button:disabled {
 /* Extra Small */
 button.xs {
   min-height: var(--ty-size-xs);
-  padding: var(--ty-spacing-0_5) var(--ty-spacing-2);
+  padding: var(--ty-spacing-0_5) var(--ty-spacing-1_5);
   font-size: var(--ty-font-xs);
 }
 
 /* Small */
 button.sm {
   min-height: var(--ty-size-sm);
-  padding: var(--ty-spacing-1) var(--ty-spacing-3);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
   font-size: var(--ty-font-sm);
 }
 
-/* Medium (default, but explicit class for consistency) */
+/* Medium (default) */
 button.md {
   min-height: var(--ty-size-md);
-  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
   font-size: var(--ty-font-base);
 }
 
 /* Large */
 button.lg {
   min-height: var(--ty-size-lg);
-  padding: var(--ty-spacing-2_5) var(--ty-spacing-5);
+  padding: var(--ty-spacing-1_5) var(--ty-spacing-3);
   font-size: var(--ty-font-lg);
 }
 
 /* Extra Large */
 button.xl {
   min-height: var(--ty-size-xl);
-  padding: var(--ty-spacing-3) var(--ty-spacing-6);
+  padding: var(--ty-spacing-2) var(--ty-spacing-4);
   font-size: var(--ty-font-xl);
 }
 
-/* ===== SEMANTIC VARIANTS ===== */
+/* ===== APPEARANCE MODIFIERS ===== */
 
-/* Important (primary) */
-button.important {
-  background: var(--ty-bg-important);
-  color: var(--ty-color-important);
-  border-color: var(--ty-border-important);
+/* Accent - Full colored background with white text */
+button.accent {
+  border: none;
+  color: white;
 }
 
-button.important:hover:not(:disabled) {
-  background: var(--ty-bg-important-p1);
+/* Filled - Tonal background, no border */
+button.filled {
+  border: none;
 }
 
-button.important:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg),
-    0 0 0 4px var(--ty-color-important);
+/* Outlined - Transparent background with border */
+button.outlined {
+  background: transparent;
 }
 
-/* Positive */
-button.positive {
-  background: var(--ty-bg-positive);
-  color: var(--ty-color-positive);
-  border-color: var(--ty-border-positive);
+/* Plain - Text only, no background or border */
+button.plain {
+  background: transparent;
+  border: none;
 }
 
-button.positive:hover:not(:disabled) {
-  background: var(--ty-bg-positive-p1);
+/* Plain specific hover - remove transform */
+button.plain:hover:not(:disabled) {
+  transform: none;
+  box-shadow: none;
 }
 
-button.positive:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg),
-    0 0 0 4px var(--ty-color-positive);
-}
+/* ===== APPEARANCE × FLAVOR COMBINATIONS ===== */
 
-/* Negative */
-button.negative {
-  background: var(--ty-bg-negative);
-  color: var(--ty-color-negative);
-  border-color: var(--ty-border-negative);
-}
+/* ----- NEUTRAL FLAVOR ----- */
 
-button.negative:hover:not(:disabled) {
-  background: var(--ty-bg-negative-p1);
-}
-
-button.negative:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg),
-    0 0 0 4px var(--ty-color-negative);
-}
-
-/* Exception (warning) */
-button.exception {
-  background: var(--ty-bg-exception);
-  color: var(--ty-color-exception);
-  border-color: var(--ty-border-exception);
-}
-
-button.exception:hover:not(:disabled) {
-  background: var(--ty-bg-exception-p1);
-}
-
-button.exception:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg),
-    0 0 0 4px var(--ty-color-exception);
-}
-
-/* Unique */
-button.unique {
-  background: var(--ty-bg-unique);
-  color: var(--ty-color-unique);
-  border-color: var(--ty-border-unique);
-}
-
-button.unique:hover:not(:disabled) {
-  background: var(--ty-bg-unique-p1);
-}
-
-button.unique:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg),
-    0 0 0 4px var(--ty-color-unique);
-}
-
-/* Neutral (explicit class, even though it's default) */
-button.neutral {
+/* Filled + Outlined (default) */
+button.filled-outlined.neutral {
   background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral);
   border-color: var(--ty-border-neutral);
 }
 
-button.neutral:hover:not(:disabled) {
+button.filled-outlined.neutral:hover:not(:disabled) {
   background: var(--ty-bg-neutral-p1);
 }
 
-button.neutral:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg),
-    0 0 0 4px var(--ty-color-neutral);
+button.filled-outlined.neutral:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-neutral);
+}
+
+/* Accent */
+button.accent.neutral {
+  background: var(--ty-color-neutral);
+}
+
+button.accent.neutral:hover:not(:disabled) {
+  background: var(--ty-color-neutral-p1);
+}
+
+button.accent.neutral:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-neutral);
+}
+
+/* Filled */
+button.filled.neutral {
+  background: var(--ty-bg-neutral);
+  color: var(--ty-color-neutral);
+}
+
+button.filled.neutral:hover:not(:disabled) {
+  background: var(--ty-bg-neutral-p1);
+}
+
+/* Outlined */
+button.outlined.neutral {
+  color: var(--ty-color-neutral);
+  border-color: var(--ty-color-neutral);
+}
+
+button.outlined.neutral:hover:not(:disabled) {
+  background: var(--ty-bg-neutral-m1);
+}
+
+/* Plain */
+button.plain.neutral {
+  color: var(--ty-color-neutral);
+}
+
+button.plain.neutral:hover:not(:disabled) {
+  background: var(--ty-bg-neutral-m1);
+}
+
+/* ----- IMPORTANT FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.important {
+  background: var(--ty-bg-important);
+  color: var(--ty-color-important);
+  border-color: var(--ty-border-important);
+}
+
+button.filled-outlined.important:hover:not(:disabled) {
+  background: var(--ty-bg-important-p1);
+}
+
+button.filled-outlined.important:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-important);
+}
+
+/* Accent */
+button.accent.important {
+  background: var(--ty-color-important);
+}
+
+button.accent.important:hover:not(:disabled) {
+  background: var(--ty-color-important-p1);
+}
+
+button.accent.important:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-important);
+}
+
+/* Filled */
+button.filled.important {
+  background: var(--ty-bg-important);
+  color: var(--ty-color-important);
+}
+
+button.filled.important:hover:not(:disabled) {
+  background: var(--ty-bg-important-p1);
+}
+
+/* Outlined */
+button.outlined.important {
+  color: var(--ty-color-important);
+  border-color: var(--ty-color-important);
+}
+
+button.outlined.important:hover:not(:disabled) {
+  background: var(--ty-bg-important-m1);
+}
+
+/* Plain */
+button.plain.important {
+  color: var(--ty-color-important);
+}
+
+button.plain.important:hover:not(:disabled) {
+  background: var(--ty-bg-important-m1);
+}
+
+/* ----- POSITIVE FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.positive {
+  background: var(--ty-bg-positive);
+  color: var(--ty-color-positive);
+  border-color: var(--ty-border-positive);
+}
+
+button.filled-outlined.positive:hover:not(:disabled) {
+  background: var(--ty-bg-positive-p1);
+}
+
+button.filled-outlined.positive:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-positive);
+}
+
+/* Accent */
+button.accent.positive {
+  background: var(--ty-color-positive);
+}
+
+button.accent.positive:hover:not(:disabled) {
+  background: var(--ty-color-positive-p1);
+}
+
+button.accent.positive:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-positive);
+}
+
+/* Filled */
+button.filled.positive {
+  background: var(--ty-bg-positive);
+  color: var(--ty-color-positive);
+}
+
+button.filled.positive:hover:not(:disabled) {
+  background: var(--ty-bg-positive-p1);
+}
+
+/* Outlined */
+button.outlined.positive {
+  color: var(--ty-color-positive);
+  border-color: var(--ty-color-positive);
+}
+
+button.outlined.positive:hover:not(:disabled) {
+  background: var(--ty-bg-positive-m1);
+}
+
+/* Plain */
+button.plain.positive {
+  color: var(--ty-color-positive);
+}
+
+button.plain.positive:hover:not(:disabled) {
+  background: var(--ty-bg-positive-m1);
+}
+
+/* ----- NEGATIVE FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.negative {
+  background: var(--ty-bg-negative);
+  color: var(--ty-color-negative);
+  border-color: var(--ty-border-negative);
+}
+
+button.filled-outlined.negative:hover:not(:disabled) {
+  background: var(--ty-bg-negative-p1);
+}
+
+button.filled-outlined.negative:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-negative);
+}
+
+/* Accent */
+button.accent.negative {
+  background: var(--ty-color-negative);
+}
+
+button.accent.negative:hover:not(:disabled) {
+  background: var(--ty-color-negative-p1);
+}
+
+button.accent.negative:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-negative);
+}
+
+/* Filled */
+button.filled.negative {
+  background: var(--ty-bg-negative);
+  color: var(--ty-color-negative);
+}
+
+button.filled.negative:hover:not(:disabled) {
+  background: var(--ty-bg-negative-p1);
+}
+
+/* Outlined */
+button.outlined.negative {
+  color: var(--ty-color-negative);
+  border-color: var(--ty-color-negative);
+}
+
+button.outlined.negative:hover:not(:disabled) {
+  background: var(--ty-bg-negative-m1);
+}
+
+/* Plain */
+button.plain.negative {
+  color: var(--ty-color-negative);
+}
+
+button.plain.negative:hover:not(:disabled) {
+  background: var(--ty-bg-negative-m1);
+}
+
+/* ----- EXCEPTION FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.exception {
+  background: var(--ty-bg-exception);
+  color: var(--ty-color-exception);
+  border-color: var(--ty-border-exception);
+}
+
+button.filled-outlined.exception:hover:not(:disabled) {
+  background: var(--ty-bg-exception-p1);
+}
+
+button.filled-outlined.exception:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-exception);
+}
+
+/* Accent */
+button.accent.exception {
+  background: var(--ty-color-exception);
+}
+
+button.accent.exception:hover:not(:disabled) {
+  background: var(--ty-color-exception-p1);
+}
+
+button.accent.exception:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-exception);
+}
+
+/* Filled */
+button.filled.exception {
+  background: var(--ty-bg-exception);
+  color: var(--ty-color-exception);
+}
+
+button.filled.exception:hover:not(:disabled) {
+  background: var(--ty-bg-exception-p1);
+}
+
+/* Outlined */
+button.outlined.exception {
+  color: var(--ty-color-exception);
+  border-color: var(--ty-color-exception);
+}
+
+button.outlined.exception:hover:not(:disabled) {
+  background: var(--ty-bg-exception-m1);
+}
+
+/* Plain */
+button.plain.exception {
+  color: var(--ty-color-exception);
+}
+
+button.plain.exception:hover:not(:disabled) {
+  background: var(--ty-bg-exception-m1);
+}
+
+/* ----- UNIQUE FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.unique {
+  background: var(--ty-bg-unique);
+  color: var(--ty-color-unique);
+  border-color: var(--ty-border-unique);
+}
+
+button.filled-outlined.unique:hover:not(:disabled) {
+  background: var(--ty-bg-unique-p1);
+}
+
+button.filled-outlined.unique:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-unique);
+}
+
+/* Accent */
+button.accent.unique {
+  background: var(--ty-color-unique);
+}
+
+button.accent.unique:hover:not(:disabled) {
+  background: var(--ty-color-unique-p1);
+}
+
+button.accent.unique:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-unique);
+}
+
+/* Filled */
+button.filled.unique {
+  background: var(--ty-bg-unique);
+  color: var(--ty-color-unique);
+}
+
+button.filled.unique:hover:not(:disabled) {
+  background: var(--ty-bg-unique-p1);
+}
+
+/* Outlined */
+button.outlined.unique {
+  color: var(--ty-color-unique);
+  border-color: var(--ty-color-unique);
+}
+
+button.outlined.unique:hover:not(:disabled) {
+  background: var(--ty-bg-unique-m1);
+}
+
+/* Plain */
+button.plain.unique {
+  color: var(--ty-color-unique);
+}
+
+button.plain.unique:hover:not(:disabled) {
+  background: var(--ty-bg-unique-m1);
 }

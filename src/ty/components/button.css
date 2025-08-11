@@ -11,12 +11,11 @@ button {
   background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral);
   border: 1px solid var(--ty-border-neutral);
-  /* Spacing */
-  padding: var(--ty-spacing-0_5) var(--ty-spacing-2);
-  min-height: var(--ty-spacing-10);
-  min-width: var(--ty-spacing-20);
-  /* Typography */
-  font-size: var(--ty-font-xs);
+  /* Spacing - default to md size */
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  min-height: var(--ty-size-md);
+  /* Typography - default to md size */
+  font-size: var(--ty-font-base);
   font-weight: var(--ty-font-semibold);
   line-height: var(--ty-line-height-normal);
   /* Shape */
@@ -45,6 +44,43 @@ button:focus-visible {
 button:disabled {
   cursor: not-allowed;
   opacity: 0.6;
+}
+
+/* ===== SIZE MODIFIERS ===== */
+
+/* Extra Small */
+button.xs {
+  min-height: var(--ty-size-xs);
+  padding: var(--ty-spacing-0_5) var(--ty-spacing-2);
+  font-size: var(--ty-font-xs);
+}
+
+/* Small */
+button.sm {
+  min-height: var(--ty-size-sm);
+  padding: var(--ty-spacing-1) var(--ty-spacing-3);
+  font-size: var(--ty-font-sm);
+}
+
+/* Medium (default, but explicit class for consistency) */
+button.md {
+  min-height: var(--ty-size-md);
+  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  font-size: var(--ty-font-base);
+}
+
+/* Large */
+button.lg {
+  min-height: var(--ty-size-lg);
+  padding: var(--ty-spacing-2_5) var(--ty-spacing-5);
+  font-size: var(--ty-font-lg);
+}
+
+/* Extra Large */
+button.xl {
+  min-height: var(--ty-size-xl);
+  padding: var(--ty-spacing-3) var(--ty-spacing-6);
+  font-size: var(--ty-font-xl);
 }
 
 /* ===== SEMANTIC VARIANTS ===== */

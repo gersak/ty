@@ -103,6 +103,12 @@
             background: var(--ty-background-important);
             color: var(--ty-color-important);
         }
+
+        .size-label {
+            font-size: var(--ty-font-sm);
+            color: var(--ty-color-neutral-p1);
+            min-width: 2rem;
+        }
     </style>
 </head>
 
@@ -143,6 +149,42 @@
     </div>
 
     <div class="demo-section">
+        <h2>Button Sizes</h2>
+        
+        <h3>All Sizes with Neutral Flavor</h3>
+        <div class="button-group">
+            <span class="size-label">xs:</span>
+            <ty-button size="xs" label="Extra Small"></ty-button>
+            <span class="size-label">sm:</span>
+            <ty-button size="sm" label="Small"></ty-button>
+            <span class="size-label">md:</span>
+            <ty-button size="md" label="Medium (Default)"></ty-button>
+            <span class="size-label">lg:</span>
+            <ty-button size="lg" label="Large"></ty-button>
+            <span class="size-label">xl:</span>
+            <ty-button size="xl" label="Extra Large"></ty-button>
+        </div>
+
+        <h3>Size Variations with Different Flavors</h3>
+        <div class="button-group">
+            <ty-button size="xs" flavor="important" label="XS Important"></ty-button>
+            <ty-button size="sm" flavor="positive" label="SM Positive"></ty-button>
+            <ty-button size="md" flavor="negative" label="MD Negative"></ty-button>
+            <ty-button size="lg" flavor="exception" label="LG Exception"></ty-button>
+            <ty-button size="xl" flavor="unique" label="XL Unique"></ty-button>
+        </div>
+
+        <h3>Size Comparison</h3>
+        <div class="button-group">
+            <ty-button size="xs" flavor="important" label="Save"></ty-button>
+            <ty-button size="sm" flavor="important" label="Save"></ty-button>
+            <ty-button size="md" flavor="important" label="Save"></ty-button>
+            <ty-button size="lg" flavor="important" label="Save"></ty-button>
+            <ty-button size="xl" flavor="important" label="Save"></ty-button>
+        </div>
+    </div>
+
+    <div class="demo-section">
         <h2>Interactive Demo</h2>
         <p>Click the buttons to see events working:</p>
         <div class="button-group">
@@ -165,28 +207,43 @@
             <button onclick="updateFlavor('neutral')">Neutral</button>
             <button onclick="toggleDisabled()">Toggle Disabled</button>
         </div>
+        <div class="button-group" style="margin-top: var(--ty-spacing-2);">
+            <button onclick="updateSize('xs')">XS</button>
+            <button onclick="updateSize('sm')">SM</button>
+            <button onclick="updateSize('md')">MD</button>
+            <button onclick="updateSize('lg')">LG</button>
+            <button onclick="updateSize('xl')">XL</button>
+        </div>
     </div>
 
     <div class="demo-section">
         <h2>Code Examples</h2>
         <h3>Basic Usage</h3>
         <pre>&lt;ty-button flavor="important" label="Click Me"&gt;&lt;/ty-button&gt;
-            &lt;ty-button flavor="positive"&gt;Save&lt;/ty-button&gt;
-            &lt;ty-button flavor="negative" disabled&gt;Delete&lt;/ty-button&gt;</pre>
+&lt;ty-button flavor="positive"&gt;Save&lt;/ty-button&gt;
+&lt;ty-button flavor="negative" disabled&gt;Delete&lt;/ty-button&gt;</pre>
+
+        <h3>Size Variations</h3>
+        <pre>&lt;ty-button size="xs" flavor="important"&gt;Extra Small&lt;/ty-button&gt;
+&lt;ty-button size="sm" flavor="positive"&gt;Small&lt;/ty-button&gt;
+&lt;ty-button size="md" flavor="neutral"&gt;Medium (Default)&lt;/ty-button&gt;
+&lt;ty-button size="lg" flavor="exception"&gt;Large&lt;/ty-button&gt;
+&lt;ty-button size="xl" flavor="negative"&gt;Extra Large&lt;/ty-button&gt;</pre>
 
         <h3>JavaScript API</h3>
         <pre>// Get element
-            const btn = document.querySelector('ty-button');
+const btn = document.querySelector('ty-button');
 
-            // Set properties
-            btn.flavor = 'positive';
-            btn.disabled = true;
-            btn.label = 'New Label';
+// Set properties
+btn.flavor = 'positive';
+btn.disabled = true;
+btn.label = 'New Label';
+btn.size = 'lg';
 
-            // Listen to events
-            btn.addEventListener('click', (e) => {
-            console.log('Button clicked!', e.detail);
-            });</pre>
+// Listen to events
+btn.addEventListener('click', (e) => {
+  console.log('Button clicked!', e.detail);
+});</pre>
     </div>
 
     <script src="js/main.js"></script>
@@ -232,6 +289,10 @@
 
         function updateFlavor(flavor) {
             dynamicBtn.flavor = flavor;
+        }
+
+        function updateSize(size) {
+            dynamicBtn.size = size;
         }
 
         function toggleDisabled() {

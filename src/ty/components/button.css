@@ -7,6 +7,7 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: var(--ty-spacing-1);
   /* Base styles */
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-1) var(--ty-spacing-2);
@@ -21,6 +22,32 @@ button {
   background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral);
   border: 1px solid var(--ty-border-neutral);
+}
+
+/* Slot styling */
+::slotted(*) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure icons in slots are sized appropriately */
+::slotted([slot="start"]),
+::slotted([slot="end"]) {
+  flex-shrink: 0;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+/* Button text */
+.button-text:empty {
+  display: none;
+}
+
+/* Adjust gap when slots are empty */
+slot[name="start"]:empty,
+slot[name="end"]:empty {
+  display: none;
 }
 
 /* Base interaction states */
@@ -47,37 +74,37 @@ button:disabled {
 
 /* Extra Small */
 button.xs {
-  min-height: var(--ty-size-xs);
   padding: var(--ty-spacing-0_5) var(--ty-spacing-1_5);
   font-size: var(--ty-font-xs);
+  gap: var(--ty-spacing-0_5);
 }
 
 /* Small */
 button.sm {
-  min-height: var(--ty-size-sm);
   padding: var(--ty-spacing-1) var(--ty-spacing-2);
   font-size: var(--ty-font-sm);
+  gap: var(--ty-spacing-0_5);
 }
 
 /* Medium (default) */
 button.md {
-  min-height: var(--ty-size-md);
   padding: var(--ty-spacing-1) var(--ty-spacing-2);
   font-size: var(--ty-font-base);
+  gap: var(--ty-spacing-1);
 }
 
 /* Large */
 button.lg {
-  min-height: var(--ty-size-lg);
   padding: var(--ty-spacing-1_5) var(--ty-spacing-3);
   font-size: var(--ty-font-lg);
+  gap: var(--ty-spacing-1_5);
 }
 
 /* Extra Large */
 button.xl {
-  min-height: var(--ty-size-xl);
   padding: var(--ty-spacing-2) var(--ty-spacing-4);
   font-size: var(--ty-font-xl);
+  gap: var(--ty-spacing-2);
 }
 
 /* ===== APPEARANCE MODIFIERS ===== */

@@ -1,10 +1,29 @@
 (ns ty.shim
-  "Thin CLJS wrapper over wc-shim.js so you don’t touch classes or js*.
-   Provides helpers for attributes, props, and shadow DOM."
+  "Thin CLJS wrapper over wc-shim.js so you don't touch classes or js*.
+   Provides helpers for attributes, props, shadow DOM, and hot reload support."
   (:require ["./shim.js" :as shim]
-            [cljs-bean.core :refer [->js ->clj]]
+            [cljs-bean.core :refer [->js]]
             [cljs.reader :as edn]
             [clojure.string :as str]))
+
+;; -----------------------------
+;; Hot Reload Support
+;; -----------------------------
+
+(defonce ^:private component-registry (atom {}))
+(defonce ^:private component-renderers (atom {}))
+
+(defn- get-all-instances
+  "Get all instances of a custom element in the document"
+  [tag-name]
+  (js/document.querySelectorAll tag-name))
+
+(defn- refresh-instances!
+  "Refresh all instances of a component by calling their render function"
+  [tag-name]
+  (when-let [render-fn (get @component-renderers tag-name)]
+    (let [instances (get-all-instances tag-name)]
+      (.forEach instances render-fn))))
 
 ;; -----------------------------
 ;; Attribute parsing helpers
@@ -43,7 +62,7 @@
 
 (defn parse-json-attr [el k]
   (when-let [v (attr el k)]
-    (-> v js/JSON.parse (->clj :keywordize-keys true))))
+    (-> v js/JSON.parse (js->clj :keywordize-keys true))))
 
 (defn parse-edn-attr [el k]
   (when-let [v (attr el k)]
@@ -112,14 +131,56 @@
        :prop (when prop (fn [el k o v] (prop el (keyword k) o v)))})
 
 ;; -----------------------------
-;; Public API
+;; Public API with Hot Reload Support
 ;; -----------------------------
 
 (defn define!
-  "Define a Custom Element.
+  "Define a Custom Element with hot reload support.
+   In development: 
+   - Skips redefinition if component already exists
+   - Refreshes existing instances with new implementation
+   In production:
+   - Standard web component definition
+   
    tag  - string tag name, e.g. \"x-counter\"
    opts - hooks/options map, see ->hooks above.
-
+   
    Returns the constructor (for completeness), but you rarely need it."
   [tag opts]
-  (shim/define tag (->hooks opts)))
+  (let [already-defined? (.get js/window.customElements tag)]
+    (cond
+      ;; In production or first definition - define normally
+      (or (not goog.DEBUG) (not already-defined?))
+      (let [constructor (shim/define tag (->hooks opts))]
+        ;; Store in registry for hot reload
+        (swap! component-registry assoc tag opts)
+        ;; Store render function if connected hook exists
+        (when-let [connected (:connected opts)]
+          (swap! component-renderers assoc tag connected))
+        constructor)
+
+      ;; In development and already defined - update and refresh
+      :else
+      (do
+        ;; Update registry with new implementation
+        (swap! component-registry assoc tag opts)
+        ;; Update render function
+        (when-let [connected (:connected opts)]
+          (swap! component-renderers assoc tag connected))
+        ;; Refresh all existing instances
+        (js/console.log (str "[Ty] Hot reloading component: " tag))
+        (refresh-instances! tag)
+        ;; Return the existing constructor
+        (.get js/window.customElements tag)))))
+
+;; -----------------------------
+;; Development helpers
+;; -----------------------------
+
+(defn ^:dev/after-load reload-all-components!
+  "Force refresh all registered components after hot reload"
+  []
+  (when goog.DEBUG
+    (doseq [[tag-name _] @component-registry]
+      (js/console.log (str "[Ty] Refreshing: " tag-name))
+      (refresh-instances! tag-name))))

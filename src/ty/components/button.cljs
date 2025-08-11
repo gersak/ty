@@ -5,6 +5,7 @@
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load button styles from button.css
+#_{:clj-kondo/ignore [:uninitialized-var]}
 (defstyles button-styles)
 
 (defn render! [el]
@@ -76,3 +77,18 @@
    :prop (fn [el _k _old _new]
            ;; Any prop change re-renders
            (render! el))})
+
+;; -----------------------------
+;; Hot Reload Hooks
+;; -----------------------------
+
+(defn ^:dev/before-load stop []
+  ;; Called before code is reloaded
+  (when goog.DEBUG
+    (js/console.log "[ty-button] Preparing for hot reload...")))
+
+(defn ^:dev/after-load start []
+  ;; Called after code is reloaded
+  ;; The shim will automatically refresh all button instances
+  (when goog.DEBUG
+    (js/console.log "[ty-button] Hot reload complete!")))

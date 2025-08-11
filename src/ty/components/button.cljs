@@ -1,107 +1,40 @@
 (ns ty.components.button
   (:require [clojure.string :as str]
-            [ty.shim :as wcs]
-            [ty.styles.tokens :as tokens]))
+            [ty.css :refer [ensure-styles!]]
+            [ty.shim :as wcs])
+  (:require-macros [ty.css :refer [defstyles]]))
 
-(defn variant->semantic-state
-  "Map button variant to semantic state"
-  [variant]
-  (case variant
-    "positive" :positive
-    "negative" :negative
-    "warning" :exception
-    "neutral" :neutral
-    :important)) ; default
-
-(defn create-styles
-  "Generate component styles"
-  [{:keys [variant disabled]}]
-  (let [state (variant->semantic-state variant)]
-    (str "<style>"
-         ":host {"
-         "  display: inline-block;"
-         "  font-family: " (tokens/css-var :font-sans) ";"
-         "}"
-         ""
-         "button {"
-         "  display: flex;"
-         "  align-items: center;"
-         "  justify-content: center;"
-         ;; Colors based on semantic state
-         "  background: " (tokens/semantic-var :background state) ";"
-         "  color: " (tokens/semantic-var :color state) ";"
-         "  border: 1px solid " (tokens/semantic-var :border state) ";"
-         ;; Spacing
-         "  padding: " (tokens/spacing 2) " " (tokens/spacing 4) ";"
-         "  min-height: " (tokens/spacing 10) ";"
-         "  min-width: " (tokens/spacing 20) ";"
-         ;; Typography
-         "  font-size: " (tokens/font-size :sm) ";"
-         "  font-weight: " (tokens/font-weight :semibold) ";"
-         "  line-height: " (tokens/line-height :normal) ";"
-         ;; Shape
-         "  border-radius: " (tokens/radius :md) ";"
-         ;; Interaction
-         "  cursor: " (if disabled "not-allowed" "pointer") ";"
-         "  opacity: " (if disabled "0.6" "1") ";"
-         "  user-select: none;"
-         "  transition: " (tokens/transition :all) ";"
-         "}"
-         ""
-         "button:hover:not(:disabled) {"
-         "  background: " (tokens/semantic-var :background state :p1) ";"
-         "  transform: translateY(-1px);"
-         "  box-shadow: " (tokens/shadow :sm) ";"
-         "}"
-         ""
-         "button:active:not(:disabled) {"
-         "  transform: translateY(0);"
-         "}"
-         ""
-         "button:focus-visible {"
-         "  outline: none;"
-         "  box-shadow: 0 0 0 2px " (tokens/css-var :background) ","
-         "              0 0 0 4px " (tokens/semantic-var :color state) ";"
-         "}"
-         "</style>")))
+;; Load button styles from button.css
+(defstyles button-styles)
 
 (defn render! [el]
   (let [{:keys [variant disabled label]
          class-name :class
-         :or {variant "important"
-              disabled false
+         :or {disabled false
               label ""}} (wcs/get-props el)
         root (wcs/ensure-shadow el)
-        ;; Check if we already have our elements
-        style-el (.querySelector root "style")
+        ;; Check if we already have button element
         button-el (.querySelector root "button")]
 
-    (println "RENDERING!!!")
-    ;; Create or update style element
-    (if style-el
-      ;; Update existing styles
-      (set! (.-textContent style-el)
-            (create-styles {:variant variant
-                            :disabled disabled}))
-      ;; Create new style element
-      (let [new-style (js/document.createElement "style")]
-        (set! (.-textContent new-style) (create-styles {:variant variant
-                                                        :disabled disabled}))
-        (.appendChild root new-style)))
+    ;; Ensure styles are loaded (handles both CSSStyleSheet and string)
+    (ensure-styles! root button-styles "ty-button")
 
     ;; Create or update button element
     (if button-el
       ;; Update existing button
       (do
         (set! (.-disabled button-el) disabled)
-        (when class-name
-          (set! (.-className button-el) class-name))
+        ;; Set variant class and any additional classes
+        (set! (.-className button-el)
+              (str/trim (str (or variant "neutral")
+                             (when class-name (str " " class-name)))))
         (set! (.-textContent button-el) (or label (.-textContent el))))
       ;; Create new button
       (let [new-button (js/document.createElement "button")]
         (set! (.-disabled new-button) disabled)
-        (when class-name
-          (set! (.-className new-button) class-name))
+        (set! (.-className new-button)
+              (str/trim (str (or variant "neutral")
+                             (when class-name (str " " class-name)))))
         (set! (.-textContent new-button) (or label (.-textContent el)))
 
         ;; Add click event listener
@@ -125,7 +58,7 @@
            :class nil}
    :construct (fn [el]
                 ;; Hydrate props from attributes at construction
-                (let [p {:variant (or (wcs/attr el :variant) "important")
+                (let [p {:variant (wcs/attr el :variant)
                          :disabled (wcs/parse-bool-attr el :disabled)
                          :label (wcs/attr el :label)
                          :class (wcs/attr el :class)}]

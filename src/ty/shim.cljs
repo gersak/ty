@@ -2,7 +2,7 @@
   "Thin CLJS wrapper over wc-shim.js so you don’t touch classes or js*.
    Provides helpers for attributes, props, and shadow DOM."
   (:require ["./shim.js" :as shim]
-            [cljs-bean.core :refer [->js]]
+            [cljs-bean.core :refer [->js ->clj]]
             [cljs.reader :as edn]
             [clojure.string :as str]))
 
@@ -43,7 +43,7 @@
 
 (defn parse-json-attr [el k]
   (when-let [v (attr el k)]
-    (-> v js/JSON.parse (js->clj :keywordize-keys true))))
+    (-> v js/JSON.parse (->clj :keywordize-keys true))))
 
 (defn parse-edn-attr [el k]
   (when-let [v (attr el k)]

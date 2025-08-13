@@ -1,0 +1,171 @@
+:host {
+  display: inline-block;
+  line-height: 0;
+  /* Default size - 1em to inherit from parent font-size */
+  width: 1em;
+  height: 1em;
+  /* Ensure the icon inherits text color */
+  color: inherit;
+  /* Smooth transitions for color changes */
+  transition: color var(--ty-transition-fast);
+}
+
+/* The SVG element inside shadow DOM */
+:host svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  /* Ensure paths use currentColor */
+  fill: currentColor;
+}
+
+/* Handle SVG elements that might have their own fill */
+:host svg * {
+  fill: currentColor;
+}
+
+/* Size variants via CSS classes on the host */
+:host(.icon-xs) {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+:host(.icon-sm) {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+:host(.icon-md) {
+  width: 1em;
+  height: 1em;
+}
+
+:host(.icon-lg) {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+:host(.icon-xl) {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+:host(.icon-2xl) {
+  width: 2em;
+  height: 2em;
+}
+
+/* Fixed pixel sizes */
+:host(.icon-16) {
+  width: 16px;
+  height: 16px;
+}
+
+:host(.icon-20) {
+  width: 20px;
+  height: 20px;
+}
+
+:host(.icon-24) {
+  width: 24px;
+  height: 24px;
+}
+
+:host(.icon-32) {
+  width: 32px;
+  height: 32px;
+}
+
+:host(.icon-48) {
+  width: 32px;
+  height: 32px;
+}
+
+/* Spinning animation - default tempo */
+:host(.icon-spin) {
+  animation: icon-spin 1s linear infinite;
+}
+
+/* Spinning animation - slow tempo */
+:host(.icon-spin.icon-tempo-slow) {
+  animation: icon-spin 2s linear infinite;
+}
+
+/* Spinning animation - fast tempo */
+:host(.icon-spin.icon-tempo-fast) {
+  animation: icon-spin 0.5s linear infinite;
+}
+
+@keyframes icon-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Pulse animation - default tempo */
+:host(.icon-pulse) {
+  animation: icon-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Pulse animation - slow tempo */
+:host(.icon-pulse.icon-tempo-slow) {
+  animation: icon-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Pulse animation - fast tempo */
+:host(.icon-pulse.icon-tempo-fast) {
+  animation: icon-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes icon-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Accessibility: ensure icons are not announced by screen readers by default */
+:host {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Allow pointer events to pass through by default */
+:host(:not(.icon-clickable)) {
+  pointer-events: none;
+}
+
+/* Clickable icons */
+:host(.icon-clickable) {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color var(--ty-transition-fast), transform var(--ty-transition-fast);
+}
+
+:host(.icon-clickable:hover) {
+  transform: scale(1.1);
+}
+
+:host(.icon-clickable:active) {
+  transform: scale(0.95);
+}
+
+/* Disabled state */
+:host(.icon-disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Block display variant */
+:host(.icon-block) {
+  display: block;
+}

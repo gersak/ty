@@ -1,0 +1,146 @@
+(ns ty.components.icon
+  (:require
+    [clojure.string :as str]
+    [ty.css :refer [ensure-styles!]]
+    [ty.icons :as icons]
+    [ty.shim :as wcs])
+  (:require-macros [ty.css :refer [defstyles]]))
+
+;; Load icon styles from icon.css
+(defstyles icon-styles)
+
+(def not-found "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 512 512\"><!--!Font Awesome Free v6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.--><path d=\"M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512z\"/></svg>")
+
+;; Track which components are watching which icons
+(def watchers (atom {}))
+
+(defn build-class-list
+  "Build class list from props and existing classes"
+  [{:keys [size spin pulse tempo class]}]
+  (str/trim
+    (str/join " "
+              (cond-> []
+                size (conj (str "icon-" size))
+                spin (conj "icon-spin")
+                pulse (conj "icon-pulse")
+                tempo (conj (str "icon-tempo-" tempo))))))
+
+(defn render! [^js el]
+  (let [{:keys [name]
+         :or {name nil}} (wcs/get-props el)
+        root (wcs/ensure-shadow el)
+        ;; Get icon SVG from store or use not-found
+        icon-svg (or (icons/get name) not-found)
+        ;; Build and apply classes
+        class-list (build-class-list (wcs/get-props el))]
+
+
+    ;; Ensure styles are loaded
+    (ensure-styles! root icon-styles "ty-icon")
+
+    ;; Apply classes to host element
+    (set! (.-className el) class-list)
+
+    ;; Clear and set shadow DOM content
+    (set! (.-innerHTML root) icon-svg)
+
+    el))
+
+(defn watch-icon! [^js el icon-name]
+  ;; Remove any existing watcher for this element
+  (let [el-id (or (.-tyIconId el) (str (random-uuid)))]
+    ;; Store the ID on the element for future reference
+    (when-not (.-tyIconId el)
+      (set! (.-tyIconId el) el-id))
+
+    ;; Update watchers atom to track this element
+    (swap! watchers assoc el-id {:element el
+                                 :icon-name icon-name})))
+
+(defn unwatch-icon! [^js el]
+  ;; Remove watcher for this element
+  (when-let [el-id (.-tyIconId el)]
+    (swap! watchers dissoc el-id)))
+
+;; Watch for changes to the icons atom
+(add-watch icons/data :icon-components
+           (fn [_ _ old-icons new-icons]
+             ;; Find which icons changed
+             (let [changed-icons (reduce-kv
+                                   (fn [acc k v]
+                                     (if (not= (get old-icons k) v)
+                                       (conj acc k)
+                                       acc))
+                                   #{}
+                                   new-icons)]
+               ;; Re-render components watching changed icons
+               (doseq [[_ {:keys [element icon-name]}] @watchers]
+                 (when (contains? changed-icons icon-name)
+                   ;; Check if element is still connected to DOM
+                   (when (.-isConnected element)
+                     (render! element)))))))
+
+(wcs/define! "ty-icon"
+  {:observed [:name :size :spin :pulse :tempo :class]
+   :props {:name nil
+           :size nil
+           :spin nil
+           :pulse nil
+           :tempo nil
+           :class nil}
+   :construct (fn [^js el]
+                ;; Hydrate props from attributes at construction
+                (let [p {:name (wcs/attr el :name)
+                         :size (wcs/attr el :size)
+                         :spin (wcs/parse-bool-attr el :spin)
+                         :pulse (wcs/parse-bool-attr el :pulse)
+                         :tempo (wcs/attr el :tempo)
+                         :class (wcs/attr el :class)}]
+                  (wcs/set-props! el p)))
+   :connected (fn [^js el]
+                ;; Start watching when connected
+                (let [{:keys [name]} (wcs/get-props el)]
+                  (when name
+                    (watch-icon! el name)))
+                (render! el))
+   :disconnected (fn [^js el]
+                   ;; Stop watching when disconnected
+                   (unwatch-icon! el))
+   :attr (fn [^js el attr-name old new]
+           ;; Reflect attribute changes into props
+           (case attr-name
+             :name (do
+                     ;; Update watcher when name changes
+                     (when old
+                       (unwatch-icon! el))
+                     (when new
+                       (watch-icon! el new))
+                     (wcs/set-props! el {:name new}))
+             :size (wcs/set-props! el {:size new})
+             :spin (wcs/set-props! el {:spin (wcs/parse-bool-attr el :spin)})
+             :pulse (wcs/set-props! el {:pulse (wcs/parse-bool-attr el :pulse)})
+             :tempo (wcs/set-props! el {:tempo new})
+             :class (wcs/set-props! el {:class new})
+             nil)
+           (render! el))
+   :prop (fn [^js el _k _old _new]
+           ;; Any prop change re-renders
+           (render! el))})
+
+
+;; -----------------------------
+;; Hot Reload Hooks
+;; -----------------------------
+
+(defn ^:dev/before-load stop []
+  ;; Called before code is reloaded
+  (when goog.DEBUG
+    (js/console.log "[ty-icon] Preparing for hot reload...")
+    ;; Clear watchers on reload to prevent memory leaks
+    (reset! watchers {})))
+
+(defn ^:dev/after-load start []
+  ;; Called after code is reloaded
+  ;; The shim will automatically refresh all icon instances
+  (when goog.DEBUG
+    (js/console.log "[ty-icon] Hot reload complete!")))

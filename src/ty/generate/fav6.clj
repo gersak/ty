@@ -40,85 +40,14 @@
   (list-images "solid"))
 
 
-; (defn gen-el
-;   [{:keys [tag attrs content]}]
-;   (let [attrs (cond->
-;                 attrs
-;                 (= tag :svg)
-;                 (assoc
-;                   :height "1em"
-;                   :width "1em"
-;                   :stroke "currentColor"
-;                   :fill "currentColor")
-;                 ;;
-;                 (#{:line :path :polyline :rect :circle :polygon} tag)
-;                 (as-> tag
-;                       (update tag :stroke (fn [v] (if (= v "#000") "currentColor" v)))
-;                   (update tag :fill (fn [v] (if (= v "#000") "currentColor" v))))
-;                 ;;
-;                 (some? (:style attrs))
-;                 (update :style (fn [current]
-;                                  (reduce
-;                                    (fn [r e]
-;                                      (let [[k v] (str/split e #":")]
-;                                        (if (#{"stroke" "fill"} k)
-;                                          (case v
-;                                            "none" (assoc r (keyword k) "none")
-;                                            "#000" r)
-;                                          (assoc r (keyword k) v))))
-;                                    nil
-;                                    (when current (str/split current #";"))))))]
-;     (if (empty? content)
-;       `(~(symbol "helix.dom" (name tag))
-;          ~(cond-> attrs
-;             (= tag :svg) (assoc :& 'props)))
-;       `(~(symbol "helix.dom" (name tag))
-;          ~(cond-> attrs
-;             (= tag :svg) (assoc :& 'props))
-;          ~@(map gen-el content)))))
-
-
-(defn gen-el
-  [{:keys [tag attrs content]}]
-  (let [attrs (cond->
-                attrs
-                (= tag :svg)
-                (assoc
-                  :height "1em"
-                  :width "1em"
-                  :stroke "currentColor"
-                  :fill "currentColor")
-                ;;
-                (#{:line :path :polyline :rect :circle :polygon} tag)
-                (as-> tag
-                      (update tag :stroke (fn [v] (if (= v "#000") "currentColor" v)))
-                  (update tag :fill (fn [v] (if (= v "#000") "currentColor" v))))
-                ;;
-                (some? (:style attrs))
-                (update :style (fn [current]
-                                 (reduce
-                                   (fn [r e]
-                                     (let [[k v] (str/split e #":")]
-                                       (if (#{"stroke" "fill"} k)
-                                         (case v
-                                           "none" (assoc r (keyword k) "none")
-                                           "#000" r)
-                                         (assoc r (keyword k) v))))
-                                   nil
-                                   (when current (str/split current #";"))))))]
-    (if (empty? content)
-      `(~(symbol "helix.dom" (name tag))
-         ~(cond-> attrs
-            (= tag :svg) (assoc :& 'props)))
-      `(~(symbol "helix.dom" (name tag))
-         ~(cond-> attrs
-            (= tag :svg) (assoc :& 'props))
-         ~@(map gen-el content)))))
-
-
 (defn process-svg
   [path]
-  (let [xml (xml/parse (str path))
+  (let [xml (->
+              (xml/parse (str path))
+              (update :attrs merge
+                      {:stroke-width "0"
+                       :stroke "currentColor"
+                       :fill "currentColor"}))
         icon (file-name path)
         icon (if (re-find #"^\d" (name icon))
                (str "_" (name icon))

@@ -16,12 +16,7 @@
   height: 100%;
   display: block;
   /* Ensure paths use currentColor */
-  fill: currentColor;
-}
-
-/* Handle SVG elements that might have their own fill */
-:host svg * {
-  fill: currentColor;
+  /* fill: currentColor; */
 }
 
 /* Size variants via CSS classes on the host */

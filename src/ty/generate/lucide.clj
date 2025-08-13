@@ -170,7 +170,7 @@
 
 (defn generate
   []
-  (let [target "gen/ty/lucide.cljs"]
+  (let [target "gen/ty/lucide.cljc"]
     (println "Generating Lucide icons to" target)
     (io/make-parents target)
     (let [icons (list-images)]

@@ -72,8 +72,8 @@
 }
 
 :host(.icon-48) {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
 }
 
 /* Spinning animation - default tempo */

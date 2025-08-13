@@ -14,9 +14,19 @@
 ;; Track which components are watching which icons
 (def watchers (atom {}))
 
+
+(defn icon-attributes
+  [^js el]
+  {:name (wcs/attr el "name")
+   :size (wcs/attr el "size")
+   :spin (wcs/parse-bool-attr el "spin")
+   :pulse (wcs/parse-bool-attr el "pulse")
+   :tempo (wcs/attr el "tempo")
+   :class (wcs/attr el "class")})
+
 (defn build-class-list
   "Build class list from props and existing classes"
-  [{:keys [size spin pulse tempo class]}]
+  [{:keys [size spin pulse tempo]}]
   (str/trim
     (str/join " "
               (cond-> []
@@ -26,14 +36,12 @@
                 tempo (conj (str "icon-tempo-" tempo))))))
 
 (defn render! [^js el]
-  (let [{:keys [name]
-         :or {name nil}} (wcs/get-props el)
+  (let [name (wcs/attr el "name")
         root (wcs/ensure-shadow el)
         ;; Get icon SVG from store or use not-found
         icon-svg (or (icons/get name) not-found)
         ;; Build and apply classes
-        class-list (build-class-list (wcs/get-props el))]
-
+        class-list (build-class-list (icon-attributes el))]
 
     ;; Ensure styles are loaded
     (ensure-styles! root icon-styles "ty-icon")
@@ -88,18 +96,10 @@
            :pulse nil
            :tempo nil
            :class nil}
-   :construct (fn [^js el]
-                ;; Hydrate props from attributes at construction
-                (let [p {:name (wcs/attr el :name)
-                         :size (wcs/attr el :size)
-                         :spin (wcs/parse-bool-attr el :spin)
-                         :pulse (wcs/parse-bool-attr el :pulse)
-                         :tempo (wcs/attr el :tempo)
-                         :class (wcs/attr el :class)}]
-                  (wcs/set-props! el p)))
+   :construct (fn [^js el])
    :connected (fn [^js el]
                 ;; Start watching when connected
-                (let [{:keys [name]} (wcs/get-props el)]
+                (let [name (wcs/attr el "name")]
                   (when name
                     (watch-icon! el name)))
                 (render! el))
@@ -108,20 +108,6 @@
                    (unwatch-icon! el))
    :attr (fn [^js el attr-name old new]
            ;; Reflect attribute changes into props
-           (case attr-name
-             :name (do
-                     ;; Update watcher when name changes
-                     (when old
-                       (unwatch-icon! el))
-                     (when new
-                       (watch-icon! el new))
-                     (wcs/set-props! el {:name new}))
-             :size (wcs/set-props! el {:size new})
-             :spin (wcs/set-props! el {:spin (wcs/parse-bool-attr el :spin)})
-             :pulse (wcs/set-props! el {:pulse (wcs/parse-bool-attr el :pulse)})
-             :tempo (wcs/set-props! el {:tempo new})
-             :class (wcs/set-props! el {:class new})
-             nil)
            (render! el))
    :prop (fn [^js el _k _old _new]
            ;; Any prop change re-renders

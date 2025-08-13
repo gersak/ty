@@ -90,7 +90,7 @@
   []
   (let [styles ["regular" "brands" "solid"]]
     (doseq [style styles
-            :let [target (str "gen/ty/fav6/" style ".cljs")]]
+            :let [target (str "gen/ty/fav6/" style ".cljc")]]
       (io/make-parents target)
       (spit target (generate-fa style)))))
 

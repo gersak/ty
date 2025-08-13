@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty Components - Demo</title>
+
+    <!-- Ty CSS Variables -->
+    <link rel="stylesheet" href="css/ty.variables.css">
+
+    <!-- Tailwind CSS (will be generated) -->
+    <link rel="stylesheet" href="css/app.css">
+
+    <!-- Load Web Components BEFORE DOM parsing -->
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize Ty components immediately
+        if (typeof ty !== 'undefined' && ty.core && ty.core.init) {
+            ty.core.init();
+        }
+    </script>
+
+    <!-- Prevent FOUC -->
+    <script>
+        // Set initial theme based on system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+    </script>
+</head>
+
+<body>
+    <!-- App will be mounted here -->
+    <div id="app"></div>
+
+    <!-- Load demo app after Web Components are defined -->
+    <script src="js/demo.js"></script>
+</body>
+
+</html>

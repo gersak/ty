@@ -1,12 +1,18 @@
 {
-  "name": "component-playground",
+  "name": "ty-components",
   "version": "1.0.0",
-  "description": "Web Components exploration with ClojureScript",
+  "description": "Modern Web Components Library built with ClojureScript",
   "private": true,
   "devDependencies": {
-    "shadow-cljs": "^2.28.0"
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "shadow-cljs": "^2.28.0",
+    "tailwindcss": "^3.4.17"
   },
   "scripts": {
-    "dev": "shadow-cljs watch app"
+    "dev": "shadow-cljs watch app",
+    "build": "shadow-cljs release app",
+    "css:watch": "npx tailwindcss -i ./src/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
+    "css:build": "npx tailwindcss -i ./src/ty/demo/tailwind.css -o ./dev/css/app.css --minify"
   }
 }

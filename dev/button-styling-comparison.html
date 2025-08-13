@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ty Button Styling Approaches</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 2rem;
+            background: #f9fafb;
+        }
+        .demo-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        h2 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            color: #111827;
+        }
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .pros-cons {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+        }
+        .pros-cons h4 {
+            margin: 0 0 0.5rem 0;
+            font-size: 0.875rem;
+            color: #374151;
+        }
+        .pros-cons ul {
+            margin: 0;
+            padding-left: 1.5rem;
+            font-size: 0.875rem;
+        }
+        pre {
+            background: #1f2937;
+            color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Button Component Styling Approaches</h1>
+    
+    <div class="demo-section">
+        <h2>Approach 1: Inline Styles (Original)</h2>
+        <div class="button-group">
+            <ty-button label="Neutral"></ty-button>
+            <ty-button variant="positive" label="Positive"></ty-button>
+            <ty-button variant="negative" label="Negative"></ty-button>
+            <ty-button label="Disabled" disabled></ty-button>
+        </div>
+        <div class="pros-cons">
+            <h4>✅ Pros:</h4>
+            <ul>
+                <li>No external dependencies</li>
+                <li>Styles are always available</li>
+                <li>Works offline</li>
+            </ul>
+            <h4>❌ Cons:</h4>
+            <ul>
+                <li>Styles mixed with logic</li>
+                <li>Harder to maintain</li>
+                <li>Duplicated for each instance</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Approach 2: External CSS File</h2>
+        <div class="button-group">
+            <ty-button-v2 label="Neutral"></ty-button-v2>
+            <ty-button-v2 variant="positive" label="Positive"></ty-button-v2>
+            <ty-button-v2 variant="negative" label="Negative"></ty-button-v2>
+            <ty-button-v2 label="Disabled" disabled></ty-button-v2>
+        </div>
+        <div class="pros-cons">
+            <h4>✅ Pros:</h4>
+            <ul>
+                <li>Clean separation of concerns</li>
+                <li>Easy to edit styles</li>
+                <li>Can be cached by browser</li>
+            </ul>
+            <h4>❌ Cons:</h4>
+            <ul>
+                <li>Extra HTTP request per component type</li>
+                <li>Path must be correct</li>
+                <li>Might have CORS issues</li>
+            </ul>
+        </div>
+        <pre>&lt;link rel="stylesheet" href="/dev/styles/button.css"&gt;</pre>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Approach 3: CSS as String Constant</h2>
+        <div class="button-group">
+            <ty-button-v3 label="Neutral"></ty-button-v3>
+            <ty-button-v3 variant="positive" label="Positive"></ty-button-v3>
+            <ty-button-v3 variant="negative" label="Negative"></ty-button-v3>
+            <ty-button-v3 label="Disabled" disabled></ty-button-v3>
+        </div>
+        <div class="pros-cons">
+            <h4>✅ Pros:</h4>
+            <ul>
+                <li>Styles in separate constant/file</li>
+                <li>No external requests</li>
+                <li>Works offline</li>
+            </ul>
+            <h4>❌ Cons:</h4>
+            <ul>
+                <li>Style tag duplicated for each instance</li>
+                <li>Slightly larger bundle size</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Approach 4: Constructable Stylesheets (Recommended)</h2>
+        <div class="button-group">
+            <ty-button-v4 label="Neutral"></ty-button-v4>
+            <ty-button-v4 variant="positive" label="Positive"></ty-button-v4>
+            <ty-button-v4 variant="negative" label="Negative"></ty-button-v4>
+            <ty-button-v4 label="Disabled" disabled></ty-button-v4>
+        </div>
+        <div class="pros-cons">
+            <h4>✅ Pros:</h4>
+            <ul>
+                <li>Most efficient - single stylesheet shared across all instances</li>
+                <li>No DOM duplication</li>
+                <li>Fast updates</li>
+                <li>Clean separation</li>
+            </ul>
+            <h4>❌ Cons:</h4>
+            <ul>
+                <li>Requires modern browser support</li>
+                <li>Slightly more complex setup</li>
+            </ul>
+        </div>
+        <pre>// Create once
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(cssText);
+
+// Use in each instance
+shadowRoot.adoptedStyleSheets = [sheet];</pre>
+    </div>
+    
+    <div class="demo-section">
+        <h2>Build-Time CSS Loading</h2>
+        <p>For production, you can load CSS at build time using macros:</p>
+        <pre>(defmacro load-css [path]
+  (slurp (io/resource path)))
+
+(def button-styles (load-css "styles/button.css"))</pre>
+        <p>This gives you the benefits of separate CSS files during development while bundling them at build time.</p>
+    </div>
+    
+    <script src="../public/js/main.js"></script>
+</body>
+</html>

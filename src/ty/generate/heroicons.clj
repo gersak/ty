@@ -117,7 +117,7 @@
   []
   (let [styles ["outline" "solid" "mini" "micro"]]
     (doseq [style styles
-            :let [target (str "gen/ty/heroicons/" style ".cljs")]]
+            :let [target (str "gen/ty/heroicons/" style ".cljc")]]
       (println "Generating" style "icons to" target)
       (io/make-parents target)
       (let [icons (list-images style)]

@@ -8,11 +8,38 @@
 #_{:clj-kondo/ignore [:uninitialized-var]}
 (defstyles button-styles)
 
-(defn render! [el]
-  (let [{:keys [flavor disabled label size filled outlined accent]
-         class-name :class
-         :or {disabled false
-              label ""}} (wcs/get-props el)
+(defn button-attributes
+  "Read all button attributes directly from element"
+  [^js el]
+  {:flavor (wcs/attr el "flavor")
+   :disabled (wcs/parse-bool-attr el "disabled")
+   :label (wcs/attr el "label")
+   :class (wcs/attr el "class")
+   :size (wcs/attr el "size")
+   :filled (wcs/parse-bool-attr el "filled")
+   :outlined (wcs/parse-bool-attr el "outlined")
+   :accent (wcs/parse-bool-attr el "accent")})
+
+(defn build-class-list
+  "Build class list from attributes"
+  [{:keys [flavor size filled outlined accent class]}]
+  (str/trim 
+    (str (or flavor "neutral")
+         " "
+         (or size "md")
+         " "
+         ;; Appearance logic
+         (cond
+           accent "accent"
+           (and filled outlined) "filled-outlined"
+           filled "filled"
+           outlined "outlined"
+           :else "plain")
+         (when class (str " " class)))))
+
+(defn render! [^js el]
+  (let [attrs (button-attributes el)
+        {:keys [disabled label]} attrs
         root (wcs/ensure-shadow el)
         ;; Check if we already have button element
         button-el (.querySelector root "button")]
@@ -26,19 +53,7 @@
       (do
         (set! (.-disabled button-el) disabled)
         ;; Set classes based on attributes
-        (set! (.-className button-el)
-              (str/trim (str (or flavor "neutral")
-                             " "
-                             (or size "md")
-                             " "
-                             ;; Appearance logic
-                             (cond
-                               accent "accent"
-                               (and filled outlined) "filled-outlined"
-                               filled "filled"
-                               outlined "outlined"
-                               :else "plain")
-                             (when class-name (str " " class-name)))))
+        (set! (.-className button-el) (build-class-list attrs))
         ;; Update label in the text span if it exists
         (when-let [text-span (.querySelector button-el ".button-text")]
           (set! (.-textContent text-span) (or label (.-textContent el)))))
@@ -50,19 +65,7 @@
 
         ;; Set button properties
         (set! (.-disabled new-button) disabled)
-        (set! (.-className new-button)
-              (str/trim (str (or flavor "neutral")
-                             " "
-                             (or size "md")
-                             " "
-                             ;; Appearance logic
-                             (cond
-                               accent "accent"
-                               (and filled outlined) "filled-outlined"
-                               filled "filled"
-                               outlined "outlined"
-                               :else "plain")
-                             (when class-name (str " " class-name)))))
+        (set! (.-className new-button) (build-class-list attrs))
 
         ;; Configure slots and text
         (set! (.-name start-slot) "start")
@@ -90,41 +93,10 @@
 
 (wcs/define! "ty-button"
   {:observed [:flavor :disabled :label :class :size :filled :outlined :accent]
-   :props {:flavor nil
-           :disabled nil
-           :label nil
-           :class nil
-           :size nil
-           :filled nil
-           :outlined nil
-           :accent nil}
-   :construct (fn [el]
-                ;; Hydrate props from attributes at construction
-                (let [p {:flavor (wcs/attr el :flavor)
-                         :disabled (wcs/parse-bool-attr el :disabled)
-                         :label (wcs/attr el :label)
-                         :class (wcs/attr el :class)
-                         :size (wcs/attr el :size)
-                         :filled (wcs/parse-bool-attr el :filled)
-                         :outlined (wcs/parse-bool-attr el :outlined)
-                         :accent (wcs/parse-bool-attr el :accent)}]
-                  (wcs/set-props! el p)))
+   ;; No need for props - we read directly from attributes
    :connected render!
-   :attr (fn [el name _old new]
-           ;; Reflect attribute changes into props
-           (case name
-             :flavor (wcs/set-props! el {:flavor new})
-             :disabled (wcs/set-props! el {:disabled (wcs/parse-bool-attr el :disabled)})
-             :label (wcs/set-props! el {:label new})
-             :class (wcs/set-props! el {:class new})
-             :size (wcs/set-props! el {:size new})
-             :filled (wcs/set-props! el {:filled (wcs/parse-bool-attr el :filled)})
-             :outlined (wcs/set-props! el {:outlined (wcs/parse-bool-attr el :outlined)})
-             :accent (wcs/set-props! el {:accent (wcs/parse-bool-attr el :accent)})
-             nil)
-           (render! el))
-   :prop (fn [el _k _old _new]
-           ;; Any prop change re-renders
+   :attr (fn [^js el _attr-name _old _new]
+           ;; Any attribute change triggers re-render
            (render! el))})
 
 ;; -----------------------------

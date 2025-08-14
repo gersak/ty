@@ -70,6 +70,11 @@
                               ;; Default fallback
                               [:top :bottom :left :right])
 
+                ;; Create config for positioning - used for both initial and auto-update
+                config {:preferences preferences
+                        :offset offset
+                        :padding 8}
+
                 ;; Track last position to avoid unnecessary updates
                 last-position (volatile! nil)
 
@@ -85,18 +90,24 @@
                               (set! (.-style.top content-div) (str y "px"))
                               (.setAttribute popup "data-placement" (name placement))))]
 
-            ;; Setup auto-update with position tracking
-            ;; Use the content div as the floating element
-            (set! (.-cleanup state)
-                  (pos/auto-update target content-div update-fn))
+            ;; IMPORTANT: Force layout before positioning calculation
+            ;; This ensures the content-div has proper dimensions
+            (set! (.-style.visibility content-div) "hidden")
+            (set! (.-style.display content-div) "block")
+            ; (.offsetHeight content-div) ; Force reflow
+            (set! (.-style.visibility content-div) "visible")
 
-            ;; Do initial positioning
+            ;; Do initial positioning BEFORE starting auto-update
             (let [position-data (pos/find-best-position
-                                  {:target-el target
-                                   :floating-el content-div
-                                   :preferences preferences
-                                   :offset offset})]
-              (update-fn position-data))))))))
+                                  (merge {:target-el target
+                                          :floating-el content-div}
+                                         config))]
+              (update-fn position-data))
+
+            ;; Setup auto-update with position tracking AFTER initial positioning
+            ;; Pass the same config to ensure consistency
+            (set! (.-cleanup state)
+                  (pos/auto-update target content-div update-fn config))))))))
 
 (defn hide-tooltip! [^js el]
   (let [state (get-state el)]
@@ -190,8 +201,8 @@
         (set! (.-innerHTML popup)
               (str "<div style='
                       position: fixed;
-                      left: 0;
-                      top: 0;
+                      left: -9999px;
+                      top: -9999px;
                       background: #333;
                       color: white;
                       padding: 10px 15px;

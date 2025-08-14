@@ -7,18 +7,18 @@
 ;; -----------------------------
 
 (def placements
-  {:top-start    {:vertical :top    :horizontal :start}
-   :top          {:vertical :top    :horizontal :center}
-   :top-end      {:vertical :top    :horizontal :end}
-   :right-start  {:vertical :center :horizontal :end   :orientation :vertical}
-   :right        {:vertical :center :horizontal :end   :orientation :vertical}
-   :right-end    {:vertical :end    :horizontal :end   :orientation :vertical}
+  {:top-start {:vertical :top :horizontal :start}
+   :top {:vertical :top :horizontal :center}
+   :top-end {:vertical :top :horizontal :end}
+   :right-start {:vertical :center :horizontal :end :orientation :vertical}
+   :right {:vertical :center :horizontal :end :orientation :vertical}
+   :right-end {:vertical :end :horizontal :end :orientation :vertical}
    :bottom-start {:vertical :bottom :horizontal :start}
-   :bottom       {:vertical :bottom :horizontal :center}
-   :bottom-end   {:vertical :bottom :horizontal :end}
-   :left-start   {:vertical :center :horizontal :start :orientation :vertical}
-   :left         {:vertical :center :horizontal :start :orientation :vertical}
-   :left-end     {:vertical :end    :horizontal :start :orientation :vertical}})
+   :bottom {:vertical :bottom :horizontal :center}
+   :bottom-end {:vertical :bottom :horizontal :end}
+   :left-start {:vertical :center :horizontal :start :orientation :vertical}
+   :left {:vertical :center :horizontal :start :orientation :vertical}
+   :left-end {:vertical :end :horizontal :start :orientation :vertical}})
 
 (def placement-preferences
   {:default [:bottom-start :bottom-end :top-start :top-end
@@ -60,7 +60,7 @@
   [{:keys [target-rect floating-rect placement offset padding scrollbar-width]}]
   (let [{:keys [vertical horizontal orientation]} (get placements placement)
         viewport (get-viewport-rect)
-        
+
         ;; Calculate X position
         x (if (= orientation :vertical)
             ;; Left/right placements
@@ -72,7 +72,7 @@
               :start (:left target-rect)
               :center (- (:center-x target-rect) (/ (:width floating-rect) 2))
               :end (- (:right target-rect) (:width floating-rect))))
-        
+
         ;; Calculate Y position
         y (if (= orientation :vertical)
             ;; Left/right placements
@@ -84,17 +84,17 @@
             (if (= vertical :top)
               (- (:top target-rect) (:height floating-rect) offset)
               (+ (:bottom target-rect) offset)))
-        
+
         ;; Calculate overflow
         overflow {:top (min 0 (- y padding))
                   :left (min 0 (- x padding))
                   :bottom (min 0 (- (:height viewport)
-                                   (+ y (:height floating-rect) padding)))
+                                    (+ y (:height floating-rect) padding)))
                   :right (min 0 (- (:width viewport)
-                                  (+ x (:width floating-rect) padding scrollbar-width)))}
-        
+                                   (+ x (:width floating-rect) padding scrollbar-width)))}
+
         overflow-amount (reduce + (map #(Math/abs %) (vals overflow)))]
-    
+
     {:x x
      :y y
      :placement placement
@@ -111,7 +111,7 @@
   (let [target-rect (get-element-rect target-el)
         floating-rect (get-element-rect floating-el)
         scrollbar-width 15
-        
+
         ;; Calculate all candidate positions
         candidates (map #(calculate-placement
                           {:target-rect target-rect
@@ -120,12 +120,12 @@
                            :offset offset
                            :padding padding
                            :scrollbar-width scrollbar-width})
-                       preferences)
-        
+                        preferences)
+
         ;; Find first that fits, or one with least overflow
         best-position (or (first (filter :fits? candidates))
-                         (apply min-key :overflow-amount candidates))]
-    
+                          (apply min-key :overflow-amount candidates))]
+
     ;; Adjust for scrollbar if needed
     (if (neg? (get-in best-position [:overflow :right]))
       (update best-position :x + (get-in best-position [:overflow :right]))
@@ -137,46 +137,48 @@
 
 (defn auto-update
   "Create auto-update system for position tracking.
+   Takes a config map with same options as find-best-position.
    Returns cleanup function."
-  [target-el floating-el update-fn]
-  (let [active? (atom true)
-        frame-id (atom nil)
-        resize-observer (atom nil)
-        mutation-observer (atom nil)
-        
+  [target-el floating-el update-fn config]
+  (let [active? (volatile! true)
+        frame-id (volatile! nil)
+        resize-observer (volatile! nil)
+        mutation-observer (volatile! nil)
+
         update! (fn []
-                 (when @active?
-                   (let [position (find-best-position
-                                   {:target-el target-el
-                                    :floating-el floating-el})]
-                     (update-fn position))))
-        
+                  (when @active?
+                    (let [position (find-best-position
+                                    (merge {:target-el target-el
+                                            :floating-el floating-el}
+                                           config))]
+                      (update-fn position))))
+
         loop! (fn loop-fn []
                 (update!)
                 (when @active?
-                  (reset! frame-id (js/requestAnimationFrame loop-fn))))]
-    
+                  (vreset! frame-id (js/requestAnimationFrame loop-fn))))]
+
     ;; Start the loop
     (loop!)
-    
+
     ;; Observe size changes
-    (reset! resize-observer (js/ResizeObserver. update!))
+    (vreset! resize-observer (js/ResizeObserver. update!))
     (.observe @resize-observer target-el)
     (.observe @resize-observer floating-el)
     (.observe @resize-observer js/document.body)
-    
+
     ;; Observe DOM changes
-    (reset! mutation-observer (js/MutationObserver. update!))
+    (vreset! mutation-observer (js/MutationObserver. update!))
     (.observe @mutation-observer target-el
               #js {:attributes true
                    :attributeFilter #js ["class" "style"]})
-    
+
     ;; Return cleanup function
     (fn cleanup []
-      (reset! active? false)
-      (when @frame-id
-        (js/cancelAnimationFrame @frame-id))
-      (when @resize-observer
-        (.disconnect @resize-observer))
-      (when @mutation-observer
-        (.disconnect @mutation-observer)))))
+      (vreset! active? false)
+      (when-let [fid @frame-id]
+        (js/cancelAnimationFrame fid))
+      (when-let [ro @resize-observer]
+        (.disconnect ro))
+      (when-let [mo @mutation-observer]
+        (.disconnect mo)))))

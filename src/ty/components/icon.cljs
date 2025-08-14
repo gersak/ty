@@ -1,9 +1,10 @@
 (ns ty.components.icon
   (:require
-    [clojure.string :as str]
-    [ty.css :refer [ensure-styles!]]
-    [ty.icons :as icons]
-    [ty.shim :as wcs])
+   [clojure.string :as str]
+   [clojure.set :as set]
+   [ty.css :refer [ensure-styles!]]
+   [ty.icons :as icons]
+   [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load icon styles from icon.css
@@ -13,7 +14,6 @@
 
 ;; Track which components are watching which icons
 (def watchers (atom {}))
-
 
 (defn icon-attributes
   [^js el]
@@ -25,29 +25,40 @@
    :class (wcs/attr el "class")})
 
 (defn build-class-list
-  "Build class list from props and existing classes"
-  [{:keys [size spin pulse tempo]}]
-  (str/trim
-    (str/join " "
-              (cond-> []
-                size (conj (str "icon-" size))
-                spin (conj "icon-spin")
-                pulse (conj "icon-pulse")
-                tempo (conj (str "icon-tempo-" tempo))))))
+  [{:keys [size spin pulse tempo class]}]
+  (let [;; Component-managed classes (internal)
+        internal-classes (cond-> #{}
+                           size (conj (str "icon-" size))
+                           spin (conj "icon-spin")
+                           pulse (conj "icon-pulse")
+                           tempo (conj (str "icon-tempo-" tempo)))
+
+        ;; User-provided classes (external)
+        external-classes (when (seq class)
+                           (set (str/split class #"\s+")))
+
+        ;; Merge both sets
+        all-classes (set/union internal-classes (or external-classes #{}))]
+
+    ;; Convert to string
+    (str/join " " all-classes)))
 
 (defn render! [^js el]
   (let [name (wcs/attr el "name")
         root (wcs/ensure-shadow el)
         ;; Get icon SVG from store or use not-found
         icon-svg (or (icons/get name) not-found)
-        ;; Build and apply classes
-        class-list (build-class-list (icon-attributes el))]
+        ;; Build new class list
+        new-class-list (build-class-list (icon-attributes el))
+        ;; Get current class list
+        current-class-list (.-className el)]
 
     ;; Ensure styles are loaded
     (ensure-styles! root icon-styles "ty-icon")
 
-    ;; Apply classes to host element
-    (set! (.-className el) class-list)
+    ;; Only update classes if they changed
+    (when (not= new-class-list current-class-list)
+      (set! (.-className el) new-class-list))
 
     ;; Clear and set shadow DOM content
     (set! (.-innerHTML root) icon-svg)
@@ -75,12 +86,12 @@
            (fn [_ _ old-icons new-icons]
              ;; Find which icons changed
              (let [changed-icons (reduce-kv
-                                   (fn [acc k v]
-                                     (if (not= (get old-icons k) v)
-                                       (conj acc k)
-                                       acc))
-                                   #{}
-                                   new-icons)]
+                                  (fn [acc k v]
+                                    (if (not= (get old-icons k) v)
+                                      (conj acc k)
+                                      acc))
+                                  #{}
+                                  new-icons)]
                ;; Re-render components watching changed icons
                (doseq [[_ {:keys [element icon-name]}] @watchers]
                  (when (contains? changed-icons icon-name)
@@ -112,7 +123,6 @@
    :prop (fn [^js el _k _old _new]
            ;; Any prop change re-renders
            (render! el))})
-
 
 ;; -----------------------------
 ;; Hot Reload Hooks

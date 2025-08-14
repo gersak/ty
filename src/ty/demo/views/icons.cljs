@@ -1,13 +1,15 @@
 (ns ty.demo.views.icons
-  (:require [clojure.string :as str]
-            [ty.icons :as icons]
+  (:require
+    [clojure.string :as str]
+    [ty.demo.state :refer [state]]
+    [ty.fav6.brands :as fa-brands]
+    [ty.fav6.regular :as fa-regular]
             ;; Font Awesome 6
-            [ty.fav6.solid :as fa-solid]
-            [ty.fav6.regular :as fa-regular]
-            [ty.fav6.brands :as fa-brands]
+    [ty.fav6.solid :as fa-solid]
+    [ty.icons :as icons]
             ;; Material Icons
-            [ty.material.filled :as mat-filled]
-            [ty.material.outlined :as mat-outlined]))
+    [ty.material.filled :as mat-filled]
+    [ty.material.outlined :as mat-outlined]))
 
 (defn icon-card [{:keys [name icon-key]}]
   [:div.p-4.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
@@ -24,9 +26,9 @@
                     (.appendChild target tooltip)
                     (js/setTimeout #(.removeChild target tooltip) 1500)))}}
    [:div.flex.flex-col.items-center.gap-3
-    [:ty-icon {:name icon-key
-               :size "xl"
-               :class "text-gray-700 dark:text-gray-300 group-hover:text-ty-important transition-colors"}]
+    [:ty-icon.text-gray-700.dark:text-gray-300.group-hover:text-ty-important.transition-colors
+     {:name icon-key
+      :size "xl"}]
     [:span.text-xs.text-gray-600.dark:text-gray-400.text-center.font-mono.break-all
      icon-key]]])
 
@@ -37,9 +39,11 @@
      :placeholder placeholder
      :value value
      :on {:input (fn [e] (on-change (.. e -target -value)))}}]
-   [:ty-icon {:name "search"
-              :size "sm"
-              :class "absolute left-3 top-3 text-gray-400"}]])
+   [:ty-icon.absolute.text-gray-400
+    {:name "search"
+     :size "sm"
+     :style {:top 14
+             :left 14}}]])
 
 (defn icon-section [{:keys [title icons]}]
   (when (seq icons)
@@ -51,63 +55,67 @@
          (icon-card {:name icon-key
                      :icon-key icon-key})])]]))
 
-(defn register-demo-icons! []
-  ;; Register Font Awesome 6 Solid icons
-  (icons/set! {"fa-solid/clock" fa-solid/clock
-               "fa-solid/calendar" fa-solid/calendar
-               "fa-solid/calendar-days" fa-solid/calendar-days
-               "fa-solid/calendar-check" fa-solid/calendar-check
-               "fa-solid/calendar-minus" fa-solid/calendar-minus
-               "fa-solid/calendar-plus" fa-solid/calendar-plus
-               "fa-solid/calendar-xmark" fa-solid/calendar-xmark
-               "fa-solid/clock-rotate-left" fa-solid/clock-rotate-left
-               "fa-solid/user-clock" fa-solid/user-clock
-               "fa-solid/business-time" fa-solid/business-time
-               "fa-solid/comment-dots" fa-solid/comment-dots
-               "fa-solid/passport" fa-solid/passport
-               "fa-solid/socks" fa-solid/socks
-               "fa-solid/t-shirt" fa-solid/t-shirt
-               "fa-solid/underline" fa-solid/underline
+(icons/add! {"fa-solid/clock" fa-solid/clock
+             "fa-solid/calendar" fa-solid/calendar
+             "fa-solid/calendar-days" fa-solid/calendar-days
+             "fa-solid/calendar-check" fa-solid/calendar-check
+             "fa-solid/calendar-minus" fa-solid/calendar-minus
+             "fa-solid/calendar-plus" fa-solid/calendar-plus
+             "fa-solid/calendar-xmark" fa-solid/calendar-xmark
+             "fa-solid/clock-rotate-left" fa-solid/clock-rotate-left
+             "fa-solid/user-clock" fa-solid/user-clock
+             "fa-solid/business-time" fa-solid/business-time
+             "fa-solid/comment-dots" fa-solid/comment-dots
+             "fa-solid/passport" fa-solid/passport
+             "fa-solid/socks" fa-solid/socks
+             "fa-solid/t-shirt" fa-solid/t-shirt
+             "fa-solid/underline" fa-solid/underline
 
                ;; Font Awesome 6 Regular icons
-               "fa-regular/clock" fa-regular/clock
-               "fa-regular/calendar" fa-regular/calendar
-               "fa-regular/calendar-check" fa-regular/calendar-check
-               "fa-regular/comment" fa-regular/comment
-               "fa-regular/envelope" fa-regular/envelope
-               "fa-regular/heart" fa-regular/heart
-               "fa-regular/star" fa-regular/star
-               "fa-regular/user" fa-regular/user
+             "fa-regular/clock" fa-regular/clock
+             "fa-regular/calendar" fa-regular/calendar
+             "fa-regular/calendar-check" fa-regular/calendar-check
+             "fa-regular/comment" fa-regular/comment
+             "fa-regular/comment-dots" fa-regular/comment-dots
+             "fa-regular/envelope" fa-regular/envelope
+             "fa-regular/heart" fa-regular/heart
+             "fa-regular/star" fa-regular/star
+             "fa-regular/user" fa-regular/user
+             "fa-regular/hand" fa-regular/hand
+             "fa-regular/file-zipper" fa-regular/file-zipper
 
                ;; Font Awesome 6 Brands
-               "fa-brands/github" fa-brands/github
-               "fa-brands/twitter" fa-brands/twitter
-               "fa-brands/linkedin" fa-brands/linkedin
-               "fa-brands/facebook" fa-brands/facebook
+             "fa-brands/github" fa-brands/github
+             "fa-brands/x-twitter" fa-brands/x-twitter
+             "fa-brands/square-facebook" fa-brands/square-facebook
+             "fa-brands/square-github" fa-brands/square-github
+             "fa-brands/square-linkedin" fa-brands/square-linkedin
+             "fa-brands/square-x-twitter" fa-brands/square-x-twitter
+             "fa-brands/square-twitter" fa-brands/square-twitter
 
                ;; Material Filled with prefix
-               "mat-filled/home" mat-filled/home
-               "mat-filled/settings" mat-filled/settings
-               "mat-filled/search" mat-filled/search
-               "mat-filled/favorite" mat-filled/favorite
-               "mat-filled/delete" mat-filled/delete
-               "mat-filled/edit" mat-filled/edit
-               "mat-filled/check" mat-filled/check
-               "mat-filled/close" mat-filled/close
-               "mat-filled/menu" mat-filled/menu
-               "mat-filled/more-vert" mat-filled/more-vert
+             "mat-filled/home" mat-filled/home
+             "mat-filled/settings" mat-filled/settings
+             "mat-filled/search" mat-filled/search
+             "mat-filled/favorite" mat-filled/favorite
+             "mat-filled/delete" mat-filled/delete
+             "mat-filled/edit" mat-filled/edit
+             "mat-filled/check" mat-filled/check
+             "mat-filled/close" mat-filled/close
+             "mat-filled/menu" mat-filled/menu
+             "mat-filled/more-vert" mat-filled/more-vert
 
                ;; Material Outlined with prefix
-               "mat-outlined/home" mat-outlined/home
-               "mat-outlined/settings" mat-outlined/settings
-               "mat-outlined/search" mat-outlined/search
-               "mat-outlined/favorite" mat-outlined/favorite
-               "mat-outlined/delete" mat-outlined/delete
-               "mat-outlined/edit" mat-outlined/edit
-               "mat-outlined/check-circle" mat-outlined/check-circle
-               "mat-outlined/info" mat-outlined/info
-               "mat-outlined/warning" mat-outlined/warning
-               "mat-outlined/error" mat-outlined/error}))
+             "mat-outlined/home" mat-outlined/home
+             "mat-outlined/settings" mat-outlined/settings
+             "mat-outlined/search" mat-outlined/search
+             "mat-outlined/favorite" mat-outlined/favorite
+             "mat-outlined/delete" mat-outlined/delete
+             "mat-outlined/edit" mat-outlined/edit
+             "mat-outlined/check-circle" mat-outlined/check-circle
+             "mat-outlined/info" mat-outlined/info
+             "mat-outlined/warning" mat-outlined/warning
+             "mat-outlined/error" mat-outlined/error})
 
 (defn filter-icons [icons search-term]
   (if (str/blank? search-term)
@@ -161,7 +169,8 @@
      [:div.flex.flex-wrap.gap-4.items-end
       (for [s ["xs" "sm" "md" "lg" "xl" "2xl"]]
         [:div.text-center {:key s}
-         [:ty-icon {:name "star" :size s}]
+         [:ty-icon {:name "star"
+                    :size s}]
          [:div.text-xs.text-gray-500.mt-1 s]])]]
 
     ;; Animations
@@ -169,10 +178,14 @@
      [:h3.text-lg.font-semibold.text-gray-900.dark:text-white.mb-4 "Animations"]
      [:div.flex.gap-6
       [:div.text-center
-       [:ty-icon {:name "settings" :size "xl" :spin true}]
+       [:ty-icon {:name "settings"
+                  :size "xl"
+                  :spin true}]
        [:div.text-sm.text-gray-600.dark:text-gray-400.mt-2 "spin"]]
       [:div.text-center
-       [:ty-icon {:name "heart" :size "xl" :pulse true}]
+       [:ty-icon {:name "heart"
+                  :size "xl"
+                  :pulse true}]
        [:div.text-sm.text-gray-600.dark:text-gray-400.mt-2 "pulse"]]]]
 
     ;; Color inheritance
@@ -182,16 +195,20 @@
       "Icons inherit color from their parent element"]
      [:div.flex.flex-wrap.gap-4
       [:div.text-ty-positive
-       [:ty-icon {:name "check" :size "xl"}]
+       [:ty-icon {:name "check"
+                  :size "xl"}]
        [:span.ml-2.text-sm "Success"]]
       [:div.text-ty-negative
-       [:ty-icon {:name "x" :size "xl"}]
+       [:ty-icon {:name "x"
+                  :size "xl"}]
        [:span.ml-2.text-sm "Error"]]
       [:div.text-ty-important
-       [:ty-icon {:name "star" :size "xl"}]
+       [:ty-icon {:name "star"
+                  :size "xl"}]
        [:span.ml-2.text-sm "Important"]]
       [:div.text-ty-exception
-       [:ty-icon {:name "alert" :size "xl"}]
+       [:ty-icon {:name "alert"
+                  :size "xl"}]
        [:span.ml-2.text-sm "Warning"]]]]
 
     ;; Usage examples
@@ -211,89 +228,93 @@
        [:code.text-sm.text-gray-600.dark:text-gray-400.font-mono
         "<ty-button><ty-icon name=\"plus\"></ty-icon> Add Item</ty-button>"]]]]]])
 
+
 (defn icons-view []
-  (let [search-term (atom "")
-        show-demo (atom true)]
-    (fn []
-      (let [search @search-term
-            demo? @show-demo
-            all-icons @icons/data
+  (let [{:keys [::search-term ::show-demo]} @state
+        all-icons @icons/data
 
-            ;; Filter icons based on search
-            filtered-icons (filter-icons all-icons search)
+          ;; Filter icons based on search
+        filtered-icons (filter-icons all-icons search-term)
 
-            ;; Categorize filtered icons
-            categorized (categorize-icons filtered-icons)
+          ;; Categorize filtered icons
+        categorized (categorize-icons filtered-icons)
 
-            ;; Count totals
-            total-count (count all-icons)
-            filtered-count (count filtered-icons)]
+          ;; Count totals
+        total-count (count all-icons)
+        filtered-count (count filtered-icons)]
+    [:div.max-w-7xl.mx-auto
+       ;; Header
+     [:div.mb-8
+      [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+       "Icon Library"]
+      [:p.text-lg.text-gray-600.dark:text-gray-400
+       (str "Explore " total-count " icons from multiple libraries. Click any icon to copy its code.")]]
 
-        [:div.max-w-7xl.mx-auto
-         ;; Header
-         [:div.mb-8
-          [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
-           "Icon Library"]
-          [:p.text-lg.text-gray-600.dark:text-gray-400
-           (str "Explore " total-count " icons from multiple libraries. Click any icon to copy its code.")]]
+       ;; Controls
+     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.mb-8
+      [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+         ;; Search
+       [:div
+        [:label.block.text-sm.font-medium.text-gray-700.dark:text-gray-300.mb-2
+         "Search Icons"]
+        (search-input {:value search-term
+                       :placeholder "Search by name..."
+                       :on-change #(swap! state assoc ::search-term %)})]
 
-         ;; Controls
-         [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.mb-8
-          [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-           ;; Search
-           [:div
-            [:label.block.text-sm.font-medium.text-gray-700.dark:text-gray-300.mb-2
-             "Search Icons"]
-            (search-input {:value search
-                           :placeholder "Search by name..."
-                           :on-change #(reset! search-term %)})]
+         ;; Toggle demo
+       [:div.flex.items-end.mb-1
+        [:button.px-4.py-2.rounded-md.text-sm.font-medium.transition-colors
+         {:class (if show-demo
+                   [:bg-ty-important :text-white]
+                   [:bg-gray-100 "dark:bg-gray-700" :text-gray-700 "dark:text-gray-300"])
+          :on {:click #(swap! state update ::show-demo not)}}
+         (if show-demo "Hide Demo" "Show Demo")]]]]
 
-           ;; Toggle demo
-           [:div.flex.items-end
-            [:button.px-4.py-2.rounded-md.text-sm.font-medium.transition-colors
-             {:class (if demo?
-                       [:bg-ty-important :text-white]
-                       [:bg-gray-100 "dark:bg-gray-700" :text-gray-700 "dark:text-gray-300"])
-              :on {:click #(swap! show-demo not)}}
-             (if demo? "Hide Demo" "Show Demo")]]]]
+       ;; Results count
+     (when-not (str/blank? search-term)
+       [:div.mb-4.text-sm.text-gray-600.dark:text-gray-400
+        (str "Found " filtered-count " icons matching \"" search-term "\"")])
 
-         ;; Results count
-         (when-not (str/blank? search)
-           [:div.mb-4.text-sm.text-gray-600.dark:text-gray-400
-            (str "Found " filtered-count " icons matching \"" search "\"")])
+       ;; Demo section
+     (when show-demo
+       [:div.mb-8
+        (demo-section)])
 
-         ;; Demo section
-         (when demo?
-           [:div.mb-8
-            (demo-section)])
+       ;; Icon sections
+     [:div
+        ;; UI Icons
+      (icon-section {:title "UI Icons"
+                     :icons (:ui categorized)})
 
-         ;; Icon sections
-         [:div
-          ;; UI Icons
-          (icon-section {:title "UI Icons"
-                         :icons (:ui categorized)})
+        ;; Font Awesome 6 Solid
+      (icon-section {:title "Font Awesome 6 - Solid"
+                     :icons (:fa-solid categorized)})
 
-          ;; Material Icons Filled
-          (icon-section {:title "Material Icons (Filled)"
-                         :icons (:material-filled categorized)})
+        ;; Font Awesome 6 Regular
+      (icon-section {:title "Font Awesome 6 - Regular"
+                     :icons (:fa-regular categorized)})
 
-          ;; Material Icons Outlined
-          (icon-section {:title "Material Icons (Outlined)"
-                         :icons (:material-outlined categorized)})
+        ;; Font Awesome 6 Brands
+      (icon-section {:title "Font Awesome 6 - Brands"
+                     :icons (:fa-brands categorized)})
 
-          ;; Heroicons
-          (icon-section {:title "Heroicons"
-                         :icons (:hero categorized)})
+        ;; Material Icons Filled
+      (icon-section {:title "Material Icons (Filled)"
+                     :icons (:material-filled categorized)})
 
-          ;; Lucide Icons
-          (icon-section {:title "Lucide Icons"
-                         :icons (:lucide categorized)})
+        ;; Material Icons Outlined
+      (icon-section {:title "Material Icons (Outlined)"
+                     :icons (:material-outlined categorized)})
 
-          ;; Font Awesome Icons
-          (icon-section {:title "Font Awesome"
-                         :icons (:font-awesome categorized)})
+        ;; Heroicons
+      (icon-section {:title "Heroicons"
+                     :icons (:hero categorized)})
 
-          ;; Other Icons
-          (when (seq (:other categorized))
-            (icon-section {:title "Other Icons"
-                           :icons (:other categorized)}))]]))))
+        ;; Lucide Icons
+      (icon-section {:title "Lucide Icons"
+                     :icons (:lucide categorized)})
+
+        ;; Other Icons
+      (when (seq (:other categorized))
+        (icon-section {:title "Other Icons"
+                       :icons (:other categorized)}))]]))

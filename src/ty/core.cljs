@@ -1,17 +1,18 @@
 (ns ty.core
   (:require
-    [ty.components.button]
-    [ty.components.icon]
-    [ty.fav6.brands :as fa-brands]
-    [ty.fav6.solid :as fa-solid]
-    [ty.fav6.regular :as fa-regular]
-    [ty.heroicons.mini :as hero-mini]
-    [ty.heroicons.outline :as hero-outline]
-    [ty.heroicons.solid :as hero-solid]
-    [ty.icons :as icons]
-    [ty.lucide :as lucide]
-    [ty.material.filled :as mat-filled]
-    [ty.material.outlined :as mat-outlined]))
+   [ty.components.button]
+   [ty.components.icon]
+   [ty.components.tooltip]
+   [ty.fav6.brands :as fa-brands]
+   [ty.fav6.solid :as fa-solid]
+   [ty.fav6.regular :as fa-regular]
+   [ty.heroicons.mini :as hero-mini]
+   [ty.heroicons.outline :as hero-outline]
+   [ty.heroicons.solid :as hero-solid]
+   [ty.icons :as icons]
+   [ty.lucide :as lucide]
+   [ty.material.filled :as mat-filled]
+   [ty.material.outlined :as mat-outlined]))
 
 (defn init []
   (js/console.log "Ty Web Components Library Initialized")
@@ -110,6 +111,7 @@
                "lucide-link" lucide/link
                "lucide-copy" lucide/copy
                "lucide-refresh" lucide/refresh-cw
+               "message-square" lucide/message-square
 
                ;; Additional icons used in demos
                "moon" lucide/moon

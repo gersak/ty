@@ -23,7 +23,7 @@
 (defn build-class-list
   "Build class list from attributes"
   [{:keys [flavor size filled outlined accent class]}]
-  (str/trim 
+  (str/trim
     (str (or flavor "neutral")
          " "
          (or size "md")

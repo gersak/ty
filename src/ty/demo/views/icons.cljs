@@ -1,15 +1,16 @@
 (ns ty.demo.views.icons
   (:require
-    [clojure.string :as str]
-    [ty.demo.state :refer [state]]
-    [ty.fav6.brands :as fa-brands]
-    [ty.fav6.regular :as fa-regular]
-            ;; Font Awesome 6
-    [ty.fav6.solid :as fa-solid]
-    [ty.icons :as icons]
-            ;; Material Icons
-    [ty.material.filled :as mat-filled]
-    [ty.material.outlined :as mat-outlined]))
+   [clojure.string :as str]
+   [ty.demo.state :refer [state]]
+   [ty.router :as router]
+   [ty.fav6.brands :as fa-brands]
+   [ty.fav6.regular :as fa-regular]
+   ;; Font Awesome 6
+   [ty.fav6.solid :as fa-solid]
+   [ty.icons :as icons]
+   ;; Material Icons
+   [ty.material.filled :as mat-filled]
+   [ty.material.outlined :as mat-outlined]))
 
 (defn icon-card [{:keys [name icon-key]}]
   [:div.p-4.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
@@ -71,7 +72,7 @@
              "fa-solid/t-shirt" fa-solid/t-shirt
              "fa-solid/underline" fa-solid/underline
 
-               ;; Font Awesome 6 Regular icons
+             ;; Font Awesome 6 Regular icons
              "fa-regular/clock" fa-regular/clock
              "fa-regular/calendar" fa-regular/calendar
              "fa-regular/calendar-check" fa-regular/calendar-check
@@ -84,7 +85,7 @@
              "fa-regular/hand" fa-regular/hand
              "fa-regular/file-zipper" fa-regular/file-zipper
 
-               ;; Font Awesome 6 Brands
+             ;; Font Awesome 6 Brands
              "fa-brands/github" fa-brands/github
              "fa-brands/x-twitter" fa-brands/x-twitter
              "fa-brands/square-facebook" fa-brands/square-facebook
@@ -93,7 +94,7 @@
              "fa-brands/square-x-twitter" fa-brands/square-x-twitter
              "fa-brands/square-twitter" fa-brands/square-twitter
 
-               ;; Material Filled with prefix
+             ;; Material Filled with prefix
              "mat-filled/home" mat-filled/home
              "mat-filled/settings" mat-filled/settings
              "mat-filled/search" mat-filled/search
@@ -105,7 +106,7 @@
              "mat-filled/menu" mat-filled/menu
              "mat-filled/more-vert" mat-filled/more-vert
 
-               ;; Material Outlined with prefix
+             ;; Material Outlined with prefix
              "mat-outlined/home" mat-outlined/home
              "mat-outlined/settings" mat-outlined/settings
              "mat-outlined/search" mat-outlined/search
@@ -230,91 +231,101 @@
 
 
 (defn icons-view []
-  (let [{:keys [::search-term ::show-demo]} @state
+  (let [;; Get query params for search
+        {:keys [search show-demo]} (router/query-params)
+        search-term (or search "")
+        show-demo? (= show-demo "true")
+        
         all-icons @icons/data
 
-          ;; Filter icons based on search
+        ;; Filter icons based on search
         filtered-icons (filter-icons all-icons search-term)
 
-          ;; Categorize filtered icons
+        ;; Categorize filtered icons
         categorized (categorize-icons filtered-icons)
 
-          ;; Count totals
+        ;; Count totals
         total-count (count all-icons)
         filtered-count (count filtered-icons)]
     [:div.max-w-7xl.mx-auto
-       ;; Header
+     ;; Header
      [:div.mb-8
       [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
        "Icon Library"]
       [:p.text-lg.text-gray-600.dark:text-gray-400
        (str "Explore " total-count " icons from multiple libraries. Click any icon to copy its code.")]]
 
-       ;; Controls
+     ;; Controls
      [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.mb-8
       [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-         ;; Search
+       ;; Search
        [:div
         [:label.block.text-sm.font-medium.text-gray-700.dark:text-gray-300.mb-2
          "Search Icons"]
         (search-input {:value search-term
                        :placeholder "Search by name..."
-                       :on-change #(swap! state assoc ::search-term %)})]
+                       :on-change (fn [value]
+                                    (if (str/blank? value)
+                                      (router/set-query! nil)
+                                      (router/set-query! {:search value
+                                                          :show-demo (str show-demo?)})))})]
 
-         ;; Toggle demo
+       ;; Toggle demo
        [:div.flex.items-end.mb-1
         [:button.px-4.py-2.rounded-md.text-sm.font-medium.transition-colors
-         {:class (if show-demo
+         {:class (if show-demo?
                    [:bg-ty-important :text-white]
                    [:bg-gray-100 "dark:bg-gray-700" :text-gray-700 "dark:text-gray-300"])
-          :on {:click #(swap! state update ::show-demo not)}}
-         (if show-demo "Hide Demo" "Show Demo")]]]]
+          :on {:click #(router/set-query! (merge (when-not (str/blank? search-term)
+                                                   {:search search-term})
+                                                 {:show-demo (str (not show-demo?))}))}}
+         (if show-demo? "Hide Demo" "Show Demo")]]]]
 
-       ;; Results count
+     ;; Results count
      (when-not (str/blank? search-term)
        [:div.mb-4.text-sm.text-gray-600.dark:text-gray-400
         (str "Found " filtered-count " icons matching \"" search-term "\"")])
 
-       ;; Demo section
-     (when show-demo
+     ;; Demo section
+     (when show-demo?
        [:div.mb-8
         (demo-section)])
 
-       ;; Icon sections
+     ;; Icon sections
      [:div
-        ;; UI Icons
+      ;; UI Icons
       (icon-section {:title "UI Icons"
                      :icons (:ui categorized)})
 
-        ;; Font Awesome 6 Solid
+      ;; Font Awesome 6 Solid
       (icon-section {:title "Font Awesome 6 - Solid"
                      :icons (:fa-solid categorized)})
 
-        ;; Font Awesome 6 Regular
+      ;; Font Awesome 6 Regular
       (icon-section {:title "Font Awesome 6 - Regular"
                      :icons (:fa-regular categorized)})
 
-        ;; Font Awesome 6 Brands
+      ;; Font Awesome 6 Brands
       (icon-section {:title "Font Awesome 6 - Brands"
                      :icons (:fa-brands categorized)})
 
-        ;; Material Icons Filled
+      ;; Material Icons Filled
       (icon-section {:title "Material Icons (Filled)"
                      :icons (:material-filled categorized)})
 
-        ;; Material Icons Outlined
+      ;; Material Icons Outlined
       (icon-section {:title "Material Icons (Outlined)"
                      :icons (:material-outlined categorized)})
 
-        ;; Heroicons
+      ;; Heroicons
       (icon-section {:title "Heroicons"
                      :icons (:hero categorized)})
 
-        ;; Lucide Icons
+      ;; Lucide Icons
       (icon-section {:title "Lucide Icons"
                      :icons (:lucide categorized)})
 
-        ;; Other Icons
+      ;; Other Icons
       (when (seq (:other categorized))
         (icon-section {:title "Other Icons"
-                       :icons (:other categorized)}))]]))
+                       :icons (:other categorized)}))]])) 

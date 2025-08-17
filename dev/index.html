@@ -4,304 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ty Components Library - Development</title>
-    <!-- Import the CSS variables -->
+    <title>Ty Components - Demo</title>
+
+    <!-- Ty CSS Variables -->
     <link rel="stylesheet" href="css/ty.variables.css">
-    <style>
-        body {
-            font-family: var(--ty-font-sans);
-            font-size: var(--ty-font-size-base);
-            line-height: var(--ty-line-height-normal);
-            color: var(--ty-color-neutral-p3);
-            background-color: var(--ty-background-p1);
-            padding: var(--ty-spacing-8);
-            margin: 0;
-        }
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+    <!-- Tailwind CSS (will be generated) -->
+    <link rel="stylesheet" href="css/app.css">
 
-        header {
-            text-align: center;
-            margin-bottom: var(--ty-spacing-8);
-            padding-bottom: var(--ty-spacing-8);
-            border-bottom: 1px solid var(--ty-border);
+    <!-- Load Web Components BEFORE DOM parsing -->
+    <script src="js/main.js"></script>
+    <script>
+        // Initialize Ty components immediately
+        if (typeof ty !== 'undefined' && ty.core && ty.core.init) {
+            ty.core.init();
         }
+    </script>
 
-        h1 {
-            font-size: var(--ty-font-size-4xl);
-            font-weight: var(--ty-font-weight-extrabold);
-            color: var(--ty-color-neutral-p3);
-            margin-bottom: var(--ty-spacing-2);
+    <!-- Prevent FOUC -->
+    <script>
+        // Set initial theme based on system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
         }
-
-        .subtitle {
-            font-size: var(--ty-font-size-lg);
-            color: var(--ty-color-neutral);
-        }
-
-        .section {
-            background: var(--ty-background);
-            padding: var(--ty-spacing-8);
-            border-radius: var(--ty-radius-lg);
-            box-shadow: var(--ty-shadow-base);
-            margin-bottom: var(--ty-spacing-8);
-            border: 1px solid var(--ty-border);
-        }
-
-        h2 {
-            font-size: var(--ty-font-size-2xl);
-            font-weight: var(--ty-font-weight-bold);
-            color: var(--ty-color-neutral-p2);
-            margin-bottom: var(--ty-spacing-6);
-        }
-
-        h3 {
-            font-size: var(--ty-font-size-xl);
-            font-weight: var(--ty-font-weight-semibold);
-            color: var(--ty-color-neutral-p1);
-            margin-bottom: var(--ty-spacing-4);
-            margin-top: var(--ty-spacing-6);
-        }
-
-        .component-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--ty-spacing-6);
-            margin-bottom: var(--ty-spacing-8);
-        }
-
-        .component-card {
-            background: var(--ty-background-p1);
-            padding: var(--ty-spacing-6);
-            border-radius: var(--ty-radius-md);
-            border: 1px solid var(--ty-border);
-            transition: var(--ty-transition-all);
-        }
-
-        .component-card:hover {
-            box-shadow: var(--ty-shadow-md);
-            transform: translateY(-2px);
-        }
-
-        .component-card h3 {
-            margin-top: 0;
-        }
-
-        .component-demo {
-            margin-bottom: var(--ty-spacing-4);
-        }
-
-        .quick-links {
-            display: flex;
-            gap: var(--ty-spacing-4);
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: var(--ty-spacing-6);
-        }
-
-        .quick-links a {
-            display: inline-flex;
-            align-items: center;
-            padding: var(--ty-spacing-2) var(--ty-spacing-6);
-            background: var(--ty-background-important);
-            color: var(--ty-color-important);
-            text-decoration: none;
-            border-radius: var(--ty-radius-md);
-            font-weight: var(--ty-font-weight-medium);
-            transition: var(--ty-transition-all);
-            border: 1px solid var(--ty-border-important);
-        }
-
-        .quick-links a:hover {
-            background: var(--ty-background-important-p1);
-            transform: translateY(-1px);
-            box-shadow: var(--ty-shadow-sm);
-        }
-
-        .demo-row {
-            display: flex;
-            gap: var(--ty-spacing-4);
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: var(--ty-spacing-4);
-        }
-
-        code {
-            background: var(--ty-background-neutral);
-            padding: var(--ty-spacing-0_5) var(--ty-spacing-1_5);
-            border-radius: var(--ty-radius-sm);
-            font-family: var(--ty-font-mono);
-            font-size: var(--ty-font-size-sm);
-        }
-
-        .code-block {
-            background: var(--ty-color-neutral-p3);
-            color: var(--ty-background);
-            padding: var(--ty-spacing-4);
-            border-radius: var(--ty-radius-md);
-            overflow-x: auto;
-            margin: var(--ty-spacing-2) 0;
-            font-family: var(--ty-font-mono);
-            font-size: var(--ty-font-size-sm);
-            line-height: var(--ty-line-height-relaxed);
-        }
-
-        .code-block code {
-            background: transparent;
-            color: inherit;
-            padding: 0;
-        }
-
-        .theme-toggle {
-            position: fixed;
-            bottom: var(--ty-spacing-4);
-            right: var(--ty-spacing-4);
-            z-index: 100;
-        }
-
-        ul {
-            margin-top: var(--ty-spacing-4);
-            margin-left: var(--ty-spacing-6);
-            color: var(--ty-color-neutral);
-        }
-
-        li {
-            margin-bottom: var(--ty-spacing-2);
-        }
-    </style>
+    </script>
 </head>
 
 <body>
-    <div class="container">
-        <header>
-            <h1>Ty Components</h1>
-            <p class="subtitle">A modern web components library built with ClojureScript</p>
-            <div class="quick-links">
-                <a href="button-demo.html">Button Demo</a>
-                <a href="https://github.com/yourusername/ty" target="_blank">GitHub</a>
-                <a href="#docs">Documentation</a>
-            </div>
-        </header>
+    <!-- App will be mounted here -->
+    <div id="app"></div>
 
-        <section class="section">
-            <h2>Available Components</h2>
-
-            <div class="component-grid">
-                <div class="component-card">
-                    <h3>Button</h3>
-                    <div class="component-demo">
-                        <div class="demo-row">
-                            <ty-button flavor="important">Important</ty-button>
-                            <ty-button flavor="positive">Positive</ty-button>
-                            <ty-button flavor="negative">Negative</ty-button>
-                        </div>
-                    </div>
-                    <p>A versatile button component with semantic flavors and states.</p>
-                    <div class="code-block">
-                        <code>&lt;ty-button flavor="positive"&gt;Click me&lt;/ty-button&gt;</code>
-                    </div>
-                </div>
-
-                <div class="component-card">
-                    <h3>More Components</h3>
-                    <p>Coming soon...</p>
-                    <ul>
-                        <li>Input fields</li>
-                        <li>Dropdowns</li>
-                        <li>Modals</li>
-                        <li>Tables</li>
-                        <li>Cards</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2>Design System</h2>
-
-            <h3>Semantic Colors</h3>
-            <p>Our design system uses semantic color naming:</p>
-            <div class="demo-row">
-                <ty-button flavor="important">Important</ty-button>
-                <ty-button flavor="positive">Positive</ty-button>
-                <ty-button flavor="negative">Negative</ty-button>
-                <ty-button flavor="exception">Exception</ty-button>
-                <ty-button flavor="neutral">Neutral</ty-button>
-            </div>
-
-            <h3>CSS Variables</h3>
-            <p>Everything is customizable through CSS variables:</p>
-            <div class="code-block">
-                <code>:root {
-                    --ty-semantic-important: #3b82f6;
-                    --ty-semantic-positive: #10b981;
-                    --ty-semantic-negative: #ef4444;
-                    /* ... customize any semantic color */
-                    }</code>
-            </div>
-        </section>
-
-        <section class="section" id="docs">
-            <h2>Quick Start</h2>
-
-            <h3>1. Include the CSS Variables</h3>
-            <div class="code-block">
-                <code>&lt;link rel="stylesheet" href="css/ty.variables.css"&gt;</code>
-            </div>
-
-            <h3>2. Include the Library</h3>
-            <div class="code-block">
-                <code>&lt;script src="/js/main.js"&gt;&lt;/script&gt;</code>
-            </div>
-
-            <h3>3. Use Components</h3>
-            <div class="code-block">
-                <code>&lt;ty-button flavor="positive"&gt;Save&lt;/ty-button&gt;</code>
-            </div>
-        </section>
-
-        <section class="section">
-            <h2>Development</h2>
-
-            <h3>Running Locally</h3>
-            <div class="code-block">
-                <code># Install dependencies
-                    npm install
-
-                    # Start development server
-                    npm run dev
-
-                    # Visit http://localhost:8000</code>
-            </div>
-
-            <h3>Building for Production</h3>
-            <div class="code-block">
-                <code># Build optimized bundle
-                    shadow-cljs release app</code>
-            </div>
-        </section>
-    </div>
-
-    <!-- Theme toggle button -->
-    <div class="theme-toggle">
-        <ty-button flavor="neutral" onclick="toggleTheme()">Toggle Theme</ty-button>
-    </div>
-
-    <!-- Load the compiled ClojureScript -->
-    <script src="js/main.js"></script>
-
-    <!-- Theme toggle -->
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-        }
-    </script>
+    <!-- Load demo app after Web Components are defined -->
+    <script src="js/demo.js"></script>
 </body>
 
 </html>

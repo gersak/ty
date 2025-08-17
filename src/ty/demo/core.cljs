@@ -1,6 +1,7 @@
 (ns ty.demo.core
   (:require [replicant.dom :as rdom]
             [ty.context :as context]
+            [ty.demo.icons :as demo-icons]
             [ty.demo.state :refer [state]]
             [ty.demo.views.buttons :as buttons]
             [ty.demo.views.home :as home]
@@ -134,12 +135,14 @@
        (router/rendered? ::theming true) [:div "Theming page - coming soon"]
        :else [:div "404"])]]])
 
-
 (defn render-app! []
   (binding [context/*roles* (:user/roles @state)]
     (rdom/render (js/document.getElementById "app") (app))))
 
 (defn ^:dev/after-load init []
+  ;; Register demo icons
+  (demo-icons/register-demo-icons!)
+
   ;; Setup routes if not already done
   (when (empty? (:children (:tree @router/*router*)))
     (setup-routes!))

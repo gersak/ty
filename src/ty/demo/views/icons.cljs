@@ -3,14 +3,7 @@
    [clojure.string :as str]
    [ty.demo.state :refer [state]]
    [ty.router :as router]
-   [ty.fav6.brands :as fa-brands]
-   [ty.fav6.regular :as fa-regular]
-   ;; Font Awesome 6
-   [ty.fav6.solid :as fa-solid]
-   [ty.icons :as icons]
-   ;; Material Icons
-   [ty.material.filled :as mat-filled]
-   [ty.material.outlined :as mat-outlined]))
+   [ty.icons :as icons]))
 
 (defn icon-card [{:keys [name icon-key]}]
   [:div.p-4.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
@@ -55,68 +48,6 @@
         [:div {:key icon-key}
          (icon-card {:name icon-key
                      :icon-key icon-key})])]]))
-
-(icons/add! {"fa-solid/clock" fa-solid/clock
-             "fa-solid/calendar" fa-solid/calendar
-             "fa-solid/calendar-days" fa-solid/calendar-days
-             "fa-solid/calendar-check" fa-solid/calendar-check
-             "fa-solid/calendar-minus" fa-solid/calendar-minus
-             "fa-solid/calendar-plus" fa-solid/calendar-plus
-             "fa-solid/calendar-xmark" fa-solid/calendar-xmark
-             "fa-solid/clock-rotate-left" fa-solid/clock-rotate-left
-             "fa-solid/user-clock" fa-solid/user-clock
-             "fa-solid/business-time" fa-solid/business-time
-             "fa-solid/comment-dots" fa-solid/comment-dots
-             "fa-solid/passport" fa-solid/passport
-             "fa-solid/socks" fa-solid/socks
-             "fa-solid/t-shirt" fa-solid/t-shirt
-             "fa-solid/underline" fa-solid/underline
-
-             ;; Font Awesome 6 Regular icons
-             "fa-regular/clock" fa-regular/clock
-             "fa-regular/calendar" fa-regular/calendar
-             "fa-regular/calendar-check" fa-regular/calendar-check
-             "fa-regular/comment" fa-regular/comment
-             "fa-regular/comment-dots" fa-regular/comment-dots
-             "fa-regular/envelope" fa-regular/envelope
-             "fa-regular/heart" fa-regular/heart
-             "fa-regular/star" fa-regular/star
-             "fa-regular/user" fa-regular/user
-             "fa-regular/hand" fa-regular/hand
-             "fa-regular/file-zipper" fa-regular/file-zipper
-
-             ;; Font Awesome 6 Brands
-             "fa-brands/github" fa-brands/github
-             "fa-brands/x-twitter" fa-brands/x-twitter
-             "fa-brands/square-facebook" fa-brands/square-facebook
-             "fa-brands/square-github" fa-brands/square-github
-             "fa-brands/square-linkedin" fa-brands/square-linkedin
-             "fa-brands/square-x-twitter" fa-brands/square-x-twitter
-             "fa-brands/square-twitter" fa-brands/square-twitter
-
-             ;; Material Filled with prefix
-             "mat-filled/home" mat-filled/home
-             "mat-filled/settings" mat-filled/settings
-             "mat-filled/search" mat-filled/search
-             "mat-filled/favorite" mat-filled/favorite
-             "mat-filled/delete" mat-filled/delete
-             "mat-filled/edit" mat-filled/edit
-             "mat-filled/check" mat-filled/check
-             "mat-filled/close" mat-filled/close
-             "mat-filled/menu" mat-filled/menu
-             "mat-filled/more-vert" mat-filled/more-vert
-
-             ;; Material Outlined with prefix
-             "mat-outlined/home" mat-outlined/home
-             "mat-outlined/settings" mat-outlined/settings
-             "mat-outlined/search" mat-outlined/search
-             "mat-outlined/favorite" mat-outlined/favorite
-             "mat-outlined/delete" mat-outlined/delete
-             "mat-outlined/edit" mat-outlined/edit
-             "mat-outlined/check-circle" mat-outlined/check-circle
-             "mat-outlined/info" mat-outlined/info
-             "mat-outlined/warning" mat-outlined/warning
-             "mat-outlined/error" mat-outlined/error})
 
 (defn filter-icons [icons search-term]
   (if (str/blank? search-term)
@@ -229,13 +160,12 @@
        [:code.text-sm.text-gray-600.dark:text-gray-400.font-mono
         "<ty-button><ty-icon name=\"plus\"></ty-icon> Add Item</ty-button>"]]]]]])
 
-
 (defn icons-view []
   (let [;; Get query params for search
         {:keys [search show-demo]} (router/query-params)
         search-term (or search "")
         show-demo? (= show-demo "true")
-        
+
         all-icons @icons/data
 
         ;; Filter icons based on search
@@ -328,4 +258,4 @@
       ;; Other Icons
       (when (seq (:other categorized))
         (icon-section {:title "Other Icons"
-                       :icons (:other categorized)}))]])) 
+                       :icons (:other categorized)}))]]))

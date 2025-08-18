@@ -1,7 +1,9 @@
 #popup-container {
   position: fixed !important;
-  top: 0px;
-  left: 0px;
+  top: var(--y, 0px);
+  left: var(--x, 0px);
+  visibility: hidden;
+  opacity: 0;
 }
 
 #popup-content {
@@ -17,13 +19,11 @@
   max-width: 400px;
   position: fixed;
   /* Option 1: Using transform */
-  transform: translate(var(--x, 0px), var(--y, 0px));
-  visibility: hidden;
-  opacity: 0;
+  /* transform: translate(var(--x, 0px), var(--y, 0px)); */
 }
 
 
-#popup-content.open {
+#popup-container.open {
   visibility: visible;
   opacity: 1;
 }

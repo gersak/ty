@@ -7,18 +7,36 @@
 ;; -----------------------------
 
 (def placements
-  {:top-start {:vertical :top :horizontal :start}
-   :top {:vertical :top :horizontal :center}
-   :top-end {:vertical :top :horizontal :end}
-   :right-start {:vertical :center :horizontal :end :orientation :vertical}
-   :right {:vertical :center :horizontal :end :orientation :vertical}
-   :right-end {:vertical :end :horizontal :end :orientation :vertical}
-   :bottom-start {:vertical :bottom :horizontal :start}
-   :bottom {:vertical :bottom :horizontal :center}
-   :bottom-end {:vertical :bottom :horizontal :end}
-   :left-start {:vertical :center :horizontal :start :orientation :vertical}
-   :left {:vertical :center :horizontal :start :orientation :vertical}
-   :left-end {:vertical :end :horizontal :start :orientation :vertical}})
+  {:top-start {:vertical :top
+               :horizontal :start}
+   :top {:vertical :top
+         :horizontal :center}
+   :top-end {:vertical :top
+             :horizontal :end}
+   :right-start {:vertical :center
+                 :horizontal :end
+                 :orientation :vertical}
+   :right {:vertical :center
+           :horizontal :end
+           :orientation :vertical}
+   :right-end {:vertical :end
+               :horizontal :end
+               :orientation :vertical}
+   :bottom-start {:vertical :bottom
+                  :horizontal :start}
+   :bottom {:vertical :bottom
+            :horizontal :center}
+   :bottom-end {:vertical :bottom
+                :horizontal :end}
+   :left-start {:vertical :center
+                :horizontal :start
+                :orientation :vertical}
+   :left {:vertical :center
+          :horizontal :start
+          :orientation :vertical}
+   :left-end {:vertical :end
+              :horizontal :start
+              :orientation :vertical}})
 
 (def placement-preferences
   {:default [:bottom-start :bottom-end :top-start :top-end
@@ -95,8 +113,8 @@
 
         overflow-amount (reduce + (map #(Math/abs %) (vals overflow)))]
 
-    {:x x
-     :y y
+    {:x (js/Math.round x)
+     :y (js/Math.round y)
      :placement placement
      :overflow overflow
      :overflow-amount overflow-amount
@@ -114,12 +132,12 @@
 
         ;; Calculate all candidate positions
         candidates (map #(calculate-placement
-                          {:target-rect target-rect
-                           :floating-rect floating-rect
-                           :placement %
-                           :offset offset
-                           :padding padding
-                           :scrollbar-width scrollbar-width})
+                           {:target-rect target-rect
+                            :floating-rect floating-rect
+                            :placement %
+                            :offset offset
+                            :padding padding
+                            :scrollbar-width scrollbar-width})
                         preferences)
 
         ;; Find first that fits, or one with least overflow
@@ -148,9 +166,9 @@
         update! (fn []
                   (when @active?
                     (let [position (find-best-position
-                                    (merge {:target-el target-el
-                                            :floating-el floating-el}
-                                           config))]
+                                     (merge {:target-el target-el
+                                             :floating-el floating-el}
+                                            config))]
                       (update-fn position))))
 
         loop! (fn loop-fn []

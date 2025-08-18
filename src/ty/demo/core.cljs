@@ -9,31 +9,29 @@
             [ty.demo.views.popups :as popups]
             [ty.router :as router]))
 
-(defn setup-routes! []
-  "Setup demo routes"
-  (router/link ::router/root
-               [{:id ::home
-                 :segment ""
-                 :name "Overview"
-                 :landing 10} ; Lowest priority landing - public
-                {:id ::buttons
-                 :segment "buttons"
-                 :name "Buttons"}
-                {:id ::icons
-                 :segment "icons"
-                 :name "Icons"}
-                {:id ::popups
-                 :segment "popups"
-                 :name "Popups"}
-                {:id ::admin-dashboard
-                 :segment "admin"
-                 :name "Admin Dashboard"
-                 :roles #{:admin}
-                 :landing 100} ; Highest priority landing for admins
-                {:id ::theming
-                 :segment "theming"
-                 :name "Theming"
-                 :roles #{:admin}}]))
+(router/link ::router/root
+             [{:id ::home
+               :segment ""
+               :name "Overview"
+               :landing 10} ; Lowest priority landing - public
+              {:id ::buttons
+               :segment "buttons"
+               :name "Buttons"}
+              {:id ::icons
+               :segment "icons"
+               :name "Icons"}
+              {:id ::popups
+               :segment "popups"
+               :name "Popups"}
+              {:id ::admin-dashboard
+               :segment "admin"
+               :name "Admin Dashboard"
+               :roles #{:admin}
+               :landing 100} ; Highest priority landing for admins
+              {:id ::theming
+               :segment "theming"
+               :name "Theming"
+               :roles #{:admin}}])
 
 (defn toggle-theme! []
   (let [new-theme (if (= (:theme @state) "light") "dark" "light")]
@@ -142,10 +140,11 @@
 (defn ^:dev/after-load init []
   ;; Register demo icons
   (demo-icons/register-demo-icons!)
+  (println "ICON STORE: " (keys @ty.icons/data))
 
   ;; Setup routes if not already done
-  (when (empty? (:children (:tree @router/*router*)))
-    (setup-routes!))
+  ; (when (empty? (:children (:tree @router/*router*)))
+  ;   (setup-routes!))
 
   ;; Initialize router with landing support
   (binding [context/*roles* (:user/roles @state)]

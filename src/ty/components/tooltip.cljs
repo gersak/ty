@@ -1,260 +1,258 @@
 (ns ty.components.tooltip
-  "Tooltip component - shows helpful text on hover.
-   Simple implementation without portal complexity.
-   
-   Usage:
-   <button>
-     Save Changes
-     <ty-tooltip content=\"Save your work\"></ty-tooltip>
-   </button>"
+  "Tooltip component - shows helpful content on hover.
+   Follows the same shadow DOM pattern as popup but triggers on hover/focus."
   (:require [ty.css :refer [ensure-styles!]]
             [ty.positioning :as pos]
             [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
-;; Load tooltip styles from tooltip.css
-#_{:clj-kondo/ignore [:uninitialized-var]}
+;; Load tooltip styles
 (defstyles tooltip-styles)
 
-;; Component state
-(defn init-state! [^js el]
-  (set! (.-_tyTooltipState el)
-        #js {:open false
-             :showTimeout nil
-             :hideTimeout nil
-             :cleanup nil
-             :targetEl nil
-             :isHovering false}))
+;; Store cleanup functions for auto-update
+(defonce auto-update-cleanup-fns (js/WeakMap.))
 
-(defn ^js get-state [^js el]
-  (or (.-_tyTooltipState el)
-      (init-state! el)))
+;; Store event cleanup functions
+(defonce event-cleanup-fns (js/WeakMap.))
 
-(defn tooltip-attributes [^js el]
-  {:content (wcs/attr el "content")
-   :position (or (wcs/attr el "position") "top")
-   :delay (or (wcs/parse-int-attr el "delay") 500)
+;; Store timeouts for show/hide delays
+(defonce timeout-state (js/WeakMap.))
+
+(defn get-timeout-state [^js el]
+  (or (.get timeout-state el)
+      (let [state #js {:showTimeout nil
+                       :hideTimeout nil}]
+        (.set timeout-state el state)
+        state)))
+
+(defn tooltip-attributes
+  "Read all tooltip attributes directly from element"
+  [^js el]
+  {:placement (or (wcs/attr el "placement") "top")
    :offset (or (wcs/parse-int-attr el "offset") 8)
-   :disabled (wcs/parse-bool-attr el "disabled")})
+   :delay (or (wcs/parse-int-attr el "delay") 600)
+   :disabled (wcs/parse-bool-attr el "disabled")
+   :variant (or (wcs/attr el "variant") "dark")
+   ;; Internal state - not a real attribute
+   :open (.-_open el)})
+
+(defn get-anchor-element
+  "Get the parent element as anchor"
+  [^js el]
+  (.-parentElement el))
+
+(defn get-tooltip-container
+  "Get the tooltip container element"
+  [^js shadow-root]
+  (.querySelector shadow-root "#tooltip-container"))
+
+(defn update-position!
+  "Calculate and update tooltip position based on anchor"
+  [^js el ^js shadow-root]
+  (let [{:keys [placement offset]} (tooltip-attributes el)
+        anchor (get-anchor-element el)
+        container (get-tooltip-container shadow-root)]
+    (when (and anchor container)
+      ;; Calculate preferred placements based on placement attribute
+      (let [preferences (case placement
+                          "top" [:top :bottom :left :right]
+                          "bottom" [:bottom :top :left :right]
+                          "left" [:left :right :top :bottom]
+                          "right" [:right :left :top :bottom]
+                          ;; Default tooltip placement
+                          [:top :bottom :right :left])
+            ;; Use positioning engine to find best position
+            position-data (pos/find-best-position
+                            {:target-el anchor
+                             :floating-el container
+                             :preferences preferences
+                             :offset offset
+                             :padding 8})
+            {:keys [x y]} position-data]
+        ;; Update CSS variables
+        (.setProperty (.-style el) "--x" (str x "px"))
+        (.setProperty (.-style el) "--y" (str y "px"))))))
+
+(defn cleanup-auto-update!
+  "Clean up all observers and listeners for auto-update"
+  [^js el]
+  (when-let [cleanup-fn (.get auto-update-cleanup-fns el)]
+    (cleanup-fn)
+    (.delete auto-update-cleanup-fns el)))
+
+(defn setup-auto-update!
+  "Setup observers and listeners for auto-updating position"
+  [^js el ^js shadow-root]
+  (let [anchor (get-anchor-element el)
+        container (get-tooltip-container shadow-root)
+        ;; Debounced update function
+        update-fn (let [timeout-id (atom nil)]
+                    (fn []
+                      (when @timeout-id
+                        (js/clearTimeout @timeout-id))
+                      (reset! timeout-id
+                              (js/setTimeout
+                                #(do
+                                   (reset! timeout-id nil)
+                                   (update-position! el shadow-root))
+                                10))))
+        ;; ResizeObserver for anchor and container
+        resize-observer (js/ResizeObserver. update-fn)
+        ;; Scroll listener with requestAnimationFrame
+        scroll-raf-id (atom nil)
+        scroll-handler (fn []
+                         (when-not @scroll-raf-id
+                           (reset! scroll-raf-id
+                                   (js/requestAnimationFrame
+                                     #(do
+                                        (reset! scroll-raf-id nil)
+                                        (update-position! el shadow-root))))))
+        ;; Cleanup function
+        cleanup (fn []
+                  (.disconnect resize-observer)
+                  (js/removeEventListener "scroll" scroll-handler true)
+                  (js/removeEventListener "resize" update-fn)
+                  (when @scroll-raf-id
+                    (js/cancelAnimationFrame @scroll-raf-id)))]
+
+    ;; Observe anchor and container for size changes
+    (when anchor
+      (.observe resize-observer anchor))
+    (when container
+      (.observe resize-observer container))
+
+    ;; Listen for scroll events (capture phase for better performance)
+    (js/addEventListener "scroll" scroll-handler true)
+
+    ;; Listen for window resize
+    (js/addEventListener "resize" update-fn)
+
+    ;; Store cleanup function
+    (.set auto-update-cleanup-fns el cleanup)))
+
+(defn clear-timeouts! [^js el]
+  (let [state (get-timeout-state el)]
+    (when-let [timeout (.-showTimeout state)]
+      (js/clearTimeout timeout)
+      (set! (.-showTimeout state) nil))
+    (when-let [timeout (.-hideTimeout state)]
+      (js/clearTimeout timeout)
+      (set! (.-hideTimeout state) nil))))
+
+(declare render!)
 
 (defn show-tooltip! [^js el]
-  (let [state (get-state el)
-        target (.-targetEl state)]
-    (when (and target (not (wcs/parse-bool-attr el "disabled")))
-      (set! (.-open state) true)
-
-      ;; Show the popup that's in the body
-      (when-let [popup (.-_tooltipPopup el)]
-        (.setAttribute popup "data-visible" "true")
-        (set! (.-style.display popup) "block")
-
-        ;; Get the inner content div for positioning
-        (when-let [content-div (.-firstChild popup)]
-          ;; Start position tracking
-          (let [{:keys [position offset]} (tooltip-attributes el)
-                ;; Get preferences based on position
-                preferences (case position
-                              "top" [:top :bottom :left :right]
-                              "bottom" [:bottom :top :left :right]
-                              "left" [:left :right :top :bottom]
-                              "right" [:right :left :top :bottom]
-                              ;; Support all position variants
-                              "top-start" [:top-start :top-end :bottom-start :bottom-end]
-                              "top-end" [:top-end :top-start :bottom-end :bottom-start]
-                              "bottom-start" [:bottom-start :bottom-end :top-start :top-end]
-                              "bottom-end" [:bottom-end :bottom-start :top-end :top-start]
-                              "left-start" [:left-start :left-end :right-start :right-end]
-                              "left-end" [:left-end :left-start :right-end :right-start]
-                              "right-start" [:right-start :right-end :left-start :left-end]
-                              "right-end" [:right-end :right-start :left-end :left-start]
-                              ;; Default fallback
-                              [:top :bottom :left :right])
-
-                ;; Create config for positioning - used for both initial and auto-update
-                config {:preferences preferences
-                        :offset offset
-                        :padding 8}
-
-                ;; Track last position to avoid unnecessary updates
-                last-position (volatile! nil)
-
-                ;; Create update function
-                update-fn (fn [{:keys [x y placement]
-                                :as position-data}]
-                            ;; Only update if position has actually changed
-                            (when (not= @last-position position-data)
-                              (vreset! last-position position-data)
-                              ;; Remove the transform and set position directly
-                              (set! (.-style.transform content-div) "none")
-                              (set! (.-style.left content-div) (str x "px"))
-                              (set! (.-style.top content-div) (str y "px"))
-                              (.setAttribute popup "data-placement" (name placement))))]
-
-            ;; IMPORTANT: Force layout before positioning calculation
-            ;; This ensures the content-div has proper dimensions
-            (set! (.-style.visibility content-div) "hidden")
-            (set! (.-style.display content-div) "block")
-            ; (.offsetHeight content-div) ; Force reflow
-            (set! (.-style.visibility content-div) "visible")
-
-            ;; Do initial positioning BEFORE starting auto-update
-            (let [position-data (pos/find-best-position
-                                  (merge {:target-el target
-                                          :floating-el content-div}
-                                         config))]
-              (update-fn position-data))
-
-            ;; Setup auto-update with position tracking AFTER initial positioning
-            ;; Pass the same config to ensure consistency
-            (set! (.-cleanup state)
-                  (pos/auto-update target content-div update-fn config))))))))
+  (let [{:keys [disabled]} (tooltip-attributes el)]
+    (when-not disabled
+      (set! (.-_open el) true)
+      (render! el))))
 
 (defn hide-tooltip! [^js el]
-  (let [state (get-state el)]
-    (set! (.-open state) false)
-
-    ;; Hide the popup that's in the body
-    (when-let [popup (.-_tooltipPopup el)]
-      (.removeAttribute popup "data-visible")
-      (set! (.-style.display popup) "none"))
-
-    ;; Stop position tracking
-    (when-let [cleanup (.-cleanup state)]
-      (cleanup)
-      (set! (.-cleanup state) nil))))
-
-(defn clear-timeouts! [^js state]
-  (when-let [timeout (.-showTimeout state)]
-    (js/clearTimeout timeout)
-    (set! (.-showTimeout state) nil))
-  (when-let [timeout (.-hideTimeout state)]
-    (js/clearTimeout timeout)
-    (set! (.-hideTimeout state) nil)))
+  (set! (.-_open el) false)
+  (render! el))
 
 (defn schedule-show! [^js el]
-  (let [state (get-state el)
+  (let [state (get-timeout-state el)
         {:keys [delay]} (tooltip-attributes el)]
-    (clear-timeouts! state)
+    (clear-timeouts! el)
     (set! (.-showTimeout state)
           (js/setTimeout #(show-tooltip! el) delay))))
 
 (defn schedule-hide! [^js el]
-  (let [state (get-state el)]
-    (clear-timeouts! state)
+  (let [state (get-timeout-state el)]
+    (clear-timeouts! el)
     (set! (.-hideTimeout state)
-          (js/setTimeout #(hide-tooltip! el) 100))))
-
-(defn setup-target! [^js el ^js target]
-  (let [state (get-state el)]
-    ;; Store target reference
-    (set! (.-targetEl state) target)
-
-    ;; Event handlers
-    (let [handle-enter (fn [e]
-                         (.stopPropagation e)
-                         (set! (.-isHovering state) true)
-                         (schedule-show! el))
-          handle-leave (fn [e]
-                         (.stopPropagation e)
-                         (set! (.-isHovering state) false)
-                         (schedule-hide! el))
-          handle-focus (fn []
-                         (schedule-show! el))
-          handle-blur (fn []
-                        (when-not (.-isHovering state)
-                          (schedule-hide! el)))]
-
-      ;; Add listeners to target
-      (.addEventListener target "mouseenter" handle-enter)
-      (.addEventListener target "mouseleave" handle-leave)
-      (.addEventListener target "focus" handle-focus)
-      (.addEventListener target "blur" handle-blur)
-
-      ;; Store cleanup function
-      (set! (.-cleanupTarget state)
-            (fn []
-              (.removeEventListener target "mouseenter" handle-enter)
-              (.removeEventListener target "mouseleave" handle-leave)
-              (.removeEventListener target "focus" handle-focus)
-              (.removeEventListener target "blur" handle-blur))))))
+          (js/setTimeout #(hide-tooltip! el) 200))))
 
 (defn render! [^js el]
-  (let [{:keys [content]} (tooltip-attributes el)]
-    ;; Store a reference to the tooltip content on the element
-    (set! (.-_tooltipContent el) (or content "NO CONTENT"))
+  (let [root (wcs/ensure-shadow el)
+        existing-container (.querySelector root "#tooltip-container")
+        {:keys [open variant]} (tooltip-attributes el)]
+    ;; Ensure styles are loaded
+    (ensure-styles! root tooltip-styles "ty-tooltip")
 
-    ;; Create a unique ID for this tooltip
-    (let [tooltip-id (str "ty-tooltip-" (str (random-uuid)))]
-      (set! (.-_tooltipId el) tooltip-id)
+    ;; Create structure if it doesn't exist
+    (when-not existing-container
+      (let [container (js/document.createElement "div")
+            content (js/document.createElement "slot")]
+        (set! (.-id container) "tooltip-container")
+        (.setAttribute container "data-variant" variant)
+        (.appendChild root container)
+        (.appendChild container content)
+        ;; Initialize position
+        (.setProperty (.-style el) "--x" "0px")
+        (.setProperty (.-style el) "--y" "0px")))
 
-      ;; Remove any existing popup
-      (when-let [existing (.getElementById js/document tooltip-id)]
-        (.removeChild (.-parentNode existing) existing))
+    ;; Update variant if it changed
+    (when-let [container (.querySelector root "#tooltip-container")]
+      (.setAttribute container "data-variant" variant)
+      ;; Update visibility
+      (if open
+        (.add (.-classList container) "open")
+        (.remove (.-classList container) "open")))
 
-      ;; Create and append the popup to body
-      (let [popup (.createElement js/document "div")]
-        (set! (.-id popup) tooltip-id)
-        (set! (.-className popup) "ty-tooltip-popup")
-        (.setAttribute popup "data-tooltip-for" "")
-        ;; Initially hide the popup
-        (set! (.-style.display popup) "none")
-        (set! (.-innerHTML popup)
-              (str "<div style='
-                      position: fixed;
-                      left: -9999px;
-                      top: -9999px;
-                      background: #333;
-                      color: white;
-                      padding: 10px 15px;
-                      border-radius: 4px;
-                      font-size: 14px;
-                      z-index: 999999;
-                      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-                      white-space: nowrap;
-                      max-width: 250px;
-                    '>"
-                   (.-_tooltipContent el)
-                   "</div>"))
+    ;; Handle open/close state
+    (if open
+      (do
+        ;; Update position
+        (update-position! el root)
+        ;; Setup auto-update
+        (setup-auto-update! el root))
+      ;; Cleanup when closed
+      (cleanup-auto-update! el))))
 
-        ;; Append to body
-        (.appendChild js/document.body popup)
+(defn setup-events! [^js el]
+  (let [anchor (get-anchor-element el)]
+    (letfn [(handle-enter [e] (schedule-show! el))
+            (handle-leave [e] (schedule-hide! el))
+            (handle-focus [e] (schedule-show! el))
+            (handle-blur [e] (schedule-hide! el))]
 
-        ;; Store reference
-        (set! (.-_tooltipPopup el) popup)))))
+      ;; Add listeners
+      (.addEventListener anchor "mouseenter" handle-enter)
+      (.addEventListener anchor "mouseleave" handle-leave)
+      (.addEventListener anchor "focusin" handle-focus)
+      (.addEventListener anchor "focusout" handle-blur)
 
-(defn update-content! [^js el]
-  (let [{:keys [content]} (tooltip-attributes el)]
-    (when-let [text-el (.querySelector el ".tooltip-text")]
-      (set! (.-innerHTML text-el) (or content "")))))
+      ;; Store event cleanup function separately
+      (.set event-cleanup-fns el
+            (fn []
+              ;; Remove all listeners
+              (.removeEventListener anchor "mouseenter" handle-enter)
+              (.removeEventListener anchor "mouseleave" handle-leave)
+              (.removeEventListener anchor "focusin" handle-focus)
+              (.removeEventListener anchor "focusout" handle-blur))))
+    (when anchor)))
 
-(defn cleanup! [^js el]
-  (let [state (get-state el)]
-    ;; Clear timeouts
-    (clear-timeouts! state)
-
-    ;; Stop position tracking
-    (when-let [cleanup (.-cleanup state)]
-      (cleanup))
-
-    ;; Remove target listeners
-    (when-let [cleanup-target (.-cleanupTarget state)]
-      (cleanup-target))
-
-    ;; Remove popup from body
-    (when-let [popup (.-_tooltipPopup el)]
-      (when (.-parentNode popup)
-        (.removeChild (.-parentNode popup) popup)))))
+(defn cleanup!
+  "Clean up when tooltip is disconnected"
+  [^js el]
+  ;; Clear timeouts
+  (clear-timeouts! el)
+  ;; Clean up auto-update
+  (cleanup-auto-update! el)
+  ;; Clean up event listeners
+  (when-let [cleanup-fn (.get event-cleanup-fns el)]
+    (cleanup-fn)
+    (.delete event-cleanup-fns el))
+  ;; Clean up timeout state
+  (.delete timeout-state el))
 
 (wcs/define! "ty-tooltip"
-  {:observed [:content :position :delay :offset :disabled]
+  {:observed [:placement :offset :delay :disabled :variant]
    :connected (fn [^js el]
+                ;; Initialize open state
+                (set! (.-_open el) false)
+                ;; Set up structure
                 (render! el)
-                ;; Find parent as target
-                (when-let [parent (.-parentElement el)]
-                  (setup-target! el parent)))
+                ;; Set up events
+                (setup-events! el))
    :disconnected cleanup!
-   :attr (fn [^js el attr-name _old _new]
-           (case attr-name
-             "content" (update-content! el)
-             "disabled" (when _new (hide-tooltip! el))
-             nil))})
+   :attr (fn [^js el attr-name _old new]
+           ;; Update variant in real-time if tooltip is visible
+           (when (and (= attr-name "variant") (.-_open el))
+             (when-let [container (.querySelector (.-shadowRoot el) "#tooltip-container")]
+               (.setAttribute container "data-variant" new)))
+           ;; Close tooltip if disabled
+           (when (and (= attr-name "disabled") new)
+             (hide-tooltip! el)))})

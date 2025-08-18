@@ -20,18 +20,15 @@
 (defn render! [^js el]
   (let [root (wcs/ensure-shadow el)
         content (.querySelector root "#popup-content")
-        _content (volatile! nil)
-        _anchor (volatile! nil)
         {:keys [open]
          :as attrs} (popup-attributes el)]
     ;; For now, just ensure we have basic structure
     ;; No shadow DOM - everything in Light DOM
     (ensure-styles! root popup-styles "ty-popup")
     (if content
-      (do
-        (when @_content
-          (set! (.-className @_content)
-                (when open "open"))))
+      (when content
+        (set! (.-className content)
+              (when open "open")))
       (let [container (js/document.createElement "div")
             content (js/document.createElement "slot")
             anchor (js/document.createElement "slot")]
@@ -45,9 +42,7 @@
         (.appendChild root container)
         (.appendChild container content)
         (.setProperty (.-style el) "--x" "0px")
-        (.setProperty (.-style el) "--y" "0px")
-        (vreset! _content content)
-        (vreset! _anchor anchor)))))
+        (.setProperty (.-style el) "--y" "0px")))))
 
 (wcs/define! "ty-popup"
   {:observed [:flavor :disabled :class :open :position]

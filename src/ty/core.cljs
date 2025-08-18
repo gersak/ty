@@ -2,6 +2,7 @@
   (:require
    [ty.components.button]
    [ty.components.icon]
+   [ty.components.popup]
    [ty.components.tooltip]))
 
 (defn init []

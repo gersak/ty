@@ -1,0 +1,29 @@
+#popup-container {
+  position: fixed !important;
+  top: 0px;
+  left: 0px;
+}
+
+#popup-content {
+  /* Basic content styling */
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+  /* Make it visible */
+  min-width: 200px;
+  max-width: 400px;
+  position: fixed;
+  /* Option 1: Using transform */
+  transform: translate(var(--x, 0px), var(--y, 0px));
+  visibility: hidden;
+  opacity: 0;
+}
+
+
+#popup-content.open {
+  visibility: visible;
+  opacity: 1;
+}

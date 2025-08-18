@@ -137,11 +137,29 @@
                     "Bottom button"
                     [:ty-tooltip {:content "Another tooltip down here"}]]]]]]})])
 
+(defn basic-popup-test []
+  [:div
+   (demo-row
+    {:title "Basic Popup Test (Always Visible)"
+     :children [[:div
+                 [:p.mb-4 "Testing minimal popup - fixed position, always visible:"]
+                 [:ty-popup
+                  [:div
+                   [:h4.font-bold.mb-2 "Hello from Popup!"]
+                   [:p "This popup is always visible and centered on screen."]
+                   [:p.text-sm.text-gray-600.mt-2 "Next we'll add positioning..."]]]]]})])
+
 (defn popups-view []
   [:div
    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2 "Popup Components"]
    [:p.text-gray-600.dark:text-gray-400.mb-8
     "Floating UI components for tooltips, dropdowns, and popovers."]
+
+   ;; Basic popup test section
+   [:section.mb-12
+    [:h2.text-2xl.font-semibold.text-gray-800.dark:text-gray-200.mb-6 "Basic Popup Test"]
+    [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.mb-6
+     (basic-popup-test)]]
 
    ;; Tooltips section
    [:section.mb-12

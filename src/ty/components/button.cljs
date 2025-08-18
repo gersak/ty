@@ -38,8 +38,8 @@
          (when class (str " " class)))))
 
 (defn render! [^js el]
-  (let [attrs (button-attributes el)
-        {:keys [disabled label]} attrs
+  (let [{:keys [disabled label]
+         :as attrs} (button-attributes el)
         root (wcs/ensure-shadow el)
         ;; Check if we already have button element
         button-el (.querySelector root "button")]
@@ -56,7 +56,7 @@
         (set! (.-className button-el) (build-class-list attrs))
         ;; Update label in the text span if it exists
         (when-let [text-span (.querySelector button-el ".button-text")]
-          (set! (.-textContent text-span) (or label (.-textContent el)))))
+          (when label (set! (.-textContent text-span) label))))
       ;; Create new button structure
       (let [new-button (js/document.createElement "button")
             start-slot (js/document.createElement "slot")

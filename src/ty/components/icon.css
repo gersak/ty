@@ -1,13 +1,20 @@
 :host {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   line-height: 0;
   /* Default size - 1em to inherit from parent font-size */
   width: 1em;
   height: 1em;
+  /* Ensure minimum size when in slots */
+  min-width: 1em;
+  min-height: 1em;
   /* Ensure the icon inherits text color */
   color: inherit;
   /* Smooth transitions for color changes */
   transition: color var(--ty-transition-fast);
+  /* Ensure proper sizing in flex contexts */
+  flex-shrink: 0;
 }
 
 /* The SVG element inside shadow DOM */
@@ -16,7 +23,12 @@
   height: 100%;
   display: block;
   /* Ensure paths use currentColor */
-  /* fill: currentColor; */
+  fill: currentColor;
+}
+
+/* When used in slots, ensure proper display */
+:host([slot]) {
+  display: inline-flex;
 }
 
 /* Size variants via CSS classes on the host */

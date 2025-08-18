@@ -1,0 +1,77 @@
+/* Tooltip host element - display contents to not affect layout */
+:host {
+  display: contents;
+}
+
+/* Tooltip container - positioned element (mirrors popup structure) */
+#tooltip-container {
+  position: fixed;
+  top: var(--y, 0px);
+  left: var(--x, 0px);
+  z-index: var(--ty-z-tooltip, 9999);
+
+  /* Hidden by default */
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 200ms, visibility 200ms;
+
+  /* Prevent interaction */
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* When open */
+#tooltip-container.open {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Default tooltip content styles */
+#tooltip-container {
+  /* Base styles */
+  background: var(--ty-tooltip-bg, #333);
+  color: var(--ty-tooltip-color, white);
+  padding: var(--ty-tooltip-padding, 6px 10px);
+  border-radius: var(--ty-tooltip-radius, 4px);
+  max-width: var(--ty-tooltip-max-width, 250px);
+  font-size: var(--ty-tooltip-font-size, 12px);
+  line-height: 1.5;
+}
+
+/* Content slot */
+#tooltip-container ::slotted(*) {
+  /* Ensure slotted content inherits styles */
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Variants */
+#tooltip-container[data-variant="dark"] {
+  background: #333;
+  color: white;
+}
+
+#tooltip-container[data-variant="light"] {
+  background: white;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+}
+
+/* Semantic variants */
+#tooltip-container[data-variant="positive"] {
+  background: var(--ty-color-positive, #10b981);
+  color: white;
+}
+
+#tooltip-container[data-variant="negative"] {
+  background: var(--ty-color-negative, #ef4444);
+  color: white;
+}
+
+#tooltip-container[data-variant="important"] {
+  background: var(--ty-color-important, #3b82f6);
+  color: white;
+}

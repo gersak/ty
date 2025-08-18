@@ -1,10 +1,10 @@
 (ns ty.components.icon
   (:require
-   [clojure.string :as str]
-   [clojure.set :as set]
-   [ty.css :refer [ensure-styles!]]
-   [ty.icons :as icons]
-   [ty.shim :as wcs])
+    [clojure.set :as set]
+    [clojure.string :as str]
+    [ty.css :refer [ensure-styles!]]
+    [ty.icons :as icons]
+    [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load icon styles from icon.css
@@ -86,12 +86,12 @@
            (fn [_ _ old-icons new-icons]
              ;; Find which icons changed
              (let [changed-icons (reduce-kv
-                                  (fn [acc k v]
-                                    (if (not= (get old-icons k) v)
-                                      (conj acc k)
-                                      acc))
-                                  #{}
-                                  new-icons)]
+                                   (fn [acc k v]
+                                     (if (not= (get old-icons k) v)
+                                       (conj acc k)
+                                       acc))
+                                   #{}
+                                   new-icons)]
                ;; Re-render components watching changed icons
                (doseq [[_ {:keys [element icon-name]}] @watchers]
                  (when (contains? changed-icons icon-name)

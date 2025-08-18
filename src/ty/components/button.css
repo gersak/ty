@@ -26,14 +26,13 @@ button {
 
 /* Slot styling */
 ::slotted(*) {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
 }
 
 /* Ensure icons in slots are sized appropriately */
-::slotted([slot="start"]),
-::slotted([slot="end"]) {
+::slotted(ty-icon) {
   flex-shrink: 0;
   width: 1.2em;
   height: 1.2em;

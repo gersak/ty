@@ -1,6 +1,7 @@
 (ns ty.core
   (:require
    [ty.components.button]
+   [ty.components.checkbox]
    [ty.components.icon]
    [ty.components.popup]
    [ty.components.tooltip]))

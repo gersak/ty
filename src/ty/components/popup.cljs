@@ -1,6 +1,6 @@
 (ns ty.components.popup
-  "Popup component with self-positioning capabilities.
-   Positions itself relative to an anchor element."
+  "Popup positioning primitive.
+   Handles positioning of floating elements relative to slotted anchors."
   (:require [ty.css :refer [ensure-styles!]]
             [ty.positioning :as pos]
             [ty.shim :as wcs])
@@ -18,9 +18,7 @@
   {:open (wcs/parse-bool-attr el "open")
    :placement (or (wcs/attr el "placement") "bottom")
    :offset (or (wcs/parse-int-attr el "offset") 8)
-   :flip (wcs/parse-bool-attr el "flip")
-   :close-on-click-outside (wcs/parse-bool-attr el "close-on-click-outside")
-   :close-on-escape (wcs/parse-bool-attr el "close-on-escape")})
+   :flip (wcs/parse-bool-attr el "flip")})
 
 (defn get-anchor-element
   "Get the slotted anchor element"
@@ -50,11 +48,11 @@
                           [:bottom :top :right :left])
             ;; Use positioning engine to find best position
             position-data (pos/find-best-position
-                            {:target-el anchor
-                             :floating-el popup
-                             :preferences preferences
-                             :offset offset
-                             :padding 8})
+                           {:target-el anchor
+                            :floating-el popup
+                            :preferences preferences
+                            :offset offset
+                            :padding 8})
             {:keys [x y]} position-data]
         ;; Update CSS variables
         (.setProperty (.-style el) "--x" (str x "px"))
@@ -67,16 +65,10 @@
     (cleanup-fn)
     (.delete cleanup-fns el)))
 
-(defn close-popup!
-  "Close the popup by removing open attribute"
-  [^js el]
-  (.removeAttribute el "open"))
-
 (defn setup-auto-update!
   "Setup observers and listeners for auto-updating position"
   [^js el ^js shadow-root]
-  (let [{:keys [close-on-click-outside close-on-escape]} (popup-attributes el)
-        anchor (get-anchor-element shadow-root)
+  (let [anchor (get-anchor-element shadow-root)
         popup (get-popup-content shadow-root)
         ;; Debounced update function
         update-fn (let [timeout-id (atom nil)]
@@ -85,10 +77,10 @@
                         (js/clearTimeout @timeout-id))
                       (reset! timeout-id
                               (js/setTimeout
-                                #(do
-                                   (reset! timeout-id nil)
-                                   (update-position! el shadow-root))
-                                10))))
+                               #(do
+                                  (reset! timeout-id nil)
+                                  (update-position! el shadow-root))
+                               10))))
         ;; ResizeObserver for anchor and popup
         resize-observer (js/ResizeObserver. update-fn)
         ;; Scroll listener with requestAnimationFrame
@@ -97,41 +89,14 @@
                          (when-not @scroll-raf-id
                            (reset! scroll-raf-id
                                    (js/requestAnimationFrame
-                                     #(do
-                                        (reset! scroll-raf-id nil)
-                                        (update-position! el shadow-root))))))
-        ;; Click outside handler
-        click-outside-handler (fn [e]
-                                (when close-on-click-outside
-                                  (let [click-target (.-target e)]
-                                    ;; Check if click is outside popup and anchor
-                                    (when-not (or (.contains el click-target)
-                                                  (and anchor (.contains anchor click-target))
-                                                  (and popup (.contains popup click-target)))
-                                      ;; Small delay to prevent immediate close on open
-                                      (js/setTimeout #(close-popup! el) 10)))))
-        ;; Escape key handler
-        escape-handler (fn [e]
-                         (when (and close-on-escape
-                                    (= (.-key e) "Escape"))
-                           (.preventDefault e)
-                           (close-popup! el)))
-        ;; Touch handler for mobile
-        touch-handler (fn [e]
-                        (when close-on-click-outside
-                          (let [touch-target (.. e -touches (item 0) -target)]
-                            (when-not (or (.contains el touch-target)
-                                          (and anchor (.contains anchor touch-target))
-                                          (and popup (.contains popup touch-target)))
-                              (js/setTimeout #(close-popup! el) 10)))))
+                                    #(do
+                                       (reset! scroll-raf-id nil)
+                                       (update-position! el shadow-root))))))
         ;; Cleanup function
         cleanup (fn []
                   (.disconnect resize-observer)
                   (js/removeEventListener "scroll" scroll-handler true)
                   (js/removeEventListener "resize" update-fn)
-                  (js/removeEventListener "mousedown" click-outside-handler true)
-                  (js/removeEventListener "touchstart" touch-handler true)
-                  (js/removeEventListener "keydown" escape-handler true)
                   (when @scroll-raf-id
                     (js/cancelAnimationFrame @scroll-raf-id)))]
 
@@ -146,15 +111,6 @@
 
     ;; Listen for window resize
     (js/addEventListener "resize" update-fn)
-
-    ;; Listen for click outside (use mousedown for better UX)
-    (when close-on-click-outside
-      (js/addEventListener "mousedown" click-outside-handler true)
-      (js/addEventListener "touchstart" touch-handler true))
-
-    ;; Listen for escape key
-    (when close-on-escape
-      (js/addEventListener "keydown" escape-handler true))
 
     ;; Store cleanup function
     (.set cleanup-fns el cleanup)))
@@ -196,7 +152,7 @@
       (cleanup-auto-update! el))))
 
 (wcs/define! "ty-popup"
-  {:observed [:open :placement :offset :flip :close-on-click-outside :close-on-escape]
+  {:observed [:open :placement :offset :flip]
    :connected render!
    :disconnected cleanup-auto-update!
    :attr (fn [^js el attr-name _old new]

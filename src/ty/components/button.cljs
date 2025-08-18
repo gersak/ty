@@ -52,15 +52,11 @@
       ;; Update existing button
       (do
         (set! (.-disabled button-el) disabled)
-        ;; Set classes based on attributes
-        (set! (.-className button-el) (build-class-list attrs))
-        ;; Update label in the text span if it exists
-        (when-let [text-span (.querySelector button-el ".button-text")]
-          (when label (set! (.-textContent text-span) label))))
+        (set! (.-className button-el) (build-class-list attrs)))
       ;; Create new button structure
       (let [new-button (js/document.createElement "button")
             start-slot (js/document.createElement "slot")
-            text-span (js/document.createElement "span")
+            text-slot (js/document.createElement "slot")
             end-slot (js/document.createElement "slot")]
 
         ;; Set button properties
@@ -69,13 +65,13 @@
 
         ;; Configure slots and text
         (set! (.-name start-slot) "start")
-        (set! (.-className text-span) "button-text")
-        (set! (.-textContent text-span) (or label (.-textContent el)))
+        (set! (.-className start-slot) "start")
         (set! (.-name end-slot) "end")
+        (set! (.-className end-slot) "end")
 
         ;; Build button structure
         (.appendChild new-button start-slot)
-        (.appendChild new-button text-span)
+        (.appendChild new-button text-slot)
         (.appendChild new-button end-slot)
 
         ;; Add click event listener

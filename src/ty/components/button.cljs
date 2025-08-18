@@ -18,23 +18,27 @@
    :size (wcs/attr el "size")
    :filled (wcs/parse-bool-attr el "filled")
    :outlined (wcs/parse-bool-attr el "outlined")
-   :accent (wcs/parse-bool-attr el "accent")})
+   :accent (wcs/parse-bool-attr el "accent")
+   :pill (wcs/parse-bool-attr el "pill")
+   :action (wcs/parse-bool-attr el "action")})
 
 (defn build-class-list
   "Build class list from attributes"
-  [{:keys [flavor size filled outlined accent class]}]
+  [{:keys [flavor size filled outlined accent pill action class]}]
   (str/trim
     (str (or flavor "neutral")
          " "
          (or size "md")
          " "
-         ;; Appearance logic
+        ;; Appearance logic
          (cond
            accent "accent"
            (and filled outlined) "filled-outlined"
            filled "filled"
            outlined "outlined"
            :else "plain")
+         (when pill " pill")
+         (when action " action")
          (when class (str " " class)))))
 
 (defn render! [^js el]
@@ -88,7 +92,7 @@
     el))
 
 (wcs/define! "ty-button"
-  {:observed [:flavor :disabled :label :class :size :filled :outlined :accent]
+  {:observed [:flavor :disabled :label :class :size :filled :outlined :accent :pill :action]
    ;; No need for props - we read directly from attributes
    :connected render!
    :attr (fn [^js el _attr-name _old _new]

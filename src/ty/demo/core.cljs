@@ -94,14 +94,14 @@
        :else "Ty Components")]
     [:div.flex.items-center.gap-4
      ;; User info / auth toggle for testing
-     [:button.text-sm.px-3.py-1.rounded.bg-gray-200.dark:bg-gray-700
+     [:button.text-sm.px-3.py-1.rounded.bg-gray-200.dark:bg-gray-700.dark:text-gray-200
       {:on {:click #(if (:user/roles @state)
                       (swap! state dissoc :user/roles)
                       (swap! state assoc :user/roles #{:admin}))}}
       (if (:user/roles @state)
         "Logout"
         "Login as Admin")]
-     [:button.p-2.rounded-md.bg-gray-100.dark:bg-gray-700.hover:bg-gray-200.dark:hover:bg-gray-600.transition-colors
+     [:button.flex.items-center.justify-center.w-8.h-8.rounded-md.bg-gray-100.dark:bg-gray-700.hover:bg-gray-200.dark:hover:bg-gray-600.transition-colors.dark:text-gray-200
       {:on {:click toggle-theme!}}
       [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
                  :size "md"}]]]]])

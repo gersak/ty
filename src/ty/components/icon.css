@@ -23,7 +23,7 @@
   height: 100%;
   display: block;
   /* Ensure paths use currentColor */
-  fill: currentColor;
+  /* fill: currentColor; */
 }
 
 /* When used in slots, ensure proper display */

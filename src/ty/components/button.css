@@ -14,7 +14,6 @@ button {
   font-size: var(--ty-font-base);
   font-weight: var(--ty-font-semibold);
   line-height: var(--ty-line-height-normal);
-  border-radius: var(--ty-radius-md);
   cursor: pointer;
   user-select: none;
   transition: var(--ty-transition-all);
@@ -22,6 +21,10 @@ button {
   background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral);
   border: 1px solid var(--ty-border-neutral);
+}
+
+button:not(.pill) {
+  border-radius: var(--ty-radius-md);
 }
 
 /* Slot styling */
@@ -44,10 +47,10 @@ button {
 }
 
 /* Adjust gap when slots are empty */
-slot[name="start"]:empty,
-slot[name="end"]:empty {
-  display: none;
-}
+/* slot[name="start"]:empty, */
+/* slot[name="end"]:empty { */
+/*   display: none; */
+/* } */
 
 /* Base interaction states */
 button:hover:not(:disabled) {
@@ -108,6 +111,73 @@ button.xl {
 
 /* ===== APPEARANCE MODIFIERS ===== */
 
+/* ===== PILL MODIFIER ===== */
+
+/* Base pill style */
+button.pill {
+  border-radius: 9999px;
+  /* Adjust horizontal padding for better pill shape */
+  padding-left: 1.25em;
+  padding-right: 1.25em;
+}
+
+/* Size-specific pill adjustments */
+button.pill.xs {
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+button.pill.sm {
+  padding-left: 1.125em;
+  padding-right: 1.125em;
+}
+
+button.pill.lg {
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+button.pill.xl {
+  padding-left: 1.75em;
+  padding-right: 1.75em;
+}
+
+/* Icon-only pill buttons (circular) */
+button.pill:has(ty-icon:only-child),
+button.pill:has(slot[name="start"]:only-child),
+button.pill:has(slot[name="end"]:only-child) {
+  /* Make it circular */
+  padding: 0;
+  aspect-ratio: 1;
+  min-width: var(--ty-size-md);
+}
+
+/* Size-specific circular pills */
+button.pill.xs:has(ty-icon:only-child) {
+  min-width: 2rem;
+  min-height: 2rem;
+}
+
+button.pill.sm:has(ty-icon:only-child) {
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+}
+
+button.pill.md:has(ty-icon:only-child) {
+  min-width: 2.5rem;
+  min-height: 2.5rem;
+}
+
+button.pill.lg:has(ty-icon:only-child) {
+  min-width: 3rem;
+  min-height: 3rem;
+}
+
+button.pill.xl:has(ty-icon:only-child) {
+  min-width: 3.5rem;
+  min-height: 3.5rem;
+}
+
 /* Accent - Full colored background with white text */
 button.accent {
   border: none;
@@ -137,6 +207,40 @@ button.plain:hover:not(:disabled) {
 }
 
 /* ===== APPEARANCE × FLAVOR COMBINATIONS ===== */
+
+/* ===== ACTION MODIFIER ===== */
+
+/* Action buttons have equal padding on all sides */
+button.action {
+  padding: var(--ty-spacing-2);
+}
+
+/* Size-specific action adjustments */
+button.action.xs {
+  padding: var(--ty-spacing-0_5);
+}
+
+button.action.sm {
+  padding: var(--ty-spacing-1);
+}
+
+button.action.md {
+  padding: var(--ty-spacing-2);
+}
+
+button.action.lg {
+  padding: var(--ty-spacing-3);
+}
+
+button.action.xl {
+  padding: var(--ty-spacing-4);
+}
+
+/* Action + Pill combination creates a perfect circle for icon buttons */
+button.action.pill:has(ty-icon:only-child) {
+  /* Already handled by pill styles, but ensure square aspect ratio */
+  padding: 0;
+}
 
 /* ----- NEUTRAL FLAVOR ----- */
 

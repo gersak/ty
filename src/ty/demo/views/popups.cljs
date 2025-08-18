@@ -250,9 +250,9 @@
    (demo-row
      {:title "Click Outside to Close"
       :children [[:div
-                  [:ty-popup (when (popup-open? :click-outside-demo)
-                               {:open true})
+                  [:ty-popup
                    {:placement "bottom"
+                    :open (popup-open? :click-outside-demo)
                     :offset "8"}
                    [:ty-button {:slot "anchor"
                                 :on {:click #(toggle-popup! :click-outside-demo)}}

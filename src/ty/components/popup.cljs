@@ -9,6 +9,9 @@
 ;; Load popup styles
 (defstyles popup-styles)
 
+;; Store cleanup functions for each popup instance
+(defonce cleanup-fns (js/WeakMap.))
+
 (defn popup-attributes
   "Read all popup attributes directly from element"
   [^js el]
@@ -55,6 +58,63 @@
         (.setProperty (.-style el) "--x" (str x "px"))
         (.setProperty (.-style el) "--y" (str y "px"))))))
 
+(defn cleanup-auto-update!
+  "Clean up all observers and listeners"
+  [^js el]
+  (when-let [cleanup-fn (.get cleanup-fns el)]
+    (cleanup-fn)
+    (.delete cleanup-fns el)))
+
+(defn setup-auto-update!
+  "Setup observers and listeners for auto-updating position"
+  [^js el ^js shadow-root]
+  (let [anchor (get-anchor-element shadow-root)
+        popup (get-popup-content shadow-root)
+        ;; Debounced update function
+        update-fn (let [timeout-id (atom nil)]
+                    (fn []
+                      (when @timeout-id
+                        (js/clearTimeout @timeout-id))
+                      (reset! timeout-id
+                              (js/setTimeout
+                                #(do
+                                   (reset! timeout-id nil)
+                                   (update-position! el shadow-root))
+                                10))))
+        ;; ResizeObserver for anchor and popup
+        resize-observer (js/ResizeObserver. update-fn)
+        ;; Scroll listener with requestAnimationFrame
+        scroll-raf-id (atom nil)
+        scroll-handler (fn []
+                         (when-not @scroll-raf-id
+                           (reset! scroll-raf-id
+                                   (js/requestAnimationFrame
+                                     #(do
+                                        (reset! scroll-raf-id nil)
+                                        (update-position! el shadow-root))))))
+        ;; Cleanup function
+        cleanup (fn []
+                  (.disconnect resize-observer)
+                  (js/removeEventListener "scroll" scroll-handler true)
+                  (js/removeEventListener "resize" update-fn)
+                  (when @scroll-raf-id
+                    (js/cancelAnimationFrame @scroll-raf-id)))]
+
+    ;; Observe anchor and popup for size changes
+    (when anchor
+      (.observe resize-observer anchor))
+    (when popup
+      (.observe resize-observer popup))
+
+    ;; Listen for scroll events (capture phase for better performance)
+    (js/addEventListener "scroll" scroll-handler true)
+
+    ;; Listen for window resize
+    (js/addEventListener "resize" update-fn)
+
+    ;; Store cleanup function
+    (.set cleanup-fns el cleanup)))
+
 (defn render! [^js el]
   (let [root (wcs/ensure-shadow el)
         existing-content (.querySelector root "#popup-container")
@@ -81,13 +141,20 @@
     (when-let [content (.querySelector root "#popup-container")]
       (set! (.-className content) (if open "open" "")))
 
-    ;; Update position when open
-    (when open
-      (update-position! el root))))
+    ;; Handle open/close state
+    (if open
+      (do
+        ;; Update position
+        (update-position! el root)
+        ;; Setup auto-update
+        (setup-auto-update! el root))
+      ;; Cleanup when closed
+      (cleanup-auto-update! el))))
 
 (wcs/define! "ty-popup"
   {:observed [:open :placement :offset :flip]
    :connected render!
+   :disconnected cleanup-auto-update!
    :attr (fn [^js el attr-name _old new]
            ;; Re-render on attribute changes
            (render! el)

@@ -18,7 +18,9 @@
   {:open (wcs/parse-bool-attr el "open")
    :placement (or (wcs/attr el "placement") "bottom")
    :offset (or (wcs/parse-int-attr el "offset") 8)
-   :flip (wcs/parse-bool-attr el "flip")})
+   :flip (wcs/parse-bool-attr el "flip")
+   :close-on-click-outside (wcs/parse-bool-attr el "close-on-click-outside")
+   :close-on-escape (wcs/parse-bool-attr el "close-on-escape")})
 
 (defn get-anchor-element
   "Get the slotted anchor element"
@@ -65,10 +67,16 @@
     (cleanup-fn)
     (.delete cleanup-fns el)))
 
+(defn close-popup!
+  "Close the popup by removing open attribute"
+  [^js el]
+  (.removeAttribute el "open"))
+
 (defn setup-auto-update!
   "Setup observers and listeners for auto-updating position"
   [^js el ^js shadow-root]
-  (let [anchor (get-anchor-element shadow-root)
+  (let [{:keys [close-on-click-outside close-on-escape]} (popup-attributes el)
+        anchor (get-anchor-element shadow-root)
         popup (get-popup-content shadow-root)
         ;; Debounced update function
         update-fn (let [timeout-id (atom nil)]
@@ -92,11 +100,38 @@
                                      #(do
                                         (reset! scroll-raf-id nil)
                                         (update-position! el shadow-root))))))
+        ;; Click outside handler
+        click-outside-handler (fn [e]
+                                (when close-on-click-outside
+                                  (let [click-target (.-target e)]
+                                    ;; Check if click is outside popup and anchor
+                                    (when-not (or (.contains el click-target)
+                                                  (and anchor (.contains anchor click-target))
+                                                  (and popup (.contains popup click-target)))
+                                      ;; Small delay to prevent immediate close on open
+                                      (js/setTimeout #(close-popup! el) 10)))))
+        ;; Escape key handler
+        escape-handler (fn [e]
+                         (when (and close-on-escape
+                                    (= (.-key e) "Escape"))
+                           (.preventDefault e)
+                           (close-popup! el)))
+        ;; Touch handler for mobile
+        touch-handler (fn [e]
+                        (when close-on-click-outside
+                          (let [touch-target (.. e -touches (item 0) -target)]
+                            (when-not (or (.contains el touch-target)
+                                          (and anchor (.contains anchor touch-target))
+                                          (and popup (.contains popup touch-target)))
+                              (js/setTimeout #(close-popup! el) 10)))))
         ;; Cleanup function
         cleanup (fn []
                   (.disconnect resize-observer)
                   (js/removeEventListener "scroll" scroll-handler true)
                   (js/removeEventListener "resize" update-fn)
+                  (js/removeEventListener "mousedown" click-outside-handler true)
+                  (js/removeEventListener "touchstart" touch-handler true)
+                  (js/removeEventListener "keydown" escape-handler true)
                   (when @scroll-raf-id
                     (js/cancelAnimationFrame @scroll-raf-id)))]
 
@@ -111,6 +146,15 @@
 
     ;; Listen for window resize
     (js/addEventListener "resize" update-fn)
+
+    ;; Listen for click outside (use mousedown for better UX)
+    (when close-on-click-outside
+      (js/addEventListener "mousedown" click-outside-handler true)
+      (js/addEventListener "touchstart" touch-handler true))
+
+    ;; Listen for escape key
+    (when close-on-escape
+      (js/addEventListener "keydown" escape-handler true))
 
     ;; Store cleanup function
     (.set cleanup-fns el cleanup)))
@@ -152,7 +196,7 @@
       (cleanup-auto-update! el))))
 
 (wcs/define! "ty-popup"
-  {:observed [:open :placement :offset :flip]
+  {:observed [:open :placement :offset :flip :close-on-click-outside :close-on-escape]
    :connected render!
    :disconnected cleanup-auto-update!
    :attr (fn [^js el attr-name _old new]

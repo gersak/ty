@@ -1,7 +1,8 @@
 (ns ty.layout
   "Dynamic layout context system using Clojure's dynamic vars.
   Provides thread-local container dimensions and responsive utilities."
-  (:require-macros [ty.layout :refer [with-container with-window]]))
+  (:require [ty.components.resize-observer :as resize-observer])
+  (:require-macros [ty.layout :refer [with-container with-window with-resize-observer]]))
 
 ;; Core dynamic var for container dimensions
 (def ^:dynamic *container*
@@ -267,11 +268,11 @@
   [element on-resize]
   (when element
     (let [observer (js/ResizeObserver.
-                     (fn [entries]
-                       (let [entry (first entries)
-                             rect (.-contentRect entry)]
-                         (on-resize {:width (.-width rect)
-                                     :height (.-height rect)}))))]
+                    (fn [entries]
+                      (let [entry (first entries)
+                            rect (.-contentRect entry)]
+                        (on-resize {:width (.-width rect)
+                                    :height (.-height rect)}))))]
       (.observe observer element)
       #(.disconnect observer))))
 
@@ -305,3 +306,11 @@
   []
   (let [{:keys [width height breakpoint orientation density]} *container*]
     (str width "x" height " " (name breakpoint) " " (name orientation))))
+
+;; ===== RESIZE OBSERVER INTEGRATION =====
+
+(defn get-element-size
+  "Get dimensions for a resize observer element by id.
+   Returns {:width number :height number} or nil."
+  [id]
+  (resize-observer/get-size id))

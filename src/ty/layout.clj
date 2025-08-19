@@ -37,3 +37,16 @@
        (ty.layout/with-container {:width width#
                                   :height height#}
          ~@body))))
+
+(defmacro with-resize-observer
+  "Bind container context from resize observer registry.
+   Gets dimensions from ty-resize-observer component with given id.
+   Usage:
+     (with-resize-observer \"my-panel\"
+       (my-component))"
+  [id & body]
+  `(if-let [{:keys [~'width ~'height]} (ty.components.resize-observer/get-size ~id)]
+     (ty.layout/with-container {:width ~'width :height ~'height}
+       ~@body)
+     ;; If no size available, execute body without container binding
+     (do ~@body)))

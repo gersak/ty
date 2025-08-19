@@ -209,7 +209,12 @@
   (add-watch context/*user* ::render
              (fn [_ _ _ _]
                (render-app!)))
+
   (add-watch layout/window-size ::render
+             (fn [_ _ _ _]
+               (render-app!)))
+
+  (add-watch context/*element-sizes* ::render
              (fn [_ _ _ _]
                (render-app!)))
 

@@ -128,7 +128,7 @@
   (let [browser-locales (.-languages js/navigator)
         {[general] false
          [specific] true} (group-by #(.includes % "-") browser-locales)]
-    (if-some [locale (or (first specific) (first general))]
+    (if-some [locale (or specific general)]
       (keyword (.replace locale "-" "_"))
       :en)))
 

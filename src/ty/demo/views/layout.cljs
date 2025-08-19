@@ -120,7 +120,7 @@
     [:div.space-y-4
      [:h3.text-lg.font-semibold "Responsive Values"]
      [:div.border.rounded
-      {:style {:fontSize font-size
+      {:style {:font-size font-size
                :padding (str padding "px")}}
       [:p "This text and padding adapt to the container size."]
       [:p.text-sm.text-gray-600.mt-2

@@ -10,7 +10,7 @@
             [ty.demo.views.icons :as icons]
             [ty.demo.views.layout :as layout-views]
             [ty.demo.views.popups :as popups]
-            [ty.layout :refer [window-size]]
+            [ty.layout :as layout]
             [ty.router :as router]))
 
 (router/link ::router/root
@@ -132,34 +132,43 @@
                  :size "md"}]]]]])
 
 (defn app []
-  [:div.h-screen.flex.bg-gray-50.dark:bg-gray-900
-   (sidebar)
-   [:div.flex-1.flex.flex-col
-    (header)
-    [:main.flex-1.overflow-auto.p-6
-     (cond
-       (router/rendered? ::home true) (home/home-view)
-       (router/rendered? ::buttons true) (buttons/buttons-view)
-       (router/rendered? ::icons true) (icons/icons-view)
-       (router/rendered? ::popups true) (popups/popups-view)
-       (router/rendered? ::i18n true) (i18n-views/i18n-view)
-       (router/rendered? ::formatting true) (formatting/formatting-view)
-       (router/rendered? ::layout true) (layout-views/layout-view)
-       (router/rendered? ::admin-dashboard true)
-       [:div.max-w-4xl.mx-auto
-        [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-4
-         "Admin Dashboard"]
-        [:p.text-gray-600.dark:text-gray-400.mb-6
-         "This page is only visible to admin users. It has the highest landing priority (100)."]
-        [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
-         [:h2.text-xl.font-semibold.mb-4 "Landing System Demo"]
-         [:p.mb-4 "Navigate to the root URL (/) to see the landing system in action:"]
-         [:ul.list-disc.list-inside.space-y-2.text-gray-600.dark:text-gray-400
-          [:li "Admin users will be redirected here (priority: 100)"]
-          [:li "Non-admin users will be redirected to Overview (priority: 10)"]
-          [:li "Try logging out and navigating to / to see the difference"]]]]
-       (router/rendered? ::theming true) [:div "Theming page - coming soon"]
-       :else [:div "404"])]]])
+  (layout/with-window
+    (let [show-sidebar? (layout/breakpoint>= :sm)
+          sidebar-width (if show-sidebar? 256 0)
+          header-height 64
+          content-padding 48] ; 24px padding on each side (p-6 = 1.5rem = 24px)
+      [:div.h-screen.flex.bg-gray-50.dark:bg-gray-900
+       (when show-sidebar? (sidebar))
+       [:div.flex-1.flex.flex-col
+        (header)
+        [:main.flex-1.overflow-auto.p-6
+         ;; Provide accurate container dimensions for the main content area
+         (layout/with-container
+           {:width (- (layout/container-width) sidebar-width content-padding)
+            :height (- (layout/container-height) header-height content-padding)}
+           (cond
+             (router/rendered? ::home true) (home/home-view)
+             (router/rendered? ::buttons true) (buttons/buttons-view)
+             (router/rendered? ::icons true) (icons/icons-view)
+             (router/rendered? ::popups true) (popups/popups-view)
+             (router/rendered? ::i18n true) (i18n-views/i18n-view)
+             (router/rendered? ::formatting true) (formatting/formatting-view)
+             (router/rendered? ::layout true) (layout-views/layout-view)
+             (router/rendered? ::admin-dashboard true)
+             [:div.max-w-4xl.mx-auto
+              [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-4
+               "Admin Dashboard"]
+              [:p.text-gray-600.dark:text-gray-400.mb-6
+               "This page is only visible to admin users. It has the highest landing priority (100)."]
+              [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+               [:h2.text-xl.font-semibold.mb-4 "Landing System Demo"]
+               [:p.mb-4 "Navigate to the root URL (/) to see the landing system in action:"]
+               [:ul.list-disc.list-inside.space-y-2.text-gray-600.dark:text-gray-400
+                [:li "Admin users will be redirected here (priority: 100)"]
+                [:li "Non-admin users will be redirected to Overview (priority: 10)"]
+                [:li "Try logging out and navigating to / to see the difference"]]]]
+             (router/rendered? ::theming true) [:div "Theming page - coming soon"]
+             :else [:div "404"]))]]])))
 
 (defn render-app! []
   (binding [context/*roles* (:user/roles @state)]
@@ -168,7 +177,6 @@
 (defn ^:dev/after-load init []
   ;; Register demo icons
   (demo-icons/register-demo-icons!)
-  (println "ICON STORE: " (keys @ty.icons/data))
 
   ;; Setup routes if not already done
   ; (when (empty? (:children (:tree @router/*router*)))
@@ -201,7 +209,7 @@
   (add-watch context/*user* ::render
              (fn [_ _ _ _]
                (render-app!)))
-  (add-watch window-size ::render
+  (add-watch layout/window-size ::render
              (fn [_ _ _ _]
                (render-app!)))
 

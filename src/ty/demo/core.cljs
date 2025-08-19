@@ -8,9 +8,9 @@
             [ty.demo.views.home :as home]
             [ty.demo.views.i18n :as i18n-views]
             [ty.demo.views.icons :as icons]
+            [ty.demo.views.layout :as layout-views]
             [ty.demo.views.popups :as popups]
-            [ty.i18n.keyword :as i18n.keyword]
-            [ty.replicant :as replicant]
+            [ty.layout :refer [window-size]]
             [ty.router :as router]))
 
 (router/link ::router/root
@@ -33,6 +33,9 @@
               {:id ::formatting
                :segment "formatting"
                :name "Formatting"}
+              {:id ::layout
+               :segment "layout"
+               :name "Layout"}
               {:id ::admin-dashboard
                :segment "admin"
                :name "Admin Dashboard"
@@ -87,6 +90,9 @@
      (nav-item {:route-id ::formatting
                 :label "Formatting"
                 :icon "hash"})
+     (nav-item {:route-id ::layout
+                :label "Layout"
+                :icon "layout"})
      (when (router/authorized? ::admin-dashboard)
        (nav-item {:route-id ::admin-dashboard
                   :label "Admin Dashboard"
@@ -107,6 +113,7 @@
        (router/rendered? ::popups true) "Popup Components"
        (router/rendered? ::i18n true) "Internationalization"
        (router/rendered? ::formatting true) "Number & Date Formatting"
+       (router/rendered? ::layout true) "Layout Context System"
        (router/rendered? ::admin-dashboard true) "Admin Dashboard"
        (router/rendered? ::theming true) "Theming & Customization"
        :else "Ty Components")]
@@ -137,6 +144,7 @@
        (router/rendered? ::popups true) (popups/popups-view)
        (router/rendered? ::i18n true) (i18n-views/i18n-view)
        (router/rendered? ::formatting true) (formatting/formatting-view)
+       (router/rendered? ::layout true) (layout-views/layout-view)
        (router/rendered? ::admin-dashboard true)
        [:div.max-w-4xl.mx-auto
         [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-4
@@ -160,6 +168,7 @@
 (defn ^:dev/after-load init []
   ;; Register demo icons
   (demo-icons/register-demo-icons!)
+  (println "ICON STORE: " (keys @ty.icons/data))
 
   ;; Setup routes if not already done
   ; (when (empty? (:children (:tree @router/*router*)))
@@ -192,8 +201,7 @@
   (add-watch context/*user* ::render
              (fn [_ _ _ _]
                (render-app!)))
-
-  (add-watch i18n.keyword/translations ::render
+  (add-watch window-size ::render
              (fn [_ _ _ _]
                (render-app!)))
 

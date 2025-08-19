@@ -7,6 +7,7 @@
             [ty.demo.views.home :as home]
             [ty.demo.views.icons :as icons]
             [ty.demo.views.popups :as popups]
+            [ty.demo.views.i18n :as i18n-views]
             [ty.router :as router]))
 
 (router/link ::router/root
@@ -23,6 +24,9 @@
               {:id ::popups
                :segment "popups"
                :name "Popups"}
+              {:id ::i18n
+               :segment "i18n"
+               :name "i18n"}
               {:id ::admin-dashboard
                :segment "admin"
                :name "Admin Dashboard"
@@ -71,6 +75,9 @@
      (nav-item {:route-id ::popups
                 :label "Popups"
                 :icon "message-square"})
+     (nav-item {:route-id ::i18n
+                :label "i18n"
+                :icon "globe"})
      (when (router/authorized? ::admin-dashboard)
        (nav-item {:route-id ::admin-dashboard
                   :label "Admin Dashboard"
@@ -89,6 +96,7 @@
        (router/rendered? ::buttons true) "Button Components"
        (router/rendered? ::icons true) "Icon Library"
        (router/rendered? ::popups true) "Popup Components"
+       (router/rendered? ::i18n true) "Internationalization"
        (router/rendered? ::admin-dashboard true) "Admin Dashboard"
        (router/rendered? ::theming true) "Theming & Customization"
        :else "Ty Components")]
@@ -117,6 +125,7 @@
        (router/rendered? ::buttons true) (buttons/buttons-view)
        (router/rendered? ::icons true) (icons/icons-view)
        (router/rendered? ::popups true) (popups/popups-view)
+       (router/rendered? ::i18n true) (i18n-views/i18n-view)
        (router/rendered? ::admin-dashboard true)
        [:div.max-w-4xl.mx-auto
         [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-4

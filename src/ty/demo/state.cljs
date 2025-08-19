@@ -8,10 +8,10 @@
 
 (defonce state
   (atom
-   (merge
-    {:theme (get-initial-theme)
-     :current-page :home
+    (merge
+      {:theme (get-initial-theme)
+       :current-page :home
      ;; Popup states for demo
-     :popup-states {}}
-    #:ty.demo.views.icons {:show-demo true
-                           :search-input ""})))
+       :popup-states {}}
+      #:ty.demo.views.icons {:show-demo true
+                             :search-input ""})))

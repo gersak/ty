@@ -8,6 +8,7 @@
             [ty.demo.views.home :as home]
             [ty.demo.views.i18n :as i18n-views]
             [ty.demo.views.icons :as icons]
+            [ty.demo.views.inputs :as inputs]
             [ty.demo.views.layout :as layout-views]
             [ty.demo.views.popups :as popups]
             [ty.layout :as layout]
@@ -21,6 +22,9 @@
               {:id ::buttons
                :segment "buttons"
                :name "Buttons"}
+              {:id ::inputs
+               :segment "inputs"
+               :name "Inputs"}
               {:id ::icons
                :segment "icons"
                :name "Icons"}
@@ -78,6 +82,9 @@
      (nav-item {:route-id ::buttons
                 :label "Buttons"
                 :icon "click"})
+     (nav-item {:route-id ::inputs
+                :label "Inputs"
+                :icon "type"})
      (nav-item {:route-id ::icons
                 :label "Icons"
                 :icon "image"})
@@ -109,6 +116,7 @@
      (cond
        (router/rendered? ::home true) "Welcome to Ty"
        (router/rendered? ::buttons true) "Button Components"
+       (router/rendered? ::inputs true) "Input Components"
        (router/rendered? ::icons true) "Icon Library"
        (router/rendered? ::popups true) "Popup Components"
        (router/rendered? ::i18n true) "Internationalization"
@@ -149,6 +157,7 @@
            (cond
              (router/rendered? ::home true) (home/home-view)
              (router/rendered? ::buttons true) (buttons/buttons-view)
+             (router/rendered? ::inputs true) (inputs/inputs-view)
              (router/rendered? ::icons true) (icons/icons-view)
              (router/rendered? ::popups true) (popups/popups-view)
              (router/rendered? ::i18n true) (i18n-views/i18n-view)

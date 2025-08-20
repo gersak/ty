@@ -2,10 +2,11 @@
   (:require
    [ty.components.button]
    [ty.components.icon]
+   [ty.components.input]
    [ty.components.popup]
    [ty.components.resize-observer]
    [ty.components.tooltip]
-    ;; Include i18n namespaces
+     ;; Include i18n namespaces
    [ty.i18n :as i18n]
    [ty.i18n.keyword]
    [ty.i18n.number]

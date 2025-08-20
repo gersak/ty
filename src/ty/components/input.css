@@ -1,0 +1,239 @@
+:host {
+  display: block;
+  font-family: var(--ty-font-sans);
+  width: 100%;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+  /* Consistent sizing for the container */
+}
+
+/* ===== LABEL STYLING ===== */
+
+.input-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ty-label-color);
+  margin-bottom: 6px;
+  line-height: 1.25;
+  padding-left: 12px;
+}
+
+/* Required indicator */
+.input-label.required::after {
+  content: " *";
+  color: #ef4444;
+  font-weight: 500;
+}
+
+/* ===== INPUT BASE STYLING ===== */
+
+input {
+  /* Base appearance - elegant and minimal like toddler */
+  box-sizing: border-box;
+  /* Ensure consistent sizing behavior */
+  width: 100%;
+  border: 1px solid var(--ty-input-border);
+  border-radius: 6px;
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  transition: all 0.15s ease-in-out;
+  outline: none;
+
+  /* Default size (md) - refined spacing */
+  min-height: 40px;
+  padding: 8px 12px;
+}
+
+/* Focus state - elegant blue glow like toddler */
+input:focus {
+  border-color: var(--ty-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
+  background: var(--ty-input-bg);
+}
+
+/* Hover state - subtle feedback */
+input:hover:not(:disabled):not(:focus) {
+  border-color: var(--ty-input-border-hover);
+}
+
+/* Disabled state - refined opacity */
+input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background: var(--ty-input-disabled-bg);
+  border-color: var(--ty-input-disabled-border);
+  color: var(--ty-input-disabled-color);
+}
+
+/* Placeholder styling - subtle and elegant */
+input::placeholder {
+  color: var(--ty-input-placeholder);
+  font-weight: 400;
+}
+
+/* ===== SIZE MODIFIERS ===== */
+
+/* Extra Small */
+input.xs {
+  min-height: 32px;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+/* Small */
+input.sm {
+  min-height: 36px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+/* Medium (default) */
+input.md {
+  min-height: 40px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Large */
+input.lg {
+  min-height: 44px;
+  padding: 10px 14px;
+  font-size: 16px;
+}
+
+/* Extra Large */
+input.xl {
+  min-height: 48px;
+  padding: 12px 16px;
+  font-size: 18px;
+}
+
+/* ===== SEMANTIC FLAVOR MODIFIERS ===== */
+
+/* Important - Blue theme */
+input.important {
+  border-color: #3b82f6;
+}
+
+input.important:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Positive - Green theme for success */
+input.positive {
+  border-color: #10b981;
+}
+
+input.positive:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Negative - Red theme for errors */
+input.negative {
+  border-color: #ef4444;
+}
+
+input.negative:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Exception - Yellow theme for warnings */
+input.exception {
+  border-color: #f59e0b;
+}
+
+input.exception:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Unique - Purple theme */
+input.unique {
+  border-color: #8b5cf6;
+}
+
+input.unique:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* ===== ACCESSIBILITY ENHANCEMENTS ===== */
+
+input:focus-visible {
+  outline: none;
+  /* We use box-shadow instead */
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  input {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  input {
+    transition: none;
+  }
+}
+
+/* ===== CONTAINER-AWARE RESPONSIVE BEHAVIOR ===== */
+
+/* Scale down on smaller containers using container queries */
+@container (max-width: 480px) {
+  input.lg {
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+
+  input.xl {
+    font-size: 16px;
+    padding: 10px 14px;
+    min-height: 44px;
+  }
+}
+
+@container (max-width: 320px) {
+  input.xl {
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+}
+
+/* Fallback for browsers without container query support */
+@media (max-width: 640px) {
+  input.lg {
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+
+  input.xl {
+    font-size: 16px;
+    padding: 10px 14px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  input.xl {
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 40px;
+  }
+}

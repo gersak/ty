@@ -11,8 +11,8 @@
             [ty.demo.views.icons :as icons]
             [ty.demo.views.inputs :as inputs]
             [ty.demo.views.layout :as layout-views]
-            [ty.demo.views.popups :as popups]
             [ty.demo.views.modal :as modal]
+            [ty.demo.views.popups :as popups]
             [ty.layout :as layout]
             [ty.router :as router]))
 

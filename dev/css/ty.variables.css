@@ -150,6 +150,35 @@
   --ty-border-unique: var(--ty-color-unique);
   --ty-border-neutral: var(--ty-color-neutral);
 
+
+  --ty-modal-bg: #ffffff;
+  --ty-modal-color: #111827;
+  --ty-modal-border: #e5e7eb;
+  --ty-modal-backdrop: rgba(0, 0, 0, 0.5);
+  --ty-modal-backdrop-blur: blur(2px);
+
+  /* Modal sizing */
+  --ty-modal-border-radius: 8px;
+  --ty-modal-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Size variants */
+  --ty-modal-sm-width: 300px;
+  --ty-modal-sm-min-width: 280px;
+  --ty-modal-md-width: 500px;
+  --ty-modal-md-min-width: 400px;
+  --ty-modal-lg-width: 700px;
+  --ty-modal-lg-min-width: 600px;
+  --ty-modal-xl-width: 900px;
+  --ty-modal-xl-min-width: 800px;
+  --ty-modal-full-width: 95vw;
+  --ty-modal-full-height: 95vh;
+
+  /* Animation */
+  --ty-modal-duration: 200ms;
+
+
   /* =================================================================
      NON-COLOR PROPERTIES
      Following best practices from Tailwind/Material
@@ -449,4 +478,32 @@ html[data-theme="dark"] {
   --ty-input-disabled-border: #1f2937;
   --ty-input-disabled-color: #6b7280;
   --ty-label-color: #d1d5db;
+
+  /* Modal */
+  --ty-modal-bg: var(--ty-bg-neutral-p1);
+  --ty-modal-color: var(--ty-color-neutral);
+  --ty-modal-border: #e5e7eb;
+  --ty-modal-backdrop: rgba(0, 0, 0, 0.5);
+  --ty-modal-backdrop-blur: blur(2px);
+
+  /* Modal sizing */
+  --ty-modal-border-radius: 8px;
+  --ty-modal-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Size variants */
+  --ty-modal-sm-width: 300px;
+  --ty-modal-sm-min-width: 280px;
+  --ty-modal-md-width: 500px;
+  --ty-modal-md-min-width: 400px;
+  --ty-modal-lg-width: 700px;
+  --ty-modal-lg-min-width: 600px;
+  --ty-modal-xl-width: 900px;
+  --ty-modal-xl-min-width: 800px;
+  --ty-modal-full-width: 95vw;
+  --ty-modal-full-height: 95vh;
+
+  /* Animation */
+  --ty-modal-duration: 200ms;
 }

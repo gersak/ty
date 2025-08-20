@@ -188,8 +188,7 @@
         :label "Programmatically Updated Price"
         :value "100.00"
         :placeholder "Price will be updated externally"
-        :on {:input process
-             :change process}}]
+        :on {:change process}}]
 
       [:div.flex.flex-wrap.gap-2
        [:button.px-3.py-1.bg-green-500.text-white.rounded.text-sm.hover:bg-green-600

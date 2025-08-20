@@ -73,7 +73,7 @@
                                      :maximumFractionDigits precision))]
       (case type
         "currency" (num/format-currency shadow-value currency locale)
-        "percent" (num/format-percent shadow-value locale)
+        "percent" (num/format-percent (/ shadow-value 100) locale) ; Divide by 100 for user-friendly percentage
         "compact" (num/format-compact shadow-value locale)
         "number" (num/format-number shadow-value locale options)
         (str shadow-value)))))
@@ -236,6 +236,9 @@
                                                                       :detail #js {:value (.-value (.-target e))
                                                                                    :originalEvent e}}))))))))
 
+(def required-icon
+  "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-asterisk-icon lucide-asterisk\"><path d=\"M12 6v12\"/><path d=\"M17.196 9 6.804 15\"/><path d=\"m6.804 9 10.392 6\"/></svg>")
+
 (defn render! [^js el]
   ;; Sync external changes first
   (sync-external-value! el)
@@ -254,13 +257,12 @@
     (if (and existing-label existing-input)
       ;; Update existing elements
       (do
-        ;; Update label
+        ;; Update label with required icon
         (when label
-          (set! (.-textContent existing-label) label)
-          (set! (.. existing-label -style -display) "block")
-          (if required
-            (.add (.-classList existing-label) "required")
-            (.remove (.-classList existing-label) "required")))
+          (set! (.-innerHTML existing-label)
+                (str label (when required (str " <span class=\"required-icon\">" required-icon "</span>"))))
+          (set! (.. existing-label -style -display) "flex")
+          (set! (.. existing-label -style -alignItems) "center"))
         (when-not label
           (set! (.. existing-label -style -display) "none"))
 
@@ -292,13 +294,12 @@
         ;; Set up container
         (set! (.-className container) "input-container")
 
-        ;; Set up label
+        ;; Set up label with required icon
         (set! (.-className label-el) "input-label")
         (when label
-          (set! (.-textContent label-el) label)
-          (set! (.. label-el -style -display) "block")
-          (when required
-            (.add (.-classList label-el) "required")))
+          (set! (.-innerHTML label-el)
+                (str label (when required (str " <span class=\"required-icon\">" required-icon "</span>"))))
+          (set! (.. label-el -style -display) "block"))
         (when-not label
           (set! (.. label-el -style -display) "none"))
 

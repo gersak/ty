@@ -23,11 +23,14 @@
   padding-left: 12px;
 }
 
-/* Required indicator */
-.input-label.required::after {
-  content: " *";
+/* Required indicator - using SVG icon instead of CSS */
+.required-icon {
+  display: inline-flex;
+  align-items: center;
   color: #ef4444;
-  font-weight: 500;
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
 }
 
 /* ===== ERROR MESSAGE STYLING ===== */

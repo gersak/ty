@@ -6,7 +6,6 @@
   (let [detail (.-detail event)
         value (.-value detail)
         text (.-text detail)]
-    (js/console.log "Dropdown changed:" (js-obj "value" value "text" text))
     (swap! state/state assoc :dropdown-value value)))
 
 (defn demo-row [{:keys [title description children]}]
@@ -76,6 +75,95 @@
                                          :readonly true}
                            [:option {:value "readonly-value"} "Read-only Value"]
                            [:option {:value "other"} "Other Option"]]]]})])
+
+(defn multiple-dropdowns-test []
+  [:div.demo-section
+   [:h2.demo-title "Global Dropdown Management"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "Test global dropdown behavior - opening one dropdown automatically closes others. Try opening multiple dropdowns to see this in action."]
+
+   [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
+    ;; First row
+    [:div
+     [:label.block.text-sm.font-medium.mb-2 "First Dropdown"]
+     [:ty-dropdown {:value "a1"
+                    :placeholder "Select option A..."
+                    :on {:change dropdown-event-handler}}
+      [:option {:value "a1"} "Option A1"]
+      [:option {:value "a2"} "Option A2"]
+      [:option {:value "a3"} "Option A3"]
+      [:option {:value "a4"} "Option A4"]]]
+
+    [:div
+     [:label.block.text-sm.font-medium.mb-2 "Second Dropdown"]
+     [:ty-dropdown {:value "b1"
+                    :placeholder "Select option B..."
+                    :on {:change dropdown-event-handler}}
+      [:option {:value "b1"} "Option B1"]
+      [:option {:value "b2"} "Option B2"]
+      [:option {:value "b3"} "Option B3"]
+      [:option {:value "b4"} "Option B4"]]]
+
+    [:div
+     [:label.block.text-sm.font-medium.mb-2 "Third Dropdown"]
+     [:ty-dropdown {:value "c1"
+                    :placeholder "Select option C..."
+                    :on {:change dropdown-event-handler}}
+      [:option {:value "c1"} "Option C1"]
+      [:option {:value "c2"} "Option C2"]
+      [:option {:value "c3"} "Option C3"]
+      [:option {:value "c4"} "Option C4"]]]
+
+    ;; Second row
+    [:div
+     [:label.block.text-sm.font-medium.mb-2 "Fourth Dropdown"]
+     [:ty-dropdown {:value "d1"
+                    :flavor "positive"
+                    :placeholder "Positive dropdown..."
+                    :on {:change dropdown-event-handler}}
+      [:option {:value "d1"} "Positive D1"]
+      [:option {:value "d2"} "Positive D2"]
+      [:option {:value "d3"} "Positive D3"]]]
+
+    [:div
+     [:label.block.text-sm.font-medium.mb-2 "Fifth Dropdown"]
+     [:ty-dropdown {:value "e1"
+                    :flavor "negative"
+                    :placeholder "Negative dropdown..."
+                    :on {:change dropdown-event-handler}}
+      [:option {:value "e1"} "Negative E1"]
+      [:option {:value "e2"} "Negative E2"]
+      [:option {:value "e3"} "Negative E3"]]]
+
+    [:div
+     [:label.block.text-sm.font-medium.mb-2 "Sixth Dropdown"]
+     [:ty-dropdown {:value "f1"
+                    :flavor "important"
+                    :placeholder "Important dropdown..."
+                    :on {:change dropdown-event-handler}}
+      [:option {:value "f1"} "Important F1"]
+      [:option {:value "f2"} "Important F2"]
+      [:option {:value "f3"} "Important F3"]]]]
+
+   [:div.mt-6.p-4.bg-blue-50.dark:bg-blue-900.border.border-blue-200.dark:border-blue-700.rounded
+    [:h4.text-sm.font-medium.text-blue-800.dark:text-blue-200.mb-2 "Expected Behavior:"]
+    [:ul.text-sm.text-blue-700.dark:text-blue-300.space-y-1
+     [:li "✅ Only one dropdown can be open at a time"]
+     [:li "✅ Opening a new dropdown closes any currently open dropdown"]
+     [:li "✅ Clicking outside closes the open dropdown"]
+     [:li "✅ ESC key closes the open dropdown"]
+     [:li "✅ Smooth transitions without visible position jumps"]]]
+
+   (code-snippet "<!-- Multiple dropdowns with automatic global management -->
+<ty-dropdown placeholder=\"First dropdown...\">
+  <option value=\"a1\">Option A1</option>
+</ty-dropdown>
+
+<ty-dropdown placeholder=\"Second dropdown...\">
+  <option value=\"b1\">Option B1</option>
+</ty-dropdown>
+
+<!-- Only one will be open at a time automatically -->")])
 
 (defn size-variants []
   [:div.demo-section
@@ -264,7 +352,7 @@
    [:div.mt-8
     [:h3.demo-subtitle "Viewport Edge Testing"]
     [:p.text-gray-600.dark:text-gray-400.mb-4
-     "Test smart positioning by scrolling these dropdowns near viewport edges"]
+     "Test smart positioning by scrolling these dropdowns near viewport edges. Notice how transitions are smooth without visible jumps."]
 
     [:div.h-96.overflow-auto.border.border-gray-200.dark:border-gray-700.rounded.p-4
      [:div.h-20] ; Top spacer
@@ -418,10 +506,11 @@
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
      "Dropdown Component"]
     [:p.text-lg.text-gray-600.dark:text-gray-400
-     "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, and semantic styling."]]
+     "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and semantic styling."]]
 
    [:div.space-y-12
     (basic-examples)
+    (multiple-dropdowns-test)
     (size-variants)
     (flavor-variants)
     (smart-positioning)

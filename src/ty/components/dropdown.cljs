@@ -8,8 +8,43 @@
 ;; Load dropdown styles
 (defstyles dropdown-styles)
 
+;; Global registry to track all open dropdowns
+(defonce open-dropdowns (atom #{}))
+
 ;; Store positioning cleanup functions
 (defonce position-cleanup-fns (js/WeakMap.))
+
+(declare close-dropdown!)
+
+(defn close-all-dropdowns!
+  "Close all currently open dropdowns"
+  []
+  (doseq [^js dropdown @open-dropdowns]
+    (when (and dropdown (.-tyDropdownState dropdown))
+      (let [shadow-root (.-shadowRoot dropdown)]
+        (when shadow-root
+          (close-dropdown! dropdown shadow-root))))))
+
+(defn close-other-dropdowns!
+  "Close all dropdowns except the specified one"
+  [except-dropdown]
+  (doseq [^js dropdown @open-dropdowns]
+    (when (and dropdown
+               (not= dropdown except-dropdown)
+               (.-tyDropdownState dropdown))
+      (let [shadow-root (.-shadowRoot dropdown)]
+        (when shadow-root
+          (close-dropdown! dropdown shadow-root))))))
+
+(defn register-dropdown!
+  "Register a dropdown as open"
+  [dropdown]
+  (swap! open-dropdowns conj dropdown))
+
+(defn unregister-dropdown!
+  "Unregister a dropdown"
+  [dropdown]
+  (swap! open-dropdowns disj dropdown))
 
 (defn dropdown-attributes
   "Read all dropdown attributes directly from element"
@@ -147,13 +182,14 @@
 
           ;; Store current placement for styling
           (set-component-state! el {:current-placement (:placement position)})
-
-          ;; Add placement class for potential styling differences
           (.remove (.-classList options-container) "placement-top" "placement-bottom")
-          (.add (.-classList options-container)
-                (if (clojure.string/includes? (name (:placement position)) "top")
-                  "placement-top"
-                  "placement-bottom")))
+          (let [placement-name (name (:placement position))]
+            (.add (.-classList options-container)
+                  (if (or (= placement-name "top")
+                          (= placement-name "top-start")
+                          (= placement-name "top-end"))
+                    "placement-top"
+                    "placement-bottom"))))
 
         ;; Manual positioning (original behavior)
         (do
@@ -201,6 +237,7 @@
     (.delete position-cleanup-fns el))
   (set-component-state! el {:position-cleanup nil}))
 
+
 (defn close-dropdown!
   "Close dropdown and reset state"
   [^js el ^js shadow-root]
@@ -209,6 +246,9 @@
                                         :current-placement nil})
         options-container (.querySelector shadow-root ".dropdown-options")
         chevron (.querySelector shadow-root ".dropdown-chevron")]
+
+    ;; Unregister from global registry
+    (unregister-dropdown! el)
 
     ;; Cleanup position tracking
     (cleanup-position-tracking! el)
@@ -230,25 +270,40 @@
         (set-component-state! el {:search ""})))))
 
 (defn open-dropdown!
-  "Open dropdown with smart positioning"
+  "Open dropdown with smart positioning and global management"
   [^js el ^js shadow-root]
   (let [{:keys [disabled readonly]} (dropdown-attributes el)]
     (when-not (or disabled readonly)
+      ;; Close all other dropdowns first
+      (close-other-dropdowns! el)
+
+      ;; Register this dropdown as open
+      (register-dropdown! el)
+
       (set-component-state! el {:open true})
       (let [options-container (.querySelector shadow-root ".dropdown-options")
             chevron (.querySelector shadow-root ".dropdown-chevron")]
 
         (when options-container
+          ;; Hide the dropdown initially to calculate position without visible movement
+          (set! (.. options-container -style -visibility) "hidden")
+          (set! (.. options-container -style -opacity) "0")
           (.add (.-classList options-container) "open"))
 
         (when chevron
           (.add (.-classList chevron) "open"))
 
-        ;; Apply smart positioning after opening
+        ;; Calculate and apply position while hidden, then make visible
         (js/setTimeout
           (fn []
-            (update-dropdown-position! el shadow-root)
-            (setup-position-tracking! el shadow-root))
+            (when options-container
+              ;; Calculate position while hidden
+              (update-dropdown-position! el shadow-root)
+              (setup-position-tracking! el shadow-root)
+
+              ;; Now make visible with smooth transition
+              (set! (.. options-container -style -visibility) "visible")
+              (set! (.. options-container -style -opacity) "")))
           16))))) ; Wait for CSS transition to start
 
 (defn handle-input-click!
@@ -379,7 +434,9 @@
               (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
             (.removeEventListener js/document "click" outside-handler)
             ;; Cleanup positioning
-            (cleanup-position-tracking! el)))))
+            (cleanup-position-tracking! el)
+            ;; Unregister from global registry
+            (unregister-dropdown! el)))))
 
 (defn update-input-display!
   "Update input field to show selected value"

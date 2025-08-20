@@ -5,6 +5,7 @@
             [ty.demo.icons :as demo-icons]
             [ty.demo.state :refer [state]]
             [ty.demo.views.buttons :as buttons]
+            [ty.demo.views.dropdowns :as dropdowns]
             [ty.demo.views.formatting :as formatting]
             [ty.demo.views.home :as home]
             [ty.demo.views.i18n :as i18n-views]
@@ -27,6 +28,9 @@
               {:id ::inputs
                :segment "inputs"
                :name "Inputs"}
+              {:id ::dropdowns
+               :segment "dropdowns"
+               :name "Dropdowns"}
               {:id ::icons
                :segment "icons"
                :name "Icons"}
@@ -90,6 +94,9 @@
      (nav-item {:route-id ::inputs
                 :label "Inputs"
                 :icon "type"})
+     (nav-item {:route-id ::dropdowns
+                :label "Dropdowns"
+                :icon "chevron-down"})
      (nav-item {:route-id ::icons
                 :label "Icons"
                 :icon "image"})
@@ -125,6 +132,7 @@
        (router/rendered? ::home true) "Welcome to Ty"
        (router/rendered? ::buttons true) "Button Components"
        (router/rendered? ::inputs true) "Input Components"
+       (router/rendered? ::dropdowns true) "Dropdown Components"
        (router/rendered? ::icons true) "Icon Library"
        (router/rendered? ::popups true) "Popup Components"
        (router/rendered? ::modal true) "Modal Dialogs"
@@ -167,6 +175,7 @@
              (router/rendered? ::home true) (home/home-view)
              (router/rendered? ::buttons true) (buttons/buttons-view)
              (router/rendered? ::inputs true) (inputs/inputs-view)
+             (router/rendered? ::dropdowns true) (dropdowns/render)
              (router/rendered? ::icons true) (icons/icons-view)
              (router/rendered? ::popups true) (popups/popups-view)
              (router/rendered? ::modal true) (modal/modal-view)

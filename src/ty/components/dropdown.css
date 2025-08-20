@@ -1,0 +1,313 @@
+/* Dropdown Component Styles */
+
+.dropdown-container {
+  position: relative;
+  display: block;
+}
+
+.dropdown-input {
+  /* Base styling */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  box-sizing: border-box;
+
+  /* Use CSS variables for universal theming */
+  background: var(--ty-input-bg, #ffffff);
+  color: var(--ty-input-color, #111827);
+  border: 1px solid var(--ty-input-border, #d1d5db);
+  border-radius: var(--ty-input-border-radius, 0.375rem);
+
+  /* Typography */
+  font-family: var(--ty-input-font-family, inherit);
+  font-size: var(--ty-input-font-size, 0.875rem);
+  font-weight: var(--ty-input-font-weight, 400);
+  line-height: var(--ty-input-line-height, 1.25rem);
+
+  /* Size variants */
+  padding: var(--ty-input-padding-y, 0.5rem) var(--ty-input-padding-x, 0.75rem);
+
+  /* Transitions */
+  transition: border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out,
+    background-color 0.15s ease-in-out;
+}
+
+.dropdown-input:focus {
+  outline: none;
+  border-color: var(--ty-input-border-focus, #3b82f6);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus, rgba(59, 130, 246, 0.1));
+}
+
+.dropdown-input:disabled {
+  background-color: var(--ty-input-bg-disabled, #f9fafb);
+  color: var(--ty-input-color-disabled, #6b7280);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.dropdown-input:read-only,
+.dropdown-input[readonly] {
+  background-color: var(--ty-input-bg-readonly, #f9fafb);
+  color: var(--ty-input-color-readonly, #6b7280);
+  cursor: default;
+}
+
+.dropdown-input::placeholder {
+  color: var(--ty-input-placeholder, #9ca3af);
+}
+
+/* Chevron indicator */
+.dropdown-chevron {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--ty-input-border, #6b7280);
+  pointer-events: none;
+  transition: transform 0.15s ease-in-out;
+}
+
+.dropdown-chevron.open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.dropdown-chevron svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Options container - supports both absolute and fixed positioning */
+.dropdown-options {
+  /* Default positioning (will be overridden by JavaScript) */
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+
+  background: var(--ty-dropdown-options-bg, #ffffff);
+  border: 1px solid var(--ty-dropdown-options-border, #d1d5db);
+  border-radius: var(--ty-dropdown-options-border-radius, 0.375rem);
+  box-shadow: var(--ty-dropdown-options-shadow, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition: max-height 0.2s ease-in-out,
+    opacity 0.15s ease-in-out,
+    transform 0.15s ease-in-out;
+
+  margin-top: 0.25rem;
+}
+
+.dropdown-options.open {
+  max-height: 16rem;
+  /* 256px */
+  opacity: 1;
+  transform: translateY(0);
+  overflow-y: auto;
+}
+
+/* Placement-specific styles for smart positioning */
+.dropdown-options.placement-top {
+  /* When positioned above, adjust transform and margin */
+  transform: translateY(0.5rem);
+  margin-top: 0;
+  margin-bottom: 0.25rem;
+}
+
+.dropdown-options.placement-top.open {
+  transform: translateY(0);
+}
+
+/* Enhanced shadow for fixed positioning */
+.dropdown-options[style*="position: fixed"] {
+  box-shadow: var(--ty-dropdown-options-shadow-enhanced,
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04));
+}
+
+/* Option elements styling */
+.dropdown-options ::slotted(option) {
+  display: block !important;
+  padding: 0.5rem 0.75rem;
+  color: var(--ty-dropdown-option-color, #111827);
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+  border: none;
+  background: none;
+  font-size: inherit;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.dropdown-options ::slotted(option:hover) {
+  background-color: var(--ty-dropdown-option-hover, #f3f4f6);
+}
+
+.dropdown-options ::slotted(option[highlighted]) {
+  background-color: var(--ty-dropdown-option-highlighted, #dbeafe);
+  color: var(--ty-dropdown-option-highlighted-color, #1e40af);
+}
+
+.dropdown-options ::slotted(option[selected]) {
+  background-color: var(--ty-dropdown-option-selected, #3b82f6);
+  color: var(--ty-dropdown-option-selected-color, #ffffff);
+}
+
+.dropdown-options ::slotted(option[hidden]) {
+  display: none !important;
+}
+
+/* Size variants using CSS custom properties */
+:host([size="xs"]) .dropdown-input {
+  --ty-input-padding-y: 0.25rem;
+  --ty-input-padding-x: 0.5rem;
+  --ty-input-font-size: 0.75rem;
+  --ty-input-line-height: 1rem;
+}
+
+:host([size="xs"]) .dropdown-chevron {
+  right: 0.5rem;
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+:host([size="sm"]) .dropdown-input {
+  --ty-input-padding-y: 0.375rem;
+  --ty-input-padding-x: 0.625rem;
+  --ty-input-font-size: 0.875rem;
+  --ty-input-line-height: 1.25rem;
+}
+
+:host([size="sm"]) .dropdown-chevron {
+  right: 0.625rem;
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+:host([size="md"]) .dropdown-input {
+  --ty-input-padding-y: 0.5rem;
+  --ty-input-padding-x: 0.75rem;
+  --ty-input-font-size: 0.875rem;
+  --ty-input-line-height: 1.25rem;
+}
+
+:host([size="lg"]) .dropdown-input {
+  --ty-input-padding-y: 0.625rem;
+  --ty-input-padding-x: 0.875rem;
+  --ty-input-font-size: 1rem;
+  --ty-input-line-height: 1.5rem;
+}
+
+:host([size="lg"]) .dropdown-chevron {
+  right: 0.875rem;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+:host([size="xl"]) .dropdown-input {
+  --ty-input-padding-y: 0.75rem;
+  --ty-input-padding-x: 1rem;
+  --ty-input-font-size: 1rem;
+  --ty-input-line-height: 1.5rem;
+}
+
+:host([size="xl"]) .dropdown-chevron {
+  right: 1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Flavor variants using semantic design tokens */
+:host([flavor="positive"]) .dropdown-input {
+  border-color: var(--ty-color-positive, #10b981);
+}
+
+:host([flavor="positive"]) .dropdown-input:focus {
+  border-color: var(--ty-color-positive, #10b981);
+  box-shadow: 0 0 0 3px var(--ty-color-positive-alpha, rgba(16, 185, 129, 0.1));
+}
+
+:host([flavor="negative"]) .dropdown-input {
+  border-color: var(--ty-color-negative, #ef4444);
+}
+
+:host([flavor="negative"]) .dropdown-input:focus {
+  border-color: var(--ty-color-negative, #ef4444);
+  box-shadow: 0 0 0 3px var(--ty-color-negative-alpha, rgba(239, 68, 68, 0.1));
+}
+
+:host([flavor="important"]) .dropdown-input {
+  border-color: var(--ty-color-important, #f59e0b);
+}
+
+:host([flavor="important"]) .dropdown-input:focus {
+  border-color: var(--ty-color-important, #f59e0b);
+  box-shadow: 0 0 0 3px var(--ty-color-important-alpha, rgba(245, 158, 11, 0.1));
+}
+
+:host([flavor="exception"]) .dropdown-input {
+  border-color: var(--ty-color-exception, #8b5cf6);
+}
+
+:host([flavor="exception"]) .dropdown-input:focus {
+  border-color: var(--ty-color-exception, #8b5cf6);
+  box-shadow: 0 0 0 3px var(--ty-color-exception-alpha, rgba(139, 92, 246, 0.1));
+}
+
+:host([flavor="unique"]) .dropdown-input {
+  border-color: var(--ty-color-unique, #ec4899);
+}
+
+:host([flavor="unique"]) .dropdown-input:focus {
+  border-color: var(--ty-color-unique, #ec4899);
+  box-shadow: 0 0 0 3px var(--ty-color-unique-alpha, rgba(236, 72, 153, 0.1));
+}
+
+/* Dark mode support */
+:host-context(.dark) .dropdown-input {
+  background: var(--ty-input-bg-dark, #1f2937);
+  color: var(--ty-input-color-dark, #f9fafb);
+  border-color: var(--ty-input-border-dark, #374151);
+}
+
+:host-context(.dark) .dropdown-input:focus {
+  border-color: var(--ty-input-border-focus-dark, #60a5fa);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus-dark, rgba(96, 165, 250, 0.1));
+}
+
+:host-context(.dark) .dropdown-options {
+  background: var(--ty-dropdown-options-bg-dark, #1f2937);
+  border-color: var(--ty-dropdown-options-border-dark, #374151);
+}
+
+:host-context(.dark) .dropdown-options ::slotted(option) {
+  color: var(--ty-dropdown-option-color-dark, #f9fafb);
+}
+
+:host-context(.dark) .dropdown-options ::slotted(option:hover) {
+  background-color: var(--ty-dropdown-option-hover-dark, #374151);
+}
+
+:host-context(.dark) .dropdown-options ::slotted(option[highlighted]) {
+  background-color: var(--ty-dropdown-option-highlighted-dark, #1e3a8a);
+  color: var(--ty-dropdown-option-highlighted-color-dark, #dbeafe);
+}
+
+/* Animation improvements for positioning changes */
+.dropdown-options {
+  /* Smooth transitions when position changes */
+  transition: max-height 0.2s ease-in-out,
+    opacity 0.15s ease-in-out,
+    transform 0.15s ease-in-out,
+    top 0.1s ease-out,
+    left 0.1s ease-out;
+}

@@ -1,6 +1,7 @@
 (ns ty.core
   (:require
    [ty.components.button]
+   [ty.components.dropdown]
    [ty.components.icon]
    [ty.components.input]
    [ty.components.modal]

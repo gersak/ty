@@ -162,8 +162,8 @@
       (when-let [selected-option (first (filter #(= (or (.-value (:element %)) (.-textContent (:element %))) value)
                                                 (map get-option-data (get-options shadow-root))))]
         (js/setTimeout
-          #(scroll-option-into-view! (:element selected-option) options-container)
-          100)))))
+         #(scroll-option-into-view! (:element selected-option) options-container)
+         100)))))
 
 (defn highlight-option!
   "Highlight option at index and scroll into view"
@@ -200,94 +200,77 @@
     (.dispatchEvent el event)))
 
 (defn update-dropdown-position!
-  "Update dropdown position using positioning system"
+  "Update dropdown dialog position"
   [^js el ^js shadow-root]
   (let [input (.querySelector shadow-root ".dropdown-input")
+        dialog (.querySelector shadow-root ".dropdown-dialog")
         options-container (.querySelector shadow-root ".dropdown-options")
-        {:keys [placement auto-placement offset]} (dropdown-attributes el)
         {:keys [open]} (get-component-state el)]
 
-    (when (and open input options-container)
-      ;; Use smart positioning if auto-placement is enabled
-      (if auto-placement
-        ;; Smart positioning with collision detection
-        (let [preferences (get pos/placement-preferences :dropdown)
-              position (pos/find-best-position
-                         {:target-el input
-                          :floating-el options-container
-                          :preferences preferences
-                          :offset offset
-                          :padding 8})]
-          ;; Apply calculated position
-          (set! (.. options-container -style -position) "fixed")
-          (set! (.. options-container -style -top) (str (:y position) "px"))
-          (set! (.. options-container -style -left) (str (:x position) "px"))
-          (set! (.. options-container -style -width) (str (.-offsetWidth input) "px"))
+    (when (and open input dialog options-container)
+      (let [input-rect (.getBoundingClientRect input)
+            input-top (.-top input-rect)
+            input-left (.-left input-rect)
+            input-width (.-width input-rect)
+            input-height (.-height input-rect)
+            viewport-height (.-innerHeight js/window)
+            options-height (.-offsetHeight options-container)
 
-          ;; Store current placement for styling
-          (set-component-state! el {:current-placement (:placement position)})
-          (.remove (.-classList options-container) "placement-top" "placement-bottom")
-          (let [placement-name (name (:placement position))]
-            (.add (.-classList options-container)
-                  (if (or (= placement-name "top")
-                          (= placement-name "top-start")
-                          (= placement-name "top-end"))
-                    "placement-top"
-                    "placement-bottom"))))
+            ;; Smart positioning: flip up if not enough space below
+            space-below (- viewport-height (+ input-top input-height))
+            space-above input-top
+            position-below (>= space-below (+ options-height 8))]
 
-        ;; Manual positioning (original behavior)
-        (do
-          (set! (.. options-container -style -position) "absolute")
-          (set! (.. options-container -style -top)
-                (if (clojure.string/includes? (name placement) "top")
-                  (str (- 0 (.-offsetHeight options-container) offset) "px")
-                  "100%"))
-          (set! (.. options-container -style -left) "0")
-          (set! (.. options-container -style -width) "100%"))))))
+        ;; Position dialog
+        (if position-below
+          (set! (.. dialog -style -top) (str (+ input-top input-height 4) "px"))
+          (set! (.. dialog -style -top) (str (- input-top options-height 4) "px")))
+
+        (set! (.. dialog -style -left) (str input-left "px"))
+        (set! (.. options-container -style -width) (str input-width "px"))
+
+        ;; Add placement class for styling
+        (.remove (.-classList options-container) "placement-top" "placement-bottom")
+        (.add (.-classList options-container)
+              (if position-below "placement-bottom" "placement-top"))))))
 
 (defn setup-position-tracking!
-  "Setup automatic position updates when dropdown is open"
+  "Setup automatic position updates when dropdown dialog is open"
   [^js el ^js shadow-root]
-  (let [input (.querySelector shadow-root ".dropdown-input")
-        options-container (.querySelector shadow-root ".dropdown-options")
-        {:keys [auto-placement]} (dropdown-attributes el)]
+  (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
+    (when dialog
+      ;; Add scroll and resize listeners to reposition dialog
+      (let [update-position (fn [] (update-dropdown-position! el shadow-root))
+            scroll-handler (fn [_] (update-position))
+            resize-handler (fn [_] (update-position))]
 
-    (when (and auto-placement input options-container)
-      ;; Cleanup any existing position tracking
-      (when-let [cleanup (.get position-cleanup-fns el)]
-        (cleanup))
+        ;; Store handlers for cleanup
+        (set! (.-tyDropdownScrollHandler el) scroll-handler)
+        (set! (.-tyDropdownResizeHandler el) resize-handler)
 
-      ;; Setup new auto-update positioning
-      (let [cleanup (pos/auto-update
-                      input
-                      options-container
-                      (fn [position]
-                        ;; Update position on scroll/resize
-                        (set! (.. options-container -style -top) (str (:y position) "px"))
-                        (set! (.. options-container -style -left) (str (:x position) "px")))
-                      {:preferences (get pos/placement-preferences :dropdown)
-                       :offset (:offset (dropdown-attributes el))
-                       :padding 8})]
-
-        ;; Store cleanup function
-        (.set position-cleanup-fns el cleanup)
-        (set-component-state! el {:position-cleanup cleanup})))))
+        ;; Add listeners
+        (.addEventListener js/window "scroll" scroll-handler #js {:passive true})
+        (.addEventListener js/window "resize" resize-handler #js {:passive true})
+        (.addEventListener js/document "scroll" scroll-handler #js {:passive true})))))
 
 (defn cleanup-position-tracking!
   "Cleanup position tracking"
   [^js el]
-  (when-let [cleanup (.get position-cleanup-fns el)]
-    (cleanup)
-    (.delete position-cleanup-fns el))
-  (set-component-state! el {:position-cleanup nil}))
+  (when-let [scroll-handler (.-tyDropdownScrollHandler el)]
+    (.removeEventListener js/window "scroll" scroll-handler)
+    (.removeEventListener js/document "scroll" scroll-handler)
+    (set! (.-tyDropdownScrollHandler el) nil))
+  (when-let [resize-handler (.-tyDropdownResizeHandler el)]
+    (.removeEventListener js/window "resize" resize-handler)
+    (set! (.-tyDropdownResizeHandler el) nil)))
 
 (defn close-dropdown!
-  "Close dropdown and reset state"
+  "Close dropdown dialog and reset state"
   [^js el ^js shadow-root]
   (let [state (set-component-state! el {:open false
                                         :highlighted-index -1
                                         :current-placement nil})
-        options-container (.querySelector shadow-root ".dropdown-options")
+        dialog (.querySelector shadow-root ".dropdown-dialog")
         chevron (.querySelector shadow-root ".dropdown-chevron")]
 
     ;; Unregister from global registry
@@ -296,13 +279,9 @@
     ;; Cleanup position tracking
     (cleanup-position-tracking! el)
 
-    (when options-container
-      (.remove (.-classList options-container) "open")
-      ;; Reset positioning styles
-      (set! (.. options-container -style -position) "")
-      (set! (.. options-container -style -top) "")
-      (set! (.. options-container -style -left) "")
-      (set! (.. options-container -style -width) ""))
+    ;; Close dialog
+    (when (and dialog (.-open dialog))
+      (.close dialog))
 
     (when chevron
       (.remove (.-classList chevron) "open"))
@@ -313,7 +292,7 @@
         (set-component-state! el {:search ""})))))
 
 (defn open-dropdown!
-  "Open dropdown with smart positioning and global management"
+  "Open dropdown dialog with smart positioning and global management"
   [^js el ^js shadow-root]
   (let [{:keys [disabled readonly searchable value]} (dropdown-attributes el)]
     (when-not (or disabled readonly)
@@ -332,50 +311,46 @@
             ;; Find the index of the currently selected option for smart keyboard navigation
             selected-index (if (and value (seq filtered))
                              (first (keep-indexed
-                                      (fn [idx option]
-                                        (when (= (:value option) value) idx))
-                                      filtered))
+                                     (fn [idx option]
+                                       (when (= (:value option) value) idx))
+                                     filtered))
                              -1)]
 
         (set-component-state! el {:open true
                                   :filtered-options filtered
                                   :highlighted-index selected-index}))
 
-      (let [options-container (.querySelector shadow-root ".dropdown-options")
-            chevron (.querySelector shadow-root ".dropdown-chevron")]
+      (let [dialog (.querySelector shadow-root ".dropdown-dialog")
+            options-container (.querySelector shadow-root ".dropdown-options")
+            chevron (.querySelector shadow-root ".dropdown-chevron")
+            input (.querySelector shadow-root ".dropdown-input")]
 
         ;; For non-searchable dropdowns, ensure all options are visible
         (when-not searchable
           (let [options (map get-option-data (get-options shadow-root))]
             (update-option-visibility! options options)))
 
-        (when options-container
-          ;; Hide the dropdown initially to calculate position without visible movement
-          (set! (.. options-container -style -visibility) "hidden")
-          (set! (.. options-container -style -opacity) "0")
-          (.add (.-classList options-container) "open"))
-
         (when chevron
           (.add (.-classList chevron) "open"))
 
-        ;; Calculate and apply position while hidden, then make visible
-        (js/setTimeout
-          (fn []
-            (when options-container
-              ;; Calculate position while hidden
-              (update-dropdown-position! el shadow-root)
-              (setup-position-tracking! el shadow-root)
+        ;; Open dialog and position it
+        (when dialog
+          (.showModal dialog)
 
-              ;; Now make visible with smooth transition
-              (set! (.. options-container -style -visibility) "visible")
-              (set! (.. options-container -style -opacity) "")
+          ;; Initial positioning
+          (update-dropdown-position! el shadow-root)
 
-              ;; Highlight the selected option if any, and scroll to it
-              (let [{:keys [highlighted-index filtered-options]} (get-component-state el)]
-                (when (>= highlighted-index 0)
-                  (highlight-option! filtered-options highlighted-index shadow-root))
-                (scroll-to-selected-option! el shadow-root))))
-          16))))) ; Wait for CSS transition to start
+          ;; Setup position tracking for scroll/resize
+          (setup-position-tracking! el shadow-root)
+
+          ;; Highlight the selected option if any, and scroll to it
+          (js/setTimeout
+           (fn []
+             (let [{:keys [highlighted-index filtered-options]} (get-component-state el)]
+               (when (>= highlighted-index 0)
+                 (highlight-option! filtered-options highlighted-index shadow-root))
+               (scroll-to-selected-option! el shadow-root)))
+           50)))))) ; Wait for CSS transition to start
 
 (defn handle-input-click!
   "Handle click on input to toggle dropdown"
@@ -400,9 +375,9 @@
             {:keys [value]} (dropdown-attributes el)
             new-highlighted-index (if (and value (seq filtered))
                                     (first (keep-indexed
-                                             (fn [idx option]
-                                               (when (= (:value option) value) idx))
-                                             filtered))
+                                            (fn [idx option]
+                                              (when (= (:value option) value) idx))
+                                            filtered))
                                     -1)]
         (set-component-state! el {:search search
                                   :filtered-options filtered
@@ -565,10 +540,12 @@
                  "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
                  "    </svg>"
                  "  </div>"
+                 "</div>"
+                 "<dialog class=\"dropdown-dialog\">"
                  "  <div class=\"dropdown-options\">"
                  "    <slot></slot>"
                  "  </div>"
-                 "</div>"))
+                 "</dialog>"))
 
       ;; Setup event listeners
       (setup-event-listeners! el root))

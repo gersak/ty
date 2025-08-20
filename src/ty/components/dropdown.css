@@ -80,66 +80,50 @@
   height: 100%;
 }
 
-/* Options container - improved positioning and transitions */
-.dropdown-options {
-  /* Default positioning (will be overridden by JavaScript) */
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  z-index: 50;
+/* Dialog element for dropdown - auto-managed z-index */
+.dropdown-dialog {
+  position: fixed;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  
+  /* Dialog automatically handles z-index stacking */
+  /* No need to set z-index - browser manages dialog layer */
+}
 
+/* Remove default dialog backdrop */
+.dropdown-dialog::backdrop {
+  display: none;
+}
+
+/* Options container inside dialog */
+.dropdown-options {
   background: var(--ty-dropdown-options-bg, #ffffff);
   border: 1px solid var(--ty-dropdown-options-border, #d1d5db);
   border-radius: var(--ty-dropdown-options-border-radius, 0.375rem);
   box-shadow: var(--ty-dropdown-options-shadow, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
 
-  /* Initial state - collapsed and hidden */
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transform: translateY(-0.5rem);
-  
-  /* Smooth transitions only for opening/closing, not positioning */
-  transition: max-height 0.2s ease-in-out,
-    opacity 0.15s ease-in-out,
-    transform 0.15s ease-in-out;
-
-  margin-top: 0.25rem;
-}
-
-.dropdown-options.open {
+  /* Sizing and scrolling */
   max-height: 16rem; /* 256px */
-  opacity: 1;
-  transform: translateY(0);
   overflow-y: auto;
   
   /* Smooth scrolling for keyboard navigation */
   scroll-behavior: smooth;
-}
-
-/* Placement-specific styles for smart positioning */
-.dropdown-options.placement-top {
-  /* When positioned above, adjust transform and add more spacing */
-  transform: translateY(0.5rem);
-  margin-top: 0;
-  margin-bottom: 0.75rem; /* Increased from 0.25rem to 0.75rem for more space */
-}
-
-.dropdown-options.placement-top.open {
-  transform: translateY(0);
-}
-
-/* Enhanced shadow for fixed positioning */
-.dropdown-options[style*="position: fixed"] {
+  
+  /* Improved shadow for dialog context */
   box-shadow: var(--ty-dropdown-options-shadow-enhanced,
       0 20px 25px -5px rgba(0, 0, 0, 0.1),
       0 10px 10px -5px rgba(0, 0, 0, 0.04));
 }
 
-/* Additional spacing for top-positioned fixed elements */
-.dropdown-options[style*="position: fixed"].placement-top {
+/* Placement-specific styles for smart positioning */
+.dropdown-options.placement-top {
   margin-bottom: 0.75rem; /* Extra space when positioned above */
+}
+
+.dropdown-options.placement-bottom {
+  margin-top: 0.25rem; /* Standard space when positioned below */
 }
 
 /* Option elements styling */

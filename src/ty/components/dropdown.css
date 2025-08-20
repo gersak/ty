@@ -99,7 +99,7 @@
   overflow: hidden;
   opacity: 0;
   transform: translateY(-0.5rem);
-
+  
   /* Smooth transitions only for opening/closing, not positioning */
   transition: max-height 0.2s ease-in-out,
     opacity 0.15s ease-in-out,
@@ -109,20 +109,21 @@
 }
 
 .dropdown-options.open {
-  max-height: 16rem;
-  /* 256px */
+  max-height: 16rem; /* 256px */
   opacity: 1;
   transform: translateY(0);
   overflow-y: auto;
+  
+  /* Smooth scrolling for keyboard navigation */
+  scroll-behavior: smooth;
 }
 
 /* Placement-specific styles for smart positioning */
 .dropdown-options.placement-top {
   /* When positioned above, adjust transform and add more spacing */
-  transform: translateY(1rem);
+  transform: translateY(0.5rem);
   margin-top: 0;
-  margin-bottom: 0.75rem;
-  /* Increased from 0.25rem to 0.75rem for more space */
+  margin-bottom: 0.75rem; /* Increased from 0.25rem to 0.75rem for more space */
 }
 
 .dropdown-options.placement-top.open {
@@ -138,8 +139,7 @@
 
 /* Additional spacing for top-positioned fixed elements */
 .dropdown-options[style*="position: fixed"].placement-top {
-  margin-bottom: 0.75rem;
-  /* Extra space when positioned above */
+  margin-bottom: 0.75rem; /* Extra space when positioned above */
 }
 
 /* Option elements styling */

@@ -51,9 +51,10 @@
   [^js el]
   {:value (or (wcs/attr el "value") "")
    :placeholder (or (wcs/attr el "placeholder") "Select an option...")
-   :searchable (if (not (wcs/attr el "searchable"))
-                 true
-                 (wcs/parse-bool-attr el "searchable"))
+   :searchable (let [searchable-attr (wcs/attr el "searchable")]
+                 (if (nil? searchable-attr)
+                   true ; default to true if not specified
+                   (wcs/parse-bool-attr el "searchable")))
    :disabled (wcs/parse-bool-attr el "disabled")
    :readonly (wcs/parse-bool-attr el "readonly")
    :size (or (wcs/attr el "size") "md")
@@ -123,13 +124,57 @@
   (doseq [{:keys [element]} options]
     (.removeAttribute element "highlighted")))
 
+(defn scroll-option-into-view!
+  "Scroll an option element into view within the dropdown container"
+  [^js option-element ^js options-container]
+  (when (and option-element options-container)
+    ;; Use scrollIntoView if available for smoother animation
+    (if (.-scrollIntoView option-element)
+      (.scrollIntoView option-element #js {:block "nearest"
+                                           :behavior "smooth"})
+      ;; Fallback to manual calculation
+      (let [container-rect (.getBoundingClientRect options-container)
+            option-rect (.getBoundingClientRect option-element)
+            container-top (.-top container-rect)
+            container-bottom (.-bottom container-rect)
+            option-top (.-top option-rect)
+            option-bottom (.-bottom option-rect)]
+
+        ;; Check if option is above visible area
+        (when (< option-top container-top)
+          (set! (.-scrollTop options-container)
+                (- (.-scrollTop options-container)
+                   (- container-top option-top))))
+
+        ;; Check if option is below visible area
+        (when (> option-bottom container-bottom)
+          (set! (.-scrollTop options-container)
+                (+ (.-scrollTop options-container)
+                   (- option-bottom container-bottom))))))))
+
+(defn scroll-to-selected-option!
+  "Scroll to the currently selected option when dropdown opens"
+  [^js el ^js shadow-root]
+  (let [{:keys [value]} (dropdown-attributes el)
+        options-container (.querySelector shadow-root ".dropdown-options")]
+    (when (and value options-container)
+      ;; Find the selected option element
+      (when-let [selected-option (first (filter #(= (or (.-value (:element %)) (.-textContent (:element %))) value)
+                                                (map get-option-data (get-options shadow-root))))]
+        (js/setTimeout
+          #(scroll-option-into-view! (:element selected-option) options-container)
+          100)))))
+
 (defn highlight-option!
-  "Highlight option at index"
-  [options index]
+  "Highlight option at index and scroll into view"
+  [options index ^js shadow-root]
   (clear-highlights! options)
   (when (and (>= index 0) (< index (count options)))
-    (let [{:keys [element]} (nth options index)]
-      (.setAttribute element "highlighted" ""))))
+    (let [{:keys [element]} (nth options index)
+          options-container (.querySelector shadow-root ".dropdown-options")]
+      (.setAttribute element "highlighted" "")
+      ;; Scroll the highlighted option into view
+      (scroll-option-into-view! element options-container))))
 
 (defn clear-selection!
   "Remove selection from all options"
@@ -270,7 +315,7 @@
 (defn open-dropdown!
   "Open dropdown with smart positioning and global management"
   [^js el ^js shadow-root]
-  (let [{:keys [disabled readonly searchable]} (dropdown-attributes el)]
+  (let [{:keys [disabled readonly searchable value]} (dropdown-attributes el)]
     (when-not (or disabled readonly)
       ;; Close all other dropdowns first
       (close-other-dropdowns! el)
@@ -278,7 +323,24 @@
       ;; Register this dropdown as open
       (register-dropdown! el)
 
-      (set-component-state! el {:open true})
+      ;; Initialize filtered options for keyboard navigation
+      (let [all-options (map get-option-data (get-options shadow-root))
+            current-search (if searchable (:search (get-component-state el)) "")
+            filtered (if searchable
+                       (filter-options all-options current-search)
+                       all-options)
+            ;; Find the index of the currently selected option for smart keyboard navigation
+            selected-index (if (and value (seq filtered))
+                             (first (keep-indexed
+                                      (fn [idx option]
+                                        (when (= (:value option) value) idx))
+                                      filtered))
+                             -1)]
+
+        (set-component-state! el {:open true
+                                  :filtered-options filtered
+                                  :highlighted-index selected-index}))
+
       (let [options-container (.querySelector shadow-root ".dropdown-options")
             chevron (.querySelector shadow-root ".dropdown-chevron")]
 
@@ -306,7 +368,13 @@
 
               ;; Now make visible with smooth transition
               (set! (.. options-container -style -visibility) "visible")
-              (set! (.. options-container -style -opacity) "")))
+              (set! (.. options-container -style -opacity) "")
+
+              ;; Highlight the selected option if any, and scroll to it
+              (let [{:keys [highlighted-index filtered-options]} (get-component-state el)]
+                (when (>= highlighted-index 0)
+                  (highlight-option! filtered-options highlighted-index shadow-root))
+                (scroll-to-selected-option! el shadow-root))))
           16))))) ; Wait for CSS transition to start
 
 (defn handle-input-click!
@@ -327,12 +395,24 @@
     (when searchable
       (let [search (.-value (.-target event))
             options (map get-option-data (get-options shadow-root))
-            filtered (filter-options options search)]
+            filtered (filter-options options search)
+            ;; Keep the selected option highlighted if it's still in filtered results
+            {:keys [value]} (dropdown-attributes el)
+            new-highlighted-index (if (and value (seq filtered))
+                                    (first (keep-indexed
+                                             (fn [idx option]
+                                               (when (= (:value option) value) idx))
+                                             filtered))
+                                    -1)]
         (set-component-state! el {:search search
                                   :filtered-options filtered
-                                  :highlighted-index -1})
+                                  :highlighted-index new-highlighted-index})
         (update-option-visibility! filtered options)
         (clear-highlights! options)
+
+        ;; Highlight the option if there's a valid index
+        (when (>= new-highlighted-index 0)
+          (highlight-option! filtered new-highlighted-index shadow-root))
 
         ;; Update position after filtering (height might change)
         (js/setTimeout #(update-dropdown-position! el shadow-root) 16)))))
@@ -385,17 +465,23 @@
       ;; UP ARROW
       38 (when open
            (.preventDefault event)
-           (let [new-index (max -1 (dec highlighted-index))
-                 options (map get-option-data (get-options shadow-root))]
+           (let [new-index (if (= highlighted-index -1)
+                             ;; If no selection, start from last option when going up
+                             (dec (count filtered-options))
+                             ;; Otherwise, move up (with -1 as minimum for no selection)
+                             (max -1 (dec highlighted-index)))]
              (set-component-state! el {:highlighted-index new-index})
-             (highlight-option! filtered-options new-index)))
+             (highlight-option! filtered-options new-index shadow-root)))
       ;; DOWN ARROW  
       40 (when open
            (.preventDefault event)
-           (let [new-index (min (dec (count filtered-options)) (inc highlighted-index))
-                 options (map get-option-data (get-options shadow-root))]
+           (let [new-index (if (= highlighted-index -1)
+                             ;; If no selection, start from first option when going down
+                             0
+                             ;; Otherwise, move down (with max as last option)
+                             (min (dec (count filtered-options)) (inc highlighted-index)))]
              (set-component-state! el {:highlighted-index new-index})
-             (highlight-option! filtered-options new-index)))
+             (highlight-option! filtered-options new-index shadow-root)))
       ;; Default - open dropdown for alphanumeric
       (when-not open
         (open-dropdown! el shadow-root)))))

@@ -14,12 +14,6 @@
 
     <!-- Load Web Components BEFORE DOM parsing -->
     <script src="js/main.js"></script>
-    <script>
-        // Initialize Ty components immediately
-        if (typeof ty !== 'undefined' && ty.core && ty.core.init) {
-            ty.core.init();
-        }
-    </script>
 
     <!-- Prevent FOUC -->
     <script>

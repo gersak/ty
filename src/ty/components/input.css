@@ -30,6 +30,27 @@
   font-weight: 500;
 }
 
+/* ===== ERROR MESSAGE STYLING ===== */
+
+.error-message {
+  font-size: 12px;
+  color: var(--ty-color-negative);
+  margin-top: 4px;
+  padding-left: 12px;
+  line-height: 1.4;
+}
+
+/* Error state for inputs */
+input.error {
+  border-color: var(--ty-color-negative);
+  background: var(--ty-bg-negative-m1);
+}
+
+input.error:focus {
+  border-color: var(--ty-color-negative-p1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
 /* ===== INPUT BASE STYLING ===== */
 
 input {

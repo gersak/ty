@@ -1,43 +1,255 @@
 (ns ty.components.input
-  "Basic input component with layout integration and semantic styling"
-  (:require [ty.css :refer [ensure-styles!]]
+  "Enhanced input component with numeric formatting via shadow values"
+  (:require [cljs-bean.core :refer [->clj ->js]]
+            [ty.css :refer [ensure-styles!]]
+            [ty.i18n :as i18n]
+            [ty.i18n.number :as num]
             [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load input styles from input.css
-#_{:clj-kondo/ignore [:uninitialized-var]}
 (defstyles input-styles)
+
+;; =====================================================
+;; Shadow Value State Management
+;; =====================================================
+
+(defn should-format?
+  "Check if input type should have numeric formatting"
+  [type]
+  (contains? #{"number" "currency" "percent" "compact"} type))
+
+(defn parse-shadow-value
+  "Convert string value to shadow value (nil or number)"
+  [value]
+  (cond
+    (or (nil? value) (= value "") (= value "")) nil
+    (number? value) value
+    (string? value) (let [parsed (js/parseFloat value)]
+                      (if (js/isNaN parsed) nil parsed))
+    :else nil))
+
+(defn get-format-config
+  "Extract formatting configuration from element attributes"
+  [^js el]
+  (let [type (wcs/attr el "type")
+        currency (wcs/attr el "currency")
+        locale (or (wcs/attr el "locale") i18n/*locale*)
+        precision (when-let [p (wcs/attr el "precision")]
+                    (js/parseInt p))]
+    {:type (or type "text")
+     :currency (or currency "USD")
+     :locale (keyword locale)
+     :precision precision}))
+
+(defn get-component-state
+  "Get or initialize component state on element"
+  [^js el]
+  (or (.-tyInputState el)
+      (let [initial-value (wcs/attr el "value")
+            shadow-value (parse-shadow-value initial-value)
+            format-config (get-format-config el)]
+        (set! (.-tyInputState el)
+              #js {:shadowValue shadow-value
+                   :lastExternalValue (or initial-value "")
+                   :isFocused false
+                   :formatConfig (->js format-config)})
+        (.-tyInputState el))))
+
+(defn update-component-state!
+  "Update component state"
+  [^js el updates]
+  (let [state (get-component-state el)]
+    (doseq [[k v] updates]
+      (aset state (name k) (if (keyword? k) (->js v) v)))))
+
+;; =====================================================
+;; Formatting Functions
+;; =====================================================
+
+(defn format-shadow-value
+  "Format shadow value according to type and config"
+  [shadow-value {:keys [type currency locale precision]}]
+  (when shadow-value
+    (let [options (cond-> {}
+                    precision (assoc :minimumFractionDigits precision
+                                     :maximumFractionDigits precision))]
+      (case type
+        "currency" (num/format-currency shadow-value currency locale)
+        "percent" (num/format-percent shadow-value locale)
+        "compact" (num/format-compact shadow-value locale)
+        "number" (num/format-number shadow-value locale options)
+        (str shadow-value)))))
+
+(defn get-display-value
+  "Get the value that should be displayed in input"
+  [^js el]
+  (let [state (get-component-state el)
+        shadow-value (.-shadowValue state)
+        is-focused (.-isFocused state)
+        format-config (->clj (.-formatConfig state) :keywordize-keys true)
+        should-format (and (should-format? (:type format-config))
+                           (not is-focused)
+                           shadow-value)]
+    (if should-format
+      (format-shadow-value shadow-value format-config)
+      (if shadow-value (str shadow-value) ""))))
+
+;; =====================================================
+;; Event Handling
+;; =====================================================
+
+(defn emit-value-events!
+  "Emit custom input events with shadow and formatted values"
+  [^js el ^js original-event]
+  (let [state (get-component-state el)
+        shadow-value (.-shadowValue state)
+        format-config (->clj (.-formatConfig state) :keywordize-keys true)
+        formatted-value (when shadow-value
+                          (format-shadow-value shadow-value format-config))
+        data #js {:bubbles true
+                  :composed true
+                  :detail #js {:value shadow-value
+                               :formattedValue formatted-value
+                               :rawValue (.-value (.-target original-event))
+                               :originalEvent original-event}}]
+
+    (doseq [e ["input" "change"]]
+      (.log js/console "Dispatching: " e data)
+      (.dispatchEvent el (js/CustomEvent. e data)))))
+
+(defn handle-input-event
+  "Handle input event - update shadow value"
+  [^js el ^js e]
+  (let [input-value (.-value (.-target e))
+        shadow-value (parse-shadow-value input-value)]
+    (update-component-state! el {:shadowValue shadow-value})
+    (emit-value-events! el e)))
+
+(defn handle-focus-event
+  "Handle focus event - show raw shadow value"
+  [^js el ^js e]
+  (update-component-state! el {:isFocused true})
+  (let [display-value (get-display-value el)
+        input-el (.-target e)]
+    (set! (.-value input-el) display-value)))
+
+(defn handle-blur-event
+  "Handle blur event - show formatted value"
+  [^js el ^js e]
+  (update-component-state! el {:isFocused false})
+  (let [display-value (get-display-value el)
+        input-el (.-target e)]
+    (set! (.-value input-el) display-value))
+  ;; WHY IS THIS HERE?
+  #_(emit-value-events! el e))
+
+;; =====================================================
+;; Upstream Value Sync
+;; =====================================================
+
+(defn sync-external-value!
+  "Sync external value changes with shadow value"
+  [^js el]
+  (let [current-value (wcs/attr el "value")
+        state (get-component-state el)
+        last-external-value (.-lastExternalValue state)]
+
+    ;; Only sync if external value actually changed
+    (when (not= current-value last-external-value)
+      (let [new-shadow-value (parse-shadow-value current-value)]
+        (update-component-state! el
+                                 {:shadowValue new-shadow-value
+                                  :lastExternalValue (or current-value "")})
+
+        ;; Update input display
+        (when-let [input-el (.querySelector (wcs/ensure-shadow el) "input")]
+          (set! (.-value input-el) (get-display-value el)))
+        (doseq [e ["input" "change"]]
+          (.dispatchEvent
+            el
+            (js/CustomEvent. e
+                             #js {:bubbles true
+                                  :composed true
+                                  :detail #js {:value current-value
+                                               :formattedValue new-shadow-value
+                                               :originalEvent nil}})))))))
+
+;; =====================================================
+;; Enhanced Attribute Reading
+;; =====================================================
 
 (defn input-attributes
   "Read all input attributes directly from element"
   [^js el]
   {:type (wcs/attr el "type")
-   :value (wcs/attr el "value")
+   :value (get-display-value el) ; Use computed display value
    :placeholder (wcs/attr el "placeholder")
    :label (wcs/attr el "label")
    :disabled (wcs/parse-bool-attr el "disabled")
    :required (wcs/parse-bool-attr el "required")
+   :error (wcs/attr el "error")
    :size (wcs/attr el "size")
    :flavor (wcs/attr el "flavor")
-   :class (wcs/attr el "class")})
+   :class (wcs/attr el "class")
+   ;; Numeric formatting attributes
+   :currency (wcs/attr el "currency")
+   :locale (wcs/attr el "locale")
+   :precision (wcs/attr el "precision")})
 
 (defn build-class-list
   "Build class list from attributes"
-  [{:keys [size flavor disabled required class]}]
+  [{:keys [size flavor disabled required error class]}]
   (str (or size "md")
        " "
        (or flavor "neutral")
        (when disabled " disabled")
        (when required " required")
+       (when error " error")
        (when class (str " " class))))
 
+;; =====================================================
+;; Component Rendering
+;; =====================================================
+
+(defn setup-input-events!
+  "Setup enhanced event listeners for numeric inputs"
+  [^js el ^js input-el]
+  (let [format-config (get-format-config el)]
+    (if (should-format? (:type format-config))
+      ;; Enhanced events for numeric inputs
+      (do
+        (.addEventListener input-el "input" #(handle-input-event el %))
+        (.addEventListener input-el "focus" #(handle-focus-event el %))
+        (.addEventListener input-el "blur" #(handle-blur-event el %)))
+
+      ;; Standard events for text inputs
+      (do
+        (.addEventListener input-el "input"
+                           (fn [e]
+                             (.dispatchEvent el (js/CustomEvent. "input"
+                                                                 #js {:bubbles true
+                                                                      :composed true
+                                                                      :detail #js {:value (.-value (.-target e))
+                                                                                   :originalEvent e}}))))
+        (.addEventListener input-el "change"
+                           (fn [e]
+                             (.dispatchEvent el (js/CustomEvent. "change"
+                                                                 #js {:bubbles true
+                                                                      :composed true
+                                                                      :detail #js {:value (.-value (.-target e))
+                                                                                   :originalEvent e}}))))))))
+
 (defn render! [^js el]
-  (let [{:keys [type value placeholder label disabled required]
+  ;; Sync external changes first
+  (sync-external-value! el)
+
+  (let [{:keys [type value placeholder label disabled required error]
          :as attrs} (input-attributes el)
         root (wcs/ensure-shadow el)
-        ;; Check if we already have the structure
         existing-label (.querySelector root "label")
-        existing-input (.querySelector root "input")]
+        existing-input (.querySelector root "input")
+        existing-error (.querySelector root ".error-message")]
 
     ;; Ensure styles are loaded
     (ensure-styles! root input-styles "ty-input")
@@ -46,27 +258,40 @@
     (if (and existing-label existing-input)
       ;; Update existing elements
       (do
+        ;; Update label
         (when label
           (set! (.-textContent existing-label) label)
           (set! (.. existing-label -style -display) "block")
-          ;; Handle required class
           (if required
             (.add (.-classList existing-label) "required")
             (.remove (.-classList existing-label) "required")))
         (when-not label
           (set! (.. existing-label -style -display) "none"))
 
-        (set! (.-type existing-input) (or type "text"))
+        ;; Update input
+        (set! (.-type existing-input) (if (#{"password" "currency" "date"} type)
+                                        "text"))
         (set! (.-value existing-input) (or value ""))
         (set! (.-placeholder existing-input) (or placeholder ""))
         (set! (.-disabled existing-input) disabled)
         (set! (.-required existing-input) required)
-        (set! (.-className existing-input) (build-class-list attrs)))
+        (set! (.-className existing-input) (build-class-list attrs))
+
+        ;; Update error message
+        (if error
+          (do
+            (when-not existing-error
+              (let [error-el (.createElement js/document "div")]
+                (set! (.-className error-el) "error-message")
+                (.appendChild root error-el)))
+            (set! (.-textContent (.querySelector root ".error-message")) error))
+          (when existing-error
+            (.remove existing-error))))
 
       ;; Create new structure
-      (let [container (js/document.createElement "div")
-            label-el (js/document.createElement "label")
-            input-el (js/document.createElement "input")]
+      (let [container (.createElement js/document "div")
+            label-el (.createElement js/document "label")
+            input-el (.createElement js/document "input")]
 
         ;; Set up container
         (set! (.-className container) "input-container")
@@ -76,7 +301,6 @@
         (when label
           (set! (.-textContent label-el) label)
           (set! (.. label-el -style -display) "block")
-          ;; Add required class if needed
           (when required
             (.add (.-classList label-el) "required")))
         (when-not label
@@ -90,22 +314,15 @@
         (set! (.-required input-el) required)
         (set! (.-className input-el) (build-class-list attrs))
 
-        ;; Add event listeners for custom events
-        (.addEventListener input-el "input"
-                           (fn [e]
-                             (.dispatchEvent el (js/CustomEvent. "input"
-                                                                 #js {:bubbles true
-                                                                      :composed true
-                                                                      :detail {:value (.-value (.-target e))
-                                                                               :originalEvent e}}))))
+        ;; Set up enhanced event listeners
+        (setup-input-events! el input-el)
 
-        (.addEventListener input-el "change"
-                           (fn [e]
-                             (.dispatchEvent el (js/CustomEvent. "change"
-                                                                 #js {:bubbles true
-                                                                      :composed true
-                                                                      :detail {:value (.-value (.-target e))
-                                                                               :originalEvent e}}))))
+        ;; Add error message if present
+        (when error
+          (let [error-el (.createElement js/document "div")]
+            (set! (.-className error-el) "error-message")
+            (set! (.-textContent error-el) error)
+            (.appendChild container error-el)))
 
         ;; Build structure
         (.appendChild container label-el)
@@ -114,24 +331,15 @@
 
     el))
 
+;; =====================================================
+;; Web Component Definition
+;; =====================================================
+
 (wcs/define! "ty-input"
-  {:observed [:type :value :placeholder :label :disabled :required :size :flavor :class]
+  {:observed [:type :value :placeholder :label :disabled :required :error
+              :size :flavor :class :currency :locale :precision]
    :connected render!
    :attr (fn [^js el _attr-name _old _new]
-           ;; Any attribute change triggers re-render
+           ;; Re-render on any attribute change
+           ;; This will trigger sync-external-value! 
            (render! el))})
-
-;; -----------------------------
-;; Hot Reload Hooks
-;; -----------------------------
-
-(defn ^:dev/before-load stop []
-  ;; Called before code is reloaded
-  (when goog.DEBUG
-    (js/console.log "[ty-input] Preparing for hot reload...")))
-
-(defn ^:dev/after-load start []
-  ;; Called after code is reloaded
-  ;; The shim will automatically refresh all input instances
-  (when goog.DEBUG
-    (js/console.log "[ty-input] Hot reload complete!")))

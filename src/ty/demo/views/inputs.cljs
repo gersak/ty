@@ -1,7 +1,8 @@
 (ns ty.demo.views.inputs
-  "Demonstrates input components with layout integration"
+  "Demonstrates input components with enhanced numeric formatting"
   (:require
-   [ty.layout :as layout]))
+    [ty.i18n :as i18n]
+    [ty.layout :as layout]))
 
 (defn basic-input-demos []
   [:div.space-y-6
@@ -39,6 +40,291 @@
       [:ty-input {:type "search"
                   :label "Search"
                   :placeholder "Search..."}]]]]])
+
+(defn numeric-formatting-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "🔢 Enhanced Numeric Formatting"]
+   [:p.text-sm.text-gray-600 "Type numbers and blur to see automatic formatting. No parsing - uses shadow values!"]
+
+   [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+    [:div.space-y-4
+     [:h4.font-medium "Number Formatting"]
+     [:div.space-y-3
+      [:ty-input {:type "number"
+                  :label "Basic Number"
+                  :placeholder "Enter a number"
+                  :value "1234.567"
+                  :precision "2"}]
+      [:ty-input {:type "number"
+                  :label "Croatian Locale"
+                  :locale "hr"
+                  :precision "2"
+                  :value "9876.54"
+                  :placeholder "Unesite broj"}]
+      [:ty-input {:type "number"
+                  :label "High Precision"
+                  :precision "4"
+                  :value "3.14159"
+                  :placeholder "Pi value"}]]]
+
+    [:div.space-y-4
+     [:h4.font-medium "Special Numeric Types"]
+     [:div.space-y-3
+      [:ty-input {:type "percent"
+                  :label "Percentage"
+                  :precision "1"
+                  :value "0.158"
+                  :placeholder "Enter decimal (0.15 = 15%)"}]
+      [:ty-input {:type "compact"
+                  :label "Compact Notation"
+                  :value "1234567"
+                  :placeholder "Large numbers"}]]]]])
+
+(defn currency-formatting-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "💰 Currency Formatting"]
+   [:p.text-sm.text-gray-600 "Automatic currency symbols and locale-aware formatting."]
+
+   [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
+    [:ty-input {:type "currency"
+                :currency "USD"
+                :locale "en-US"
+                :label "US Dollar"
+                :value "2500.99"
+                :placeholder "Enter price"}]
+    [:ty-input {:type "currency"
+                :currency "EUR"
+                :locale "de"
+                :label "Euro (German)"
+                :value "3456.78"
+                :placeholder "Preis eingeben"}]
+    [:ty-input {:type "currency"
+                :currency "HRK"
+                :locale "hr"
+                :label "Croatian Kuna"
+                :value "12345.67"
+                :placeholder "Unesite cijenu"}]
+    [:ty-input {:type "currency"
+                :currency "JPY"
+                :locale "ja"
+                :precision "0"
+                :label "Japanese Yen"
+                :value "150000"
+                :placeholder "価格を入力"}]
+    [:ty-input {:type "currency"
+                :currency "GBP"
+                :locale "en-GB"
+                :label "British Pound"
+                :value "789.12"
+                :placeholder "Enter amount"}]
+    [:ty-input {:type "currency"
+                :currency "CAD"
+                :locale "en-CA"
+                :label "Canadian Dollar"
+                :value "1999.99"
+                :placeholder "Enter price"}]]])
+
+(defn error-handling-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "⚠️ Error Handling & Validation"]
+   [:p.text-sm.text-gray-600 "User-controlled error states with clean styling."]
+
+   [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
+    [:div.space-y-4
+     [:h4.font-medium "Error States"]
+     [:div.space-y-3
+      [:ty-input {:type "number"
+                  :label "Invalid Amount"
+                  :error "Please enter a valid number"
+                  :value "abc"
+                  :placeholder "Enter number"}]
+      [:ty-input {:type "currency"
+                  :currency "USD"
+                  :label "Required Field"
+                  :required true
+                  :error "This field is required"
+                  :placeholder "Enter price"}]
+      [:ty-input {:type "email"
+                  :label "Invalid Email"
+                  :error "Please enter a valid email address"
+                  :value "invalid-email"
+                  :placeholder "your@email.com"}]]]
+
+    [:div.space-y-4
+     [:h4.font-medium "Interactive Error Demo"]
+     [:div.space-y-3
+      [:ty-input {:id "toggle-error-demo"
+                  :type "currency"
+                  :currency "USD"
+                  :label "Price Field"
+                  :value "123.45"
+                  :placeholder "Enter price"}]
+      [:button.px-4.py-2.bg-blue-500.text-white.rounded.hover:bg-blue-600
+       {:on {:click #(let [input (.getElementById js/document "toggle-error-demo")
+                           has-error (.hasAttribute input "error")]
+                       (if has-error
+                         (.removeAttribute input "error")
+                         (.setAttribute input "error" "Custom validation error")))}}
+       "Toggle Error State"]]]]])
+
+(defn external-value-demo []
+  (letfn [(process [e]
+            (.log js/console "EVNT: " e)
+            #_(let [log (.getElementById js/document "event-log")
+                    timestamp (.toLocaleTimeString (js/Date.))
+                    detail (.-detail e)
+                    entry (str "[" timestamp "] CHANGE: "
+                               "value=" (.-value detail)
+                               " formatted=" (.-formattedValue detail))]
+                (set! (.-textContent log) (str entry "\n" (.-textContent log)))
+                (set! (.-scrollTop log) 0)))]
+    [:div.space-y-6
+     [:h3.text-lg.font-semibold "🔄 External Value Changes"]
+     [:p.text-sm.text-gray-600 "Test shadow value synchronization with programmatic updates."]
+     [:div.space-y-4
+      [:ty-input
+       {:id "external-demo"
+        :type "currency"
+        :currency "USD"
+        :label "Programmatically Updated Price"
+        :value "100.00"
+        :placeholder "Price will be updated externally"
+        :on {:input process
+             :change process}}]
+
+      [:div.flex.flex-wrap.gap-2
+       [:button.px-3.py-1.bg-green-500.text-white.rounded.text-sm.hover:bg-green-600
+        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "250.75")}}
+        "Set $250.75"]
+       [:button.px-3.py-1.bg-blue-500.text-white.rounded.text-sm.hover:bg-blue-600
+        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "1000")}}
+        "Set $1,000"]
+       [:button.px-3.py-1.bg-purple-500.text-white.rounded.text-sm.hover:bg-purple-600
+        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "99.99")}}
+        "Set $99.99"]
+       [:button.px-3.py-1.bg-gray-500.text-white.rounded.text-sm.hover:bg-gray-600
+        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "")}}
+        "Clear"]]
+
+      [:div.mt-4
+       [:h5.font-medium.text-sm "Event Log:"]
+       [:div#event-log.bg-black.text-green-400.p-3.rounded.font-mono.text-xs.h-24.overflow-y-auto
+        "Type in the input above or click buttons to see events..."]]]]))
+
+(defn comprehensive-form-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "💼 Professional Invoice Form"]
+   [:p.text-sm.text-gray-600 "Real-world example showcasing various numeric input types in context."]
+
+   [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
+    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+     ;; Client Information
+     [:div.space-y-4
+      [:h4.font-medium.border-b.pb-2 "Client Information"]
+      [:ty-input {:type "text"
+                  :label "Company Name"
+                  :required true
+                  :placeholder "Acme Corp"}]
+      [:ty-input {:type "email"
+                  :label "Email"
+                  :required true
+                  :placeholder "billing@acme.com"}]
+      [:ty-input {:type "text"
+                  :label "Address"
+                  :placeholder "123 Business St"}]]
+
+     ;; Invoice Details  
+     [:div.space-y-4
+      [:h4.font-medium.border-b.pb-2 "Invoice Details"]
+      [:ty-input {:type "text"
+                  :label "Invoice Number"
+                  :value "INV-001"
+                  :placeholder "INV-001"}]
+      [:ty-input {:type "date"
+                  :label "Invoice Date"
+                  :placeholder "Select date"}]
+      [:ty-input {:type "percent"
+                  :label "Tax Rate"
+                  :value "0.08"
+                  :precision "2"
+                  :placeholder "0.08 = 8%"}]]]
+
+    ;; Line Items with Numeric Formatting
+    [:div.mt-6.space-y-4
+     [:h4.font-medium.border-b.pb-2 "Line Items"]
+     [:div.grid.grid-cols-1.md:grid-cols-12.gap-4.items-end
+      [:div.md:col-span-5
+       [:ty-input {:type "text"
+                   :label "Description"
+                   :placeholder "Consulting services"}]]
+      [:div.md:col-span-2
+       [:ty-input {:type "number"
+                   :label "Quantity"
+                   :value "1"
+                   :placeholder "1"}]]
+      [:div.md:col-span-3
+       [:ty-input {:type "currency"
+                   :currency "USD"
+                   :label "Unit Price"
+                   :value "150.00"
+                   :placeholder "Price per unit"}]]
+      [:div.md:col-span-2
+       [:ty-input {:type "currency"
+                   :currency "USD"
+                   :label "Total"
+                   :value "150.00"
+                   :disabled true}]]]
+
+     [:div.grid.grid-cols-1.md:grid-cols-12.gap-4.items-end
+      [:div.md:col-span-5
+       [:ty-input {:type "text"
+                   :label "Description"
+                   :placeholder "Website development"}]]
+      [:div.md:col-span-2
+       [:ty-input {:type "number"
+                   :label "Quantity"
+                   :value "40"
+                   :placeholder "Hours"}]]
+      [:div.md:col-span-3
+       [:ty-input {:type "currency"
+                   :currency "USD"
+                   :label "Unit Price"
+                   :value "75.00"
+                   :placeholder "Hourly rate"}]]
+      [:div.md:col-span-2
+       [:ty-input {:type "currency"
+                   :currency "USD"
+                   :label "Total"
+                   :value "3000.00"
+                   :disabled true}]]]]
+
+    ;; Summary with formatted totals
+    [:div.mt-6.pt-4.border-t
+     [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
+      [:div] ;; Spacer
+      [:div.space-y-3
+       [:div.flex.justify-between.items-center
+        [:span.font-medium "Subtotal:"]
+        [:ty-input {:type "currency"
+                    :currency "USD"
+                    :value "3150.00"
+                    :disabled true
+                    :size "sm"}]]
+       [:div.flex.justify-between.items-center
+        [:span.font-medium "Tax (8%):"]
+        [:ty-input {:type "currency"
+                    :currency "USD"
+                    :value "252.00"
+                    :disabled true
+                    :size "sm"}]]
+       [:div.flex.justify-between.items-center.border-t.pt-2
+        [:span.font-bold.text-lg "Total:"]
+        [:ty-input {:type "currency"
+                    :currency "USD"
+                    :value "3402.00"
+                    :disabled true
+                    :flavor "important"}]]]]]]])
+
 
 (defn size-variants-demo []
   [:div.space-y-6
@@ -126,20 +412,43 @@
      [:h4.font-medium.mb-6 "Contact Information"]
      [:div.space-y-5
       [:div.grid.grid-cols-1.sm:grid-cols-2.gap-4
-       [:ty-input {:type "text" :label "First Name" :required true :placeholder "John"}]
-       [:ty-input {:type "text" :label "Last Name" :required true :placeholder "Doe"}]]
-      [:ty-input {:type "text" :label "Address" :placeholder "123 Main Street"}]
-      [:ty-input {:type "text" :label "City" :placeholder "New York"}]
-      [:ty-input {:type "text" :label "Country" :placeholder "United States"}]
-      [:ty-input {:type "date" :label "Date of Birth" :placeholder "mm/dd/yyyy"}]]]
+       [:ty-input {:type "text"
+                   :label "First Name"
+                   :required true
+                   :placeholder "John"}]
+       [:ty-input {:type "text"
+                   :label "Last Name"
+                   :required true
+                   :placeholder "Doe"}]]
+      [:ty-input {:type "text"
+                  :label "Address"
+                  :placeholder "123 Main Street"}]
+      [:ty-input {:type "text"
+                  :label "City"
+                  :placeholder "New York"}]
+      [:ty-input {:type "text"
+                  :label "Country"
+                  :placeholder "United States"}]
+      [:ty-input {:type "date"
+                  :label "Date of Birth"
+                  :placeholder "mm/dd/yyyy"}]]]
 
     ;; Login form with elegant styling
     [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
      [:h4.font-medium.mb-6 "Account Access"]
      [:div.space-y-5
-      [:ty-input {:type "email" :label "Email Address" :required true :placeholder "your@email.com"}]
-      [:ty-input {:type "password" :label "Password" :required true :placeholder "Enter password"}]
-      [:ty-input {:type "password" :label "Confirm Password" :required true :placeholder "Confirm password"}]]]]])
+      [:ty-input {:type "email"
+                  :label "Email Address"
+                  :required true
+                  :placeholder "your@email.com"}]
+      [:ty-input {:type "password"
+                  :label "Password"
+                  :required true
+                  :placeholder "Enter password"}]
+      [:ty-input {:type "password"
+                  :label "Confirm Password"
+                  :required true
+                  :placeholder "Confirm password"}]]]]])
 
 (defn event-demo []
   [:div.space-y-6
@@ -160,16 +469,32 @@
   (layout/with-window
     [:div.p-8.max-w-6xl.mx-auto.space-y-8
      [:div
-      [:h1.text-3xl.font-bold.mb-4 "Input Components"]
+      [:h1.text-3xl.font-bold.mb-4 "Enhanced Input Components"]
       [:p.text-gray-600
-       "Form input components with elegant styling inspired by toddler's refined design."]
+       "Form inputs with sophisticated numeric formatting, shadow values, and layout integration."]
       [:p.text-sm.text-gray-500.mt-2
-       "Features subtle borders, proper spacing, and polished visual hierarchy."]]
+       "✨ NEW: Auto-formatting on blur, currency support, locale-aware formatting, and error handling!"]]
 
-     ;; Highlight the improved form layouts first
+     ;; Highlight the new numeric formatting capabilities first
      [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
-      (form-layout-demo)]
+      (numeric-formatting-demo)]
 
+     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+      (currency-formatting-demo)]
+
+     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+      (comprehensive-form-demo)]
+
+     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+      (error-handling-demo)]
+
+     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+      (external-value-demo)]
+
+     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+      (event-demo)]
+
+     ;; Keep existing demos but lower priority
      [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
       (basic-input-demos)]
 
@@ -183,4 +508,4 @@
       (container-aware-demo)]
 
      [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
-      (event-demo)]]))
+      (form-layout-demo)]]))

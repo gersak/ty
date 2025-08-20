@@ -1,6 +1,7 @@
 (ns ty.demo.core
   (:require [replicant.dom :as rdom]
             [ty.context :as context]
+            [ty.core]
             [ty.demo.icons :as demo-icons]
             [ty.demo.state :refer [state]]
             [ty.demo.views.buttons :as buttons]

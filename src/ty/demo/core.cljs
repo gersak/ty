@@ -14,6 +14,7 @@
             [ty.demo.views.layout :as layout-views]
             [ty.demo.views.modal :as modal]
             [ty.demo.views.popups :as popups]
+            [ty.demo.views.tags :as tags]
             [ty.layout :as layout]
             [ty.router :as router]))
 
@@ -37,6 +38,9 @@
               {:id ::popups
                :segment "popups"
                :name "Popups"}
+              {:id ::tags
+               :segment "tags"
+               :name "Tags"}
               {:id ::modal
                :segment "modal"
                :name "Modal"}
@@ -103,6 +107,9 @@
      (nav-item {:route-id ::popups
                 :label "Popups"
                 :icon "message-square"})
+     (nav-item {:route-id ::tags
+                :label "Tags"
+                :icon "tag"})
      (nav-item {:route-id ::modal
                 :label "Modal"
                 :icon "square"})
@@ -135,6 +142,7 @@
        (router/rendered? ::dropdowns true) "Dropdown Components"
        (router/rendered? ::icons true) "Icon Library"
        (router/rendered? ::popups true) "Popup Components"
+       (router/rendered? ::tags true) "Tag Components"
        (router/rendered? ::modal true) "Modal Dialogs"
        (router/rendered? ::i18n true) "Internationalization"
        (router/rendered? ::formatting true) "Number & Date Formatting"
@@ -178,6 +186,7 @@
              (router/rendered? ::dropdowns true) (dropdowns/render)
              (router/rendered? ::icons true) (icons/icons-view)
              (router/rendered? ::popups true) (popups/popups-view)
+             (router/rendered? ::tags true) (tags/tags-view)
              (router/rendered? ::modal true) (modal/modal-view)
              (router/rendered? ::i18n true) (i18n-views/i18n-view)
              (router/rendered? ::formatting true) (formatting/formatting-view)

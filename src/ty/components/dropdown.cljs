@@ -1,7 +1,6 @@
 (ns ty.components.dropdown
   "Smart dropdown component with search filtering and intelligent positioning"
   (:require [ty.css :refer [ensure-styles!]]
-            [ty.positioning :as pos]
             [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
@@ -10,9 +9,6 @@
 
 ;; Global registry to track all open dropdowns
 (defonce open-dropdowns (atom #{}))
-
-;; Store positioning cleanup functions
-(defonce position-cleanup-fns (js/WeakMap.))
 
 (declare close-dropdown!)
 
@@ -51,10 +47,12 @@
   [^js el]
   {:value (or (wcs/attr el "value") "")
    :placeholder (or (wcs/attr el "placeholder") "Select an option...")
-   :searchable (let [searchable-attr (wcs/attr el "searchable")]
-                 (if (nil? searchable-attr)
-                   true ; default to true if not specified
-                   (wcs/parse-bool-attr el "searchable")))
+   :searchable (let [searchable? (wcs/parse-bool-attr el "pill")
+                     not-searchable? (wcs/parse-bool-attr el "not-pill")]
+                 (cond
+                   searchable? true
+                   not-searchable? false
+                   :else true))
    :disabled (wcs/parse-bool-attr el "disabled")
    :readonly (wcs/parse-bool-attr el "readonly")
    :size (or (wcs/attr el "size") "md")
@@ -162,8 +160,8 @@
       (when-let [selected-option (first (filter #(= (or (.-value (:element %)) (.-textContent (:element %))) value)
                                                 (map get-option-data (get-options shadow-root))))]
         (js/setTimeout
-         #(scroll-option-into-view! (:element selected-option) options-container)
-         100)))))
+          #(scroll-option-into-view! (:element selected-option) options-container)
+          100)))))
 
 (defn highlight-option!
   "Highlight option at index and scroll into view"
@@ -267,9 +265,9 @@
 (defn close-dropdown!
   "Close dropdown dialog and reset state"
   [^js el ^js shadow-root]
-  (let [state (set-component-state! el {:open false
-                                        :highlighted-index -1
-                                        :current-placement nil})
+  (let [_ (set-component-state! el {:open false
+                                    :highlighted-index -1
+                                    :current-placement nil})
         dialog (.querySelector shadow-root ".dropdown-dialog")
         chevron (.querySelector shadow-root ".dropdown-chevron")]
 
@@ -311,9 +309,9 @@
             ;; Find the index of the currently selected option for smart keyboard navigation
             selected-index (if (and value (seq filtered))
                              (first (keep-indexed
-                                     (fn [idx option]
-                                       (when (= (:value option) value) idx))
-                                     filtered))
+                                      (fn [idx option]
+                                        (when (= (:value option) value) idx))
+                                      filtered))
                              -1)]
 
         (set-component-state! el {:open true
@@ -321,9 +319,7 @@
                                   :highlighted-index selected-index}))
 
       (let [dialog (.querySelector shadow-root ".dropdown-dialog")
-            options-container (.querySelector shadow-root ".dropdown-options")
-            chevron (.querySelector shadow-root ".dropdown-chevron")
-            input (.querySelector shadow-root ".dropdown-input")]
+            chevron (.querySelector shadow-root ".dropdown-chevron")]
 
         ;; For non-searchable dropdowns, ensure all options are visible
         (when-not searchable
@@ -345,12 +341,12 @@
 
           ;; Highlight the selected option if any, and scroll to it
           (js/setTimeout
-           (fn []
-             (let [{:keys [highlighted-index filtered-options]} (get-component-state el)]
-               (when (>= highlighted-index 0)
-                 (highlight-option! filtered-options highlighted-index shadow-root))
-               (scroll-to-selected-option! el shadow-root)))
-           50)))))) ; Wait for CSS transition to start
+            (fn []
+              (let [{:keys [highlighted-index filtered-options]} (get-component-state el)]
+                (when (>= highlighted-index 0)
+                  (highlight-option! filtered-options highlighted-index shadow-root))
+                (scroll-to-selected-option! el shadow-root)))
+            50)))))) ; Wait for CSS transition to start
 
 (defn handle-input-click!
   "Handle click on input to toggle dropdown"
@@ -375,9 +371,9 @@
             {:keys [value]} (dropdown-attributes el)
             new-highlighted-index (if (and value (seq filtered))
                                     (first (keep-indexed
-                                            (fn [idx option]
-                                              (when (= (:value option) value) idx))
-                                            filtered))
+                                             (fn [idx option]
+                                               (when (= (:value option) value) idx))
+                                             filtered))
                                     -1)]
         (set-component-state! el {:search search
                                   :filtered-options filtered
@@ -565,9 +561,9 @@
     (set! (.-tyDropdownCleanup el) nil)))
 
 (wcs/define! "ty-dropdown"
-  {:observed [:value :placeholder :searchable :disabled :readonly :size :flavor :placement :auto-placement :offset]
+  {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :size :flavor :placement :auto-placement :offset]
    :connected render!
    :disconnected cleanup!
-   :attr (fn [^js el attr-name _old new]
+   :attr (fn [^js el _ _old _]
            ;; Re-render on attribute changes
            (render! el))})

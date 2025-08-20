@@ -7,6 +7,7 @@
    [ty.components.modal]
    [ty.components.popup]
    [ty.components.resize-observer]
+   [ty.components.tag]
    [ty.components.tooltip]
      ;; Include i18n namespaces
    [ty.i18n :as i18n]

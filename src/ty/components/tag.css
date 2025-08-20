@@ -1,0 +1,377 @@
+/* Tag Component Styles using centralized ty.variables.css */
+
+/* Host element */
+:host {
+  display: inline-block;
+  vertical-align: top;
+}
+
+/* Main container */
+.tag-container {
+  display: inline-flex;
+  align-items: center;
+  /* Default pill shape - can be overridden */
+  border-radius: var(--ty-radius-full);
+  font-family: var(--ty-font-sans);
+  font-weight: var(--ty-font-medium);
+  line-height: var(--ty-line-height-none);
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  box-sizing: border-box;
+
+  /* Default MD size - no need for [size="md"] */
+  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  /* 8px 16px */
+  font-size: var(--ty-font-sm);
+  /* 14px */
+  line-height: var(--ty-line-height-tight);
+  min-width: var(--ty-spacing-16);
+  /* 64px */
+
+  /* Transitions using centralized values */
+  transition: var(--ty-transition-all);
+
+  /* Default styling using semantic variables */
+  background: var(--ty-bg-neutral);
+  color: var(--ty-color-neutral-p3);
+  border: 1px solid transparent;
+}
+
+/* Non-pill variant - rectangular with rounded corners */
+:host([pill="false"]) .tag-container,
+:host([not-pill="true"]) .tag-container {
+  border-radius: var(--ty-radius-md);
+  /* 6px instead of full pill */
+}
+
+/* Interactive states */
+.tag-container[tabindex]:not([aria-disabled="true"]) {
+  cursor: pointer;
+}
+
+.tag-container[tabindex]:not([aria-disabled="true"]):hover {
+  background: var(--ty-bg-neutral-p1);
+  transform: translateY(-1px);
+  box-shadow: var(--ty-shadow-md);
+}
+
+.tag-container[tabindex]:not([aria-disabled="true"]):active {
+  transform: translateY(0);
+  box-shadow: var(--ty-shadow-sm);
+}
+
+.tag-container[tabindex]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ty-color-important-m3);
+}
+
+/* Disabled state */
+.tag-container[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Slot containers */
+.tag-start,
+.tag-content,
+.tag-end {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.tag-content {
+  flex: 1;
+  min-width: 0;
+  /* Allow text truncation */
+}
+
+/* Default MD spacing for slots */
+.tag-start:not(:empty) {
+  margin-right: var(--ty-spacing-3);
+  /* 12px */
+}
+
+.tag-end:not(:empty) {
+  margin-left: var(--ty-spacing-3);
+  /* 12px */
+}
+
+/* Dismiss button */
+.tag-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: var(--ty-spacing-3);
+  padding: 0;
+  background: none;
+  border: none;
+  color: currentColor;
+  cursor: pointer;
+  border-radius: var(--ty-radius-full);
+  transition: var(--ty-transition-all);
+  opacity: 0.7;
+  flex-shrink: 0;
+  /* Default MD dismiss button size */
+  width: var(--ty-spacing-4);
+  /* 16px */
+  height: var(--ty-spacing-4);
+}
+
+.tag-dismiss:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.tag-dismiss svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Size variants - override defaults */
+:host([size="xs"]) .tag-container {
+  padding: var(--ty-spacing-mini) var(--ty-spacing-2);
+  /* 2px 8px */
+  font-size: var(--ty-font-xs);
+  /* 12px */
+  line-height: var(--ty-line-height-tight);
+  min-width: var(--ty-spacing-10);
+  /* 40px */
+}
+
+:host([size="xs"]) .tag-start:not(:empty),
+:host([size="xs"]) .tag-end:not(:empty) {
+  margin-left: var(--ty-spacing-2);
+  /* 8px */
+  margin-right: var(--ty-spacing-2);
+}
+
+:host([size="xs"]) .tag-dismiss {
+  width: var(--ty-spacing-3);
+  /* 12px */
+  height: var(--ty-spacing-3);
+  margin-left: var(--ty-spacing-2);
+}
+
+:host([size="sm"]) .tag-container {
+  padding: var(--ty-spacing-1) var(--ty-spacing-3);
+  /* 4px 12px */
+  font-size: var(--ty-font-xs);
+  /* 12px */
+  line-height: var(--ty-line-height-tight);
+  min-width: var(--ty-spacing-12);
+  /* 48px */
+}
+
+:host([size="sm"]) .tag-start:not(:empty),
+:host([size="sm"]) .tag-end:not(:empty) {
+  margin-left: var(--ty-spacing-2);
+  /* 8px */
+  margin-right: var(--ty-spacing-2);
+}
+
+:host([size="sm"]) .tag-dismiss {
+  width: var(--ty-spacing-3);
+  /* 12px */
+  height: var(--ty-spacing-3);
+  margin-left: var(--ty-spacing-2);
+}
+
+/* MD is now the default - no need for explicit [size="md"] selector */
+/* All default styles above apply to MD size */
+
+:host([size="lg"]) .tag-container {
+  padding: var(--ty-spacing-3) var(--ty-spacing-5);
+  /* 12px 20px */
+  font-size: var(--ty-font-sm);
+  /* 14px */
+  line-height: var(--ty-line-height-tight);
+  min-width: var(--ty-spacing-20);
+  /* 80px */
+}
+
+:host([size="lg"]) .tag-start:not(:empty),
+:host([size="lg"]) .tag-end:not(:empty) {
+  margin-left: var(--ty-spacing-4);
+  /* 16px */
+  margin-right: var(--ty-spacing-4);
+}
+
+:host([size="lg"]) .tag-dismiss {
+  width: var(--ty-spacing-5);
+  /* 20px */
+  height: var(--ty-spacing-5);
+  margin-left: var(--ty-spacing-4);
+}
+
+:host([size="xl"]) .tag-container {
+  padding: var(--ty-spacing-4) var(--ty-spacing-6);
+  /* 16px 24px */
+  font-size: var(--ty-font-base);
+  /* 16px */
+  line-height: var(--ty-line-height-tight);
+  min-width: var(--ty-spacing-24);
+  /* 96px */
+}
+
+:host([size="xl"]) .tag-start:not(:empty),
+:host([size="xl"]) .tag-end:not(:empty) {
+  margin-left: var(--ty-spacing-4);
+  /* 16px */
+  margin-right: var(--ty-spacing-4);
+}
+
+:host([size="xl"]) .tag-dismiss {
+  width: var(--ty-spacing-5);
+  /* 20px */
+  height: var(--ty-spacing-5);
+  margin-left: var(--ty-spacing-4);
+}
+
+/* Flavor variants using centralized semantic colors */
+
+/* Neutral (default) */
+:host([flavor="neutral"]) .tag-container {
+  background: var(--ty-bg-neutral);
+  color: var(--ty-color-neutral-p3);
+  border-color: var(--ty-border-neutral);
+}
+
+:host([flavor="neutral"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-neutral-p1);
+}
+
+:host([flavor="neutral"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-neutral-m3);
+}
+
+/* Positive */
+:host([flavor="positive"]) .tag-container {
+  background: var(--ty-bg-positive);
+  color: var(--ty-color-positive-p3);
+  border-color: var(--ty-border-positive);
+}
+
+:host([flavor="positive"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-positive-p1);
+}
+
+:host([flavor="positive"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-positive-m3);
+}
+
+/* Negative */
+:host([flavor="negative"]) .tag-container {
+  background: var(--ty-bg-negative);
+  color: var(--ty-color-negative-p3);
+  border-color: var(--ty-border-negative);
+}
+
+:host([flavor="negative"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-negative-p1);
+}
+
+:host([flavor="negative"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-negative-m3);
+}
+
+/* Important */
+:host([flavor="important"]) .tag-container {
+  background: var(--ty-bg-important);
+  color: var(--ty-color-important-p3);
+  border-color: var(--ty-border-important);
+}
+
+:host([flavor="important"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-important-p1);
+}
+
+:host([flavor="important"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-important-m3);
+}
+
+/* Exception */
+:host([flavor="exception"]) .tag-container {
+  background: var(--ty-bg-exception);
+  color: var(--ty-color-exception-p3);
+  border-color: var(--ty-border-exception);
+}
+
+:host([flavor="exception"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-exception-p1);
+}
+
+:host([flavor="exception"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-exception-m3);
+}
+
+/* Unique */
+:host([flavor="unique"]) .tag-container {
+  background: var(--ty-bg-unique);
+  color: var(--ty-color-unique-p3);
+  border-color: var(--ty-border-unique);
+}
+
+:host([flavor="unique"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-unique-p1);
+}
+
+:host([flavor="unique"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
+}
+
+/* Slotted content styling */
+.tag-start ::slotted(*),
+.tag-content ::slotted(*),
+.tag-end ::slotted(*) {
+  display: flex;
+  align-items: center;
+}
+
+/* Icon sizing for slotted icons */
+.tag-start ::slotted(ty-icon),
+.tag-end ::slotted(ty-icon) {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+/* Count/badge styling using centralized spacing */
+.tag-end ::slotted(.count) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--ty-spacing-6);
+  /* 24px */
+  height: var(--ty-spacing-5);
+  /* 20px */
+  padding: 0 var(--ty-spacing-2);
+  /* 0 8px */
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: var(--ty-radius-full);
+  font-size: var(--ty-font-xs);
+  font-weight: var(--ty-font-semibold);
+  line-height: var(--ty-line-height-none);
+  flex-shrink: 0;
+}
+
+/* Special handling for long text content */
+.tag-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 12rem;
+}
+
+/* For user tags specifically */
+:host([data-type="user"]) .tag-content {
+  max-width: 16rem;
+}
+
+:host([data-type="user"]) .tag-container {
+  min-width: var(--ty-spacing-20);
+  /* 80px for user tags */
+}
+
+/* Dark mode is handled automatically by the centralized variables */

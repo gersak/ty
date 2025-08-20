@@ -56,7 +56,7 @@
   [el k]
   (let [v (attr el k)]
     (cond
-      (nil? v) false
+      (nil? v) nil
       (= "false" (str/lower-case v)) false
       :else true)))
 

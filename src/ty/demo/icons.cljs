@@ -1,16 +1,16 @@
 (ns ty.demo.icons
   "Icon registration for the demo application"
   (:require
-    [ty.fav6.brands :as fa-brands]
-    [ty.fav6.regular :as fa-regular]
-    [ty.fav6.solid :as fa-solid]
-    [ty.heroicons.mini :as hero-mini]
-    [ty.heroicons.outline :as hero-outline]
-    [ty.heroicons.solid :as hero-solid]
-    [ty.icons :as icons]
-    [ty.lucide :as lucide]
-    [ty.material.filled :as mat-filled]
-    [ty.material.outlined :as mat-outlined]))
+   [ty.fav6.brands :as fa-brands]
+   [ty.fav6.regular :as fa-regular]
+   [ty.fav6.solid :as fa-solid]
+   [ty.heroicons.mini :as hero-mini]
+   [ty.heroicons.outline :as hero-outline]
+   [ty.heroicons.solid :as hero-solid]
+   [ty.icons :as icons]
+   [ty.lucide :as lucide]
+   [ty.material.filled :as mat-filled]
+   [ty.material.outlined :as mat-outlined]))
 
 (defn register-demo-icons!
   "Register all icons used in the demo application"
@@ -44,6 +44,16 @@
                "message-square" lucide/message-square
                "hash" lucide/hash ; Icon for Formatting
                "layout" lucide/layout ; Icon for Layout
+               "tag" lucide/tag
+               "chevron-down" lucide/chevron-down
+               "filter" lucide/filter
+               "code" lucide/code
+               "check-circle" lucide/check-circle
+               "x-circle" lucide/x-circle
+               "clock" lucide/clock
+               "pause" lucide/pause
+               "exclamation" lucide/alert-triangle
+               "lightning-bolt" lucide/zap
 
                ;; Demo icons
                "loading" fa-solid/spinner

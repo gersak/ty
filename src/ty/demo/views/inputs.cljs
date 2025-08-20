@@ -44,7 +44,7 @@
 (defn numeric-formatting-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "🔢 Enhanced Numeric Formatting"]
-   [:p.text-sm.text-gray-600 "Type numbers and blur to see automatic formatting. No parsing - uses shadow values!"]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Type numbers and blur to see automatic formatting. No parsing - uses shadow values!"]
 
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
     [:div.space-y-4
@@ -83,7 +83,7 @@
 (defn currency-formatting-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "💰 Currency Formatting"]
-   [:p.text-sm.text-gray-600 "Automatic currency symbols and locale-aware formatting."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Automatic currency symbols and locale-aware formatting."]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
     [:ty-input {:type "currency"
@@ -127,7 +127,7 @@
 (defn error-handling-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "⚠️ Error Handling & Validation"]
-   [:p.text-sm.text-gray-600 "User-controlled error states with clean styling."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "User-controlled error states with clean styling."]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
     [:div.space-y-4
@@ -159,8 +159,9 @@
                   :label "Price Field"
                   :value "123.45"
                   :placeholder "Enter price"}]
-      [:button.px-4.py-2.bg-blue-500.text-white.rounded.hover:bg-blue-600
-       {:on {:click #(let [input (.getElementById js/document "toggle-error-demo")
+      [:button.px-4.py-2.rounded.transition-colors
+       {:class [:bg-blue-500 :hover:bg-blue-600 :text-white :dark:bg-blue-600 :dark:hover:bg-blue-700]
+        :on {:click #(let [input (.getElementById js/document "toggle-error-demo")
                            has-error (.hasAttribute input "error")]
                        (if has-error
                          (.removeAttribute input "error")
@@ -179,7 +180,7 @@
               (set! (.-scrollTop log) 0)))]
     [:div.space-y-6
      [:h3.text-lg.font-semibold "🔄 External Value Changes"]
-     [:p.text-sm.text-gray-600 "Test shadow value synchronization with programmatic updates."]
+     [:p.text-sm.text-gray-600.dark:text-gray-400 "Test shadow value synchronization with programmatic updates."]
      [:div.space-y-4
       [:ty-input
        {:id "external-demo"
@@ -191,34 +192,39 @@
         :on {:change process}}]
 
       [:div.flex.flex-wrap.gap-2
-       [:button.px-3.py-1.bg-green-500.text-white.rounded.text-sm.hover:bg-green-600
-        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "250.75")}}
+       [:button.px-3.py-1.rounded.text-sm.transition-colors
+        {:class [:bg-green-500.dark:bg-green-600 :hover:bg-green-600 :text-white :dark:bg-green-600 :dark:hover:bg-green-700]
+         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "250.75")}}
         "Set $250.75"]
-       [:button.px-3.py-1.bg-blue-500.text-white.rounded.text-sm.hover:bg-blue-600
-        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "1000")}}
+       [:button.px-3.py-1.rounded.text-sm.transition-colors
+        {:class [:bg-blue-500 :hover:bg-blue-600 :text-white :dark:bg-blue-600 :dark:hover:bg-blue-700]
+         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "1000")}}
         "Set $1,000"]
-       [:button.px-3.py-1.bg-purple-500.text-white.rounded.text-sm.hover:bg-purple-600
-        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "99.99")}}
+       [:button.px-3.py-1.rounded.text-sm.transition-colors
+        {:class [:bg-purple-500 :hover:bg-purple-600 :text-white :dark:bg-purple-600 :dark:hover:bg-purple-700]
+         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "99.99")}}
         "Set $99.99"]
-       [:button.px-3.py-1.bg-gray-500.text-white.rounded.text-sm.hover:bg-gray-600
-        {:on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "")}}
+       [:button.px-3.py-1.rounded.text-sm.transition-colors
+        {:class [:bg-gray-500 :hover:bg-gray-600 :text-white :dark:bg-gray-600 :dark:hover:bg-gray-700]
+         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "")}}
         "Clear"]]
 
       [:div.mt-4
        [:h5.font-medium.text-sm "Event Log:"]
-       [:pre#event-log.bg-black.text-green-400.p-3.rounded.font-mono.text-xs.h-24.overflow-y-auto
+       [:pre#event-log.p-3.rounded.font-mono.text-xs.h-24.overflow-y-auto.transition-colors
+        {:class [:bg-gray-900 :text-green-400 :dark:bg-gray-800 :dark:text-green-300]}
         "Type in the input above or click buttons to see events..."]]]]))
 
 (defn comprehensive-form-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "💼 Professional Invoice Form"]
-   [:p.text-sm.text-gray-600 "Real-world example showcasing various numeric input types in context."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Real-world example showcasing various numeric input types in context."]
 
    [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
      ;; Client Information
      [:div.space-y-4
-      [:h4.font-medium.border-b.pb-2 "Client Information"]
+      [:h4.font-medium.border-b.dark:border-gray-600.pb-2 "Client Information"]
       [:ty-input {:type "text"
                   :label "Company Name"
                   :required true
@@ -233,7 +239,7 @@
 
      ;; Invoice Details  
      [:div.space-y-4
-      [:h4.font-medium.border-b.pb-2 "Invoice Details"]
+      [:h4.font-medium.border-b.dark:border-gray-600.pb-2 "Invoice Details"]
       [:ty-input {:type "text"
                   :label "Invoice Number"
                   :value "INV-001"
@@ -249,7 +255,7 @@
 
     ;; Line Items with Numeric Formatting
     [:div.mt-6.space-y-4
-     [:h4.font-medium.border-b.pb-2 "Line Items"]
+     [:h4.font-medium.border-b.dark:border-gray-600.pb-2 "Line Items"]
      [:div.grid.grid-cols-1.md:grid-cols-12.gap-4.items-end
       [:div.md:col-span-5
        [:ty-input {:type "text"
@@ -297,7 +303,7 @@
                    :disabled true}]]]]
 
     ;; Summary with formatted totals
-    [:div.mt-6.pt-4.border-t
+    [:div.mt-6.pt-4.border-t.dark:border-gray-600
      [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
       [:div] ;; Spacer
       [:div.space-y-3
@@ -315,14 +321,13 @@
                     :value "252.00"
                     :disabled true
                     :size "sm"}]]
-       [:div.flex.justify-between.items-center.border-t.pt-2
+       [:div.flex.justify-between.items-center.border-t.dark:border-gray-600.pt-2
         [:span.font-bold.text-lg "Total:"]
         [:ty-input {:type "currency"
                     :currency "USD"
                     :value "3402.00"
                     :disabled true
                     :flavor "important"}]]]]]]])
-
 
 (defn size-variants-demo []
   [:div.space-y-6
@@ -370,10 +375,10 @@
 (defn container-aware-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "Container-Aware Inputs"]
-   [:p.text-sm.text-gray-600 "These inputs adapt to their container size using the layout context."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "These inputs adapt to their container size using the layout context."]
 
    ;; Resizable container demo
-   [:ty-resize-observer#input-container.bg-blue-50.dark:bg-blue-900.border-2.border-blue-200.dark:border-blue-700.rounded-lg.p-4.resize.overflow-auto
+   [:ty-resize-observer#input-container.bg-blue-50.dark:bg-blue-900.border-2.border-b.dark:border-gray-600lue-200.dark:border-blue-700.rounded-lg.p-4.resize.overflow-auto
     {:style {:min-width "200px"
              :min-height "200px"
              :width "400px"
@@ -382,8 +387,8 @@
       [:div.space-y-4
        [:div.text-center
         [:h4.font-semibold "Resizable Container"]
-        [:p.text-sm.text-gray-600 "Container: " (layout/container-width) "×" (layout/container-height) "px"]
-        [:p.text-xs.text-gray-500 "Breakpoint: " (name (layout/container-breakpoint))]]
+        [:p.text-sm.text-gray-600.dark:text-gray-400 "Container: " (layout/container-width) "×" (layout/container-height) "px"]
+        [:p.text-xs.text-gray-500.dark:text-gray-500 "Breakpoint: " (name (layout/container-breakpoint))]]
 
        [:div.space-y-3
         [:ty-input {:label "Responsive Input"
@@ -402,7 +407,7 @@
 (defn form-layout-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "Professional Form Layouts"]
-   [:p.text-sm.text-gray-600 "Clean, elegant forms with proper spacing and visual hierarchy."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Clean, elegant forms with proper spacing and visual hierarchy."]
 
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
     ;; Contact form with refined spacing like toddler
@@ -451,7 +456,7 @@
 (defn event-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "Event Handling"]
-   [:p.text-sm.text-gray-600 "Check the browser console to see custom events fired by inputs."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Check the browser console to see custom events fired by inputs."]
    [:div.space-y-3
     [:ty-input {:label "Input Events"
                 :placeholder "Type here and check console"
@@ -465,12 +470,12 @@
 
 (defn inputs-view []
   (layout/with-window
-    [:div.p-8.max-w-6xl.mx-auto.space-y-8
+    [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400
      [:div
       [:h1.text-3xl.font-bold.mb-4 "Enhanced Input Components"]
-      [:p.text-gray-600
+      [:p
        "Form inputs with sophisticated numeric formatting, shadow values, and layout integration."]
-      [:p.text-sm.text-gray-500.mt-2
+      [:p.text-sm.text-gray-500.dark:text-gray-500.mt-2
        "✨ NEW: Auto-formatting on blur, currency support, locale-aware formatting, and error handling!"]]
 
      ;; Highlight the new numeric formatting capabilities first

@@ -1,10 +1,10 @@
 (ns ty.demo.views.formatting
   "Demonstrates number and date formatting"
   (:require
-   [ty.i18n :as i18n]
-   [ty.i18n.number :as number]
-   [ty.i18n.time :as time]
-   [ty.demo.state :refer [state]]))
+    [ty.demo.state :refer [state]]
+    [ty.i18n :as i18n]
+    [ty.i18n.number :as number]
+    [ty.i18n.time :as time]))
 
 (defn number-formatting-examples []
   (let [locale (:locale @state i18n/*locale*)
@@ -13,7 +13,7 @@
         currency-amount 1999.99]
     [:div.space-y-4
      [:h3.text-lg.font-semibold "Number Formatting"]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Basic Number"]
       [:div.grid.grid-cols-2.gap-4.text-sm
@@ -23,7 +23,7 @@
        [:div
         [:code "(i18n/t " sample-number " :" (name locale) ")"]
         [:span.ml-2 "→ " (i18n/t sample-number locale)]]]]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Currency"]
       [:div.grid.grid-cols-2.gap-4.text-sm
@@ -39,7 +39,7 @@
        [:div
         [:code "(i18n/t " currency-amount " \"JPY\")"]
         [:span.ml-2 "→ " (i18n/t currency-amount "JPY")]]]]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Percentages"]
       [:div.grid.grid-cols-2.gap-4.text-sm
@@ -49,7 +49,7 @@
        [:div
         [:code "(number/format-percent 0.1234)"]
         [:span.ml-2 "→ " (number/format-percent 0.1234)]]]]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Compact Notation"]
       [:div.grid.grid-cols-2.gap-4.text-sm
@@ -68,7 +68,7 @@
         sample-date (js/Date.)]
     [:div.space-y-4
      [:h3.text-lg.font-semibold "Date/Time Formatting"]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Date Styles"]
       [:div.space-y-1.text-sm
@@ -87,7 +87,7 @@
        [:div
         [:code "(i18n/t sample-date \"full\")"]
         [:span.ml-2 "→ " (i18n/t sample-date "full")]]]]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Time Formatting"]
       [:div.space-y-1.text-sm
@@ -97,16 +97,20 @@
        [:div
         [:code "(i18n/t sample-date \"datetime\")"]
         [:span.ml-2 "→ " (i18n/t sample-date "datetime")]]]]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Custom Formatting"]
       [:div.space-y-1.text-sm
        [:div
         [:code "(time/format-date sample-date locale {:year \"numeric\" :month \"long\" :day \"numeric\"})"]
-        [:div.ml-2 "→ " (time/format-date sample-date locale {:year "numeric" :month "long" :day "numeric"})]]
+        [:div.ml-2 "→ " (time/format-date sample-date locale {:year "numeric"
+                                                              :month "long"
+                                                              :day "numeric"})]]
        [:div
         [:code "(time/format-date sample-date locale {:weekday \"long\" :hour \"2-digit\" :minute \"2-digit\"})"]
-        [:div.ml-2 "→ " (time/format-date sample-date locale {:weekday "long" :hour "2-digit" :minute "2-digit"})]]]]]))
+        [:div.ml-2 "→ " (time/format-date sample-date locale {:weekday "long"
+                                                              :hour "2-digit"
+                                                              :minute "2-digit"})]]]]]))
 
 (defn relative-time-examples []
   [:div.space-y-4
@@ -129,7 +133,7 @@
   (let [locale (:locale @state i18n/*locale*)]
     [:div.space-y-4
      [:h3.text-lg.font-semibold "Locale Information"]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Weekdays"]
       [:div.text-sm
@@ -137,7 +141,7 @@
        [:div.flex.flex-wrap.gap-2.mt-2
         (for [day (i18n/locale locale :weekdays)]
           [:span.px-2.py-1.bg-gray-100.rounded {:key day} day])]]]
-     
+
      [:div.space-y-2
       [:h4.font-medium "Months"]
       [:div.text-sm
@@ -149,13 +153,13 @@
 (defn formatting-view []
   (let [locale (:locale @state i18n/*locale*)]
     (binding [i18n/*locale* locale]
-      [:div.p-8.max-w-6xl.mx-auto.space-y-8
+      [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400
        [:div
         [:h1.text-3xl.font-bold.mb-4 "Number & Date Formatting"]
-        [:p.text-gray-600 
+        [:p
          "Format numbers, currencies, dates, and times using native Intl API."]]
-       
-       [:div.bg-white.rounded-lg.shadow-md.p-6
+
+       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.text
         [:div.flex.items-center.gap-4.mb-6
          [:span.font-medium "Current locale:"]
          [:select.px-3.py-2.border.rounded-md
@@ -168,15 +172,15 @@
           [:option {:value "fr"} "Français"]
           [:option {:value "es"} "Español"]
           [:option {:value "ja"} "日本語"]]]]
-       
-       [:div.bg-white.rounded-lg.shadow-md.p-6
+
+       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
         (number-formatting-examples)]
-       
-       [:div.bg-white.rounded-lg.shadow-md.p-6
+
+       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
         (date-formatting-examples)]
-       
-       [:div.bg-white.rounded-lg.shadow-md.p-6
+
+       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
         (relative-time-examples)]
-       
-       [:div.bg-white.rounded-lg.shadow-md.p-6
+
+       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
         (locale-info-examples)]])))

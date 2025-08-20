@@ -204,7 +204,7 @@
        [:div.flex.items-end.mb-1
         [:button.px-4.py-2.rounded-md.text-sm.font-medium.transition-colors
          {:class (if show-demo?
-                   [:bg-ty-important :text-white]
+                   [:bg-ty-important :text-white :dark:text-white]
                    [:bg-gray-100 "dark:bg-gray-700" :text-gray-700 "dark:text-gray-300"])
           :on {:click #(router/set-query! (merge (when-not (str/blank? search-term)
                                                    {:search search-term})

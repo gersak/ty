@@ -42,29 +42,29 @@
      [:span.font-medium "breakpoint>= :md"]
      [:span.px-2.py-1.rounded.text-xs
       {:class (if (layout/breakpoint>= :md)
-                [:bg-green-500 :text-white]
-                [:bg-gray-300 :text-gray-700])}
+                [:bg-green-500.dark:bg-green-600 :text-white :dark:text-white]
+                [:bg-gray-300 :text-gray-700 :dark:bg-gray-600 :dark:text-gray-300])}
       (str (layout/breakpoint>= :md))]]
     [:div.flex.items-center.gap-2
      [:span.font-medium "breakpoint<= :lg"]
      [:span.px-2.py-1.rounded.text-xs
       {:class (if (layout/breakpoint<= :lg)
-                [:bg-green-500 :text-white]
-                [:bg-gray-300 :text-gray-700])}
+                [:bg-green-500.dark:bg-green-600 :text-white :dark:text-white]
+                [:bg-gray-300 :text-gray-700 :dark:bg-gray-600 :dark:text-gray-300])}
       (str (layout/breakpoint<= :lg))]]
     [:div.flex.items-center.gap-2
      [:span.font-medium "portrait?"]
      [:span.px-2.py-1.rounded.text-xs
       {:class (if (layout/portrait?)
-                [:bg-green-500 :text-white]
-                [:bg-gray-300 :text-gray-700])}
+                [:bg-green-500.dark:bg-green-600 :text-white :dark:text-white]
+                [:bg-gray-300 :text-gray-700 :dark:bg-gray-600 :dark:text-gray-300])}
       (str (layout/portrait?))]]
     [:div.flex.items-center.gap-2
      [:span.font-medium "landscape?"]
      [:span.px-2.py-1.rounded.text-xs
       {:class (if (layout/landscape?)
-                [:bg-green-500 :text-white]
-                [:bg-gray-300 :text-gray-700])}
+                [:bg-green-500.dark:bg-green-600 :text-white :dark:text-white]
+                [:bg-gray-300 :text-gray-700 :dark:bg-gray-600 :dark:text-gray-300])}
       (str (layout/landscape?))]]]])
 
 (defn responsive-grid-demo []
@@ -158,7 +158,7 @@
 (defn resize-observer-basic-demo []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Basic Resize Observer"]
-   [:p.text-sm.text-gray-600 "Drag the bottom-right corner to resize this panel."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Drag the bottom-right corner to resize this panel."]
    [:ty-resize-observer#basic-demo.bg-blue-50.dark:bg-blue-900.border-2.border-blue-200.dark:border-blue-700.rounded-lg.p-4.resize.overflow-auto
     {:style {:min-width "200px"
              :min-height "150px"
@@ -168,7 +168,7 @@
       [:div.space-y-3
        [:div.text-center
         [:h4.font-semibold "Resizable Panel"]
-        [:p.text-sm.text-gray-600 "This content is aware of its container size"]]
+        [:p.text-sm.text-gray-600.dark:text-gray-400 "This content is aware of its container size"]]
        [:div.bg-white.dark:bg-gray-800.rounded.p-3
         [:div.text-sm
          [:div [:span.font-medium "Width: "] [:span.font-mono (layout/container-width) "px"]]
@@ -183,7 +183,7 @@
 (defn resize-observer-responsive-grid []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Container-Aware Responsive Grid"]
-   [:p.text-sm.text-gray-600 "This grid adapts based on the container size, not window size."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "This grid adapts based on the container size, not window size."]
    [:ty-resize-observer#grid-demo.bg-gray-50.dark:bg-gray-800.border-2.border-gray-200.dark:border-gray-600.rounded-lg.p-4.resize.overflow-auto
     {:style {:min-width "200px"
              :min-height "200px"
@@ -198,7 +198,7 @@
         [:div.space-y-3
          [:div.text-center
           [:div.text-sm [:span.font-medium "Grid columns: "] [:span.font-mono columns]]
-          [:div.text-xs.text-gray-500 "Based on container breakpoint: " (name (layout/container-breakpoint))]]
+          [:div.text-xs.text-gray-500.dark:text-gray-500 "Based on container breakpoint: " (name (layout/container-breakpoint))]]
          [:div.grid.gap-2
           {:style {:grid-template-columns (str "repeat(" columns ", minmax(0, 1fr))")}}
           (for [i (range 8)]
@@ -209,7 +209,7 @@
 (defn resize-observer-flexbox-demo []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Flexbox Layout with Resize Observer"]
-   [:p.text-sm.text-gray-600 "Both panels use resize observers for layout context."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Both panels use resize observers for layout context."]
    [:div.flex.gap-4.h-80
     [:ty-resize-observer#flex-sidebar.bg-purple-50.dark:bg-purple-900.border-2.border-purple-200.dark:border-purple-700.rounded-lg.p-4.resize.overflow-auto
      {:style {:min-width "150px"
@@ -242,7 +242,7 @@
 (defn resize-observer-nested-demo []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Nested Resize Observers"]
-   [:p.text-sm.text-gray-600 "Nested containers, each with their own resize observer."]
+   [:p.text-sm.text-gray-600.dark:text-gray-400 "Nested containers, each with their own resize observer."]
    [:ty-resize-observer#outer-container.bg-blue-50.dark:bg-blue-900.border-2.border-blue-300.dark:border-blue-600.rounded-lg.p-4.resize.overflow-auto
     {:style {:min-width "300px"
              :min-height "200px"
@@ -275,7 +275,7 @@
         main-size (layout/get-element-size "flex-main")]
     [:div.space-y-4
      [:h3.text-lg.font-semibold "Resize Observer API"]
-     [:p.text-sm.text-gray-600 "Direct access to element sizes from anywhere in the application."]
+     [:p.text-sm.text-gray-600.dark:text-gray-400 "Direct access to element sizes from anywhere in the application."]
      [:div.bg-gray-50.dark:bg-gray-800.rounded-lg.p-4
       [:div.space-y-3
        [:div
@@ -309,7 +309,7 @@
     (let [{:keys [width height]} @layout/window-size]
       [:div.space-y-1
        [:div "Window: " [:span.font-mono width " x " height] "px"]
-       [:div.text-xs.text-gray-500 "Resize the window to see updates"]])]])
+       [:div.text-xs.text-gray-500.dark:text-gray-500 "Resize the window to see updates"]])]])
 
 (defn window-vs-container-demo []
   [:div.space-y-4
@@ -329,7 +329,7 @@
   ;; Use the with-window macro instead of manual tracking
   [:ty-resize-observer#layout-core-features
    (layout/with-resize-observer "layout-core-features"
-     [:div.p-8.max-w-6xl.mx-auto.space-y-8
+     [:div.p-8.max-w-6xl.mx-auto.space-y-8.dark:text-gray-200
       [:div
        [:h1.text-3xl.font-bold.mb-4 "Layout Context System"]
        [:p.text-gray-600

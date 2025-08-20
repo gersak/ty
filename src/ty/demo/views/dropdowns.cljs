@@ -46,7 +46,7 @@
               :description "Disable search functionality for simple selection"
               :children [[:div.max-w-xs
                           [:ty-dropdown {:value "medium"
-                                         :searchable false
+                                         :searchable "false"
                                          :placeholder "Select size..."
                                          :on {:change dropdown-event-handler}}
                            [:option {:value "small"} "Small"]

@@ -51,10 +51,9 @@
   [^js el]
   {:value (or (wcs/attr el "value") "")
    :placeholder (or (wcs/attr el "placeholder") "Select an option...")
-   :searchable (let [searchable-attr (wcs/attr el "searchable")]
-                 (if (nil? searchable-attr)
-                   true ; default to true if not specified
-                   (wcs/parse-bool-attr el "searchable")))
+   :searchable (if (not (wcs/attr el "searchable"))
+                 true
+                 (wcs/parse-bool-attr el "searchable"))
    :disabled (wcs/parse-bool-attr el "disabled")
    :readonly (wcs/parse-bool-attr el "readonly")
    :size (or (wcs/attr el "size") "md")
@@ -237,7 +236,6 @@
     (.delete position-cleanup-fns el))
   (set-component-state! el {:position-cleanup nil}))
 
-
 (defn close-dropdown!
   "Close dropdown and reset state"
   [^js el ^js shadow-root]
@@ -272,7 +270,7 @@
 (defn open-dropdown!
   "Open dropdown with smart positioning and global management"
   [^js el ^js shadow-root]
-  (let [{:keys [disabled readonly]} (dropdown-attributes el)]
+  (let [{:keys [disabled readonly searchable]} (dropdown-attributes el)]
     (when-not (or disabled readonly)
       ;; Close all other dropdowns first
       (close-other-dropdowns! el)
@@ -283,6 +281,11 @@
       (set-component-state! el {:open true})
       (let [options-container (.querySelector shadow-root ".dropdown-options")
             chevron (.querySelector shadow-root ".dropdown-chevron")]
+
+        ;; For non-searchable dropdowns, ensure all options are visible
+        (when-not searchable
+          (let [options (map get-option-data (get-options shadow-root))]
+            (update-option-visibility! options options)))
 
         (when options-container
           ;; Hide the dropdown initially to calculate position without visible movement
@@ -319,17 +322,20 @@
 (defn handle-input-change!
   "Handle input value change for search"
   [^js el ^js shadow-root ^js event]
-  (let [search (.-value (.-target event))
-        options (map get-option-data (get-options shadow-root))
-        filtered (filter-options options search)]
-    (set-component-state! el {:search search
-                              :filtered-options filtered
-                              :highlighted-index -1})
-    (update-option-visibility! filtered options)
-    (clear-highlights! options)
+  (let [{:keys [searchable]} (dropdown-attributes el)]
+    ;; Only process search if dropdown is searchable
+    (when searchable
+      (let [search (.-value (.-target event))
+            options (map get-option-data (get-options shadow-root))
+            filtered (filter-options options search)]
+        (set-component-state! el {:search search
+                                  :filtered-options filtered
+                                  :highlighted-index -1})
+        (update-option-visibility! filtered options)
+        (clear-highlights! options)
 
-    ;; Update position after filtering (height might change)
-    (js/setTimeout #(update-dropdown-position! el shadow-root) 16)))
+        ;; Update position after filtering (height might change)
+        (js/setTimeout #(update-dropdown-position! el shadow-root) 16)))))
 
 (defn handle-option-click!
   "Handle click on option"
@@ -482,7 +488,13 @@
       (setup-event-listeners! el root))
 
     ;; Update input display to match current value
-    (update-input-display! el root)))
+    (update-input-display! el root)
+
+    ;; For non-searchable dropdowns, ensure all options are visible
+    (when-not searchable
+      (let [options (map get-option-data (get-options root))]
+        (when (seq options)
+          (update-option-visibility! options options))))))
 
 (defn cleanup! [^js el]
   (when-let [cleanup-fn (.-tyDropdownCleanup el)]

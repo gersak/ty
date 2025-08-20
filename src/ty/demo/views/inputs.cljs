@@ -168,16 +168,15 @@
        "Toggle Error State"]]]]])
 
 (defn external-value-demo []
-  (letfn [(process [e]
-            (.log js/console "EVNT: " e)
-            #_(let [log (.getElementById js/document "event-log")
-                    timestamp (.toLocaleTimeString (js/Date.))
-                    detail (.-detail e)
-                    entry (str "[" timestamp "] CHANGE: "
-                               "value=" (.-value detail)
-                               " formatted=" (.-formattedValue detail))]
-                (set! (.-textContent log) (str entry "\n" (.-textContent log)))
-                (set! (.-scrollTop log) 0)))]
+  (letfn [(process [^js e]
+            (let [log (.getElementById js/document "event-log")
+                  timestamp (.toLocaleTimeString (js/Date.))
+                  detail (.-detail e)
+                  entry (str "[" timestamp "] CHANGE: "
+                             "value=" (.-value detail)
+                             " formatted=" (.-formattedValue detail))]
+              (set! (.-textContent log) (str entry "\n" (.-textContent log)))
+              (set! (.-scrollTop log) 0)))]
     [:div.space-y-6
      [:h3.text-lg.font-semibold "🔄 External Value Changes"]
      [:p.text-sm.text-gray-600 "Test shadow value synchronization with programmatic updates."]
@@ -208,7 +207,7 @@
 
       [:div.mt-4
        [:h5.font-medium.text-sm "Event Log:"]
-       [:div#event-log.bg-black.text-green-400.p-3.rounded.font-mono.text-xs.h-24.overflow-y-auto
+       [:pre#event-log.bg-black.text-green-400.p-3.rounded.font-mono.text-xs.h-24.overflow-y-auto
         "Type in the input above or click buttons to see events..."]]]]))
 
 (defn comprehensive-form-demo []

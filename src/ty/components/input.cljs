@@ -1,7 +1,6 @@
 (ns ty.components.input
   "Enhanced input component with numeric formatting via shadow values"
-  (:require [cljs-bean.core :refer [->clj ->js]]
-            [ty.css :refer [ensure-styles!]]
+  (:require [ty.css :refer [ensure-styles!]]
             [ty.i18n :as i18n]
             [ty.i18n.number :as num]
             [ty.shim :as wcs])
@@ -30,16 +29,16 @@
     :else nil))
 
 (defn get-format-config
-  "Extract formatting configuration from element attributes"
+  "Extract formatting configuration from element attributes as JS object"
   [^js el]
   (let [type (wcs/attr el "type")
         currency (wcs/attr el "currency")
-        locale (or (wcs/attr el "locale") i18n/*locale*)
+        locale (or (wcs/attr el "locale") (name i18n/*locale*))
         precision (when-let [p (wcs/attr el "precision")]
                     (js/parseInt p))]
     {:type (or type "text")
      :currency (or currency "USD")
-     :locale (keyword locale)
+     :locale locale
      :precision precision}))
 
 (defn get-component-state
@@ -47,21 +46,18 @@
   [^js el]
   (or (.-tyInputState el)
       (let [initial-value (wcs/attr el "value")
-            shadow-value (parse-shadow-value initial-value)
-            format-config (get-format-config el)]
+            shadow-value (parse-shadow-value initial-value)]
         (set! (.-tyInputState el)
-              #js {:shadowValue shadow-value
-                   :lastExternalValue (or initial-value "")
-                   :isFocused false
-                   :formatConfig (->js format-config)})
+              {:shadow-value shadow-value
+               :last-external-value (or initial-value "")
+               :is-focused false})
         (.-tyInputState el))))
 
 (defn update-component-state!
   "Update component state"
   [^js el updates]
   (let [state (get-component-state el)]
-    (doseq [[k v] updates]
-      (aset state (name k) (if (keyword? k) (->js v) v)))))
+    (set! (.-tyInputState el) (merge state updates))))
 
 ;; =====================================================
 ;; Formatting Functions
@@ -69,7 +65,8 @@
 
 (defn format-shadow-value
   "Format shadow value according to type and config"
-  [shadow-value {:keys [type currency locale precision]}]
+  [shadow-value {:keys [type currency locale precision]
+                 :as config}]
   (when shadow-value
     (let [options (cond-> {}
                     precision (assoc :minimumFractionDigits precision
@@ -84,10 +81,9 @@
 (defn get-display-value
   "Get the value that should be displayed in input"
   [^js el]
-  (let [state (get-component-state el)
-        shadow-value (.-shadowValue state)
-        is-focused (.-isFocused state)
-        format-config (->clj (.-formatConfig state) :keywordize-keys true)
+  (let [{:keys [shadow-value is-focused]
+         :as state} (get-component-state el)
+        format-config (get-format-config el)
         should-format (and (should-format? (:type format-config))
                            (not is-focused)
                            shadow-value)]
@@ -102,9 +98,9 @@
 (defn emit-value-events!
   "Emit custom input events with shadow and formatted values"
   [^js el ^js original-event]
-  (let [state (get-component-state el)
-        shadow-value (.-shadowValue state)
-        format-config (->clj (.-formatConfig state) :keywordize-keys true)
+  (let [{:keys [shadow-value]
+         :as state} (get-component-state el)
+        format-config (get-format-config el)
         formatted-value (when shadow-value
                           (format-shadow-value shadow-value format-config))
         data #js {:bubbles true
@@ -115,7 +111,6 @@
                                :originalEvent original-event}}]
 
     (doseq [e ["input" "change"]]
-      (.log js/console "Dispatching: " e data)
       (.dispatchEvent el (js/CustomEvent. e data)))))
 
 (defn handle-input-event
@@ -123,13 +118,13 @@
   [^js el ^js e]
   (let [input-value (.-value (.-target e))
         shadow-value (parse-shadow-value input-value)]
-    (update-component-state! el {:shadowValue shadow-value})
+    (update-component-state! el {:shadow-value shadow-value})
     (emit-value-events! el e)))
 
 (defn handle-focus-event
   "Handle focus event - show raw shadow value"
   [^js el ^js e]
-  (update-component-state! el {:isFocused true})
+  (update-component-state! el {:is-focused true})
   (let [display-value (get-display-value el)
         input-el (.-target e)]
     (set! (.-value input-el) display-value)))
@@ -137,7 +132,7 @@
 (defn handle-blur-event
   "Handle blur event - show formatted value"
   [^js el ^js e]
-  (update-component-state! el {:isFocused false})
+  (update-component-state! el {:is-focused false})
   (let [display-value (get-display-value el)
         input-el (.-target e)]
     (set! (.-value input-el) display-value))
@@ -152,15 +147,14 @@
   "Sync external value changes with shadow value"
   [^js el]
   (let [current-value (wcs/attr el "value")
-        state (get-component-state el)
-        last-external-value (.-lastExternalValue state)]
+        {:keys [last-external-value]
+         :as state} (get-component-state el)]
 
     ;; Only sync if external value actually changed
     (when (not= current-value last-external-value)
       (let [new-shadow-value (parse-shadow-value current-value)]
-        (update-component-state! el
-                                 {:shadowValue new-shadow-value
-                                  :lastExternalValue (or current-value "")})
+        (update-component-state! el {:shadow-value new-shadow-value
+                                     :last-external-value (or current-value "")})
 
         ;; Update input display
         (when-let [input-el (.querySelector (wcs/ensure-shadow el) "input")]
@@ -171,8 +165,10 @@
             (js/CustomEvent. e
                              #js {:bubbles true
                                   :composed true
-                                  :detail #js {:value current-value
-                                               :formattedValue new-shadow-value
+                                  :detail #js {:value new-shadow-value
+                                               :formattedValue (format-shadow-value
+                                                                 current-value
+                                                                 (get-format-config el))
                                                :originalEvent nil}})))))))
 
 ;; =====================================================

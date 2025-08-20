@@ -54,6 +54,7 @@
                "pause" lucide/pause
                "exclamation" lucide/alert-triangle
                "lightning-bolt" lucide/zap
+               "server" lucide/server
 
                ;; Demo icons
                "loading" fa-solid/spinner

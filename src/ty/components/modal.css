@@ -1,0 +1,201 @@
+/* Modal Host Styling */
+:host {
+  display: contents;
+  /* Don't interfere with layout */
+}
+
+.close-button {
+  position: absolute;
+  top: 5px;
+  right: 2px;
+  background: transparent;
+  border: none;
+}
+
+.close-button.hide {
+  visibility: hidden;
+}
+
+/* Dialog Element - Native HTML Dialog */
+.ty-modal-dialog {
+  /* Reset default dialog styles */
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  padding: 30px;
+
+  /* Modal positioning */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  /* Layer management */
+  z-index: 1000;
+
+  /* Remove default backdrop */
+  background: transparent;
+}
+
+/* Custom backdrop using ::backdrop pseudo-element */
+.ty-modal-dialog::backdrop {
+  background: var(--ty-modal-backdrop, rgba(0, 0, 0, 0.5));
+  backdrop-filter: var(--ty-modal-backdrop-blur, blur(2px));
+  animation: ty-modal-backdrop-enter var(--ty-modal-duration, 200ms) ease-out;
+}
+
+/* When backdrop is disabled */
+.ty-modal-dialog:not([data-backdrop])::backdrop {
+  background: transparent;
+  backdrop-filter: none;
+}
+
+/* Modal Content Container */
+.modal-content {
+  background: var(--ty-modal-bg, #ffffff);
+  border-radius: var(--ty-modal-border-radius, 8px);
+  box-shadow: var(--ty-modal-shadow,
+      0 20px 25px -5px rgba(0, 0, 0, 0.1),
+      0 10px 10px -5px rgba(0, 0, 0, 0.04));
+
+  /* Default modal styling */
+  max-height: 90vh;
+  max-width: 90vw;
+  overflow: auto;
+
+  /* Animation */
+  animation: ty-modal-content-enter var(--ty-modal-duration, 200ms) ease-out;
+
+  /* Ensure content is scrollable if needed */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Size Variants */
+.ty-modal-dialog.sm .modal-content {
+  width: var(--ty-modal-sm-width, 300px);
+  min-width: var(--ty-modal-sm-min-width, 280px);
+}
+
+.ty-modal-dialog.md .modal-content {
+  width: var(--ty-modal-md-width, 500px);
+  min-width: var(--ty-modal-md-min-width, 400px);
+}
+
+.ty-modal-dialog.lg .modal-content {
+  width: var(--ty-modal-lg-width, 700px);
+  min-width: var(--ty-modal-lg-min-width, 600px);
+}
+
+.ty-modal-dialog.xl .modal-content {
+  width: var(--ty-modal-xl-width, 900px);
+  min-width: var(--ty-modal-xl-min-width, 800px);
+}
+
+.ty-modal-dialog.full .modal-content {
+  width: var(--ty-modal-full-width, 95vw);
+  height: var(--ty-modal-full-height, 95vh);
+  max-width: none;
+  max-height: none;
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 640px) {
+  .ty-modal-dialog .modal-content {
+    width: 95vw !important;
+    min-width: unset !important;
+    max-width: none;
+    margin: 20px;
+  }
+
+  .ty-modal-dialog.full .modal-content {
+    width: 100vw !important;
+    height: 100vh !important;
+    margin: 0;
+    border-radius: 0;
+  }
+}
+
+/* Animation Keyframes */
+@keyframes ty-modal-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes ty-modal-content-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Focus management */
+.ty-modal-dialog {
+  outline: none;
+}
+
+.ty-modal-dialog:focus-visible {
+  outline: 2px solid var(--ty-color-important, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Dark theme support */
+.dark .modal-content {
+  background: var(--ty-modal-bg-dark, #1f2937);
+  color: var(--ty-modal-color-dark, #f9fafb);
+  border: 1px solid var(--ty-modal-border-dark, #374151);
+}
+
+.dark .ty-modal-dialog::backdrop {
+  background: var(--ty-modal-backdrop-dark, rgba(0, 0, 0, 0.7));
+}
+
+/* CSS Custom Properties for Theming */
+:root {
+  /* Light theme modal colors */
+  --ty-modal-bg: #ffffff;
+  --ty-modal-color: #111827;
+  --ty-modal-border: #e5e7eb;
+  --ty-modal-backdrop: rgba(0, 0, 0, 0.5);
+  --ty-modal-backdrop-blur: blur(2px);
+
+  /* Modal sizing */
+  --ty-modal-border-radius: 8px;
+  --ty-modal-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* Size variants */
+  --ty-modal-sm-width: 300px;
+  --ty-modal-sm-min-width: 280px;
+  --ty-modal-md-width: 500px;
+  --ty-modal-md-min-width: 400px;
+  --ty-modal-lg-width: 700px;
+  --ty-modal-lg-min-width: 600px;
+  --ty-modal-xl-width: 900px;
+  --ty-modal-xl-min-width: 800px;
+  --ty-modal-full-width: 95vw;
+  --ty-modal-full-height: 95vh;
+
+  /* Animation */
+  --ty-modal-duration: 200ms;
+}
+
+/* Dark theme overrides */
+.dark {
+  --ty-modal-bg-dark: #1f2937;
+  --ty-modal-color-dark: #f9fafb;
+  --ty-modal-border-dark: #374151;
+  --ty-modal-backdrop-dark: rgba(0, 0, 0, 0.7);
+}

@@ -3,6 +3,7 @@
    [ty.components.button]
    [ty.components.icon]
    [ty.components.input]
+   [ty.components.modal]
    [ty.components.popup]
    [ty.components.resize-observer]
    [ty.components.tooltip]

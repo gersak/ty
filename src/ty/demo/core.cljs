@@ -12,6 +12,7 @@
             [ty.demo.views.inputs :as inputs]
             [ty.demo.views.layout :as layout-views]
             [ty.demo.views.popups :as popups]
+            [ty.demo.views.modal :as modal]
             [ty.layout :as layout]
             [ty.router :as router]))
 
@@ -32,6 +33,9 @@
               {:id ::popups
                :segment "popups"
                :name "Popups"}
+              {:id ::modal
+               :segment "modal"
+               :name "Modal"}
               {:id ::i18n
                :segment "i18n"
                :name "i18n"}
@@ -92,6 +96,9 @@
      (nav-item {:route-id ::popups
                 :label "Popups"
                 :icon "message-square"})
+     (nav-item {:route-id ::modal
+                :label "Modal"
+                :icon "square"})
      (nav-item {:route-id ::i18n
                 :label "i18n"
                 :icon "globe"})
@@ -120,6 +127,7 @@
        (router/rendered? ::inputs true) "Input Components"
        (router/rendered? ::icons true) "Icon Library"
        (router/rendered? ::popups true) "Popup Components"
+       (router/rendered? ::modal true) "Modal Dialogs"
        (router/rendered? ::i18n true) "Internationalization"
        (router/rendered? ::formatting true) "Number & Date Formatting"
        (router/rendered? ::layout true) "Layout Context System"
@@ -161,6 +169,7 @@
              (router/rendered? ::inputs true) (inputs/inputs-view)
              (router/rendered? ::icons true) (icons/icons-view)
              (router/rendered? ::popups true) (popups/popups-view)
+             (router/rendered? ::modal true) (modal/modal-view)
              (router/rendered? ::i18n true) (i18n-views/i18n-view)
              (router/rendered? ::formatting true) (formatting/formatting-view)
              (router/rendered? ::layout true) (layout-views/layout-view)

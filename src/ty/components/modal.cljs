@@ -1,7 +1,8 @@
 (ns ty.components.modal
   "Modal web component wrapping native dialog element"
   (:require [ty.css :refer [ensure-styles!]]
-            [ty.shim :as wcs])
+            [ty.shim :as wcs]
+            [ty.util.outside-click :as outside-click])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load modal styles from modal.css

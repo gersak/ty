@@ -1,30 +1,12 @@
 (ns ty.components.dropdown
   "Clean dropdown component with stub + dialog overlay pattern"
   (:require [ty.css :refer [ensure-styles!]]
-            [ty.shim :as wcs])
+            [ty.shim :as wcs]
+            [ty.util.outside-click :as outside-click])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load dropdown styles
 (defstyles dropdown-styles)
-
-;; Simple global management - just track current open dropdown
-(defonce current-open-dropdown (atom nil))
-
-(declare close-dropdown!)
-
-(defn close-current-dropdown!
-  "Close currently open dropdown if any"
-  []
-  (when-let [dropdown @current-open-dropdown]
-    (when-let [shadow-root (.-shadowRoot dropdown)]
-      (close-dropdown! dropdown shadow-root))
-    (reset! current-open-dropdown nil)))
-
-(defn set-current-dropdown!
-  "Set the currently open dropdown, closing any previous one"
-  [dropdown]
-  (close-current-dropdown!)
-  (reset! current-open-dropdown dropdown))
 
 (defn dropdown-attributes
   "Read dropdown attributes directly from element"
@@ -60,7 +42,7 @@
     (set! (.-tyDropdownState el) new-state)
     new-state))
 
-;; Option management functions (copied from old implementation)
+;; Option management functions
 (defn get-options
   "Get all option elements from slot"
   [^js shadow-root]
@@ -143,7 +125,6 @@
           (select-option! options value))
         (set! (.-textContent stub-value) placeholder)))))
 
-;; Simple positioning - just above/below decision
 (defn update-dropdown-position!
   "Position dialog so input appears exactly where stub was"
   [^js el ^js shadow-root]
@@ -197,36 +178,50 @@
               (.add (.-classList dialog) (if position-below "position-below" "position-above")))))))))
 
 (defn close-dropdown!
-  "Close dropdown dialog and reset state"
+  "Programmatically close dropdown dialog"
   [^js el ^js shadow-root]
-  (let [_ (set-component-state! el {:open false
-                                    :highlighted-index -1})
-        dialog (.querySelector shadow-root ".dropdown-dialog")
-        chevron (.querySelector shadow-root ".dropdown-chevron")]
-
-    ;; Clear from global state
-    (when (= @current-open-dropdown el)
-      (reset! current-open-dropdown nil))
-
-    ;; Close dialog
+  (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
+    ;; Close dialog - this will trigger the dialog close event
     (when (and dialog (.-open dialog))
-      (.close dialog))
+      (.close dialog))))
 
-    (when chevron
-      (.remove (.-classList chevron) "open"))
+(defn handle-outside-action!
+  "Handle outside click or escape key to close dropdown"
+  [^js el ^js shadow-root ^js event]
+  ;; Only close if this dropdown is the current one
+  (when (outside-click/is-current-component? el)
+    (close-dropdown! el shadow-root)))
 
-    ;; Reset search if not searchable
-    (let [{:keys [searchable]} (dropdown-attributes el)]
-      (when-not searchable
-        (set-component-state! el {:search ""})))))
+(defn handle-dialog-close!
+  "Handle dialog close event (now just for cleanup)"
+  [^js el ^js shadow-root ^js event]
+  ;; Update component state to reflect closed status
+  (set-component-state! el {:open false
+                            :highlighted-index -1})
+
+  ;; Update visual state  
+  (when-let [chevron (.querySelector shadow-root ".dropdown-chevron")]
+    (.remove (.-classList chevron) "open"))
+
+  ;; Reset search if not searchable
+  (let [{:keys [searchable]} (dropdown-attributes el)]
+    (when-not searchable
+      (set-component-state! el {:search ""})))
+
+  ;; Clear from global registry
+  (when (outside-click/is-current-component? el)
+    (reset! outside-click/current-open-component nil)))
 
 (defn open-dropdown!
-  "Open dropdown dialog with simplified management"
+  "Open dropdown dialog"
   [^js el ^js shadow-root]
   (let [{:keys [disabled readonly searchable value]} (dropdown-attributes el)]
     (when-not (or disabled readonly)
-      ;; Set as current open dropdown (closes any existing)
-      (set-current-dropdown! el)
+      ;; Close any other open dropdown first
+      (outside-click/close-current-component!)
+
+      ;; Register this dropdown as current
+      (outside-click/set-current-component! el #(close-dropdown! % shadow-root))
 
       ;; Initialize filtered options for keyboard navigation
       (let [all-options (map get-option-data (get-options shadow-root))
@@ -266,9 +261,19 @@
           (when (and input searchable)
             (set! (.-value input) ""))
 
-          ;; Position dialog once - no tracking needed
+          ;; Position dialog once
           (update-dropdown-position! el shadow-root)
 
+          ;; Setup enhanced outside click detection with mobile support
+          (when-not (.-tyOutsideClickCleanup el)
+            (set! (.-tyOutsideClickCleanup el)
+                  (outside-click/setup-outside-handlers!
+                    dialog
+                    (partial handle-outside-action! el shadow-root)
+                    {:mobile-optimized? true
+                     :prevent-default? false
+                     :touch-enabled? true
+                     :escape-key? true})))
           ;; Highlight the selected option if any
           (js/setTimeout
             (fn []
@@ -338,15 +343,11 @@
     (close-dropdown! el shadow-root)))
 
 (defn handle-keyboard!
-  "Handle keyboard navigation"
+  "Handle keyboard navigation (arrow keys and enter only - ESC handled by outside-click util)"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [open highlighted-index filtered-options]} (get-component-state el)
         key-code (.-keyCode event)]
     (case key-code
-      ;; ESC - close dropdown
-      27 (when open
-           (.preventDefault event)
-           (close-dropdown! el shadow-root))
       ;; ENTER - select highlighted option
       13 (do
            (.preventDefault event)
@@ -377,15 +378,6 @@
              (highlight-option! filtered-options new-index)))
       nil)))
 
-(defn handle-outside-click!
-  "Handle clicks outside dropdown to close it"
-  [^js el ^js shadow-root ^js event]
-  (let [{:keys [open]} (get-component-state el)]
-    (when open
-      (let [path (or (.composedPath event) [])]
-        (when-not (some #(= % el) path)
-          (close-dropdown! el shadow-root))))))
-
 (defn setup-event-listeners!
   "Setup event listeners for stub + dialog structure"
   [^js el ^js shadow-root]
@@ -393,7 +385,7 @@
         input (.querySelector shadow-root ".dropdown-input")
         close-btn (.querySelector shadow-root ".dropdown-close")
         slot (.querySelector shadow-root "slot")
-        outside-handler (partial handle-outside-click! el shadow-root)]
+        dialog (.querySelector shadow-root ".dropdown-dialog")]
 
     ;; Stub click - opens dialog
     (when stub
@@ -412,12 +404,19 @@
     (when slot
       (.addEventListener slot "click" (partial handle-option-click! el shadow-root)))
 
-    ;; Outside clicks
-    (.addEventListener js/document "click" outside-handler)
+    ;; Dialog close event - now just for cleanup
+    (when dialog
+      (.addEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
 
     ;; Store cleanup function
     (set! (.-tyDropdownCleanup el)
           (fn []
+            ;; Cleanup outside click handlers
+            (when-let [outside-cleanup (.-tyOutsideClickCleanup el)]
+              (outside-cleanup)
+              (set! (.-tyOutsideClickCleanup el) nil))
+
+            ;; Cleanup regular event listeners
             (when stub
               (.removeEventListener stub "click" (partial handle-stub-click! el shadow-root)))
             (when input
@@ -427,10 +426,8 @@
               (.removeEventListener close-btn "click" (partial handle-close-click! el shadow-root)))
             (when slot
               (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
-            (.removeEventListener js/document "click" outside-handler)
-            ;; Clear from global state if this was the open one
-            (when (= @current-open-dropdown el)
-              (reset! current-open-dropdown nil))))))
+            (when dialog
+              (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))))))
 
 (defn render! [^js el]
   (let [root (wcs/ensure-shadow el)
@@ -444,7 +441,7 @@
       (set! (.-innerHTML root)
             (str
              ;; Stub - Styled to look identical to input for seamless transition
-              "<div class=\"dropdown-stub dropdown-input-style\" "
+              "<div class=\"dropdown-stub\" "
               (when disabled "disabled ")
               ">"
               "  <span class=\"dropdown-value\">" placeholder "</span>"

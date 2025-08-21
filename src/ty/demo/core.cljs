@@ -144,9 +144,6 @@
        (router/rendered? ::popups true) "Popup Components"
        (router/rendered? ::tags true) "Tag Components"
        (router/rendered? ::modal true) "Modal Dialogs"
-       (router/rendered? ::i18n true) "Internationalization"
-       (router/rendered? ::formatting true) "Number & Date Formatting"
-       (router/rendered? ::layout true) "Layout Context System"
        (router/rendered? ::admin-dashboard true) "Admin Dashboard"
        (router/rendered? ::theming true) "Theming & Customization"
        :else "Ty Components")]
@@ -188,9 +185,6 @@
              (router/rendered? ::popups true) (popups/popups-view)
              (router/rendered? ::tags true) (tags/tags-view)
              (router/rendered? ::modal true) (modal/modal-view)
-             (router/rendered? ::i18n true) (i18n-views/i18n-view)
-             (router/rendered? ::formatting true) (formatting/formatting-view)
-             (router/rendered? ::layout true) (layout-views/layout-view)
              (router/rendered? ::admin-dashboard true)
              [:div.max-w-4xl.mx-auto
               [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-4

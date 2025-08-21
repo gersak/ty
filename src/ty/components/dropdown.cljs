@@ -47,8 +47,8 @@
   [^js el]
   {:value (or (wcs/attr el "value") "")
    :placeholder (or (wcs/attr el "placeholder") "Select an option...")
-   :searchable (let [searchable? (wcs/parse-bool-attr el "pill")
-                     not-searchable? (wcs/parse-bool-attr el "not-pill")]
+   :searchable (let [searchable? (wcs/parse-bool-attr el "searchable")
+                     not-searchable? (wcs/parse-bool-attr el "not-searchable")]
                  (cond
                    searchable? true
                    not-searchable? false
@@ -167,7 +167,8 @@
   "Highlight option at index and scroll into view"
   [options index ^js shadow-root]
   (clear-highlights! options)
-  (when (and (>= index 0) (< index (count options)))
+  (when (and index (>= index 0) (< index (count options)))
+    (println "OPTIONS: " index options)
     (let [{:keys [element]} (nth options index)
           options-container (.querySelector shadow-root ".dropdown-options")]
       (.setAttribute element "highlighted" "")
@@ -518,6 +519,8 @@
   (let [root (wcs/ensure-shadow el)
         {:keys [placeholder searchable disabled readonly]} (dropdown-attributes el)]
 
+    (println "SEARCHABLE: " searchable)
+
     ;; Ensure styles are loaded
     (ensure-styles! root dropdown-styles "ty-dropdown")
 
@@ -528,8 +531,7 @@
                  "  <input class=\"dropdown-input\" type=\"text\" "
                  "         placeholder=\"" placeholder "\" "
                  (when disabled "disabled ")
-                 (when readonly "readonly ")
-                 (when-not searchable "readonly ")
+                 (when (or readonly (false? searchable)) "readonly ")
                  ">"
                  "  <div class=\"dropdown-chevron\">"
                  "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"

@@ -169,7 +169,7 @@
   [:div.demo-section
    [:h2.demo-title "Size Variants"]
    [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Five size variants to fit different contexts and layouts"]
+    "Five size variants to fit different contexts and layouts, plus mini width for compact spaces"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-5.gap-4
     [:div
@@ -212,9 +212,93 @@
       [:option {:value "xl1"} "XL Option 1"]
       [:option {:value "xl2"} "XL Option 2"]]]]
 
+   ;; Mini width examples
+   [:div.mt-8
+    [:h3.demo-subtitle "Mini Width Variant"]
+    [:p.text-gray-600.dark:text-gray-400.mb-4
+     "Add class=\"mini\" for compact 140px width - perfect for quantity selectors, status indicators, and tight layouts"]
+
+    [:div.grid.grid-cols-2.md:grid-cols-4.lg:grid-cols-6.gap-4
+     [:div
+      [:label.block.text-sm.font-medium.mb-1 "Quantity"]
+      [:ty-dropdown {:class "mini"
+                     :size "sm"
+                     :value "1"
+                     :placeholder "Qty"}
+       [:option {:value "1"} "1"]
+       [:option {:value "2"} "2"]
+       [:option {:value "3"} "3"]
+       [:option {:value "4"} "4"]
+       [:option {:value "5"} "5"]]]
+
+     [:div
+      [:label.block.text-sm.font-medium.mb-1 "Size"]
+      [:ty-dropdown {:class "mini"
+                     :size "sm"
+                     :value "M"
+                     :placeholder "Size"}
+       [:option {:value "XS"} "XS"]
+       [:option {:value "S"} "S"]
+       [:option {:value "M"} "M"]
+       [:option {:value "L"} "L"]
+       [:option {:value "XL"} "XL"]]]
+
+     [:div
+      [:label.block.text-sm.font-medium.mb-1 "Status"]
+      [:ty-dropdown {:class "mini"
+                     :size "xs"
+                     :value "OK"
+                     :flavor "positive"
+                     :placeholder "Status"}
+       [:option {:value "OK"} "OK"]
+       [:option {:value "ERR"} "ERR"]
+       [:option {:value "WARN"} "WARN"]]]
+
+     [:div
+      [:label.block.text-sm.font-medium.mb-1 "Priority"]
+      [:ty-dropdown {:class "mini"
+                     :size "xs"
+                     :value "H"
+                     :flavor "important"
+                     :placeholder "Priority"}
+       [:option {:value "L"} "Low"]
+       [:option {:value "M"} "Med"]
+       [:option {:value "H"} "High"]]]
+
+     [:div
+      [:label.block.text-sm.font-medium.mb-1 "Type"]
+      [:ty-dropdown {:class "mini"
+                     :size "sm"
+                     :value "A"
+                     :flavor "unique"
+                     :placeholder "Type"}
+       [:option {:value "A"} "Type A"]
+       [:option {:value "B"} "Type B"]
+       [:option {:value "C"} "Type C"]]]
+
+     [:div
+      [:label.block.text-sm.font-medium.mb-1 "Grade"]
+      [:ty-dropdown {:class "mini"
+                     :size "sm"
+                     :value "A+"
+                     :flavor "exception"
+                     :placeholder "Grade"}
+       [:option {:value "A+"} "A+"]
+       [:option {:value "A"} "A"]
+       [:option {:value "B+"} "B+"]
+       [:option {:value "B"} "B"]
+       [:option {:value "C"} "C"]]]]]
+
    (code-snippet "<ty-dropdown size=\"lg\" placeholder=\"Large dropdown\">
   <option value=\"lg1\">LG Option 1</option>
   <option value=\"lg2\">LG Option 2</option>
+</ty-dropdown>
+
+<!-- Mini width variant - 140px wide -->
+<ty-dropdown class=\"mini\" size=\"sm\" placeholder=\"Qty\">
+  <option value=\"1\">1</option>
+  <option value=\"2\">2</option>
+  <option value=\"3\">3</option>
 </ty-dropdown>")])
 
 (defn flavor-variants []

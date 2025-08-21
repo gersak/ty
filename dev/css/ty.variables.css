@@ -337,6 +337,47 @@
   --ty-input-disabled-border: #e5e7eb;
   --ty-input-disabled-color: #9ca3af;
   --ty-label-color: #374151;
+
+  /* Dropdown Component */
+  --ty-dropdown-stub-bg: var(--ty-input-bg);
+  --ty-dropdown-stub-color: var(--ty-input-color);
+  --ty-dropdown-stub-border: var(--ty-input-border);
+  --ty-dropdown-stub-border-hover: var(--ty-input-border-hover);
+  --ty-dropdown-stub-border-focus: var(--ty-input-border-focus);
+  --ty-dropdown-stub-shadow-focus: var(--ty-input-shadow-focus);
+  --ty-dropdown-stub-disabled-bg: var(--ty-input-disabled-bg);
+  --ty-dropdown-stub-disabled-color: var(--ty-input-disabled-color);
+  
+  --ty-dropdown-chevron-color: var(--ty-input-placeholder);
+  
+  --ty-dropdown-dialog-bg: transparent;
+  --ty-dropdown-dialog-backdrop: none;
+  
+  --ty-dropdown-header-bg: var(--ty-input-bg);
+  --ty-dropdown-input-bg: var(--ty-input-bg);
+  --ty-dropdown-input-color: var(--ty-input-color);
+  --ty-dropdown-input-border: var(--ty-input-border);
+  --ty-dropdown-input-border-focus: var(--ty-input-border-focus);
+  --ty-dropdown-input-shadow-focus: var(--ty-input-shadow-focus);
+  --ty-dropdown-input-placeholder: var(--ty-input-placeholder);
+  
+  --ty-dropdown-close-color: var(--ty-color-neutral);
+  --ty-dropdown-close-hover-bg: var(--ty-bg-neutral-m1);
+  
+  --ty-dropdown-options-bg: var(--ty-input-bg);
+  --ty-dropdown-options-border: var(--ty-input-border);
+  --ty-dropdown-options-border-radius: var(--ty-radius-md);
+  --ty-dropdown-options-shadow: var(--ty-shadow-xl);
+  --ty-dropdown-options-shadow-enhanced: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  --ty-dropdown-option-color: var(--ty-input-color);
+  --ty-dropdown-option-hover: var(--ty-bg-neutral-m1);
+  --ty-dropdown-option-highlighted: var(--ty-bg-important-m1);
+  --ty-dropdown-option-highlighted-color: var(--ty-color-important-p1);
+  --ty-dropdown-option-selected: var(--ty-color-important);
+  --ty-dropdown-option-selected-color: #ffffff;
 }
 
 /* =================================================================
@@ -478,6 +519,12 @@ html[data-theme="dark"] {
   --ty-input-disabled-border: #1f2937;
   --ty-input-disabled-color: #6b7280;
   --ty-label-color: #d1d5db;
+
+  /* Dropdown Component - dark mode automatically inherits from input vars */
+  --ty-dropdown-close-hover-bg: var(--ty-bg-neutral-p1);
+  --ty-dropdown-option-hover: var(--ty-bg-neutral-p1);
+  --ty-dropdown-option-highlighted: var(--ty-bg-important-m1);
+  --ty-dropdown-option-highlighted-color: var(--ty-color-important-p1);
 
   /* Modal */
   --ty-modal-bg: var(--ty-bg-neutral-p1);

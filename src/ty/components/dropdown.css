@@ -5,74 +5,69 @@
   display: block;
 }
 
-.dropdown-input {
-  /* Base styling */
+/* ===== STUB STYLING ===== */
+/* Styled to look identical to input for seamless transition */
+
+.dropdown-stub {
+  /* Copy all input styling for visual consistency */
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   cursor: pointer;
   box-sizing: border-box;
 
-  /* Use CSS variables for universal theming */
-  background: var(--ty-input-bg, #ffffff);
-  color: var(--ty-input-color, #111827);
-  border: 1px solid var(--ty-input-border, #d1d5db);
-  border-radius: var(--ty-input-border-radius, 0.375rem);
+  /* Use dropdown stub tokens from ty.variables.css */
+  background: var(--ty-dropdown-stub-bg);
+  color: var(--ty-dropdown-stub-color);
+  border: 1px solid var(--ty-dropdown-stub-border);
+  border-radius: var(--ty-radius-md);
 
-  /* Typography */
-  font-family: var(--ty-input-font-family, inherit);
-  font-size: var(--ty-input-font-size, 0.875rem);
-  font-weight: var(--ty-input-font-weight, 400);
-  line-height: var(--ty-input-line-height, 1.25rem);
+  /* Typography - same as input */
+  font-family: var(--ty-font-sans);
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-normal);
+  line-height: var(--ty-line-height-tight);
 
-  /* Size variants */
-  padding: var(--ty-input-padding-y, 0.5rem) var(--ty-input-padding-x, 0.75rem);
+  /* Size variants - default (md) */
+  min-height: var(--ty-size-md);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
 
   /* Transitions */
-  transition: border-color 0.15s ease-in-out,
-    box-shadow 0.15s ease-in-out,
-    background-color 0.15s ease-in-out;
+  transition: var(--ty-transition-all);
 }
 
-.dropdown-input:focus {
-  outline: none;
-  border-color: var(--ty-input-border-focus, #3b82f6);
-  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus, rgba(59, 130, 246, 0.1));
+.dropdown-stub:hover {
+  border-color: var(--ty-dropdown-stub-border-hover);
 }
 
-.dropdown-input:disabled {
-  background-color: var(--ty-input-bg-disabled, #f9fafb);
-  color: var(--ty-input-color-disabled, #6b7280);
+.dropdown-stub[disabled] {
+  background-color: var(--ty-dropdown-stub-disabled-bg);
+  color: var(--ty-dropdown-stub-disabled-color);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.dropdown-input:read-only,
-.dropdown-input[readonly] {
-  background-color: var(--ty-input-bg-readonly, #f9fafb);
-  color: var(--ty-input-color-readonly, #6b7280);
-  cursor: default;
+.dropdown-value {
+  flex: 1;
+  color: inherit;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
-.dropdown-input::placeholder {
-  color: var(--ty-input-placeholder, #9ca3af);
-}
+/* ===== CHEVRON INDICATOR ===== */
 
-/* Chevron indicator */
 .dropdown-chevron {
-  position: absolute;
-  top: 50%;
-  right: 0.75rem;
-  transform: translateY(-50%);
   width: 1rem;
   height: 1rem;
-  color: var(--ty-input-border, #6b7280);
-  pointer-events: none;
-  transition: transform 0.15s ease-in-out;
+  color: var(--ty-dropdown-chevron-color);
+  margin-left: var(--ty-spacing-2);
+  transition: var(--ty-transition-transform);
 }
 
 .dropdown-chevron.open {
-  transform: translateY(-50%) rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .dropdown-chevron svg {
@@ -80,59 +75,123 @@
   height: 100%;
 }
 
-/* Dialog element for dropdown - auto-managed z-index */
+/* ===== DIALOG STRUCTURE ===== */
+
 .dropdown-dialog {
   position: fixed;
   margin: 0;
   padding: 0;
   border: none;
-  background: transparent;
-  
+  background: var(--ty-dropdown-dialog-bg);
   /* Dialog automatically handles z-index stacking */
-  /* No need to set z-index - browser manages dialog layer */
 }
 
 /* Remove default dialog backdrop */
 .dropdown-dialog::backdrop {
-  display: none;
+  display: var(--ty-dropdown-dialog-backdrop);
 }
 
-/* Options container inside dialog */
+/* ===== DIALOG HEADER ===== */
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ty-spacing-2);
+  background: var(--ty-dropdown-header-bg);
+}
+
+.dropdown-input {
+  /* Base styling */
+  width: 100%;
+  box-sizing: border-box;
+
+  /* Use dropdown input tokens */
+  background: var(--ty-dropdown-input-bg);
+  color: var(--ty-dropdown-input-color);
+  border: 1px solid var(--ty-dropdown-input-border);
+  border-radius: var(--ty-radius-md);
+
+  /* Typography */
+  font-family: var(--ty-font-sans);
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-normal);
+  line-height: var(--ty-line-height-tight);
+
+  /* Size */
+  min-height: var(--ty-size-md);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+
+  /* Transitions */
+  transition: var(--ty-transition-all);
+  outline: none;
+}
+
+.dropdown-input:focus {
+  border-color: var(--ty-dropdown-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ty-dropdown-input-shadow-focus);
+}
+
+.dropdown-input:disabled {
+  background-color: var(--ty-input-disabled-bg);
+  color: var(--ty-input-disabled-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.dropdown-input::placeholder {
+  color: var(--ty-dropdown-input-placeholder);
+}
+
+.dropdown-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--ty-spacing-1);
+  border-radius: var(--ty-radius-base);
+  color: var(--ty-dropdown-close-color);
+  transition: var(--ty-transition-colors);
+}
+
+.dropdown-close:hover {
+  background-color: var(--ty-dropdown-close-hover-bg);
+}
+
+.dropdown-close svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ===== OPTIONS CONTAINER ===== */
+
 .dropdown-options {
-  background: var(--ty-dropdown-options-bg, #ffffff);
-  border: 1px solid var(--ty-dropdown-options-border, #d1d5db);
-  border-radius: var(--ty-dropdown-options-border-radius, 0.375rem);
-  box-shadow: var(--ty-dropdown-options-shadow, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05));
+  background: var(--ty-dropdown-options-bg);
+  border: 1px solid var(--ty-dropdown-options-border);
+  border-radius: var(--ty-dropdown-options-border-radius);
+  box-shadow: var(--ty-dropdown-options-shadow);
+
+  margin-top: var(--ty-spacing-2);
+  margin-bottom: var(--ty-spacing-2);
 
   /* Sizing and scrolling */
-  max-height: 16rem; /* 256px */
+  max-height: 16rem;
+  /* 256px */
   overflow-y: auto;
-  
+
   /* Smooth scrolling for keyboard navigation */
   scroll-behavior: smooth;
-  
-  /* Improved shadow for dialog context */
-  box-shadow: var(--ty-dropdown-options-shadow-enhanced,
-      0 20px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04));
+
+  /* Enhanced shadow for dialog context */
+  box-shadow: var(--ty-dropdown-options-shadow-enhanced);
 }
 
-/* Placement-specific styles for smart positioning */
-.dropdown-options.placement-top {
-  margin-bottom: 0.75rem; /* Extra space when positioned above */
-}
+/* ===== OPTION ELEMENTS ===== */
 
-.dropdown-options.placement-bottom {
-  margin-top: 0.25rem; /* Standard space when positioned below */
-}
-
-/* Option elements styling */
 .dropdown-options ::slotted(option) {
   display: block !important;
-  padding: 0.5rem 0.75rem;
-  color: var(--ty-dropdown-option-color, #111827);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  color: var(--ty-dropdown-option-color);
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
+  transition: var(--ty-transition-colors);
   border: none;
   background: none;
   font-size: inherit;
@@ -143,155 +202,168 @@
 }
 
 .dropdown-options ::slotted(option:hover) {
-  background-color: var(--ty-dropdown-option-hover, #f3f4f6);
+  background-color: var(--ty-dropdown-option-hover);
 }
 
 .dropdown-options ::slotted(option[highlighted]) {
-  background-color: var(--ty-dropdown-option-highlighted, #dbeafe);
-  color: var(--ty-dropdown-option-highlighted-color, #1e40af);
+  background-color: var(--ty-dropdown-option-highlighted);
+  color: var(--ty-dropdown-option-highlighted-color);
 }
 
 .dropdown-options ::slotted(option[selected]) {
-  background-color: var(--ty-dropdown-option-selected, #3b82f6);
-  color: var(--ty-dropdown-option-selected-color, #ffffff);
+  background-color: var(--ty-dropdown-option-selected);
+  color: var(--ty-dropdown-option-selected-color);
 }
 
 .dropdown-options ::slotted(option[hidden]) {
   display: none !important;
 }
 
-/* Size variants using CSS custom properties */
+/* ===== SIZE VARIANTS ===== */
+
+:host([size="xs"]) .dropdown-stub,
 :host([size="xs"]) .dropdown-input {
-  --ty-input-padding-y: 0.25rem;
-  --ty-input-padding-x: 0.5rem;
-  --ty-input-font-size: 0.75rem;
-  --ty-input-line-height: 1rem;
+  min-height: var(--ty-size-xs);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  font-size: var(--ty-font-xs);
 }
 
 :host([size="xs"]) .dropdown-chevron {
-  right: 0.5rem;
   width: 0.75rem;
   height: 0.75rem;
 }
 
+:host([size="sm"]) .dropdown-stub,
 :host([size="sm"]) .dropdown-input {
-  --ty-input-padding-y: 0.375rem;
-  --ty-input-padding-x: 0.625rem;
-  --ty-input-font-size: 0.875rem;
-  --ty-input-line-height: 1.25rem;
+  min-height: var(--ty-size-sm);
+  padding: calc(var(--ty-spacing-1) + var(--ty-spacing-mini)) calc(var(--ty-spacing-2) + var(--ty-spacing-mini));
+  font-size: var(--ty-font-sm);
 }
 
 :host([size="sm"]) .dropdown-chevron {
-  right: 0.625rem;
   width: 0.875rem;
   height: 0.875rem;
 }
 
+:host([size="md"]) .dropdown-stub,
 :host([size="md"]) .dropdown-input {
-  --ty-input-padding-y: 0.5rem;
-  --ty-input-padding-x: 0.75rem;
-  --ty-input-font-size: 0.875rem;
-  --ty-input-line-height: 1.25rem;
+  min-height: var(--ty-size-md);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  font-size: var(--ty-font-sm);
 }
 
+:host([size="lg"]) .dropdown-stub,
 :host([size="lg"]) .dropdown-input {
-  --ty-input-padding-y: 0.625rem;
-  --ty-input-padding-x: 0.875rem;
-  --ty-input-font-size: 1rem;
-  --ty-input-line-height: 1.5rem;
+  min-height: var(--ty-size-lg);
+  padding: calc(var(--ty-spacing-2) + var(--ty-spacing-mini)) calc(var(--ty-spacing-3) + var(--ty-spacing-mini));
+  font-size: var(--ty-font-base);
 }
 
 :host([size="lg"]) .dropdown-chevron {
-  right: 0.875rem;
   width: 1.125rem;
   height: 1.125rem;
 }
 
+:host([size="xl"]) .dropdown-stub,
 :host([size="xl"]) .dropdown-input {
-  --ty-input-padding-y: 0.75rem;
-  --ty-input-padding-x: 1rem;
-  --ty-input-font-size: 1rem;
-  --ty-input-line-height: 1.5rem;
+  min-height: var(--ty-size-xl);
+  padding: var(--ty-spacing-3) var(--ty-spacing-4);
+  font-size: var(--ty-font-base);
 }
 
 :host([size="xl"]) .dropdown-chevron {
-  right: 1rem;
   width: 1.25rem;
   height: 1.25rem;
 }
 
-/* Flavor variants using semantic design tokens */
+/* ===== SEMANTIC FLAVOR VARIANTS ===== */
+
+:host([flavor="positive"]) .dropdown-stub,
 :host([flavor="positive"]) .dropdown-input {
-  border-color: var(--ty-color-positive, #10b981);
+  border-color: var(--ty-color-positive);
 }
 
+:host([flavor="positive"]) .dropdown-stub:hover,
 :host([flavor="positive"]) .dropdown-input:focus {
-  border-color: var(--ty-color-positive, #10b981);
-  box-shadow: 0 0 0 3px var(--ty-color-positive-alpha, rgba(16, 185, 129, 0.1));
+  border-color: var(--ty-color-positive-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-positive-m3);
 }
 
+:host([flavor="negative"]) .dropdown-stub,
 :host([flavor="negative"]) .dropdown-input {
-  border-color: var(--ty-color-negative, #ef4444);
+  border-color: var(--ty-color-negative);
 }
 
+:host([flavor="negative"]) .dropdown-stub:hover,
 :host([flavor="negative"]) .dropdown-input:focus {
-  border-color: var(--ty-color-negative, #ef4444);
-  box-shadow: 0 0 0 3px var(--ty-color-negative-alpha, rgba(239, 68, 68, 0.1));
+  border-color: var(--ty-color-negative-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-negative-m3);
 }
 
+:host([flavor="important"]) .dropdown-stub,
 :host([flavor="important"]) .dropdown-input {
-  border-color: var(--ty-color-important, #f59e0b);
+  border-color: var(--ty-color-important);
 }
 
+:host([flavor="important"]) .dropdown-stub:hover,
 :host([flavor="important"]) .dropdown-input:focus {
-  border-color: var(--ty-color-important, #f59e0b);
-  box-shadow: 0 0 0 3px var(--ty-color-important-alpha, rgba(245, 158, 11, 0.1));
+  border-color: var(--ty-color-important-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-important-m3);
 }
 
+:host([flavor="exception"]) .dropdown-stub,
 :host([flavor="exception"]) .dropdown-input {
-  border-color: var(--ty-color-exception, #8b5cf6);
+  border-color: var(--ty-color-exception);
 }
 
+:host([flavor="exception"]) .dropdown-stub:hover,
 :host([flavor="exception"]) .dropdown-input:focus {
-  border-color: var(--ty-color-exception, #8b5cf6);
-  box-shadow: 0 0 0 3px var(--ty-color-exception-alpha, rgba(139, 92, 246, 0.1));
+  border-color: var(--ty-color-exception-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-exception-m3);
 }
 
+:host([flavor="unique"]) .dropdown-stub,
 :host([flavor="unique"]) .dropdown-input {
-  border-color: var(--ty-color-unique, #ec4899);
+  border-color: var(--ty-color-unique);
 }
 
+:host([flavor="unique"]) .dropdown-stub:hover,
 :host([flavor="unique"]) .dropdown-input:focus {
-  border-color: var(--ty-color-unique, #ec4899);
-  box-shadow: 0 0 0 3px var(--ty-color-unique-alpha, rgba(236, 72, 153, 0.1));
+  border-color: var(--ty-color-unique-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
 }
 
-/* Dark mode support */
-:host-context(.dark) .dropdown-input {
-  background: var(--ty-input-bg-dark, #1f2937);
-  color: var(--ty-input-color-dark, #f9fafb);
-  border-color: var(--ty-input-border-dark, #374151);
+/* ===== MOBILE FULLSCREEN ===== */
+
+.dropdown-dialog.mobile-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
 }
 
-:host-context(.dark) .dropdown-input:focus {
-  border-color: var(--ty-input-border-focus-dark, #60a5fa);
-  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus-dark, rgba(96, 165, 250, 0.1));
+.dropdown-dialog.mobile-fullscreen .dropdown-options {
+  max-height: calc(100vh - 5rem);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-:host-context(.dark) .dropdown-options {
-  background: var(--ty-dropdown-options-bg-dark, #1f2937);
-  border-color: var(--ty-dropdown-options-border-dark, #374151);
+/* ===== PLACEMENT VARIANTS ===== */
+
+.dropdown-dialog.position-above .dropdown-options {
+  margin-bottom: var(--ty-spacing-3);
+  margin-top: 0;
 }
 
-:host-context(.dark) .dropdown-options ::slotted(option) {
-  color: var(--ty-dropdown-option-color-dark, #f9fafb);
+.dropdown-dialog.position-below .dropdown-options {
+  margin-top: var(--ty-spacing-1);
+  margin-bottom: 0;
 }
 
-:host-context(.dark) .dropdown-options ::slotted(option:hover) {
-  background-color: var(--ty-dropdown-option-hover-dark, #374151);
-}
+/* ===== MINI WIDTH VARIANT ===== */
 
-:host-context(.dark) .dropdown-options ::slotted(option[highlighted]) {
-  background-color: var(--ty-dropdown-option-highlighted-dark, #1e3a8a);
-  color: var(--ty-dropdown-option-highlighted-color-dark, #dbeafe);
+.dropdown-stub,
+.dropdown-input {
+  min-width: 8.75rem;
 }

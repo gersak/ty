@@ -2,6 +2,84 @@
 :host {
   display: contents;
   /* Don't interfere with layout */
+
+  /* ===== CSS VARIABLE INHERITANCE ===== */
+  /* Explicitly inherit global CSS variables into Modal Shadow DOM */
+  /* This allows nested components (like dropdown) to access design tokens */
+
+  /* Core design tokens */
+  --ty-font-sans: var(--ty-font-sans, ui-sans-serif, system-ui, sans-serif);
+  --ty-font-xs: var(--ty-font-xs, 0.75rem);
+  --ty-font-sm: var(--ty-font-sm, 0.875rem);
+  --ty-font-base: var(--ty-font-base, 1rem);
+  --ty-font-normal: var(--ty-font-normal, 400);
+  --ty-font-medium: var(--ty-font-medium, 500);
+  --ty-line-height-tight: var(--ty-line-height-tight, 1.25);
+  --ty-size-xs: var(--ty-size-xs, 1.5rem);
+  --ty-size-sm: var(--ty-size-sm, 2rem);
+  --ty-size-md: var(--ty-size-md, 2.5rem);
+  --ty-size-lg: var(--ty-size-lg, 3rem);
+  --ty-size-xl: var(--ty-size-xl, 3.5rem);
+  --ty-spacing-1: var(--ty-spacing-1, 0.25rem);
+  --ty-spacing-2: var(--ty-spacing-2, 0.5rem);
+  --ty-spacing-3: var(--ty-spacing-3, 0.75rem);
+  --ty-spacing-4: var(--ty-spacing-4, 1rem);
+  --ty-spacing-mini: var(--ty-spacing-mini, 0.125rem);
+  --ty-radius-md: var(--ty-radius-md, 0.375rem);
+  --ty-radius-base: var(--ty-radius-base, 0.25rem);
+  --ty-transition-all: var(--ty-transition-all, all 0.15s ease);
+  --ty-transition-colors: var(--ty-transition-colors, color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease);
+  --ty-transition-transform: var(--ty-transition-transform, transform 0.15s ease);
+
+  /* Background and border tokens */
+  --ty-bg-primary: var(--ty-bg-primary, #ffffff);
+  --ty-bg-secondary: var(--ty-bg-secondary, #f3f4f6);
+  --ty-border-primary: var(--ty-border-primary, #e5e7eb);
+  --ty-text-primary: var(--ty-text-primary, #111827);
+
+  /* Input-specific tokens for dropdown components */
+  --ty-input-bg: var(--ty-input-bg, #ffffff);
+  --ty-input-color: var(--ty-input-color, #111827);
+  --ty-input-border: var(--ty-input-border, #d1d5db);
+  --ty-input-border-focus: var(--ty-input-border-focus, #3b82f6);
+  --ty-input-border-hover: var(--ty-input-border-hover, #9ca3af);
+  --ty-input-shadow-focus: var(--ty-input-shadow-focus, rgba(59, 130, 246, 0.1));
+  --ty-input-placeholder: var(--ty-input-placeholder, #9ca3af);
+  --ty-input-disabled-bg: var(--ty-input-disabled-bg, #f9fafb);
+  --ty-input-disabled-color: var(--ty-input-disabled-color, #6b7280);
+
+  /* Dropdown-specific tokens */
+  --ty-dropdown-options-bg: var(--ty-dropdown-options-bg, var(--ty-bg-primary, #ffffff));
+  --ty-dropdown-options-border: var(--ty-dropdown-options-border, var(--ty-border-primary, #e5e7eb));
+  --ty-dropdown-header-bg: var(--ty-dropdown-header-bg, var(--ty-bg-primary, #ffffff));
+  --ty-dropdown-option-color: var(--ty-dropdown-option-color, var(--ty-text-primary, #111827));
+  --ty-dropdown-option-hover: var(--ty-dropdown-option-hover, var(--ty-bg-secondary, #f3f4f6));
+  --ty-dropdown-option-highlighted: var(--ty-dropdown-option-highlighted, var(--ty-color-primary, #3b82f6));
+  --ty-dropdown-option-highlighted-color: var(--ty-dropdown-option-highlighted-color, var(--ty-text-on-primary, #ffffff));
+  --ty-dropdown-option-selected: var(--ty-dropdown-option-selected, var(--ty-color-primary-m2, #dbeafe));
+  --ty-dropdown-option-selected-color: var(--ty-dropdown-option-selected-color, var(--ty-color-primary-p1, #1d4ed8));
+
+  /* Semantic colors */
+  --ty-color-primary: var(--ty-color-primary, #3b82f6);
+  --ty-color-primary-p1: var(--ty-color-primary-p1, #1d4ed8);
+  --ty-color-primary-m2: var(--ty-color-primary-m2, #dbeafe);
+  --ty-text-on-primary: var(--ty-text-on-primary, #ffffff);
+  --ty-color-positive: var(--ty-color-positive, #10b981);
+  --ty-color-positive-p1: var(--ty-color-positive-p1, #059669);
+  --ty-color-positive-m3: var(--ty-color-positive-m3, rgba(16, 185, 129, 0.1));
+  --ty-color-negative: var(--ty-color-negative, #ef4444);
+  --ty-color-negative-p1: var(--ty-color-negative-p1, #dc2626);
+  --ty-color-negative-m3: var(--ty-color-negative-m3, rgba(239, 68, 68, 0.1));
+  --ty-color-important: var(--ty-color-important, #f59e0b);
+  --ty-color-important-p1: var(--ty-color-important-p1, #d97706);
+  --ty-color-important-m3: var(--ty-color-important-m3, rgba(245, 158, 11, 0.1));
+  --ty-color-exception: var(--ty-color-exception, #8b5cf6);
+  --ty-color-exception-p1: var(--ty-color-exception-p1, #7c3aed);
+  --ty-color-exception-m3: var(--ty-color-exception-m3, rgba(139, 92, 246, 0.1));
+  --ty-color-unique: var(--ty-color-unique, #ec4899);
+  --ty-color-unique-p1: var(--ty-color-unique-p1, #db2777);
+  --ty-color-unique-m3: var(--ty-color-unique-m3, rgba(236, 72, 153, 0.1));
+  --ty-color-neutral: var(--ty-color-neutral, #6b7280);
 }
 
 .close-button {
@@ -58,7 +136,7 @@
 
 /* Modal Content Container */
 .modal-content {
-  background: var(--ty-modal-bg, #ffffff);
+  background: "none";
   border-radius: var(--ty-modal-border-radius, 8px);
   box-shadow: var(--ty-modal-shadow,
       0 20px 25px -5px rgba(0, 0, 0, 0.1),

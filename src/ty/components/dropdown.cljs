@@ -125,6 +125,19 @@
           (select-option! options value))
         (set! (.-textContent stub-value) placeholder)))))
 
+;; =====================================================
+;; DEVICE DETECTION & MODE SWITCHING
+;; =====================================================
+
+(defn is-mobile-device?
+  "Detect if we're on a mobile device based on screen width"
+  []
+  (<= (.-innerWidth js/window) 768))
+
+;; =====================================================
+;; DESKTOP MODE (Current Implementation)
+;; =====================================================
+
 (defn update-dropdown-position!
   "Position dialog so input appears exactly where stub was"
   [^js el ^js shadow-root]
@@ -177,7 +190,7 @@
               (.remove (.-classList dialog) "position-above" "position-below")
               (.add (.-classList dialog) (if position-below "position-below" "position-above")))))))))
 
-(defn close-dropdown!
+(defn close-desktop-dropdown!
   "Programmatically close dropdown dialog"
   [^js el ^js shadow-root]
   (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
@@ -185,14 +198,14 @@
     (when (and dialog (.-open dialog))
       (.close dialog))))
 
-(defn handle-outside-action!
+(defn handle-desktop-outside-action!
   "Handle outside click or escape key to close dropdown"
   [^js el ^js shadow-root ^js event]
   ;; Only close if this dropdown is the current one
   (when (outside-click/is-current-component? el)
-    (close-dropdown! el shadow-root)))
+    (close-desktop-dropdown! el shadow-root)))
 
-(defn handle-dialog-close!
+(defn handle-desktop-dialog-close!
   "Handle dialog close event (now just for cleanup)"
   [^js el ^js shadow-root ^js event]
   ;; Update component state to reflect closed status
@@ -212,7 +225,7 @@
   (when (outside-click/is-current-component? el)
     (reset! outside-click/current-open-component nil)))
 
-(defn open-dropdown!
+(defn open-desktop-dropdown!
   "Open dropdown dialog"
   [^js el ^js shadow-root]
   (let [{:keys [disabled readonly searchable value]} (dropdown-attributes el)]
@@ -221,7 +234,7 @@
       (outside-click/close-current-component!)
 
       ;; Register this dropdown as current
-      (outside-click/set-current-component! el #(close-dropdown! % shadow-root))
+      (outside-click/set-current-component! el #(close-desktop-dropdown! % shadow-root))
 
       ;; Initialize filtered options for keyboard navigation
       (let [all-options (map get-option-data (get-options shadow-root))
@@ -264,16 +277,17 @@
           ;; Position dialog once
           (update-dropdown-position! el shadow-root)
 
-          ;; Setup enhanced outside click detection with mobile support
+          ;; Setup outside click detection
           (when-not (.-tyOutsideClickCleanup el)
             (set! (.-tyOutsideClickCleanup el)
                   (outside-click/setup-outside-handlers!
                     dialog
-                    (partial handle-outside-action! el shadow-root)
+                    (partial handle-desktop-outside-action! el shadow-root)
                     {:mobile-optimized? true
                      :prevent-default? false
                      :touch-enabled? true
                      :escape-key? true})))
+
           ;; Highlight the selected option if any
           (js/setTimeout
             (fn []
@@ -282,24 +296,24 @@
                   (highlight-option! filtered-options highlighted-index))))
             50))))))
 
-;; Event handlers
-(defn handle-stub-click!
+;; Event handlers for desktop mode
+(defn handle-desktop-stub-click!
   "Handle click on stub to open dropdown dialog"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [{:keys [disabled]} (dropdown-attributes el)]
     (when-not disabled
-      (open-dropdown! el shadow-root))))
+      (open-desktop-dropdown! el shadow-root))))
 
-(defn handle-close-click!
+(defn handle-desktop-close-click!
   "Handle click on close button to close dropdown"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
-  (close-dropdown! el shadow-root))
+  (close-desktop-dropdown! el shadow-root))
 
-(defn handle-input-change!
+(defn handle-desktop-input-change!
   "Handle input value change for search"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [searchable]} (dropdown-attributes el)]
@@ -322,7 +336,7 @@
         (when (>= new-highlighted-index 0)
           (highlight-option! filtered new-highlighted-index))))))
 
-(defn handle-option-click!
+(defn handle-desktop-option-click!
   "Handle click on option"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
@@ -340,9 +354,9 @@
     ;; Dispatch change event
     (dispatch-change-event! el value text)
     ;; Close dropdown
-    (close-dropdown! el shadow-root)))
+    (close-desktop-dropdown! el shadow-root)))
 
-(defn handle-keyboard!
+(defn handle-desktop-keyboard!
   "Handle keyboard navigation (arrow keys and enter only - ESC handled by outside-click util)"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [open highlighted-index filtered-options]} (get-component-state el)
@@ -359,7 +373,7 @@
                    (select-option! options value))
                  (update-stub-display! el shadow-root)
                  (dispatch-change-event! el value text)
-                 (close-dropdown! el shadow-root)))))
+                 (close-desktop-dropdown! el shadow-root)))))
       ;; UP ARROW
       38 (when open
            (.preventDefault event)
@@ -378,7 +392,7 @@
              (highlight-option! filtered-options new-index)))
       nil)))
 
-(defn setup-event-listeners!
+(defn setup-desktop-event-listeners!
   "Setup event listeners for stub + dialog structure"
   [^js el ^js shadow-root]
   (let [stub (.querySelector shadow-root ".dropdown-stub")
@@ -389,24 +403,24 @@
 
     ;; Stub click - opens dialog
     (when stub
-      (.addEventListener stub "click" (partial handle-stub-click! el shadow-root)))
+      (.addEventListener stub "click" (partial handle-desktop-stub-click! el shadow-root)))
 
     ;; Input events (inside dialog)
     (when input
-      (.addEventListener input "input" (partial handle-input-change! el shadow-root))
-      (.addEventListener input "keydown" (partial handle-keyboard! el shadow-root)))
+      (.addEventListener input "input" (partial handle-desktop-input-change! el shadow-root))
+      (.addEventListener input "keydown" (partial handle-desktop-keyboard! el shadow-root)))
 
     ;; Close button
     (when close-btn
-      (.addEventListener close-btn "click" (partial handle-close-click! el shadow-root)))
+      (.addEventListener close-btn "click" (partial handle-desktop-close-click! el shadow-root)))
 
     ;; Option clicks via event delegation on slot
     (when slot
-      (.addEventListener slot "click" (partial handle-option-click! el shadow-root)))
+      (.addEventListener slot "click" (partial handle-desktop-option-click! el shadow-root)))
 
     ;; Dialog close event - now just for cleanup
     (when dialog
-      (.addEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
+      (.addEventListener dialog "close" (partial handle-desktop-dialog-close! el shadow-root)))
 
     ;; Store cleanup function
     (set! (.-tyDropdownCleanup el)
@@ -418,23 +432,21 @@
 
             ;; Cleanup regular event listeners
             (when stub
-              (.removeEventListener stub "click" (partial handle-stub-click! el shadow-root)))
+              (.removeEventListener stub "click" (partial handle-desktop-stub-click! el shadow-root)))
             (when input
-              (.removeEventListener input "input" (partial handle-input-change! el shadow-root))
-              (.removeEventListener input "keydown" (partial handle-keyboard! el shadow-root)))
+              (.removeEventListener input "input" (partial handle-desktop-input-change! el shadow-root))
+              (.removeEventListener input "keydown" (partial handle-desktop-keyboard! el shadow-root)))
             (when close-btn
-              (.removeEventListener close-btn "click" (partial handle-close-click! el shadow-root)))
+              (.removeEventListener close-btn "click" (partial handle-desktop-close-click! el shadow-root)))
             (when slot
-              (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
+              (.removeEventListener slot "click" (partial handle-desktop-option-click! el shadow-root)))
             (when dialog
-              (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))))))
+              (.removeEventListener dialog "close" (partial handle-desktop-dialog-close! el shadow-root)))))))
 
-(defn render! [^js el]
-  (let [root (wcs/ensure-shadow el)
-        {:keys [placeholder searchable disabled]} (dropdown-attributes el)]
-
-    ;; Ensure styles are loaded
-    (ensure-styles! root dropdown-styles "ty-dropdown")
+(defn render-desktop-mode!
+  "Current working desktop implementation - unchanged"
+  [^js el ^js root]
+  (let [{:keys [placeholder searchable disabled]} (dropdown-attributes el)]
 
     ;; Create stub + dialog structure
     (when-not (.querySelector root ".dropdown-stub")
@@ -472,7 +484,7 @@
               "</dialog>"))
 
       ;; Setup event listeners
-      (setup-event-listeners! el root))
+      (setup-desktop-event-listeners! el root))
 
     ;; Update stub display to match current value
     (update-stub-display! el root)
@@ -482,6 +494,161 @@
       (let [options (map get-option-data (get-options root))]
         (when (seq options)
           (update-option-visibility! options options))))))
+
+;; =====================================================
+;; MOBILE MODE (New Implementation)
+;; =====================================================
+
+(defn handle-mobile-modal-close!
+  "Handle mobile modal close events"
+  [^js el ^js event]
+  ;; Update component state to closed
+  (set-component-state! el {:open false
+                            :highlighted-index -1})
+
+  ;; Update visual state
+  (when-let [root (.-shadowRoot el)]
+    (when-let [chevron (.querySelector root ".dropdown-chevron")]
+      (.remove (.-classList chevron) "open"))
+
+    ;; Close the modal
+    (when-let [modal (.querySelector root ".mobile-dropdown-modal")]
+      (.removeAttribute modal "open"))))
+
+(defn handle-mobile-option-click!
+  "Handle option clicks in mobile mode"
+  [^js el ^js event]
+  (.preventDefault event)
+  (.stopPropagation event)
+  (let [option-element (.-target event)
+        value (or (.-value option-element) (.-textContent option-element))
+        text (.-textContent option-element)]
+    ;; Update value attribute
+    (.setAttribute el "value" value)
+    ;; Update selection
+    (when-let [root (.-shadowRoot el)]
+      (let [options (map get-option-data (get-options root))]
+        (select-option! options value))
+      ;; Update stub display
+      (update-stub-display! el root))
+    ;; Dispatch change event
+    (dispatch-change-event! el value text)
+    ;; Close modal
+    (handle-mobile-modal-close! el event)))
+
+(defn handle-mobile-search!
+  "Handle search input in mobile mode"
+  [^js el ^js event]
+  (let [{:keys [searchable]} (dropdown-attributes el)]
+    (when searchable
+      (let [search (.-value (.-target event))]
+        (when-let [root (.-shadowRoot el)]
+          (let [options (map get-option-data (get-options root))
+                filtered (filter-options options search)]
+            (set-component-state! el {:search search
+                                      :filtered-options filtered})
+            (update-option-visibility! filtered options)))))))
+
+(defn setup-mobile-event-listeners!
+  "Setup event listeners for mobile mode"
+  [^js el ^js root]
+  (let [stub (.querySelector root ".dropdown-stub")
+        modal (.querySelector root ".mobile-dropdown-modal")
+        search-input (.querySelector root ".mobile-search-input")
+        slot (.querySelector root "slot")]
+
+    ;; Stub click - opens modal
+    (when stub
+      (.addEventListener stub "click"
+                         (fn [e]
+                           (.preventDefault e)
+                           (.stopPropagation e)
+                           (let [{:keys [disabled]} (dropdown-attributes el)]
+                             (when-not disabled
+              ;; Update state
+                               (set-component-state! el {:open true})
+              ;; Open modal
+                               (when modal
+                                 (.setAttribute modal "open" "true"))
+              ;; Update chevron
+                               (when-let [chevron (.querySelector root ".dropdown-chevron")]
+                                 (.add (.-classList chevron) "open")))))))
+
+    ;; Modal close events
+    (when modal
+      (.addEventListener modal "ty-modal-close" (partial handle-mobile-modal-close! el)))
+
+    ;; Search input
+    (when search-input
+      (.addEventListener search-input "input" (partial handle-mobile-search! el)))
+
+    ;; Option clicks
+    (when slot
+      (.addEventListener slot "click" (partial handle-mobile-option-click! el)))))
+
+(defn render-mobile-mode!
+  "New mobile implementation using ty-modal for full-screen experience"
+  [^js el ^js root]
+  (let [{:keys [placeholder searchable disabled]} (dropdown-attributes el)]
+
+    ;; Create stub + mobile modal structure
+    (when-not (.querySelector root ".dropdown-stub")
+      (set! (.-innerHTML root)
+            (str
+             ;; Stub - same as desktop
+              "<div class=\"dropdown-stub\" "
+              (when disabled "disabled ")
+              ">"
+              "  <span class=\"dropdown-value\">" placeholder "</span>"
+              "  <div class=\"dropdown-chevron\">"
+              "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+              "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+              "    </svg>"
+              "  </div>"
+              "</div>"
+
+             ;; ty-modal for full-screen mobile experience
+              "<ty-modal class=\"mobile-dropdown-modal\" size=\"full\" "
+              "backdrop=\"true\" close-on-outside-click=\"true\" close-on-escape=\"true\">"
+              "  <div class=\"mobile-dropdown-content\">"
+              "    <div class=\"mobile-search-header\">"
+              "      <input class=\"mobile-search-input\" type=\"text\" "
+              "             placeholder=\"" placeholder "\" "
+              (when disabled "disabled ")
+              "      />"
+              "    </div>"
+              "    <div class=\"mobile-options-list\">"
+              "      <slot></slot>"
+              "    </div>"
+              "  </div>"
+              "</ty-modal>")))
+
+      ;; Setup mobile-specific event listeners
+    (setup-mobile-event-listeners! el root)
+
+    ;; Update stub display
+    (update-stub-display! el root)
+
+    ;; For non-searchable dropdowns, ensure all options are visible
+    (when-not searchable
+      (let [options (map get-option-data (get-options root))]
+        (when (seq options)
+          (update-option-visibility! options options))))))
+
+;; =====================================================
+;; MAIN RENDER FUNCTION
+;; =====================================================
+
+(defn render! [^js el]
+  (let [root (wcs/ensure-shadow el)]
+
+    ;; Ensure styles are loaded
+    (ensure-styles! root dropdown-styles "ty-dropdown")
+
+    ;; Choose rendering mode based on device
+    (if (is-mobile-device?)
+      (render-mobile-mode! el root)
+      (render-desktop-mode! el root))))
 
 (defn cleanup! [^js el]
   (when-let [cleanup-fn (.-tyDropdownCleanup el)]

@@ -1,19 +1,20 @@
 /* Dropdown Component Styles */
 
-.dropdown-container {
+/* ===== WRAPPER STRUCTURE ===== */
+
+.dropdown-wrapper {
+  /* Positioning context - no visual styling */
   position: relative;
   display: block;
+  width: 100%;
 }
 
-/* ===== STUB STYLING ===== */
-/* Styled to look identical to input for seamless transition */
+/* ===== STUB INPUT STYLING ===== */
+/* The actual input element that handles all visual styling */
 
-.dropdown-stub {
+.dropdown-input.dropdown-stub {
   /* Copy all input styling for visual consistency */
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
   cursor: pointer;
   box-sizing: border-box;
 
@@ -32,42 +33,51 @@
   /* Size variants - default (md) */
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+  /* Space for chevron */
 
   /* Transitions */
   transition: var(--ty-transition-all);
+
+  /* Remove default input appearance */
+  appearance: none;
+  outline: none;
 }
 
-.dropdown-stub:hover {
+.dropdown-input.dropdown-stub:hover {
   border-color: var(--ty-dropdown-stub-border-hover);
 }
 
-.dropdown-stub[disabled] {
+.dropdown-input.dropdown-stub[disabled] {
   background-color: var(--ty-dropdown-stub-disabled-bg);
   color: var(--ty-dropdown-stub-disabled-color);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.dropdown-value {
-  flex: 1;
-  color: inherit;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
+.dropdown-input.dropdown-stub:focus {
+  border-color: var(--ty-dropdown-stub-border-hover);
+  /* No focus ring since it's readonly */
 }
 
 /* ===== CHEVRON INDICATOR ===== */
 
 .dropdown-chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--ty-spacing-3);
+  transform: translateY(-50%);
+
   width: 1rem;
   height: 1rem;
   color: var(--ty-dropdown-chevron-color);
-  margin-left: var(--ty-spacing-2);
   transition: var(--ty-transition-transform);
+  pointer-events: none;
+  /* Let clicks pass through to input */
 }
 
 .dropdown-chevron.open {
-  transform: rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .dropdown-chevron svg {
@@ -78,28 +88,38 @@
 /* ===== DIALOG STRUCTURE ===== */
 
 .dropdown-dialog {
-  position: fixed;
+  /* Absolute positioning relative to wrapper (no border offset!) */
+  position: absolute;
+  left: 0;
+  width: 100%;
+  min-width: max-content;
+  max-width: none;
+
   margin: 0;
   padding: 0;
   border: none;
   background: var(--ty-dropdown-dialog-bg);
   box-sizing: border-box;
-  /* Dialog automatically handles z-index stacking */
+  z-index: 1000;
+
+  /* Dialog automatically handles focus management */
 }
 
 .dropdown-dialog.position-above {
+  bottom: 0px;
   display: flex;
   flex-direction: column-reverse;
 }
 
 .dropdown-dialog.position-below {
+  top: 0px;
   display: flex;
   flex-direction: column;
 }
 
-/* Remove default dialog backdrop */
+/* Remove default dialog backdrop since we're using absolute positioning */
 .dropdown-dialog::backdrop {
-  display: var(--ty-dropdown-dialog-backdrop);
+  display: none;
 }
 
 /* ===== DIALOG HEADER ===== */
@@ -111,7 +131,7 @@
   background: var(--ty-dropdown-header-bg);
 }
 
-.dropdown-input {
+.dropdown-search-input {
   /* Base styling */
   width: 100%;
   box-sizing: border-box;
@@ -137,19 +157,19 @@
   outline: none;
 }
 
-.dropdown-input:focus {
+.dropdown-search-input:focus {
   border-color: var(--ty-dropdown-input-border-focus);
   box-shadow: 0 0 0 3px var(--ty-dropdown-input-shadow-focus);
 }
 
-.dropdown-input:disabled {
+.dropdown-search-input:disabled {
   background-color: var(--ty-input-disabled-bg);
   color: var(--ty-input-disabled-color);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
-.dropdown-input::placeholder {
+.dropdown-search-input::placeholder {
   color: var(--ty-dropdown-input-placeholder);
 }
 
@@ -252,7 +272,7 @@
 }
 
 .mobile-search-input {
-  /* Base styling - similar to dropdown-input */
+  /* Base styling - similar to dropdown-search-input */
   width: 100%;
   box-sizing: border-box;
 
@@ -339,123 +359,147 @@
 
 /* ===== SIZE VARIANTS ===== */
 
-:host([size="xs"]) .dropdown-stub,
-:host([size="xs"]) .dropdown-input {
+:host([size="xs"]) .dropdown-input.dropdown-stub,
+:host([size="xs"]) .dropdown-search-input {
   min-height: var(--ty-size-xs);
   padding: var(--ty-spacing-1) var(--ty-spacing-2);
   font-size: var(--ty-font-xs);
 }
 
+:host([size="xs"]) .dropdown-input.dropdown-stub {
+  padding-right: calc(var(--ty-spacing-2) + 0.75rem + var(--ty-spacing-1));
+}
+
 :host([size="xs"]) .dropdown-chevron {
   width: 0.75rem;
   height: 0.75rem;
+  right: var(--ty-spacing-2);
 }
 
-:host([size="sm"]) .dropdown-stub,
-:host([size="sm"]) .dropdown-input {
+:host([size="sm"]) .dropdown-input.dropdown-stub,
+:host([size="sm"]) .dropdown-search-input {
   min-height: var(--ty-size-sm);
   padding: calc(var(--ty-spacing-1) + var(--ty-spacing-mini)) calc(var(--ty-spacing-2) + var(--ty-spacing-mini));
   font-size: var(--ty-font-sm);
 }
 
+:host([size="sm"]) .dropdown-input.dropdown-stub {
+  padding-right: calc(var(--ty-spacing-2) + var(--ty-spacing-mini) + 0.875rem + var(--ty-spacing-2));
+}
+
 :host([size="sm"]) .dropdown-chevron {
   width: 0.875rem;
   height: 0.875rem;
+  right: calc(var(--ty-spacing-2) + var(--ty-spacing-mini));
 }
 
-:host([size="md"]) .dropdown-stub,
-:host([size="md"]) .dropdown-input {
+:host([size="md"]) .dropdown-input.dropdown-stub,
+:host([size="md"]) .dropdown-search-input {
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
   font-size: var(--ty-font-sm);
 }
 
-:host([size="lg"]) .dropdown-stub,
-:host([size="lg"]) .dropdown-input {
+:host([size="md"]) .dropdown-input.dropdown-stub {
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+}
+
+:host([size="lg"]) .dropdown-input.dropdown-stub,
+:host([size="lg"]) .dropdown-search-input {
   min-height: var(--ty-size-lg);
   padding: calc(var(--ty-spacing-2) + var(--ty-spacing-mini)) calc(var(--ty-spacing-3) + var(--ty-spacing-mini));
   font-size: var(--ty-font-base);
 }
 
+:host([size="lg"]) .dropdown-input.dropdown-stub {
+  padding-right: calc(var(--ty-spacing-3) + var(--ty-spacing-mini) + 1.125rem + var(--ty-spacing-2));
+}
+
 :host([size="lg"]) .dropdown-chevron {
   width: 1.125rem;
   height: 1.125rem;
+  right: calc(var(--ty-spacing-3) + var(--ty-spacing-mini));
 }
 
-:host([size="xl"]) .dropdown-stub,
-:host([size="xl"]) .dropdown-input {
+:host([size="xl"]) .dropdown-input.dropdown-stub,
+:host([size="xl"]) .dropdown-search-input {
   min-height: var(--ty-size-xl);
   padding: var(--ty-spacing-3) var(--ty-spacing-4);
   font-size: var(--ty-font-base);
 }
 
+:host([size="xl"]) .dropdown-input.dropdown-stub {
+  padding-right: calc(var(--ty-spacing-4) + 1.25rem + var(--ty-spacing-2));
+}
+
 :host([size="xl"]) .dropdown-chevron {
   width: 1.25rem;
   height: 1.25rem;
+  right: var(--ty-spacing-4);
 }
 
 /* ===== SEMANTIC FLAVOR VARIANTS ===== */
 
-:host([flavor="positive"]) .dropdown-stub,
-:host([flavor="positive"]) .dropdown-input,
+:host([flavor="positive"]) .dropdown-input.dropdown-stub,
+:host([flavor="positive"]) .dropdown-search-input,
 :host([flavor="positive"]) .mobile-search-input {
   border-color: var(--ty-color-positive);
 }
 
-:host([flavor="positive"]) .dropdown-stub:hover,
-:host([flavor="positive"]) .dropdown-input:focus,
+:host([flavor="positive"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="positive"]) .dropdown-search-input:focus,
 :host([flavor="positive"]) .mobile-search-input:focus {
   border-color: var(--ty-color-positive-p1);
   box-shadow: 0 0 0 3px var(--ty-color-positive-m3);
 }
 
-:host([flavor="negative"]) .dropdown-stub,
-:host([flavor="negative"]) .dropdown-input,
+:host([flavor="negative"]) .dropdown-input.dropdown-stub,
+:host([flavor="negative"]) .dropdown-search-input,
 :host([flavor="negative"]) .mobile-search-input {
   border-color: var(--ty-color-negative);
 }
 
-:host([flavor="negative"]) .dropdown-stub:hover,
-:host([flavor="negative"]) .dropdown-input:focus,
+:host([flavor="negative"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="negative"]) .dropdown-search-input:focus,
 :host([flavor="negative"]) .mobile-search-input:focus {
   border-color: var(--ty-color-negative-p1);
   box-shadow: 0 0 0 3px var(--ty-color-negative-m3);
 }
 
-:host([flavor="important"]) .dropdown-stub,
-:host([flavor="important"]) .dropdown-input,
+:host([flavor="important"]) .dropdown-input.dropdown-stub,
+:host([flavor="important"]) .dropdown-search-input,
 :host([flavor="important"]) .mobile-search-input {
   border-color: var(--ty-color-important);
 }
 
-:host([flavor="important"]) .dropdown-stub:hover,
-:host([flavor="important"]) .dropdown-input:focus,
+:host([flavor="important"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="important"]) .dropdown-search-input:focus,
 :host([flavor="important"]) .mobile-search-input:focus {
   border-color: var(--ty-color-important-p1);
   box-shadow: 0 0 0 3px var(--ty-color-important-m3);
 }
 
-:host([flavor="exception"]) .dropdown-stub,
-:host([flavor="exception"]) .dropdown-input,
+:host([flavor="exception"]) .dropdown-input.dropdown-stub,
+:host([flavor="exception"]) .dropdown-search-input,
 :host([flavor="exception"]) .mobile-search-input {
   border-color: var(--ty-color-exception);
 }
 
-:host([flavor="exception"]) .dropdown-stub:hover,
-:host([flavor="exception"]) .dropdown-input:focus,
+:host([flavor="exception"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="exception"]) .dropdown-search-input:focus,
 :host([flavor="exception"]) .mobile-search-input:focus {
   border-color: var(--ty-color-exception-p1);
   box-shadow: 0 0 0 3px var(--ty-color-exception-m3);
 }
 
-:host([flavor="unique"]) .dropdown-stub,
-:host([flavor="unique"]) .dropdown-input,
+:host([flavor="unique"]) .dropdown-input.dropdown-stub,
+:host([flavor="unique"]) .dropdown-search-input,
 :host([flavor="unique"]) .mobile-search-input {
   border-color: var(--ty-color-unique);
 }
 
-:host([flavor="unique"]) .dropdown-stub:hover,
-:host([flavor="unique"]) .dropdown-input:focus,
+:host([flavor="unique"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="unique"]) .dropdown-search-input:focus,
 :host([flavor="unique"]) .mobile-search-input:focus {
   border-color: var(--ty-color-unique-p1);
   box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
@@ -464,6 +508,9 @@
 /* ===== MOBILE FULLSCREEN (Desktop dialog on mobile) ===== */
 
 .dropdown-dialog.mobile-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
   max-width: none !important;
@@ -491,7 +538,7 @@
 
 /* ===== MINI WIDTH VARIANT ===== */
 
-.dropdown-stub,
-.dropdown-input {
+.dropdown-input.dropdown-stub,
+.dropdown-search-input {
   min-width: 8.75rem;
 }

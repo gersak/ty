@@ -7,48 +7,22 @@
 ;; =====================================================
 
 (defn update-position!
-  "Position dialog at top to test if positioning works"
+  "Smart positioning using CSS classes - works with wrapper structure"
   [^js el ^js shadow-root]
-  (let [stub (.querySelector shadow-root ".dropdown-stub")
+  (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
         dialog (.querySelector shadow-root ".dropdown-dialog")
-        input (.querySelector shadow-root ".dropdown-input")
         {:keys [open]} (common/get-component-state el)]
 
-    (when (and open stub dialog)
-      (let [stub-rect (.getBoundingClientRect stub)
-            stub-top (.-top stub-rect)
-            stub-bottom (.-bottom stub-rect)
-            stub-left (.-left stub-rect)
-            stub-width (.-width stub-rect)
-            stub-height (.-height stub-rect)
-            dialog-dimensions (.getBoundingClientRect dialog)
-            dialog-height (.-height dialog-dimensions)
-            viewport-width (.-innerWidth js/window)
-            viewport-height (.-innerHeight js/window)]
+    (when (and open wrapper dialog)
+      (let [wrapper-rect (.getBoundingClientRect wrapper)
+            wrapper-bottom (.-bottom wrapper-rect)
+            viewport-height (.-innerHeight js/window)
+            space-below (- viewport-height wrapper-bottom)
+            position-below (> space-below 300)] ; Need ~300px for dropdown
 
-            ;; Add positioning class
-        (let [space-below (- viewport-height stub-top stub-height)
-              position-below (> space-below 300)] ; Need ~300px for dropdown
-
-              ;; Position dialog so input appears exactly where stub was
-          (set! (.. dialog -style -position) "fixed")
-          (set! (.. dialog -style -left) (str stub-left "px"))
-          (set! (.. dialog -style -width) (str stub-width "px"))
-          (set! (.. dialog -style -margin) "0")
-
-          (println "BOTTOM: " stub-bottom)
-          (println "STUB HEIGHT: " stub-height)
-          (println "DIALOG HEIGHT: " dialog-height)
-
-          (if position-below
-                ;; Position below: input at stub position, options below
-            (set! (.. dialog -style -top) (str stub-top "px"))
-                ;; Position above: calculate so input aligns with stub
-            (set! (.. dialog -style -top) (str (- stub-bottom dialog-height) "px")))
-
-              ;; Add class for CSS to handle layout direction
-          (.remove (.-classList dialog) "position-above" "position-below")
-          (.add (.-classList dialog) (if position-below "position-below" "position-above")))))))
+        ;; Just toggle CSS classes - let CSS handle the positioning
+        (.remove (.-classList dialog) "position-above" "position-below")
+        (.add (.-classList dialog) (if position-below "position-below" "position-above"))))))
 
 ;; =====================================================
 ;; DESKTOP DROPDOWN CONTROL
@@ -102,7 +76,7 @@
         ;; Open dialog - input inside dialog gets focus naturally!
         ;; Browser handles preventing multiple modals automatically
         (when dialog
-          (.showModal dialog)
+          (.show dialog)
 
           ;; Set initial input value for searchable dropdowns
           (when (and input searchable)
@@ -253,22 +227,23 @@
 ;; =====================================================
 
 (defn setup-event-listeners!
-  "Setup event listeners for stub + dialog structure"
+  "Setup event listeners for wrapper + input + dialog structure"
   [^js el ^js shadow-root]
-  (let [stub (.querySelector shadow-root ".dropdown-stub")
-        input (.querySelector shadow-root ".dropdown-input")
+  (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
+        stub-input (.querySelector shadow-root ".dropdown-input.dropdown-stub")
+        search-input (.querySelector shadow-root ".dropdown-search-input")
         close-btn (.querySelector shadow-root ".dropdown-close")
         slot (.querySelector shadow-root "slot")
         dialog (.querySelector shadow-root ".dropdown-dialog")]
 
-    ;; Stub click - opens dialog
-    (when stub
-      (.addEventListener stub "click" (partial handle-stub-click! el shadow-root)))
+    ;; Stub input click - opens dialog
+    (when stub-input
+      (.addEventListener stub-input "click" (partial handle-stub-click! el shadow-root)))
 
-    ;; Input events (inside dialog) - includes escape key handling
-    (when input
-      (.addEventListener input "input" (partial handle-input-change! el shadow-root))
-      (.addEventListener input "keydown" (partial handle-keyboard! el shadow-root)))
+    ;; Search input events (inside dialog) - includes escape key handling
+    (when search-input
+      (.addEventListener search-input "input" (partial handle-input-change! el shadow-root))
+      (.addEventListener search-input "keydown" (partial handle-keyboard! el shadow-root)))
 
     ;; Close button
     (when close-btn
@@ -290,11 +265,11 @@
     (set! (.-tyDropdownCleanup el)
           (fn []
             ;; Cleanup regular event listeners
-            (when stub
-              (.removeEventListener stub "click" (partial handle-stub-click! el shadow-root)))
-            (when input
-              (.removeEventListener input "input" (partial handle-input-change! el shadow-root))
-              (.removeEventListener input "keydown" (partial handle-keyboard! el shadow-root)))
+            (when stub-input
+              (.removeEventListener stub-input "click" (partial handle-stub-click! el shadow-root)))
+            (when search-input
+              (.removeEventListener search-input "input" (partial handle-input-change! el shadow-root))
+              (.removeEventListener search-input "keydown" (partial handle-keyboard! el shadow-root)))
             (when close-btn
               (.removeEventListener close-btn "click" (partial handle-close-click! el shadow-root)))
             (when slot
@@ -308,44 +283,51 @@
 ;; =====================================================
 
 (defn render!
-  "Desktop implementation using dialog element with smart positioning"
+  "Desktop implementation using wrapper + input + dialog structure for perfect positioning"
   [^js el ^js root]
   (let [{:keys [placeholder searchable disabled]} (common/dropdown-attributes el)]
 
-    ;; Create stub + dialog structure
-    (when-not (.querySelector root ".dropdown-stub")
+    ;; Create wrapper + input + dialog structure
+    (when-not (.querySelector root ".dropdown-wrapper")
       (set! (.-innerHTML root)
             (str
-             ;; Stub - Styled to look identical to input for seamless transition
-              "<div class=\"dropdown-stub\" "
+             ;; Wrapper - provides positioning context, no styling
+              "<div class=\"dropdown-wrapper\">"
+
+             ;; Read-only input - handles all visual styling
+              "  <input class=\"dropdown-input dropdown-stub\" "
+              "         type=\"text\" "
+              "         readonly "
+              "         placeholder=\"" placeholder "\" "
               (when disabled "disabled ")
-              ">"
-              "  <span class=\"dropdown-value\">" placeholder "</span>"
+              "         value=\"" placeholder "\" />"
+
+             ;; Chevron - positioned over the input
               "  <div class=\"dropdown-chevron\">"
               "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
               "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
               "    </svg>"
               "  </div>"
-              "</div>"
 
-             ;; Dialog - Contains input + options (opens as overlay)
-              "<dialog class=\"dropdown-dialog\">"
-              "  <div class=\"dropdown-header\">"
-              "    <input class=\"dropdown-input\" type=\"text\" "
-              "           placeholder=\"" placeholder "\" "
+             ;; Dialog - positioned relative to wrapper (no border offset)
+              "  <dialog class=\"dropdown-dialog\">"
+              "    <div class=\"dropdown-header\">"
+              "      <input class=\"dropdown-search-input\" type=\"text\" "
+              "             placeholder=\"" (if searchable "Search..." placeholder) "\" "
               (when disabled "disabled ")
-              "    />"
+              "      />"
               (when-not disabled
-                "    <button class=\"dropdown-close\" type=\"button\" aria-label=\"Close\">"
-                "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-                "        <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-                "      </svg>"
-                "    </button>")
-              "  </div>"
-              "  <div class=\"dropdown-options\">"
-              "    <slot></slot>"
-              "  </div>"
-              "</dialog>"))
+                "      <button class=\"dropdown-close\" type=\"button\" aria-label=\"Close\">"
+                "        <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+                "          <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+                "        </svg>"
+                "      </button>")
+              "    </div>"
+              "    <div class=\"dropdown-options\">"
+              "      <slot></slot>"
+              "    </div>"
+              "  </dialog>"
+              "</div>"))
 
       ;; Setup event listeners
       (setup-event-listeners! el root))

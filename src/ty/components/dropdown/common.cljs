@@ -131,17 +131,17 @@
 ;; =====================================================
 
 (defn update-stub-display!
-  "Update stub to show selected value or placeholder"
+  "Update stub input to show selected value or placeholder"
   [^js el ^js shadow-root]
   (let [{:keys [value placeholder]} (dropdown-attributes el)
-        stub-value (.querySelector shadow-root ".dropdown-value")
+        stub-input (.querySelector shadow-root ".dropdown-input.dropdown-stub")
         options (map get-option-data (get-options shadow-root))]
-    (when stub-value
+    (when stub-input
       (if-let [selected-option (first (filter #(= (:value %) value) options))]
         (do
-          (set! (.-textContent stub-value) (:text selected-option))
+          (set! (.-value stub-input) (:text selected-option))
           (select-option! options value))
-        (set! (.-textContent stub-value) placeholder)))))
+        (set! (.-value stub-input) placeholder)))))
 
 ;; =====================================================
 ;; DEVICE DETECTION

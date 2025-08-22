@@ -28,9 +28,9 @@
    (demo-row {:title "Basic Dropdown"
               :description "A simple dropdown with searchable options"
               :children [[:div.max-w-xs
-                          [:ty-dropdown {:value "red"
-                                         :placeholder "Select a color..."
-                                         :on {:change dropdown-event-handler}}
+                          [:ty-dropdown.w-full {:value "red"
+                                                :placeholder "Select a color..."
+                                                :on {:change dropdown-event-handler}}
                            [:option {:value "red"} "Red"]
                            [:option {:value "blue"} "Blue"]
                            [:option {:value "green"} "Green"]

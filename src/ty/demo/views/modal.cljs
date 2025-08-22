@@ -13,21 +13,31 @@
    [:div.mb-8
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
      "Modal Component"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400
-     "A modal component that wraps the native HTML dialog element."]]
+    [:p.text-lg.text-gray-600.dark:text-gray-400.mb-4
+     "A pure modal wrapper component that provides backdrop, focus management, and keyboard interaction without imposing any styling on your content."]
+    [:div.p-4.bg-blue-50.dark:bg-blue-900.border.border-blue-200.dark:border-blue-700.rounded
+     [:h4.text-sm.font-medium.text-blue-800.dark:text-blue-200.mb-2 "Key Features:"]
+     [:ul.text-sm.text-blue-700.dark:text-blue-300.space-y-1
+      [:li "• No built-in sizing - content determines its own dimensions"]
+      [:li "• No background or styling imposed - pure content wrapper"]
+      [:li "• Focus management and keyboard navigation"]
+      [:li "• Backdrop click and escape key handling"]
+      [:li "• CSS variable inheritance for design tokens"]]]]
 
    ;; Basic test
    [:div.demo-section
     [:h2.demo-title "Basic Modal Test"]
+    [:p.text-gray-600.dark:text-gray-400.mb-4
+     "The modal component is a pure wrapper - all styling (size, background, borders, etc.) is applied by user content."]
     [:ty-button {:on {:click #(swap! state/state assoc :modal-basic-open true)}}
      "Open Modal"]
 
     ;; Simple modal
     [:ty-modal {:open (get @state/state :modal-basic-open false)
                 :on {:ty-modal-close #(swap! state/state assoc :modal-basic-open false)}}
-     [:div.p-6
-      [:h3 "Test Modal"]
-      [:p "This is a test modal."]
+     [:div.p-6.max-w-md.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
+      [:h3.text-lg.font-semibold.mb-4 "Test Modal"]
+      [:p.text-gray-600.dark:text-gray-400.mb-4 "This is a test modal with user-defined styling."]
       [:ty-button {:on {:click #(swap! state/state assoc :modal-basic-open false)}}
        "Close"]]]]
 
@@ -46,9 +56,8 @@
 
     ;; Simple modal with dropdown
     [:ty-modal {:open (get @state/state :modal-dropdown-simple-open false)
-                :size "lg"
                 :on {:ty-modal-close #(swap! state/state assoc :modal-dropdown-simple-open false)}}
-     [:div.p-6
+     [:div.p-6.max-w-lg.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
       [:h3.text-xl.font-semibold.mb-4 "Simple Dropdown Test"]
       [:p.text-gray-600.mb-4
        "Test basic dropdown functionality inside a modal:"]
@@ -87,9 +96,8 @@
 
     ;; Complex modal with multiple dropdowns and edge cases
     [:ty-modal {:open (get @state/state :modal-dropdown-complex-open false)
-                :size "xl"
                 :on {:ty-modal-close #(swap! state/state assoc :modal-dropdown-complex-open false)}}
-     [:div.p-6
+     [:div.p-6.max-w-4xl.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
       [:h3.text-xl.font-semibold.mb-4 "Complex Dropdown Test"]
       [:p.text-gray-600.mb-6
        "Test multiple dropdowns, positioning edge cases, and interactions:"]

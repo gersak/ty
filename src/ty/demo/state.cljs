@@ -11,6 +11,7 @@
     (merge
       {:theme (get-initial-theme)
        :current-page :home
+       :mobile-menu-open false
      ;; Popup states for demo
        :popup-states {}}
       #:ty.demo.views.icons {:show-demo true

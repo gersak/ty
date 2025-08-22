@@ -254,24 +254,30 @@
 
 /* ===== MOBILE MODE STYLES ===== */
 
-.mobile-dropdown-modal {
-  /* Modal positioning handled by ty-modal component */
+
+.ty-modal-dialog {
+  width: 80vw;
+  height: 80vw;
 }
 
 .mobile-dropdown-content {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  background: var(--ty-bg);
+  width: 60vw;
+  height: 60vh;
+  background: var(--ty-bg-neutral);
   border-radius: var(--ty-radius-2xl);
   overflow: hidden;
+  box-sizing: border-box;
   /* Prevent content from showing outside rounded corners */
 }
 
 .mobile-search-header {
-  padding: var(--ty-spacing-6);
+  padding: var(--ty-spacing-4);
   border-bottom: 1px solid var(--ty-border);
   background: var(--ty-bg);
+  flex-shrink: 0;
+  /* Prevent header from shrinking */
   /* Use consistent background */
 }
 
@@ -288,15 +294,15 @@
 
   /* Typography */
   font-family: var(--ty-font-sans);
-  font-size: var(--ty-font-lg);
-  /* Larger for mobile */
+  font-size: var(--ty-font-base);
+  /* Base size for mobile */
   font-weight: var(--ty-font-normal);
   line-height: var(--ty-line-height-tight);
 
   /* Mobile-optimized sizing */
-  min-height: var(--ty-size-xl);
-  /* Larger touch target */
-  padding: var(--ty-spacing-4) var(--ty-spacing-5);
+  min-height: var(--ty-size-lg);
+  /* Good touch target */
+  padding: var(--ty-spacing-3) var(--ty-spacing-4);
 
   /* Transitions */
   transition: var(--ty-transition-all);
@@ -326,30 +332,33 @@
   /* Remove padding for full-width options */
   background: var(--ty-bg);
   /* Consistent background */
+  width: 100%;
+  max-height: calc(100vh - 120px);
+  /* Account for header height */
+  box-sizing: border-box;
 }
 
 /* Mobile option styling - applied to slotted options */
 .mobile-options-list ::slotted(option) {
-  display: block !important;
-  padding: var(--ty-spacing-5) var(--ty-spacing-6);
-  /* Larger touch-friendly padding */
+  display: flex !important;
+  align-items: center;
+  padding: var(--ty-spacing-4) var(--ty-spacing-4);
+  /* Good touch padding */
   color: var(--ty-input-color);
   cursor: pointer;
   transition: var(--ty-transition-colors);
   border: none;
   background: none;
-  font-size: var(--ty-font-lg);
-  /* Larger mobile text */
+  font-size: var(--ty-font-base);
+  /* Base mobile text */
   font-family: inherit;
   width: 100%;
   text-align: left;
   box-sizing: border-box;
   border-bottom: 1px solid var(--ty-border-m1);
   /* Subtle separator */
-  min-height: var(--ty-size-xl);
+  min-height: var(--ty-size-lg);
   /* Consistent touch target */
-  display: flex;
-  align-items: center;
 }
 
 .mobile-options-list ::slotted(option:last-child) {
@@ -525,25 +534,6 @@
   box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
 }
 
-/* ===== MOBILE FULLSCREEN (Desktop dialog on mobile) ===== */
-
-.dropdown-dialog.mobile-fullscreen {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  max-width: none !important;
-  max-height: none !important;
-}
-
-.dropdown-dialog.mobile-fullscreen .dropdown-options {
-  max-height: calc(100vh - 5rem);
-  border: none;
-  border-radius: 0;
-  box-shadow: none;
-}
-
 /* ===== PLACEMENT VARIANTS ===== */
 
 .dropdown-dialog.position-above .dropdown-options {
@@ -561,4 +551,30 @@
 .dropdown-input.dropdown-stub,
 .dropdown-search-input {
   min-width: 8.75rem;
+}
+
+/* ===== MOBILE SPECIFIC OVERRIDES ===== */
+
+@media (max-width: 768px) {
+  .mobile-dropdown-content {}
+
+  .mobile-search-header {
+    padding: var(--ty-spacing-3);
+    /* Slightly less padding on mobile */
+  }
+
+  .mobile-search-input {
+    font-size: var(--ty-font-sm);
+    /* Smaller text on mobile */
+    min-height: var(--ty-size-md);
+    /* Standard height on mobile */
+    padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  }
+
+  .mobile-options-list ::slotted(option) {
+    padding: var(--ty-spacing-3) var(--ty-spacing-3);
+    /* Consistent with mobile input */
+    font-size: var(--ty-font-sm);
+    min-height: var(--ty-size-md);
+  }
 }

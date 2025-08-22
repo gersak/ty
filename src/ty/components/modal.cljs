@@ -15,7 +15,6 @@
   "Extract modal configuration from element attributes"
   [^js el]
   {:open (wcs/parse-bool-attr el "open")
-   :size (or (wcs/attr el "size") "md")
    :backdrop (if (wcs/attr el "backdrop")
                (wcs/parse-bool-attr el "backdrop")
                true) ; default to true if not specified
@@ -175,15 +174,15 @@
 ;; =====================================================
 
 (defn render! [^js el]
-  (let [{:keys [open size backdrop close-on-outside-click close-on-escape]} (modal-attributes el)
+  (let [{:keys [open backdrop close-on-outside-click close-on-escape]} (modal-attributes el)
         root (wcs/ensure-shadow el)
         dialog (ensure-internal-dialog! root)]
 
     ;; Ensure styles are loaded
     (ensure-styles! root modal-styles "ty-modal")
 
-    ;; Apply size class to dialog
-    (set! (.-className dialog) (str "ty-modal-dialog " size))
+    ;; Apply basic dialog class (no size styling)
+    (set! (.-className dialog) "ty-modal-dialog")
 
     ;; Apply backdrop attribute
     (if backdrop
@@ -200,7 +199,7 @@
     (if open
       (when-not (.-open dialog)
         (.showModal dialog)
-        (dispatch-modal-event! el "ty-modal-open" #js {:size size}))
+        (dispatch-modal-event! el "ty-modal-open" #js {}))
       (when (.-open dialog)
         (.close dialog)
         (dispatch-modal-event! el "ty-modal-close" #js {:reason "programmatic"})))
@@ -221,7 +220,7 @@
 ;; =====================================================
 
 (wcs/define! "ty-modal"
-  {:observed [:open :size :backdrop :close-on-outside-click :close-on-escape :protected]
+  {:observed [:open :backdrop :close-on-outside-click :close-on-escape :protected]
    :connected render!
    :attr (fn [^js el _attr-name _old _new]
            (render! el))

@@ -127,39 +127,39 @@
       (set! (.-innerHTML root)
             (str
              ;; Wrapper - provides positioning context, no styling
-             "<div class=\"dropdown-wrapper\">"
+              "<div class=\"dropdown-wrapper\">"
 
              ;; Read-only input - handles all visual styling (same as desktop)
-             "  <input class=\"dropdown-input dropdown-stub\" "
-             "         type=\"text\" "
-             "         readonly "
-             "         placeholder=\"" placeholder "\" "
-             (when disabled "disabled ")
-             "         value=\"" placeholder "\" />"
+              "  <input class=\"dropdown-input dropdown-stub\" "
+              "         type=\"text\" "
+              "         readonly "
+              "         placeholder=\"" placeholder "\" "
+              (when disabled "disabled ")
+              "         value=\"" placeholder "\" />"
 
              ;; Chevron - positioned over the input
-             "  <div class=\"dropdown-chevron\">"
-             "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-             "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-             "    </svg>"
-             "  </div>"
+              "  <div class=\"dropdown-chevron\">"
+              "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+              "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+              "    </svg>"
+              "  </div>"
 
              ;; ty-modal for full-screen mobile experience
-             "  <ty-modal class=\"mobile-dropdown-modal\" size=\"full\" "
-             "  backdrop=\"true\" close-on-outside-click=\"true\" close-on-escape=\"true\">"
-             "    <div class=\"mobile-dropdown-content\">"
-             "      <div class=\"mobile-search-header\">"
-             "        <input class=\"mobile-search-input\" type=\"text\" "
-             "               placeholder=\"" (if searchable "Search..." placeholder) "\" "
-             (when disabled "disabled ")
-             "        />"
-             "      </div>"
-             "      <div class=\"mobile-options-list\">"
-             "        <slot></slot>"
-             "      </div>"
-             "    </div>"
-             "  </ty-modal>"
-             "</div>")))
+              "  <ty-modal class=\"mobile-dropdown-modal\""
+              "  backdrop=\"true\" close-on-outside-click=\"true\" close-on-escape=\"true\">"
+              "    <div class=\"mobile-dropdown-content\">"
+              "      <div class=\"mobile-search-header\">"
+              "        <input class=\"mobile-search-input\" type=\"text\" "
+              "               placeholder=\"" (if searchable "Search..." placeholder) "\" "
+              (when disabled "disabled ")
+              "        />"
+              "      </div>"
+              "      <div class=\"mobile-options-list\">"
+              "        <slot></slot>"
+              "      </div>"
+              "    </div>"
+              "  </ty-modal>"
+              "</div>")))
 
       ;; Setup mobile-specific event listeners
     (setup-event-listeners! el root)

@@ -121,7 +121,7 @@
 
 /* Selected content styling */
 .dropdown-stub slot[name="selected"] {
-  display: contents;
+  display: block; width: 100%;
 }
 
 /* ===== CHEVRON INDICATOR ===== */
@@ -646,4 +646,466 @@
 /* Hide placeholder when there is a selection */
 .dropdown-stub.has-selection .dropdown-placeholder {
   display: none;
+}
+
+/* ===== SIZE MODIFIERS FOR STUB ===== */
+
+/* Extra Small */
+.dropdown-stub.xs {
+  min-height: 32px;
+  padding: 4px 8px;
+  padding-right: calc(8px + 1rem + 4px);
+  /* Space for chevron */
+  font-size: 12px;
+}
+
+/* Small */
+.dropdown-stub.sm {
+  min-height: 36px;
+  padding: 6px 10px;
+  padding-right: calc(10px + 1rem + 6px);
+  /* Space for chevron */
+  font-size: 13px;
+}
+
+/* Medium (default) */
+.dropdown-stub.md {
+  min-height: 40px;
+  padding: 8px 12px;
+  padding-right: calc(12px + 1rem + 8px);
+  /* Space for chevron */
+  font-size: 14px;
+}
+
+/* Large */
+.dropdown-stub.lg {
+  min-height: 44px;
+  padding: 10px 14px;
+  padding-right: calc(14px + 1rem + 10px);
+  /* Space for chevron */
+  font-size: 16px;
+}
+
+/* Extra Large */
+.dropdown-stub.xl {
+  min-height: 48px;
+  padding: 12px 16px;
+  padding-right: calc(16px + 1rem + 12px);
+  /* Space for chevron */
+  font-size: 18px;
+}
+
+/* ===== SEMANTIC FLAVOR MODIFIERS FOR STUB ===== */
+
+/* Important - Blue theme */
+.dropdown-stub.important {
+  border-color: #3b82f6;
+}
+
+.dropdown-stub.important:hover {
+  border-color: #2563eb;
+}
+
+.dropdown-stub.important:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Positive - Green theme for success */
+.dropdown-stub.positive {
+  border-color: #10b981;
+}
+
+.dropdown-stub.positive:hover {
+  border-color: #059669;
+}
+
+.dropdown-stub.positive:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Negative - Red theme for errors */
+.dropdown-stub.negative {
+  border-color: #ef4444;
+}
+
+.dropdown-stub.negative:hover {
+  border-color: #dc2626;
+}
+
+.dropdown-stub.negative:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Exception - Yellow theme for warnings */
+.dropdown-stub.exception {
+  border-color: #f59e0b;
+}
+
+.dropdown-stub.exception:hover {
+  border-color: #d97706;
+}
+
+.dropdown-stub.exception:focus {
+  border-color: #d97706;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Unique - Purple theme */
+.dropdown-stub.unique {
+  border-color: #8b5cf6;
+}
+
+.dropdown-stub.unique:hover {
+  border-color: #7c3aed;
+}
+
+.dropdown-stub.unique:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Neutral (default) - no special colors, use base styling */
+.dropdown-stub.neutral {
+  /* Uses default styling defined above */
+}
+
+/* ===== SELECTED CONTENT STYLING ===== */
+/* Ensure cloned content in stub looks identical to original options */
+
+.dropdown-stub slot[name="selected"] {
+  display: block; width: 100%;
+}
+
+/* Reset any conflicting styles for cloned content */
+.dropdown-stub slot[name="selected"] ty-option,
+.dropdown-stub slot[name="selected"] option {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  outline: none;
+  appearance: none;
+}
+
+/* Ensure div content in cloned options displays properly */
+.dropdown-stub slot[name="selected"] div {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: inherit;
+}
+
+/* Preserve flex layouts from original options */
+.dropdown-stub slot[name="selected"] .flex {
+  display: flex;
+}
+
+.dropdown-stub slot[name="selected"] .items-center {
+  align-items: center;
+}
+
+.dropdown-stub slot[name="selected"] .gap-3 {
+  gap: 0.75rem;
+}
+
+.dropdown-stub slot[name="selected"] .gap-2 {
+  gap: 0.5rem;
+}
+
+/* Preserve text sizing and weights */
+.dropdown-stub slot[name="selected"] .font-medium {
+  font-weight: 500;
+}
+
+.dropdown-stub slot[name="selected"] .text-sm {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.dropdown-stub slot[name="selected"] .text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+/* Preserve color classes */
+.dropdown-stub slot[name="selected"] .text-gray-500 {
+  color: rgb(107 114 128);
+}
+
+.dropdown-stub slot[name="selected"] .text-gray-600 {
+  color: rgb(75 85 99);
+}
+
+.dropdown-stub slot[name="selected"] .text-gray-800 {
+  color: rgb(31 41 55);
+}
+
+/* Preserve background colors for badges */
+.dropdown-stub slot[name="selected"] .bg-green-100 {
+  background-color: rgb(220 252 231);
+}
+
+.dropdown-stub slot[name="selected"] .bg-yellow-100 {
+  background-color: rgb(254 249 195);
+}
+
+.dropdown-stub slot[name="selected"] .bg-red-100 {
+  background-color: rgb(254 226 226);
+}
+
+.dropdown-stub slot[name="selected"] .bg-gray-100 {
+  background-color: rgb(243 244 246);
+}
+
+/* Preserve text colors for badges */
+.dropdown-stub slot[name="selected"] .text-green-800 {
+  color: rgb(22 101 52);
+}
+
+.dropdown-stub slot[name="selected"] .text-yellow-800 {
+  color: rgb(133 77 14);
+}
+
+.dropdown-stub slot[name="selected"] .text-red-800 {
+  color: rgb(153 27 27);
+}
+
+/* Preserve border radius and padding */
+.dropdown-stub slot[name="selected"] .rounded {
+  border-radius: 0.25rem;
+}
+
+.dropdown-stub slot[name="selected"] .rounded-full {
+  border-radius: 9999px;
+}
+
+.dropdown-stub slot[name="selected"] .px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.dropdown-stub slot[name="selected"] .py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+}
+
+/* Preserve flex utilities */
+.dropdown-stub slot[name="selected"] .flex-1 {
+  flex: 1 1 0%;
+}
+
+.dropdown-stub slot[name="selected"] .flex-shrink-0 {
+  flex-shrink: 0;
+}
+
+.dropdown-stub slot[name="selected"] .min-w-0 {
+  min-width: 0px;
+}
+
+/* Preserve sizing utilities */
+.dropdown-stub slot[name="selected"] .w-3 {
+  width: 0.75rem;
+}
+
+.dropdown-stub slot[name="selected"] .h-3 {
+  height: 0.75rem;
+}
+
+.dropdown-stub slot[name="selected"] .w-6 {
+  width: 1.5rem;
+}
+
+.dropdown-stub slot[name="selected"] .h-6 {
+  height: 1.5rem;
+}
+
+.dropdown-stub slot[name="selected"] .w-8 {
+  width: 2rem;
+}
+
+.dropdown-stub slot[name="selected"] .h-8 {
+  height: 2rem;
+}
+
+/* Preserve icon/indicator colors */
+.dropdown-stub slot[name="selected"] .bg-yellow-400 {
+  background-color: rgb(250 204 21);
+}
+
+.dropdown-stub slot[name="selected"] .bg-blue-600 {
+  background-color: rgb(37 99 235);
+}
+
+.dropdown-stub slot[name="selected"] .bg-green-600 {
+  background-color: rgb(22 163 74);
+}
+
+.dropdown-stub slot[name="selected"] .bg-orange-600 {
+  background-color: rgb(234 88 12);
+}
+
+.dropdown-stub slot[name="selected"] .bg-blue-500 {
+  background-color: rgb(59 130 246);
+}
+
+.dropdown-stub slot[name="selected"] .bg-purple-500 {
+  background-color: rgb(168 85 247);
+}
+
+.dropdown-stub slot[name="selected"] .bg-pink-500 {
+  background-color: rgb(236 72 153);
+}
+
+.dropdown-stub slot[name="selected"] .bg-green-500 {
+  background-color: rgb(34 197 94);
+}
+
+.dropdown-stub slot[name="selected"] .bg-yellow-500 {
+  background-color: rgb(234 179 8);
+}
+
+.dropdown-stub slot[name="selected"] .bg-red-500 {
+  background-color: rgb(239 68 68);
+}
+
+.dropdown-stub slot[name="selected"] .bg-gray-400 {
+  background-color: rgb(156 163 175);
+}
+
+/* Text colors for contrasting text on colored backgrounds */
+.dropdown-stub slot[name="selected"] .text-black {
+  color: rgb(0 0 0);
+}
+
+.dropdown-stub slot[name="selected"] .text-white {
+  color: rgb(255 255 255);
+}
+
+/* ===== DARK MODE SUPPORT FOR SELECTED CONTENT ===== */
+
+.dark .dropdown-stub slot[name="selected"] .text-gray-500 {
+  color: rgb(156 163 175);
+}
+
+.dark .dropdown-stub slot[name="selected"] .text-gray-600 {
+  color: rgb(156 163 175);
+}
+
+.dark .dropdown-stub slot[name="selected"] .text-gray-800 {
+  color: rgb(209 213 219);
+}
+
+/* Dark mode badge backgrounds */
+.dark .dropdown-stub slot[name="selected"] .bg-green-100 {
+  background-color: rgb(20 83 45);
+}
+
+.dark .dropdown-stub slot[name="selected"] .bg-yellow-100 {
+  background-color: rgb(120 53 15);
+}
+
+.dark .dropdown-stub slot[name="selected"] .bg-red-100 {
+  background-color: rgb(127 29 29);
+}
+
+.dark .dropdown-stub slot[name="selected"] .bg-gray-100 {
+  background-color: rgb(55 65 81);
+}
+
+/* Dark mode badge text colors */
+.dark .dropdown-stub slot[name="selected"] .text-green-800 {
+  color: rgb(187 247 208);
+}
+
+.dark .dropdown-stub slot[name="selected"] .text-yellow-800 {
+  color: rgb(254 240 138);
+}
+
+.dark .dropdown-stub slot[name="selected"] .text-red-800 {
+  color: rgb(254 202 202);
+}
+
+/* ===== FORCE FULL WIDTH FOR SELECTED CONTENT ===== */
+
+/* Make the selected content fill the full width of the stub */
+.dropdown-stub slot[name="selected"] {
+  display: block;
+  width: 100%;
+}
+
+/* Ensure the cloned ty-option or option elements expand fully */
+.dropdown-stub slot[name="selected"] ty-option,
+.dropdown-stub slot[name="selected"] option {
+  display: block;
+  width: 100% !important;
+  max-width: none !important;
+  flex: 1 1 auto;
+}
+
+/* Make sure the top-level div in cloned content uses full width */
+.dropdown-stub slot[name="selected"] > * {
+  display: block;
+  width: 100%;
+}
+
+/* Ensure flex containers inside selected content expand to full width */
+.dropdown-stub slot[name="selected"] .flex {
+  display: flex;
+  width: 100%;
+}
+
+/* Override any width constraints on the main content div */
+.dropdown-stub slot[name="selected"] div:first-child {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Ensure justify-between works properly across full width */
+.dropdown-stub slot[name="selected"] .justify-between {
+  justify-content: space-between;
+}
+
+/* Make sure flex-1 elements take available space */
+.dropdown-stub slot[name="selected"] .flex-1 {
+  flex: 1 1 0%;
+  min-width: 0;
+}
+
+/* ===== ADDITIONAL FULL WIDTH ENFORCEMENT ===== */
+
+/* Force all cloned elements to fill width */
+.dropdown-stub[slot=""] ty-option,
+.dropdown-stub ty-option[slot="selected"] {
+  width: 100% !important;
+  display: block !important;
+}
+
+/* Ensure the shadow root content in ty-option expands */
+.dropdown-stub ty-option::part(content) {
+  width: 100%;
+}
+
+/* Force flex containers in selected content to use full width */
+.dropdown-stub slot[name="selected"] .flex.items-center {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+/* Ensure gap-3 layouts still expand to full width */
+.dropdown-stub slot[name="selected"] .flex.items-center.gap-3 {
+  width: 100% !important;
+  justify-content: space-between;
+}
+
+/* Override any max-width constraints */
+.dropdown-stub slot[name="selected"] * {
+  max-width: none !important;
 }

@@ -52,9 +52,9 @@
             ;; Find the index of the currently selected option
             selected-index (if (and value (seq filtered))
                              (first (keep-indexed
-                                      (fn [idx option]
-                                        (when (= (:value option) value) idx))
-                                      filtered))
+                                     (fn [idx option]
+                                       (when (= (:value option) value) idx))
+                                     filtered))
                              -1)]
 
         (common/set-component-state! el {:open true
@@ -87,11 +87,11 @@
 
           ;; Highlight the selected option if any
           (js/setTimeout
-            (fn []
-              (let [{:keys [highlighted-index filtered-options]} (common/get-component-state el)]
-                (when (>= highlighted-index 0)
-                  (common/highlight-option! filtered-options highlighted-index))))
-            50))))))
+           (fn []
+             (let [{:keys [highlighted-index filtered-options]} (common/get-component-state el)]
+               (when (>= highlighted-index 0)
+                 (common/highlight-option! filtered-options highlighted-index))))
+           50))))))
 
 ;; =====================================================
 ;; DESKTOP EVENT HANDLERS
@@ -153,9 +153,9 @@
             {:keys [value]} (common/dropdown-attributes el)
             new-highlighted-index (if (and value (seq filtered))
                                     (first (keep-indexed
-                                             (fn [idx option]
-                                               (when (= (:value option) value) idx))
-                                             filtered))
+                                            (fn [idx option]
+                                              (when (= (:value option) value) idx))
+                                            filtered))
                                     -1)]
         (common/set-component-state! el {:search search
                                          :filtered-options filtered
@@ -308,49 +308,49 @@
 (defn render!
   "Desktop implementation using wrapper + stub div + dialog structure for rich content"
   [^js el ^js root]
-  (let [{:keys [placeholder searchable disabled]} (common/dropdown-attributes el)]
+  (let [{:keys [placeholder searchable disabled size flavor]} (common/dropdown-attributes el)]
 
     ;; Create wrapper + stub + dialog structure
     (when-not (.querySelector root ".dropdown-wrapper")
       (set! (.-innerHTML root)
             (str
              ;; Wrapper - provides positioning context, no styling
-              "<div class=\"dropdown-wrapper\">"
+             "<div class=\"dropdown-wrapper\">"
 
              ;; Dropdown stub - shows selected option or placeholder
-              "  <div class=\"dropdown-stub\" "
-              (when disabled "disabled ")
-              ">"
-              "    <slot name=\"selected\"></slot>"
-              "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
-              "  </div>"
+             "  <div class=\"dropdown-stub " size " " flavor "\" "
+             (when disabled "disabled ")
+             ">"
+             "    <slot name=\"selected\"></slot>"
+             "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
+             "  </div>"
 
              ;; Chevron - positioned over the stub
-              "  <div class=\"dropdown-chevron\">"
-              "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-              "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-              "    </svg>"
-              "  </div>"
+             "  <div class=\"dropdown-chevron\">"
+             "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+             "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+             "    </svg>"
+             "  </div>"
 
              ;; Dialog - positioned relative to wrapper (no border offset)
-              "  <dialog class=\"dropdown-dialog\">"
-              "    <div class=\"dropdown-header\">"
-              "      <input class=\"dropdown-search-input\" type=\"text\" "
-              "             placeholder=\"" (if searchable "Search..." placeholder) "\" "
-              (when disabled "disabled ")
-              "      />"
-              (when-not disabled
-                "      <button class=\"dropdown-close\" type=\"button\" aria-label=\"Close\">"
-                "        <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-                "          <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-                "        </svg>"
-                "      </button>")
-              "    </div>"
-              "    <div class=\"dropdown-options\">"
-              "      <slot id=\"options-slot\"></slot>"
-              "    </div>"
-              "  </dialog>"
-              "</div>"))
+             "  <dialog class=\"dropdown-dialog\">"
+             "    <div class=\"dropdown-header\">"
+             "      <input class=\"dropdown-search-input\" type=\"text\" "
+             "             placeholder=\"" (if searchable "Search..." placeholder) "\" "
+             (when disabled "disabled ")
+             "      />"
+             (when-not disabled
+               "      <button class=\"dropdown-close\" type=\"button\" aria-label=\"Close\">"
+               "        <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+               "          <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+               "        </svg>"
+               "      </button>")
+             "    </div>"
+             "    <div class=\"dropdown-options\">"
+             "      <slot id=\"options-slot\"></slot>"
+             "    </div>"
+             "  </dialog>"
+             "</div>"))
 
       ;; Setup event listeners
       (setup-event-listeners! el root))

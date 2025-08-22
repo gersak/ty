@@ -361,146 +361,6 @@
   <option value=\"pos2\">Positive Option 2</option>
 </ty-dropdown>")])
 
-(defn smart-positioning []
-  [:div.demo-section
-   [:h2.demo-title "Smart Positioning"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Intelligent positioning that adapts to viewport constraints and prevents overflow"]
-
-   (demo-row {:title "Auto-Placement (Default)"
-              :description "Automatically chooses the best position to avoid viewport overflow"
-              :children [[:div.max-w-xs
-                          [:ty-dropdown {:value "auto1"
-                                         :placeholder "Smart positioning"
-                                         :auto-placement true}
-                           [:option {:value "auto1"} "Automatically positioned"]
-                           [:option {:value "auto2"} "Collision detection"]
-                           [:option {:value "auto3"} "Viewport aware"]
-                           [:option {:value "auto4"} "Intelligent fallbacks"]
-                           [:option {:value "auto5"} "Smooth transitions"]]]]})
-   (code-snippet "<ty-dropdown auto-placement=\"true\">
-  <option value=\"auto1\">Automatically positioned</option>
-</ty-dropdown>")
-
-   (demo-row {:title "Manual Placement"
-              :description "Explicitly control dropdown placement direction"
-              :children [[:div.grid.grid-cols-2.gap-4.max-w-md
-                          [:div
-                           [:label.block.text-sm.font-medium.mb-1 "Bottom Start"]
-                           [:ty-dropdown {:value "bs1"
-                                          :placement "bottom-start"
-                                          :auto-placement false
-                                          :placeholder "Bottom start"}
-                            [:option {:value "bs1"} "Bottom Start 1"]
-                            [:option {:value "bs2"} "Bottom Start 2"]]]
-                          [:div
-                           [:label.block.text-sm.font-medium.mb-1 "Top Start"]
-                           [:ty-dropdown {:value "ts1"
-                                          :placement "top-start"
-                                          :auto-placement false
-                                          :placeholder "Top start"}
-                            [:option {:value "ts1"} "Top Start 1"]
-                            [:option {:value "ts2"} "Top Start 2"]]]]]})
-   (code-snippet "<ty-dropdown placement=\"top-start\" auto-placement=\"false\">
-  <option value=\"ts1\">Top Start 1</option>
-</ty-dropdown>")
-
-   (demo-row {:title "Offset Control"
-              :description "Adjust the distance between input and dropdown"
-              :children [[:div.grid.grid-cols-3.gap-4.max-w-lg
-                          [:div
-                           [:label.block.text-sm.font-medium.mb-1 "Small Offset (2px)"]
-                           [:ty-dropdown {:value "off1"
-                                          :offset 2
-                                          :placeholder "2px offset"}
-                            [:option {:value "off1"} "Close to input"]
-                            [:option {:value "off2"} "Minimal gap"]]]
-                          [:div
-                           [:label.block.text-sm.font-medium.mb-1 "Default (4px)"]
-                           [:ty-dropdown {:value "off3"
-                                          :placeholder "Default offset"}
-                            [:option {:value "off3"} "Standard gap"]
-                            [:option {:value "off4"} "Default spacing"]]]
-                          [:div
-                           [:label.block.text-sm.font-medium.mb-1 "Large Offset (12px)"]
-                           [:ty-dropdown {:value "off5"
-                                          :offset 12
-                                          :placeholder "12px offset"}
-                            [:option {:value "off5"} "Far from input"]
-                            [:option {:value "off6"} "Large gap"]]]]]})
-   (code-snippet "<ty-dropdown offset=\"12\">
-  <option value=\"off5\">Far from input</option>
-</ty-dropdown>")
-
-   ;; Viewport edge testing
-   [:div.mt-8
-    [:h3.demo-subtitle "Viewport Edge Testing"]
-    [:p.text-gray-600.dark:text-gray-400.mb-4
-     "Test smart positioning by scrolling these dropdowns near viewport edges. Notice how transitions are smooth without visible jumps."]
-
-    [:div.h-96.overflow-auto.border.border-gray-200.dark:border-gray-700.rounded.p-4
-     [:div.h-20] ; Top spacer
-
-     ;; Top edge test
-     [:div.mb-4
-      [:label.block.text-sm.font-medium.mb-1 "Near Top Edge"]
-      [:ty-dropdown {:value "edge1"
-                     :placeholder "Should flip down when near top"}
-       [:option {:value "edge1"} "Option 1"]
-       [:option {:value "edge2"} "Option 2"]
-       [:option {:value "edge3"} "Option 3"]
-       [:option {:value "edge4"} "Option 4"]
-       [:option {:value "edge5"} "Option 5"]]]
-
-     [:div.h-64] ; Middle spacer
-
-     ;; Bottom edge test
-     [:div.mb-4
-      [:label.block.text-sm.font-medium.mb-1 "Near Bottom Edge"]
-      [:ty-dropdown {:value "edge6"
-                     :placeholder "Should flip up when near bottom"}
-       [:option {:value "edge6"} "Option 6"]
-       [:option {:value "edge7"} "Option 7"]
-       [:option {:value "edge8"} "Option 8"]
-       [:option {:value "edge9"} "Option 9"]
-       [:option {:value "edge10"} "Option 10"]]]
-
-     [:div.h-20]]] ; Bottom spacer
-
-   (code-snippet "<!-- Dropdown automatically flips direction near viewport edges -->
-<ty-dropdown auto-placement=\"true\">
-  <option>Viewport-aware positioning</option>
-</ty-dropdown>")])
-
-(defn responsive-example []
-  (layout/with-window
-    [:div.demo-section
-     [:h2.demo-title "Responsive Example"]
-     [:p.text-gray-600.dark:text-gray-400.mb-6
-      "This dropdown adapts its size based on the container width using layout context."]
-
-     [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
-      [:div.border.border-gray-200.dark:border-gray-700.p-4.rounded
-       [:label.block.text-sm.font-medium.mb-2 "Narrow Container"]
-       [:ty-dropdown {:size (if (layout/breakpoint>= :md) "lg" "sm")
-                      :value "responsive1"
-                      :placeholder "Responsive dropdown"}
-        [:option {:value "responsive1"} "Responsive Option 1"]
-        [:option {:value "responsive2"} "Responsive Option 2"]
-        [:option {:value "responsive3"} "Responsive Option 3"]]]
-
-      [:div.border.border-gray-200.dark:border-gray-700.p-4.rounded.md:col-span-2
-       [:label.block.text-sm.font-medium.mb-2 "Wide Container"]
-       [:ty-dropdown {:size (if (layout/breakpoint>= :lg) "xl" "md")
-                      :value "responsive4"
-                      :placeholder "Another responsive dropdown"}
-        [:option {:value "responsive4"} "Wide Option 1"]
-        [:option {:value "responsive5"} "Wide Option 2"]
-        [:option {:value "responsive6"} "Wide Option 3"]]]]
-
-     (code-snippet "<ty-dropdown size={breakpointMd ? \"lg\" : \"sm\"}>
-  <option value=\"responsive1\">Responsive Option 1</option>
-</ty-dropdown>")]))
 
 (defn search-examples []
   [:div.demo-section
@@ -608,6 +468,7 @@
   <!-- Type to filter, then click outside input to clear -->
 </ty-dropdown>")])
 
+
 (defn rich-html-demo []
   [:div.demo-section
    [:h2.demo-title "Rich HTML Content in Options"]
@@ -621,7 +482,7 @@
      [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
       "Each option includes an icon and formatted description. Notice how the full styling appears in the stub when selected."]
 
-     [:div.max-w-md
+     [:div.max-w-xl
       [:ty-dropdown {:value "clojure"
                      :placeholder "Choose a programming language..."
                      :on {:change dropdown-event-handler}}
@@ -666,39 +527,39 @@
      [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
       "Options with profile pictures, names, roles, and online status indicators."]
 
-     [:div.max-w-md
+     [:div.max-w-xl
       [:ty-dropdown {:value "alice"
                      :placeholder "Assign to team member..."
                      :on {:change dropdown-event-handler}}
        [:ty-option {:value "alice"}
         [:div.flex.items-center.gap-3
-         [:div.relative
+         [:div.relative.flex-shrink-0
           [:div.w-8.h-8.rounded-full.bg-blue-500.flex.items-center.justify-center.text-white.font-medium "A"]
           [:div.absolute.-top-1.-right-1.w-3.h-3.bg-green-500.rounded-full.border-2.border-white]]
-         [:div
+         [:div.flex-1.min-w-0
           [:div.font-medium "Alice Johnson"]
           [:div.text-sm.text-gray-500 "Senior Developer"]]
-         [:span.ml-auto.px-2.py-1.text-xs.bg-green-100.text-green-800.rounded-full "Online"]]]
+         [:span.px-2.py-1.text-xs.bg-green-100.text-green-800.rounded-full.flex-shrink-0 "Online"]]]
 
        [:ty-option {:value "bob"}
         [:div.flex.items-center.gap-3
-         [:div.relative
+         [:div.relative.flex-shrink-0
           [:div.w-8.h-8.rounded-full.bg-purple-500.flex.items-center.justify-center.text-white.font-medium "B"]
           [:div.absolute.-top-1.-right-1.w-3.h-3.bg-yellow-500.rounded-full.border-2.border-white]]
-         [:div
+         [:div.flex-1.min-w-0
           [:div.font-medium "Bob Smith"]
           [:div.text-sm.text-gray-500 "Product Manager"]]
-         [:span.ml-auto.px-2.py-1.text-xs.bg-yellow-100.text-yellow-800.rounded-full "Away"]]]
+         [:span.px-2.py-1.text-xs.bg-yellow-100.text-yellow-800.rounded-full.flex-shrink-0 "Away"]]]
 
        [:ty-option {:value "carol"}
         [:div.flex.items-center.gap-3
-         [:div.relative
+         [:div.relative.flex-shrink-0
           [:div.w-8.h-8.rounded-full.bg-pink-500.flex.items-center.justify-center.text-white.font-medium "C"]
           [:div.absolute.-top-1.-right-1.w-3.h-3.bg-gray-400.rounded-full.border-2.border-white]]
-         [:div
+         [:div.flex-1.min-w-0
           [:div.font-medium "Carol Davis"]
           [:div.text-sm.text-gray-500 "UX Designer"]]
-         [:span.ml-auto.px-2.py-1.text-xs.bg-gray-100.text-gray-800.rounded-full "Offline"]]]]]]
+         [:span.px-2.py-1.text-xs.bg-gray-100.text-gray-800.rounded-full.flex-shrink-0 "Offline"]]]]]]
 
     ;; System Status with Indicators
     [:div
@@ -706,7 +567,7 @@
      [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
       "Options showing system status with colored indicators and metrics."]
 
-     [:div.max-w-md
+     [:div.max-w-xl
       [:ty-dropdown {:value "prod"
                      :placeholder "Select environment..."
                      :on {:change dropdown-event-handler}}
@@ -740,7 +601,7 @@
      [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
       "File picker with file type icons, sizes, and modification dates."]
 
-     [:div.max-w-lg
+     [:div.max-w-xl
       [:ty-dropdown {:value "report.pdf"
                      :placeholder "Choose a file..."
                      :on {:change dropdown-event-handler}}
@@ -792,6 +653,165 @@
   <!-- More rich options... -->
 </ty-dropdown>")])
 
+
+(defn sizing-flavors-demo []
+  [:div.demo-section
+   [:h2.demo-title "Sizing & Flavors with Rich Content"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "Dropdowns support different sizes (xs, sm, md, lg, xl) and semantic flavors (neutral, important, positive, negative, exception, unique) while preserving rich HTML content."]
+
+   [:div.space-y-8
+    ;; Size Examples
+    [:div
+     [:h3.demo-subtitle "Different Sizes"]
+     [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
+      ;; Extra Small
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Extra Small (xs)"]
+       [:ty-dropdown {:size "xs"
+                      :placeholder "Choose..."}
+        [:ty-option {:value "react"}
+         [:div.flex.items-center.gap-2
+          [:div.w-4.h-4.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-xs "R"]
+          [:span.text-sm "React"]]]
+        [:ty-option {:value "vue"}
+         [:div.flex.items-center.gap-2
+          [:div.w-4.h-4.bg-green-500.rounded.flex.items-center.justify-center.text-white.text-xs "V"]
+          [:span.text-sm "Vue"]]]]]
+
+      ;; Small
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Small (sm)"]
+       [:ty-dropdown {:size "sm"
+                      :placeholder "Choose..."}
+        [:ty-option {:value "react"}
+         [:div.flex.items-center.gap-2
+          [:div.w-5.h-5.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-xs "R"]
+          [:span "React"]]]
+        [:ty-option {:value "vue"}
+         [:div.flex.items-center.gap-2
+          [:div.w-5.h-5.bg-green-500.rounded.flex.items-center.justify-center.text-white.text-xs "V"]
+          [:span "Vue"]]]]]
+
+      ;; Large
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Large (lg)"]
+       [:ty-dropdown {:size "lg"
+                      :placeholder "Choose..."}
+        [:ty-option {:value "react"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-6.h-6.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-sm "R"]
+          [:span.text-lg "React"]]]
+        [:ty-option {:value "vue"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-6.h-6.bg-green-500.rounded.flex.items-center.justify-center.text-white.text-sm "V"]
+          [:span.text-lg "Vue"]]]]]]]
+
+    ;; Flavor Examples
+    [:div
+     [:h3.demo-subtitle "Semantic Flavors"]
+     [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+      ;; Important (Blue)
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Important (Blue)"]
+       [:ty-dropdown {:flavor "important"
+                      :placeholder "Select priority..."}
+        [:ty-option {:value "high"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-blue-500.rounded-full]
+          [:span "High Priority"]]]
+        [:ty-option {:value "medium"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-blue-300.rounded-full]
+          [:span "Medium Priority"]]]]]
+
+      ;; Positive (Green)
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Positive (Green)"]
+       [:ty-dropdown {:flavor "positive"
+                      :placeholder "Select status..."}
+        [:ty-option {:value "approved"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-green-500.rounded-full]
+          [:span "Approved"]]]
+        [:ty-option {:value "completed"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-green-400.rounded-full]
+          [:span "Completed"]]]]]
+
+      ;; Negative (Red)
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Negative (Red)"]
+       [:ty-dropdown {:flavor "negative"
+                      :placeholder "Select error..."}
+        [:ty-option {:value "failed"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-red-500.rounded-full]
+          [:span "Failed"]]]
+        [:ty-option {:value "rejected"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-red-400.rounded-full]
+          [:span "Rejected"]]]]]
+
+      ;; Exception (Yellow)
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Exception (Yellow)"]
+       [:ty-dropdown {:flavor "exception"
+                      :placeholder "Select warning..."}
+        [:ty-option {:value "warning"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-yellow-500.rounded-full]
+          [:span "Warning"]]]
+        [:ty-option {:value "caution"}
+         [:div.flex.items-center.items-center.gap-3
+          [:div.w-3.h-3.bg-yellow-400.rounded-full]
+          [:span "Caution"]]]]]]]
+
+    ;; Combined Example
+    [:div
+     [:h3.demo-subtitle "Combined Size & Flavor"]
+     [:div.max-w-xl
+      [:label.block.text-sm.font-medium.mb-2 "Large + Unique (Purple)"]
+      [:ty-dropdown {:size "lg"
+                     :flavor "unique"
+                     :placeholder "Choose your superpower..."}
+       [:ty-option {:value "flight"}
+        [:div.flex.items-center.items-center.gap-3
+         [:div.w-8.h-8.bg-purple-100.rounded-full.flex.items-center.justify-center
+          [:span.text-purple-600.text-lg "✈️"]]
+         [:div
+          [:div.font-medium.text-lg "Flight"]
+          [:div.text-sm.text-gray-500 "Soar through the skies"]]]]
+       [:ty-option {:value "invisibility"}
+        [:div.flex.items-center.items-center.gap-3
+         [:div.w-8.h-8.bg-purple-100.rounded-full.flex.items-center.justify-center
+          [:span.text-purple-600.text-lg "👻"]]
+         [:div
+          [:div.font-medium.text-lg "Invisibility"]
+          [:div.text-sm.text-gray-500 "Become unseen at will"]]]]
+       [:ty-option {:value "telepathy"}
+        [:div.flex.items-center.items-center.gap-3
+         [:div.w-8.h-8.bg-purple-100.rounded-full.flex.items-center.justify-center
+          [:span.text-purple-600.text-lg "🧠"]]
+         [:div
+          [:div.font-medium.text-lg "Telepathy"]
+          [:div.text-sm.text-gray-500 "Read minds and communicate"]]]]]]]]
+
+   (code-snippet "<!-- Size and flavor examples -->
+<ty-dropdown size=\"lg\" flavor=\"unique\" placeholder=\"Choose...\">
+  <ty-option value=\"special\">
+    <div class=\"flex items-center gap-3\">
+      <div class=\"w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center\">
+        <span class=\"text-purple-600 text-lg\">✨</span>
+      </div>
+      <div>
+        <div class=\"font-medium text-lg\">Special Option</div>
+        <div class=\"text-sm text-gray-500\">With rich content</div>
+      </div>
+    </div>
+  </ty-option>
+</ty-dropdown>")])
+
 (defn event-debugging []
   [:div.demo-section
    [:h2.demo-title "Event Debugging"]
@@ -831,9 +851,8 @@
     (multiple-dropdowns-test)
     (size-variants)
     (flavor-variants)
-    (smart-positioning)
-    (responsive-example)
     (search-examples)
     (blur-clear-demo)
     (rich-html-demo)
+    (sizing-flavors-demo)
     (event-debugging)]])

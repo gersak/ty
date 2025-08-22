@@ -2,16 +2,17 @@
 
 .option-content {
   display: block;
+  box-sizing: border-box;
   width: 100%;
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
-  
+
   /* Ensure content is clickable */
   cursor: pointer;
   user-select: none;
-  
+
   /* Smooth transitions */
   transition: var(--ty-transition-all);
-  
+
   /* Text styling */
   color: var(--ty-text-primary);
   font-family: var(--ty-font-sans);

@@ -159,7 +159,7 @@
 (defn render!
   "Mobile implementation using ty-modal for full-screen experience"
   [^js el ^js root]
-  (let [{:keys [placeholder searchable disabled]} (common/dropdown-attributes el)]
+  (let [{:keys [placeholder searchable disabled size flavor]} (common/dropdown-attributes el)]
 
     ;; Create wrapper + mobile modal structure (matching desktop structure)
     (when-not (.querySelector root ".dropdown-wrapper")
@@ -169,7 +169,7 @@
               "<div class=\"dropdown-wrapper\">"
 
              ;; Dropdown stub - shows selected option or placeholder (same as desktop)
-              "  <div class=\"dropdown-stub\" "
+              "  <div class=\"dropdown-stub " size " " flavor "\" "
               (when disabled "disabled ")
               ">"
               "    <slot name=\"selected\"></slot>"

@@ -17,6 +17,13 @@
 
   ;; Update visual state
   (when-let [root (.-shadowRoot el)]
+    ;; Clear selection - this will remove clones and clear selected attributes
+    ;; DON'T clear selection when modal closes - keep the selected option!
+    ;; (common/clear-selection! root)
+
+    ;; Update selection display (show placeholder again)
+    ;; Selection display will be managed by the selection itself
+
     ;; Clear the search input visually
     (when-let [search-input (.querySelector root ".mobile-search-input")]
       (set! (.-value search-input) ""))
@@ -39,15 +46,18 @@
   [^js el ^js event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [option-element (.-target event)
-        value (or (.-value option-element) (.-textContent option-element))]
-    ;; Update value attribute
-    (.setAttribute el "value" value)
-    ;; Update selection
+  (let [option-element (.-target event)]
+
+    ;; Select the option (this will clone it to selected slot)
     (when-let [root (.-shadowRoot el)]
-      (common/select-option! root option-element))
-    ;; Dispatch change event
+      (common/select-option! root option-element)
+
+    ;; Update selection display (hide placeholder)
+      (common/update-selection-display! el root))
+
+    ;; Dispatch change event with option element
     (common/dispatch-change-event! el option-element)
+
     ;; Close modal
     (handle-modal-close! el event)))
 
@@ -108,14 +118,14 @@
 (defn setup-event-listeners!
   "Setup event listeners for mobile mode"
   [^js el ^js root]
-  (let [stub-input (.querySelector root ".dropdown-input.dropdown-stub")
+  (let [stub (.querySelector root ".dropdown-stub")
         modal (.querySelector root ".mobile-dropdown-modal")
         search-input (.querySelector root ".mobile-search-input")
-        slot (.querySelector root "#options-slot")]
+        options-container (.querySelector root ".mobile-options-list")]
 
-    ;; Stub input click - opens modal
-    (when stub-input
-      (.addEventListener stub-input "click" (partial handle-stub-click! el root)))
+    ;; Stub click - opens modal
+    (when stub
+      (.addEventListener stub "click" (partial handle-stub-click! el root)))
 
     ;; Modal close events
     (when modal
@@ -125,22 +135,22 @@
     (when search-input
       (.addEventListener search-input "input" (partial handle-search! el)))
 
-    ;; Option clicks
-    (when slot
-      (.addEventListener slot "click" (partial handle-option-click! el)))
+    ;; Option clicks via event delegation on options container
+    (when options-container
+      (.addEventListener options-container "click" (partial handle-option-click! el)))
 
     ;; Store cleanup function
     (set! (.-tyDropdownCleanup el)
           (fn []
             ;; Cleanup mobile event listeners
-            (when stub-input
-              (.removeEventListener stub-input "click" (partial handle-stub-click! el root)))
+            (when stub
+              (.removeEventListener stub "click" (partial handle-stub-click! el root)))
             (when modal
               (.removeEventListener modal "ty-modal-close" (partial handle-modal-close! el)))
             (when search-input
               (.removeEventListener search-input "input" (partial handle-search! el)))
-            (when slot
-              (.removeEventListener slot "click" (partial handle-option-click! el)))))))
+            (when options-container
+              (.removeEventListener options-container "click" (partial handle-option-click! el)))))))
 
 ;; =====================================================
 ;; MOBILE RENDERING
@@ -158,15 +168,15 @@
              ;; Wrapper - provides positioning context, no styling
               "<div class=\"dropdown-wrapper\">"
 
-             ;; Read-only input - handles all visual styling (same as desktop)
-              "  <input class=\"dropdown-input dropdown-stub\" "
-              "         type=\"text\" "
-              "         readonly "
-              "         placeholder=\"" placeholder "\" "
+             ;; Dropdown stub - shows selected option or placeholder (same as desktop)
+              "  <div class=\"dropdown-stub\" "
               (when disabled "disabled ")
-              "         value=\"" placeholder "\" />"
+              ">"
+              "    <slot name=\"selected\"></slot>"
+              "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
+              "  </div>"
 
-             ;; Chevron - positioned over the input
+             ;; Chevron - positioned over the stub
               "  <div class=\"dropdown-chevron\">"
               "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
               "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
@@ -184,14 +194,14 @@
               "        />"
               "      </div>"
               "      <div class=\"mobile-options-list\">"
-              "        <slot id=\"options-slot\"></slot>"
+              "        <slot></slot>"
               "      </div>"
               "    </div>"
               "  </ty-modal>"
-              "</div>")))
+              "</div>"))
 
       ;; Setup mobile-specific event listeners
-    (setup-event-listeners! el root)
+      (setup-event-listeners! el root))
 
     ;; For non-searchable dropdowns, ensure all options are visible
     (when-not searchable

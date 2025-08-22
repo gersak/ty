@@ -83,7 +83,18 @@
   padding: 0;
   border: none;
   background: var(--ty-dropdown-dialog-bg);
+  box-sizing: border-box;
   /* Dialog automatically handles z-index stacking */
+}
+
+.dropdown-dialog.position-above {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.dropdown-dialog.position-below {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Remove default dialog backdrop */

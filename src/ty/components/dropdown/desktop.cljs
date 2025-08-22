@@ -1,63 +1,54 @@
 (ns ty.components.dropdown.desktop
   "Desktop implementation of dropdown using dialog element with smart positioning"
-  (:require [ty.components.dropdown.common :as common]
-            [ty.util.outside-click :as outside-click]))
+  (:require [ty.components.dropdown.common :as common]))
 
 ;; =====================================================
 ;; DESKTOP POSITIONING
 ;; =====================================================
 
 (defn update-position!
-  "Position dialog so input appears exactly where stub was"
+  "Position dialog at top to test if positioning works"
   [^js el ^js shadow-root]
   (let [stub (.querySelector shadow-root ".dropdown-stub")
         dialog (.querySelector shadow-root ".dropdown-dialog")
+        input (.querySelector shadow-root ".dropdown-input")
         {:keys [open]} (common/get-component-state el)]
 
     (when (and open stub dialog)
       (let [stub-rect (.getBoundingClientRect stub)
             stub-top (.-top stub-rect)
+            stub-bottom (.-bottom stub-rect)
             stub-left (.-left stub-rect)
             stub-width (.-width stub-rect)
             stub-height (.-height stub-rect)
+            dialog-dimensions (.getBoundingClientRect dialog)
+            dialog-height (.-height dialog-dimensions)
             viewport-width (.-innerWidth js/window)
-            viewport-height (.-innerHeight js/window)
-            is-mobile (<= viewport-width 768)]
+            viewport-height (.-innerHeight js/window)]
 
-        (if is-mobile
-          ;; Mobile: Full screen dialog
-          (do
-            (set! (.. dialog -style -position) "fixed")
-            (set! (.. dialog -style -top) "0")
-            (set! (.. dialog -style -left) "0")
-            (set! (.. dialog -style -width) "100vw")
-            (set! (.. dialog -style -height) "100vh")
-            (set! (.. dialog -style -margin) "0")
-            (.add (.-classList dialog) "mobile-fullscreen"))
-
-          ;; Desktop: Position input exactly where stub was
-          (do
-            (.remove (.-classList dialog) "mobile-fullscreen")
-
-            ;; Simple decision: above or below?
-            (let [space-below (- viewport-height stub-top stub-height)
-                  position-below (> space-below 300)] ; Need ~300px for dropdown
+            ;; Add positioning class
+        (let [space-below (- viewport-height stub-top stub-height)
+              position-below (> space-below 300)] ; Need ~300px for dropdown
 
               ;; Position dialog so input appears exactly where stub was
-              (set! (.. dialog -style -position) "fixed")
-              (set! (.. dialog -style -left) (str stub-left "px"))
-              (set! (.. dialog -style -width) (str stub-width "px"))
-              (set! (.. dialog -style -margin) "0")
+          (set! (.. dialog -style -position) "fixed")
+          (set! (.. dialog -style -left) (str stub-left "px"))
+          (set! (.. dialog -style -width) (str stub-width "px"))
+          (set! (.. dialog -style -margin) "0")
 
-              (if position-below
+          (println "BOTTOM: " stub-bottom)
+          (println "STUB HEIGHT: " stub-height)
+          (println "DIALOG HEIGHT: " dialog-height)
+
+          (if position-below
                 ;; Position below: input at stub position, options below
-                (set! (.. dialog -style -top) (str stub-top "px"))
+            (set! (.. dialog -style -top) (str stub-top "px"))
                 ;; Position above: calculate so input aligns with stub
-                (set! (.. dialog -style -bottom) (str (- viewport-height stub-top stub-height) "px")))
+            (set! (.. dialog -style -top) (str (- stub-bottom dialog-height) "px")))
 
               ;; Add class for CSS to handle layout direction
-              (.remove (.-classList dialog) "position-above" "position-below")
-              (.add (.-classList dialog) (if position-below "position-below" "position-above")))))))))
+          (.remove (.-classList dialog) "position-above" "position-below")
+          (.add (.-classList dialog) (if position-below "position-below" "position-above")))))))
 
 ;; =====================================================
 ;; DESKTOP DROPDOWN CONTROL
@@ -68,22 +59,16 @@
   [^js el ^js shadow-root]
   (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
     ;; Close dialog - this will trigger the dialog close event
-    (when (and dialog (.-open dialog))
-      (.close dialog))))
+    (.remove (.-classList dialog) "position-above" "position-below")
+    (.close dialog)))
 
-(declare handle-option-click! handle-outside-action!)
+(declare handle-option-click!)
 
 (defn open-dropdown!
   "Open dropdown dialog"
   [^js el ^js shadow-root]
   (let [{:keys [disabled readonly searchable value]} (common/dropdown-attributes el)]
     (when-not (or disabled readonly)
-      ;; Close any other open dropdown first
-      (outside-click/close-current-component!)
-
-      ;; Register this dropdown as current
-      (outside-click/set-current-component! el #(close-dropdown! % shadow-root))
-
       ;; Initialize filtered options for keyboard navigation
       (let [all-options (map common/get-option-data (common/get-options shadow-root))
             current-search (if searchable (:search (common/get-component-state el)) "")
@@ -115,6 +100,7 @@
           (.add (.-classList chevron) "open"))
 
         ;; Open dialog - input inside dialog gets focus naturally!
+        ;; Browser handles preventing multiple modals automatically
         (when dialog
           (.showModal dialog)
 
@@ -124,17 +110,6 @@
 
           ;; Position dialog once
           (update-position! el shadow-root)
-
-          ;; Setup outside click detection
-          (when-not (.-tyOutsideClickCleanup el)
-            (set! (.-tyOutsideClickCleanup el)
-                  (outside-click/setup-outside-handlers!
-                    dialog
-                    (partial handle-outside-action! el shadow-root)
-                    {:mobile-optimized? true
-                     :prevent-default? false
-                     :touch-enabled? true
-                     :escape-key? true})))
 
           ;; Highlight the selected option if any
           (js/setTimeout
@@ -148,12 +123,14 @@
 ;; DESKTOP EVENT HANDLERS
 ;; =====================================================
 
-(defn handle-outside-action!
-  "Handle outside click or escape key to close dropdown"
+(defn handle-backdrop-click!
+  "Handle dialog backdrop clicks (native approach like modal)"
   [^js el ^js shadow-root ^js event]
-  ;; Only close if this dropdown is the current one
-  (when (outside-click/is-current-component? el)
-    (close-dropdown! el shadow-root)))
+  (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
+    (when (= (.-target event) dialog) ; Click on backdrop, not content
+      (.preventDefault event)
+      (.stopPropagation event)
+      (close-dropdown! el shadow-root))))
 
 (defn handle-dialog-close!
   "Handle dialog close event (now just for cleanup)"
@@ -169,11 +146,7 @@
   ;; Reset search if not searchable
   (let [{:keys [searchable]} (common/dropdown-attributes el)]
     (when-not searchable
-      (common/set-component-state! el {:search ""})))
-
-  ;; Clear from global registry
-  (when (outside-click/is-current-component? el)
-    (reset! outside-click/current-open-component nil)))
+      (common/set-component-state! el {:search ""}))))
 
 (defn handle-stub-click!
   "Handle click on stub to open dropdown dialog"
@@ -235,11 +208,16 @@
     (close-dropdown! el shadow-root)))
 
 (defn handle-keyboard!
-  "Handle keyboard navigation (arrow keys and enter only - ESC handled by outside-click util)"
+  "Handle keyboard navigation (arrow keys, enter, and escape)"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [open highlighted-index filtered-options]} (common/get-component-state el)
         key-code (.-keyCode event)]
     (case key-code
+      ;; ESCAPE - close dropdown
+      27 (do
+           (.preventDefault event)
+           (.stopPropagation event)
+           (close-dropdown! el shadow-root))
       ;; ENTER - select highlighted option
       13 (do
            (.preventDefault event)
@@ -287,7 +265,7 @@
     (when stub
       (.addEventListener stub "click" (partial handle-stub-click! el shadow-root)))
 
-    ;; Input events (inside dialog)
+    ;; Input events (inside dialog) - includes escape key handling
     (when input
       (.addEventListener input "input" (partial handle-input-change! el shadow-root))
       (.addEventListener input "keydown" (partial handle-keyboard! el shadow-root)))
@@ -300,18 +278,17 @@
     (when slot
       (.addEventListener slot "click" (partial handle-option-click! el shadow-root)))
 
-    ;; Dialog close event - now just for cleanup
+    ;; Dialog close event - for cleanup
     (when dialog
       (.addEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
+
+    ;; Native dialog backdrop clicks (like modal)
+    (when dialog
+      (.addEventListener dialog "click" (partial handle-backdrop-click! el shadow-root)))
 
     ;; Store cleanup function
     (set! (.-tyDropdownCleanup el)
           (fn []
-            ;; Cleanup outside click handlers
-            (when-let [outside-cleanup (.-tyOutsideClickCleanup el)]
-              (outside-cleanup)
-              (set! (.-tyOutsideClickCleanup el) nil))
-
             ;; Cleanup regular event listeners
             (when stub
               (.removeEventListener stub "click" (partial handle-stub-click! el shadow-root)))
@@ -323,7 +300,8 @@
             (when slot
               (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
             (when dialog
-              (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))))))
+              (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root))
+              (.removeEventListener dialog "click" (partial handle-backdrop-click! el shadow-root)))))))
 
 ;; =====================================================
 ;; DESKTOP RENDERING

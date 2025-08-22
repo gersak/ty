@@ -97,14 +97,18 @@
 ;; DESKTOP EVENT HANDLERS
 ;; =====================================================
 
-(defn handle-backdrop-click!
-  "Handle dialog backdrop clicks (native approach like modal)"
+(defn handle-outside-click!
+  "Handle clicks outside the dropdown to close it"
   [^js el ^js shadow-root ^js event]
-  (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
-    (when (= (.-target event) dialog) ; Click on backdrop, not content
-      (.preventDefault event)
-      (.stopPropagation event)
-      (close-dropdown! el shadow-root))))
+  (let [{:keys [open]} (common/get-component-state el)]
+    (when open
+      (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
+            target (.-target event)]
+        ;; Check if click target is outside the wrapper
+        (when (and wrapper (not (.contains wrapper target)))
+          (.preventDefault event)
+          (.stopPropagation event)
+          (close-dropdown! el shadow-root))))))
 
 (defn handle-dialog-close!
   "Handle dialog close event (now just for cleanup)"
@@ -257,9 +261,11 @@
     (when dialog
       (.addEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
 
-    ;; Native dialog backdrop clicks (like modal)
-    (when dialog
-      (.addEventListener dialog "click" (partial handle-backdrop-click! el shadow-root)))
+    ;; Global outside click detection - listen on document
+    (let [outside-click-handler (partial handle-outside-click! el shadow-root)]
+      (.addEventListener js/document "click" outside-click-handler)
+      ;; Store handler for cleanup
+      (set! (.-tyOutsideClickHandler el) outside-click-handler))
 
     ;; Store cleanup function
     (set! (.-tyDropdownCleanup el)
@@ -275,8 +281,11 @@
             (when slot
               (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
             (when dialog
-              (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root))
-              (.removeEventListener dialog "click" (partial handle-backdrop-click! el shadow-root)))))))
+              (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
+            ;; Cleanup outside click listener
+            (when-let [handler (.-tyOutsideClickHandler el)]
+              (.removeEventListener js/document "click" handler)
+              (set! (.-tyOutsideClickHandler el) nil))))))
 
 ;; =====================================================
 ;; DESKTOP RENDERING

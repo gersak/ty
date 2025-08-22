@@ -18,10 +18,10 @@
   cursor: pointer;
   box-sizing: border-box;
 
-  /* Use dropdown stub tokens from ty.variables.css */
-  background: var(--ty-dropdown-stub-bg);
-  color: var(--ty-dropdown-stub-color);
-  border: 1px solid var(--ty-dropdown-stub-border);
+  /* Use standard ty tokens directly */
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-md);
 
   /* Typography - same as input */
@@ -45,18 +45,18 @@
 }
 
 .dropdown-input.dropdown-stub:hover {
-  border-color: var(--ty-dropdown-stub-border-hover);
+  border-color: var(--ty-input-border-hover);
 }
 
 .dropdown-input.dropdown-stub[disabled] {
-  background-color: var(--ty-dropdown-stub-disabled-bg);
-  color: var(--ty-dropdown-stub-disabled-color);
+  background-color: var(--ty-input-disabled-bg);
+  color: var(--ty-input-disabled-color);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .dropdown-input.dropdown-stub:focus {
-  border-color: var(--ty-dropdown-stub-border-hover);
+  border-color: var(--ty-input-border-hover);
   /* No focus ring since it's readonly */
 }
 
@@ -70,7 +70,7 @@
 
   width: 1rem;
   height: 1rem;
-  color: var(--ty-dropdown-chevron-color);
+  color: var(--ty-input-placeholder);
   transition: var(--ty-transition-transform);
   pointer-events: none;
   /* Let clicks pass through to input */
@@ -98,9 +98,9 @@
   margin: 0;
   padding: 0;
   border: none;
-  background: var(--ty-dropdown-dialog-bg);
+  background: transparent;
   box-sizing: border-box;
-  z-index: 1000;
+  z-index: var(--ty-z-dropdown);
 
   /* Dialog automatically handles focus management */
 }
@@ -128,7 +128,7 @@
   display: flex;
   align-items: center;
   gap: var(--ty-spacing-2);
-  background: var(--ty-dropdown-header-bg);
+  background: var(--ty-input-bg);
 }
 
 .dropdown-search-input {
@@ -136,10 +136,10 @@
   width: 100%;
   box-sizing: border-box;
 
-  /* Use dropdown input tokens */
-  background: var(--ty-dropdown-input-bg);
-  color: var(--ty-dropdown-input-color);
-  border: 1px solid var(--ty-dropdown-input-border);
+  /* Use standard ty input tokens */
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-md);
 
   /* Typography */
@@ -158,8 +158,8 @@
 }
 
 .dropdown-search-input:focus {
-  border-color: var(--ty-dropdown-input-border-focus);
-  box-shadow: 0 0 0 3px var(--ty-dropdown-input-shadow-focus);
+  border-color: var(--ty-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
 }
 
 .dropdown-search-input:disabled {
@@ -170,7 +170,7 @@
 }
 
 .dropdown-search-input::placeholder {
-  color: var(--ty-dropdown-input-placeholder);
+  color: var(--ty-input-placeholder);
 }
 
 .dropdown-close {
@@ -179,12 +179,12 @@
   cursor: pointer;
   padding: var(--ty-spacing-1);
   border-radius: var(--ty-radius-base);
-  color: var(--ty-dropdown-close-color);
+  color: var(--ty-color-neutral);
   transition: var(--ty-transition-colors);
 }
 
 .dropdown-close:hover {
-  background-color: var(--ty-dropdown-close-hover-bg);
+  background-color: var(--ty-bg-neutral-p1);
 }
 
 .dropdown-close svg {
@@ -195,10 +195,10 @@
 /* ===== OPTIONS CONTAINER ===== */
 
 .dropdown-options {
-  background: var(--ty-dropdown-options-bg);
-  border: 1px solid var(--ty-dropdown-options-border);
-  border-radius: var(--ty-dropdown-options-border-radius);
-  box-shadow: var(--ty-dropdown-options-shadow);
+  background: var(--ty-input-bg);
+  border: 1px solid var(--ty-input-border);
+  border-radius: var(--ty-radius-lg);
+  box-shadow: var(--ty-shadow-xl);
 
   margin-top: var(--ty-spacing-2);
   margin-bottom: var(--ty-spacing-2);
@@ -212,7 +212,9 @@
   scroll-behavior: smooth;
 
   /* Enhanced shadow for dialog context */
-  box-shadow: var(--ty-dropdown-options-shadow-enhanced);
+  box-shadow:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
 /* ===== OPTION ELEMENTS ===== */
@@ -220,7 +222,7 @@
 .dropdown-options ::slotted(option) {
   display: block !important;
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
-  color: var(--ty-dropdown-option-color);
+  color: var(--ty-input-color);
   cursor: pointer;
   transition: var(--ty-transition-colors);
   border: none;
@@ -233,17 +235,17 @@
 }
 
 .dropdown-options ::slotted(option:hover) {
-  background-color: var(--ty-dropdown-option-hover);
+  background-color: var(--ty-bg-neutral-m1);
 }
 
 .dropdown-options ::slotted(option[highlighted]) {
-  background-color: var(--ty-dropdown-option-highlighted);
-  color: var(--ty-dropdown-option-highlighted-color);
+  background-color: var(--ty-bg-important-m1);
+  color: var(--ty-color-important-p1);
 }
 
 .dropdown-options ::slotted(option[selected]) {
-  background-color: var(--ty-dropdown-option-selected);
-  color: var(--ty-dropdown-option-selected-color);
+  background-color: var(--ty-color-important);
+  color: #ffffff;
 }
 
 .dropdown-options ::slotted(option[hidden]) {
@@ -260,15 +262,17 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--ty-dropdown-options-bg);
-  border-radius: var(--ty-radius-md);
+  background: var(--ty-bg);
+  border-radius: var(--ty-radius-2xl);
   overflow: hidden;
+  /* Prevent content from showing outside rounded corners */
 }
 
 .mobile-search-header {
-  padding: var(--ty-spacing-4);
-  border-bottom: 1px solid var(--ty-dropdown-options-border);
-  background: var(--ty-dropdown-header-bg);
+  padding: var(--ty-spacing-6);
+  border-bottom: 1px solid var(--ty-border);
+  background: var(--ty-bg);
+  /* Use consistent background */
 }
 
 .mobile-search-input {
@@ -276,21 +280,23 @@
   width: 100%;
   box-sizing: border-box;
 
-  /* Use dropdown input tokens */
-  background: var(--ty-dropdown-input-bg);
-  color: var(--ty-dropdown-input-color);
-  border: 1px solid var(--ty-dropdown-input-border);
-  border-radius: var(--ty-radius-md);
+  /* Use standard ty input tokens */
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  border: 1px solid var(--ty-input-border);
+  border-radius: var(--ty-radius-lg);
 
   /* Typography */
   font-family: var(--ty-font-sans);
-  font-size: var(--ty-font-base);
+  font-size: var(--ty-font-lg);
+  /* Larger for mobile */
   font-weight: var(--ty-font-normal);
   line-height: var(--ty-line-height-tight);
 
   /* Mobile-optimized sizing */
-  min-height: var(--ty-size-lg);
-  padding: var(--ty-spacing-3) var(--ty-spacing-4);
+  min-height: var(--ty-size-xl);
+  /* Larger touch target */
+  padding: var(--ty-spacing-4) var(--ty-spacing-5);
 
   /* Transitions */
   transition: var(--ty-transition-all);
@@ -298,8 +304,8 @@
 }
 
 .mobile-search-input:focus {
-  border-color: var(--ty-dropdown-input-border-focus);
-  box-shadow: 0 0 0 3px var(--ty-dropdown-input-shadow-focus);
+  border-color: var(--ty-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
 }
 
 .mobile-search-input:disabled {
@@ -310,46 +316,60 @@
 }
 
 .mobile-search-input::placeholder {
-  color: var(--ty-dropdown-input-placeholder);
+  color: var(--ty-input-placeholder);
 }
 
 .mobile-options-list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--ty-spacing-2) 0;
-  background: var(--ty-dropdown-options-bg);
+  padding: 0;
+  /* Remove padding for full-width options */
+  background: var(--ty-bg);
+  /* Consistent background */
 }
 
 /* Mobile option styling - applied to slotted options */
 .mobile-options-list ::slotted(option) {
   display: block !important;
-  padding: var(--ty-spacing-3) var(--ty-spacing-4);
-  color: var(--ty-dropdown-option-color);
+  padding: var(--ty-spacing-5) var(--ty-spacing-6);
+  /* Larger touch-friendly padding */
+  color: var(--ty-input-color);
   cursor: pointer;
   transition: var(--ty-transition-colors);
   border: none;
   background: none;
-  font-size: var(--ty-font-base);
+  font-size: var(--ty-font-lg);
+  /* Larger mobile text */
   font-family: inherit;
   width: 100%;
   text-align: left;
   box-sizing: border-box;
-  border-bottom: 1px solid var(--ty-dropdown-options-border);
+  border-bottom: 1px solid var(--ty-border-m1);
+  /* Subtle separator */
+  min-height: var(--ty-size-xl);
+  /* Consistent touch target */
+  display: flex;
+  align-items: center;
+}
+
+.mobile-options-list ::slotted(option:last-child) {
+  border-bottom: none;
+  /* No border on last option */
 }
 
 .mobile-options-list ::slotted(option:hover),
 .mobile-options-list ::slotted(option:active) {
-  background-color: var(--ty-dropdown-option-hover);
+  background-color: var(--ty-bg-neutral-m1);
 }
 
 .mobile-options-list ::slotted(option[highlighted]) {
-  background-color: var(--ty-dropdown-option-highlighted);
-  color: var(--ty-dropdown-option-highlighted-color);
+  background-color: var(--ty-bg-important-m1);
+  color: var(--ty-color-important-p1);
 }
 
 .mobile-options-list ::slotted(option[selected]) {
-  background-color: var(--ty-dropdown-option-selected);
-  color: var(--ty-dropdown-option-selected-color);
+  background-color: var(--ty-color-important);
+  color: #ffffff;
   font-weight: var(--ty-font-medium);
 }
 

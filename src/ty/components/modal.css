@@ -32,10 +32,13 @@
   --ty-transition-transform: var(--ty-transition-transform, transform 0.15s ease);
 
   /* Background and border tokens */
-  --ty-bg-primary: var(--ty-bg-primary, #ffffff);
-  --ty-bg-secondary: var(--ty-bg-secondary, #f3f4f6);
-  --ty-border-primary: var(--ty-border-primary, #e5e7eb);
-  --ty-text-primary: var(--ty-text-primary, #111827);
+  --ty-bg: var(--ty-bg, #ffffff);
+  --ty-bg-p1: var(--ty-bg-p1, #f3f4f6);
+  --ty-bg-neutral-m1: var(--ty-bg-neutral-m1, #f9fafb);
+  --ty-bg-neutral-p1: var(--ty-bg-neutral-p1, #e5e7eb);
+  --ty-bg-important-m1: var(--ty-bg-important-m1, #eff6ff);
+  --ty-border: var(--ty-border, #e5e7eb);
+  --ty-color-neutral-p2: var(--ty-color-neutral-p2, #374151);
 
   /* Input-specific tokens for dropdown components */
   --ty-input-bg: var(--ty-input-bg, #ffffff);
@@ -48,37 +51,21 @@
   --ty-input-disabled-bg: var(--ty-input-disabled-bg, #f9fafb);
   --ty-input-disabled-color: var(--ty-input-disabled-color, #6b7280);
 
-  /* Dropdown-specific tokens */
-  --ty-dropdown-options-bg: var(--ty-dropdown-options-bg, var(--ty-bg-primary, #ffffff));
-  --ty-dropdown-options-border: var(--ty-dropdown-options-border, var(--ty-border-primary, #e5e7eb));
-  --ty-dropdown-header-bg: var(--ty-dropdown-header-bg, var(--ty-bg-primary, #ffffff));
-  --ty-dropdown-option-color: var(--ty-dropdown-option-color, var(--ty-text-primary, #111827));
-  --ty-dropdown-option-hover: var(--ty-dropdown-option-hover, var(--ty-bg-secondary, #f3f4f6));
-  --ty-dropdown-option-highlighted: var(--ty-dropdown-option-highlighted, var(--ty-color-primary, #3b82f6));
-  --ty-dropdown-option-highlighted-color: var(--ty-dropdown-option-highlighted-color, var(--ty-text-on-primary, #ffffff));
-  --ty-dropdown-option-selected: var(--ty-dropdown-option-selected, var(--ty-color-primary-m2, #dbeafe));
-  --ty-dropdown-option-selected-color: var(--ty-dropdown-option-selected-color, var(--ty-color-primary-p1, #1d4ed8));
-
   /* Semantic colors */
-  --ty-color-primary: var(--ty-color-primary, #3b82f6);
-  --ty-color-primary-p1: var(--ty-color-primary-p1, #1d4ed8);
-  --ty-color-primary-m2: var(--ty-color-primary-m2, #dbeafe);
-  --ty-text-on-primary: var(--ty-text-on-primary, #ffffff);
+  --ty-color-important: var(--ty-color-important, #3b82f6);
+  --ty-color-important-p1: var(--ty-color-important-p1, #2563eb);
   --ty-color-positive: var(--ty-color-positive, #10b981);
   --ty-color-positive-p1: var(--ty-color-positive-p1, #059669);
-  --ty-color-positive-m3: var(--ty-color-positive-m3, rgba(16, 185, 129, 0.1));
+  --ty-color-positive-m3: var(--ty-color-positive-m3, #a7f3d0);
   --ty-color-negative: var(--ty-color-negative, #ef4444);
   --ty-color-negative-p1: var(--ty-color-negative-p1, #dc2626);
-  --ty-color-negative-m3: var(--ty-color-negative-m3, rgba(239, 68, 68, 0.1));
-  --ty-color-important: var(--ty-color-important, #f59e0b);
-  --ty-color-important-p1: var(--ty-color-important-p1, #d97706);
-  --ty-color-important-m3: var(--ty-color-important-m3, rgba(245, 158, 11, 0.1));
-  --ty-color-exception: var(--ty-color-exception, #8b5cf6);
-  --ty-color-exception-p1: var(--ty-color-exception-p1, #7c3aed);
-  --ty-color-exception-m3: var(--ty-color-exception-m3, rgba(139, 92, 246, 0.1));
-  --ty-color-unique: var(--ty-color-unique, #ec4899);
-  --ty-color-unique-p1: var(--ty-color-unique-p1, #db2777);
-  --ty-color-unique-m3: var(--ty-color-unique-m3, rgba(236, 72, 153, 0.1));
+  --ty-color-negative-m3: var(--ty-color-negative-m3, #fecaca);
+  --ty-color-exception: var(--ty-color-exception, #f59e0b);
+  --ty-color-exception-p1: var(--ty-color-exception-p1, #d97706);
+  --ty-color-exception-m3: var(--ty-color-exception-m3, #fde68a);
+  --ty-color-unique: var(--ty-color-unique, #8b5cf6);
+  --ty-color-unique-p1: var(--ty-color-unique-p1, #7c3aed);
+  --ty-color-unique-m3: var(--ty-color-unique-m3, #ddd6fe);
   --ty-color-neutral: var(--ty-color-neutral, #6b7280);
 }
 

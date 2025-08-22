@@ -152,6 +152,9 @@
   --ty-border-unique: var(--ty-color-unique);
   --ty-border-neutral: var(--ty-color-neutral);
 
+  /* =================================================================
+     MODAL TOKENS
+     ================================================================= */
 
   --ty-modal-bg: #ffffff;
   --ty-modal-color: #111827;
@@ -160,7 +163,8 @@
   --ty-modal-backdrop-blur: blur(2px);
 
   /* Modal sizing */
-  --ty-modal-border-radius: 8px;
+  --ty-modal-border-radius: 16px;
+  /* Increased for more rounded look */
   --ty-modal-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -180,6 +184,21 @@
   /* Animation */
   --ty-modal-duration: 200ms;
 
+  /* =================================================================
+     INPUT COMPONENT TOKENS
+     ================================================================= */
+
+  --ty-input-bg: #ffffff;
+  --ty-input-color: #111827;
+  --ty-input-border: #d1d5db;
+  --ty-input-border-hover: #9ca3af;
+  --ty-input-border-focus: #3b82f6;
+  --ty-input-shadow-focus: rgba(59, 130, 246, 0.1);
+  --ty-input-placeholder: #9ca3af;
+  --ty-input-disabled-bg: #f9fafb;
+  --ty-input-disabled-border: #e5e7eb;
+  --ty-input-disabled-color: #9ca3af;
+  --ty-label-color: #374151;
 
   /* =================================================================
      NON-COLOR PROPERTIES
@@ -321,65 +340,6 @@
   --ty-z-modal: 1050;
   --ty-z-popover: 1060;
   --ty-z-tooltip: 1070;
-
-  /* =================================================================
-     COMPONENT THEME TOKENS
-     Used by individual components - centralized theming
-     ================================================================= */
-
-  /* Input Component */
-  --ty-input-bg: #ffffff;
-  --ty-input-color: #111827;
-  --ty-input-border: #d1d5db;
-  --ty-input-border-hover: #9ca3af;
-  --ty-input-border-focus: #3b82f6;
-  --ty-input-shadow-focus: rgba(59, 130, 246, 0.1);
-  --ty-input-placeholder: #9ca3af;
-  --ty-input-disabled-bg: #f9fafb;
-  --ty-input-disabled-border: #e5e7eb;
-  --ty-input-disabled-color: #9ca3af;
-  --ty-label-color: #374151;
-
-  /* Dropdown Component */
-  --ty-dropdown-stub-bg: var(--ty-input-bg);
-  --ty-dropdown-stub-color: var(--ty-input-color);
-  --ty-dropdown-stub-border: var(--ty-input-border);
-  --ty-dropdown-stub-border-hover: var(--ty-input-border-hover);
-  --ty-dropdown-stub-border-focus: var(--ty-input-border-focus);
-  --ty-dropdown-stub-shadow-focus: var(--ty-input-shadow-focus);
-  --ty-dropdown-stub-disabled-bg: var(--ty-input-disabled-bg);
-  --ty-dropdown-stub-disabled-color: var(--ty-input-disabled-color);
-
-  --ty-dropdown-chevron-color: var(--ty-input-placeholder);
-
-  --ty-dropdown-dialog-bg: transparent;
-  --ty-dropdown-dialog-backdrop: none;
-
-  --ty-dropdown-header-bg: var(--ty-input-bg);
-  --ty-dropdown-input-bg: var(--ty-input-bg);
-  --ty-dropdown-input-color: var(--ty-input-color);
-  --ty-dropdown-input-border: var(--ty-input-border);
-  --ty-dropdown-input-border-focus: var(--ty-input-border-focus);
-  --ty-dropdown-input-shadow-focus: var(--ty-input-shadow-focus);
-  --ty-dropdown-input-placeholder: var(--ty-input-placeholder);
-
-  --ty-dropdown-close-color: var(--ty-color-neutral);
-  --ty-dropdown-close-hover-bg: var(--ty-bg-neutral-m1);
-
-  --ty-dropdown-options-bg: var(--ty-input-bg);
-  --ty-dropdown-options-border: var(--ty-input-border);
-  --ty-dropdown-options-border-radius: var(--ty-radius-md);
-  --ty-dropdown-options-shadow: var(--ty-shadow-xl);
-  --ty-dropdown-options-shadow-enhanced:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-
-  --ty-dropdown-option-color: var(--ty-input-color);
-  --ty-dropdown-option-hover: var(--ty-bg-neutral-m1);
-  --ty-dropdown-option-highlighted: var(--ty-bg-important-m1);
-  --ty-dropdown-option-highlighted-color: var(--ty-color-important-p1);
-  --ty-dropdown-option-selected: var(--ty-color-important);
-  --ty-dropdown-option-selected-color: #ffffff;
 }
 
 /* =================================================================
@@ -509,7 +469,7 @@ html[data-theme="dark"] {
   --ty-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   --ty-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
-  /* Component theme tokens - dark mode */
+  /* Input component tokens - dark mode */
   --ty-input-bg: #1f2937;
   --ty-input-color: #f9fafb;
   --ty-input-border: #374151;
@@ -522,26 +482,20 @@ html[data-theme="dark"] {
   --ty-input-disabled-color: #6b7280;
   --ty-label-color: #d1d5db;
 
-  /* Dropdown Component - dark mode automatically inherits from input vars */
-  --ty-dropdown-close-hover-bg: var(--ty-bg-neutral-p1);
-  --ty-dropdown-option-hover: var(--ty-bg-neutral-p1);
-  --ty-dropdown-option-highlighted: var(--ty-bg-important-m1);
-  --ty-dropdown-option-highlighted-color: var(--ty-color-important-p1);
-
-  /* Modal */
-  --ty-modal-bg: var(--ty-bg-neutral-p1);
-  --ty-modal-color: var(--ty-color-neutral);
-  --ty-modal-border: #e5e7eb;
-  --ty-modal-backdrop: rgba(0, 0, 0, 0.5);
+  /* Modal - dark mode */
+  --ty-modal-bg: var(--ty-bg-p1);
+  --ty-modal-color: var(--ty-color-neutral-p1);
+  --ty-modal-border: var(--ty-border);
+  --ty-modal-backdrop: rgba(0, 0, 0, 0.7);
   --ty-modal-backdrop-blur: blur(2px);
 
-  /* Modal sizing */
-  --ty-modal-border-radius: 8px;
+  /* Modal sizing - same border radius as light mode */
+  --ty-modal-border-radius: 16px;
   --ty-modal-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    0 20px 25px -5px rgba(0, 0, 0, 0.4),
+    0 10px 10px -5px rgba(0, 0, 0, 0.2);
 
-  /* Size variants */
+  /* Size variants - same as light mode */
   --ty-modal-sm-width: 300px;
   --ty-modal-sm-min-width: 280px;
   --ty-modal-md-width: 500px;
@@ -553,6 +507,6 @@ html[data-theme="dark"] {
   --ty-modal-full-width: 95vw;
   --ty-modal-full-height: 95vh;
 
-  /* Animation */
+  /* Animation - same as light mode */
   --ty-modal-duration: 200ms;
 }

@@ -148,9 +148,13 @@
 ;; =====================================================
 
 (defn is-mobile-device?
-  "Detect if we're on a mobile device based on screen width"
+  "Detect if we're on a mobile device based on screen width and touch capability"
   []
-  (<= (.-innerWidth js/window) 768))
+  (let [width (.-innerWidth js/window)
+        has-touch (or (exists? (.-ontouchstart js/window))
+                      (> (.-maxTouchPoints js/navigator) 0))]
+    (or (<= width 768)
+        (and (<= width 1024) has-touch)))) ; Tablets with touch should use mobile mode
 
 ;; =====================================================
 ;; CSS UTILITIES

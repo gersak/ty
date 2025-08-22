@@ -12,13 +12,18 @@
 (defn render!
   "Main render function that delegates to mobile or desktop implementation"
   [^js el]
-  (let [root (wcs/ensure-shadow el)]
+  (let [root (wcs/ensure-shadow el)
+        is-mobile? (common/is-mobile-device?)]
+
+    ;; Debug logging
+    (println "Window width:" (.-innerWidth js/window))
+    (println "Is mobile?" is-mobile?)
 
     ;; Ensure styles are loaded
     (common/ensure-dropdown-styles! root)
 
     ;; Choose rendering mode based on device detection
-    (if (common/is-mobile-device?)
+    (if is-mobile?
       (mobile/render! el root)
       (desktop/render! el root))))
 

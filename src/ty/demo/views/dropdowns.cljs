@@ -558,6 +558,56 @@
   <option value=\"clojure\">Clojure</option>
 </ty-dropdown>")])
 
+(defn blur-clear-demo []
+  [:div.demo-section
+   [:h2.demo-title "Blur Clear Search (Desktop Only)"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "On desktop, clicking outside the search input clears the search and shows all options. This feature helps users reset their search without having to manually clear the input."]
+
+   [:div.space-y-6
+    [:div
+     [:h3.demo-subtitle "Try it out:"]
+     [:ol.list-decimal.list-inside.text-sm.text-gray-600.dark:text-gray-400.mb-4.space-y-1
+      [:li "Open the dropdown below"]
+      [:li "Type something to filter the options (e.g., \"java\")"]
+      [:li "Click outside the search input (but keep dropdown open)"]
+      [:li "Notice the search clears and all options are visible again"]]
+
+     [:div.max-w-sm
+      [:ty-dropdown {:value "clojure"
+                     :placeholder "Search to test blur clear..."
+                     :on {:change dropdown-event-handler}}
+       [:option {:value "javascript"} "JavaScript"]
+       [:option {:value "typescript"} "TypeScript"]
+       [:option {:value "python"} "Python"]
+       [:option {:value "java"} "Java"]
+       [:option {:value "clojure"} "Clojure"]
+       [:option {:value "clojurescript"} "ClojureScript"]
+       [:option {:value "rust"} "Rust"]
+       [:option {:value "go"} "Go"]
+       [:option {:value "kotlin"} "Kotlin"]
+       [:option {:value "swift"} "Swift"]
+       [:option {:value "csharp"} "C#"]
+       [:option {:value "cpp"} "C++"]
+       [:option {:value "ruby"} "Ruby"]
+       [:option {:value "php"} "PHP"]
+       [:option {:value "scala"} "Scala"]
+       [:option {:value "haskell"} "Haskell"]
+       [:option {:value "elixir"} "Elixir"]]]]
+
+    [:div {:class "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"}
+     [:h4.text-sm.font-medium.text-blue-900.dark:text-blue-100.mb-2 "Platform Behavior"]
+     [:ul.text-sm.text-blue-700.dark:text-blue-200.space-y-1
+      [:li "📱 " [:strong "Mobile:"] " Search is cleared when modal closes"]
+      [:li "🖥️ " [:strong "Desktop:"] " Search is cleared on input blur (this demo)"]]]]
+
+   (code-snippet "<!-- Desktop blur clear demo -->
+<ty-dropdown placeholder=\"Search to test blur clear...\">
+  <option value=\"javascript\">JavaScript</option>
+  <option value=\"python\">Python</option>
+  <!-- Type to filter, then click outside input to clear -->
+</ty-dropdown>")])
+
 (defn event-debugging []
   [:div.demo-section
    [:h2.demo-title "Event Debugging"]
@@ -600,4 +650,5 @@
     (smart-positioning)
     (responsive-example)
     (search-examples)
+    (blur-clear-demo)
     (event-debugging)]])

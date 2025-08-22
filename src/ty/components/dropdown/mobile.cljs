@@ -9,18 +9,30 @@
 (defn handle-modal-close!
   "Handle mobile modal close events"
   [^js el ^js event]
-  ;; Update component state to closed
+  ;; Update component state to closed AND clear search
   (common/set-component-state! el {:open false
-                                   :highlighted-index -1})
+                                   :search ""
+                                   :highlighted-index -1
+                                   :filtered-options []})
 
   ;; Update visual state
   (when-let [root (.-shadowRoot el)]
+    ;; Clear the search input visually
+    (when-let [search-input (.querySelector root ".mobile-search-input")]
+      (set! (.-value search-input) ""))
+
+    ;; Reset chevron
     (when-let [chevron (.querySelector root ".dropdown-chevron")]
       (.remove (.-classList chevron) "open"))
 
     ;; Close the modal
     (when-let [modal (.querySelector root ".mobile-dropdown-modal")]
-      (.removeAttribute modal "open"))))
+      (.removeAttribute modal "open"))
+
+    ;; Reset option visibility (show all options)
+    (let [options (map common/get-option-data (common/get-options root))]
+      (when (seq options)
+        (common/update-option-visibility! options options)))))
 
 (defn handle-option-click!
   "Handle option clicks in mobile mode"
@@ -28,18 +40,14 @@
   (.preventDefault event)
   (.stopPropagation event)
   (let [option-element (.-target event)
-        value (or (.-value option-element) (.-textContent option-element))
-        text (.-textContent option-element)]
+        value (or (.-value option-element) (.-textContent option-element))]
     ;; Update value attribute
     (.setAttribute el "value" value)
     ;; Update selection
     (when-let [root (.-shadowRoot el)]
-      (let [options (map common/get-option-data (common/get-options root))]
-        (common/select-option! options value))
-      ;; Update stub display
-      (common/update-stub-display! el root))
+      (common/select-option! root option-element))
     ;; Dispatch change event
-    (common/dispatch-change-event! el value text)
+    (common/dispatch-change-event! el option-element)
     ;; Close modal
     (handle-modal-close! el event)))
 
@@ -61,16 +69,37 @@
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [{:keys [disabled]} (common/dropdown-attributes el)]
+  (let [{:keys [disabled searchable]} (common/dropdown-attributes el)]
     (when-not disabled
-      ;; Update state
-      (common/set-component-state! el {:open true})
+      ;; Update state and clear any previous search
+      (common/set-component-state! el {:open true
+                                       :search ""
+                                       :filtered-options []})
+
+      ;; Clear the search input visually
+      (when-let [search-input (.querySelector shadow-root ".mobile-search-input")]
+        (set! (.-value search-input) ""))
+
+      ;; Show all options initially
+      (let [options (map common/get-option-data (common/get-options shadow-root))]
+        (when (seq options)
+          (common/update-option-visibility! options options)))
+
       ;; Open modal
       (when-let [modal (.querySelector shadow-root ".mobile-dropdown-modal")]
         (.setAttribute modal "open" "true"))
+
       ;; Update chevron
       (when-let [chevron (.querySelector shadow-root ".dropdown-chevron")]
-        (.add (.-classList chevron) "open")))))
+        (.add (.-classList chevron) "open"))
+
+      ;; Auto-focus the search input after modal opens (slight delay for modal animation)
+      (when searchable
+        (js/setTimeout
+          (fn []
+            (when-let [search-input (.querySelector shadow-root ".mobile-search-input")]
+              (.focus search-input)))
+          150)))))
 
 ;; =====================================================
 ;; MOBILE EVENT SETUP
@@ -82,7 +111,7 @@
   (let [stub-input (.querySelector root ".dropdown-input.dropdown-stub")
         modal (.querySelector root ".mobile-dropdown-modal")
         search-input (.querySelector root ".mobile-search-input")
-        slot (.querySelector root "slot")]
+        slot (.querySelector root "#options-slot")]
 
     ;; Stub input click - opens modal
     (when stub-input
@@ -155,7 +184,7 @@
               "        />"
               "      </div>"
               "      <div class=\"mobile-options-list\">"
-              "        <slot></slot>"
+              "        <slot id=\"options-slot\"></slot>"
               "      </div>"
               "    </div>"
               "  </ty-modal>"
@@ -163,9 +192,6 @@
 
       ;; Setup mobile-specific event listeners
     (setup-event-listeners! el root)
-
-    ;; Update stub display
-    (common/update-stub-display! el root)
 
     ;; For non-searchable dropdowns, ensure all options are visible
     (when-not searchable

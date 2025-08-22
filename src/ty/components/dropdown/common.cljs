@@ -56,7 +56,7 @@
 (defn get-options
   "Get all option elements from slot"
   [^js shadow-root]
-  (when-let [slot (.querySelector shadow-root "slot")]
+  (when-let [slot (.querySelector shadow-root "slot:not([name])")]
     (array-seq (.assignedElements slot))))
 
 (defn get-option-data
@@ -100,17 +100,31 @@
       (.setAttribute element "highlighted" ""))))
 
 (defn clear-selection!
-  "Remove selection from all options"
-  [options]
-  (doseq [{:keys [element]} options]
-    (.removeAttribute element "selected")))
+  "Remove selection from all options and clear selected slot"
+  [^js shadow-root]
+  ;; Clear selection attributes from original options
+  (doseq [option (get-options shadow-root)]
+    (.removeAttribute option "selected"))
+
+  ;; Remove any clones from selected slot
+  (when-let [selected-slot (.querySelector shadow-root "slot[name='selected']")]
+    (doseq [clone (array-seq (.assignedElements selected-slot))]
+      (.remove clone))))
 
 (defn select-option!
-  "Mark option as selected"
-  [options value]
-  (clear-selection! options)
-  (when-let [option (first (filter #(= (:value %) value) options))]
-    (.setAttribute (:element option) "selected" "")))
+  "Mark option as selected and clone to selected slot"
+  [^js shadow-root option]
+  (when option
+    (clear-selection! shadow-root)
+
+    ;; Clone the option for display in stub
+    (let [clone (.cloneNode option true)]
+      (.setAttribute clone "slot" "selected")
+      ;; Add the clone to the DOM so it can render in the stub
+      (.appendChild (.-parentNode option) clone))
+
+    ;; Mark original as selected (stays in main slot for search)
+    (.setAttribute option "selected" "")))
 
 ;; =====================================================
 ;; EVENT DISPATCHING
@@ -118,8 +132,8 @@
 
 (defn dispatch-change-event!
   "Dispatch custom change event"
-  [^js el value text]
-  (let [detail (js-obj "value" value "text" text)
+  [^js el option]
+  (let [detail #js {:option option}
         event (js/CustomEvent. "change"
                                #js {:detail detail
                                     :bubbles true
@@ -130,18 +144,17 @@
 ;; DISPLAY UPDATES
 ;; =====================================================
 
-(defn update-stub-display!
-  "Update stub input to show selected value or placeholder"
+(defn update-selection-display!
+  "Simple function to show/hide placeholder based on selected options"
   [^js el ^js shadow-root]
-  (let [{:keys [value placeholder]} (dropdown-attributes el)
-        stub-input (.querySelector shadow-root ".dropdown-input.dropdown-stub")
-        options (map get-option-data (get-options shadow-root))]
-    (when stub-input
-      (if-let [selected-option (first (filter #(= (:value %) value) options))]
-        (do
-          (set! (.-value stub-input) (:text selected-option))
-          (select-option! options value))
-        (set! (.-value stub-input) placeholder)))))
+  (let [stub (.querySelector shadow-root ".dropdown-stub")
+        options (get-options shadow-root)
+        has-selected? (some #(.hasAttribute % "selected") options)]
+
+    (when stub
+      (if has-selected?
+        (.add (.-classList stub) "has-selection")
+        (.remove (.-classList stub) "has-selection")))))
 
 ;; =====================================================
 ;; DEVICE DETECTION

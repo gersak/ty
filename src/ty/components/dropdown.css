@@ -60,6 +60,70 @@
   /* No focus ring since it's readonly */
 }
 
+/* ===== DROPDOWN STUB (DIV) ===== */
+/* The clickable div that replaces the input for rich content support */
+
+.dropdown-stub {
+  /* Copy all input styling for visual consistency */
+  min-width: 182px;
+  width: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  /* Use standard ty tokens directly */
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  border: 1px solid var(--ty-input-border);
+  border-radius: var(--ty-radius-md);
+
+  /* Typography - same as input */
+  font-family: var(--ty-font-sans);
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-normal);
+  line-height: var(--ty-line-height-tight);
+
+  /* Size variants - default (md) */
+  min-height: var(--ty-size-md);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+  /* Space for chevron */
+
+  /* Transitions */
+  transition: var(--ty-transition-all);
+
+  /* Remove default appearance */
+  outline: none;
+}
+
+.dropdown-stub:hover {
+  border-color: var(--ty-input-border-hover);
+}
+
+.dropdown-stub[disabled] {
+  background-color: var(--ty-input-disabled-bg);
+  color: var(--ty-input-disabled-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.dropdown-stub:focus {
+  border-color: var(--ty-input-border-hover);
+}
+
+/* Placeholder styling */
+.dropdown-placeholder {
+  color: var(--ty-input-placeholder);
+  pointer-events: none;
+}
+
+/* Selected content styling */
+.dropdown-stub slot[name="selected"] {
+  display: contents;
+}
+
 /* ===== CHEVRON INDICATOR ===== */
 
 .dropdown-chevron {
@@ -577,4 +641,9 @@
     font-size: var(--ty-font-sm);
     min-height: var(--ty-size-md);
   }
+}
+
+/* Hide placeholder when there is a selection */
+.dropdown-stub.has-selection .dropdown-placeholder {
+  display: none;
 }

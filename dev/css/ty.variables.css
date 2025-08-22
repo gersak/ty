@@ -3,9 +3,7 @@
    ================================================================= */
 
 /* Default theme (light) */
-*,
-::before,
-::after {
+html {
   /* =================================================================
      SEMANTIC BASE COLORS
      Users customize these to match their brand
@@ -346,9 +344,7 @@
    DARK THEME
    ================================================================= */
 
-html.dark *,
-html.dark ::after,
-html.dark ::before,
+html.dark,
 html[data-theme="dark"] {
   /* Semantic colors remain the same (users can override) */
   --ty-semantic-positive: #10b981;

@@ -165,23 +165,45 @@
         (when (>= new-highlighted-index 0)
           (common/highlight-option! filtered new-highlighted-index))))))
 
+(defn handle-search-blur!
+  "Handle blur event on search input - clear search and reset to all options"
+  [^js el ^js shadow-root ^js event]
+  (let [{:keys [searchable]} (common/dropdown-attributes el)]
+    (when searchable
+      ;; Clear search state
+      (common/set-component-state! el {:search ""})
+
+      ;; Get all options and reset visibility
+      (let [options (map common/get-option-data (common/get-options shadow-root))]
+        (when (seq options)
+          ;; Update component state with all options
+          (common/set-component-state! el {:filtered-options options
+                                           :highlighted-index -1})
+          ;; Make all options visible
+          (common/update-option-visibility! options options)
+          ;; Clear any highlights
+          (common/clear-highlights! options)))
+
+      ;; Visually clear the search input
+      (when-let [search-input (.querySelector shadow-root ".dropdown-search-input")]
+        (set! (.-value search-input) "")))))
+
 (defn handle-option-click!
   "Handle click on option"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [option-element (.-target event)
-        value (or (.-value option-element) (.-textContent option-element))
-        text (.-textContent option-element)]
-    ;; Update value attribute
-    (.setAttribute el "value" value)
-    ;; Update selection
-    (let [options (map common/get-option-data (common/get-options shadow-root))]
-      (common/select-option! options value))
-    ;; Update stub display
-    (common/update-stub-display! el shadow-root)
+  (let [option-element (.-target event)]
+
+    ;; Set the clicked option as selected
+    (common/select-option! shadow-root option-element)
+
+    ;; Update selection display (hide placeholder)
+    (common/update-selection-display! el shadow-root)
+
     ;; Dispatch change event
-    (common/dispatch-change-event! el value text)
+    (common/dispatch-change-event! el option-element)
+
     ;; Close dropdown
     (close-dropdown! el shadow-root)))
 
@@ -201,12 +223,9 @@
            (.preventDefault event)
            (when open
              (when (and (>= highlighted-index 0) (< highlighted-index (count filtered-options)))
-               (let [{:keys [value text]} (nth filtered-options highlighted-index)]
-                 (.setAttribute el "value" value)
-                 (let [options (map common/get-option-data (common/get-options shadow-root))]
-                   (common/select-option! options value))
-                 (common/update-stub-display! el shadow-root)
-                 (common/dispatch-change-event! el value text)
+               (let [{:keys [element]} (nth filtered-options highlighted-index)]
+                 (common/select-option! shadow-root element)
+                 (common/dispatch-change-event! el element)
                  (close-dropdown! el shadow-root)))))
       ;; UP ARROW
       38 (when open
@@ -231,27 +250,23 @@
 ;; =====================================================
 
 (defn setup-event-listeners!
-  "Setup event listeners for wrapper + input + dialog structure"
+  "Setup event listeners for wrapper + stub + dialog structure"
   [^js el ^js shadow-root]
   (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
-        stub-input (.querySelector shadow-root ".dropdown-input.dropdown-stub")
+        stub (.querySelector shadow-root ".dropdown-stub")
         search-input (.querySelector shadow-root ".dropdown-search-input")
-        close-btn (.querySelector shadow-root ".dropdown-close")
-        slot (.querySelector shadow-root "slot")
+        slot (.querySelector shadow-root "#options-slot")
         dialog (.querySelector shadow-root ".dropdown-dialog")]
 
-    ;; Stub input click - opens dialog
-    (when stub-input
-      (.addEventListener stub-input "click" (partial handle-stub-click! el shadow-root)))
+    ;; Stub click - opens dialog
+    (when stub
+      (.addEventListener stub "click" (partial handle-stub-click! el shadow-root)))
 
-    ;; Search input events (inside dialog) - includes escape key handling
+    ;; Search input events (inside dialog) - includes escape key handling and blur
     (when search-input
       (.addEventListener search-input "input" (partial handle-input-change! el shadow-root))
-      (.addEventListener search-input "keydown" (partial handle-keyboard! el shadow-root)))
-
-    ;; Close button
-    (when close-btn
-      (.addEventListener close-btn "click" (partial handle-close-click! el shadow-root)))
+      (.addEventListener search-input "keydown" (partial handle-keyboard! el shadow-root))
+      (.addEventListener search-input "blur" (partial handle-search-blur! el shadow-root)))
 
     ;; Option clicks via event delegation on slot
     (when slot
@@ -271,13 +286,12 @@
     (set! (.-tyDropdownCleanup el)
           (fn []
             ;; Cleanup regular event listeners
-            (when stub-input
-              (.removeEventListener stub-input "click" (partial handle-stub-click! el shadow-root)))
+            (when stub
+              (.removeEventListener stub "click" (partial handle-stub-click! el shadow-root)))
             (when search-input
               (.removeEventListener search-input "input" (partial handle-input-change! el shadow-root))
-              (.removeEventListener search-input "keydown" (partial handle-keyboard! el shadow-root)))
-            (when close-btn
-              (.removeEventListener close-btn "click" (partial handle-close-click! el shadow-root)))
+              (.removeEventListener search-input "keydown" (partial handle-keyboard! el shadow-root))
+              (.removeEventListener search-input "blur" (partial handle-search-blur! el shadow-root)))
             (when slot
               (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
             (when dialog
@@ -292,26 +306,26 @@
 ;; =====================================================
 
 (defn render!
-  "Desktop implementation using wrapper + input + dialog structure for perfect positioning"
+  "Desktop implementation using wrapper + stub div + dialog structure for rich content"
   [^js el ^js root]
   (let [{:keys [placeholder searchable disabled]} (common/dropdown-attributes el)]
 
-    ;; Create wrapper + input + dialog structure
+    ;; Create wrapper + stub + dialog structure
     (when-not (.querySelector root ".dropdown-wrapper")
       (set! (.-innerHTML root)
             (str
              ;; Wrapper - provides positioning context, no styling
               "<div class=\"dropdown-wrapper\">"
 
-             ;; Read-only input - handles all visual styling
-              "  <input class=\"dropdown-input dropdown-stub\" "
-              "         type=\"text\" "
-              "         readonly "
-              "         placeholder=\"" placeholder "\" "
+             ;; Dropdown stub - shows selected option or placeholder
+              "  <div class=\"dropdown-stub\" "
               (when disabled "disabled ")
-              "         value=\"" placeholder "\" />"
+              ">"
+              "    <slot name=\"selected\"></slot>"
+              "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
+              "  </div>"
 
-             ;; Chevron - positioned over the input
+             ;; Chevron - positioned over the stub
               "  <div class=\"dropdown-chevron\">"
               "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
               "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
@@ -333,16 +347,13 @@
                 "      </button>")
               "    </div>"
               "    <div class=\"dropdown-options\">"
-              "      <slot></slot>"
+              "      <slot id=\"options-slot\"></slot>"
               "    </div>"
               "  </dialog>"
               "</div>"))
 
       ;; Setup event listeners
       (setup-event-listeners! el root))
-
-    ;; Update stub display to match current value
-    (common/update-stub-display! el root)
 
     ;; For non-searchable dropdowns, ensure all options are visible
     (when-not searchable

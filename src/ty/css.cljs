@@ -1,5 +1,8 @@
 (ns ty.css)
 
+;; =============================================================================
+;; Style Application Utilities
+;; =============================================================================
 
 (defn ensure-styles!
   "Applies styles to a shadow root, handling both CSSStyleSheet and string styles.
@@ -39,3 +42,4 @@
 
      :else
      (js/console.error "ensure-styles!: styles must be CSSStyleSheet or string" styles))))
+

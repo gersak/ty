@@ -43,9 +43,9 @@
 
    ;; Dropdown in Modal Test
    [:div.demo-section
-    [:h2.demo-title "Dropdown in Modal Test"]
+    [:h2.demo-title "Dropdown in Modal Test - CSS Variable Inheritance"]
     [:p.text-gray-600.dark:text-gray-400.mb-4
-     "Test dropdown positioning, z-index stacking, and behavior inside modal dialogs."]
+     "Test dropdown positioning, z-index stacking, and behavior inside modal dialogs. This specifically tests the automatic CSS variable inheritance system that ensures nested web components have access to all design tokens."]
 
     [:div.grid.grid-cols-1.md:grid-cols-2.gap-4.mb-6
      [:ty-button {:on {:click #(swap! state/state assoc :modal-dropdown-simple-open true)}}

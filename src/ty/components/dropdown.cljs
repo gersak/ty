@@ -15,10 +15,6 @@
   (let [root (wcs/ensure-shadow el)
         is-mobile? (common/is-mobile-device?)]
 
-    ;; Debug logging
-    (println "Window width:" (.-innerWidth js/window))
-    (println "Is mobile?" is-mobile?)
-
     ;; Ensure styles are loaded
     (common/ensure-dropdown-styles! root)
 

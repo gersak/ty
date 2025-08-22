@@ -1,71 +1,27 @@
 /* Dropdown Component Styles */
 
+/* ===== HOST ELEMENT STYLES ===== */
+
+:host {
+  display: inline-block;
+  width: auto;
+  min-width: 200px;
+  /* Default reasonable min-width */
+}
+
 /* ===== WRAPPER STRUCTURE ===== */
 
 .dropdown-wrapper {
-  /* Positioning context - no visual styling */
   position: relative;
   display: block;
   width: 100%;
 }
 
-/* ===== STUB INPUT STYLING ===== */
-/* The actual input element that handles all visual styling */
-
-.dropdown-input.dropdown-stub {
-  /* Copy all input styling for visual consistency */
-  width: 100%;
-  cursor: pointer;
-  box-sizing: border-box;
-
-  /* Use standard ty tokens directly */
-  background: var(--ty-input-bg);
-  color: var(--ty-input-color);
-  border: 1px solid var(--ty-input-border);
-  border-radius: var(--ty-radius-md);
-
-  /* Typography - same as input */
-  font-family: var(--ty-font-sans);
-  font-size: var(--ty-font-sm);
-  font-weight: var(--ty-font-normal);
-  line-height: var(--ty-line-height-tight);
-
-  /* Size variants - default (md) */
-  min-height: var(--ty-size-md);
-  padding: var(--ty-spacing-2) var(--ty-spacing-3);
-  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
-  /* Space for chevron */
-
-  /* Transitions */
-  transition: var(--ty-transition-all);
-
-  /* Remove default input appearance */
-  appearance: none;
-  outline: none;
-}
-
-.dropdown-input.dropdown-stub:hover {
-  border-color: var(--ty-input-border-hover);
-}
-
-.dropdown-input.dropdown-stub[disabled] {
-  background-color: var(--ty-input-disabled-bg);
-  color: var(--ty-input-disabled-color);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.dropdown-input.dropdown-stub:focus {
-  border-color: var(--ty-input-border-hover);
-  /* No focus ring since it's readonly */
-}
-
-/* ===== DROPDOWN STUB (DIV) ===== */
-/* The clickable div that replaces the input for rich content support */
+/* ===== DROPDOWN STUB (CLICKABLE TRIGGER) ===== */
 
 .dropdown-stub {
-  /* Copy all input styling for visual consistency */
-  min-width: 182px;
+  /* Layout */
+  /* min-width: 206px; */
   width: 100%;
   cursor: pointer;
   box-sizing: border-box;
@@ -73,28 +29,25 @@
   display: flex;
   align-items: center;
 
-  /* Use standard ty tokens directly */
+  /* Visual styling using ty tokens */
   background: var(--ty-input-bg);
   color: var(--ty-input-color);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-md);
 
-  /* Typography - same as input */
+  /* Typography */
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-sm);
   font-weight: var(--ty-font-normal);
   line-height: var(--ty-line-height-tight);
 
-  /* Size variants - default (md) */
+  /* Default size (md) */
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
   padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
-  /* Space for chevron */
 
-  /* Transitions */
-  transition: var(--ty-transition-all);
-
-  /* Remove default appearance */
+  /* Transitions - includes opacity for open state */
+  transition: var(--ty-transition-all), opacity 0.2s ease;
   outline: none;
 }
 
@@ -113,15 +66,44 @@
   border-color: var(--ty-input-border-hover);
 }
 
+/* Hide stub when dropdown is open */
+.dropdown-wrapper:has(.dropdown-chevron.open) .dropdown-stub {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Placeholder styling */
 .dropdown-placeholder {
   color: var(--ty-input-placeholder);
   pointer-events: none;
 }
 
-/* Selected content styling */
+.dropdown-stub.has-selection .dropdown-placeholder {
+  display: none;
+}
+
+/* Selected content styling - only takes space when content exists */
 .dropdown-stub slot[name="selected"] {
-  display: block; width: 100%;
+  display: block;
+  width: 0%;
+}
+
+.dropdown-stub.has-selection slot[name="selected"] {
+  width: 100%;
+}
+
+.dropdown-stub slot[name="selected"] * {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  line-height: inherit;
+  outline: none;
+  appearance: none;
 }
 
 /* ===== CHEVRON INDICATOR ===== */
@@ -131,13 +113,11 @@
   top: 50%;
   right: var(--ty-spacing-3);
   transform: translateY(-50%);
-
   width: 1rem;
   height: 1rem;
   color: var(--ty-input-placeholder);
   transition: var(--ty-transition-transform);
   pointer-events: none;
-  /* Let clicks pass through to input */
 }
 
 .dropdown-chevron.open {
@@ -149,24 +129,35 @@
   height: 100%;
 }
 
+/* Hide chevron for read-only dropdowns */
+:host([readonly]) .dropdown-chevron {
+  display: none;
+}
+
+/* Adjust padding for read-only dropdowns since no chevron */
+:host([readonly]) .dropdown-stub {
+  padding-right: var(--ty-spacing-3);
+}
+
+/* Read-only dropdowns should not be clickable */
+:host([readonly]) .dropdown-stub {
+  cursor: default;
+}
+
 /* ===== DIALOG STRUCTURE ===== */
 
 .dropdown-dialog {
-  /* Absolute positioning relative to wrapper (no border offset!) */
   position: absolute;
   left: 0;
   width: 100%;
-  min-width: max-content;
-  max-width: none;
-
+  max-width: 100%;
+  /* Force dialog to stay within stub bounds */
   margin: 0;
   padding: 0;
   border: none;
   background: transparent;
   box-sizing: border-box;
   z-index: var(--ty-z-dropdown);
-
-  /* Dialog automatically handles focus management */
 }
 
 .dropdown-dialog.position-above {
@@ -181,7 +172,6 @@
   flex-direction: column;
 }
 
-/* Remove default dialog backdrop since we're using absolute positioning */
 .dropdown-dialog::backdrop {
   display: none;
 }
@@ -193,30 +183,25 @@
   align-items: center;
   gap: var(--ty-spacing-2);
   background: var(--ty-input-bg);
+  position: relative;
 }
 
 .dropdown-search-input {
-  /* Base styling */
   width: 100%;
+  min-width: 0;
+  /* Allow input to shrink below its intrinsic minimum */
   box-sizing: border-box;
-
-  /* Use standard ty input tokens */
   background: var(--ty-input-bg);
   color: var(--ty-input-color);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-md);
-
-  /* Typography */
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-sm);
   font-weight: var(--ty-font-normal);
   line-height: var(--ty-line-height-tight);
-
-  /* Size */
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
-
-  /* Transitions */
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
   transition: var(--ty-transition-all);
   outline: none;
 }
@@ -235,6 +220,27 @@
 
 .dropdown-search-input::placeholder {
   color: var(--ty-input-placeholder);
+}
+
+.dropdown-search-chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--ty-spacing-3);
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: var(--ty-input-placeholder);
+  transition: var(--ty-transition-transform);
+  pointer-events: none;
+}
+
+.dropdown-search-chevron.open {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.dropdown-search-chevron svg {
+  width: 100%;
+  height: 100%;
 }
 
 .dropdown-close {
@@ -263,22 +269,29 @@
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-lg);
   box-shadow: var(--ty-shadow-xl);
-
-  margin-top: var(--ty-spacing-2);
-  margin-bottom: var(--ty-spacing-2);
-
-  /* Sizing and scrolling */
   max-height: 16rem;
-  /* 256px */
+  width: 100%;
+  /* Force options to respect dialog width */
+  max-width: 100%;
+  /* Prevent expansion beyond dialog */
+  overflow-x: hidden;
+  /* Hide horizontal overflow */
   overflow-y: auto;
-
-  /* Smooth scrolling for keyboard navigation */
   scroll-behavior: smooth;
-
-  /* Enhanced shadow for dialog context */
+  box-sizing: border-box;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.dropdown-dialog.position-above .dropdown-options {
+  margin-bottom: var(--ty-spacing-3);
+  margin-top: 0;
+}
+
+.dropdown-dialog.position-below .dropdown-options {
+  margin-top: var(--ty-spacing-1);
+  margin-bottom: 0;
 }
 
 /* ===== OPTION ELEMENTS ===== */
@@ -318,12 +331,6 @@
 
 /* ===== MOBILE MODE STYLES ===== */
 
-
-.ty-modal-dialog {
-  width: 80vw;
-  height: 80vw;
-}
-
 .mobile-dropdown-content {
   display: flex;
   flex-direction: column;
@@ -333,7 +340,6 @@
   border-radius: var(--ty-radius-2xl);
   overflow: hidden;
   box-sizing: border-box;
-  /* Prevent content from showing outside rounded corners */
 }
 
 .mobile-search-header {
@@ -341,34 +347,21 @@
   border-bottom: 1px solid var(--ty-border);
   background: var(--ty-bg);
   flex-shrink: 0;
-  /* Prevent header from shrinking */
-  /* Use consistent background */
 }
 
 .mobile-search-input {
-  /* Base styling - similar to dropdown-search-input */
   width: 100%;
   box-sizing: border-box;
-
-  /* Use standard ty input tokens */
   background: var(--ty-input-bg);
   color: var(--ty-input-color);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-lg);
-
-  /* Typography */
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-base);
-  /* Base size for mobile */
   font-weight: var(--ty-font-normal);
   line-height: var(--ty-line-height-tight);
-
-  /* Mobile-optimized sizing */
   min-height: var(--ty-size-lg);
-  /* Good touch target */
   padding: var(--ty-spacing-3) var(--ty-spacing-4);
-
-  /* Transitions */
   transition: var(--ty-transition-all);
   outline: none;
 }
@@ -393,41 +386,32 @@
   flex: 1;
   overflow-y: auto;
   padding: 0;
-  /* Remove padding for full-width options */
   background: var(--ty-bg);
-  /* Consistent background */
   width: 100%;
   max-height: calc(100vh - 120px);
-  /* Account for header height */
   box-sizing: border-box;
 }
 
-/* Mobile option styling - applied to slotted options */
 .mobile-options-list ::slotted(option) {
   display: flex !important;
   align-items: center;
   padding: var(--ty-spacing-4) var(--ty-spacing-4);
-  /* Good touch padding */
   color: var(--ty-input-color);
   cursor: pointer;
   transition: var(--ty-transition-colors);
   border: none;
   background: none;
   font-size: var(--ty-font-base);
-  /* Base mobile text */
   font-family: inherit;
   width: 100%;
   text-align: left;
   box-sizing: border-box;
   border-bottom: 1px solid var(--ty-border-m1);
-  /* Subtle separator */
   min-height: var(--ty-size-lg);
-  /* Consistent touch target */
 }
 
 .mobile-options-list ::slotted(option:last-child) {
   border-bottom: none;
-  /* No border on last option */
 }
 
 .mobile-options-list ::slotted(option:hover),
@@ -450,662 +434,89 @@
   display: none !important;
 }
 
-/* ===== SIZE VARIANTS ===== */
-
-:host([size="xs"]) .dropdown-input.dropdown-stub,
-:host([size="xs"]) .dropdown-search-input {
-  min-height: var(--ty-size-xs);
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
-  font-size: var(--ty-font-xs);
-}
-
-:host([size="xs"]) .dropdown-input.dropdown-stub {
-  padding-right: calc(var(--ty-spacing-2) + 0.75rem + var(--ty-spacing-1));
-}
-
-:host([size="xs"]) .dropdown-chevron {
-  width: 0.75rem;
-  height: 0.75rem;
-  right: var(--ty-spacing-2);
-}
-
-:host([size="sm"]) .dropdown-input.dropdown-stub,
-:host([size="sm"]) .dropdown-search-input {
-  min-height: var(--ty-size-sm);
-  padding: calc(var(--ty-spacing-1) + var(--ty-spacing-mini)) calc(var(--ty-spacing-2) + var(--ty-spacing-mini));
-  font-size: var(--ty-font-sm);
-}
-
-:host([size="sm"]) .dropdown-input.dropdown-stub {
-  padding-right: calc(var(--ty-spacing-2) + var(--ty-spacing-mini) + 0.875rem + var(--ty-spacing-2));
-}
-
-:host([size="sm"]) .dropdown-chevron {
-  width: 0.875rem;
-  height: 0.875rem;
-  right: calc(var(--ty-spacing-2) + var(--ty-spacing-mini));
-}
-
-:host([size="md"]) .dropdown-input.dropdown-stub,
-:host([size="md"]) .dropdown-search-input {
-  min-height: var(--ty-size-md);
-  padding: var(--ty-spacing-2) var(--ty-spacing-3);
-  font-size: var(--ty-font-sm);
-}
-
-:host([size="md"]) .dropdown-input.dropdown-stub {
-  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
-}
-
-:host([size="lg"]) .dropdown-input.dropdown-stub,
-:host([size="lg"]) .dropdown-search-input {
-  min-height: var(--ty-size-lg);
-  padding: calc(var(--ty-spacing-2) + var(--ty-spacing-mini)) calc(var(--ty-spacing-3) + var(--ty-spacing-mini));
-  font-size: var(--ty-font-base);
-}
-
-:host([size="lg"]) .dropdown-input.dropdown-stub {
-  padding-right: calc(var(--ty-spacing-3) + var(--ty-spacing-mini) + 1.125rem + var(--ty-spacing-2));
-}
-
-:host([size="lg"]) .dropdown-chevron {
-  width: 1.125rem;
-  height: 1.125rem;
-  right: calc(var(--ty-spacing-3) + var(--ty-spacing-mini));
-}
-
-:host([size="xl"]) .dropdown-input.dropdown-stub,
-:host([size="xl"]) .dropdown-search-input {
-  min-height: var(--ty-size-xl);
-  padding: var(--ty-spacing-3) var(--ty-spacing-4);
-  font-size: var(--ty-font-base);
-}
-
-:host([size="xl"]) .dropdown-input.dropdown-stub {
-  padding-right: calc(var(--ty-spacing-4) + 1.25rem + var(--ty-spacing-2));
-}
-
-:host([size="xl"]) .dropdown-chevron {
-  width: 1.25rem;
-  height: 1.25rem;
-  right: var(--ty-spacing-4);
-}
-
 /* ===== SEMANTIC FLAVOR VARIANTS ===== */
 
-:host([flavor="positive"]) .dropdown-input.dropdown-stub,
+:host([flavor="positive"]) .dropdown-stub,
 :host([flavor="positive"]) .dropdown-search-input,
 :host([flavor="positive"]) .mobile-search-input {
   border-color: var(--ty-color-positive);
 }
 
-:host([flavor="positive"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="positive"]) .dropdown-stub:hover,
 :host([flavor="positive"]) .dropdown-search-input:focus,
 :host([flavor="positive"]) .mobile-search-input:focus {
   border-color: var(--ty-color-positive-p1);
   box-shadow: 0 0 0 3px var(--ty-color-positive-m3);
 }
 
-:host([flavor="negative"]) .dropdown-input.dropdown-stub,
+:host([flavor="negative"]) .dropdown-stub,
 :host([flavor="negative"]) .dropdown-search-input,
 :host([flavor="negative"]) .mobile-search-input {
   border-color: var(--ty-color-negative);
 }
 
-:host([flavor="negative"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="negative"]) .dropdown-stub:hover,
 :host([flavor="negative"]) .dropdown-search-input:focus,
 :host([flavor="negative"]) .mobile-search-input:focus {
   border-color: var(--ty-color-negative-p1);
   box-shadow: 0 0 0 3px var(--ty-color-negative-m3);
 }
 
-:host([flavor="important"]) .dropdown-input.dropdown-stub,
+:host([flavor="important"]) .dropdown-stub,
 :host([flavor="important"]) .dropdown-search-input,
 :host([flavor="important"]) .mobile-search-input {
   border-color: var(--ty-color-important);
 }
 
-:host([flavor="important"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="important"]) .dropdown-stub:hover,
 :host([flavor="important"]) .dropdown-search-input:focus,
 :host([flavor="important"]) .mobile-search-input:focus {
   border-color: var(--ty-color-important-p1);
   box-shadow: 0 0 0 3px var(--ty-color-important-m3);
 }
 
-:host([flavor="exception"]) .dropdown-input.dropdown-stub,
+:host([flavor="exception"]) .dropdown-stub,
 :host([flavor="exception"]) .dropdown-search-input,
 :host([flavor="exception"]) .mobile-search-input {
   border-color: var(--ty-color-exception);
 }
 
-:host([flavor="exception"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="exception"]) .dropdown-stub:hover,
 :host([flavor="exception"]) .dropdown-search-input:focus,
 :host([flavor="exception"]) .mobile-search-input:focus {
   border-color: var(--ty-color-exception-p1);
   box-shadow: 0 0 0 3px var(--ty-color-exception-m3);
 }
 
-:host([flavor="unique"]) .dropdown-input.dropdown-stub,
+:host([flavor="unique"]) .dropdown-stub,
 :host([flavor="unique"]) .dropdown-search-input,
 :host([flavor="unique"]) .mobile-search-input {
   border-color: var(--ty-color-unique);
 }
 
-:host([flavor="unique"]) .dropdown-input.dropdown-stub:hover,
+:host([flavor="unique"]) .dropdown-stub:hover,
 :host([flavor="unique"]) .dropdown-search-input:focus,
 :host([flavor="unique"]) .mobile-search-input:focus {
   border-color: var(--ty-color-unique-p1);
   box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
 }
 
-/* ===== PLACEMENT VARIANTS ===== */
-
-.dropdown-dialog.position-above .dropdown-options {
-  margin-bottom: var(--ty-spacing-3);
-  margin-top: 0;
-}
-
-.dropdown-dialog.position-below .dropdown-options {
-  margin-top: var(--ty-spacing-1);
-  margin-bottom: 0;
-}
-
-/* ===== MINI WIDTH VARIANT ===== */
-
-.dropdown-input.dropdown-stub,
-.dropdown-search-input {
-  min-width: 8.75rem;
-}
-
-/* ===== MOBILE SPECIFIC OVERRIDES ===== */
+/* ===== MOBILE RESPONSIVE ADJUSTMENTS ===== */
 
 @media (max-width: 768px) {
-  .mobile-dropdown-content {}
-
   .mobile-search-header {
     padding: var(--ty-spacing-3);
-    /* Slightly less padding on mobile */
   }
 
   .mobile-search-input {
     font-size: var(--ty-font-sm);
-    /* Smaller text on mobile */
     min-height: var(--ty-size-md);
-    /* Standard height on mobile */
     padding: var(--ty-spacing-2) var(--ty-spacing-3);
   }
 
   .mobile-options-list ::slotted(option) {
     padding: var(--ty-spacing-3) var(--ty-spacing-3);
-    /* Consistent with mobile input */
     font-size: var(--ty-font-sm);
     min-height: var(--ty-size-md);
   }
-}
-
-/* Hide placeholder when there is a selection */
-.dropdown-stub.has-selection .dropdown-placeholder {
-  display: none;
-}
-
-/* ===== SIZE MODIFIERS FOR STUB ===== */
-
-/* Extra Small */
-.dropdown-stub.xs {
-  min-height: 32px;
-  padding: 4px 8px;
-  padding-right: calc(8px + 1rem + 4px);
-  /* Space for chevron */
-  font-size: 12px;
-}
-
-/* Small */
-.dropdown-stub.sm {
-  min-height: 36px;
-  padding: 6px 10px;
-  padding-right: calc(10px + 1rem + 6px);
-  /* Space for chevron */
-  font-size: 13px;
-}
-
-/* Medium (default) */
-.dropdown-stub.md {
-  min-height: 40px;
-  padding: 8px 12px;
-  padding-right: calc(12px + 1rem + 8px);
-  /* Space for chevron */
-  font-size: 14px;
-}
-
-/* Large */
-.dropdown-stub.lg {
-  min-height: 44px;
-  padding: 10px 14px;
-  padding-right: calc(14px + 1rem + 10px);
-  /* Space for chevron */
-  font-size: 16px;
-}
-
-/* Extra Large */
-.dropdown-stub.xl {
-  min-height: 48px;
-  padding: 12px 16px;
-  padding-right: calc(16px + 1rem + 12px);
-  /* Space for chevron */
-  font-size: 18px;
-}
-
-/* ===== SEMANTIC FLAVOR MODIFIERS FOR STUB ===== */
-
-/* Important - Blue theme */
-.dropdown-stub.important {
-  border-color: #3b82f6;
-}
-
-.dropdown-stub.important:hover {
-  border-color: #2563eb;
-}
-
-.dropdown-stub.important:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Positive - Green theme for success */
-.dropdown-stub.positive {
-  border-color: #10b981;
-}
-
-.dropdown-stub.positive:hover {
-  border-color: #059669;
-}
-
-.dropdown-stub.positive:focus {
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
-/* Negative - Red theme for errors */
-.dropdown-stub.negative {
-  border-color: #ef4444;
-}
-
-.dropdown-stub.negative:hover {
-  border-color: #dc2626;
-}
-
-.dropdown-stub.negative:focus {
-  border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-/* Exception - Yellow theme for warnings */
-.dropdown-stub.exception {
-  border-color: #f59e0b;
-}
-
-.dropdown-stub.exception:hover {
-  border-color: #d97706;
-}
-
-.dropdown-stub.exception:focus {
-  border-color: #d97706;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-}
-
-/* Unique - Purple theme */
-.dropdown-stub.unique {
-  border-color: #8b5cf6;
-}
-
-.dropdown-stub.unique:hover {
-  border-color: #7c3aed;
-}
-
-.dropdown-stub.unique:focus {
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-}
-
-/* Neutral (default) - no special colors, use base styling */
-.dropdown-stub.neutral {
-  /* Uses default styling defined above */
-}
-
-/* ===== SELECTED CONTENT STYLING ===== */
-/* Ensure cloned content in stub looks identical to original options */
-
-.dropdown-stub slot[name="selected"] {
-  display: block; width: 100%;
-}
-
-/* Reset any conflicting styles for cloned content */
-.dropdown-stub slot[name="selected"] ty-option,
-.dropdown-stub slot[name="selected"] option {
-  display: block;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  border: none;
-  background: none;
-  color: inherit;
-  font: inherit;
-  line-height: inherit;
-  outline: none;
-  appearance: none;
-}
-
-/* Ensure div content in cloned options displays properly */
-.dropdown-stub slot[name="selected"] div {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: inherit;
-}
-
-/* Preserve flex layouts from original options */
-.dropdown-stub slot[name="selected"] .flex {
-  display: flex;
-}
-
-.dropdown-stub slot[name="selected"] .items-center {
-  align-items: center;
-}
-
-.dropdown-stub slot[name="selected"] .gap-3 {
-  gap: 0.75rem;
-}
-
-.dropdown-stub slot[name="selected"] .gap-2 {
-  gap: 0.5rem;
-}
-
-/* Preserve text sizing and weights */
-.dropdown-stub slot[name="selected"] .font-medium {
-  font-weight: 500;
-}
-
-.dropdown-stub slot[name="selected"] .text-sm {
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.dropdown-stub slot[name="selected"] .text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
-
-/* Preserve color classes */
-.dropdown-stub slot[name="selected"] .text-gray-500 {
-  color: rgb(107 114 128);
-}
-
-.dropdown-stub slot[name="selected"] .text-gray-600 {
-  color: rgb(75 85 99);
-}
-
-.dropdown-stub slot[name="selected"] .text-gray-800 {
-  color: rgb(31 41 55);
-}
-
-/* Preserve background colors for badges */
-.dropdown-stub slot[name="selected"] .bg-green-100 {
-  background-color: rgb(220 252 231);
-}
-
-.dropdown-stub slot[name="selected"] .bg-yellow-100 {
-  background-color: rgb(254 249 195);
-}
-
-.dropdown-stub slot[name="selected"] .bg-red-100 {
-  background-color: rgb(254 226 226);
-}
-
-.dropdown-stub slot[name="selected"] .bg-gray-100 {
-  background-color: rgb(243 244 246);
-}
-
-/* Preserve text colors for badges */
-.dropdown-stub slot[name="selected"] .text-green-800 {
-  color: rgb(22 101 52);
-}
-
-.dropdown-stub slot[name="selected"] .text-yellow-800 {
-  color: rgb(133 77 14);
-}
-
-.dropdown-stub slot[name="selected"] .text-red-800 {
-  color: rgb(153 27 27);
-}
-
-/* Preserve border radius and padding */
-.dropdown-stub slot[name="selected"] .rounded {
-  border-radius: 0.25rem;
-}
-
-.dropdown-stub slot[name="selected"] .rounded-full {
-  border-radius: 9999px;
-}
-
-.dropdown-stub slot[name="selected"] .px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
-}
-
-.dropdown-stub slot[name="selected"] .py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
-
-/* Preserve flex utilities */
-.dropdown-stub slot[name="selected"] .flex-1 {
-  flex: 1 1 0%;
-}
-
-.dropdown-stub slot[name="selected"] .flex-shrink-0 {
-  flex-shrink: 0;
-}
-
-.dropdown-stub slot[name="selected"] .min-w-0 {
-  min-width: 0px;
-}
-
-/* Preserve sizing utilities */
-.dropdown-stub slot[name="selected"] .w-3 {
-  width: 0.75rem;
-}
-
-.dropdown-stub slot[name="selected"] .h-3 {
-  height: 0.75rem;
-}
-
-.dropdown-stub slot[name="selected"] .w-6 {
-  width: 1.5rem;
-}
-
-.dropdown-stub slot[name="selected"] .h-6 {
-  height: 1.5rem;
-}
-
-.dropdown-stub slot[name="selected"] .w-8 {
-  width: 2rem;
-}
-
-.dropdown-stub slot[name="selected"] .h-8 {
-  height: 2rem;
-}
-
-/* Preserve icon/indicator colors */
-.dropdown-stub slot[name="selected"] .bg-yellow-400 {
-  background-color: rgb(250 204 21);
-}
-
-.dropdown-stub slot[name="selected"] .bg-blue-600 {
-  background-color: rgb(37 99 235);
-}
-
-.dropdown-stub slot[name="selected"] .bg-green-600 {
-  background-color: rgb(22 163 74);
-}
-
-.dropdown-stub slot[name="selected"] .bg-orange-600 {
-  background-color: rgb(234 88 12);
-}
-
-.dropdown-stub slot[name="selected"] .bg-blue-500 {
-  background-color: rgb(59 130 246);
-}
-
-.dropdown-stub slot[name="selected"] .bg-purple-500 {
-  background-color: rgb(168 85 247);
-}
-
-.dropdown-stub slot[name="selected"] .bg-pink-500 {
-  background-color: rgb(236 72 153);
-}
-
-.dropdown-stub slot[name="selected"] .bg-green-500 {
-  background-color: rgb(34 197 94);
-}
-
-.dropdown-stub slot[name="selected"] .bg-yellow-500 {
-  background-color: rgb(234 179 8);
-}
-
-.dropdown-stub slot[name="selected"] .bg-red-500 {
-  background-color: rgb(239 68 68);
-}
-
-.dropdown-stub slot[name="selected"] .bg-gray-400 {
-  background-color: rgb(156 163 175);
-}
-
-/* Text colors for contrasting text on colored backgrounds */
-.dropdown-stub slot[name="selected"] .text-black {
-  color: rgb(0 0 0);
-}
-
-.dropdown-stub slot[name="selected"] .text-white {
-  color: rgb(255 255 255);
-}
-
-/* ===== DARK MODE SUPPORT FOR SELECTED CONTENT ===== */
-
-.dark .dropdown-stub slot[name="selected"] .text-gray-500 {
-  color: rgb(156 163 175);
-}
-
-.dark .dropdown-stub slot[name="selected"] .text-gray-600 {
-  color: rgb(156 163 175);
-}
-
-.dark .dropdown-stub slot[name="selected"] .text-gray-800 {
-  color: rgb(209 213 219);
-}
-
-/* Dark mode badge backgrounds */
-.dark .dropdown-stub slot[name="selected"] .bg-green-100 {
-  background-color: rgb(20 83 45);
-}
-
-.dark .dropdown-stub slot[name="selected"] .bg-yellow-100 {
-  background-color: rgb(120 53 15);
-}
-
-.dark .dropdown-stub slot[name="selected"] .bg-red-100 {
-  background-color: rgb(127 29 29);
-}
-
-.dark .dropdown-stub slot[name="selected"] .bg-gray-100 {
-  background-color: rgb(55 65 81);
-}
-
-/* Dark mode badge text colors */
-.dark .dropdown-stub slot[name="selected"] .text-green-800 {
-  color: rgb(187 247 208);
-}
-
-.dark .dropdown-stub slot[name="selected"] .text-yellow-800 {
-  color: rgb(254 240 138);
-}
-
-.dark .dropdown-stub slot[name="selected"] .text-red-800 {
-  color: rgb(254 202 202);
-}
-
-/* ===== FORCE FULL WIDTH FOR SELECTED CONTENT ===== */
-
-/* Make the selected content fill the full width of the stub */
-.dropdown-stub slot[name="selected"] {
-  display: block;
-  width: 100%;
-}
-
-/* Ensure the cloned ty-option or option elements expand fully */
-.dropdown-stub slot[name="selected"] ty-option,
-.dropdown-stub slot[name="selected"] option {
-  display: block;
-  width: 100% !important;
-  max-width: none !important;
-  flex: 1 1 auto;
-}
-
-/* Make sure the top-level div in cloned content uses full width */
-.dropdown-stub slot[name="selected"] > * {
-  display: block;
-  width: 100%;
-}
-
-/* Ensure flex containers inside selected content expand to full width */
-.dropdown-stub slot[name="selected"] .flex {
-  display: flex;
-  width: 100%;
-}
-
-/* Override any width constraints on the main content div */
-.dropdown-stub slot[name="selected"] div:first-child {
-  width: 100% !important;
-  max-width: none !important;
-}
-
-/* Ensure justify-between works properly across full width */
-.dropdown-stub slot[name="selected"] .justify-between {
-  justify-content: space-between;
-}
-
-/* Make sure flex-1 elements take available space */
-.dropdown-stub slot[name="selected"] .flex-1 {
-  flex: 1 1 0%;
-  min-width: 0;
-}
-
-/* ===== ADDITIONAL FULL WIDTH ENFORCEMENT ===== */
-
-/* Force all cloned elements to fill width */
-.dropdown-stub[slot=""] ty-option,
-.dropdown-stub ty-option[slot="selected"] {
-  width: 100% !important;
-  display: block !important;
-}
-
-/* Ensure the shadow root content in ty-option expands */
-.dropdown-stub ty-option::part(content) {
-  width: 100%;
-}
-
-/* Force flex containers in selected content to use full width */
-.dropdown-stub slot[name="selected"] .flex.items-center {
-  width: 100% !important;
-  min-width: 100% !important;
-}
-
-/* Ensure gap-3 layouts still expand to full width */
-.dropdown-stub slot[name="selected"] .flex.items-center.gap-3 {
-  width: 100% !important;
-  justify-content: space-between;
-}
-
-/* Override any max-width constraints */
-.dropdown-stub slot[name="selected"] * {
-  max-width: none !important;
 }

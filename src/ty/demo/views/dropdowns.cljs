@@ -30,13 +30,14 @@
               :children [[:div.max-w-xs
                           [:ty-dropdown.w-full {:value "red"
                                                 :placeholder "Select a color..."
+                                                :style {:min-width "200px"}
                                                 :on {:change dropdown-event-handler}}
                            [:option {:value "red"} "Red"]
                            [:option {:value "blue"} "Blue"]
                            [:option {:value "green"} "Green"]
                            [:option {:value "yellow"} "Yellow"]
                            [:option {:value "purple"} "Purple"]]]]})
-   (code-snippet "<ty-dropdown value=\"red\" placeholder=\"Select a color...\">
+   (code-snippet "<ty-dropdown value=\"red\" placeholder=\"Select a color...\" style=\"min-width: 200px;\">
   <option value=\"red\">Red</option>
   <option value=\"blue\">Blue</option>
   <option value=\"green\">Green</option>
@@ -48,12 +49,13 @@
                           [:ty-dropdown {:value "medium"
                                          :searchable "false"
                                          :placeholder "Select size..."
+                                         :style {:min-width "180px"}
                                          :on {:change dropdown-event-handler}}
                            [:option {:value "small"} "Small"]
                            [:option {:value "medium"} "Medium"]
                            [:option {:value "large"} "Large"]
                            [:option {:value "xl"} "Extra Large"]]]]})
-   (code-snippet "<ty-dropdown searchable=\"false\" placeholder=\"Select size...\">
+   (code-snippet "<ty-dropdown searchable=\"false\" placeholder=\"Select size...\" style=\"min-width: 180px;\">
   <option value=\"small\">Small</option>
   <option value=\"medium\">Medium</option>
 </ty-dropdown>")
@@ -63,7 +65,8 @@
               :children [[:div.max-w-xs
                           [:ty-dropdown {:value "option2"
                                          :disabled true
-                                         :placeholder "Disabled dropdown"}
+                                         :placeholder "Disabled dropdown"
+                                         :style {:min-width "200px"}}
                            [:option {:value "option1"} "Option 1"]
                            [:option {:value "option2"} "Option 2"]
                            [:option {:value "option3"} "Option 3"]]]]})
@@ -72,7 +75,8 @@
               :description "Read-only dropdown shows value but prevents interaction"
               :children [[:div.max-w-xs
                           [:ty-dropdown {:value "readonly-value"
-                                         :readonly true}
+                                         :readonly true
+                                         :style {:min-width "200px"}}
                            [:option {:value "readonly-value"} "Read-only Value"]
                            [:option {:value "other"} "Other Option"]]]]})])
 
@@ -80,7 +84,7 @@
   [:div.demo-section
    [:h2.demo-title "Global Dropdown Management"]
    [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Test global dropdown behavior - opening one dropdown automatically closes others. Try opening multiple dropdowns to see this in action."]
+    "Test global dropdown behavior - opening one dropdown automatically closes others. This ensures only one dropdown can be open at a time across the entire page."]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
     ;; First row
@@ -88,6 +92,7 @@
      [:label.block.text-sm.font-medium.mb-2 "First Dropdown"]
      [:ty-dropdown {:value "a1"
                     :placeholder "Select option A..."
+                    :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
       [:option {:value "a1"} "Option A1"]
       [:option {:value "a2"} "Option A2"]
@@ -98,6 +103,7 @@
      [:label.block.text-sm.font-medium.mb-2 "Second Dropdown"]
      [:ty-dropdown {:value "b1"
                     :placeholder "Select option B..."
+                    :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
       [:option {:value "b1"} "Option B1"]
       [:option {:value "b2"} "Option B2"]
@@ -108,6 +114,7 @@
      [:label.block.text-sm.font-medium.mb-2 "Third Dropdown"]
      [:ty-dropdown {:value "c1"
                     :placeholder "Select option C..."
+                    :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
       [:option {:value "c1"} "Option C1"]
       [:option {:value "c2"} "Option C2"]
@@ -120,6 +127,7 @@
      [:ty-dropdown {:value "d1"
                     :flavor "positive"
                     :placeholder "Positive dropdown..."
+                    :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
       [:option {:value "d1"} "Positive D1"]
       [:option {:value "d2"} "Positive D2"]
@@ -130,6 +138,7 @@
      [:ty-dropdown {:value "e1"
                     :flavor "negative"
                     :placeholder "Negative dropdown..."
+                    :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
       [:option {:value "e1"} "Negative E1"]
       [:option {:value "e2"} "Negative E2"]
@@ -140,6 +149,7 @@
      [:ty-dropdown {:value "f1"
                     :flavor "important"
                     :placeholder "Important dropdown..."
+                    :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
       [:option {:value "f1"} "Important F1"]
       [:option {:value "f2"} "Important F2"]
@@ -148,219 +158,92 @@
    [:div.mt-6.p-4.bg-blue-50.dark:bg-blue-900.border.border-blue-200.dark:border-blue-700.rounded
     [:h4.text-sm.font-medium.text-blue-800.dark:text-blue-200.mb-2 "Expected Behavior:"]
     [:ul.text-sm.text-blue-700.dark:text-blue-300.space-y-1
-     [:li "✅ Only one dropdown can be open at a time"]
-     [:li "✅ Opening a new dropdown closes any currently open dropdown"]
+     [:li "✅ Only one dropdown can be open at a time across the entire page"]
+     [:li "✅ Opening a new dropdown automatically closes any currently open dropdown"]
+     [:li "✅ Works with both mobile modal and desktop dialog implementations"]
      [:li "✅ Clicking outside closes the open dropdown"]
      [:li "✅ ESC key closes the open dropdown"]
      [:li "✅ Smooth transitions without visible position jumps"]]]
 
    (code-snippet "<!-- Multiple dropdowns with automatic global management -->
-<ty-dropdown placeholder=\"First dropdown...\">
+<ty-dropdown placeholder=\"First dropdown...\" style=\"min-width: 180px;\">
   <option value=\"a1\">Option A1</option>
 </ty-dropdown>
 
-<ty-dropdown placeholder=\"Second dropdown...\">
+<ty-dropdown placeholder=\"Second dropdown...\" style=\"min-width: 180px;\">
   <option value=\"b1\">Option B1</option>
 </ty-dropdown>
 
 <!-- Only one will be open at a time automatically -->")])
 
-(defn size-variants []
-  [:div.demo-section
-   [:h2.demo-title "Size Variants"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Five size variants to fit different contexts and layouts, plus mini width for compact spaces"]
-
-   [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-5.gap-4
-    [:div
-     [:label.block.text-sm.font-medium.mb-1 "Extra Small (xs)"]
-     [:ty-dropdown {:size "xs"
-                    :value "xs1"
-                    :placeholder "XS dropdown"}
-      [:option {:value "xs1"} "XS Option 1"]
-      [:option {:value "xs2"} "XS Option 2"]]]
-
-    [:div
-     [:label.block.text-sm.font-medium.mb-1 "Small (sm)"]
-     [:ty-dropdown {:size "sm"
-                    :value "sm1"
-                    :placeholder "SM dropdown"}
-      [:option {:value "sm1"} "SM Option 1"]
-      [:option {:value "sm2"} "SM Option 2"]]]
-
-    [:div
-     [:label.block.text-sm.font-medium.mb-1 "Medium (md)"]
-     [:ty-dropdown {:size "md"
-                    :value "md1"
-                    :placeholder "MD dropdown"}
-      [:option {:value "md1"} "MD Option 1"]
-      [:option {:value "md2"} "MD Option 2"]]]
-
-    [:div
-     [:label.block.text-sm.font-medium.mb-1 "Large (lg)"]
-     [:ty-dropdown {:size "lg"
-                    :value "lg1"
-                    :placeholder "LG dropdown"}
-      [:option {:value "lg1"} "LG Option 1"]
-      [:option {:value "lg2"} "LG Option 2"]]]
-
-    [:div
-     [:label.block.text-sm.font-medium.mb-1 "Extra Large (xl)"]
-     [:ty-dropdown {:size "xl"
-                    :value "xl1"
-                    :placeholder "XL dropdown"}
-      [:option {:value "xl1"} "XL Option 1"]
-      [:option {:value "xl2"} "XL Option 2"]]]]
-
-   ;; Mini width examples
-   [:div.mt-8
-    [:h3.demo-subtitle "Mini Width Variant"]
-    [:p.text-gray-600.dark:text-gray-400.mb-4
-     "Add class=\"mini\" for compact 140px width - perfect for quantity selectors, status indicators, and tight layouts"]
-
-    [:div.grid.grid-cols-2.md:grid-cols-4.lg:grid-cols-6.gap-4
-     [:div
-      [:label.block.text-sm.font-medium.mb-1 "Quantity"]
-      [:ty-dropdown {:class "mini"
-                     :size "sm"
-                     :value "1"
-                     :placeholder "Qty"}
-       [:option {:value "1"} "1"]
-       [:option {:value "2"} "2"]
-       [:option {:value "3"} "3"]
-       [:option {:value "4"} "4"]
-       [:option {:value "5"} "5"]]]
-
-     [:div
-      [:label.block.text-sm.font-medium.mb-1 "Size"]
-      [:ty-dropdown {:class "mini"
-                     :size "sm"
-                     :value "M"
-                     :placeholder "Size"}
-       [:option {:value "XS"} "XS"]
-       [:option {:value "S"} "S"]
-       [:option {:value "M"} "M"]
-       [:option {:value "L"} "L"]
-       [:option {:value "XL"} "XL"]]]
-
-     [:div
-      [:label.block.text-sm.font-medium.mb-1 "Status"]
-      [:ty-dropdown {:class "mini"
-                     :size "xs"
-                     :value "OK"
-                     :flavor "positive"
-                     :placeholder "Status"}
-       [:option {:value "OK"} "OK"]
-       [:option {:value "ERR"} "ERR"]
-       [:option {:value "WARN"} "WARN"]]]
-
-     [:div
-      [:label.block.text-sm.font-medium.mb-1 "Priority"]
-      [:ty-dropdown {:class "mini"
-                     :size "xs"
-                     :value "H"
-                     :flavor "important"
-                     :placeholder "Priority"}
-       [:option {:value "L"} "Low"]
-       [:option {:value "M"} "Med"]
-       [:option {:value "H"} "High"]]]
-
-     [:div
-      [:label.block.text-sm.font-medium.mb-1 "Type"]
-      [:ty-dropdown {:class "mini"
-                     :size "sm"
-                     :value "A"
-                     :flavor "unique"
-                     :placeholder "Type"}
-       [:option {:value "A"} "Type A"]
-       [:option {:value "B"} "Type B"]
-       [:option {:value "C"} "Type C"]]]
-
-     [:div
-      [:label.block.text-sm.font-medium.mb-1 "Grade"]
-      [:ty-dropdown {:class "mini"
-                     :size "sm"
-                     :value "A+"
-                     :flavor "exception"
-                     :placeholder "Grade"}
-       [:option {:value "A+"} "A+"]
-       [:option {:value "A"} "A"]
-       [:option {:value "B+"} "B+"]
-       [:option {:value "B"} "B"]
-       [:option {:value "C"} "C"]]]]]
-
-   (code-snippet "<ty-dropdown size=\"lg\" placeholder=\"Large dropdown\">
-  <option value=\"lg1\">LG Option 1</option>
-  <option value=\"lg2\">LG Option 2</option>
-</ty-dropdown>
-
-<!-- Mini width variant - 140px wide -->
-<ty-dropdown class=\"mini\" size=\"sm\" placeholder=\"Qty\">
-  <option value=\"1\">1</option>
-  <option value=\"2\">2</option>
-  <option value=\"3\">3</option>
-</ty-dropdown>")])
-
 (defn flavor-variants []
   [:div.demo-section
    [:h2.demo-title "Flavor Variants"]
    [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Semantic flavors convey meaning and context"]
+    "Semantic flavors convey meaning and context through border colors"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
     [:div
-     [:label.block.text-sm.font-medium.mb-1 "Neutral (default)"]
-     [:ty-dropdown {:flavor "neutral"
-                    :value "neutral1"
-                    :placeholder "Neutral flavor"}
+     [:label.block.text-sm.font-medium.mb-2 "Neutral (default)"]
+     [:ty-dropdown {:value "neutral1"
+                    :placeholder "Neutral flavor"
+                    :style {:min-width "180px"}}
       [:option {:value "neutral1"} "Neutral Option 1"]
       [:option {:value "neutral2"} "Neutral Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-1 "Positive"]
+     [:label.block.text-sm.font-medium.mb-2 "Positive (Green)"]
      [:ty-dropdown {:flavor "positive"
                     :value "pos1"
-                    :placeholder "Positive flavor"}
+                    :placeholder "Positive flavor"
+                    :style {:min-width "180px"}}
       [:option {:value "pos1"} "Positive Option 1"]
       [:option {:value "pos2"} "Positive Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-1 "Negative"]
+     [:label.block.text-sm.font-medium.mb-2 "Negative (Red)"]
      [:ty-dropdown {:flavor "negative"
                     :value "neg1"
-                    :placeholder "Negative flavor"}
+                    :placeholder "Negative flavor"
+                    :style {:min-width "180px"}}
       [:option {:value "neg1"} "Negative Option 1"]
       [:option {:value "neg2"} "Negative Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-1 "Important"]
+     [:label.block.text-sm.font-medium.mb-2 "Important (Blue)"]
      [:ty-dropdown {:flavor "important"
                     :value "imp1"
-                    :placeholder "Important flavor"}
+                    :placeholder "Important flavor"
+                    :style {:min-width "180px"}}
       [:option {:value "imp1"} "Important Option 1"]
       [:option {:value "imp2"} "Important Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-1 "Exception"]
+     [:label.block.text-sm.font-medium.mb-2 "Exception (Yellow)"]
      [:ty-dropdown {:flavor "exception"
                     :value "exc1"
-                    :placeholder "Exception flavor"}
+                    :placeholder "Exception flavor"
+                    :style {:min-width "180px"}}
       [:option {:value "exc1"} "Exception Option 1"]
       [:option {:value "exc2"} "Exception Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-1 "Unique"]
+     [:label.block.text-sm.font-medium.mb-2 "Unique (Purple)"]
      [:ty-dropdown {:flavor "unique"
                     :value "unq1"
-                    :placeholder "Unique flavor"}
+                    :placeholder "Unique flavor"
+                    :style {:min-width "180px"}}
       [:option {:value "unq1"} "Unique Option 1"]
       [:option {:value "unq2"} "Unique Option 2"]]]]
 
    (code-snippet "<ty-dropdown flavor=\"positive\" placeholder=\"Positive flavor\">
   <option value=\"pos1\">Positive Option 1</option>
   <option value=\"pos2\">Positive Option 2</option>
-</ty-dropdown>")])
+</ty-dropdown>
 
+<ty-dropdown flavor=\"negative\" placeholder=\"Negative flavor\">
+  <option value=\"neg1\">Negative Option 1</option>
+</ty-dropdown>")])
 
 (defn search-examples []
   [:div.demo-section
@@ -373,6 +256,7 @@
               :children [[:div.max-w-sm
                           [:ty-dropdown {:value "clojure"
                                          :placeholder "Search languages..."
+                                         :style {:min-width "220px"}
                                          :on {:change dropdown-event-handler}}
                            [:option {:value "javascript"} "JavaScript"]
                            [:option {:value "typescript"} "TypeScript"]
@@ -400,6 +284,7 @@
               :children [[:div.max-w-sm
                           [:ty-dropdown {:value "react"
                                          :placeholder "Search frameworks..."
+                                         :style {:min-width "200px"}
                                          :on {:change dropdown-event-handler}}
                            [:option {:value "react"} "React"]
                            [:option {:value "vue"} "Vue.js"]
@@ -412,7 +297,7 @@
                            [:option {:value "htmx"} "HTMX"]
                            [:option {:value "stimulus"} "Stimulus"]]]]})
 
-   (code-snippet "<ty-dropdown placeholder=\"Search languages...\">
+   (code-snippet "<ty-dropdown placeholder=\"Search languages...\" style=\"min-width: 220px;\">
   <option value=\"javascript\">JavaScript</option>
   <option value=\"python\">Python</option>
   <option value=\"clojure\">Clojure</option>
@@ -467,7 +352,6 @@
   <option value=\"python\">Python</option>
   <!-- Type to filter, then click outside input to clear -->
 </ty-dropdown>")])
-
 
 (defn rich-html-demo []
   [:div.demo-section
@@ -653,23 +537,22 @@
   <!-- More rich options... -->
 </ty-dropdown>")])
 
-
 (defn sizing-flavors-demo []
   [:div.demo-section
-   [:h2.demo-title "Sizing & Flavors with Rich Content"]
+   [:h2.demo-title "Custom Sizing Examples"]
    [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Dropdowns support different sizes (xs, sm, md, lg, xl) and semantic flavors (neutral, important, positive, negative, exception, unique) while preserving rich HTML content."]
+    "Use inline styles or CSS classes to customize dropdown sizing and appearance."]
 
    [:div.space-y-8
     ;; Size Examples
     [:div
-     [:h3.demo-subtitle "Different Sizes"]
+     [:h3.demo-subtitle "Different Widths"]
      [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
-      ;; Extra Small
+      ;; Compact
       [:div
-       [:label.block.text-sm.font-medium.mb-2 "Extra Small (xs)"]
-       [:ty-dropdown {:size "xs"
-                      :placeholder "Choose..."}
+       [:label.block.text-sm.font-medium.mb-2 "Compact (160px)"]
+       [:ty-dropdown {:placeholder "Compact..."
+                      :style {:min-width "160px" :font-size "0.875rem"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-2
           [:div.w-4.h-4.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-xs "R"]
@@ -679,11 +562,11 @@
           [:div.w-4.h-4.bg-green-500.rounded.flex.items-center.justify-center.text-white.text-xs "V"]
           [:span.text-sm "Vue"]]]]]
 
-      ;; Small
+      ;; Standard
       [:div
-       [:label.block.text-sm.font-medium.mb-2 "Small (sm)"]
-       [:ty-dropdown {:size "sm"
-                      :placeholder "Choose..."}
+       [:label.block.text-sm.font-medium.mb-2 "Standard (200px)"]
+       [:ty-dropdown {:placeholder "Standard..."
+                      :style {:min-width "200px"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-2
           [:div.w-5.h-5.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-xs "R"]
@@ -693,120 +576,63 @@
           [:div.w-5.h-5.bg-green-500.rounded.flex.items-center.justify-center.text-white.text-xs "V"]
           [:span "Vue"]]]]]
 
-      ;; Large
+      ;; Wide
       [:div
-       [:label.block.text-sm.font-medium.mb-2 "Large (lg)"]
-       [:ty-dropdown {:size "lg"
-                      :placeholder "Choose..."}
+       [:label.block.text-sm.font-medium.mb-2 "Wide (300px)"]
+       [:ty-dropdown {:placeholder "Wide dropdown..."
+                      :style {:min-width "300px" :font-size "1rem"}}
         [:ty-option {:value "react"}
-         [:div.flex.items-center.items-center.gap-3
+         [:div.flex.items-center.gap-3
           [:div.w-6.h-6.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-sm "R"]
           [:span.text-lg "React"]]]
         [:ty-option {:value "vue"}
-         [:div.flex.items-center.items-center.gap-3
+         [:div.flex.items-center.gap-3
           [:div.w-6.h-6.bg-green-500.rounded.flex.items-center.justify-center.text-white.text-sm "V"]
           [:span.text-lg "Vue"]]]]]]]
 
-    ;; Flavor Examples
-    [:div
-     [:h3.demo-subtitle "Semantic Flavors"]
-     [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-      ;; Important (Blue)
-      [:div
-       [:label.block.text-sm.font-medium.mb-2 "Important (Blue)"]
-       [:ty-dropdown {:flavor "important"
-                      :placeholder "Select priority..."}
-        [:ty-option {:value "high"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-blue-500.rounded-full]
-          [:span "High Priority"]]]
-        [:ty-option {:value "medium"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-blue-300.rounded-full]
-          [:span "Medium Priority"]]]]]
-
-      ;; Positive (Green)
-      [:div
-       [:label.block.text-sm.font-medium.mb-2 "Positive (Green)"]
-       [:ty-dropdown {:flavor "positive"
-                      :placeholder "Select status..."}
-        [:ty-option {:value "approved"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-green-500.rounded-full]
-          [:span "Approved"]]]
-        [:ty-option {:value "completed"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-green-400.rounded-full]
-          [:span "Completed"]]]]]
-
-      ;; Negative (Red)
-      [:div
-       [:label.block.text-sm.font-medium.mb-2 "Negative (Red)"]
-       [:ty-dropdown {:flavor "negative"
-                      :placeholder "Select error..."}
-        [:ty-option {:value "failed"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-red-500.rounded-full]
-          [:span "Failed"]]]
-        [:ty-option {:value "rejected"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-red-400.rounded-full]
-          [:span "Rejected"]]]]]
-
-      ;; Exception (Yellow)
-      [:div
-       [:label.block.text-sm.font-medium.mb-2 "Exception (Yellow)"]
-       [:ty-dropdown {:flavor "exception"
-                      :placeholder "Select warning..."}
-        [:ty-option {:value "warning"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-yellow-500.rounded-full]
-          [:span "Warning"]]]
-        [:ty-option {:value "caution"}
-         [:div.flex.items-center.items-center.gap-3
-          [:div.w-3.h-3.bg-yellow-400.rounded-full]
-          [:span "Caution"]]]]]]]
-
     ;; Combined Example
     [:div
-     [:h3.demo-subtitle "Combined Size & Flavor"]
-     [:div.max-w-xl
-      [:label.block.text-sm.font-medium.mb-2 "Large + Unique (Purple)"]
-      [:ty-dropdown {:size "lg"
-                     :flavor "unique"
-                     :placeholder "Choose your superpower..."}
-       [:ty-option {:value "flight"}
-        [:div.flex.items-center.items-center.gap-3
-         [:div.w-8.h-8.bg-purple-100.rounded-full.flex.items-center.justify-center
-          [:span.text-purple-600.text-lg "✈️"]]
+     [:h3.demo-subtitle "Large Form Example"]
+     [:div.max-w-2xl
+      [:label.block.text-sm.font-medium.mb-2 "Choose your preferred framework"]
+      [:ty-dropdown {:placeholder "Select a web framework..."
+                     :style {:min-width "400px" :font-size "1.1rem" :min-height "3rem"}}
+       [:ty-option {:value "react"}
+        [:div.flex.items-center.gap-4
+         [:div.w-10.h-10.bg-blue-100.rounded-lg.flex.items-center.justify-center
+          [:span.text-blue-600.text-xl "⚛️"]]
          [:div
-          [:div.font-medium.text-lg "Flight"]
-          [:div.text-sm.text-gray-500 "Soar through the skies"]]]]
-       [:ty-option {:value "invisibility"}
-        [:div.flex.items-center.items-center.gap-3
-         [:div.w-8.h-8.bg-purple-100.rounded-full.flex.items-center.justify-center
-          [:span.text-purple-600.text-lg "👻"]]
+          [:div.font-medium.text-lg "React"]
+          [:div.text-sm.text-gray-500 "A JavaScript library for building user interfaces"]]]]
+       [:ty-option {:value "vue"}
+        [:div.flex.items-center.gap-4
+         [:div.w-10.h-10.bg-green-100.rounded-lg.flex.items-center.justify-center
+          [:span.text-green-600.text-xl "🟢"]]
          [:div
-          [:div.font-medium.text-lg "Invisibility"]
-          [:div.text-sm.text-gray-500 "Become unseen at will"]]]]
-       [:ty-option {:value "telepathy"}
-        [:div.flex.items-center.items-center.gap-3
-         [:div.w-8.h-8.bg-purple-100.rounded-full.flex.items-center.justify-center
-          [:span.text-purple-600.text-lg "🧠"]]
+          [:div.font-medium.text-lg "Vue.js"]
+          [:div.text-sm.text-gray-500 "The progressive JavaScript framework"]]]]
+       [:ty-option {:value "svelte"}
+        [:div.flex.items-center.gap-4
+         [:div.w-10.h-10.bg-orange-100.rounded-lg.flex.items-center.justify-center
+          [:span.text-orange-600.text-xl "🔥"]]
          [:div
-          [:div.font-medium.text-lg "Telepathy"]
-          [:div.text-sm.text-gray-500 "Read minds and communicate"]]]]]]]]
+          [:div.font-medium.text-lg "Svelte"]
+          [:div.text-sm.text-gray-500 "Cybernetically enhanced web apps"]]]]]]]]
 
-   (code-snippet "<!-- Size and flavor examples -->
-<ty-dropdown size=\"lg\" flavor=\"unique\" placeholder=\"Choose...\">
+   (code-snippet "<!-- Custom sizing with inline styles -->
+<ty-dropdown placeholder=\"Compact...\" style=\"min-width: 160px; font-size: 0.875rem;\">
+  <ty-option value=\"react\">React</ty-option>
+</ty-dropdown>
+
+<ty-dropdown placeholder=\"Large...\" style=\"min-width: 400px; font-size: 1.1rem; min-height: 3rem;\">
   <ty-option value=\"special\">
-    <div class=\"flex items-center gap-3\">
-      <div class=\"w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center\">
-        <span class=\"text-purple-600 text-lg\">✨</span>
+    <div class=\"flex items-center gap-4\">
+      <div class=\"w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center\">
+        <span class=\"text-blue-600 text-xl\">⚛️</span>
       </div>
       <div>
-        <div class=\"font-medium text-lg\">Special Option</div>
-        <div class=\"text-sm text-gray-500\">With rich content</div>
+        <div class=\"font-medium text-lg\">React</div>
+        <div class=\"text-sm text-gray-500\">A JavaScript library for building user interfaces</div>
       </div>
     </div>
   </ty-option>
@@ -844,12 +670,11 @@
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
      "Dropdown Component"]
     [:p.text-lg.text-gray-600.dark:text-gray-400
-     "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and semantic styling."]]
+     "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and rich content support. Use inline styles for custom sizing and flavor attributes for semantic styling."]]
 
    [:div.space-y-12
     (basic-examples)
     (multiple-dropdowns-test)
-    (size-variants)
     (flavor-variants)
     (search-examples)
     (blur-clear-demo)

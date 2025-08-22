@@ -1,26 +1,24 @@
 (ns ty.components.dropdown.desktop
   "Desktop implementation of dropdown using dialog element with smart positioning"
-  (:require [ty.components.dropdown.common :as common]))
+  (:require [ty.components.dropdown.common :as common]
+            [ty.components.dropdown.global :as global]))
 
 ;; =====================================================
 ;; DESKTOP POSITIONING
 ;; =====================================================
 
 (defn update-position!
-  "Smart positioning using CSS classes - works with wrapper structure"
+  "Smart positioning using CSS classes"
   [^js el ^js shadow-root]
   (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
         dialog (.querySelector shadow-root ".dropdown-dialog")
         {:keys [open]} (common/get-component-state el)]
-
     (when (and open wrapper dialog)
       (let [wrapper-rect (.getBoundingClientRect wrapper)
             wrapper-bottom (.-bottom wrapper-rect)
             viewport-height (.-innerHeight js/window)
             space-below (- viewport-height wrapper-bottom)
-            position-below (> space-below 300)] ; Need ~300px for dropdown
-
-        ;; Just toggle CSS classes - let CSS handle the positioning
+            position-below (> space-below 300)]
         (.remove (.-classList dialog) "position-above" "position-below")
         (.add (.-classList dialog) (if position-below "position-below" "position-above"))))))
 
@@ -29,63 +27,60 @@
 ;; =====================================================
 
 (defn close-dropdown!
-  "Programmatically close dropdown dialog"
+  "Close dropdown dialog"
   [^js el ^js shadow-root]
-  (let [dialog (.querySelector shadow-root ".dropdown-dialog")]
-    ;; Close dialog - this will trigger the dialog close event
+  (when-let [dialog (.querySelector shadow-root ".dropdown-dialog")]
     (.remove (.-classList dialog) "position-above" "position-below")
-    (.close dialog)))
-
-(declare handle-option-click!)
+    (.close dialog))
+  ;; Clear from global state if this is the current dropdown
+  (global/clear-current-dropdown! el))
 
 (defn open-dropdown!
-  "Open dropdown dialog"
+  "Open dropdown dialog with keyboard navigation setup"
   [^js el ^js shadow-root]
   (let [{:keys [disabled readonly searchable value]} (common/dropdown-attributes el)]
     (when-not (or disabled readonly)
-      ;; Initialize filtered options for keyboard navigation
+      ;; Close any currently open dropdown before opening this one
+      (global/set-current-dropdown! el)
+
+      ;; Initialize state for keyboard navigation
       (let [all-options (map common/get-option-data (common/get-options shadow-root))
             current-search (if searchable (:search (common/get-component-state el)) "")
             filtered (if searchable
                        (common/filter-options all-options current-search)
                        all-options)
-            ;; Find the index of the currently selected option
-            selected-index (if (and value (seq filtered))
+            selected-index (when (and value (seq filtered))
                              (first (keep-indexed
                                      (fn [idx option]
                                        (when (= (:value option) value) idx))
-                                     filtered))
-                             -1)]
+                                     filtered)))]
 
         (common/set-component-state! el {:open true
                                          :filtered-options filtered
-                                         :highlighted-index selected-index}))
+                                         :highlighted-index (or selected-index -1)}))
 
       (let [dialog (.querySelector shadow-root ".dropdown-dialog")
             chevron (.querySelector shadow-root ".dropdown-chevron")
-            input (.querySelector shadow-root ".dropdown-input")]
+            search-chevron (.querySelector shadow-root ".dropdown-search-chevron")
+            input (.querySelector shadow-root ".dropdown-search-input")]
 
-        ;; For non-searchable dropdowns, ensure all options are visible
+        ;; Show all options for non-searchable dropdowns
         (when-not searchable
           (let [options (map common/get-option-data (common/get-options shadow-root))]
             (common/update-option-visibility! options options)))
 
         (when chevron
           (.add (.-classList chevron) "open"))
+        (when search-chevron
+          (.add (.-classList search-chevron) "open"))
 
-        ;; Open dialog - input inside dialog gets focus naturally!
-        ;; Browser handles preventing multiple modals automatically
         (when dialog
           (.show dialog)
-
-          ;; Set initial input value for searchable dropdowns
           (when (and input searchable)
             (set! (.-value input) ""))
-
-          ;; Position dialog once
           (update-position! el shadow-root)
 
-          ;; Highlight the selected option if any
+          ;; Highlight selected option after brief delay
           (js/setTimeout
            (fn []
              (let [{:keys [highlighted-index filtered-options]} (common/get-component-state el)]
@@ -94,40 +89,36 @@
            50))))))
 
 ;; =====================================================
-;; DESKTOP EVENT HANDLERS
+;; EVENT HANDLERS
 ;; =====================================================
 
 (defn handle-outside-click!
-  "Handle clicks outside the dropdown to close it"
+  "Close dropdown when clicking outside"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [open]} (common/get-component-state el)]
     (when open
       (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
             target (.-target event)]
-        ;; Check if click target is outside the wrapper
         (when (and wrapper (not (.contains wrapper target)))
           (.preventDefault event)
           (.stopPropagation event)
           (close-dropdown! el shadow-root))))))
 
 (defn handle-dialog-close!
-  "Handle dialog close event (now just for cleanup)"
+  "Handle dialog close event for cleanup"
   [^js el ^js shadow-root ^js event]
-  ;; Update component state to reflect closed status
   (common/set-component-state! el {:open false
                                    :highlighted-index -1})
-
-  ;; Update visual state  
   (when-let [chevron (.querySelector shadow-root ".dropdown-chevron")]
     (.remove (.-classList chevron) "open"))
-
-  ;; Reset search if not searchable
+  (when-let [search-chevron (.querySelector shadow-root ".dropdown-search-chevron")]
+    (.remove (.-classList search-chevron) "open"))
   (let [{:keys [searchable]} (common/dropdown-attributes el)]
     (when-not searchable
       (common/set-component-state! el {:search ""}))))
 
 (defn handle-stub-click!
-  "Handle click on stub to open dropdown dialog"
+  "Open dropdown when clicking stub"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
@@ -135,15 +126,8 @@
     (when-not disabled
       (open-dropdown! el shadow-root))))
 
-(defn handle-close-click!
-  "Handle click on close button to close dropdown"
-  [^js el ^js shadow-root ^js event]
-  (.preventDefault event)
-  (.stopPropagation event)
-  (close-dropdown! el shadow-root))
-
 (defn handle-input-change!
-  "Handle input value change for search"
+  "Handle search input changes"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [searchable]} (common/dropdown-attributes el)]
     (when searchable
@@ -151,92 +135,70 @@
             options (map common/get-option-data (common/get-options shadow-root))
             filtered (common/filter-options options search)
             {:keys [value]} (common/dropdown-attributes el)
-            new-highlighted-index (if (and value (seq filtered))
+            new-highlighted-index (when (and value (seq filtered))
                                     (first (keep-indexed
                                             (fn [idx option]
                                               (when (= (:value option) value) idx))
-                                            filtered))
-                                    -1)]
+                                            filtered)))]
         (common/set-component-state! el {:search search
                                          :filtered-options filtered
-                                         :highlighted-index new-highlighted-index})
+                                         :highlighted-index (or new-highlighted-index -1)})
         (common/update-option-visibility! filtered options)
         (common/clear-highlights! options)
-        (when (>= new-highlighted-index 0)
+        (when (>= (or new-highlighted-index -1) 0)
           (common/highlight-option! filtered new-highlighted-index))))))
 
 (defn handle-search-blur!
-  "Handle blur event on search input - clear search and reset to all options"
+  "Reset search when search input loses focus"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [searchable]} (common/dropdown-attributes el)]
     (when searchable
-      ;; Clear search state
       (common/set-component-state! el {:search ""})
-
-      ;; Get all options and reset visibility
       (let [options (map common/get-option-data (common/get-options shadow-root))]
         (when (seq options)
-          ;; Update component state with all options
           (common/set-component-state! el {:filtered-options options
                                            :highlighted-index -1})
-          ;; Make all options visible
           (common/update-option-visibility! options options)
-          ;; Clear any highlights
           (common/clear-highlights! options)))
-
-      ;; Visually clear the search input
       (when-let [search-input (.querySelector shadow-root ".dropdown-search-input")]
         (set! (.-value search-input) "")))))
 
 (defn handle-option-click!
-  "Handle click on option"
+  "Handle option selection"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
   (let [option-element (.-target event)]
-
-    ;; Set the clicked option as selected
     (common/select-option! shadow-root option-element)
-
-    ;; Update selection display (hide placeholder)
     (common/update-selection-display! el shadow-root)
-
-    ;; Dispatch change event
     (common/dispatch-change-event! el option-element)
-
-    ;; Close dropdown
     (close-dropdown! el shadow-root)))
 
 (defn handle-keyboard!
-  "Handle keyboard navigation (arrow keys, enter, and escape)"
+  "Handle keyboard navigation"
   [^js el ^js shadow-root ^js event]
   (let [{:keys [open highlighted-index filtered-options]} (common/get-component-state el)
         key-code (.-keyCode event)]
     (case key-code
-      ;; ESCAPE - close dropdown
-      27 (do
+      27 (do ; ESCAPE
            (.preventDefault event)
            (.stopPropagation event)
            (close-dropdown! el shadow-root))
-      ;; ENTER - select highlighted option
-      13 (do
+      13 (do ; ENTER
            (.preventDefault event)
-           (when open
-             (when (and (>= highlighted-index 0) (< highlighted-index (count filtered-options)))
-               (let [{:keys [element]} (nth filtered-options highlighted-index)]
-                 (common/select-option! shadow-root element)
-                 (common/dispatch-change-event! el element)
-                 (close-dropdown! el shadow-root)))))
-      ;; UP ARROW
-      38 (when open
+           (when (and open (>= highlighted-index 0) (< highlighted-index (count filtered-options)))
+             (let [{:keys [element]} (nth filtered-options highlighted-index)]
+               (common/select-option! shadow-root element)
+               (common/dispatch-change-event! el element)
+               (close-dropdown! el shadow-root))))
+      38 (when open ; UP ARROW
            (.preventDefault event)
            (let [new-index (if (= highlighted-index -1)
                              (dec (count filtered-options))
                              (max -1 (dec highlighted-index)))]
              (common/set-component-state! el {:highlighted-index new-index})
              (common/highlight-option! filtered-options new-index)))
-      ;; DOWN ARROW  
-      40 (when open
+      40 (when open ; DOWN ARROW
            (.preventDefault event)
            (let [new-index (if (= highlighted-index -1)
                              0
@@ -246,46 +208,36 @@
       nil)))
 
 ;; =====================================================
-;; DESKTOP EVENT SETUP
+;; EVENT SETUP
 ;; =====================================================
 
 (defn setup-event-listeners!
-  "Setup event listeners for wrapper + stub + dialog structure"
+  "Setup all event listeners for desktop mode"
   [^js el ^js shadow-root]
-  (let [wrapper (.querySelector shadow-root ".dropdown-wrapper")
-        stub (.querySelector shadow-root ".dropdown-stub")
+  (let [stub (.querySelector shadow-root ".dropdown-stub")
         search-input (.querySelector shadow-root ".dropdown-search-input")
         slot (.querySelector shadow-root "#options-slot")
-        dialog (.querySelector shadow-root ".dropdown-dialog")]
+        dialog (.querySelector shadow-root ".dropdown-dialog")
+        outside-click-handler (partial handle-outside-click! el shadow-root)]
 
-    ;; Stub click - opens dialog
+    ;; Setup event listeners
     (when stub
       (.addEventListener stub "click" (partial handle-stub-click! el shadow-root)))
-
-    ;; Search input events (inside dialog) - includes escape key handling and blur
     (when search-input
       (.addEventListener search-input "input" (partial handle-input-change! el shadow-root))
       (.addEventListener search-input "keydown" (partial handle-keyboard! el shadow-root))
       (.addEventListener search-input "blur" (partial handle-search-blur! el shadow-root)))
-
-    ;; Option clicks via event delegation on slot
     (when slot
       (.addEventListener slot "click" (partial handle-option-click! el shadow-root)))
-
-    ;; Dialog close event - for cleanup
     (when dialog
       (.addEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
 
-    ;; Global outside click detection - listen on document
-    (let [outside-click-handler (partial handle-outside-click! el shadow-root)]
-      (.addEventListener js/document "click" outside-click-handler)
-      ;; Store handler for cleanup
-      (set! (.-tyOutsideClickHandler el) outside-click-handler))
+    (.addEventListener js/document "click" outside-click-handler)
+    (set! (.-tyOutsideClickHandler el) outside-click-handler)
 
     ;; Store cleanup function
     (set! (.-tyDropdownCleanup el)
           (fn []
-            ;; Cleanup regular event listeners
             (when stub
               (.removeEventListener stub "click" (partial handle-stub-click! el shadow-root)))
             (when search-input
@@ -296,7 +248,6 @@
               (.removeEventListener slot "click" (partial handle-option-click! el shadow-root)))
             (when dialog
               (.removeEventListener dialog "close" (partial handle-dialog-close! el shadow-root)))
-            ;; Cleanup outside click listener
             (when-let [handler (.-tyOutsideClickHandler el)]
               (.removeEventListener js/document "click" handler)
               (set! (.-tyOutsideClickHandler el) nil))))))
@@ -306,56 +257,41 @@
 ;; =====================================================
 
 (defn render!
-  "Desktop implementation using wrapper + stub div + dialog structure for rich content"
+  "Desktop implementation using dialog structure"
   [^js el ^js root]
-  (let [{:keys [placeholder searchable disabled size flavor]} (common/dropdown-attributes el)]
-
-    ;; Create wrapper + stub + dialog structure
+  (let [{:keys [placeholder searchable disabled]} (common/dropdown-attributes el)]
     (when-not (.querySelector root ".dropdown-wrapper")
       (set! (.-innerHTML root)
             (str
-             ;; Wrapper - provides positioning context, no styling
              "<div class=\"dropdown-wrapper\">"
-
-             ;; Dropdown stub - shows selected option or placeholder
-             "  <div class=\"dropdown-stub " size " " flavor "\" "
-             (when disabled "disabled ")
-             ">"
+             "  <div class=\"dropdown-stub\"" (when disabled " disabled") ">"
              "    <slot name=\"selected\"></slot>"
              "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
              "  </div>"
-
-             ;; Chevron - positioned over the stub
              "  <div class=\"dropdown-chevron\">"
              "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
              "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
              "    </svg>"
              "  </div>"
-
-             ;; Dialog - positioned relative to wrapper (no border offset)
              "  <dialog class=\"dropdown-dialog\">"
              "    <div class=\"dropdown-header\">"
-             "      <input class=\"dropdown-search-input\" type=\"text\" "
-             "             placeholder=\"" (if searchable "Search..." placeholder) "\" "
-             (when disabled "disabled ")
-             "      />"
-             (when-not disabled
-               "      <button class=\"dropdown-close\" type=\"button\" aria-label=\"Close\">"
-               "        <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-               "          <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-               "        </svg>"
-               "      </button>")
+             "      <input class=\"dropdown-search-input\" type=\"text\""
+             "             placeholder=\"" (if searchable "Search..." placeholder) "\""
+             (when disabled " disabled") " />"
+             "      <div class=\"dropdown-search-chevron\">"
+             "        <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+             "          <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+             "        </svg>"
+             "      </div>"
              "    </div>"
              "    <div class=\"dropdown-options\">"
              "      <slot id=\"options-slot\"></slot>"
              "    </div>"
              "  </dialog>"
              "</div>"))
-
-      ;; Setup event listeners
       (setup-event-listeners! el root))
 
-    ;; For non-searchable dropdowns, ensure all options are visible
+    ;; Ensure all options visible for non-searchable dropdowns
     (when-not searchable
       (let [options (map common/get-option-data (common/get-options root))]
         (when (seq options)

@@ -1,7 +1,8 @@
 (ns ty.components.dropdown.common
   "Shared functionality for dropdown component - used by both mobile and desktop implementations"
-  (:require [ty.css :refer [ensure-styles!]]
-            [ty.shim :as wcs])
+  (:require [ty.components.option]
+            [ty.css :refer [ensure-styles!]]
+            [ty.shim :as wcs]) ; Import ty-option component
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load dropdown styles
@@ -57,14 +58,31 @@
   "Get all option elements from slot"
   [^js shadow-root]
   (when-let [slot (.querySelector shadow-root "slot:not([name])")]
-    (array-seq (.assignedElements slot))))
+    (let [assigned-elements (.assignedElements slot)]
+      (->> assigned-elements
+           array-seq
+           (filter #(or (= (.-tagName %) "OPTION")
+                        (= (.-tagName %) "TY-OPTION")))))))
 
 (defn get-option-data
-  "Extract value and text from option element"
+  "Extract value and text from option element (both <option> and <ty-option>)"
   [^js option]
-  {:value (or (.-value option) (.-textContent option))
-   :text (.-textContent option)
-   :element option})
+  (let [tag-name (.-tagName option)]
+    (cond
+      (= tag-name "OPTION")
+      {:value (or (.-value option) (.-textContent option))
+       :text (.-textContent option)
+       :element option}
+
+      (= tag-name "TY-OPTION")
+      {:value (or (.-value option) (.getAttribute option "value") (.-textContent option))
+       :text (.-textContent option)
+       :element option}
+
+      :else
+      {:value (.-textContent option)
+       :text (.-textContent option)
+       :element option})))
 
 (defn filter-options
   "Filter options based on search string"

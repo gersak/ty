@@ -608,6 +608,190 @@
   <!-- Type to filter, then click outside input to clear -->
 </ty-dropdown>")])
 
+(defn rich-html-demo []
+  [:div.demo-section
+   [:h2.demo-title "Rich HTML Content in Options"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "Options can contain rich HTML with icons, badges, formatting, and styling. The selected option displays with full styling preserved in the dropdown stub."]
+
+   [:div.space-y-8
+    ;; Programming Languages with Icons
+    [:div
+     [:h3.demo-subtitle "Programming Languages with Icons"]
+     [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
+      "Each option includes an icon and formatted description. Notice how the full styling appears in the stub when selected."]
+
+     [:div.max-w-md
+      [:ty-dropdown {:value "clojure"
+                     :placeholder "Choose a programming language..."
+                     :on {:change dropdown-event-handler}}
+       [:ty-option {:value "javascript"}
+        [:div.flex.items-center.gap-3
+         [:div.w-6.h-6.rounded.bg-yellow-400.flex.items-center.justify-center.text-black.text-xs.font-bold "JS"]
+         [:div
+          [:div.font-medium "JavaScript"]
+          [:div.text-sm.text-gray-500 "Dynamic scripting language"]]]]
+
+       [:ty-option {:value "typescript"}
+        [:div.flex.items-center.gap-3
+         [:div.w-6.h-6.rounded.bg-blue-600.flex.items-center.justify-center.text-white.text-xs.font-bold "TS"]
+         [:div
+          [:div.font-medium "TypeScript"]
+          [:div.text-sm.text-gray-500 "JavaScript with static typing"]]]]
+
+       [:ty-option {:value "clojure"}
+        [:div.flex.items-center.gap-3
+         [:div.w-6.h-6.rounded.bg-green-600.flex.items-center.justify-center.text-white.text-xs.font-bold "λ"]
+         [:div
+          [:div.font-medium "Clojure"]
+          [:div.text-sm.text-gray-500 "Functional Lisp for the JVM"]]]]
+
+       [:ty-option {:value "rust"}
+        [:div.flex.items-center.gap-3
+         [:div.w-6.h-6.rounded.bg-orange-600.flex.items-center.justify-center.text-white.text-xs.font-bold "R"]
+         [:div
+          [:div.font-medium "Rust"]
+          [:div.text-sm.text-gray-500 "Memory-safe systems programming"]]]]
+
+       [:ty-option {:value "python"}
+        [:div.flex.items-center.gap-3
+         [:div.w-6.h-6.rounded.bg-blue-500.flex.items-center.justify-center.text-white.text-xs.font-bold "Py"]
+         [:div
+          [:div.font-medium "Python"]
+          [:div.text-sm.text-gray-500 "Versatile high-level language"]]]]]]]
+
+    ;; Team Members with Avatars and Status
+    [:div
+     [:h3.demo-subtitle "Team Members with Status"]
+     [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
+      "Options with profile pictures, names, roles, and online status indicators."]
+
+     [:div.max-w-md
+      [:ty-dropdown {:value "alice"
+                     :placeholder "Assign to team member..."
+                     :on {:change dropdown-event-handler}}
+       [:ty-option {:value "alice"}
+        [:div.flex.items-center.gap-3
+         [:div.relative
+          [:div.w-8.h-8.rounded-full.bg-blue-500.flex.items-center.justify-center.text-white.font-medium "A"]
+          [:div.absolute.-top-1.-right-1.w-3.h-3.bg-green-500.rounded-full.border-2.border-white]]
+         [:div
+          [:div.font-medium "Alice Johnson"]
+          [:div.text-sm.text-gray-500 "Senior Developer"]]
+         [:span.ml-auto.px-2.py-1.text-xs.bg-green-100.text-green-800.rounded-full "Online"]]]
+
+       [:ty-option {:value "bob"}
+        [:div.flex.items-center.gap-3
+         [:div.relative
+          [:div.w-8.h-8.rounded-full.bg-purple-500.flex.items-center.justify-center.text-white.font-medium "B"]
+          [:div.absolute.-top-1.-right-1.w-3.h-3.bg-yellow-500.rounded-full.border-2.border-white]]
+         [:div
+          [:div.font-medium "Bob Smith"]
+          [:div.text-sm.text-gray-500 "Product Manager"]]
+         [:span.ml-auto.px-2.py-1.text-xs.bg-yellow-100.text-yellow-800.rounded-full "Away"]]]
+
+       [:ty-option {:value "carol"}
+        [:div.flex.items-center.gap-3
+         [:div.relative
+          [:div.w-8.h-8.rounded-full.bg-pink-500.flex.items-center.justify-center.text-white.font-medium "C"]
+          [:div.absolute.-top-1.-right-1.w-3.h-3.bg-gray-400.rounded-full.border-2.border-white]]
+         [:div
+          [:div.font-medium "Carol Davis"]
+          [:div.text-sm.text-gray-500 "UX Designer"]]
+         [:span.ml-auto.px-2.py-1.text-xs.bg-gray-100.text-gray-800.rounded-full "Offline"]]]]]]
+
+    ;; System Status with Indicators
+    [:div
+     [:h3.demo-subtitle "System Status with Indicators"]
+     [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
+      "Options showing system status with colored indicators and metrics."]
+
+     [:div.max-w-md
+      [:ty-dropdown {:value "prod"
+                     :placeholder "Select environment..."
+                     :on {:change dropdown-event-handler}}
+       [:ty-option {:value "prod"}
+        [:div.flex.items-center.gap-3
+         [:div.w-3.h-3.bg-green-500.rounded-full]
+         [:div.flex-1
+          [:div.font-medium "Production"]
+          [:div.text-sm.text-gray-500 "99.9% uptime • 1.2k users"]]
+         [:span.px-2.py-1.text-xs.bg-green-100.text-green-800.rounded "Healthy"]]]
+
+       [:ty-option {:value "staging"}
+        [:div.flex.items-center.gap-3
+         [:div.w-3.h-3.bg-yellow-500.rounded-full]
+         [:div.flex-1
+          [:div.font-medium "Staging"]
+          [:div.text-sm.text-gray-500 "95.2% uptime • 12 users"]]
+         [:span.px-2.py-1.text-xs.bg-yellow-100.text-yellow-800.rounded "Warning"]]]
+
+       [:ty-option {:value "dev"}
+        [:div.flex.items-center.gap-3
+         [:div.w-3.h-3.bg-red-500.rounded-full]
+         [:div.flex-1
+          [:div.font-medium "Development"]
+          [:div.text-sm.text-gray-500 "78.1% uptime • 3 users"]]
+         [:span.px-2.py-1.text-xs.bg-red-100.text-red-800.rounded "Error"]]]]]]
+
+    ;; Files with Icons and Metadata
+    [:div
+     [:h3.demo-subtitle "Files with Metadata"]
+     [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
+      "File picker with file type icons, sizes, and modification dates."]
+
+     [:div.max-w-lg
+      [:ty-dropdown {:value "report.pdf"
+                     :placeholder "Choose a file..."
+                     :on {:change dropdown-event-handler}}
+       [:ty-option {:value "report.pdf"}
+        [:div.flex.items-center.gap-3
+         [:div.w-8.h-8.bg-red-100.rounded.flex.items-center.justify-center
+          [:span.text-red-600.text-xs.font-bold "PDF"]]
+         [:div.flex-1
+          [:div.font-medium "Annual Report 2024.pdf"]
+          [:div.text-sm.text-gray-500 "2.4 MB • Modified 2 hours ago"]]]]
+
+       [:ty-option {:value "spreadsheet.xlsx"}
+        [:div.flex.items-center.gap-3
+         [:div.w-8.h-8.bg-green-100.rounded.flex.items-center.justify-center
+          [:span.text-green-600.text-xs.font-bold "XLS"]]
+         [:div.flex-1
+          [:div.font-medium "Budget_Q4.xlsx"]
+          [:div.text-sm.text-gray-500 "856 KB • Modified yesterday"]]]]
+
+       [:ty-option {:value "presentation.pptx"}
+        [:div.flex.items-center.gap-3
+         [:div.w-8.h-8.bg-orange-100.rounded.flex.items-center.justify-center
+          [:span.text-orange-600.text-xs.font-bold "PPT"]]
+         [:div.flex-1
+          [:div.font-medium "Project_Kickoff.pptx"]
+          [:div.text-sm.text-gray-500 "12.3 MB • Modified last week"]]]]]]]
+
+    ;; Benefits callout
+    [:div {:class "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6"}
+     [:h4.text-lg.font-medium.text-blue-900.dark:text-blue-100.mb-3 "Rich Content Benefits"]
+     [:ul.text-sm.text-blue-700.dark:text-blue-200.space-y-2
+      [:li "🎨 " [:strong "Full styling preserved:"] " Icons, colors, layouts display perfectly"]
+      [:li "🔍 " [:strong "Search still works:"] " Filters on text content while showing rich UI"]
+      [:li "📱 " [:strong "Mobile & desktop:"] " Rich content works on all devices"]
+      [:li "⚡ " [:strong "Performance optimized:"] " Uses efficient DOM cloning"]
+      [:li "♿ " [:strong "Accessible:"] " Screen readers see meaningful text content"]]]]
+
+   (code-snippet "<!-- Rich HTML options example -->
+<ty-dropdown value=\"clojure\" placeholder=\"Choose language...\">
+  <ty-option value=\"javascript\">
+    <div class=\"flex items-center gap-3\">
+      <div class=\"w-6 h-6 rounded bg-yellow-400 flex items-center justify-center text-black text-xs font-bold\">JS</div>
+      <div>
+        <div class=\"font-medium\">JavaScript</div>
+        <div class=\"text-sm text-gray-500\">Dynamic scripting language</div>
+      </div>
+    </div>
+  </ty-option>
+  <!-- More rich options... -->
+</ty-dropdown>")])
+
 (defn event-debugging []
   [:div.demo-section
    [:h2.demo-title "Event Debugging"]
@@ -651,4 +835,5 @@
     (responsive-example)
     (search-examples)
     (blur-clear-demo)
+    (rich-html-demo)
     (event-debugging)]])

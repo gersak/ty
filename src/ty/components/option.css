@@ -1,0 +1,50 @@
+/* Ty Option Component Styles */
+
+.option-content {
+  display: block;
+  width: 100%;
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  
+  /* Ensure content is clickable */
+  cursor: pointer;
+  user-select: none;
+  
+  /* Smooth transitions */
+  transition: var(--ty-transition-all);
+  
+  /* Text styling */
+  color: var(--ty-text-primary);
+  font-family: var(--ty-font-sans);
+  font-size: var(--ty-font-sm);
+  line-height: var(--ty-line-height-normal);
+}
+
+.option-content:hover {
+  background: var(--ty-bg-hover);
+}
+
+.option-content[highlighted] {
+  background: var(--ty-primary-100);
+  color: var(--ty-primary-900);
+}
+
+.option-content[selected] {
+  background: var(--ty-primary-50);
+  color: var(--ty-primary-900);
+  font-weight: var(--ty-font-medium);
+}
+
+.option-content[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: none !important;
+}
+
+.option-content[hidden] {
+  display: none !important;
+}
+
+/* Ensure nested elements inherit proper styling */
+.option-content * {
+  pointer-events: none;
+}

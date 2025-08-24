@@ -3,16 +3,21 @@
 /* Multiselect stub modifications */
 .multiselect-stub {
   min-height: 2.5rem;
-  padding: 0.375rem 2.5rem 0.375rem 0.75rem;
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
   align-items: center;
+  padding: 0.5rem 2.5rem 0.5rem 0.75rem;
 }
 
-.multiselect-stub.has-selection {
-  padding-top: 0.375rem;
-  padding-bottom: 0.375rem;
+/* When tags are present, reduce padding to make room */
+.multiselect-stub:has(.multiselect-chips ty-tag) {
+  padding: 0.25rem 2.5rem 0.25rem 0.5rem;
+}
+
+/* Fallback for browsers that don't support :has() */
+.multiselect-stub.has-tags {
+  padding: 0.25rem 2.5rem 0.25rem 0.5rem;
 }
 
 /* Tags container */
@@ -26,6 +31,9 @@
 
 .dropdown-placeholder {
   flex-grow: 1;
+  color: var(--ty-input-placeholder, #9ca3af);
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 /* Clear All Button */
@@ -78,6 +86,13 @@
   display: none !important;
 }
 
+#options-slot {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 4px;
+  gap: 4px;
+}
+
 /* Selected option styling in dropdown */
 [selected] {
   background: var(--ty-dropdown-option-selected-bg, #3b82f6);
@@ -122,4 +137,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+/* Better alignment for tags and placeholder */
+.multiselect-stub .multiselect-chips,
+.multiselect-stub .dropdown-placeholder {
+  align-self: stretch;
+  min-height: 1.5rem;
+  display: flex;
+  align-items: center;
 }

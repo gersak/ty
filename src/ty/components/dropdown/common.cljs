@@ -64,17 +64,18 @@
 ;; =====================================================
 
 (defn get-options
-  "Get all option elements from slot"
+  "Get all option elements from slot (supports <option>, <ty-option>, and <ty-tag>)"
   [^js shadow-root]
   (when-let [slot (.querySelector shadow-root "slot:not([name])")]
     (let [assigned-elements (.assignedElements slot)]
       (->> assigned-elements
            array-seq
            (filter #(or (= (.-tagName %) "OPTION")
-                        (= (.-tagName %) "TY-OPTION")))))))
+                        (= (.-tagName %) "TY-OPTION")
+                        (= (.-tagName %) "TY-TAG")))))))
 
 (defn get-option-data
-  "Extract value and text from option element (both <option> and <ty-option>)"
+  "Extract value and text from option element (supports <option>, <ty-option>, and <ty-tag>)"
   [^js option]
   (let [tag-name (.-tagName option)]
     (cond
@@ -85,6 +86,11 @@
 
       (= tag-name "TY-OPTION")
       {:value (or (.-value option) (.getAttribute option "value") (.-textContent option))
+       :text (.-textContent option)
+       :element option}
+
+      (= tag-name "TY-TAG")
+      {:value (or (.getAttribute option "value") (.-textContent option))
        :text (.-textContent option)
        :element option}
 

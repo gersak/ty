@@ -82,8 +82,7 @@
 ;; CLEAR ALL FUNCTIONALITY
 ;; =====================================================
 
-
-(declare update-selection-tags!)
+(declare update-selection-tags! update-selection-display!)
 
 (defn add-clear-all-button!
   "Add a clear all button when there are selected values"
@@ -105,63 +104,55 @@
                              (fn [e]
                                (.preventDefault e)
                                (.stopPropagation e)
-              ;; Clear all selections
+                               ;; Clear all selections
                                (set-multiselect-state! el {:selected-values []})
-                               (update-selection-tags! el shadow-root)
+
+                               ;; Update the value attribute to reflect cleared state
+                               (.setAttribute el "value" "")
+
+                               ;; Clear selected state from all options
+                               (let [options (map common/get-option-data (common/get-options shadow-root))]
+                                 (doseq [{:keys [element]} options]
+                                   (.removeAttribute element "selected")))
+
+                               ;; Update display
+                               (update-selection-display! el shadow-root)
+
+                               ;; Dispatch change event
                                (dispatch-multiselect-change! el [] "clear" nil)))
 
           ;; Add to container
           (.appendChild tags-container clear-btn))))))
 
-
-(defn update-selection-tags!
-  "Update the tag display in the multiselect stub using ty-tag components"
+(defn update-selection-display!
+  "Update which ty-tags are shown in the selected area vs available for selection"
   [^js el ^js shadow-root]
   (let [{:keys [selected-values]} (get-multiselect-state el)
-        {:keys [flavor]} (common/dropdown-attributes el)
-        tags-container (.querySelector shadow-root ".multiselect-chips")
-        placeholder (.querySelector shadow-root ".dropdown-placeholder")]
+        selected-slot (.querySelector shadow-root "slot[name='selected']")
+        options-slot (.querySelector shadow-root "slot:not([name])")
+        placeholder (.querySelector shadow-root ".dropdown-placeholder")
+        all-tags (when options-slot
+                   (->> (.assignedElements options-slot)
+                        array-seq
+                        (filter #(= (.toLowerCase (.-tagName %)) "ty-tag"))))]
 
-    (when tags-container
-      ;; Clear existing tags
-      (set! (.-innerHTML tags-container) "")
+    ;; Show/hide placeholder
+    (if (seq selected-values)
+      (.add (.-classList placeholder) "hidden")
+      (.remove (.-classList placeholder) "hidden"))
 
-      ;; Show/hide placeholder based on selection
-      (if (seq selected-values)
-        (do
-          (.add (.-classList placeholder) "hidden")
-
-          ;; Create ty-tag for each selected value
-          (doseq [value selected-values]
-            (let [tag (.createElement js/document "ty-tag")]
-
-              ;; Set tag attributes
-              (.setAttribute tag "size" "sm")
-              (.setAttribute tag "flavor" (or flavor "neutral"))
-              (.setAttribute tag "dismissible" "true")
-              (.setAttribute tag "pill" "true")
-
-              ;; Set tag content
-              (set! (.-textContent tag) value)
-
-              ;; Add tag to container first so it gets properly initialized
-              (.appendChild tags-container tag)
-
-              ;; Wait for the ty-tag component to be fully rendered and initialized
-              (js/requestAnimationFrame
-                (fn []
-                  ;; Add dismiss event listener after component is ready
-                  (.addEventListener tag "ty-tag-dismiss"
-                                     (fn [e]
-                                       (.preventDefault e)
-                                       (.stopPropagation e)
-                                       ;; Remove this value from selection
-                                       (let [new-values (vec (remove #(= % value) selected-values))]
-                                         (set-multiselect-state! el {:selected-values new-values})
-                                         (update-selection-tags! el shadow-root)
-                                         (dispatch-multiselect-change! el new-values "remove" value))))))))
-
-          (.remove (.-classList placeholder) "hidden"))))))
+    ;; Update tag slots and visibility
+    (doseq [tag all-tags]
+      (let [tag-value (.getAttribute tag "value")]
+        (if (some #(= % tag-value) selected-values)
+          (do
+            ;; Move to selected slot
+            (.setAttribute tag "slot" "selected")
+            (.removeAttribute tag "hidden"))
+          (do
+            ;; Move back to default slot (options)
+            (.removeAttribute tag "slot")
+            (.removeAttribute tag "hidden")))))))
 
 ;; =====================================================
 ;; OPTION INTERACTION
@@ -183,7 +174,7 @@
     (set-multiselect-state! el {:selected-values new-values})
 
     ;; Update visual selection display
-    (update-selection-tags! el shadow-root)
+    (update-selection-display! el shadow-root)
 
     ;; Update option highlighting
     (let [options (map common/get-option-data (common/get-options shadow-root))]
@@ -246,7 +237,9 @@
              ;; Multiselect wrapper
               "  <div class=\"dropdown-wrapper\">"
               "    <div class=\"dropdown-stub multiselect-stub\"" (when disabled " disabled") ">"
-              "      <div class=\"multiselect-chips\"></div>" ; Container for selected chips
+              "      <div class=\"multiselect-chips\">"
+              "        <slot name=\"selected\"></slot>"
+              "      </div>" ; Container for selected chips
               "      <span class=\"dropdown-placeholder\">" placeholder "</span>"
               "    </div>"
               "    <div class=\"dropdown-chevron\">"
@@ -316,7 +309,24 @@
                   (set! (.-tyOutsideClickHandler el) nil))))))
 
     ;; Update chips display
-    (update-selection-tags! el root)
+    ;; Setup ty-tag dismiss event listeners
+    (let [all-tags (->> (.querySelectorAll el "ty-tag")
+                        array-seq)]
+      (doseq [tag all-tags]
+        (.addEventListener tag "ty-tag-dismiss"
+                           (fn [e]
+                             (.preventDefault e)
+                             (.stopPropagation e)
+                             (let [tag-value (.getAttribute tag "value")
+                                   {:keys [selected-values]} (get-multiselect-state el)
+                                   new-values (vec (remove #(= % tag-value) selected-values))]
+                               (set-multiselect-state! el {:selected-values new-values})
+                               (.setAttribute el "value" (.join (clj->js new-values) ","))
+                               (update-selection-display! el root)
+                               (dispatch-multiselect-change! el new-values "remove" tag-value))))))
+
+    ;; Update selection display
+    (update-selection-display! el root)
 
     ;; Update option selected states
     (let [{:keys [selected-values]} (get-multiselect-state el)

@@ -18,6 +18,9 @@
 
 .multiselect-stub.has-tags slot[name="selected"] {
   width: 100% !important;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
 }
 
 
@@ -83,8 +86,8 @@
 .dropdown-options {
   display: flex;
   flex-wrap: wrap;
-  padding: 8px;
-  gap: 8px;
+  padding: 0.5rem;
+  gap: 0.25rem;
 }
 
 /* Make ty-tags in dropdown clickable with pointer cursor */

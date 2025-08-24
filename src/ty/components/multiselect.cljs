@@ -58,6 +58,17 @@
        (filter #(= (.getAttribute % "value") value))
        first))
 
+(defn all-options-selected?
+  "Check if all available options are selected"
+  [^js el]
+  (let [all-tags (get-all-tags el)
+        selected-count (->> all-tags
+                            (filter #(.hasAttribute % "selected"))
+                            count)
+        total-count (count all-tags)]
+    (and (> total-count 0)
+         (= selected-count total-count))))
+
 (defn update-tag-state!
   "Update a tag's selected state and attributes"
   [^js tag selected?]
@@ -180,6 +191,10 @@
                 action (if new-selected "add" "remove")]
             (dispatch-multiselect-change! el selected-values action tag-value))
 
+
+          (when (all-options-selected? el)
+            (desktop/close-dropdown! el shadow-root))
+
           ;; Keep dropdown open for multiple selections
           nil)))))
 
@@ -213,8 +228,10 @@
     (when-not (or (= (.toLowerCase (.-tagName target)) "ty-tag")
                   (.closest target "ty-tag")
                   (.closest target ".tag-dismiss"))
-      ;; Use desktop dropdown's stub click handler
-      (desktop/handle-stub-click! el shadow-root event))))
+      ;; Don't open dropdown if all options are already selected
+      (when-not (all-options-selected? el)
+        ;; Use desktop dropdown's stub click handler
+        (desktop/handle-stub-click! el shadow-root event)))))
 
 (defn handle-clear-all!
   "Handle clear all button click"
@@ -293,9 +310,7 @@
               "  </label>"
              ;; Multiselect wrapper
               "  <div class=\"dropdown-wrapper\">"
-              "    <div class=\"dropdown-stub multiselect-stub\""
-              (when disabled " disabled")
-              ">"
+              "    <div class=\"dropdown-stub multiselect-stub\"" (when disabled " disabled") ">"
               "      <div class=\"multiselect-chips\">"
               "        <slot name=\"selected\"></slot>"
               "      </div>"

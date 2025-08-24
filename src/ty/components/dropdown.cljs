@@ -39,7 +39,7 @@
 ;; =====================================================
 
 (wcs/define! "ty-dropdown"
-  {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :flavor]
+  {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :flavor :label :required :external-search]
    :connected render!
    :disconnected cleanup!
    :attr (fn [^js el _ _old _]

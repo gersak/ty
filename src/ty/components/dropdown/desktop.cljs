@@ -51,9 +51,9 @@
                        all-options)
             selected-index (when (and value (seq filtered))
                              (first (keep-indexed
-                                     (fn [idx option]
-                                       (when (= (:value option) value) idx))
-                                     filtered)))]
+                                      (fn [idx option]
+                                        (when (= (:value option) value) idx))
+                                      filtered)))]
 
         (common/set-component-state! el {:open true
                                          :filtered-options filtered
@@ -82,11 +82,11 @@
 
           ;; Highlight selected option after brief delay
           (js/setTimeout
-           (fn []
-             (let [{:keys [highlighted-index filtered-options]} (common/get-component-state el)]
-               (when (>= highlighted-index 0)
-                 (common/highlight-option! filtered-options highlighted-index))))
-           50))))))
+            (fn []
+              (let [{:keys [highlighted-index filtered-options]} (common/get-component-state el)]
+                (when (>= highlighted-index 0)
+                  (common/highlight-option! filtered-options highlighted-index))))
+            50))))))
 
 ;; =====================================================
 ;; EVENT HANDLERS
@@ -129,24 +129,30 @@
 (defn handle-input-change!
   "Handle search input changes"
   [^js el ^js shadow-root ^js event]
-  (let [{:keys [searchable]} (common/dropdown-attributes el)]
+  (let [{:keys [searchable external-search]} (common/dropdown-attributes el)]
     (when searchable
-      (let [search (.-value (.-target event))
-            options (map common/get-option-data (common/get-options shadow-root))
-            filtered (common/filter-options options search)
-            {:keys [value]} (common/dropdown-attributes el)
-            new-highlighted-index (when (and value (seq filtered))
-                                    (first (keep-indexed
-                                            (fn [idx option]
-                                              (when (= (:value option) value) idx))
-                                            filtered)))]
-        (common/set-component-state! el {:search search
-                                         :filtered-options filtered
-                                         :highlighted-index (or new-highlighted-index -1)})
-        (common/update-option-visibility! filtered options)
-        (common/clear-highlights! options)
-        (when (>= (or new-highlighted-index -1) 0)
-          (common/highlight-option! filtered new-highlighted-index))))))
+      (let [search (.-value (.-target event))]
+        (common/set-component-state! el {:search search})
+
+        (if external-search
+          ;; External search: dispatch event for external handling
+          (common/dispatch-search-event! el search)
+
+          ;; Internal search: filter options locally
+          (let [options (map common/get-option-data (common/get-options shadow-root))
+                filtered (common/filter-options options search)
+                {:keys [value]} (common/dropdown-attributes el)
+                new-highlighted-index (when (and value (seq filtered))
+                                        (first (keep-indexed
+                                                 (fn [idx option]
+                                                   (when (= (:value option) value) idx))
+                                                 filtered)))]
+            (common/set-component-state! el {:filtered-options filtered
+                                             :highlighted-index (or new-highlighted-index -1)})
+            (common/update-option-visibility! filtered options)
+            (common/clear-highlights! options)
+            (when (>= (or new-highlighted-index -1) 0)
+              (common/highlight-option! filtered new-highlighted-index))))))))
 
 (defn handle-search-blur!
   "Reset search when search input loses focus"
@@ -259,36 +265,45 @@
 (defn render!
   "Desktop implementation using dialog structure"
   [^js el ^js root]
-  (let [{:keys [placeholder searchable disabled]} (common/dropdown-attributes el)]
-    (when-not (.querySelector root ".dropdown-wrapper")
+  (let [{:keys [placeholder searchable disabled label required]} (common/dropdown-attributes el)]
+    (when-not (.querySelector root ".dropdown-container")
       (set! (.-innerHTML root)
             (str
-             "<div class=\"dropdown-wrapper\">"
-             "  <div class=\"dropdown-stub\"" (when disabled " disabled") ">"
-             "    <slot name=\"selected\"></slot>"
-             "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
-             "  </div>"
-             "  <div class=\"dropdown-chevron\">"
-             "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-             "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-             "    </svg>"
-             "  </div>"
-             "  <dialog class=\"dropdown-dialog\">"
-             "    <div class=\"dropdown-header\">"
-             "      <input class=\"dropdown-search-input\" type=\"text\""
-             "             placeholder=\"" (if searchable "Search..." placeholder) "\""
-             (when disabled " disabled") " />"
-             "      <div class=\"dropdown-search-chevron\">"
-             "        <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-             "          <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-             "        </svg>"
-             "      </div>"
-             "    </div>"
-             "    <div class=\"dropdown-options\">"
-             "      <slot id=\"options-slot\"></slot>"
-             "    </div>"
-             "  </dialog>"
-             "</div>"))
+             ;; Container with label
+              "<div class=\"dropdown-container\">"
+             ;; Label (optional)
+              "  <label class=\"dropdown-label\" style=\"" (if label "display: flex; align-items: center;" "display: none;") "\">"
+              (or label "")
+              (when (and label required) (str " <span class=\"required-icon\">" common/required-icon "</span>"))
+              "  </label>"
+             ;; Dropdown wrapper
+              "  <div class=\"dropdown-wrapper\">"
+              "    <div class=\"dropdown-stub\"" (when disabled " disabled") ">"
+              "      <slot name=\"selected\"></slot>"
+              "      <span class=\"dropdown-placeholder\">" placeholder "</span>"
+              "    </div>"
+              "    <div class=\"dropdown-chevron\">"
+              "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+              "        <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+              "      </svg>"
+              "    </div>"
+              "    <dialog class=\"dropdown-dialog\">"
+              "      <div class=\"dropdown-header\">"
+              "        <input class=\"dropdown-search-input\" type=\"text\""
+              "               placeholder=\"" (if searchable "Search..." placeholder) "\""
+              (when disabled " disabled") " />"
+              "        <div class=\"dropdown-search-chevron\">"
+              "          <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+              "            <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+              "          </svg>"
+              "        </div>"
+              "      </div>"
+              "      <div class=\"dropdown-options\">"
+              "        <slot id=\"options-slot\"></slot>"
+              "      </div>"
+              "    </dialog>"
+              "  </div>"
+              "</div>"))
       (setup-event-listeners! el root))
 
     ;; Ensure all options visible for non-searchable dropdowns

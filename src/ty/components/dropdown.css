@@ -3,10 +3,41 @@
 /* ===== HOST ELEMENT STYLES ===== */
 
 :host {
-  display: inline-block;
+  display: block;
   width: auto;
   min-width: 200px;
   /* Default reasonable min-width */
+}
+
+/* ===== CONTAINER STRUCTURE ===== */
+
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ===== LABEL STYLING ===== */
+
+.dropdown-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ty-label-color);
+  margin-bottom: 6px;
+  line-height: 1.25;
+  padding-left: 12px;
+}
+
+/* Required indicator - using SVG icon instead of CSS */
+.required-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #ef4444;
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  margin-left: 4px;
 }
 
 /* ===== WRAPPER STRUCTURE ===== */

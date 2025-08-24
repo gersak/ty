@@ -8,6 +8,12 @@
 ;; Load dropdown styles
 (defstyles dropdown-styles "ty/components/dropdown.css")
 
+;; Required indicator icon (same as input component)
+(def required-icon
+  "<svg width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" fill=\"currentColor\">
+    <circle cx=\"4\" cy=\"4\" r=\"2\" />
+   </svg>")
+
 ;; =====================================================
 ;; ATTRIBUTE PARSING
 ;; =====================================================
@@ -26,7 +32,10 @@
    :disabled (wcs/parse-bool-attr el "disabled")
    :readonly (wcs/parse-bool-attr el "readonly")
    :size (or (wcs/attr el "size") "md")
-   :flavor (or (wcs/attr el "flavor") "neutral")})
+   :flavor (or (wcs/attr el "flavor") "neutral")
+   :label (wcs/attr el "label")
+   :required (wcs/parse-bool-attr el "required")
+   :external-search (wcs/parse-bool-attr el "external-search")})
 
 ;; =====================================================
 ;; COMPONENT STATE MANAGEMENT
@@ -153,6 +162,17 @@
   [^js el option]
   (let [detail #js {:option option}
         event (js/CustomEvent. "change"
+                               #js {:detail detail
+                                    :bubbles true
+                                    :cancelable true})]
+    (.dispatchEvent el event)))
+
+(defn dispatch-search-event!
+  "Dispatch custom search event for external search handling"
+  [^js el query]
+  (let [detail #js {:query query
+                    :element el}
+        event (js/CustomEvent. "ty-search"
                                #js {:detail detail
                                     :bubbles true
                                     :cancelable true})]

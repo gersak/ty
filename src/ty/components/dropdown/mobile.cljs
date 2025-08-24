@@ -68,15 +68,21 @@
 (defn handle-search!
   "Handle search input in mobile mode"
   [^js el ^js event]
-  (let [{:keys [searchable]} (common/dropdown-attributes el)]
+  (let [{:keys [searchable external-search]} (common/dropdown-attributes el)]
     (when searchable
       (let [search (.-value (.-target event))]
-        (when-let [root (.-shadowRoot el)]
-          (let [options (map common/get-option-data (common/get-options root))
-                filtered (common/filter-options options search)]
-            (common/set-component-state! el {:search search
-                                             :filtered-options filtered})
-            (common/update-option-visibility! filtered options)))))))
+        (common/set-component-state! el {:search search})
+
+        (if external-search
+          ;; External search: dispatch event for external handling
+          (common/dispatch-search-event! el search)
+
+          ;; Internal search: filter options locally
+          (when-let [root (.-shadowRoot el)]
+            (let [options (map common/get-option-data (common/get-options root))
+                  filtered (common/filter-options options search)]
+              (common/set-component-state! el {:filtered-options filtered})
+              (common/update-option-visibility! filtered options))))))))
 
 (defn handle-stub-click!
   "Handle click on stub to open mobile modal"
@@ -166,45 +172,50 @@
 (defn render!
   "Mobile implementation using ty-modal for full-screen experience"
   [^js el ^js root]
-  (let [{:keys [placeholder searchable disabled size flavor]} (common/dropdown-attributes el)]
+  (let [{:keys [placeholder searchable disabled label required]} (common/dropdown-attributes el)]
 
     ;; Create wrapper + mobile modal structure (matching desktop structure)
-    (when-not (.querySelector root ".dropdown-wrapper")
+    (when-not (.querySelector root ".dropdown-container")
       (set! (.-innerHTML root)
             (str
-             ;; Wrapper - provides positioning context, no styling
-             "<div class=\"dropdown-wrapper\">"
-
+             ;; Container with label
+             "<div class=\"dropdown-container\">"
+             ;; Label (optional)
+             "  <label class=\"dropdown-label\" style=\"" (if label "display: flex; align-items: center;" "display: none;") "\">"
+             (or label "")
+             (when (and label required) (str " <span class=\"required-icon\">" common/required-icon "</span>"))
+             "  </label>"
+             ;; Dropdown wrapper - provides positioning context, no styling
+             "  <div class=\"dropdown-wrapper\">"
              ;; Dropdown stub - shows selected option or placeholder (same as desktop)
-             "  <div class=\"dropdown-stub " size " " flavor "\" "
+             "    <div class=\"dropdown-stub\" "
              (when disabled "disabled ")
              ">"
-             "    <slot name=\"selected\"></slot>"
-             "    <span class=\"dropdown-placeholder\">" placeholder "</span>"
-             "  </div>"
-
-             ;; Chevron - positioned over the stub
-             "  <div class=\"dropdown-chevron\">"
-             "    <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-             "      <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-             "    </svg>"
-             "  </div>"
-
-             ;; ty-modal for full-screen mobile experience
-             "  <ty-modal class=\"mobile-dropdown-modal\""
-             "  backdrop=\"true\" close-on-outside-click=\"true\" close-on-escape=\"true\">"
-             "    <div class=\"mobile-dropdown-content\">"
-             "      <div class=\"mobile-search-header\">"
-             "        <input class=\"mobile-search-input\" type=\"text\" "
-             "               placeholder=\"" (if searchable "Search..." placeholder) "\" "
-             (when disabled "disabled ")
-             "        />"
-             "      </div>"
-             "      <div class=\"mobile-options-list\">"
-             "        <slot></slot>"
-             "      </div>"
+             "      <slot name=\"selected\"></slot>"
+             "      <span class=\"dropdown-placeholder\">" placeholder "</span>"
              "    </div>"
-             "  </ty-modal>"
+             ;; Chevron - positioned over the stub
+             "    <div class=\"dropdown-chevron\">"
+             "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+             "        <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+             "      </svg>"
+             "    </div>"
+             ;; ty-modal for full-screen mobile experience
+             "    <ty-modal class=\"mobile-dropdown-modal\""
+             "    backdrop=\"true\" close-on-outside-click=\"true\" close-on-escape=\"true\">"
+             "      <div class=\"mobile-dropdown-content\">"
+             "        <div class=\"mobile-search-header\">"
+             "          <input class=\"mobile-search-input\" type=\"text\" "
+             "                 placeholder=\"" (if searchable "Search..." placeholder) "\" "
+             (when disabled "disabled ")
+             "          />"
+             "        </div>"
+             "        <div class=\"mobile-options-list\">"
+             "          <slot></slot>"
+             "        </div>"
+             "      </div>"
+             "    </ty-modal>"
+             "  </div>"
              "</div>"))
 
       ;; Setup mobile-specific event listeners

@@ -220,6 +220,9 @@
              (router/rendered? ::popups true) (popups/popups-view)
              (router/rendered? ::tags true) (tags/tags-view)
              (router/rendered? ::modal true) (modal/modal-view)
+             (router/rendered? ::i18n true) (i18n-views/i18n-view)
+             (router/rendered? ::formatting true) (formatting/formatting-view)
+             (router/rendered? ::layout true) (layout-views/layout-view)
              (router/rendered? ::admin-dashboard true)
              [:div.max-w-4xl.mx-auto
               [:h1.text-2xl.lg:text-3xl.font-bold.text-gray-900.dark:text-white.mb-4

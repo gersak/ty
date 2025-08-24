@@ -43,6 +43,41 @@
   <option value=\"green\">Green</option>
 </ty-dropdown>")
 
+   (demo-row {:title "With Label"
+              :description "Dropdown with built-in label support"
+              :children [[:div.max-w-xs
+                          [:ty-dropdown {:value "medium"
+                                         :label "Size"
+                                         :placeholder "Select size..."
+                                         :style {:min-width "180px"}
+                                         :on {:change dropdown-event-handler}}
+                           [:option {:value "small"} "Small"]
+                           [:option {:value "medium"} "Medium"]
+                           [:option {:value "large"} "Large"]
+                           [:option {:value "xl"} "Extra Large"]]]]})
+   (code-snippet "<ty-dropdown label=\"Size\" placeholder=\"Select size...\" style=\"min-width: 180px;\">
+  <option value=\"small\">Small</option>
+  <option value=\"medium\">Medium</option>
+</ty-dropdown>")
+
+   (demo-row {:title "Required Dropdown"
+              :description "Dropdown with required indicator"
+              :children [[:div.max-w-xs
+                          [:ty-dropdown {:label "Country"
+                                         :required true
+                                         :placeholder "Select your country"
+                                         :style {:min-width "200px"}
+                                         :on {:change dropdown-event-handler}}
+                           [:option {:value "us"} "United States"]
+                           [:option {:value "ca"} "Canada"]
+                           [:option {:value "uk"} "United Kingdom"]
+                           [:option {:value "de"} "Germany"]
+                           [:option {:value "fr"} "France"]]]]})
+   (code-snippet "<ty-dropdown label=\"Country\" required placeholder=\"Select your country\">
+  <option value=\"us\">United States</option>
+  <option value=\"ca\">Canada</option>
+</ty-dropdown>")
+
    (demo-row {:title "Non-searchable"
               :description "Disable search functionality for simple selection"
               :children [[:div.max-w-xs
@@ -72,9 +107,10 @@
                            [:option {:value "option3"} "Option 3"]]]]})
 
    (demo-row {:title "Read-only State"
-              :description "Read-only dropdown shows value but prevents interaction"
+              :description "Read-only dropdown shows value but prevents interaction (note: no chevron)"
               :children [[:div.max-w-xs
                           [:ty-dropdown {:value "readonly-value"
+                                         :label "Read-only Field"
                                          :readonly true
                                          :style {:min-width "200px"}}
                            [:option {:value "readonly-value"} "Read-only Value"]
@@ -89,8 +125,8 @@
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
     ;; First row
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "First Dropdown"]
      [:ty-dropdown {:value "a1"
+                    :label "First Dropdown"
                     :placeholder "Select option A..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
@@ -100,8 +136,8 @@
       [:option {:value "a4"} "Option A4"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Second Dropdown"]
      [:ty-dropdown {:value "b1"
+                    :label "Second Dropdown"
                     :placeholder "Select option B..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
@@ -111,8 +147,8 @@
       [:option {:value "b4"} "Option B4"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Third Dropdown"]
      [:ty-dropdown {:value "c1"
+                    :label "Third Dropdown"
                     :placeholder "Select option C..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
@@ -123,8 +159,8 @@
 
     ;; Second row
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Fourth Dropdown"]
      [:ty-dropdown {:value "d1"
+                    :label "Fourth Dropdown"
                     :flavor "positive"
                     :placeholder "Positive dropdown..."
                     :style {:min-width "180px"}
@@ -134,8 +170,8 @@
       [:option {:value "d3"} "Positive D3"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Fifth Dropdown"]
      [:ty-dropdown {:value "e1"
+                    :label "Fifth Dropdown"
                     :flavor "negative"
                     :placeholder "Negative dropdown..."
                     :style {:min-width "180px"}
@@ -145,8 +181,8 @@
       [:option {:value "e3"} "Negative E3"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Sixth Dropdown"]
      [:ty-dropdown {:value "f1"
+                    :label "Sixth Dropdown"
                     :flavor "important"
                     :placeholder "Important dropdown..."
                     :style {:min-width "180px"}
@@ -184,16 +220,16 @@
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Neutral (default)"]
      [:ty-dropdown {:value "neutral1"
+                    :label "Neutral (default)"
                     :placeholder "Neutral flavor"
                     :style {:min-width "180px"}}
       [:option {:value "neutral1"} "Neutral Option 1"]
       [:option {:value "neutral2"} "Neutral Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Positive (Green)"]
      [:ty-dropdown {:flavor "positive"
+                    :label "Positive (Green)"
                     :value "pos1"
                     :placeholder "Positive flavor"
                     :style {:min-width "180px"}}
@@ -201,8 +237,8 @@
       [:option {:value "pos2"} "Positive Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Negative (Red)"]
      [:ty-dropdown {:flavor "negative"
+                    :label "Negative (Red)"
                     :value "neg1"
                     :placeholder "Negative flavor"
                     :style {:min-width "180px"}}
@@ -210,8 +246,8 @@
       [:option {:value "neg2"} "Negative Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Important (Blue)"]
      [:ty-dropdown {:flavor "important"
+                    :label "Important (Blue)"
                     :value "imp1"
                     :placeholder "Important flavor"
                     :style {:min-width "180px"}}
@@ -219,8 +255,8 @@
       [:option {:value "imp2"} "Important Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Exception (Yellow)"]
      [:ty-dropdown {:flavor "exception"
+                    :label "Exception (Yellow)"
                     :value "exc1"
                     :placeholder "Exception flavor"
                     :style {:min-width "180px"}}
@@ -228,8 +264,8 @@
       [:option {:value "exc2"} "Exception Option 2"]]]
 
     [:div
-     [:label.block.text-sm.font-medium.mb-2 "Unique (Purple)"]
      [:ty-dropdown {:flavor "unique"
+                    :label "Unique (Purple)"
                     :value "unq1"
                     :placeholder "Unique flavor"
                     :style {:min-width "180px"}}
@@ -550,8 +586,8 @@
      [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
       ;; Compact
       [:div
-       [:label.block.text-sm.font-medium.mb-2 "Compact (160px)"]
        [:ty-dropdown {:placeholder "Compact..."
+                      :label "Compact (160px)"
                       :style {:min-width "160px" :font-size "0.875rem"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-2
@@ -564,8 +600,8 @@
 
       ;; Standard
       [:div
-       [:label.block.text-sm.font-medium.mb-2 "Standard (200px)"]
        [:ty-dropdown {:placeholder "Standard..."
+                      :label "Standard (200px)"
                       :style {:min-width "200px"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-2
@@ -578,8 +614,8 @@
 
       ;; Wide
       [:div
-       [:label.block.text-sm.font-medium.mb-2 "Wide (300px)"]
        [:ty-dropdown {:placeholder "Wide dropdown..."
+                      :label "Wide (300px)"
                       :style {:min-width "300px" :font-size "1rem"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-3
@@ -594,8 +630,8 @@
     [:div
      [:h3.demo-subtitle "Large Form Example"]
      [:div.max-w-2xl
-      [:label.block.text-sm.font-medium.mb-2 "Choose your preferred framework"]
       [:ty-dropdown {:placeholder "Select a web framework..."
+                     :label "Choose your preferred framework"
                      :style {:min-width "400px" :font-size "1.1rem" :min-height "3rem"}}
        [:ty-option {:value "react"}
         [:div.flex.items-center.gap-4

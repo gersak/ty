@@ -5,9 +5,9 @@
   min-height: 2.5rem;
   padding: 0.375rem 2.5rem 0.375rem 0.75rem;
   display: flex;
-  align-items: center;
   flex-wrap: wrap;
   gap: 0.25rem;
+  align-items: center;
 }
 
 .multiselect-stub.has-selection {
@@ -26,6 +26,43 @@
 
 .dropdown-placeholder {
   flex-grow: 1;
+}
+
+/* Clear All Button */
+.clear-all-btn {
+  background: var(--ty-button-secondary-bg, #f3f4f6);
+  border: 1px solid var(--ty-button-secondary-border, #d1d5db);
+  color: var(--ty-button-secondary-color, #374151);
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-left: 0.25rem;
+  flex-shrink: 0;
+}
+
+.clear-all-btn:hover {
+  background: var(--ty-button-secondary-bg-hover, #e5e7eb);
+  border-color: var(--ty-button-secondary-border-hover, #9ca3af);
+}
+
+.clear-all-btn:focus {
+  outline: 2px solid var(--ty-focus-ring, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Dark theme for clear button */
+.dark .clear-all-btn {
+  background: var(--ty-button-secondary-bg, #374151);
+  border-color: var(--ty-button-secondary-border, #4b5563);
+  color: var(--ty-button-secondary-color, #d1d5db);
+}
+
+.dark .clear-all-btn:hover {
+  background: var(--ty-button-secondary-bg-hover, #4b5563);
+  border-color: var(--ty-button-secondary-border-hover, #6b7280);
 }
 
 /* Placeholder styling when tags are present */
@@ -66,6 +103,11 @@
 @media (max-width: 640px) {
   .multiselect-chips ty-tag {
     max-width: 100px;
+  }
+
+  .clear-all-btn {
+    font-size: 0.6875rem;
+    padding: 0.125rem 0.25rem;
   }
 }
 

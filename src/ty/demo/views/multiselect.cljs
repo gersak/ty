@@ -165,9 +165,29 @@
                                [:option {:value "option2"} "Option 2"]
                                [:option {:value "option3"} "Option 3"]]]]})
 
+   (demo-section {:title "With Clear All Button"
+                  :description "Enable the clearable attribute to show a 'Clear all' button"
+                  :children [[:div.max-w-md
+                              [:ty-multiselect {:value "feature1,feature2,feature3"
+                                                :clearable true
+                                                :label "Features"
+                                                :placeholder "Select features..."
+                                                :style {:min-width "320px"}
+                                                :on {:change multiselect-event-handler}}
+                               [:option {:value "feature1"} "Feature 1"]
+                               [:option {:value "feature2"} "Feature 2"]
+                               [:option {:value "feature3"} "Feature 3"]
+                               [:option {:value "feature4"} "Feature 4"]
+                               [:option {:value "feature5"} "Feature 5"]]]]})
+
    (code-snippet "<ty-multiselect value=\"option1,option2\" disabled>
   <option value=\"option1\">Option 1</option>
   <option value=\"option2\">Option 2</option>
+</ty-multiselect>
+
+<ty-multiselect clearable value=\"feature1,feature2\" placeholder=\"With clear all...\">
+  <option value=\"feature1\">Feature 1</option>
+  <option value=\"feature2\">Feature 2</option>
 </ty-multiselect>")])
 
 (defn event-debugging []

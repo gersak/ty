@@ -78,6 +78,42 @@
 ;; SELECTION DISPLAY MANAGEMENT
 ;; =====================================================
 
+;; =====================================================
+;; CLEAR ALL FUNCTIONALITY
+;; =====================================================
+
+
+(declare update-selection-tags!)
+
+(defn add-clear-all-button!
+  "Add a clear all button when there are selected values"
+  [^js el ^js shadow-root]
+  (let [{:keys [selected-values]} (get-multiselect-state el)
+        tags-container (.querySelector shadow-root ".multiselect-chips")
+        {:keys [disabled]} (common/dropdown-attributes el)]
+
+    (when (and tags-container (seq selected-values) (not disabled))
+      ;; Check if clear button already exists
+      (when-not (.querySelector tags-container ".clear-all-btn")
+        (let [clear-btn (.createElement js/document "button")]
+          (.add (.-classList clear-btn) "clear-all-btn")
+          (set! (.-innerHTML clear-btn) "Clear all")
+          (set! (.-title clear-btn) "Clear all selected items")
+
+          ;; Add click handler
+          (.addEventListener clear-btn "click"
+                             (fn [e]
+                               (.preventDefault e)
+                               (.stopPropagation e)
+              ;; Clear all selections
+                               (set-multiselect-state! el {:selected-values []})
+                               (update-selection-tags! el shadow-root)
+                               (dispatch-multiselect-change! el [] "clear" nil)))
+
+          ;; Add to container
+          (.appendChild tags-container clear-btn))))))
+
+
 (defn update-selection-tags!
   "Update the tag display in the multiselect stub using ty-tag components"
   [^js el ^js shadow-root]
@@ -101,28 +137,31 @@
 
               ;; Set tag attributes
               (.setAttribute tag "size" "sm")
-              (.setAttribute tag "flavor" flavor)
+              (.setAttribute tag "flavor" (or flavor "neutral"))
               (.setAttribute tag "dismissible" "true")
               (.setAttribute tag "pill" "true")
 
               ;; Set tag content
               (set! (.-textContent tag) value)
 
-              ;; Add dismiss event listener
-              (.addEventListener tag "ty-tag-dismiss"
-                                 (fn [e]
-                                   (.preventDefault e)
-                                   (.stopPropagation e)
-                  ;; Remove this value from selection
-                                   (let [new-values (vec (remove #(= % value) selected-values))]
-                                     (set-multiselect-state! el {:selected-values new-values})
-                                     (update-selection-tags! el shadow-root)
-                                     (dispatch-multiselect-change! el new-values "remove" value))))
+              ;; Add tag to container first so it gets properly initialized
+              (.appendChild tags-container tag)
 
-              ;; Add tag to container
-              (.appendChild tags-container tag))))
+              ;; Wait for the ty-tag component to be fully rendered and initialized
+              (js/requestAnimationFrame
+                (fn []
+                  ;; Add dismiss event listener after component is ready
+                  (.addEventListener tag "ty-tag-dismiss"
+                                     (fn [e]
+                                       (.preventDefault e)
+                                       (.stopPropagation e)
+                                       ;; Remove this value from selection
+                                       (let [new-values (vec (remove #(= % value) selected-values))]
+                                         (set-multiselect-state! el {:selected-values new-values})
+                                         (update-selection-tags! el shadow-root)
+                                         (dispatch-multiselect-change! el new-values "remove" value))))))))
 
-        (.remove (.-classList placeholder) "hidden")))))
+          (.remove (.-classList placeholder) "hidden"))))))
 
 ;; =====================================================
 ;; OPTION INTERACTION
@@ -305,7 +344,7 @@
 ;; =====================================================
 
 (wcs/define! "ty-multiselect"
-  {:observed [:value :placeholder :disabled :readonly :flavor :label :required]
+  {:observed [:value :placeholder :disabled :readonly :flavor :label :required :clearable]
    :connected render!
    :disconnected cleanup!
    :attr (fn [^js el _ _ _]

@@ -66,9 +66,19 @@
                  (dispatch-tag-event! el "ty-tag-dismiss" #js {:target el}))
         nil))))
 
+(defn cleanup-event-listeners!
+  "Clean up existing event listeners"
+  [^js el]
+  (when-let [cleanup-fn (.-tyTagCleanup el)]
+    (cleanup-fn)
+    (set! (.-tyTagCleanup el) nil)))
+
 (defn setup-event-listeners!
   "Setup event listeners for tag interactions"
   [^js el ^js shadow-root]
+  ;; Clean up any existing listeners first
+  (cleanup-event-listeners! el)
+  
   (let [container (.querySelector shadow-root ".tag-container")
         dismiss-btn (.querySelector shadow-root ".tag-dismiss")]
 
@@ -97,40 +107,37 @@
     ;; Ensure styles are loaded
     (ensure-styles! root tag-styles "ty-tag")
 
-    ;; Create structure if it doesn't exist
-    (when-not (.querySelector root ".tag-container")
-      (set! (.-innerHTML root)
-            (str "<div class=\"tag-container\""
-                 (when clickable " tabindex=\"0\"")
-                 (when disabled " aria-disabled=\"true\"")
-                 ">"
-                 "  <div class=\"tag-start\">"
-                 "    <slot name=\"start\"></slot>"
-                 "  </div>"
-                 "  <div class=\"tag-content\">"
-                 "    <slot></slot>"
-                 "  </div>"
-                 "  <div class=\"tag-end\">"
-                 "    <slot name=\"end\"></slot>"
-                 (when dismissible
-                   (str "    <button class=\"tag-dismiss\" type=\"button\" aria-label=\"Remove tag\">"
-                        "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-                        "        <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-                        "      </svg>"
-                        "    </button>"))
-                 "  </div>"
-                 "</div>"))
+    ;; Always recreate structure to handle attribute changes properly
+    (set! (.-innerHTML root)
+          (str "<div class=\"tag-container\""
+               (when clickable " tabindex=\"0\"")
+               (when disabled " aria-disabled=\"true\"")
+               ">"
+               "  <div class=\"tag-start\">"
+               "    <slot name=\"start\"></slot>"
+               "  </div>"
+               "  <div class=\"tag-content\">"
+               "    <slot></slot>"
+               "  </div>"
+               "  <div class=\"tag-end\">"
+               "    <slot name=\"end\"></slot>"
+               (when dismissible
+                 (str "    <button class=\"tag-dismiss\" type=\"button\" aria-label=\"Remove tag\">"
+                      "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+                      "        <path fill-rule=\"evenodd\" d=\"M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+                      "      </svg>"
+                      "    </button>"))
+               "  </div>"
+               "</div>"))
 
-      ;; Setup event listeners
-      (setup-event-listeners! el root))))
+    ;; Setup event listeners
+    (setup-event-listeners! el root)))
 
 (defn cleanup! [^js el]
-  (when-let [cleanup-fn (.-tyTagCleanup el)]
-    (cleanup-fn)
-    (set! (.-tyTagCleanup el) nil)))
+  (cleanup-event-listeners! el))
 
 (wcs/define! "ty-tag"
-  {:observed [:size :flavor :pill :not-pill :clickable :dismissible :disabled]
+  {:observed [:size :flavor :pill :not-pill :clickable :dismissible :disabled :slot]
    :connected render!
    :disconnected cleanup!
    :attr (fn [^js el attr-name _old new]

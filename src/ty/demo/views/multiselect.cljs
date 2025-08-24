@@ -29,8 +29,8 @@
   [:div.demo-section
    [:h2.demo-title "Basic Multiselect"]
 
-   (demo-section {:title "Simple Multiselect"
-                  :description "Select multiple options. Click ty-tag dismiss buttons (×) to remove them."
+   (demo-section {:title "Simple Multiselect (value attribute)"
+                  :description "Initialize with value=\"red,blue\". Click tags to toggle selection."
                   :children [[:div.max-w-md
                               [:ty-multiselect {:value "red,blue"
                                                 :placeholder "Select colors..."
@@ -40,6 +40,9 @@
                                          :pill true
                                          :size "sm"} "Red"]
                                [:ty-tag {:value "blue"
+                                         :pill true
+                                         :size "sm"} "Blue"]
+                               [:ty-tag {:value "green"
                                          :pill true
                                          :size "sm"} "Green"]
                                [:ty-tag {:value "yellow"
@@ -53,13 +56,13 @@
                                          :size "sm"} "Orange"]]]]})
 
    (code-snippet "<ty-multiselect value=\"red,blue\" placeholder=\"Select colors...\">
-  <ty-tag value=\"red\" dismissible pill size=\"sm\">Red</ty-tag>
-  <ty-tag value=\"blue\" dismissible pill size=\"sm\">Blue</ty-tag>
-  <ty-tag value=\"green\" dismissible pill size=\"sm\">Green</ty-tag>
+  <ty-tag value=\"red\" pill size=\"sm\">Red</ty-tag>
+  <ty-tag value=\"blue\" pill size=\"sm\">Blue</ty-tag>
+  <ty-tag value=\"green\" pill size=\"sm\">Green</ty-tag>
 </ty-multiselect>")
 
-   (demo-section {:title "With Label"
-                  :description "Multiselect with built-in label support"
+   (demo-section {:title "With Pre-selected Tags"
+                  :description "Initialize with selected attribute on tags directly. More declarative approach."
                   :children [[:div.max-w-md
                               [:ty-multiselect {:label "Programming Languages"
                                                 :placeholder "Select languages..."
@@ -67,10 +70,12 @@
                                                 :on {:change multiselect-event-handler}}
                                [:ty-tag {:value "javascript"
                                          :pill true
-                                         :size "sm"} "JavaScript"]
+                                         :size "sm"
+                                         :selected true} "JavaScript"]
                                [:ty-tag {:value "python"
                                          :pill true
-                                         :size "sm"} "Python"]
+                                         :size "sm"
+                                         :selected true} "Python"]
                                [:ty-tag {:value "java"
                                          :pill true
                                          :size "sm"} "Java"]
@@ -85,12 +90,13 @@
                                          :size "sm"} "Go"]]]]})
 
    (code-snippet "<ty-multiselect label=\"Programming Languages\" placeholder=\"Select languages...\">
-  <ty-tag value=\"javascript\" dismissible pill size=\"sm\">JavaScript</ty-tag>
-  <ty-tag value=\"python\" dismissible pill size=\"sm\">Python</ty-tag>
+  <ty-tag value=\"javascript\" pill size=\"sm\" selected>JavaScript</ty-tag>
+  <ty-tag value=\"python\" pill size=\"sm\" selected>Python</ty-tag>
+  <ty-tag value=\"java\" pill size=\"sm\">Java</ty-tag>
 </ty-multiselect>")
 
-   (demo-section {:title "Required Field"
-                  :description "Required multiselect with indicator"
+   (demo-section {:title "Required Field (No Initial Selection)"
+                  :description "Required multiselect with indicator, starting with no selections"
                   :children [[:div.max-w-md
                               [:ty-multiselect {:label "Skills"
                                                 :required true
@@ -109,16 +115,16 @@
                                [:ty-tag {:value "node"
                                          :pill true
                                          :size "sm"} "Node.js"]
-                               [:ty-tag {:value "python"
+                               [:ty-tag {:value "django"
                                          :pill true
-                                         :size "sm"} "Python"]
-                               [:ty-tag {:value "java"
+                                         :size "sm"} "Django"]
+                               [:ty-tag {:value "rails"
                                          :pill true
-                                         :size "sm"} "Java"]]]]})
+                                         :size "sm"} "Rails"]]]]})
 
    (code-snippet "<ty-multiselect label=\"Skills\" required placeholder=\"Select your skills...\">
-  <ty-tag value=\"react\" dismissible pill size=\"sm\">React</ty-tag>
-  <ty-tag value=\"vue\" dismissible pill size=\"sm\">Vue.js</ty-tag>
+  <ty-tag value=\"react\" pill size=\"sm\">React</ty-tag>
+  <ty-tag value=\"vue\" pill size=\"sm\">Vue.js</ty-tag>
 </ty-multiselect>")])
 
 (defn flavor-examples []
@@ -220,13 +226,13 @@
                 :size "sm"} "Waiting"]]]]
 
    (code-snippet "<ty-multiselect flavor=\"positive\" placeholder=\"Positive items...\">
-  <ty-tag value=\"approved\" dismissible pill size=\"sm\" flavor=\"positive\">Approved</ty-tag>
-  <ty-tag value=\"verified\" dismissible pill size=\"sm\" flavor=\"positive\">Verified</ty-tag>
+  <ty-tag value=\"approved\" pill size=\"sm\" flavor=\"positive\">Approved</ty-tag>
+  <ty-tag value=\"verified\" pill size=\"sm\" flavor=\"positive\">Verified</ty-tag>
 </ty-multiselect>
 
 <ty-multiselect flavor=\"negative\" placeholder=\"Negative items...\">
-  <ty-tag value=\"error\" dismissible pill size=\"sm\" flavor=\"negative\">Error</ty-tag>
-  <ty-tag value=\"failed\" dismissible pill size=\"sm\" flavor=\"negative\">Failed</ty-tag>
+  <ty-tag value=\"error\" pill size=\"sm\" flavor=\"negative\">Error</ty-tag>
+  <ty-tag value=\"failed\" pill size=\"sm\" flavor=\"negative\">Failed</ty-tag>
 </ty-multiselect>")])
 
 (defn state-examples []
@@ -251,7 +257,7 @@
                                          :size "sm"} "Option 3"]]]]})
 
    (demo-section {:title "With Clear All Button"
-                  :description "Enable the clearable attribute to show a 'Clear all' button"
+                  :description "Enable the clearable attribute to show a 'Clear all' button when items are selected"
                   :children [[:div.max-w-md
                               [:ty-multiselect {:value "feature1,feature2,feature3"
                                                 :clearable true
@@ -276,13 +282,13 @@
                                          :size "sm"} "Feature 5"]]]]})
 
    (code-snippet "<ty-multiselect value=\"option1,option2\" disabled>
-  <ty-tag value=\"option1\" dismissible pill size=\"sm\">Option 1</ty-tag>
-  <ty-tag value=\"option2\" dismissible pill size=\"sm\">Option 2</ty-tag>
+  <ty-tag value=\"option1\" pill size=\"sm\">Option 1</ty-tag>
+  <ty-tag value=\"option2\" pill size=\"sm\">Option 2</ty-tag>
 </ty-multiselect>
 
 <ty-multiselect clearable value=\"feature1,feature2\" placeholder=\"With clear all...\">
-  <ty-tag value=\"feature1\" dismissible pill size=\"sm\">Feature 1</ty-tag>
-  <ty-tag value=\"feature2\" dismissible pill size=\"sm\">Feature 2</ty-tag>
+  <ty-tag value=\"feature1\" pill size=\"sm\">Feature 1</ty-tag>
+  <ty-tag value=\"feature2\" pill size=\"sm\">Feature 2</ty-tag>
 </ty-multiselect>")])
 
 (defn event-debugging []
@@ -316,7 +322,7 @@
 };
 
 <ty-multiselect onChange={handleChange}>
-  <ty-tag value=\"event1\" dismissible pill size=\"sm\">Event Test 1</ty-tag>
+  <ty-tag value=\"event1\" pill size=\"sm\">Event Test 1</ty-tag>
 </ty-multiselect>")])
 
 (defn render []
@@ -325,7 +331,7 @@
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
      "Multiselect Component"]
     [:p.text-lg.text-gray-600.dark:text-gray-400
-     "A multiselect component that allows selecting multiple options. Built on top of the dropdown component with ty-tag-based selection display. Features semantic flavors, proper outside click handling, and full keyboard accessibility."]]
+     "A multiselect component that allows selecting multiple options. Built on top of the dropdown component with ty-tag-based selection display. Tags automatically move between slots and update their dismissible state based on selection."]]
 
    [:div.space-y-12
     (basic-examples)

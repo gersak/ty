@@ -1,5 +1,5 @@
 (ns ty.components.multiselect
-  "Basic multiselect component extending dropdown functionality with ty-tag integration"
+  "Multiselect component with ty-tag integration for multiple selections"
   (:require [ty.components.dropdown.common :as common]
             [ty.components.dropdown.desktop :as desktop]
             [ty.components.dropdown.mobile :as mobile]
@@ -22,8 +22,7 @@
       (let [initial-state {:open false
                            :search ""
                            :highlighted-index -1
-                           :filtered-options []
-                           :selected-values []}] ; Array of selected values
+                           :filtered-options []}]
         (set! (.-tyMultiselectState el) initial-state)
         initial-state)))
 
@@ -35,32 +34,104 @@
     new-state))
 
 ;; =====================================================
-;; VALUE PARSING AND MANAGEMENT
+;; TAG MANAGEMENT
 ;; =====================================================
 
-(defn parse-initial-values
-  "Parse initial values from value attribute (comma-separated)"
+(defn get-all-tags
+  "Get all ty-tag elements from the component"
   [^js el]
-  (let [value-attr (wcs/attr el "value")]
-    (if (and value-attr (not-empty value-attr))
-      (vec (.split value-attr ","))
-      [])))
+  (->> (.querySelectorAll el "ty-tag")
+       array-seq))
 
-(defn is-selected?
-  "Check if value is in selected values array"
-  [value selected-values]
-  (some #(= % value) selected-values))
+(defn get-selected-values
+  "Get array of values from tags that have selected attribute"
+  [^js el]
+  (->> (get-all-tags el)
+       (filter #(.hasAttribute % "selected"))
+       (map #(.getAttribute % "value"))
+       vec))
 
-(defn toggle-selection
-  "Add or remove value from selected values array"
-  [value selected-values]
-  (if (is-selected? value selected-values)
-    (vec (remove #(= % value) selected-values))
-    (conj selected-values value)))
+(defn find-tag-by-value
+  "Find a tag element by its value attribute"
+  [^js el value]
+  (->> (get-all-tags el)
+       (filter #(= (.getAttribute % "value") value))
+       first))
 
-;; =====================================================
-;; EVENT DISPATCHING
-;; =====================================================
+(defn update-tag-state!
+  "Update a tag's selected state and attributes"
+  [^js tag selected?]
+  (let [parent (.-parentNode tag)]
+    (if selected?
+      (do
+        (.setAttribute tag "selected" "")
+        (.setAttribute tag "slot" "selected")
+        (.setAttribute tag "dismissible" "true")
+        ;; Force re-slotting by removing and re-adding the element
+        (when parent
+          (.removeChild parent tag)
+          (.appendChild parent tag)))
+      (do
+        (.removeAttribute tag "selected")
+        (.removeAttribute tag "slot")
+        (.removeAttribute tag "dismissible")
+        ;; Force re-slotting by removing and re-adding the element
+        (when parent
+          (.removeChild parent tag)
+          (.appendChild parent tag))))))
+
+(defn update-component-value!
+  "Update the component's value attribute based on selected tags"
+  [^js el]
+  (let [selected-values (get-selected-values el)
+        value-str (if (seq selected-values)
+                    (.join (clj->js selected-values) ",")
+                    "")]
+    (.setAttribute el "value" value-str)
+    value-str))
+
+(defn update-placeholder-and-stub!
+  "Show/hide placeholder and update stub classes based on selection"
+  [^js el ^js shadow-root]
+  (let [selected-values (get-selected-values el)
+        placeholder (.querySelector shadow-root ".dropdown-placeholder")
+        stub (.querySelector shadow-root ".multiselect-stub")]
+    ;; Update placeholder visibility
+    (when placeholder
+      (if (seq selected-values)
+        (.add (.-classList placeholder) "hidden")
+        (.remove (.-classList placeholder) "hidden")))
+    ;; Update stub class for styling
+    (when stub
+      (if (seq selected-values)
+        (.add (.-classList stub) "has-tags")
+        (.remove (.-classList stub) "has-tags")))))
+
+(defn initialize-selections!
+  "Initialize selections from either pre-selected tags or value attribute
+   Priority: 1. Tags with selected attribute, 2. Component value attribute"
+  [^js el]
+  (let [tags (get-all-tags el)
+        ;; Check if any tags already have selected attribute
+        has-preselected? (some #(.hasAttribute % "selected") tags)]
+
+    (if has-preselected?
+      ;; Use existing selected attributes and sync component value
+      (do
+        (doseq [tag tags]
+          (when (.hasAttribute tag "selected")
+            (update-tag-state! tag true)))
+        (update-component-value! el))
+
+      ;; Otherwise use value attribute to set selections
+      (let [value-attr (wcs/attr el "value")
+            initial-values (if (and value-attr (not-empty value-attr))
+                             (set (.split value-attr ","))
+                             #{})]
+        (doseq [tag tags]
+          (let [tag-value (.getAttribute tag "value")
+                should-be-selected (contains? initial-values tag-value)]
+            (update-tag-state! tag should-be-selected)))))))
 
 (defn dispatch-multiselect-change!
   "Dispatch multiselect change event"
@@ -75,136 +146,119 @@
     (.dispatchEvent el event)))
 
 ;; =====================================================
-;; SELECTION DISPLAY MANAGEMENT
+;; EVENT HANDLERS
 ;; =====================================================
 
-;; =====================================================
-;; CLEAR ALL FUNCTIONALITY
-;; =====================================================
+(defn handle-tag-click!
+  "Handle click on a tag in the options dropdown"
+  [^js el ^js shadow-root ^js event]
+  (let [target (.-target event)]
+    ;; Check if we clicked on a ty-tag or something inside it
+    (when-let [tag (if (= (.toLowerCase (.-tagName target)) "ty-tag")
+                     target
+                     (.closest target "ty-tag"))]
+      ;; Handle all tags except disabled ones
+      (when-not (.hasAttribute tag "disabled")
+        (.preventDefault event)
+        (.stopPropagation event)
 
-(declare update-selection-tags! update-selection-display!)
+        (let [tag-value (.getAttribute tag "value")
+              currently-selected (.hasAttribute tag "selected")
+              new-selected (not currently-selected)]
 
-(defn add-clear-all-button!
-  "Add a clear all button when there are selected values"
-  [^js el ^js shadow-root]
-  (let [{:keys [selected-values]} (get-multiselect-state el)
-        tags-container (.querySelector shadow-root ".multiselect-chips")
-        {:keys [disabled]} (common/dropdown-attributes el)]
+          ;; Toggle the tag's selected state
+          (update-tag-state! tag new-selected)
 
-    (when (and tags-container (seq selected-values) (not disabled))
-      ;; Check if clear button already exists
-      (when-not (.querySelector tags-container ".clear-all-btn")
-        (let [clear-btn (.createElement js/document "button")]
-          (.add (.-classList clear-btn) "clear-all-btn")
-          (set! (.-innerHTML clear-btn) "Clear all")
-          (set! (.-title clear-btn) "Clear all selected items")
+          ;; Update component value
+          (update-component-value! el)
 
-          ;; Add click handler
-          (.addEventListener clear-btn "click"
-                             (fn [e]
-                               (.preventDefault e)
-                               (.stopPropagation e)
-                               ;; Clear all selections
-                               (set-multiselect-state! el {:selected-values []})
+          ;; Update placeholder and stub class
+          (update-placeholder-and-stub! el shadow-root)
 
-                               ;; Update the value attribute to reflect cleared state
-                               (.setAttribute el "value" "")
+          ;; Dispatch change event
+          (let [selected-values (get-selected-values el)
+                action (if new-selected "add" "remove")]
+            (dispatch-multiselect-change! el selected-values action tag-value))
 
-                               ;; Clear selected state from all options
-                               (let [options (map common/get-option-data (common/get-options shadow-root))]
-                                 (doseq [{:keys [element]} options]
-                                   (.removeAttribute element "selected")))
+          ;; Keep dropdown open for multiple selections
+          nil)))))
 
-                               ;; Update display
-                               (update-selection-display! el shadow-root)
-
-                               ;; Dispatch change event
-                               (dispatch-multiselect-change! el [] "clear" nil)))
-
-          ;; Add to container
-          (.appendChild tags-container clear-btn))))))
-
-(defn update-selection-display!
-  "Update which ty-tags are shown in the selected area vs available for selection"
-  [^js el ^js shadow-root]
-  (let [{:keys [selected-values]} (get-multiselect-state el)
-        selected-slot (.querySelector shadow-root "slot[name='selected']")
-        options-slot (.querySelector shadow-root "slot:not([name])")
-        placeholder (.querySelector shadow-root ".dropdown-placeholder")
-        all-tags (when options-slot
-                   (->> (.assignedElements options-slot)
-                        array-seq
-                        (filter #(= (.toLowerCase (.-tagName %)) "ty-tag"))))]
-
-    ;; Show/hide placeholder
-    (if (seq selected-values)
-      (.add (.-classList placeholder) "hidden")
-      (.remove (.-classList placeholder) "hidden"))
-
-    ;; Update tag slots and visibility
-    (doseq [tag all-tags]
-      (let [tag-value (.getAttribute tag "value")]
-        (if (some #(= % tag-value) selected-values)
-          (do
-            ;; Move to selected slot
-            (.setAttribute tag "slot" "selected")
-            (.removeAttribute tag "hidden"))
-          (do
-            ;; Move back to default slot (options)
-            (.removeAttribute tag "slot")
-            (.removeAttribute tag "hidden")))))))
-
-;; =====================================================
-;; OPTION INTERACTION
-;; =====================================================
-
-(defn handle-multiselect-option-click!
-  "Handle option click for multiselect (toggle selection, don't close)"
+(defn handle-tag-dismiss!
+  "Handle dismiss event from a selected tag"
   [^js el ^js shadow-root ^js event]
   (.preventDefault event)
   (.stopPropagation event)
-  (let [option-element (.-target event)
-        option-data (common/get-option-data option-element)
-        value (:value option-data)
-        {:keys [selected-values]} (get-multiselect-state el)
-        new-values (toggle-selection value selected-values)
-        action (if (is-selected? value selected-values) "remove" "add")]
 
-    ;; Update state
-    (set-multiselect-state! el {:selected-values new-values})
+  (let [tag (.-target (.-detail event))
+        tag-value (.getAttribute tag "value")]
 
-    ;; Update visual selection display
-    (update-selection-display! el shadow-root)
+    ;; Update tag state
+    (update-tag-state! tag false)
 
-    ;; Update option highlighting
-    (let [options (map common/get-option-data (common/get-options shadow-root))]
-      (doseq [{:keys [element value]} options]
-        (if (is-selected? value new-values)
-          (.setAttribute element "selected" "")
-          (.removeAttribute element "selected"))))
+    ;; Update component value
+    (update-component-value! el)
+
+    ;; Update placeholder and stub class
+    (update-placeholder-and-stub! el shadow-root)
 
     ;; Dispatch change event
-    (dispatch-multiselect-change! el new-values action value)
+    (let [selected-values (get-selected-values el)]
+      (dispatch-multiselect-change! el selected-values "remove" tag-value))))
 
-    ;; DON'T close dropdown - keep it open for multiple selections
-    ))
-
-;; =====================================================
-;; STUB CLICK HANDLING
-;; =====================================================
-
-(defn handle-multiselect-stub-click!
-  "Handle stub click - prevent clicks on tags from opening dropdown"
+(defn handle-stub-click!
+  "Handle click on the stub area"
   [^js el ^js shadow-root ^js event]
   (let [target (.-target event)]
-    ;; If clicking on a ty-tag element, don't open dropdown
+    ;; Don't open dropdown if clicking on a selected tag or dismiss button
     (when-not (or (= (.toLowerCase (.-tagName target)) "ty-tag")
-                  (.closest target "ty-tag"))
+                  (.closest target "ty-tag")
+                  (.closest target ".tag-dismiss"))
       ;; Use desktop dropdown's stub click handler
       (desktop/handle-stub-click! el shadow-root event))))
 
+(defn handle-clear-all!
+  "Handle clear all button click"
+  [^js el ^js shadow-root ^js event]
+  (.preventDefault event)
+  (.stopPropagation event)
+
+  ;; Clear all selections
+  (doseq [tag (get-all-tags el)]
+    (update-tag-state! tag false))
+
+  ;; Update component value
+  (update-component-value! el)
+
+  ;; Update placeholder and stub class
+  (update-placeholder-and-stub! el shadow-root)
+
+  ;; Dispatch change event
+  (dispatch-multiselect-change! el [] "clear" nil))
+
 ;; =====================================================
-;; MULTISELECT RENDERING
+;; SETUP AND CLEANUP
+;; =====================================================
+
+(defn setup-tag-listeners!
+  "Setup event listeners for all ty-tag elements"
+  [^js el ^js shadow-root]
+  ;; Remove any existing listeners first
+  (when-let [listeners (.-tyTagListeners el)]
+    (doseq [[tag handler] listeners]
+      (.removeEventListener tag "ty-tag-dismiss" handler))
+    (set! (.-tyTagListeners el) nil))
+
+  ;; Add new listeners
+  (let [tags (get-all-tags el)
+        listeners (atom [])]
+    (doseq [tag tags]
+      (let [handler (partial handle-tag-dismiss! el shadow-root)]
+        (.addEventListener tag "ty-tag-dismiss" handler)
+        (swap! listeners conj [tag handler])))
+    (set! (.-tyTagListeners el) @listeners)))
+
+;; =====================================================
+;; RENDERING
 ;; =====================================================
 
 (defn render!
@@ -212,18 +266,21 @@
   [^js el]
   (let [root (wcs/ensure-shadow el)
         is-mobile? (common/is-mobile-device?)
-        {:keys [placeholder disabled label required]} (common/dropdown-attributes el)]
+        {:keys [placeholder disabled label required]} (common/dropdown-attributes el)
+        clearable? (wcs/parse-bool-attr el "clearable")]
 
     ;; Ensure styles are loaded
     (common/ensure-dropdown-styles! root)
     (ensure-styles! root multiselect-styles "ty-multiselect")
 
-    ;; Initialize selected values from attribute
+    ;; Initialize state if needed
     (when-not (.-tyMultiselectState el)
-      (let [initial-values (parse-initial-values el)]
-        (set-multiselect-state! el {:selected-values initial-values})))
+      (set-multiselect-state! el {:open false
+                                  :search ""
+                                  :highlighted-index -1
+                                  :filtered-options []}))
 
-    ;; Render multiselect-specific HTML structure
+    ;; Create structure if it doesn't exist
     (when-not (.querySelector root ".multiselect-container")
       (set! (.-innerHTML root)
             (str
@@ -236,10 +293,12 @@
               "  </label>"
              ;; Multiselect wrapper
               "  <div class=\"dropdown-wrapper\">"
-              "    <div class=\"dropdown-stub multiselect-stub\"" (when disabled " disabled") ">"
+              "    <div class=\"dropdown-stub multiselect-stub\""
+              (when disabled " disabled")
+              ">"
               "      <div class=\"multiselect-chips\">"
               "        <slot name=\"selected\"></slot>"
-              "      </div>" ; Container for selected chips
+              "      </div>"
               "      <span class=\"dropdown-placeholder\">" placeholder "</span>"
               "    </div>"
               "    <div class=\"dropdown-chevron\">"
@@ -265,29 +324,29 @@
               "  </div>"
               "</div>"))
 
-      ;; Setup event listeners with multiselect-specific handlers
+      ;; Setup event listeners
       (let [stub (.querySelector root ".dropdown-stub")
             search-input (.querySelector root ".dropdown-search-input")
-            slot (.querySelector root "#options-slot")
+            options-slot (.querySelector root "#options-slot")
             dialog (.querySelector root ".dropdown-dialog")]
 
-        ;; Override stub click to handle chips
+        ;; Stub click handler
         (when stub
-          (.addEventListener stub "click" (partial handle-multiselect-stub-click! el root)))
+          (.addEventListener stub "click" (partial handle-stub-click! el root)))
 
-        ;; Use desktop search input handler (already handles search)
+        ;; Search input handler
         (when search-input
           (.addEventListener search-input "input" (partial desktop/handle-input-change! el root)))
 
-        ;; Override option clicks for multiselect behavior  
-        (when slot
-          (.addEventListener slot "click" (partial handle-multiselect-option-click! el root)))
+        ;; Option clicks handler - listen for clicks anywhere in the dropdown
+        (when options-slot
+          (.addEventListener options-slot "click" (partial handle-tag-click! el root)))
 
-        ;; Use desktop dialog close handler
+        ;; Dialog close handler
         (when dialog
           (.addEventListener dialog "close" (partial desktop/handle-dialog-close! el root)))
 
-        ;; Add outside click handler for proper dialog closing
+        ;; Outside click handler
         (let [outside-click-handler (partial desktop/handle-outside-click! el root)]
           (.addEventListener js/document "click" outside-click-handler)
           (set! (.-tyOutsideClickHandler el) outside-click-handler))
@@ -296,11 +355,11 @@
         (set! (.-tyDropdownCleanup el)
               (fn []
                 (when stub
-                  (.removeEventListener stub "click" (partial handle-multiselect-stub-click! el root)))
+                  (.removeEventListener stub "click" (partial handle-stub-click! el root)))
                 (when search-input
                   (.removeEventListener search-input "input" (partial desktop/handle-input-change! el root)))
-                (when slot
-                  (.removeEventListener slot "click" (partial handle-multiselect-option-click! el root)))
+                (when options-slot
+                  (.removeEventListener options-slot "click" (partial handle-tag-click! el root)))
                 (when dialog
                   (.removeEventListener dialog "close" (partial desktop/handle-dialog-close! el root)))
                 ;; Clean up outside click handler
@@ -308,44 +367,52 @@
                   (.removeEventListener js/document "click" handler)
                   (set! (.-tyOutsideClickHandler el) nil))))))
 
-    ;; Update chips display
-    ;; Setup ty-tag dismiss event listeners
-    (let [all-tags (->> (.querySelectorAll el "ty-tag")
-                        array-seq)]
-      (doseq [tag all-tags]
-        (.addEventListener tag "ty-tag-dismiss"
-                           (fn [e]
-                             (.preventDefault e)
-                             (.stopPropagation e)
-                             (let [tag-value (.getAttribute tag "value")
-                                   {:keys [selected-values]} (get-multiselect-state el)
-                                   new-values (vec (remove #(= % tag-value) selected-values))]
-                               (set-multiselect-state! el {:selected-values new-values})
-                               (.setAttribute el "value" (.join (clj->js new-values) ","))
-                               (update-selection-display! el root)
-                               (dispatch-multiselect-change! el new-values "remove" tag-value))))))
+    ;; Initialize selections (supports both selected attrs and value attr)
+    (initialize-selections! el)
 
-    ;; Update selection display
-    (update-selection-display! el root)
+    ;; Setup tag dismiss listeners
+    (setup-tag-listeners! el root)
 
-    ;; Update option selected states
-    (let [{:keys [selected-values]} (get-multiselect-state el)
-          options (map common/get-option-data (common/get-options root))]
-      (doseq [{:keys [element value]} options]
-        (if (is-selected? value selected-values)
-          (.setAttribute element "selected" "")
-          (.removeAttribute element "selected"))))))
+    ;; Update placeholder and stub class
+    (update-placeholder-and-stub! el root)
+
+    ;; Handle clearable button
+    (when clearable?
+      (let [chips-container (.querySelector root ".multiselect-chips")
+            existing-clear-btn (.querySelector root ".clear-all-btn")
+            has-selections? (seq (get-selected-values el))]
+
+        ;; Add or remove clear button based on selections
+        (if has-selections?
+          (when-not existing-clear-btn
+            (let [clear-btn (.createElement js/document "button")]
+              (set! (.-className clear-btn) "clear-all-btn")
+              (set! (.-type clear-btn) "button")
+              (set! (.-innerHTML clear-btn) "Clear all")
+              (.setAttribute clear-btn "aria-label" "Clear all selections")
+              (.addEventListener clear-btn "click" (partial handle-clear-all! el root))
+              (.appendChild chips-container clear-btn)))
+          (when existing-clear-btn
+            (.remove existing-clear-btn)))))))
 
 ;; =====================================================
-;; CLEANUP FUNCTION
+;; CLEANUP
 ;; =====================================================
 
 (defn cleanup!
   "Cleanup function for multiselect"
   [^js el]
+  ;; Clean up tag listeners
+  (when-let [listeners (.-tyTagListeners el)]
+    (doseq [[tag handler] listeners]
+      (.removeEventListener tag "ty-tag-dismiss" handler))
+    (set! (.-tyTagListeners el) nil))
+
+  ;; Clean up dropdown listeners
   (when-let [cleanup-fn (.-tyDropdownCleanup el)]
     (cleanup-fn)
     (set! (.-tyDropdownCleanup el) nil))
+
   ;; Clear multiselect state
   (set! (.-tyMultiselectState el) nil))
 
@@ -357,5 +424,12 @@
   {:observed [:value :placeholder :disabled :readonly :flavor :label :required :clearable]
    :connected render!
    :disconnected cleanup!
-   :attr (fn [^js el _ _ _]
+   :attr (fn [^js el attr-name old-value new-value]
+           ;; Re-render on attribute changes
+           (when (= attr-name "value")
+             ;; When value changes externally, update tags
+             (initialize-selections! el)
+             (let [root (wcs/ensure-shadow el)]
+               (update-placeholder-and-stub! el root)
+               (setup-tag-listeners! el root)))
            (render! el))})

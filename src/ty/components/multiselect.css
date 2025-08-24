@@ -11,14 +11,15 @@
 }
 
 /* When tags are present, reduce padding to make room */
-.multiselect-stub:has(.multiselect-chips ty-tag) {
-  padding: 0.25rem 2.5rem 0.25rem 0.5rem;
-}
-
-/* Fallback for browsers that don't support :has() */
 .multiselect-stub.has-tags {
   padding: 0.25rem 2.5rem 0.25rem 0.5rem;
+  width: 100%;
 }
+
+.multiselect-stub.has-tags slot[name="selected"] {
+  width: 100% !important;
+}
+
 
 /* Tags container */
 .multiselect-chips {
@@ -74,44 +75,41 @@
 }
 
 /* Placeholder styling when tags are present */
-.multiselect-chips:not(:empty)+.dropdown-placeholder {
-  display: none;
-}
-
-.multiselect-chips:empty+.dropdown-placeholder {
-  display: block;
-}
-
 .dropdown-placeholder.hidden {
   display: none !important;
 }
 
-#options-slot {
+/* Options area styling */
+.dropdown-options {
   display: flex;
   flex-wrap: wrap;
-  padding: 4px;
-  gap: 4px;
+  padding: 8px;
+  gap: 8px;
 }
 
-/* Selected option styling in dropdown */
-[selected] {
-  background: var(--ty-dropdown-option-selected-bg, #3b82f6);
-  color: var(--ty-dropdown-option-selected-color, white);
+/* Make ty-tags in dropdown clickable with pointer cursor */
+.dropdown-options ty-tag {
+  cursor: pointer !important;
+  user-select: none;
+  transition: transform 0.1s ease;
 }
 
-[selected]:hover {
-  background: var(--ty-dropdown-option-selected-bg-hover, #2563eb);
+.dropdown-options ty-tag:hover {
+  transform: scale(1.02);
 }
 
-/* Dark theme support for selected options */
-.dark [selected] {
-  background: var(--ty-dropdown-option-selected-bg, #3b82f6);
-  color: var(--ty-dropdown-option-selected-color, white);
+.dropdown-options ty-tag:active {
+  transform: scale(0.98);
+}
+
+/* Visual feedback for selected tags in options */
+.dropdown-options ty-tag[selected] {
+  opacity: 0.5;
 }
 
 /* Ensure ty-tag components in multiselect have proper sizing */
 .multiselect-chips ty-tag {
-  max-width: 120px;
+  max-width: 150px;
 }
 
 /* Responsive adjustments */
@@ -137,13 +135,4 @@
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-}
-
-/* Better alignment for tags and placeholder */
-.multiselect-stub .multiselect-chips,
-.multiselect-stub .dropdown-placeholder {
-  align-self: stretch;
-  min-height: 1.5rem;
-  display: flex;
-  align-items: center;
 }

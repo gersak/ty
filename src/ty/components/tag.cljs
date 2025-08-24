@@ -7,10 +7,17 @@
 ;; Load tag styles
 (defstyles tag-styles)
 
+(defn get-tag-value
+  "Get value from either property or attribute"
+  [^js el]
+  (or (.-value el)                    ; First check property
+      (wcs/attr el "value")))          ; Then check attribute
+
 (defn tag-attributes
   "Extract tag configuration from element attributes"
   [^js el]
-  {:size (or (wcs/attr el "size") "md") ; Still default to "md" internally for consistency
+  {:value (get-tag-value el)  ; Use helper to get value
+   :size (or (wcs/attr el "size") "md") ; Still default to "md" internally for consistency
    :flavor (or (wcs/attr el "flavor") "neutral")
    :pill (let [pill? (wcs/parse-bool-attr el "pill")
                not-pill? (wcs/parse-bool-attr el "not-pill")]
@@ -78,7 +85,7 @@
   [^js el ^js shadow-root]
   ;; Clean up any existing listeners first
   (cleanup-event-listeners! el)
-  
+
   (let [container (.querySelector shadow-root ".tag-container")
         dismiss-btn (.querySelector shadow-root ".tag-dismiss")]
 
@@ -102,16 +109,23 @@
 
 (defn render! [^js el]
   (let [root (wcs/ensure-shadow el)
-        {:keys [size flavor clickable dismissible disabled]} (tag-attributes el)]
+        {:keys [value size flavor clickable dismissible disabled]} (tag-attributes el)]
 
     ;; Ensure styles are loaded
     (ensure-styles! root tag-styles "ty-tag")
+    
+    ;; Ensure value is also set as attribute for CSS selectors and debugging
+    (when value
+      (when-not (.hasAttribute el "value")
+        (.setAttribute el "value" value)))
 
     ;; Always recreate structure to handle attribute changes properly
     (set! (.-innerHTML root)
           (str "<div class=\"tag-container\""
                (when clickable " tabindex=\"0\"")
                (when disabled " aria-disabled=\"true\"")
+               ;; Add data-value for CSS access if needed
+               (when value (str " data-value=\"" value "\""))
                ">"
                "  <div class=\"tag-start\">"
                "    <slot name=\"start\"></slot>"
@@ -137,7 +151,7 @@
   (cleanup-event-listeners! el))
 
 (wcs/define! "ty-tag"
-  {:observed [:size :flavor :pill :not-pill :clickable :dismissible :disabled :slot]
+  {:observed [:size :flavor :pill :not-pill :clickable :dismissible :disabled :slot :value]
    :connected render!
    :disconnected cleanup!
    :attr (fn [^js el attr-name _old new]

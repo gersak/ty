@@ -1,6 +1,7 @@
 (ns ty.components.multiselect
   "Multiselect component with ty-tag integration for multiple selections"
-  (:require [ty.components.dropdown.common :as common]
+  (:require [cljs-bean.core :refer [->js ->clj]]
+            [ty.components.dropdown.common :as common]
             [ty.components.dropdown.desktop :as desktop]
             [ty.components.dropdown.mobile :as mobile]
             [ty.components.tag] ; Import ty-tag component
@@ -34,8 +35,24 @@
     new-state))
 
 ;; =====================================================
+;; VALUE HELPERS
+;; =====================================================
+
+(defn get-multiselect-value
+  "Get value from either property or attribute (handles Replicant prop passing)"
+  [^js el]
+  (or (.-value el) ; First check property (for Replicant)
+      (wcs/attr el "value"))) ; Then check attribute
+
+;; =====================================================
 ;; TAG MANAGEMENT
 ;; =====================================================
+
+(defn get-tag-value
+  "Get value from either property or attribute"
+  [^js tag]
+  (or (.-value tag) ; First check property
+      (.getAttribute tag "value"))) ; Then check attribute
 
 (defn get-all-tags
   "Get all ty-tag elements from the component"
@@ -48,14 +65,15 @@
   [^js el]
   (->> (get-all-tags el)
        (filter #(.hasAttribute % "selected"))
-       (map #(.getAttribute % "value"))
+       (map get-tag-value)
+       (filter some?) ; Remove nil values
        vec))
 
 (defn find-tag-by-value
-  "Find a tag element by its value attribute"
+  "Find a tag element by its value attribute or property"
   [^js el value]
   (->> (get-all-tags el)
-       (filter #(= (.getAttribute % "value") value))
+       (filter #(= (get-tag-value %) value))
        first))
 
 (defn all-options-selected?
@@ -92,13 +110,15 @@
           (.appendChild parent tag))))))
 
 (defn update-component-value!
-  "Update the component's value attribute based on selected tags"
+  "Update the component's value attribute and property based on selected tags"
   [^js el]
   (let [selected-values (get-selected-values el)
         value-str (if (seq selected-values)
-                    (.join (clj->js selected-values) ",")
+                    (.join (->js selected-values) ",")
                     "")]
+    ;; Update both attribute and property for consistency
     (.setAttribute el "value" value-str)
+    (set! (.-value el) value-str)
     value-str))
 
 (defn update-placeholder-and-stub!
@@ -119,8 +139,8 @@
         (.remove (.-classList stub) "has-tags")))))
 
 (defn initialize-selections!
-  "Initialize selections from either pre-selected tags or value attribute
-   Priority: 1. Tags with selected attribute, 2. Component value attribute"
+  "Initialize selections from either pre-selected tags or value attribute/property
+   Priority: 1. Tags with selected attribute, 2. Component value attribute/property"
   [^js el]
   (let [tags (get-all-tags el)
         ;; Check if any tags already have selected attribute
@@ -134,21 +154,23 @@
             (update-tag-state! tag true)))
         (update-component-value! el))
 
-      ;; Otherwise use value attribute to set selections
-      (let [value-attr (wcs/attr el "value")
-            initial-values (if (and value-attr (not-empty value-attr))
-                             (set (.split value-attr ","))
+      ;; Otherwise use value attribute/property to set selections
+      (let [value-str (get-multiselect-value el) ; Use new helper function
+            initial-values (if (and value-str (not-empty value-str))
+                             (set (.split value-str ","))
                              #{})]
         (doseq [tag tags]
-          (let [tag-value (.getAttribute tag "value")
-                should-be-selected (contains? initial-values tag-value)]
-            (update-tag-state! tag should-be-selected)))))))
+          (let [tag-value (get-tag-value tag)
+                should-be-selected (and tag-value
+                                        (contains? initial-values tag-value))]
+            (when should-be-selected
+              (update-tag-state! tag true))))))))
 
 (defn dispatch-multiselect-change!
   "Dispatch multiselect change event"
   [^js el values action item]
-  (let [detail #js {:values (clj->js values)
-                    :action action ; "add" | "remove" | "clear"
+  (let [detail #js {:values (->js values)
+                    :action action ; "add" | "remove"
                     :item item} ; The item that was added/removed
         event (js/CustomEvent. "change"
                                #js {:detail detail
@@ -173,7 +195,7 @@
         (.preventDefault event)
         (.stopPropagation event)
 
-        (let [tag-value (.getAttribute tag "value")
+        (let [tag-value (get-tag-value tag)
               currently-selected (.hasAttribute tag "selected")
               new-selected (not currently-selected)]
 
@@ -191,7 +213,6 @@
                 action (if new-selected "add" "remove")]
             (dispatch-multiselect-change! el selected-values action tag-value))
 
-
           (when (all-options-selected? el)
             (desktop/close-dropdown! el shadow-root))
 
@@ -205,7 +226,7 @@
   (.stopPropagation event)
 
   (let [tag (.-target (.-detail event))
-        tag-value (.getAttribute tag "value")]
+        tag-value (get-tag-value tag)]
 
     ;; Update tag state
     (update-tag-state! tag false)
@@ -232,25 +253,6 @@
       (when-not (all-options-selected? el)
         ;; Use desktop dropdown's stub click handler
         (desktop/handle-stub-click! el shadow-root event)))))
-
-(defn handle-clear-all!
-  "Handle clear all button click"
-  [^js el ^js shadow-root ^js event]
-  (.preventDefault event)
-  (.stopPropagation event)
-
-  ;; Clear all selections
-  (doseq [tag (get-all-tags el)]
-    (update-tag-state! tag false))
-
-  ;; Update component value
-  (update-component-value! el)
-
-  ;; Update placeholder and stub class
-  (update-placeholder-and-stub! el shadow-root)
-
-  ;; Dispatch change event
-  (dispatch-multiselect-change! el [] "clear" nil))
 
 ;; =====================================================
 ;; SETUP AND CLEANUP
@@ -283,8 +285,7 @@
   [^js el]
   (let [root (wcs/ensure-shadow el)
         is-mobile? (common/is-mobile-device?)
-        {:keys [placeholder disabled label required]} (common/dropdown-attributes el)
-        clearable? (wcs/parse-bool-attr el "clearable")]
+        {:keys [placeholder disabled label required]} (common/dropdown-attributes el)]
 
     ;; Ensure styles are loaded
     (common/ensure-dropdown-styles! root)
@@ -382,33 +383,14 @@
                   (.removeEventListener js/document "click" handler)
                   (set! (.-tyOutsideClickHandler el) nil))))))
 
-    ;; Initialize selections (supports both selected attrs and value attr)
+    ;; Initialize selections (supports both selected attrs and value attr/prop)
     (initialize-selections! el)
 
     ;; Setup tag dismiss listeners
     (setup-tag-listeners! el root)
 
     ;; Update placeholder and stub class
-    (update-placeholder-and-stub! el root)
-
-    ;; Handle clearable button
-    (when clearable?
-      (let [chips-container (.querySelector root ".multiselect-chips")
-            existing-clear-btn (.querySelector root ".clear-all-btn")
-            has-selections? (seq (get-selected-values el))]
-
-        ;; Add or remove clear button based on selections
-        (if has-selections?
-          (when-not existing-clear-btn
-            (let [clear-btn (.createElement js/document "button")]
-              (set! (.-className clear-btn) "clear-all-btn")
-              (set! (.-type clear-btn) "button")
-              (set! (.-innerHTML clear-btn) "Clear all")
-              (.setAttribute clear-btn "aria-label" "Clear all selections")
-              (.addEventListener clear-btn "click" (partial handle-clear-all! el root))
-              (.appendChild chips-container clear-btn)))
-          (when existing-clear-btn
-            (.remove existing-clear-btn)))))))
+    (update-placeholder-and-stub! el root)))
 
 ;; =====================================================
 ;; CLEANUP
@@ -436,7 +418,7 @@
 ;; =====================================================
 
 (wcs/define! "ty-multiselect"
-  {:observed [:value :placeholder :disabled :readonly :flavor :label :required :clearable]
+  {:observed [:value :placeholder :disabled :readonly :flavor :label :required]
    :connected render!
    :disconnected cleanup!
    :attr (fn [^js el attr-name old-value new-value]

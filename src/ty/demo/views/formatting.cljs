@@ -150,7 +150,7 @@
         (for [month (i18n/locale locale :months)]
           [:span.px-2.py-1.bg-gray-100.rounded {:key month} month])]]]]))
 
-(defn formatting-view []
+(defn view []
   (let [locale (:locale @state i18n/*locale*)]
     (binding [i18n/*locale* locale]
       [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400

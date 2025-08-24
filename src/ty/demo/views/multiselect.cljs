@@ -325,7 +325,7 @@
   <ty-tag value=\"event1\" pill size=\"sm\">Event Test 1</ty-tag>
 </ty-multiselect>")])
 
-(defn render []
+(defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2

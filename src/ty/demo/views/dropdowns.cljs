@@ -588,7 +588,8 @@
       [:div
        [:ty-dropdown {:placeholder "Compact..."
                       :label "Compact (160px)"
-                      :style {:min-width "160px" :font-size "0.875rem"}}
+                      :style {:min-width "160px"
+                              :font-size "0.875rem"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-2
           [:div.w-4.h-4.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-xs "R"]
@@ -616,7 +617,8 @@
       [:div
        [:ty-dropdown {:placeholder "Wide dropdown..."
                       :label "Wide (300px)"
-                      :style {:min-width "300px" :font-size "1rem"}}
+                      :style {:min-width "300px"
+                              :font-size "1rem"}}
         [:ty-option {:value "react"}
          [:div.flex.items-center.gap-3
           [:div.w-6.h-6.bg-blue-500.rounded.flex.items-center.justify-center.text-white.text-sm "R"]
@@ -632,7 +634,9 @@
      [:div.max-w-2xl
       [:ty-dropdown {:placeholder "Select a web framework..."
                      :label "Choose your preferred framework"
-                     :style {:min-width "400px" :font-size "1.1rem" :min-height "3rem"}}
+                     :style {:min-width "400px"
+                             :font-size "1.1rem"
+                             :min-height "3rem"}}
        [:ty-option {:value "react"}
         [:div.flex.items-center.gap-4
          [:div.w-10.h-10.bg-blue-100.rounded-lg.flex.items-center.justify-center
@@ -700,7 +704,7 @@
   <option value=\"event1\">Event Test 1</option>
 </ty-dropdown>")])
 
-(defn render []
+(defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2

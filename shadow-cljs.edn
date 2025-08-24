@@ -2,6 +2,7 @@
 
  :nrepl {:port 7888}
  :dependencies [[no.cjohansen/replicant "2025.06.21"]
+                [dev.gersak/timing "0.7.0"]
                 [cljs-bean "1.9.0"]]
 
  :builds {:app {:target :browser

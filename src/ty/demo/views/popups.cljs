@@ -328,7 +328,7 @@
                         :on {:click #(toggle-popup! :interactive-demo)}}
                        "Cancel"]]]]]]]})])
 
-(defn popups-view []
+(defn view []
   [:div
    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2 "Popup Components"]
    [:p.text-gray-600.dark:text-gray-400.mb-8

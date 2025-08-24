@@ -3,7 +3,9 @@
 (defn feature-card [{:keys [title description icon]}]
   [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
    [:div.flex.items-center.gap-3.mb-3
-    [:ty-icon {:name icon :size "lg" :class "text-ty-important"}]
+    [:ty-icon {:name icon
+               :size "lg"
+               :class "text-ty-important"}]
     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white title]]
    [:p.text-gray-600.dark:text-gray-400 description]])
 
@@ -11,7 +13,7 @@
   [:pre.code-block
    [:code code]])
 
-(defn home-view []
+(defn view []
   [:div.max-w-6xl.mx-auto
    ;; Hero section
    [:div.text-center.mb-12
@@ -20,11 +22,17 @@
     [:p.text-xl.text-gray-600.dark:text-gray-400.mb-6
      "Modern Web Components built with ClojureScript"]
     [:div.flex.gap-4.justify-center
-     [:ty-button {:flavor "important" :filled true :size "lg"}
-      [:ty-icon {:name "book-open" :slot "start"}]
+     [:ty-button {:flavor "important"
+                  :filled true
+                  :size "lg"}
+      [:ty-icon {:name "book-open"
+                 :slot "start"}]
       "View Documentation"]
-     [:ty-button {:flavor "neutral" :outlined true :size "lg"}
-      [:ty-icon {:name "github" :slot "start"}]
+     [:ty-button {:flavor "neutral"
+                  :outlined true
+                  :size "lg"}
+      [:ty-icon {:name "github"
+                 :slot "start"}]
       "GitHub"]]]
 
    ;; Features grid
@@ -69,12 +77,18 @@
     [:div.mt-6
      [:h3.demo-subtitle "Example Result:"]
      [:div.flex.gap-4.items-center.flex-wrap
-      [:ty-button {:flavor "positive" :filled true}
-       [:ty-icon {:name "check" :slot "start"}]
+      [:ty-button {:flavor "positive"
+                   :filled true}
+       [:ty-icon {:name "check"
+                  :slot "start"}]
        "Save Changes"]
-      [:ty-button {:flavor "negative" :outlined true}
-       [:ty-icon {:name "x" :slot "start"}]
+      [:ty-button {:flavor "negative"
+                   :outlined true}
+       [:ty-icon {:name "x"
+                  :slot "start"}]
        "Cancel"]
-      [:ty-button {:flavor "important" :accent true}
-       [:ty-icon {:name "star" :slot "start"}]
+      [:ty-button {:flavor "important"
+                   :accent true}
+       [:ty-icon {:name "star"
+                  :slot "start"}]
        "Featured"]]]]])

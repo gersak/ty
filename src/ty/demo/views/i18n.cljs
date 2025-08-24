@@ -145,7 +145,7 @@
    [:div.text-sm.text-gray-600
     "Open browser console to see the translations atom"]])
 
-(defn i18n-view []
+(defn view []
   (let [locale (:locale @state i18n/*locale*)]
     (binding [i18n/*locale* locale]
       [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400

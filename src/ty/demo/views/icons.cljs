@@ -1,9 +1,9 @@
 (ns ty.demo.views.icons
   (:require
-   [clojure.string :as str]
-   [ty.demo.state :refer [state]]
-   [ty.router :as router]
-   [ty.icons :as icons]))
+    [clojure.string :as str]
+    [ty.demo.state :refer [state]]
+    [ty.icons :as icons]
+    [ty.router :as router]))
 
 (defn icon-card [{:keys [name icon-key]}]
   [:div.p-4.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
@@ -160,7 +160,7 @@
        [:code.text-sm.text-gray-600.dark:text-gray-400.font-mono
         "<ty-button><ty-icon name=\"plus\"></ty-icon> Add Item</ty-button>"]]]]]])
 
-(defn icons-view []
+(defn view []
   (let [;; Get query params for search
         {:keys [search show-demo]} (router/query-params)
         search-term (or search "")

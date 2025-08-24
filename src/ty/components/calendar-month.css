@@ -1,0 +1,153 @@
+/* Calendar Month Component Styles */
+
+.calendar-month-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--ty-calendar-bg, #ffffff);
+  border-radius: 0.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  user-select: none;
+}
+
+/* Weekday headers */
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ty-calendar-border, #e5e7eb);
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--ty-calendar-weekday-color, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Days grid */
+.calendar-days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.25rem;
+}
+
+/* Day cells */
+.calendar-day {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--ty-calendar-day-color, #111827);
+  background: transparent;
+  position: relative;
+  min-height: 2.5rem;
+}
+
+.calendar-day:hover:not(.other-month):not(.selected) {
+  background: var(--ty-calendar-day-hover, #f3f4f6);
+}
+
+/* Selected day */
+.calendar-day.selected {
+  background: var(--ty-calendar-day-selected, #3b82f6);
+  color: var(--ty-calendar-day-selected-color, #ffffff);
+  font-weight: 600;
+}
+
+.calendar-day.selected:hover {
+  background: var(--ty-calendar-day-selected-hover, #2563eb);
+}
+
+/* Today */
+.calendar-day.today:not(.selected) {
+  background: var(--ty-calendar-day-today-bg, #fef2f2);
+  color: var(--ty-calendar-day-today, #ef4444);
+  font-weight: 600;
+  position: relative;
+}
+
+.calendar-day.today:not(.selected)::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--ty-calendar-day-today, #ef4444);
+}
+
+/* Weekend days */
+.calendar-day.weekend:not(.selected):not(.today) {
+  color: var(--ty-calendar-weekend-color, #9ca3af);
+}
+
+/* Other month days */
+.calendar-day.other-month {
+  color: var(--ty-calendar-other-month-color, #d1d5db);
+  cursor: default;
+}
+
+.calendar-day.other-month:hover {
+  background: transparent;
+}
+
+/* Dark theme support */
+.dark .calendar-month-container {
+  background: var(--ty-calendar-bg, #1f2937);
+  color: var(--ty-calendar-color, #f9fafb);
+}
+
+.dark .calendar-weekdays {
+  border-bottom-color: var(--ty-calendar-border, #374151);
+}
+
+.dark .calendar-weekday {
+  color: var(--ty-calendar-weekday-color, #9ca3af);
+}
+
+.dark .calendar-day {
+  color: var(--ty-calendar-day-color, #f3f4f6);
+}
+
+.dark .calendar-day:hover:not(.other-month):not(.selected) {
+  background: var(--ty-calendar-day-hover, #374151);
+}
+
+.dark .calendar-day.today:not(.selected) {
+  background: var(--ty-calendar-day-today-bg, #451a1a);
+}
+
+.dark .calendar-day.weekend:not(.selected):not(.today) {
+  color: var(--ty-calendar-weekend-color, #6b7280);
+}
+
+.dark .calendar-day.other-month {
+  color: var(--ty-calendar-other-month-color, #4b5563);
+}
+
+/* Responsive sizing */
+@media (max-width: 640px) {
+  .calendar-month-container {
+    padding: 0.75rem;
+  }
+  
+  .calendar-day {
+    font-size: 0.8125rem;
+    min-height: 2.25rem;
+  }
+  
+  .calendar-weekday {
+    font-size: 0.6875rem;
+  }
+}

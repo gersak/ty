@@ -468,7 +468,7 @@
                 :placeholder "Enter a valid email"
                 :flavor "important"}]]])
 
-(defn inputs-view []
+(defn view []
   (layout/with-window
     [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400
      [:div

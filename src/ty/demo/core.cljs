@@ -5,6 +5,7 @@
             [ty.demo.icons :as demo-icons]
             [ty.demo.state :refer [state]]
             [ty.demo.views.buttons :as buttons]
+            [ty.demo.views.calendar :as calendar]
             [ty.demo.views.dropdowns :as dropdowns]
             [ty.demo.views.formatting :as formatting]
             [ty.demo.views.home :as home]
@@ -36,6 +37,9 @@
               {:id ::multiselect
                :segment "multiselect"
                :name "Multiselect"}
+              {:id ::calendar
+               :segment "calendar"
+               :name "Calendar"}
               {:id ::icons
                :segment "icons"
                :name "Icons"}
@@ -109,7 +113,10 @@
               :icon "chevron-down"})
    (nav-item {:route-id ::multiselect
               :label "Multiselect"
-              :icon "list"})
+              :icon "check-circle"})
+   (nav-item {:route-id ::calendar
+              :label "Calendar"
+              :icon "lucide-calendar"})
    (nav-item {:route-id ::icons
               :label "Icons"
               :icon "image"})
@@ -182,6 +189,7 @@
         (router/rendered? ::inputs true) "Input Components"
         (router/rendered? ::dropdowns true) "Dropdown Components"
         (router/rendered? ::multiselect true) "Multiselect Components"
+        (router/rendered? ::calendar true) "Calendar Components"
         (router/rendered? ::icons true) "Icon Library"
         (router/rendered? ::popups true) "Popup Components"
         (router/rendered? ::tags true) "Tag Components"
@@ -220,18 +228,19 @@
            {:width (- (layout/container-width) sidebar-width content-padding)
             :height (- (layout/container-height) header-height content-padding)}
            (cond
-             (router/rendered? ::home true) (home/home-view)
-             (router/rendered? ::buttons true) (buttons/buttons-view)
-             (router/rendered? ::inputs true) (inputs/inputs-view)
-             (router/rendered? ::dropdowns true) (dropdowns/render)
-             (router/rendered? ::multiselect true) (multiselect/render)
-             (router/rendered? ::icons true) (icons/icons-view)
-             (router/rendered? ::popups true) (popups/popups-view)
-             (router/rendered? ::tags true) (tags/tags-view)
-             (router/rendered? ::modal true) (modal/modal-view)
-             (router/rendered? ::i18n true) (i18n-views/i18n-view)
-             (router/rendered? ::formatting true) (formatting/formatting-view)
-             (router/rendered? ::layout true) (layout-views/layout-view)
+             (router/rendered? ::home true) (home/view)
+             (router/rendered? ::buttons true) (buttons/view)
+             (router/rendered? ::inputs true) (inputs/view)
+             (router/rendered? ::dropdowns true) (dropdowns/view)
+             (router/rendered? ::multiselect true) (multiselect/view)
+             (router/rendered? ::calendar true) (calendar/view)
+             (router/rendered? ::icons true) (icons/view)
+             (router/rendered? ::popups true) (popups/view)
+             (router/rendered? ::tags true) (tags/view)
+             (router/rendered? ::modal true) (modal/view)
+             (router/rendered? ::i18n true) (i18n-views/view)
+             (router/rendered? ::formatting true) (formatting/view)
+             (router/rendered? ::layout true) (layout-views/view)
              (router/rendered? ::admin-dashboard true)
              [:div.max-w-4xl.mx-auto
               [:h1.text-2xl.lg:text-3xl.font-bold.text-gray-900.dark:text-white.mb-4

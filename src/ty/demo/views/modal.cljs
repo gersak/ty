@@ -8,7 +8,7 @@
     (js/console.log "Modal dropdown changed:" (js-obj "value" value "text" text))
     (swap! state/state assoc :modal-dropdown-value value)))
 
-(defn modal-view []
+(defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2

@@ -325,7 +325,7 @@
     [:div.text-xs.text-gray-500
      "The container context is bound from window dimensions"]]])
 
-(defn layout-view []
+(defn view []
   ;; Use the with-window macro instead of manual tracking
   [:ty-resize-observer#layout-core-features
    (layout/with-resize-observer "layout-core-features"

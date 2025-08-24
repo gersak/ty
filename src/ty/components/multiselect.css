@@ -1,0 +1,83 @@
+/* Multiselect-specific styles extending dropdown base styles */
+
+/* Multiselect stub modifications */
+.multiselect-stub {
+  min-height: 2.5rem;
+  padding: 0.375rem 2.5rem 0.375rem 0.75rem;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.multiselect-stub.has-selection {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+}
+
+/* Tags container */
+.multiselect-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.dropdown-placeholder {
+  flex-grow: 1;
+}
+
+/* Placeholder styling when tags are present */
+.multiselect-chips:not(:empty)+.dropdown-placeholder {
+  display: none;
+}
+
+.multiselect-chips:empty+.dropdown-placeholder {
+  display: block;
+}
+
+.dropdown-placeholder.hidden {
+  display: none !important;
+}
+
+/* Selected option styling in dropdown */
+[selected] {
+  background: var(--ty-dropdown-option-selected-bg, #3b82f6);
+  color: var(--ty-dropdown-option-selected-color, white);
+}
+
+[selected]:hover {
+  background: var(--ty-dropdown-option-selected-bg-hover, #2563eb);
+}
+
+/* Dark theme support for selected options */
+.dark [selected] {
+  background: var(--ty-dropdown-option-selected-bg, #3b82f6);
+  color: var(--ty-dropdown-option-selected-color, white);
+}
+
+/* Ensure ty-tag components in multiselect have proper sizing */
+.multiselect-chips ty-tag {
+  max-width: 120px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .multiselect-chips ty-tag {
+    max-width: 100px;
+  }
+}
+
+/* Focus management for stub */
+.multiselect-stub:focus-within {
+  outline: 2px solid var(--ty-focus-ring, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* Ensure proper spacing in container layouts */
+.multiselect-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}

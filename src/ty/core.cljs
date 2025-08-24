@@ -5,6 +5,7 @@
    [ty.components.icon]
    [ty.components.input]
    [ty.components.modal]
+   [ty.components.multiselect]
    [ty.components.popup]
    [ty.components.resize-observer]
    [ty.components.tag]

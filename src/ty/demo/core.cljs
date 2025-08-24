@@ -13,6 +13,7 @@
             [ty.demo.views.inputs :as inputs]
             [ty.demo.views.layout :as layout-views]
             [ty.demo.views.modal :as modal]
+            [ty.demo.views.multiselect :as multiselect]
             [ty.demo.views.popups :as popups]
             [ty.demo.views.tags :as tags]
             [ty.layout :as layout]
@@ -32,6 +33,9 @@
               {:id ::dropdowns
                :segment "dropdowns"
                :name "Dropdowns"}
+              {:id ::multiselect
+               :segment "multiselect"
+               :name "Multiselect"}
               {:id ::icons
                :segment "icons"
                :name "Icons"}
@@ -103,6 +107,9 @@
    (nav-item {:route-id ::dropdowns
               :label "Dropdowns"
               :icon "chevron-down"})
+   (nav-item {:route-id ::multiselect
+              :label "Multiselect"
+              :icon "list"})
    (nav-item {:route-id ::icons
               :label "Icons"
               :icon "image"})
@@ -174,6 +181,7 @@
         (router/rendered? ::buttons true) "Button Components"
         (router/rendered? ::inputs true) "Input Components"
         (router/rendered? ::dropdowns true) "Dropdown Components"
+        (router/rendered? ::multiselect true) "Multiselect Components"
         (router/rendered? ::icons true) "Icon Library"
         (router/rendered? ::popups true) "Popup Components"
         (router/rendered? ::tags true) "Tag Components"
@@ -216,6 +224,7 @@
              (router/rendered? ::buttons true) (buttons/buttons-view)
              (router/rendered? ::inputs true) (inputs/inputs-view)
              (router/rendered? ::dropdowns true) (dropdowns/render)
+             (router/rendered? ::multiselect true) (multiselect/render)
              (router/rendered? ::icons true) (icons/icons-view)
              (router/rendered? ::popups true) (popups/popups-view)
              (router/rendered? ::tags true) (tags/tags-view)

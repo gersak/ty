@@ -38,9 +38,12 @@
 ;; =====================================================
 
 (defn get-value
-  "Get current parsed value from element property."
+  "Get current value from element, checking property first, then attribute.
+   Returns the raw value (property takes precedence for programmatic access)."
   [^js el]
-  (.-value el))
+  (or (.-value el)
+      (when (.hasAttribute el "value")
+        (.getAttribute el "value"))))
 
 (defn get-attribute
   "Get current attribute value (the string in HTML)."
@@ -88,12 +91,14 @@
 
 (defn setup-component!
   "Initialize a component with its state update function.
+   Always syncs initial value to ensure attribute visibility.
    Call this in component's connected callback."
   [^js el update-state-fn]
   (set! (.-tyUpdateState el) update-state-fn)
-  ;; Sync initial value if present
-  (when-let [initial (get-attribute el)]
-    (sync-value! el initial)))
+  ;; Always sync initial value (from property or attribute) to ensure attribute is visible
+  (let [initial (get-value el)]
+    (when initial
+      (sync-value! el initial))))
 
 (defn handle-attr-change
   "Standard handler for value attribute changes.

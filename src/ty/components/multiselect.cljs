@@ -1,12 +1,12 @@
 (ns ty.components.multiselect
   "Multiselect component with ty-tag integration for multiple selections"
-  (:require [cljs-bean.core :refer [->js ->clj]]
-            [ty.components.dropdown.common :as common]
-            [ty.components.dropdown.desktop :as desktop]
-            [ty.components.dropdown.mobile :as mobile]
-            [ty.components.tag] ; Import ty-tag component
-            [ty.css :refer [ensure-styles!]]
-            [ty.shim :as wcs])
+  (:require
+    [ty.components.dropdown.common :as common]
+    [ty.components.dropdown.desktop :as desktop]
+    [ty.components.dropdown.mobile :as mobile]
+    [ty.components.tag] ; Import ty-tag component
+    [ty.css :refer [ensure-styles!]]
+    [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load multiselect styles
@@ -114,7 +114,7 @@
   [^js el]
   (let [selected-values (get-selected-values el)
         value-str (if (seq selected-values)
-                    (.join (->js selected-values) ",")
+                    (.join selected-values ",")
                     "")]
     ;; Update both attribute and property for consistency
     (.setAttribute el "value" value-str)
@@ -169,7 +169,7 @@
 (defn dispatch-multiselect-change!
   "Dispatch multiselect change event"
   [^js el values action item]
-  (let [detail #js {:values (->js values)
+  (let [detail #js {:values values
                     :action action ; "add" | "remove"
                     :item item} ; The item that was added/removed
         event (js/CustomEvent. "change"

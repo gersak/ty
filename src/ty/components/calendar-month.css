@@ -9,6 +9,12 @@
   border-radius: 0.5rem;
   font-family: system-ui, -apple-system, sans-serif;
   user-select: none;
+  outline: none;
+}
+
+/* Focus styles for keyboard navigation */
+.calendar-month-container:focus {
+  box-shadow: 0 0 0 2px var(--ty-calendar-focus-ring, rgba(59, 130, 246, 0.5));
 }
 
 /* Weekday headers */
@@ -50,10 +56,16 @@
   background: transparent;
   position: relative;
   min-height: 2.5rem;
+  outline: none;
 }
 
-.calendar-day:hover:not(.other-month):not(.selected) {
+.calendar-day:hover:not(.other-month):not(.selected):not(.disabled) {
   background: var(--ty-calendar-day-hover, #f3f4f6);
+}
+
+/* Focused day (keyboard navigation) */
+.calendar-day.focused:not(.selected) {
+  box-shadow: 0 0 0 2px var(--ty-calendar-focus-ring, rgba(59, 130, 246, 0.5));
 }
 
 /* Selected day */
@@ -102,10 +114,36 @@
   background: transparent;
 }
 
+/* Disabled days */
+.calendar-day.disabled {
+  color: var(--ty-calendar-disabled-color, #d1d5db);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.calendar-day.disabled:hover {
+  background: transparent;
+}
+
+/* Combination states */
+.calendar-day.disabled.today:not(.selected) {
+  background: var(--ty-calendar-day-today-bg-disabled, #fef2f2);
+  opacity: 0.5;
+}
+
+.calendar-day.disabled.selected {
+  background: var(--ty-calendar-day-selected-disabled, #9ca3af);
+  opacity: 0.7;
+}
+
 /* Dark theme support */
 .dark .calendar-month-container {
   background: var(--ty-calendar-bg, #1f2937);
   color: var(--ty-calendar-color, #f9fafb);
+}
+
+.dark .calendar-month-container:focus {
+  box-shadow: 0 0 0 2px var(--ty-calendar-focus-ring, rgba(96, 165, 250, 0.5));
 }
 
 .dark .calendar-weekdays {
@@ -120,8 +158,12 @@
   color: var(--ty-calendar-day-color, #f3f4f6);
 }
 
-.dark .calendar-day:hover:not(.other-month):not(.selected) {
+.dark .calendar-day:hover:not(.other-month):not(.selected):not(.disabled) {
   background: var(--ty-calendar-day-hover, #374151);
+}
+
+.dark .calendar-day.focused:not(.selected) {
+  box-shadow: 0 0 0 2px var(--ty-calendar-focus-ring, rgba(96, 165, 250, 0.5));
 }
 
 .dark .calendar-day.today:not(.selected) {
@@ -134,6 +176,10 @@
 
 .dark .calendar-day.other-month {
   color: var(--ty-calendar-other-month-color, #4b5563);
+}
+
+.dark .calendar-day.disabled {
+  color: var(--ty-calendar-disabled-color, #4b5563);
 }
 
 /* Responsive sizing */
@@ -150,4 +196,13 @@
   .calendar-weekday {
     font-size: 0.6875rem;
   }
+}
+
+/* Accessibility */
+.calendar-day[aria-disabled="true"] {
+  pointer-events: none;
+}
+
+.calendar-day[tabindex="0"]:focus {
+  box-shadow: 0 0 0 2px var(--ty-calendar-focus-ring, rgba(59, 130, 246, 0.5));
 }

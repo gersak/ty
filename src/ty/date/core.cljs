@@ -27,33 +27,101 @@
   []
   (time->value (date)))
 
+(defn parse-value
+  "Parse various date input formats to numeric value (milliseconds).
+   Supports:
+   - Numeric timestamps (milliseconds)
+   - ISO date strings (2024-12-25, 2024-12-25T10:30:00Z)
+   - Date objects
+   - nil (returns nil)
+   
+   Returns nil if parsing fails."
+  [input]
+  (cond
+    ;; Already nil
+    (nil? input) nil
+    
+    ;; Already a number - assume it's milliseconds
+    (number? input) input
+    
+    ;; Date object
+    (instance? js/Date input)
+    (let [ms (.getTime input)]
+      (when-not (js/isNaN ms) ms))
+    
+    ;; String - try to parse
+    (string? input)
+    (when (not= input "")
+      (let [parsed (js/Date. input)
+            ms (.getTime parsed)]
+        (when-not (js/isNaN ms) ms)))
+    
+    ;; Unknown type
+    :else nil))
+
+(defn format-value
+  "Format a numeric value to ISO string (YYYY-MM-DD).
+   Returns nil if value is invalid."
+  [value]
+  (when-let [v (parse-value value)]
+    (let [date-obj (value->time v)
+          year (.getFullYear date-obj)
+          month (inc (.getMonth date-obj))
+          day (.getDate date-obj)]
+      (str year "-" 
+           (when (< month 10) "0") month "-"
+           (when (< day 10) "0") day))))
+
 (defn format-date
   "Format date using Intl.DateTimeFormat"
   ([value] (format-date value "en-US" {}))
   ([value locale] (format-date value locale {}))
   ([value locale options]
-   (let [date-obj (value->time value)
-         formatter (js/Intl.DateTimeFormat. locale (clj->js options))]
-     (.format formatter date-obj))))
+   (when-let [v (parse-value value)]
+     (let [date-obj (value->time v)
+           formatter (js/Intl.DateTimeFormat. locale (clj->js options))]
+       (.format formatter date-obj)))))
 
 (defn parse-date-string
-  "Parse ISO date string to numeric value"
+  "Parse ISO date string to numeric value.
+   DEPRECATED: Use parse-value instead."
   [date-str]
-  (when (and date-str (not= date-str ""))
-    (if (string? date-str)
-      (time->value (js/Date. date-str))
-      ;; If it's already a number, return it
-      date-str)))
+  (parse-value date-str))
 
 (defn same-day?
   "Check if two date values are on the same day"
   [value1 value2]
-  (when (and value1 value2)
-    (let [ctx1 (day-time-context value1)
-          ctx2 (day-time-context value2)]
-      (and (= (:year ctx1) (:year ctx2))
-           (= (:month ctx1) (:month ctx2))
-           (= (:day-in-month ctx1) (:day-in-month ctx2))))))
+  (when-let [v1 (parse-value value1)]
+    (when-let [v2 (parse-value value2)]
+      (let [ctx1 (day-time-context v1)
+            ctx2 (day-time-context v2)]
+        (and (= (:year ctx1) (:year ctx2))
+             (= (:month ctx1) (:month ctx2))
+             (= (:day-in-month ctx1) (:day-in-month ctx2)))))))
+
+(defn in-range?
+  "Check if a date value is within the given range (inclusive).
+   Returns true if value is between min-date and max-date."
+  [value min-date max-date]
+  (when-let [v (parse-value value)]
+    (and (or (nil? min-date)
+             (>= v (parse-value min-date)))
+         (or (nil? max-date)
+             (<= v (parse-value max-date))))))
+
+(defn is-disabled?
+  "Check if a date value is in the disabled dates set.
+   disabled-dates can be a set, array, or comma-separated string."
+  [value disabled-dates]
+  (when (and value disabled-dates)
+    (let [v (parse-value value)
+          disabled-set (cond
+                        (set? disabled-dates) disabled-dates
+                        (sequential? disabled-dates) (set disabled-dates)
+                        (string? disabled-dates) 
+                        (set (map parse-value (.split disabled-dates ",")))
+                        :else #{})]
+      (contains? disabled-set v))))
 
 (defn calendar-month-days
   "Generate calendar month days for 6-week display.

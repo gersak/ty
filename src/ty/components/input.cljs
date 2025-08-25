@@ -366,17 +366,40 @@
                 (init-component-state! el)
                ;; Then render
                 (render! el))
-   :attr (fn [^js el attr-name _old new-value]
+   :attr (fn [^js el attr-name old-value new-value]
            ;; For value changes, check if it's external
-           (if (= attr-name "value")
-             (let [state (get-component-state el)]
-               ;; Only sync if it's different from our current state
-               (when (and state (not= new-value (str (:shadow-value state))))
+           (if (= attr-name :value)
+             (let [state (get-component-state el)
+                   current-str (when (:shadow-value state)
+                                 (str (:shadow-value state)))]
+               ;; Compare normalized strings - handles nil properly
+               ;; If new-value is nil/empty and shadow is nil, they're the same
+               ;; If new-value differs from stringified shadow, it's external
+               (when (and state
+                          (not= new-value current-str))
+                 ;; It's an external change - sync it
                  (let [shadow-value (parse-shadow-value new-value)]
-                   (update-component-state! el {:shadow-value shadow-value
-                                                :last-external-value (or new-value "")})
+                   ;; Don't use update-component-state! here as it will set the attribute again
+                   ;; Just update the state directly and the input display
+                   (set! (.-tyInputState el)
+                         (merge state {:shadow-value shadow-value
+                                       :last-external-value (or new-value "")}))
+                   ;; Also update the property
+                   (set! (.-value el) shadow-value)
                    ;; Update input display
                    (when-let [input-el (.querySelector (wcs/ensure-shadow el) "input")]
-                     (set! (.-value input-el) (get-display-value el))))))
+                     (set! (.-value input-el) (get-display-value el)))
+                   ;; Emit events for the external change
+                   (let [format-config (get-format-config el)
+                         formatted-value (when shadow-value
+                                           (format-shadow-value shadow-value format-config))]
+                     (doseq [e ["input" "change"]]
+                       (.dispatchEvent el
+                                       (js/CustomEvent. e
+                                                        #js {:bubbles true
+                                                             :composed true
+                                                             :detail #js {:value shadow-value
+                                                                          :formattedValue formatted-value
+                                                                          :originalEvent nil}})))))))
              ;; For other attributes, just re-render
              (render! el)))})

@@ -1,8 +1,8 @@
 (ns ty.demo.views.inputs
   "Demonstrates input components with enhanced numeric formatting"
   (:require
-    [ty.i18n :as i18n]
-    [ty.layout :as layout]))
+   [ty.i18n :as i18n]
+   [ty.layout :as layout]))
 
 (defn basic-input-demos []
   [:div.space-y-6

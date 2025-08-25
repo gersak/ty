@@ -33,7 +33,6 @@
   Currency should be a 3-letter ISO code like 'USD', 'EUR', 'HRK'"
   ([number currency] (format-currency number currency i18n/*locale*))
   ([number currency locale]
-   (println "FORMATING: " number currency locale)
    (format-number number locale {:style "currency"
                                  :currency currency})))
 

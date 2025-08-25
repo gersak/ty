@@ -1,8 +1,9 @@
 (ns ty.components.calendar-month
-  "Calendar month grid component with enhanced features"
+  "Calendar month grid component with transparent value handling"
   (:require [ty.css :refer [ensure-styles!]]
             [ty.date.core :as date]
-            [ty.shim :as wcs])
+            [ty.shim :as wcs]
+            [ty.value :as val])
   (:require-macros [ty.css :refer [defstyles]]))
 
 (declare render!)
@@ -10,15 +11,45 @@
 ;; Load calendar-month styles
 (defstyles calendar-month-styles)
 
+;; =====================================================
+;; Register Value Handlers with Multimethod
+;; =====================================================
+
+(defmethod val/parse-value "TY-CALENDAR-MONTH" [el value]
+  (date/parse-value value))
+
+(defmethod val/normalize-value "TY-CALENDAR-MONTH" [el value]
+  (date/format-value value))
+
+;; =====================================================
+;; State Management
+;; =====================================================
+
+(defn get-initial-state
+  "Create complete initial calendar state based on element's value"
+  [^js el]
+  (let [initial-value (val/parse-value el (val/get-value el))
+        {:keys [view-year view-month]}
+        (if initial-value
+          ;; If value exists, show that month/year
+          (let [ctx (date/day-time-context initial-value)]
+            {:view-year (:year ctx)
+             :view-month (:month ctx)})
+          ;; Otherwise show current month/year
+          {:view-year (.getFullYear (js/Date.))
+           :view-month (inc (.getMonth (js/Date.)))})]
+    ;; Return complete initial state
+    {:selected-value initial-value
+     :view-year view-year
+     :view-month view-month
+     :highlighted-day nil
+     :focused-day nil}))
+
 (defn get-calendar-state
   "Get or initialize calendar component state"
   [^js el]
   (or (.-tyCalendarState el)
-      (let [initial-state {:selected-value nil
-                           :view-year (.getFullYear (js/Date.))
-                           :view-month (inc (.getMonth (js/Date.)))
-                           :highlighted-day nil
-                           :focused-day nil}]
+      (let [initial-state (get-initial-state el)]
         (set! (.-tyCalendarState el) initial-state)
         initial-state)))
 
@@ -27,14 +58,28 @@
   [^js el updates]
   (let [new-state (merge (get-calendar-state el) updates)]
     (set! (.-tyCalendarState el) new-state)
+    ;; Also update via the value system if selected-value changed
+    (when (contains? updates :selected-value)
+      (set! (.-tyUpdateState el) (partial set-calendar-state! el)))
     new-state))
 
-(defn get-calendar-value
-  "Get value from either property or attribute (handles Replicant prop passing).
-   Supports ISO strings, timestamps, and Date objects."
-  [^js el]
-  (date/parse-value (or (.-value el)
-                        (wcs/attr el "value"))))
+(defn sync-calendar-value!
+  "Sync value and optionally update view to show that month."
+  [^js el raw-value & {:keys [update-view?]
+                       :or {update-view? true}}]
+  (let [parsed (val/sync-value! el raw-value)]
+    ;; Update our internal state
+    (set-calendar-state! el {:selected-value parsed})
+    ;; If we have a valid value and should update view, navigate to that month/year
+    (when (and parsed update-view?)
+      (let [ctx (date/day-time-context parsed)]
+        (set-calendar-state! el {:view-year (:year ctx)
+                                 :view-month (:month ctx)})))
+    parsed))
+
+;; =====================================================
+;; Other Attribute Getters
+;; =====================================================
 
 (defn get-min-date
   "Get minimum date constraint"
@@ -69,6 +114,10 @@
   (and (date/in-range? day-value min-date max-date)
        (not (contains? disabled-dates day-value))))
 
+;; =====================================================
+;; Event Dispatching
+;; =====================================================
+
 (defn dispatch-date-select!
   "Dispatch date selection event with detailed information"
   [^js el value day-context]
@@ -93,6 +142,10 @@
                                     :cancelable false})]
     (.dispatchEvent el event)))
 
+;; =====================================================
+;; Event Handlers
+;; =====================================================
+
 (defn handle-day-click!
   "Handle click on a calendar day"
   [^js el ^js shadow-root day-context min-date max-date disabled-dates ^js event]
@@ -111,7 +164,8 @@
       ;; Check if selectable
       (is-selectable? value min-date max-date disabled-dates)
       (do
-        (set-calendar-state! el {:selected-value value})
+        ;; Sync value (don't update view since user is already looking at this month)
+        (sync-calendar-value! el value :update-view? false)
         (dispatch-date-select! el value day-context)
         (render! el))
 
@@ -166,12 +220,17 @@
           (when (and day-context
                      (not (:other-month day-context))
                      (is-selectable? focused-day min-date max-date disabled-dates))
-            (set-calendar-state! el {:selected-value focused-day})
+            ;; Sync value (don't update view)
+            (sync-calendar-value! el focused-day :update-view? false)
             (dispatch-date-select! el focused-day day-context)
             (render! el))))
 
       ;; Default - do nothing
       nil)))
+
+;; =====================================================
+;; Rendering
+;; =====================================================
 
 (defn render-day-cell
   "Render a single day cell with all states"
@@ -227,17 +286,10 @@
   (let [root (wcs/ensure-shadow el)
         {:keys [view-year view-month selected-value focused-day]} (get-calendar-state el)
 
-        ;; Get value from property or attribute
-        value (get-calendar-value el)
-
         ;; Get constraints
         min-date (get-min-date el)
         max-date (get-max-date el)
         disabled-dates (get-disabled-dates el)
-
-        ;; Update selected value if provided
-        _ (when (and value (not= value selected-value))
-            (set-calendar-state! el {:selected-value value}))
 
         ;; Generate calendar days
         days (date/calendar-month-days view-year view-month)
@@ -295,7 +347,7 @@
                                        weeks)))]
           (doseq [day-context ordered-days]
             (let [day-cell (render-day-cell el root day-context
-                                            (or value selected-value) today-value
+                                            selected-value today-value
                                             min-date max-date disabled-dates focused-day)]
               (.appendChild days-grid day-cell))))
         (.appendChild container days-grid))
@@ -305,26 +357,45 @@
 (defn cleanup!
   "Cleanup function for calendar month"
   [^js el]
-  (set! (.-tyCalendarState el) nil))
+  (set! (.-tyCalendarState el) nil)
+  (set! (.-tyUpdateState el) nil)
+  (set! (.-tyRender el) nil))
 
-;; Register the web component
+;; =====================================================
+;; Web Component Registration
+;; =====================================================
+
 (wcs/define! "ty-calendar-month"
   {:observed [:value :year :month :min-date :max-date :disabled-dates
               :locale :first-day-of-week :allow-other-month]
-   :connected render!
+   :connected (fn [^js el]
+               ;; Store render function for use by value system
+                (set! (.-tyRender el) render!)
+               ;; Setup value handling
+                (val/setup-component! el (partial set-calendar-state! el))
+               ;; Initialize state (which considers initial value for view)
+                (get-calendar-state el)
+                (render! el))
    :disconnected cleanup!
    :attr (fn [^js el attr-name old-value new-value]
            (case attr-name
-             "value" (do
-                       (when-let [parsed (date/parse-value new-value)]
-                         (set-calendar-state! el {:selected-value parsed}))
-                       (render! el))
-             "year" (do
-                      (set-calendar-state! el {:view-year (js/parseInt new-value)})
-                      (render! el))
-             "month" (do
-                       (set-calendar-state! el {:view-month (js/parseInt new-value)})
-                       (render! el))
+             "value"
+             ;; Use the simplified handler
+             (val/handle-attr-change el attr-name old-value new-value render!)
+
+             "year"
+             (do
+               (set-calendar-state! el {:view-year (js/parseInt new-value)})
+               (render! el))
+
+             "month"
+             (do
+               (set-calendar-state! el {:view-month (js/parseInt new-value)})
+               (render! el))
+
              ("min-date" "max-date" "disabled-dates" "locale"
-                         "first-day-of-week" "allow-other-month") (render! el)
+                         "first-day-of-week" "allow-other-month")
+             (render! el)
+
+             ;; Default
              (render! el)))})

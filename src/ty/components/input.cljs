@@ -41,23 +41,49 @@
      :locale locale
      :precision precision}))
 
-(defn get-component-state
-  "Get or initialize component state on element"
+(defn init-component-state!
+  "Initialize component state from current value"
   [^js el]
-  (or (.-tyInputState el)
-      (let [initial-value (wcs/attr el "value")
-            shadow-value (parse-shadow-value initial-value)]
-        (set! (.-tyInputState el)
-              {:shadow-value shadow-value
-               :last-external-value (or initial-value "")
-               :is-focused false})
-        (.-tyInputState el))))
+  (let [initial-value (or (.-value el) (wcs/attr el "value"))
+        shadow-value (parse-shadow-value initial-value)]
+    (set! (.-tyInputState el)
+          {:shadow-value shadow-value
+           :last-external-value (or initial-value "")
+           :is-focused false})
+    ;; Mirror initial value upstream
+    (if shadow-value
+      (do
+        (.setAttribute el "value" (str shadow-value))
+        (set! (.-value el) shadow-value))
+      (do
+        (.removeAttribute el "value")
+        (set! (.-value el) nil)))
+    (.-tyInputState el)))
+
+(defn get-component-state
+  "Get component state (must be initialized first)"
+  [^js el]
+  (.-tyInputState el))
 
 (defn update-component-state!
-  "Update component state"
+  "Update component state and mirror to value attribute"
   [^js el updates]
-  (let [state (get-component-state el)]
-    (set! (.-tyInputState el) (merge state updates))))
+  (let [state (get-component-state el)
+        new-state (merge state updates)]
+    (set! (.-tyInputState el) new-state)
+
+    ;; Mirror shadow value upstream to maintain transparency
+    (when (contains? updates :shadow-value)
+      (let [shadow-value (:shadow-value updates)]
+        (if shadow-value
+          (do
+            (.setAttribute el "value" (str shadow-value))
+            (set! (.-value el) shadow-value))
+          (do
+            (.removeAttribute el "value")
+            (set! (.-value el) nil)))))
+
+    new-state))
 
 ;; =====================================================
 ;; Formatting Functions
@@ -240,8 +266,7 @@
   "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-asterisk-icon lucide-asterisk\"><path d=\"M12 6v12\"/><path d=\"M17.196 9 6.804 15\"/><path d=\"m6.804 9 10.392 6\"/></svg>")
 
 (defn render! [^js el]
-  ;; Sync external changes first
-  (sync-external-value! el)
+  ;; Don't sync external value here - state is already initialized
 
   (let [{:keys [type value placeholder label disabled required error]
          :as attrs} (input-attributes el)
@@ -268,6 +293,7 @@
 
         ;; Update input
         (set! (.-type existing-input) (if (#{"password" "currency" "date"} type)
+                                        type
                                         "text"))
         (set! (.-value existing-input) (or value ""))
         (set! (.-placeholder existing-input) (or placeholder ""))
@@ -335,8 +361,22 @@
 (wcs/define! "ty-input"
   {:observed [:type :value :placeholder :label :disabled :required :error
               :size :flavor :class :currency :locale :precision]
-   :connected render!
-   :attr (fn [^js el _attr-name _old _new]
-           ;; Re-render on any attribute change
-           ;; This will trigger sync-external-value! 
-           (render! el))})
+   :connected (fn [^js el]
+               ;; Initialize state first
+                (init-component-state! el)
+               ;; Then render
+                (render! el))
+   :attr (fn [^js el attr-name _old new-value]
+           ;; For value changes, check if it's external
+           (if (= attr-name "value")
+             (let [state (get-component-state el)]
+               ;; Only sync if it's different from our current state
+               (when (and state (not= new-value (str (:shadow-value state))))
+                 (let [shadow-value (parse-shadow-value new-value)]
+                   (update-component-state! el {:shadow-value shadow-value
+                                                :last-external-value (or new-value "")})
+                   ;; Update input display
+                   (when-let [input-el (.querySelector (wcs/ensure-shadow el) "input")]
+                     (set! (.-value input-el) (get-display-value el))))))
+             ;; For other attributes, just re-render
+             (render! el)))})

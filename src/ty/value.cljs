@@ -56,9 +56,9 @@
    This avoids issues with different string formats that represent
    the same internal value."
   [^js el new-raw-value]
-  (let [current-parsed (get-value el)
+  (let [current-value (.-value el) ; Get the current parsed value from property
         new-parsed (parse-value el new-raw-value)]
-    (not= current-parsed new-parsed)))
+    (not= current-value new-parsed)))
 
 (defn sync-value!
   "Parse input once and sync to all three places:

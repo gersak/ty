@@ -5,7 +5,7 @@
   flex-direction: column;
   gap: 0.5rem;
   padding: 1rem;
-  background: white;
+  background: var(--ty-bg, white);
   border-radius: 0.5rem;
   font-family: system-ui, sans-serif;
   user-select: none;
@@ -17,14 +17,14 @@
   grid-template-columns: repeat(7, 1fr);
   gap: 0.25rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--ty-border-neutral, #e5e7eb);
 }
 
 .calendar-weekday {
   text-align: center;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--ty-color-neutral-m1, #6b7280);
   text-transform: uppercase;
 }
 
@@ -37,39 +37,67 @@
 .calendar-day {
   aspect-ratio: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   border-radius: 0.375rem;
   font-size: 0.875rem;
   min-height: 2.5rem;
-  color: #111827;
+  color: var(--ty-color-neutral, #111827);
   cursor: pointer;
   transition: background-color 0.15s ease;
+  position: relative;
 }
 
 .calendar-day:hover {
-  background-color: #f3f4f6;
+  background-color: var(--ty-bg-neutral-p1, #f3f4f6);
+  color: var(--ty-color-p2) !important;
 }
 
-/* Day state styles */
+/* Today styling - unique semantic colors */
 .calendar-day.today {
-  background-color: #3b82f6;
-  color: white;
+  color: var(--ty-color-unique-p1, #059669);
   font-weight: 600;
+  background-color: var(--ty-bg-unique-m1, #ecfdf5);
 }
 
 .calendar-day.today:hover {
-  background-color: #2563eb;
+  background-color: var(--ty-bg-unique, #d1fae5);
 }
 
+/* Today dot indicator */
+.calendar-day.today::after {
+  content: '';
+  position: absolute;
+  bottom: 0.25rem;
+  width: 0.25rem;
+  height: 0.25rem;
+  background-color: var(--ty-color-unique-p2, #047857);
+  border-radius: 50%;
+}
+
+/* Weekend styling */
 .calendar-day.weekend {
-  color: #9ca3af;
+  color: var(--ty-color-neutral-m2, #9ca3af);
 }
 
+/* Other month styling */
 .calendar-day.other-month {
-  color: #d1d5db;
+  color: var(--ty-color-neutral-m3, #d1d5db);
 }
 
 .calendar-day.other-month:hover {
-  background-color: #f9fafb;
+  background-color: var(--ty-bg-neutral-m1, #f9fafb);
+}
+
+/* Today + Weekend combination */
+.calendar-day.today.weekend {
+  color: var(--ty-color-unique-p1, #059669);
+  background-color: var(--ty-bg-unique-m1, #ecfdf5);
+}
+
+/* Today + Other Month combination */
+.calendar-day.today.other-month {
+  color: var(--ty-color-unique, #10b981);
+  background-color: var(--ty-bg-unique-m2, #f0fdf4);
 }

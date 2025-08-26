@@ -81,22 +81,32 @@
                   (day-classes-fn (->js day-context))
                   (default-day-classes (->js day-context)))]
 
+    ;; STRICT DOM-ONLY CHECK: Throw error immediately if custom function returns non-DOM content
+    (when (and day-content-fn content (not (.-nodeType content)))
+      (throw (js/Error. (str "Custom render function must return a DOM element, got: " (type content) ". "
+                             "Use (.createElement js/document \"div\") to create DOM elements."))))
+
     ;; Apply classes
     (set! (.-className day-element) (clojure.string/join " " classes))
 
-    ;; Set content (string or HTML)
+    ;; Set content (kept for future flexibility - current strict check prevents this path for custom functions)
     (cond
-      ;; String content - use textContent for safety
+      ;; String content (from default renderer) - use textContent
       (string? content)
       (set! (.-textContent day-element) content)
 
-      ;; DOM element - append it
+      ;; DOM element - append it (ONLY valid custom content after strict check above)
       (and content (.-nodeType content))
       (.appendChild day-element content)
 
-      ;; Fallback - treat as HTML string
+      ;; Custom render function returned invalid content - throw error (redundant after strict check but kept for completeness)
+      (and day-content-fn content)
+      (throw (js/Error. (str "Custom render function must return a DOM element, got: " (type content) ". "
+                             "Use (.createElement js/document \"div\") to create DOM elements.")))
+
+      ;; No content or nil - do nothing
       :else
-      (set! (.-innerHTML day-element) (str content)))
+      nil)
 
     ;; Add click handler
     (.addEventListener day-element "click"

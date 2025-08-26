@@ -1,35 +1,63 @@
 (ns ty.demo.views.calendar
-  "Calendar component demos with enhanced features"
+  "Calendar component demos with DOM-only render functions"
   (:require
     [cljs-bean.core :refer [->clj ->js]]
     [ty.date.core :as date]
     [ty.demo.state :as state]))
 
-;; Demo render functions for testing  
+;; Demo render functions for testing - ALL DOM-ONLY  
 ;; Set up demo render functions ONCE when namespace loads
 (defonce demo-functions-setup
   (do
-    (js/console.log "Setting up demo render functions...")
+    (js/console.log "Setting up DOM-only demo render functions...")
 
-    ;; Holiday day content - shows day with holiday indicator
+    ;; Holiday day content - DOM elements only
     (set! (.-holidayDayContent js/window)
           (fn [^js context]
             (let [{:keys [day-in-month holiday?]} (->clj context)]
-              (if true
-                (str "<div class=\"day-content\"><span>" day-in-month "</span><span class=\"holiday-star\">★</span></div>")
-                (str day-in-month)))))
+              (if holiday?
+                ;; Create DOM elements for holiday display
+                (let [container (.createElement js/document "div")
+                      day-span (.createElement js/document "span")
+                      star-span (.createElement js/document "span")]
+                  (set! (.-className container) "day-content")
+                  (set! (.-textContent day-span) (str day-in-month))
+                  (set! (.-className star-span) "holiday-star")
+                  (set! (.-textContent star-span) "★")
+                  (.appendChild container day-span)
+                  (.appendChild container star-span)
+                  container)
+                ;; Simple day number for non-holidays
+                (let [span (.createElement js/document "span")]
+                  (set! (.-textContent span) (str day-in-month))
+                  span)))))
 
-    ;; Event dots day content - shows day with event indicators  
+    ;; Event dots day content - DOM elements only
     (set! (.-eventDayContent js/window)
           (fn [^js context]
             (let [{:keys [day-in-month]} (->clj context)
                   ;; Mock some events for demo (15th, 18th, 22nd, 25th have events)
                   has-events (#{15 18 22 25} day-in-month)]
               (if has-events
-                (str "<div class=\"day-content\"><span>" day-in-month "</span><div class=\"event-dots\"><span class=\"event-dot\"></span></div></div>")
-                (str day-in-month)))))
+                ;; Create DOM elements for event display
+                (let [container (.createElement js/document "div")
+                      day-span (.createElement js/document "span")
+                      dots-container (.createElement js/document "div")
+                      dot (.createElement js/document "span")]
+                  (set! (.-className container) "day-content")
+                  (set! (.-textContent day-span) (str day-in-month))
+                  (set! (.-className dots-container) "event-dots")
+                  (set! (.-className dot) "event-dot")
+                  (.appendChild dots-container dot)
+                  (.appendChild container day-span)
+                  (.appendChild container dots-container)
+                  container)
+                ;; Simple day number for no events
+                (let [span (.createElement js/document "span")]
+                  (set! (.-textContent span) (str day-in-month))
+                  span)))))
 
-    ;; Price display for booking calendar
+    ;; Hotel pricing day content - DOM elements only
     (set! (.-hotelDayContent js/window)
           (fn [^js context]
             (let [{:keys [day-in-month other-month weekend]} (->clj context)
@@ -37,10 +65,24 @@
                   weekend-markup (if weekend 50 0)
                   price (+ base-price weekend-markup)]
               (if other-month
-                (str day-in-month)
-                (str "<div class=\"hotel-day\"><span class=\"day-num\">" day-in-month "</span><span class=\"price\">$" price "</span></div>")))))
+                ;; Simple day number for other months
+                (let [span (.createElement js/document "span")]
+                  (set! (.-textContent span) (str day-in-month))
+                  span)
+                ;; Create DOM elements for hotel pricing
+                (let [container (.createElement js/document "div")
+                      day-span (.createElement js/document "span")
+                      price-span (.createElement js/document "span")]
+                  (set! (.-className container) "hotel-day")
+                  (set! (.-className day-span) "day-num")
+                  (set! (.-textContent day-span) (str day-in-month))
+                  (set! (.-className price-span) "price")
+                  (set! (.-textContent price-span) (str "$" price))
+                  (.appendChild container day-span)
+                  (.appendChild container price-span)
+                  container)))))
 
-    ;; Task count for project timeline  
+    ;; Project task count day content - DOM elements only
     (set! (.-projectDayContent js/window)
           (fn [^js context]
             (let [{:keys [day-in-month]} (->clj context)
@@ -49,8 +91,22 @@
                                5 3, 12 1, 18 5, 22 2, 28 4
                                0)]
               (if (> task-count 0)
-                (str "<div class=\"project-day\"><span class=\"day-num\">" day-in-month "</span><span class=\"task-count\">" task-count " tasks</span></div>")
-                (str day-in-month)))))
+                ;; Create DOM elements for task display
+                (let [container (.createElement js/document "div")
+                      day-span (.createElement js/document "span")
+                      task-span (.createElement js/document "span")]
+                  (set! (.-className container) "project-day")
+                  (set! (.-className day-span) "day-num")
+                  (set! (.-textContent day-span) (str day-in-month))
+                  (set! (.-className task-span) "task-count")
+                  (set! (.-textContent task-span) (str task-count " tasks"))
+                  (.appendChild container day-span)
+                  (.appendChild container task-span)
+                  container)
+                ;; Simple day number for no tasks
+                (let [span (.createElement js/document "span")]
+                  (set! (.-textContent span) (str day-in-month))
+                  span)))))
 
     ;; Custom classes for different contexts
     (set! (.-holidayDayClasses js/window)
@@ -81,72 +137,17 @@
                       has-tasks (conj "has-tasks"))))))
 
     ;; Log that setup is complete
-    (js/console.log "Demo render functions registered:"
+    (js/console.log "DOM-only demo render functions registered:"
                     #js {:holidayDayContent (exists? (.-holidayDayContent js/window))
                          :eventDayContent (exists? (.-eventDayContent js/window))
                          :hotelDayContent (exists? (.-hotelDayContent js/window))
                          :projectDayContent (exists? (.-projectDayContent js/window))})
     :setup-complete))
 
- ;; APPROACH 1: Return HTML Strings (Current - should work now)
-(set! (.-holidayDayContent js/window)
-      (fn [^js context]
-        (let [{:keys [day-in-month holiday?]} (->clj context)]
-          (if holiday?
-                ;; Return HTML string - component uses innerHTML
-            "<div class=\"day-content\"><span>25</span><span class=\"holiday-star\">★</span></div>"
-            (str day-in-month)))))
-
-    ;; APPROACH 2: Return DOM Elements (Better)
-(set! (.-hotelDayContentDOM js/window)
-      (fn [^js context]
-        (let [{:keys [day-in-month other-month weekend]} (->clj context)]
-          (if other-month
-            (str day-in-month)
-                ;; Create actual DOM elements
-            (let [container (.createElement js/document "div")
-                  day-span (.createElement js/document "span")
-                  price-span (.createElement js/document "span")
-                  base-price 120
-                  weekend-markup (if weekend 50 0)
-                  price (+ base-price weekend-markup)]
-              (set! (.-className container) "hotel-day")
-              (set! (.-className day-span) "day-num")
-              (set! (.-textContent day-span) (str day-in-month))
-              (set! (.-className price-span) "price")
-              (set! (.-textContent price-span) (str "$" price))
-              (.appendChild container day-span)
-              (.appendChild container price-span)
-              container)))))
-
-    ;; APPROACH 3: Mixed Content (Most Flexible)
-(set! (.-eventDayContentMixed js/window)
-      (fn [^js context]
-        (let [{:keys [day-in-month]} (->clj context)
-              has-events (#{15 18 22 25} day-in-month)]
-          (if has-events
-                ;; Create container with mixed content
-            (let [container (.createElement js/document "div")
-                  day-span (.createElement js/document "span")
-                  dots-container (.createElement js/document "div")
-                  dot (.createElement js/document "span")]
-              (set! (.-className container) "day-content")
-              (set! (.-textContent day-span) (str day-in-month))
-              (set! (.-className dots-container) "event-dots")
-              (set! (.-className dot) "event-dot")
-              (.appendChild dots-container dot)
-              (.appendChild container day-span)
-              (.appendChild container dots-container)
-              container)
-            (str day-in-month)))))
-
-    ;; Keep your existing string-based functions working
-    ;; Holiday day content - shows day with holiday indicator
-
 (defn handle-day-click [^js event]
   (let [detail (.-detail event)
         date-parts (.-dateParts detail)]
-    (js/console.log "Day clicked:" detail #_(aget detail "date-parts"))
+    (js/console.log "Day clicked:" detail)
     (swap! state/state assoc :last-clicked
            {:year (.-year date-parts)
             :month (.-month date-parts)
@@ -177,8 +178,8 @@
 
 (defn basic-calendar-month []
   [:div.demo-section
-   [:h2.demo-title "Stateless Calendar - Render Functions"]
-   [:p.text-sm.text-gray-600.mb-6 "Demonstrating different approaches to custom day rendering"]
+   [:h2.demo-title "Stateless Calendar - DOM-Only Render Functions"]
+   [:p.text-sm.text-gray-600.mb-6 "All custom render functions return DOM elements for optimal performance and security"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-4.gap-4
     ;; Default rendering
@@ -189,39 +190,61 @@
                           :display-month "12"
                           :on {:day-click handle-day-click}}]]
 
-    ;; HTML String approach  
+    ;; Holiday indicators
     [:div
-     [:h3.demo-subtitle "HTML Strings"]
-     [:p.text-sm.text-gray-600.mb-4 "Returns HTML as strings"]
+     [:h3.demo-subtitle "Holiday Indicators"]
+     [:p.text-sm.text-gray-600.mb-4 "Days with holiday stars"]
      [:ty-calendar-month {:display-year "2024"
                           :display-month "12"
                           :day-content-fn "holidayDayContent"
                           :on {:day-click handle-day-click}}]]
 
-    ;; DOM Elements approach
+    ;; Event indicators
     [:div
-     [:h3.demo-subtitle "DOM Elements"]
-     [:p.text-sm.text-gray-600.mb-4 "Hotel pricing with DOM"]
+     [:h3.demo-subtitle "Event Calendar"]
+     [:p.text-sm.text-gray-600.mb-4 "Days with event dots"]
      [:ty-calendar-month {:display-year "2024"
                           :display-month "12"
-                          :day-content-fn "hotelDayContentDOM"
+                          :day-content-fn "eventDayContent"
                           :on {:day-click handle-day-click}}]]
 
-    ;; Mixed content approach
+    ;; Hotel pricing
     [:div
-     [:h3.demo-subtitle "Mixed Content"]
-     [:p.text-sm.text-gray-600.mb-4 "Events with DOM elements"]
+     [:h3.demo-subtitle "Hotel Booking"]
+     [:p.text-sm.text-gray-600.mb-4 "Pricing calendar"]
      [:ty-calendar-month {:display-year "2024"
                           :display-month "12"
-                          :day-content-fn "eventDayContentMixed"
+                          :day-content-fn "hotelDayContent"
+                          :on {:day-click handle-day-click}}]]
+
+    ;; Project tasks
+    [:div
+     [:h3.demo-subtitle "Project Timeline"]
+     [:p.text-sm.text-gray-600.mb-4 "Task count display"]
+     [:ty-calendar-month {:display-year "2024"
+                          :display-month "12"
+                          :day-content-fn "projectDayContent"
                           :on {:day-click handle-day-click}}]]]
 
-   [:div.mt-6.p-4.bg-blue-50.rounded-lg
-    [:h4.font-semibold.mb-2 "Render Function Approaches:"]
+   [:div.mt-6.p-4.bg-green-50.rounded-lg
+    [:h4.font-semibold.mb-2 "✅ DOM-Only Architecture Benefits:"]
     [:div.text-sm.space-y-2
-     [:div [:strong "HTML Strings:"] " Return HTML as string - component uses innerHTML"]
-     [:div [:strong "DOM Elements:"] " Return actual DOM nodes - component appends them"]
-     [:div [:strong "Mixed:"] " Combine both approaches as needed"]]]
+     [:div [:strong "Performance:"] " Direct DOM manipulation, no innerHTML parsing"]
+     [:div [:strong "Security:"] " No XSS risks from user-generated content"]
+     [:div [:strong "Type Safety:"] " Compile-time guarantees for render functions"]
+     [:div [:strong "Flexibility:"] " Full DOM API access for complex layouts"]]]
+
+   [:div.mt-6.p-4.bg-blue-50.rounded-lg
+    [:h4.font-semibold.mb-2 "💡 Render Function Pattern:"]
+    [:pre.text-xs.bg-white.p-3.rounded.overflow-x-auto
+     [:code
+      "(defn my-render-fn [day-context]\n"
+      "  (let [container (.createElement js/document \"div\")\n"
+      "        span (.createElement js/document \"span\")]\n"
+      "    (set! (.-className container) \"custom-day\")\n"
+      "    (set! (.-textContent span) \"Content\")\n"
+      "    (.appendChild container span)\n"
+      "    container)) ; Return DOM element"]]]
 
    ;; Event log
    [:div.mt-6.p-4.bg-gray-50.rounded-lg
@@ -236,110 +259,83 @@
 
 (defn calendar-features []
   [:div.demo-section.mt-8
-   [:h2.demo-title "Enhanced Features"]
+   [:h2.demo-title "Architecture & Features"]
 
    [:div.grid.grid-cols-1.gap-6
 
-    ;; Feature list
+    ;; Architecture benefits
     [:div.bg-gray-50.dark:bg-gray-800.rounded-lg.p-6
-     [:h3.font-semibold.mb-4 "New Features in v2"]
+     [:h3.font-semibold.mb-4 "DOM-Only Render Architecture"]
      [:ul.space-y-2.text-sm
       [:li.flex.items-start
        [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Flexible Value Parsing:"] " Supports ISO strings, timestamps, and Date objects"]]
+       [:span [:strong "Strict Type Safety:"] " Custom render functions must return DOM elements"]]
       [:li.flex.items-start
        [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Date Constraints:"] " Min/max date limits and specific disabled dates"]]
+       [:span [:strong "Zero XSS Risk:"] " No innerHTML usage, only safe DOM manipulation"]]
       [:li.flex.items-start
        [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Keyboard Navigation:"] " Arrow keys to move, Enter/Space to select"]]
+       [:span [:strong "Optimal Performance:"] " Direct element creation and attachment"]]
       [:li.flex.items-start
        [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Accessibility:"] " ARIA attributes, focus management, screen reader support"]]
+       [:span [:strong "Full DOM API:"] " Access to complete browser DOM functionality"]]
       [:li.flex.items-start
        [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Localization:"] " Weekday names in any locale via Intl API"]]
+       [:span [:strong "Framework Agnostic:"] " Works with vanilla JS, React, Vue, etc."]]
       [:li.flex.items-start
        [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "First Day of Week:"] " Monday (1) by default, or Sunday (0) for US style"]]
-      [:li.flex.items-start
-       [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Enhanced Events:"] " date-select includes formatted value, month-change for navigation"]]
-      [:li.flex.items-start
-       [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Full Calendar Component:"] " Complete calendar with month/year navigation dropdowns and today button"]]
-      [:li.flex.items-start
-       [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Clear Navigation API:"] " view-year/view-month initial-only attributes (React-compatible)"]]
-      [:li.flex.items-start
-       [:span.text-green-500.mr-2 "✓"]
-       [:span [:strong "Visual States:"] " Disabled, focused, selected, today, weekend, other-month"]]]]
+       [:span [:strong "ClojureScript Native:"] " Seamless data conversion with cljs-bean"]]]]
 
-    ;; Code example
-    [:div.bg-gray-50.dark:bg-gray-800.rounded-lg.p-6
+    ;; Technical implementation
+    [:div.bg-blue-50.dark:bg-blue-900.rounded-lg.p-6
+     [:h3.font-semibold.mb-4 "Technical Implementation"]
+     [:div.text-sm.space-y-2
+      [:p "Render functions receive day context and must return DOM elements:"]
+      [:pre.bg-white.p-3.rounded.text-xs.overflow-x-auto
+       [:code
+        ";; ✅ Correct - returns DOM element\n"
+        "(fn [day-context]\n"
+        "  (let [el (.createElement js/document \"div\")]\n"
+        "    (set! (.-textContent el) \"Content\")\n"
+        "    el))\n\n"
+        ";; ❌ Error - returns string\n"
+        "(fn [day-context]\n"
+        "  \"<div>Content</div>\") ; Throws error!"]]]]
+
+    ;; Usage examples
+    [:div.bg-yellow-50.dark:bg-yellow-900.rounded-lg.p-6
      [:h3.font-semibold.mb-4 "Usage Examples"]
      [:pre.code-block.text-xs.overflow-x-auto
       [:code
-       ";; Full calendar with navigation\n"
-       "<ty-calendar show-today-button=\"true\"></ty-calendar>\n\n"
-       ";; Calendar with initial view\n"
-       "<ty-calendar view-year=\"2024\" view-month=\"12\"></ty-calendar>\n\n"
-       ";; Calendar with constraints\n"
-       "<ty-calendar \n"
-       "  view-year=\"2024\"\n"
-       "  view-month=\"12\"\n"
-       "  min-date=\"2024-12-01\"\n"
-       "  max-date=\"2024-12-31\"\n"
-       "  disabled-dates=\"2024-12-24,2024-12-25\"\n"
-       "  show-today-button=\"true\">\n"
-       "</ty-calendar>\n\n"
-       ";; Localized calendar (German)\n"
-       "<ty-calendar \n"
-       "  locale=\"de-DE\"\n"
-       "  first-day-of-week=\"1\"\n"
-       "  show-today-button=\"true\">\n"
-       "</ty-calendar>\n\n"
-       ";; Calendar month grid only\n"
-       "<ty-calendar-month view-year=\"2024\" view-month=\"12\"></ty-calendar-month>\n\n"
-       ";; Replicant usage with event handlers\n"
-       "[:ty-calendar\n"
-       " {:value selected-date\n"
-       "  :view-year \"2024\"\n"
-       "  :view-month \"12\"\n"
-       "  :show-today-button true\n"
-       "  :on {:date-select handle-selection\n"
-       "       :month-change handle-navigation}}]"]]]
+       ";; Basic calendar month\n"
+       "[:ty-calendar-month]\n\n"
+       ";; With custom render function\n"
+       "[:ty-calendar-month\n"
+       " {:day-content-fn \"myRenderFunction\"}]\n\n"
+       ";; With display date\n"
+       "[:ty-calendar-month\n"
+       " {:display-year \"2024\"\n"
+       "  :display-month \"12\"\n"
+       "  :day-content-fn \"hotelPricing\"}]\n\n"
+       ";; All attributes\n"
+       "[:ty-calendar-month\n"
+       " {:display-year \"2024\"\n"
+       "  :display-month \"12\"\n"
+       "  :day-content-fn \"customContent\"\n"
+       "  :day-classes-fn \"customClasses\"}]"]]]
 
-    ;; Keyboard navigation
-    [:div.bg-blue-50.dark:bg-blue-900.rounded-lg.p-6
-     [:h3.font-semibold.mb-4 "Keyboard Navigation"]
+    ;; Real-world patterns
+    [:div.bg-green-50.dark:bg-green-900.rounded-lg.p-6
+     [:h3.font-semibold.mb-4 "Real-World Patterns"]
      [:div.text-sm.space-y-2
-      [:p "Focus the calendar and use keyboard to navigate:"]
+      [:p "Common use cases implemented with DOM-only functions:"]
       [:ul.ml-4.space-y-1
-       [:li "• " [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "←"] " / "
-        [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "→"] " - Navigate days"]
-       [:li "• " [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "↑"] " / "
-        [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "↓"] " - Navigate weeks"]
-       [:li "• " [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "Enter"] " / "
-        [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "Space"] " - Select focused date"]
-       [:li "• " [:kbd.px-2.py-1.bg-gray-200.dark:bg-gray-700.rounded "Tab"] " - Move focus in/out"]]]]
-
-    ;; Technical details
-    [:div.bg-yellow-50.dark:bg-yellow-900.rounded-lg.p-6
-     [:h3.font-semibold.mb-4 "Value Format Support"]
-     [:div.text-sm.space-y-2
-      [:p "The component accepts multiple value formats:"]
-      [:ul.ml-4.space-y-1.font-mono.text-xs
-       [:li "• ISO strings: \"2024-12-25\", \"2024-12-25T10:30:00Z\""]
-       [:li "• Timestamps: 1735084800000 (milliseconds)"]
-       [:li "• Date objects: new Date(2024, 11, 25)"]
-       [:li "• nil/empty: No selection"]]
-      [:p.mt-3 "Events return:"]
-      [:ul.ml-4.space-y-1.font-mono.text-xs
-       [:li "• value: Numeric timestamp (milliseconds)"]
-       [:li "• date: JavaScript Date object"]
-       [:li "• formatted: ISO date string (YYYY-MM-DD)"]
-       [:li "• context: Full day context from timing library"]]]]]])
+       [:li "• " [:strong "Hotel Booking:"] " Price display with weekend markup"]
+       [:li "• " [:strong "Event Calendar:"] " Visual indicators for scheduled events"]
+       [:li "• " [:strong "Project Timeline:"] " Task counts and progress indicators"]
+       [:li "• " [:strong "Holiday Calendar:"] " Special styling for holidays and weekends"]
+       [:li "• " [:strong "Availability Calendar:"] " Booking status and constraints"]
+       [:li "• " [:strong "Multi-Calendar Views:"] " Different render functions per calendar"]]]]]])
 
 (defn view []
   [:div.p-6

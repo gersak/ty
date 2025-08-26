@@ -1,13 +1,14 @@
 (ns ty.components.multiselect
   "Multiselect component with ty-tag integration for multiple selections"
   (:require
-    [clojure.string :as str]
-    [ty.components.dropdown.common :as common]
-    [ty.components.dropdown.desktop :as desktop]
-    [ty.components.dropdown.mobile :as mobile]
-    [ty.components.tag] ; Import ty-tag component
-    [ty.css :refer [ensure-styles!]]
-    [ty.shim :as wcs])
+   [cljs-bean.core :as bean]
+   [clojure.string :as str]
+   [ty.components.dropdown.common :as common]
+   [ty.components.dropdown.desktop :as desktop]
+   [ty.components.dropdown.mobile :as mobile]
+   [ty.components.tag] ; Import ty-tag component
+   [ty.css :refer [ensure-styles!]]
+   [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load multiselect styles
@@ -170,9 +171,9 @@
 (defn dispatch-multiselect-change!
   "Dispatch multiselect change event"
   [^js el values action item]
-  (let [detail #js {:values values
-                    :action action ; "add" | "remove"
-                    :item item} ; The item that was added/removed
+  (let [detail (bean/->js {:values values
+                           :action action ; "add" | "remove"
+                           :item item}) ; The item that was added/removed
         event (js/CustomEvent. "change"
                                #js {:detail detail
                                     :bubbles true
@@ -304,42 +305,42 @@
       (set! (.-innerHTML root)
             (str
              ;; Container with label
-              "<div class=\"multiselect-container\">"
+             "<div class=\"multiselect-container\">"
              ;; Label (optional)
-              "  <label class=\"dropdown-label\" style=\"" (if label "display: flex; align-items: center;" "display: none;") "\">"
-              (or label "")
-              (when (and label required) (str " <span class=\"required-icon\">" common/required-icon "</span>"))
-              "  </label>"
+             "  <label class=\"dropdown-label\" style=\"" (if label "display: flex; align-items: center;" "display: none;") "\">"
+             (or label "")
+             (when (and label required) (str " <span class=\"required-icon\">" common/required-icon "</span>"))
+             "  </label>"
              ;; Multiselect wrapper
-              "  <div class=\"dropdown-wrapper\">"
-              "    <div class=\"dropdown-stub multiselect-stub\"" (when disabled " disabled") ">"
-              "      <div class=\"multiselect-chips\">"
-              "        <slot name=\"selected\"></slot>"
-              "      </div>"
-              "      <span class=\"dropdown-placeholder\">" placeholder "</span>"
-              "    </div>"
-              "    <div class=\"dropdown-chevron\">"
-              "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-              "        <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-              "      </svg>"
-              "    </div>"
-              "    <dialog class=\"dropdown-dialog\">"
-              "      <div class=\"dropdown-header\">"
-              "        <input class=\"dropdown-search-input\" type=\"text\""
-              "               placeholder=\"Search options...\""
-              (when disabled " disabled") " />"
-              "        <div class=\"dropdown-search-chevron\">"
-              "          <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
-              "            <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
-              "          </svg>"
-              "        </div>"
-              "      </div>"
-              "      <div class=\"dropdown-options\">"
-              "        <slot id=\"options-slot\"></slot>"
-              "      </div>"
-              "    </dialog>"
-              "  </div>"
-              "</div>"))
+             "  <div class=\"dropdown-wrapper\">"
+             "    <div class=\"dropdown-stub multiselect-stub\"" (when disabled " disabled") ">"
+             "      <div class=\"multiselect-chips\">"
+             "        <slot name=\"selected\"></slot>"
+             "      </div>"
+             "      <span class=\"dropdown-placeholder\">" placeholder "</span>"
+             "    </div>"
+             "    <div class=\"dropdown-chevron\">"
+             "      <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+             "        <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+             "      </svg>"
+             "    </div>"
+             "    <dialog class=\"dropdown-dialog\">"
+             "      <div class=\"dropdown-header\">"
+             "        <input class=\"dropdown-search-input\" type=\"text\""
+             "               placeholder=\"Search options...\""
+             (when disabled " disabled") " />"
+             "        <div class=\"dropdown-search-chevron\">"
+             "          <svg viewBox=\"0 0 20 20\" fill=\"currentColor\">"
+             "            <path fill-rule=\"evenodd\" d=\"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z\" clip-rule=\"evenodd\" />"
+             "          </svg>"
+             "        </div>"
+             "      </div>"
+             "      <div class=\"dropdown-options\">"
+             "        <slot id=\"options-slot\"></slot>"
+             "      </div>"
+             "    </dialog>"
+             "  </div>"
+             "</div>"))
 
       ;; Setup event listeners
       (let [stub (.querySelector root ".dropdown-stub")

@@ -1,7 +1,6 @@
 (ns ty.core
   (:require
    [ty.components.button]
-   [ty.components.calendar]
    [ty.components.calendar-month]
    [ty.components.dropdown]
    [ty.components.icon]

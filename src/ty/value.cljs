@@ -47,9 +47,11 @@
 
 (defn get-attribute
   "Get current attribute value (the string in HTML)."
-  [^js el]
-  (when (.hasAttribute el "value")
-    (.getAttribute el "value")))
+  [^js el attr-name]
+  (or
+    (aget el attr-name)
+    (when (.hasAttribute el attr-name)
+      (.getAttribute el attr-name))))
 
 (defn external-value-changed?
   "Check if value changed externally by comparing PARSED values.

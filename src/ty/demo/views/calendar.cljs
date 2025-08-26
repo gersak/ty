@@ -19,27 +19,26 @@
   (let [detail (.-detail event)
         year (.-year detail)
         month (.-month detail)]
-    (js/console.log "Month changed:" #js {:year year :month month})))
+    (js/console.log "Month changed:" #js {:year year
+                                          :month month})))
 
 (defn basic-calendar-month []
   [:div.demo-section
-   [:h2.demo-title "Calendar - Single Test Case"]
+   [:h2.demo-title "Stateless Calendar - Fallback Demo"]
 
-   [:div.max-w-fit.mx-auto
-    [:h3.demo-subtitle "Full Calendar with Navigation"]
-    [:p.text-sm.text-gray-600.mb-4 "view-year=\"2024\" view-month=\"12\" show-today-button"]
+   [:div.grid.grid-cols-1.md:grid-cols-2.gap-8
+    ;; Explicit month
+    [:div
+     [:h3.demo-subtitle "December 2024 (Explicit)"]
+     [:p.text-sm.text-gray-600.mb-4 "display-year=\"2024\" display-month=\"12\""]
+     [:ty-calendar-month {:display-year "2024"
+                          :display-month "12"}]]
 
-    [:ty-calendar {:view-year "2024"
-                   :view-month "12"
-                   :show-today-button true
-                   :on {:date-select handle-date-select
-                        :month-change handle-month-change}}]]
-
-   [:div.mt-4.text-sm.text-gray-600.dark:text-gray-400
-    (when-let [selected (:selected-date @state/state)]
-      [:div "Selected: " (date/format-date selected "en-US"
-                                           {:weekday "long" :year "numeric"
-                                            :month "long" :day "numeric"})])]])
+    ;; Fallback to current month
+    [:div
+     [:h3.demo-subtitle "Current Month (Fallback)"]
+     [:p.text-sm.text-gray-600.mb-4 "No attributes - falls back to today's month"]
+     [:ty-calendar-month]]]])
 
 (defn calendar-features []
   [:div.demo-section.mt-8

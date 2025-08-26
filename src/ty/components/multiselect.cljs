@@ -1,6 +1,7 @@
 (ns ty.components.multiselect
   "Multiselect component with ty-tag integration for multiple selections"
   (:require
+    [clojure.string :as str]
     [ty.components.dropdown.common :as common]
     [ty.components.dropdown.desktop :as desktop]
     [ty.components.dropdown.mobile :as mobile]
@@ -114,7 +115,7 @@
   [^js el]
   (let [selected-values (get-selected-values el)
         value-str (if (seq selected-values)
-                    (.join selected-values ",")
+                    (str/join "," (map str selected-values))
                     "")]
     ;; Update both attribute and property for consistency
     (.setAttribute el "value" value-str)

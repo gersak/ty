@@ -88,11 +88,11 @@
   "Batch set props (EDN map). Triggers per-key prop hook."
   [^js el m]
   (let [js-props (reduce-kv
-                   (fn [r k v]
-                     (aset r (name k) v)
-                     r)
-                   #js {}
-                   m)]
+                  (fn [r k v]
+                    (aset r (name k) v)
+                    r)
+                  #js {}
+                  m)]
     (shim/setProps el js-props))
   el)
 
@@ -101,10 +101,10 @@
   [^js el]
   (let [p (.-_props el)]
     (reduce
-      (fn [r k]
-        (assoc r (keyword k) (aget p k)))
-      {}
-      (js/Object.keys p))))
+     (fn [r k]
+       (assoc r (keyword k) (aget p k)))
+     {}
+     (js/Object.keys p))))
 
 ;; -----------------------------
 ;; Hooks adapter
@@ -177,6 +177,45 @@
 ;; Development helpers
 ;; -----------------------------
 
+(defn get-initial-attrs
+  "Extract initial-only attributes on first render - React compatible.
+   
+   Reads attributes from the element once (on first call) and parses them
+   using the provided attribute map. Subsequent calls return nil.
+   
+   This pattern is ideal for 'initial view' parameters that should only
+   be applied once on component initialization, preventing conflicts 
+   with user interactions or React re-renders.
+   
+   Usage:
+   (let [initial (get-initial-attrs el {:view-year js/parseInt
+                                        :view-month js/parseInt
+                                        :min-date date/parse-value})]
+     (when (seq initial)
+       (apply-initial-state! el initial)))
+   
+   Arguments:
+   - el: The web component element
+   - attr-map: Map of attribute keywords to parser functions
+   
+   Returns:
+   - Map of parsed attribute values (first call only)
+   - nil on subsequent calls"
+  [^js el attr-map]
+  (when-not (.-tyInitialAttrsRead el)
+    (set! (.-tyInitialAttrsRead el) true)
+    (reduce-kv
+     (fn [acc attr-key parse-fn]
+       (when-let [attr-val (attr el (name attr-key))]
+         (try
+           (assoc acc attr-key (parse-fn attr-val))
+           (catch js/Error e
+             (js/console.warn (str "Failed to parse initial attribute "
+                                   (name attr-key) "=" attr-val ": " (.-message e)))
+             acc))))
+     {}
+     attr-map)))
+
 (defn ^:dev/after-load reload-all-components!
   "Force refresh all registered components after hot reload"
   []
@@ -184,3 +223,40 @@
     (doseq [[tag-name _] @component-registry]
       (js/console.log (str "[Ty] Refreshing: " tag-name))
       (refresh-instances! tag-name))))
+
+ ;; Add to shim.cljs - new batching functions
+
+(defn- get-batch-queue [^js el]
+  (or (.-tyAttrBatch el)
+      (set! (.-tyAttrBatch el) #js {:changes #js {}
+                                    :scheduled false})))
+
+(defn- flush-attribute-batch! [^js el batch-callback]
+  (let [batch (.-tyAttrBatch el)]
+    (when (and batch (> (.-length (js/Object.keys (.-changes batch))) 0))
+      ;; Call the batch callback with all changes
+      (batch-callback el (js->clj (.-changes batch)))
+      ;; Clear the batch
+      (set! (.-changes batch) #js {})
+      (set! (.-scheduled batch) false))))
+
+(defn- schedule-batch-flush! [^js el batch-callback]
+  (let [batch (get-batch-queue el)]
+    (when-not (.-scheduled batch)
+      (set! (.-scheduled batch) true)
+      (js/requestAnimationFrame
+       #(flush-attribute-batch! el batch-callback)))))
+
+(defn define-batched! [tag opts]
+  "Define component with batched attribute updates"
+  (let [batch-attr-fn (:batch-attr opts)
+        regular-opts (dissoc opts :batch-attr)]
+    (define! tag
+      (assoc regular-opts
+             :attr (fn [^js el attr-name old-value new-value]
+                ;; Add to batch
+                     (let [batch (get-batch-queue el)]
+                       (aset (.-changes batch) attr-name new-value))
+                ;; Schedule flush
+                     (schedule-batch-flush! el batch-attr-fn))))))
+

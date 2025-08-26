@@ -26,24 +26,78 @@
 ;; =====================================================
 
 (defn get-initial-state
-  "Create complete initial calendar state based on element's value"
+  "Create complete initial calendar state based on element's value and initial attributes"
   [^js el]
+  ;; Add this temporarily in get-initial-state
+  (js/console.log "Element properties debug:"
+                  #js {:all-props (.getOwnPropertyNames js/Object el)
+                       :view-year-prop (.-viewYear el)
+                       :view-month-prop (.-viewMonth el)
+                       :view-month-attr (.getAttribute el "view-month")
+                       :has-view-year-attr (.hasAttribute el "view-year")
+                       :has-view-month-attr (.hasAttribute el "view-month")})
   (let [initial-value (val/parse-value el (val/get-value el))
-        {:keys [view-year view-month]}
-        (if initial-value
-          ;; If value exists, show that month/year
-          (let [ctx (date/day-time-context initial-value)]
-            {:view-year (:year ctx)
-             :view-month (:month ctx)})
-          ;; Otherwise show current month/year
-          {:view-year (.getFullYear (js/Date.))
-           :view-month (inc (.getMonth (js/Date.)))})]
-    ;; Return complete initial state
-    {:selected-value initial-value
-     :view-year view-year
-     :view-month view-month
-     :highlighted-day nil
-     :focused-day nil}))
+
+        ;; Replicant-compatible: check both properties and attributes
+        view-year-str (wcs/attr el "view-year")
+        view-month-str (wcs/attr el "view-month")
+        min-date-str (or (.-minDate el) (wcs/attr el "min-date"))
+        max-date-str (or (.-maxDate el) (wcs/attr el "max-date"))
+
+        ;; Parse the attributes if they exist
+        initial-view-year (val/parse-integer view-year-str)
+        initial-view-month (val/parse-integer view-month-str)
+        initial-min-date (when min-date-str (date/parse-value min-date-str))
+        initial-max-date (when max-date-str (date/parse-value max-date-str))]
+
+    ;; Debug logging
+    (js/console.log "Calendar initial state debug:"
+                    #js {:element-tag (.-tagName el)
+                         :view-year-prop (.-viewYear el)
+                         :view-year-attr (wcs/attr el "view-year")
+                         :view-year-final view-year-str
+                         :view-month-prop (.-viewMonth el)
+                         :view-month-attr (wcs/attr el "view-month")
+                         :view-month-final view-month-str
+                         :parsed-year initial-view-year
+                         :parsed-month initial-view-month})
+
+    (let [;; Determine view year/month
+          {:keys [view-year view-month]}
+          (cond
+            ;; Use initial attributes if at least one is provided
+            (or initial-view-year initial-view-month)
+            (do
+              (js/console.log "Using initial navigation (partial):"
+                              #js {:year (or initial-view-year (.getFullYear (js/Date.)))
+                                   :month (or initial-view-month (inc (.getMonth (js/Date.))))
+                                   :had-year (boolean initial-view-year)
+                                   :had-month (boolean initial-view-month)})
+              {:view-year (or initial-view-year (.getFullYear (js/Date.)))
+               :view-month (or initial-view-month (inc (.getMonth (js/Date.))))})
+
+            ;; If value exists, show that month/year
+            initial-value
+            (let [ctx (date/day-time-context initial-value)]
+              (js/console.log "Using value date:" #js {:year (:year ctx)
+                                                       :month (:month ctx)})
+              {:view-year (:year ctx)
+               :view-month (:month ctx)})
+
+            ;; Otherwise show current month/year
+            :else
+            (do
+              (js/console.log "Using current date")
+              {:view-year (.getFullYear (js/Date.))
+               :view-month (inc (.getMonth (js/Date.)))}))]
+      ;; Return complete initial state
+      {:selected-value initial-value
+       :view-year view-year
+       :view-month view-month
+       :focused-day nil
+       ;; Store initial constraints for reference
+       :initial-min-date initial-min-date
+       :initial-max-date initial-max-date})))
 
 (defn get-calendar-state
   "Get or initialize calendar component state"
@@ -82,16 +136,20 @@
 ;; =====================================================
 
 (defn get-min-date
-  "Get minimum date constraint"
+  "Get minimum date constraint - prefers initial value over current attribute"
   [^js el]
-  (date/parse-value (or (.-minDate el)
-                        (wcs/attr el "min-date"))))
+  (let [{:keys [initial-min-date]} (get-calendar-state el)]
+    (or initial-min-date
+        (date/parse-value (or (.-minDate el)
+                              (wcs/attr el "min-date"))))))
 
 (defn get-max-date
-  "Get maximum date constraint"
+  "Get maximum date constraint - prefers initial value over current attribute"
   [^js el]
-  (date/parse-value (or (.-maxDate el)
-                        (wcs/attr el "max-date"))))
+  (let [{:keys [initial-max-date]} (get-calendar-state el)]
+    (or initial-max-date
+        (date/parse-value (or (.-maxDate el)
+                              (wcs/attr el "max-date"))))))
 
 (defn get-disabled-dates
   "Get disabled dates as a set of values"
@@ -300,7 +358,7 @@
         weekday-names (date/get-weekday-names locale "short")
 
         ;; Get first day of week (0 = Sunday, 1 = Monday)
-        first-day-of-week (or (js/parseInt (wcs/attr el "first-day-of-week")) 0)
+        first-day-of-week (val/parse-attr-int el "first-day-of-week" 1)
 
         ;; Rotate weekday names based on first day of week
         ordered-weekdays (if (= first-day-of-week 0)
@@ -359,43 +417,34 @@
   [^js el]
   (set! (.-tyCalendarState el) nil)
   (set! (.-tyUpdateState el) nil)
-  (set! (.-tyRender el) nil))
+  (set! (.-tyRender el) nil)
+  (set! (.-tyInitialAttrsRead el) nil))
 
 ;; =====================================================
 ;; Web Component Registration
 ;; =====================================================
 
-(wcs/define! "ty-calendar-month"
-  {:observed [:value :year :month :min-date :max-date :disabled-dates
+(wcs/define-batched! "ty-calendar-month"
+  {:observed [:value :view-year :view-month :min-date :max-date :disabled-dates
               :locale :first-day-of-week :allow-other-month]
    :connected (fn [^js el]
                ;; Store render function for use by value system
                 (set! (.-tyRender el) render!)
                ;; Setup value handling
                 (val/setup-component! el (partial set-calendar-state! el))
-               ;; Initialize state (which considers initial value for view)
+               ;; Initialize state (which considers initial value and initial attrs for view)
                 (get-calendar-state el)
                 (render! el))
    :disconnected cleanup!
-   :attr (fn [^js el attr-name old-value new-value]
-           (case attr-name
-             "value"
-             ;; Use the simplified handler
-             (val/handle-attr-change el attr-name old-value new-value render!)
+   :batch-attr (fn [^js el changes]
+           ;; Handle view navigation changes together
+                 (let [view-year (get changes "view-year")
+                       view-month (get changes "view-month")
+                       updates (cond-> {}
+                                 view-year (assoc :view-year (val/parse-integer view-year))
+                                 view-month (assoc :view-month (val/parse-integer view-month)))]
+                   (when (seq updates)
+                     (set-calendar-state! el updates)))
 
-             "year"
-             (do
-               (set-calendar-state! el {:view-year (js/parseInt new-value)})
-               (render! el))
-
-             "month"
-             (do
-               (set-calendar-state! el {:view-month (js/parseInt new-value)})
-               (render! el))
-
-             ("min-date" "max-date" "disabled-dates" "locale"
-                         "first-day-of-week" "allow-other-month")
-             (render! el)
-
-             ;; Default
-             (render! el)))})
+           ;; Re-render once at the end  
+                 (render! el))})

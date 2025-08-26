@@ -142,6 +142,46 @@
                       nil)
     :else nil))
 
+(defn parse-integer
+  "Safely parse integer from string or number, returns nil for invalid input.
+   
+   Examples:
+   (parse-integer \"42\")     => 42
+   (parse-integer \"abc\")    => nil
+   (parse-integer nil)       => nil
+   (parse-integer 42)        => 42"
+  [value]
+  (cond
+    (nil? value) nil
+    (number? value) (if (js/isNaN value) nil (js/Math.round value))
+    (string? value)
+    (let [trimmed (.trim value)]
+      (if (= trimmed "")
+        nil
+        (let [parsed (js/parseInt trimmed 10)]
+          (if (js/isNaN parsed) nil parsed))))
+    :else nil))
+
+(defn parse-float-safe
+  "Safely parse float from string or number, returns nil for invalid input.
+   
+   Examples:
+   (parse-float-safe \"42.5\")   => 42.5
+   (parse-float-safe \"abc\")    => nil
+   (parse-float-safe nil)       => nil
+   (parse-float-safe 42.5)      => 42.5"
+  [value]
+  (cond
+    (nil? value) nil
+    (number? value) (if (js/isNaN value) nil value)
+    (string? value)
+    (let [trimmed (.trim value)]
+      (if (= trimmed "")
+        nil
+        (let [parsed (js/parseFloat trimmed)]
+          (if (js/isNaN parsed) nil parsed))))
+    :else nil))
+
 (defn parse-array
   "Parse comma-separated or array values."
   [value]
@@ -158,6 +198,30 @@
   [parsed-array]
   (when (seq parsed-array)
     (.join parsed-array ",")))
+
+(defn parse-attr-int
+  "Safely parse integer attribute with default fallback.
+   
+   Examples:
+   (parse-attr-int el \"width\" 100)     => 100 if width=\"abc\" or missing
+   (parse-attr-int el \"width\" 100)     => 42 if width=\"42\"
+   
+   This is perfect for component attributes that need safe defaults."
+  [^js el attr-name default-value]
+  (if-let [attr-value (.getAttribute el (name attr-name))]
+    (or (parse-integer attr-value) default-value)
+    default-value))
+
+(defn parse-attr-float
+  "Safely parse float attribute with default fallback.
+   
+   Examples:
+   (parse-attr-float el \"opacity\" 1.0)  => 1.0 if opacity=\"abc\" or missing
+   (parse-attr-float el \"opacity\" 1.0)  => 0.5 if opacity=\"0.5\""
+  [^js el attr-name default-value]
+  (if-let [attr-value (.getAttribute el (name attr-name))]
+    (or (parse-float-safe attr-value) default-value)
+    default-value))
 
 ;; =====================================================
 ;; Property Setter Helper

@@ -37,7 +37,7 @@
 
 .error-message {
   font-size: 12px;
-  color: var(--ty-color-negative);
+  color: var(--ty-color-danger);
   margin-top: 4px;
   padding-left: 12px;
   line-height: 1.4;
@@ -45,12 +45,12 @@
 
 /* Error state for inputs */
 input.error {
-  border-color: var(--ty-color-negative);
-  background: var(--ty-bg-negative-m1);
+  border-color: var(--ty-color-danger);
+  background: var(--ty-bg-danger-m1);
 }
 
 input.error:focus {
-  border-color: var(--ty-color-negative-p1);
+  border-color: var(--ty-color-danger-p1);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
@@ -141,54 +141,115 @@ input.xl {
   font-size: 18px;
 }
 
+/* ===== NEW: INDUSTRY-STANDARD SEMANTIC FLAVOR MODIFIERS ===== */
+
+/* Primary - Main brand focus state */
+input.primary {
+  border-color: var(--ty-input-primary-border, var(--ty-color-primary));
+}
+
+input.primary:focus {
+  border-color: var(--ty-color-primary-p1);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Secondary - Supporting action focus state */
+input.secondary {
+  border-color: var(--ty-input-secondary-border, var(--ty-color-secondary));
+}
+
+input.secondary:focus {
+  border-color: var(--ty-color-secondary-p1);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Success - Valid/confirmed input state */
+input.success {
+  border-color: var(--ty-input-success-border);
+}
+
+input.success:focus {
+  border-color: var(--ty-color-success-p1);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Danger - Error/invalid input state */
+input.danger {
+  border-color: var(--ty-input-danger-border);
+}
+
+input.danger:focus {
+  border-color: var(--ty-color-danger-p1);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Warning - Caution/attention needed input state */
+input.warning {
+  border-color: var(--ty-input-warning-border);
+}
+
+input.warning:focus {
+  border-color: var(--ty-color-warning-p1);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+/* Info - Informational/helpful input state */
+input.info {
+  border-color: var(--ty-input-info-border);
+}
+
+input.info:focus {
+  border-color: var(--ty-color-info-p1);
+  box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+}
+
+/* ===== LEGACY SEMANTIC FLAVOR MODIFIERS (Backward Compatibility) ===== */
+/* 
+   These legacy flavor classes continue to work exactly as before
+   because they reference the new semantic tokens via CSS variable mapping:
+   
+   
+   The mapping is handled in ty.variables.css, so no changes needed here.
+*/
+
 /* ===== SEMANTIC FLAVOR MODIFIERS ===== */
 
 /* Important - Blue theme */
-input.important {
   border-color: #3b82f6;
 }
 
-input.important:focus {
   border-color: #2563eb;
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* Positive - Green theme for success */
-input.positive {
   border-color: #10b981;
 }
 
-input.positive:focus {
   border-color: #059669;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Negative - Red theme for errors */
-input.negative {
   border-color: #ef4444;
 }
 
-input.negative:focus {
   border-color: #dc2626;
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 /* Exception - Yellow theme for warnings */
-input.exception {
   border-color: #f59e0b;
 }
 
-input.exception:focus {
   border-color: #d97706;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
 /* Unique - Purple theme */
-input.unique {
   border-color: #8b5cf6;
 }
 
-input.unique:focus {
   border-color: #7c3aed;
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }

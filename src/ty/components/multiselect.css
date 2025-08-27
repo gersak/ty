@@ -17,7 +17,6 @@
 }
 
 .multiselect-stub.has-tags slot[name="selected"] {
-  width: 100% !important;
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
@@ -36,13 +35,15 @@
 .dropdown-placeholder {
   flex-grow: 1;
   color: var(--ty-input-placeholder, #9ca3af);
-  font-size: 1rem;
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-light);
+  font-style: italic;
   line-height: 1.5;
 }
 
 /* Placeholder styling when tags are present */
 .dropdown-placeholder.hidden {
-  display: none !important;
+  display: none;
 }
 
 /* Options area styling */
@@ -55,7 +56,6 @@
 
 /* Make ty-tags in dropdown clickable with pointer cursor */
 .dropdown-options ty-tag {
-  cursor: pointer !important;
   user-select: none;
   transition: transform 0.1s ease;
 }

@@ -8,6 +8,23 @@
 ;; Load dropdown styles
 (defstyles dropdown-styles "ty/components/dropdown.css")
 
+;; =====================================================
+;; Semantic Flavor Normalization
+;; =====================================================
+
+(defn validate-flavor
+  "Validate that flavor uses new industry-standard semantic naming.
+   For dropdowns, flavor indicates semantic meaning for selection context."
+  [flavor]
+  (let [valid-flavors #{"primary" "secondary" "success" "danger" "warning" "info" "neutral"}
+        normalized (or flavor "neutral")]
+    (when (and goog.DEBUG (not (contains? valid-flavors normalized)))
+      (js/console.warn (str "[ty-dropdown] Invalid flavor '" flavor "'. Using 'neutral'. "
+                            "Valid flavors: primary, secondary, success, danger, warning, info, neutral.")))
+    (if (contains? valid-flavors normalized)
+      normalized
+      "neutral")))
+
 ;; Required indicator icon (same as input component)
 (def required-icon
   "<svg width=\"8\" height=\"8\" viewBox=\"0 0 8 8\" fill=\"currentColor\">
@@ -19,23 +36,26 @@
 ;; =====================================================
 
 (defn dropdown-attributes
-  "Read dropdown attributes directly from element"
+  "Read dropdown attributes directly from element.
+   Only accepts new industry-standard semantic flavors."
   [^js el]
-  {:value (or (wcs/attr el "value") "")
-   :placeholder (or (wcs/attr el "placeholder") "Select an option...")
-   :searchable (let [searchable? (wcs/parse-bool-attr el "searchable")
-                     not-searchable? (wcs/parse-bool-attr el "not-searchable")]
-                 (cond
-                   searchable? true
-                   not-searchable? false
-                   :else true))
-   :disabled (wcs/parse-bool-attr el "disabled")
-   :readonly (wcs/parse-bool-attr el "readonly")
-   :size (or (wcs/attr el "size") "md")
-   :flavor (or (wcs/attr el "flavor") "neutral")
-   :label (wcs/attr el "label")
-   :required (wcs/parse-bool-attr el "required")
-   :external-search (wcs/parse-bool-attr el "external-search")})
+  (let [raw-flavor (wcs/attr el "flavor")
+        validated-flavor (validate-flavor raw-flavor)]
+    {:value (or (wcs/attr el "value") "")
+     :placeholder (or (wcs/attr el "placeholder") "Select an option...")
+     :searchable (let [searchable? (wcs/parse-bool-attr el "searchable")
+                       not-searchable? (wcs/parse-bool-attr el "not-searchable")]
+                   (cond
+                     searchable? true
+                     not-searchable? false
+                     :else true))
+     :disabled (wcs/parse-bool-attr el "disabled")
+     :readonly (wcs/parse-bool-attr el "readonly")
+     :size (or (wcs/attr el "size") "md")
+     :flavor validated-flavor
+     :label (wcs/attr el "label")
+     :required (wcs/parse-bool-attr el "required")
+     :external-search (wcs/parse-bool-attr el "external-search")}))
 
 ;; =====================================================
 ;; COMPONENT STATE MANAGEMENT

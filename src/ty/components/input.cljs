@@ -10,6 +10,35 @@
 (defstyles input-styles)
 
 ;; =====================================================
+;; Semantic Flavor Normalization
+;; =====================================================
+
+(defn validate-flavor
+  "Validate that flavor uses new industry-standard semantic naming.
+   For inputs, flavor typically indicates validation state or visual emphasis."
+  [flavor]
+  (let [valid-flavors #{"primary" "secondary" "success" "danger" "warning" "info" "neutral"}
+        normalized (or flavor "neutral")]
+    (when (and goog.DEBUG (not (contains? valid-flavors normalized)))
+      (js/console.warn (str "[ty-input] Invalid flavor '" flavor "'. Using 'neutral'. "
+                            "Valid flavors: primary, secondary, success, danger, warning, info, neutral.")))
+    (if (contains? valid-flavors normalized)
+      normalized
+      "neutral")))
+
+(defn get-validation-state
+  "Determine validation state based on error attribute and flavor.
+   Returns the appropriate semantic state for styling."
+  [error flavor]
+  (cond
+    ;; Error attribute takes precedence
+    (not-empty error) "danger"
+    ;; Use validated flavor for validation states
+    (#{"success" "danger" "warning" "info"} flavor) flavor
+    ;; For other flavors, return neutral (no special validation styling)
+    :else "neutral"))
+
+;; =====================================================
 ;; Shadow Value State Management
 ;; =====================================================
 
@@ -187,44 +216,55 @@
           (set! (.-value input-el) (get-display-value el)))
         (doseq [e ["input" "change"]]
           (.dispatchEvent
-            el
-            (js/CustomEvent. e
-                             #js {:bubbles true
-                                  :composed true
-                                  :detail #js {:value new-shadow-value
-                                               :formattedValue (format-shadow-value
-                                                                 current-value
-                                                                 (get-format-config el))
-                                               :originalEvent nil}})))))))
+           el
+           (js/CustomEvent. e
+                            #js {:bubbles true
+                                 :composed true
+                                 :detail #js {:value new-shadow-value
+                                              :formattedValue (format-shadow-value
+                                                               current-value
+                                                               (get-format-config el))
+                                              :originalEvent nil}})))))))
 
 ;; =====================================================
 ;; Enhanced Attribute Reading
 ;; =====================================================
 
 (defn input-attributes
-  "Read all input attributes directly from element"
+  "Read all input attributes directly from element.
+   Only accepts new industry-standard semantic flavors."
   [^js el]
-  {:type (wcs/attr el "type")
-   :value (get-display-value el) ; Use computed display value
-   :placeholder (wcs/attr el "placeholder")
-   :label (wcs/attr el "label")
-   :disabled (wcs/parse-bool-attr el "disabled")
-   :required (wcs/parse-bool-attr el "required")
-   :error (wcs/attr el "error")
-   :size (wcs/attr el "size")
-   :flavor (wcs/attr el "flavor")
-   :class (wcs/attr el "class")
-   ;; Numeric formatting attributes
-   :currency (wcs/attr el "currency")
-   :locale (wcs/attr el "locale")
-   :precision (wcs/attr el "precision")})
+  (let [raw-flavor (wcs/attr el "flavor")
+        validated-flavor (validate-flavor raw-flavor)
+        error (wcs/attr el "error")
+        validation-state (get-validation-state error validated-flavor)]
+    {:type (wcs/attr el "type")
+     :value (get-display-value el) ; Use computed display value
+     :placeholder (wcs/attr el "placeholder")
+     :label (wcs/attr el "label")
+     :disabled (wcs/parse-bool-attr el "disabled")
+     :required (wcs/parse-bool-attr el "required")
+     :error error
+     :size (wcs/attr el "size")
+     :flavor validated-flavor
+     :validation-state validation-state ; Computed semantic validation state
+     :class (wcs/attr el "class")
+     ;; Numeric formatting attributes
+     :currency (wcs/attr el "currency")
+     :locale (wcs/attr el "locale")
+     :precision (wcs/attr el "precision")}))
 
 (defn build-class-list
-  "Build class list from attributes"
-  [{:keys [size flavor disabled required error class]}]
+  "Build class list from attributes with semantic validation state support.
+   Uses normalized flavor and validation state for consistent styling."
+  [{:keys [size flavor validation-state disabled required error class]}]
   (str (or size "md")
        " "
        (or flavor "neutral")
+       " "
+       ;; Add validation state class if it's a validation semantic
+       (when (#{"success" "danger" "warning" "info"} validation-state)
+         (str validation-state " "))
        (when disabled " disabled")
        (when required " required")
        (when error " error")

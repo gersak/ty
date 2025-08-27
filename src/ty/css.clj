@@ -7,30 +7,37 @@
 
 (def ^:private ty-css-variables
   "Complete list of Ty CSS variables that need to be inherited in Shadow DOM.
-   This ensures all design tokens are available to nested web components."
-  [;; Core semantic colors
-   "--ty-semantic-positive" "--ty-semantic-negative" "--ty-semantic-exception"
-   "--ty-semantic-important" "--ty-semantic-unique" "--ty-semantic-neutral"
+   This ensures all design tokens are available to nested web components.
+   
+   Updated to use ONLY industry-standard semantic naming:
+   Primary, Secondary, Success, Danger, Warning, Info, Neutral"
+  [;; Core semantic colors (NEW INDUSTRY STANDARD)
+   "--ty-semantic-primary" "--ty-semantic-secondary" "--ty-semantic-success"
+   "--ty-semantic-danger" "--ty-semantic-warning" "--ty-semantic-info" "--ty-semantic-neutral"
 
-   ;; Color variations (positive)
-   "--ty-color-positive" "--ty-color-positive-p1" "--ty-color-positive-p2" "--ty-color-positive-p3"
-   "--ty-color-positive-m1" "--ty-color-positive-m2" "--ty-color-positive-m3"
+   ;; Color variations (primary)
+   "--ty-color-primary" "--ty-color-primary-p1" "--ty-color-primary-p2" "--ty-color-primary-p3"
+   "--ty-color-primary-m1" "--ty-color-primary-m2" "--ty-color-primary-m3"
 
-   ;; Color variations (negative)
-   "--ty-color-negative" "--ty-color-negative-p1" "--ty-color-negative-p2" "--ty-color-negative-p3"
-   "--ty-color-negative-m1" "--ty-color-negative-m2" "--ty-color-negative-m3"
+   ;; Color variations (secondary)
+   "--ty-color-secondary" "--ty-color-secondary-p1" "--ty-color-secondary-p2" "--ty-color-secondary-p3"
+   "--ty-color-secondary-m1" "--ty-color-secondary-m2" "--ty-color-secondary-m3"
 
-   ;; Color variations (exception)
-   "--ty-color-exception" "--ty-color-exception-p1" "--ty-color-exception-p2" "--ty-color-exception-p3"
-   "--ty-color-exception-m1" "--ty-color-exception-m2" "--ty-color-exception-m3"
+   ;; Color variations (success)
+   "--ty-color-success" "--ty-color-success-p1" "--ty-color-success-p2" "--ty-color-success-p3"
+   "--ty-color-success-m1" "--ty-color-success-m2" "--ty-color-success-m3"
 
-   ;; Color variations (important)
-   "--ty-color-important" "--ty-color-important-p1" "--ty-color-important-p2" "--ty-color-important-p3"
-   "--ty-color-important-m1" "--ty-color-important-m2" "--ty-color-important-m3"
+   ;; Color variations (danger)
+   "--ty-color-danger" "--ty-color-danger-p1" "--ty-color-danger-p2" "--ty-color-danger-p3"
+   "--ty-color-danger-m1" "--ty-color-danger-m2" "--ty-color-danger-m3"
 
-   ;; Color variations (unique)
-   "--ty-color-unique" "--ty-color-unique-p1" "--ty-color-unique-p2" "--ty-color-unique-p3"
-   "--ty-color-unique-m1" "--ty-color-unique-m2" "--ty-color-unique-m3"
+   ;; Color variations (warning)
+   "--ty-color-warning" "--ty-color-warning-p1" "--ty-color-warning-p2" "--ty-color-warning-p3"
+   "--ty-color-warning-m1" "--ty-color-warning-m2" "--ty-color-warning-m3"
+
+   ;; Color variations (info)
+   "--ty-color-info" "--ty-color-info-p1" "--ty-color-info-p2" "--ty-color-info-p3"
+   "--ty-color-info-m1" "--ty-color-info-m2" "--ty-color-info-m3"
 
    ;; Color variations (neutral)
    "--ty-color-neutral" "--ty-color-neutral-p1" "--ty-color-neutral-p2" "--ty-color-neutral-p3"
@@ -38,29 +45,41 @@
 
    ;; Background colors
    "--ty-bg" "--ty-bg-p1" "--ty-bg-p2" "--ty-bg-p3" "--ty-bg-m1" "--ty-bg-m2" "--ty-bg-m3"
-   "--ty-bg-positive" "--ty-bg-positive-p1" "--ty-bg-positive-m1"
-   "--ty-bg-negative" "--ty-bg-negative-p1" "--ty-bg-negative-m1"
-   "--ty-bg-exception" "--ty-bg-exception-p1" "--ty-bg-exception-m1"
-   "--ty-bg-important" "--ty-bg-important-p1" "--ty-bg-important-m1"
-   "--ty-bg-unique" "--ty-bg-unique-p1" "--ty-bg-unique-m1"
+   "--ty-bg-primary" "--ty-bg-primary-p1" "--ty-bg-primary-m1"
+   "--ty-bg-secondary" "--ty-bg-secondary-p1" "--ty-bg-secondary-m1"
+   "--ty-bg-success" "--ty-bg-success-p1" "--ty-bg-success-m1"
+   "--ty-bg-danger" "--ty-bg-danger-p1" "--ty-bg-danger-m1"
+   "--ty-bg-warning" "--ty-bg-warning-p1" "--ty-bg-warning-m1"
+   "--ty-bg-info" "--ty-bg-info-p1" "--ty-bg-info-m1"
    "--ty-bg-neutral" "--ty-bg-neutral-p1" "--ty-bg-neutral-m1"
 
    ;; Border colors
    "--ty-border" "--ty-border-p1" "--ty-border-p2" "--ty-border-p3"
    "--ty-border-m1" "--ty-border-m2" "--ty-border-m3"
-   "--ty-border-positive" "--ty-border-negative" "--ty-border-exception"
-   "--ty-border-important" "--ty-border-unique" "--ty-border-neutral"
+   "--ty-border-primary" "--ty-border-secondary" "--ty-border-success"
+   "--ty-border-danger" "--ty-border-warning" "--ty-border-info" "--ty-border-neutral"
 
    ;; Modal tokens
    "--ty-modal-bg" "--ty-modal-color" "--ty-modal-border"
    "--ty-modal-backdrop" "--ty-modal-backdrop-blur" "--ty-modal-border-radius"
    "--ty-modal-shadow" "--ty-modal-duration"
 
+   ;; Modal size variants
+   "--ty-modal-sm-width" "--ty-modal-sm-min-width"
+   "--ty-modal-md-width" "--ty-modal-md-min-width"
+   "--ty-modal-lg-width" "--ty-modal-lg-min-width"
+   "--ty-modal-xl-width" "--ty-modal-xl-min-width"
+   "--ty-modal-full-width" "--ty-modal-full-height"
+
    ;; Input component tokens
    "--ty-input-bg" "--ty-input-color" "--ty-input-border" "--ty-input-border-hover"
    "--ty-input-border-focus" "--ty-input-shadow-focus" "--ty-input-placeholder"
    "--ty-input-disabled-bg" "--ty-input-disabled-border" "--ty-input-disabled-color"
    "--ty-label-color"
+
+   ;; Input semantic states
+   "--ty-input-success-border" "--ty-input-danger-border"
+   "--ty-input-warning-border" "--ty-input-info-border"
 
    ;; Spacing scale
    "--ty-spacing-0" "--ty-spacing-px" "--ty-spacing-mini"

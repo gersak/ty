@@ -5,7 +5,7 @@
    [:div.flex.items-center.gap-3.mb-3
     [:ty-icon {:name icon
                :size "lg"
-               :class "text-ty-important"}]
+               :class "text-ty-primary"}]
     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white title]]
    [:p.text-gray-600.dark:text-gray-400 description]])
 
@@ -22,7 +22,7 @@
     [:p.text-xl.text-gray-600.dark:text-gray-400.mb-6
      "Modern Web Components built with ClojureScript"]
     [:div.flex.gap-4.justify-center
-     [:ty-button {:flavor "important"
+     [:ty-button {:flavor "primary"
                   :filled true
                   :size "lg"}
       [:ty-icon {:name "book-open"
@@ -72,22 +72,22 @@
 
     [:div.mb-6
      [:h3.demo-subtitle "3. Use Components"]
-     (code-example "<ty-button flavor=\"positive\">\n  <ty-icon name=\"check\" slot=\"start\"></ty-icon>\n  Save Changes\n</ty-button>")]
+     (code-example "<ty-button flavor=\"success\">\n  <ty-icon name=\"check\" slot=\"start\"></ty-icon>\n  Save Changes\n</ty-button>")]
 
     [:div.mt-6
      [:h3.demo-subtitle "Example Result:"]
      [:div.flex.gap-4.items-center.flex-wrap
-      [:ty-button {:flavor "positive"
+      [:ty-button {:flavor "success"
                    :filled true}
        [:ty-icon {:name "check"
                   :slot "start"}]
        "Save Changes"]
-      [:ty-button {:flavor "negative"
+      [:ty-button {:flavor "danger"
                    :outlined true}
        [:ty-icon {:name "x"
                   :slot "start"}]
        "Cancel"]
-      [:ty-button {:flavor "important"
+      [:ty-button {:flavor "primary"
                    :accent true}
        [:ty-icon {:name "star"
                   :slot "start"}]

@@ -7,27 +7,47 @@
 ;; Load tag styles
 (defstyles tag-styles)
 
+;; =====================================================
+;; Semantic Flavor Normalization
+;; =====================================================
+
+(defn validate-flavor
+  "Validate that flavor uses new industry-standard semantic naming.
+   For tags, flavor indicates semantic meaning (status, category, importance)."
+  [flavor]
+  (let [valid-flavors #{"primary" "secondary" "success" "danger" "warning" "info" "neutral"}
+        normalized (or flavor "neutral")]
+    (when (and goog.DEBUG (not (contains? valid-flavors normalized)))
+      (js/console.warn (str "[ty-tag] Invalid flavor '" flavor "'. Using 'neutral'. "
+                            "Valid flavors: primary, secondary, success, danger, warning, info, neutral.")))
+    (if (contains? valid-flavors normalized)
+      normalized
+      "neutral")))
+
 (defn get-tag-value
   "Get value from either property or attribute"
   [^js el]
-  (or (.-value el)                    ; First check property
-      (wcs/attr el "value")))          ; Then check attribute
+  (or (.-value el) ; First check property
+      (wcs/attr el "value"))) ; Then check attribute
 
 (defn tag-attributes
-  "Extract tag configuration from element attributes"
+  "Extract tag configuration from element attributes.
+   Only accepts new industry-standard semantic flavors."
   [^js el]
-  {:value (get-tag-value el)  ; Use helper to get value
-   :size (or (wcs/attr el "size") "md") ; Still default to "md" internally for consistency
-   :flavor (or (wcs/attr el "flavor") "neutral")
-   :pill (let [pill? (wcs/parse-bool-attr el "pill")
-               not-pill? (wcs/parse-bool-attr el "not-pill")]
-           (cond
-             pill? true
-             not-pill? false
-             :else true)) ; default to true (pill shape)
-   :clickable (wcs/parse-bool-attr el "clickable")
-   :dismissible (wcs/parse-bool-attr el "dismissible")
-   :disabled (wcs/parse-bool-attr el "disabled")})
+  (let [raw-flavor (wcs/attr el "flavor")
+        validated-flavor (validate-flavor raw-flavor)]
+    {:value (get-tag-value el) ; Use helper to get value
+     :size (or (wcs/attr el "size") "md") ; Still default to "md" internally for consistency
+     :flavor validated-flavor
+     :pill (let [pill? (wcs/parse-bool-attr el "pill")
+                 not-pill? (wcs/parse-bool-attr el "not-pill")]
+             (cond
+               pill? true
+               not-pill? false
+               :else true)) ; default to true (pill shape)
+     :clickable (wcs/parse-bool-attr el "clickable")
+     :dismissible (wcs/parse-bool-attr el "dismissible")
+     :disabled (wcs/parse-bool-attr el "disabled")}))
 
 (defn dispatch-tag-event!
   "Dispatch custom tag events"
@@ -113,7 +133,7 @@
 
     ;; Ensure styles are loaded
     (ensure-styles! root tag-styles "ty-tag")
-    
+
     ;; Ensure value is also set as attribute for CSS selectors and debugging
     (when value
       (when-not (.hasAttribute el "value")

@@ -1,83 +1,97 @@
 /* =================================================================
-   Ty Component Library - CSS Variables
+   Ty Component Library - CSS Variables v2
+   Industry-Standard Semantic Color System
    ================================================================= */
 
 /* Default theme (light) */
 html {
   /* =================================================================
-     SEMANTIC BASE COLORS
-     Users customize these to match their brand
+     NEW: INDUSTRY-STANDARD SEMANTIC BASE COLORS
+     Primary, Secondary, Success, Danger, Warning, Info, Neutral
      ================================================================= */
 
-  --ty-semantic-positive: #10b981;
-  /* Success, confirm, go */
-  --ty-semantic-negative: #ef4444;
-  /* Error, danger, stop */
-  --ty-semantic-exception: #f59e0b;
-  /* Warning, caution */
-  --ty-semantic-important: #3b82f6;
-  /* Primary, emphasis */
-  --ty-semantic-unique: #8b5cf6;
-  /* Special, branded */
+  --ty-semantic-primary: #3b82f6;
+  /* Main brand color, primary actions, CTAs */
+  --ty-semantic-secondary: #8b5cf6;
+  /* Supporting actions, less prominent */
+  --ty-semantic-success: #10b981;
+  /* Positive outcomes, confirmations, "good" states */
+  --ty-semantic-danger: #ef4444;
+  /* Errors, destructive actions, critical issues */
+  --ty-semantic-warning: #f59e0b;
+  /* Caution, attention needed, "be careful" states */
+  --ty-semantic-info: #06b6d4;
+  /* Informational, neutral emphasis, helpful notes */
   --ty-semantic-neutral: #6b7280;
-  /* Default, standard */
+  /* Default, standard, muted states */
+
+
 
   /* =================================================================
-     COLOR VARIATIONS
+     NEW: INDUSTRY-STANDARD COLOR VARIATIONS
      Manually defined for precise control
      p = plus (more emphasis), m = minus (less emphasis)
      ================================================================= */
 
-  /* Positive */
-  --ty-color-positive: var(--ty-semantic-positive);
-  --ty-color-positive-p1: #059669;
+  /* Primary */
+  --ty-color-primary: var(--ty-semantic-primary);
+  --ty-color-primary-p1: #2563eb;
   /* Darker/stronger */
-  --ty-color-positive-p2: #047857;
+  --ty-color-primary-p2: #1d4ed8;
   /* Even darker/stronger */
-  --ty-color-positive-p3: #064e3b;
+  --ty-color-primary-p3: #1e40af;
   /* Maximum emphasis */
-  --ty-color-positive-m1: #34d399;
+  --ty-color-primary-m1: #60a5fa;
   /* Lighter/weaker */
-  --ty-color-positive-m2: #6ee7b7;
+  --ty-color-primary-m2: #93c5fd;
   /* Even lighter/weaker */
-  --ty-color-positive-m3: #a7f3d0;
+  --ty-color-primary-m3: #bfdbfe;
   /* Minimum emphasis */
 
-  /* Negative */
-  --ty-color-negative: var(--ty-semantic-negative);
-  --ty-color-negative-p1: #dc2626;
-  --ty-color-negative-p2: #b91c1c;
-  --ty-color-negative-p3: #991b1b;
-  --ty-color-negative-m1: #f87171;
-  --ty-color-negative-m2: #fca5a5;
-  --ty-color-negative-m3: #fecaca;
+  /* Secondary */
+  --ty-color-secondary: var(--ty-semantic-secondary);
+  --ty-color-secondary-p1: #7c3aed;
+  --ty-color-secondary-p2: #6d28d9;
+  --ty-color-secondary-p3: #5b21b6;
+  --ty-color-secondary-m1: #a78bfa;
+  --ty-color-secondary-m2: #c4b5fd;
+  --ty-color-secondary-m3: #ddd6fe;
 
-  /* Exception */
-  --ty-color-exception: var(--ty-semantic-exception);
-  --ty-color-exception-p1: #d97706;
-  --ty-color-exception-p2: #b45309;
-  --ty-color-exception-p3: #92400e;
-  --ty-color-exception-m1: #fbbf24;
-  --ty-color-exception-m2: #fcd34d;
-  --ty-color-exception-m3: #fde68a;
+  /* Success */
+  --ty-color-success: var(--ty-semantic-success);
+  --ty-color-success-p1: #059669;
+  --ty-color-success-p2: #047857;
+  --ty-color-success-p3: #064e3b;
+  --ty-color-success-m1: #34d399;
+  --ty-color-success-m2: #6ee7b7;
+  --ty-color-success-m3: #a7f3d0;
 
-  /* Important */
-  --ty-color-important: var(--ty-semantic-important);
-  --ty-color-important-p1: #2563eb;
-  --ty-color-important-p2: #1d4ed8;
-  --ty-color-important-p3: #1e40af;
-  --ty-color-important-m1: #60a5fa;
-  --ty-color-important-m2: #93c5fd;
-  --ty-color-important-m3: #bfdbfe;
+  /* Danger */
+  --ty-color-danger: var(--ty-semantic-danger);
+  --ty-color-danger-p1: #dc2626;
+  --ty-color-danger-p2: #b91c1c;
+  --ty-color-danger-p3: #991b1b;
+  --ty-color-danger-m1: #f87171;
+  --ty-color-danger-m2: #fca5a5;
+  --ty-color-danger-m3: #fecaca;
 
-  /* Unique */
-  --ty-color-unique: var(--ty-semantic-unique);
-  --ty-color-unique-p1: #7c3aed;
-  --ty-color-unique-p2: #6d28d9;
-  --ty-color-unique-p3: #5b21b6;
-  --ty-color-unique-m1: #a78bfa;
-  --ty-color-unique-m2: #c4b5fd;
-  --ty-color-unique-m3: #ddd6fe;
+  /* Warning */
+  --ty-color-warning: var(--ty-semantic-warning);
+  --ty-color-warning-p1: #d97706;
+  --ty-color-warning-p2: #b45309;
+  --ty-color-warning-p3: #92400e;
+  --ty-color-warning-m1: #fbbf24;
+  --ty-color-warning-m2: #fcd34d;
+  --ty-color-warning-m3: #fde68a;
+
+  /* Info */
+  --ty-color-info: var(--ty-semantic-info);
+  --ty-color-info-p1: #0891b2;
+  --ty-color-info-p2: #0e7490;
+  --ty-color-info-p3: #155e75;
+  --ty-color-info-m1: #22d3ee;
+  --ty-color-info-m2: #67e8f9;
+  --ty-color-info-m3: #a5f3fc;
 
   /* Neutral */
   --ty-color-neutral: var(--ty-semantic-neutral);
@@ -88,10 +102,6 @@ html {
   --ty-color-neutral-m2: #d1d5db;
   --ty-color-neutral-m3: #e5e7eb;
 
-  /* =================================================================
-     BACKGROUND COLORS
-     Usually lighter than text colors for contrast
-     ================================================================= */
 
   --ty-bg: #ffffff;
   --ty-bg-p1: #f9fafb;
@@ -105,33 +115,43 @@ html {
   --ty-bg-m2: #ffffff;
   --ty-bg-m3: #ffffff;
 
-  /* Semantic bgs */
-  --ty-bg-positive: #d1fae5;
-  --ty-bg-positive-p1: #a7f3d0;
-  --ty-bg-positive-m1: #ecfdf5;
+  /* Primary backgrounds */
+  --ty-bg-primary: #dbeafe;
+  --ty-bg-primary-p1: #bfdbfe;
+  --ty-bg-primary-m1: #eff6ff;
 
-  --ty-bg-negative: #fee2e2;
-  --ty-bg-negative-p1: #fecaca;
-  --ty-bg-negative-m1: #fef2f2;
+  /* Secondary backgrounds */
+  --ty-bg-secondary: #e9d5ff;
+  --ty-bg-secondary-p1: #ddd6fe;
+  --ty-bg-secondary-m1: #f3e8ff;
 
-  --ty-bg-exception: #fef3c7;
-  --ty-bg-exception-p1: #fde68a;
-  --ty-bg-exception-m1: #fffbeb;
+  /* Success backgrounds */
+  --ty-bg-success: #d1fae5;
+  --ty-bg-success-p1: #a7f3d0;
+  --ty-bg-success-m1: #ecfdf5;
 
-  --ty-bg-important: #dbeafe;
-  --ty-bg-important-p1: #bfdbfe;
-  --ty-bg-important-m1: #eff6ff;
+  /* Danger backgrounds */
+  --ty-bg-danger: #fee2e2;
+  --ty-bg-danger-p1: #fecaca;
+  --ty-bg-danger-m1: #fef2f2;
 
-  --ty-bg-unique: #e9d5ff;
-  --ty-bg-unique-p1: #ddd6fe;
-  --ty-bg-unique-m1: #f3e8ff;
+  /* Warning backgrounds */
+  --ty-bg-warning: #fef3c7;
+  --ty-bg-warning-p1: #fde68a;
+  --ty-bg-warning-m1: #fffbeb;
 
+  /* Info backgrounds */
+  --ty-bg-info: #cffafe;
+  --ty-bg-info-p1: #a5f3fc;
+  --ty-bg-info-m1: #ecfeff;
+
+  /* Neutral backgrounds */
   --ty-bg-neutral: #f3f4f6;
   --ty-bg-neutral-p1: #e5e7eb;
   --ty-bg-neutral-m1: #f9fafb;
 
   /* =================================================================
-     BORDER COLORS
+     NEW: INDUSTRY-STANDARD BORDER COLORS
      ================================================================= */
 
   --ty-border: #e5e7eb;
@@ -143,15 +163,16 @@ html {
   --ty-border-m3: #fafafa;
 
   /* Semantic borders */
-  --ty-border-positive: var(--ty-color-positive);
-  --ty-border-negative: var(--ty-color-negative);
-  --ty-border-exception: var(--ty-color-exception);
-  --ty-border-important: var(--ty-color-important);
-  --ty-border-unique: var(--ty-color-unique);
+  --ty-border-primary: var(--ty-color-primary);
+  --ty-border-secondary: var(--ty-color-secondary);
+  --ty-border-success: var(--ty-color-success);
+  --ty-border-danger: var(--ty-color-danger);
+  --ty-border-warning: var(--ty-color-warning);
+  --ty-border-info: var(--ty-color-info);
   --ty-border-neutral: var(--ty-color-neutral);
 
   /* =================================================================
-     MODAL TOKENS
+     MODAL TOKENS (Updated with new semantics)
      ================================================================= */
 
   --ty-modal-bg: #ffffff;
@@ -183,20 +204,26 @@ html {
   --ty-modal-duration: 200ms;
 
   /* =================================================================
-     INPUT COMPONENT TOKENS
+     INPUT COMPONENT TOKENS (Updated with new semantics)
      ================================================================= */
 
   --ty-input-bg: #ffffff;
   --ty-input-color: #111827;
   --ty-input-border: #d1d5db;
   --ty-input-border-hover: #9ca3af;
-  --ty-input-border-focus: #3b82f6;
+  --ty-input-border-focus: var(--ty-color-primary);
   --ty-input-shadow-focus: rgba(59, 130, 246, 0.1);
   --ty-input-placeholder: #9ca3af;
   --ty-input-disabled-bg: #f9fafb;
   --ty-input-disabled-border: #e5e7eb;
   --ty-input-disabled-color: #9ca3af;
   --ty-label-color: #374151;
+
+  /* Input semantic states */
+  --ty-input-success-border: var(--ty-color-success);
+  --ty-input-danger-border: var(--ty-color-danger);
+  --ty-input-warning-border: var(--ty-color-warning);
+  --ty-input-info-border: var(--ty-color-info);
 
   /* =================================================================
      NON-COLOR PROPERTIES
@@ -341,71 +368,91 @@ html {
 }
 
 /* =================================================================
-   DARK THEME
+   DARK THEME (Updated with new semantics)
    ================================================================= */
 
 html.dark,
 html[data-theme="dark"] {
-  /* Semantic colors remain the same (users can override) */
-  --ty-semantic-positive: #10b981;
-  --ty-semantic-negative: #ef4444;
-  --ty-semantic-exception: #f59e0b;
-  --ty-semantic-important: #60a5fa;
-  /* Lighter for dark mode */
-  --ty-semantic-unique: #a78bfa;
-  /* Lighter for dark mode */
+  /* =================================================================
+     NEW: INDUSTRY-STANDARD SEMANTIC COLORS - DARK THEME
+     ================================================================= */
+
+  /* Semantic colors - adjusted for dark mode */
+  --ty-semantic-primary: #60a5fa;
+  /* Lighter blue for better contrast on dark */
+  --ty-semantic-secondary: #a78bfa;
+  /* Lighter purple for better contrast on dark */
+  --ty-semantic-success: #34d399;
+  /* Lighter green for better contrast on dark */
+  --ty-semantic-danger: #f87171;
+  /* Lighter red for better contrast on dark */
+  --ty-semantic-warning: #fbbf24;
+  /* Lighter amber for better contrast on dark */
+  --ty-semantic-info: #22d3ee;
+  /* Lighter cyan for better contrast on dark */
   --ty-semantic-neutral: #9ca3af;
-  /* Lighter for dark mode */
+  /* Lighter gray for better contrast on dark */
+
+
 
   /* Color variations - emphasis inverted for dark mode */
   /* In dark mode, "more emphasis" often means lighter */
 
-  /* Positive */
-  --ty-color-positive: var(--ty-semantic-positive);
-  --ty-color-positive-p1: #34d399;
+  /* Primary */
+  --ty-color-primary: var(--ty-semantic-primary);
+  --ty-color-primary-p1: #93c5fd;
   /* Lighter = more emphasis */
-  --ty-color-positive-p2: #6ee7b7;
-  --ty-color-positive-p3: #a7f3d0;
-  --ty-color-positive-m1: #059669;
+  --ty-color-primary-p2: #bfdbfe;
+  --ty-color-primary-p3: #dbeafe;
+  --ty-color-primary-m1: #3b82f6;
   /* Darker = less emphasis */
-  --ty-color-positive-m2: #047857;
-  --ty-color-positive-m3: #064e3b;
+  --ty-color-primary-m2: #2563eb;
+  --ty-color-primary-m3: #1d4ed8;
 
-  /* Negative */
-  --ty-color-negative: var(--ty-semantic-negative);
-  --ty-color-negative-p1: #f87171;
-  --ty-color-negative-p2: #fca5a5;
-  --ty-color-negative-p3: #fecaca;
-  --ty-color-negative-m1: #dc2626;
-  --ty-color-negative-m2: #b91c1c;
-  --ty-color-negative-m3: #991b1b;
+  /* Secondary */
+  --ty-color-secondary: var(--ty-semantic-secondary);
+  --ty-color-secondary-p1: #c4b5fd;
+  --ty-color-secondary-p2: #ddd6fe;
+  --ty-color-secondary-p3: #e9d5ff;
+  --ty-color-secondary-m1: #8b5cf6;
+  --ty-color-secondary-m2: #7c3aed;
+  --ty-color-secondary-m3: #6d28d9;
 
-  /* Exception */
-  --ty-color-exception: var(--ty-semantic-exception);
-  --ty-color-exception-p1: #fbbf24;
-  --ty-color-exception-p2: #fcd34d;
-  --ty-color-exception-p3: #fde68a;
-  --ty-color-exception-m1: #d97706;
-  --ty-color-exception-m2: #b45309;
-  --ty-color-exception-m3: #92400e;
+  /* Success */
+  --ty-color-success: var(--ty-semantic-success);
+  --ty-color-success-p1: #6ee7b7;
+  --ty-color-success-p2: #a7f3d0;
+  --ty-color-success-p3: #d1fae5;
+  --ty-color-success-m1: #10b981;
+  --ty-color-success-m2: #059669;
+  --ty-color-success-m3: #047857;
 
-  /* Important */
-  --ty-color-important: var(--ty-semantic-important);
-  --ty-color-important-p1: #93c5fd;
-  --ty-color-important-p2: #bfdbfe;
-  --ty-color-important-p3: #dbeafe;
-  --ty-color-important-m1: #3b82f6;
-  --ty-color-important-m2: #2563eb;
-  --ty-color-important-m3: #1d4ed8;
+  /* Danger */
+  --ty-color-danger: var(--ty-semantic-danger);
+  --ty-color-danger-p1: #fca5a5;
+  --ty-color-danger-p2: #fecaca;
+  --ty-color-danger-p3: #fee2e2;
+  --ty-color-danger-m1: #ef4444;
+  --ty-color-danger-m2: #dc2626;
+  --ty-color-danger-m3: #b91c1c;
 
-  /* Unique */
-  --ty-color-unique: var(--ty-semantic-unique);
-  --ty-color-unique-p1: #c4b5fd;
-  --ty-color-unique-p2: #ddd6fe;
-  --ty-color-unique-p3: #e9d5ff;
-  --ty-color-unique-m1: #8b5cf6;
-  --ty-color-unique-m2: #7c3aed;
-  --ty-color-unique-m3: #6d28d9;
+  /* Warning */
+  --ty-color-warning: var(--ty-semantic-warning);
+  --ty-color-warning-p1: #fcd34d;
+  --ty-color-warning-p2: #fde68a;
+  --ty-color-warning-p3: #fef3c7;
+  --ty-color-warning-m1: #f59e0b;
+  --ty-color-warning-m2: #d97706;
+  --ty-color-warning-m3: #b45309;
+
+  /* Info */
+  --ty-color-info: var(--ty-semantic-info);
+  --ty-color-info-p1: #67e8f9;
+  --ty-color-info-p2: #a5f3fc;
+  --ty-color-info-p3: #cffafe;
+  --ty-color-info-m1: #06b6d4;
+  --ty-color-info-m2: #0891b2;
+  --ty-color-info-m3: #0e7490;
 
   /* Neutral */
   --ty-color-neutral: var(--ty-semantic-neutral);
@@ -416,7 +463,7 @@ html[data-theme="dark"] {
   --ty-color-neutral-m2: #4b5563;
   --ty-color-neutral-m3: #374151;
 
-  /* bgs for dark mode */
+  /* Backgrounds for dark mode */
   --ty-bg: #111827;
   --ty-bg-p1: #1f2937;
   --ty-bg-p2: #374151;
@@ -426,25 +473,29 @@ html[data-theme="dark"] {
   --ty-bg-m3: #000000;
 
   /* Semantic bgs - much darker in dark mode */
-  --ty-bg-positive: #064e3b;
-  --ty-bg-positive-p1: #047857;
-  --ty-bg-positive-m1: #022c22;
+  --ty-bg-primary: #1e3a8a;
+  --ty-bg-primary-p1: #1e40af;
+  --ty-bg-primary-m1: #172554;
 
-  --ty-bg-negative: #7f1d1d;
-  --ty-bg-negative-p1: #991b1b;
-  --ty-bg-negative-m1: #450a0a;
+  --ty-bg-secondary: #4c1d95;
+  --ty-bg-secondary-p1: #5b21b6;
+  --ty-bg-secondary-m1: #2e1065;
 
-  --ty-bg-exception: #78350f;
-  --ty-bg-exception-p1: #92400e;
-  --ty-bg-exception-m1: #451a03;
+  --ty-bg-success: #064e3b;
+  --ty-bg-success-p1: #047857;
+  --ty-bg-success-m1: #022c22;
 
-  --ty-bg-important: #1e3a8a;
-  --ty-bg-important-p1: #1e40af;
-  --ty-bg-important-m1: #172554;
+  --ty-bg-danger: #7f1d1d;
+  --ty-bg-danger-p1: #991b1b;
+  --ty-bg-danger-m1: #450a0a;
 
-  --ty-bg-unique: #4c1d95;
-  --ty-bg-unique-p1: #5b21b6;
-  --ty-bg-unique-m1: #2e1065;
+  --ty-bg-warning: #78350f;
+  --ty-bg-warning-p1: #92400e;
+  --ty-bg-warning-m1: #451a03;
+
+  --ty-bg-info: #164e63;
+  --ty-bg-info-p1: #155e75;
+  --ty-bg-info-m1: #083344;
 
   --ty-bg-neutral: #1f2937;
   --ty-bg-neutral-p1: #374151;
@@ -472,13 +523,19 @@ html[data-theme="dark"] {
   --ty-input-color: #f9fafb;
   --ty-input-border: #374151;
   --ty-input-border-hover: #4b5563;
-  --ty-input-border-focus: #60a5fa;
+  --ty-input-border-focus: var(--ty-color-primary);
   --ty-input-shadow-focus: rgba(96, 165, 250, 0.1);
   --ty-input-placeholder: #6b7280;
   --ty-input-disabled-bg: #111827;
   --ty-input-disabled-border: #1f2937;
   --ty-input-disabled-color: #6b7280;
   --ty-label-color: #d1d5db;
+
+  /* Input semantic states - dark mode */
+  --ty-input-success-border: var(--ty-color-success);
+  --ty-input-danger-border: var(--ty-color-danger);
+  --ty-input-warning-border: var(--ty-color-warning);
+  --ty-input-info-border: var(--ty-color-info);
 
   /* Modal - dark mode */
   --ty-modal-bg: var(--ty-bg-p1);

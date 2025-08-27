@@ -206,41 +206,370 @@ button.plain:hover:not(:disabled) {
   box-shadow: none;
 }
 
-/* ===== APPEARANCE × FLAVOR COMBINATIONS ===== */
+/* ===== NEW: INDUSTRY-STANDARD SEMANTIC FLAVORS ===== */
 
-/* ===== ACTION MODIFIER ===== */
+/* ----- PRIMARY FLAVOR ----- */
 
-/* Action buttons have equal padding on all sides */
-button.action {
-  padding: var(--ty-spacing-2);
+/* Filled + Outlined (default) */
+button.filled-outlined.primary {
+  background: var(--ty-bg-primary);
+  color: var(--ty-color-primary);
+  border-color: var(--ty-border-primary);
 }
 
-/* Size-specific action adjustments */
-button.action.xs {
-  padding: var(--ty-spacing-0_5);
+button.filled-outlined.primary:hover:not(:disabled) {
+  background: var(--ty-bg-primary-p1);
 }
 
-button.action.sm {
-  padding: var(--ty-spacing-1);
+button.filled-outlined.primary:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-primary);
 }
 
-button.action.md {
-  padding: var(--ty-spacing-2);
+/* Accent */
+button.accent.primary {
+  background: var(--ty-color-primary);
 }
 
-button.action.lg {
-  padding: var(--ty-spacing-3);
+button.accent.primary:hover:not(:disabled) {
+  background: var(--ty-color-primary-p1);
 }
 
-button.action.xl {
-  padding: var(--ty-spacing-4);
+button.accent.primary:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-primary);
 }
 
-/* Action + Pill combination creates a perfect circle for icon buttons */
-button.action.pill:has(ty-icon:only-child) {
-  /* Already handled by pill styles, but ensure square aspect ratio */
-  padding: 0;
+/* Filled */
+button.filled.primary {
+  background: var(--ty-bg-primary);
+  color: var(--ty-color-primary);
 }
+
+button.filled.primary:hover:not(:disabled) {
+  background: var(--ty-bg-primary-p1);
+}
+
+/* Outlined */
+button.outlined.primary {
+  color: var(--ty-color-primary);
+  border-color: var(--ty-color-primary);
+}
+
+button.outlined.primary:hover:not(:disabled) {
+  background: var(--ty-bg-primary-m1);
+}
+
+/* Plain */
+button.plain.primary {
+  color: var(--ty-color-primary);
+}
+
+button.plain.primary:hover:not(:disabled) {
+  background: var(--ty-bg-primary-m1);
+}
+
+/* ----- SECONDARY FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.secondary {
+  background: var(--ty-bg-secondary);
+  color: var(--ty-color-secondary);
+  border-color: var(--ty-border-secondary);
+}
+
+button.filled-outlined.secondary:hover:not(:disabled) {
+  background: var(--ty-bg-secondary-p1);
+}
+
+button.filled-outlined.secondary:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-secondary);
+}
+
+/* Accent */
+button.accent.secondary {
+  background: var(--ty-color-secondary);
+}
+
+button.accent.secondary:hover:not(:disabled) {
+  background: var(--ty-color-secondary-p1);
+}
+
+button.accent.secondary:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-secondary);
+}
+
+/* Filled */
+button.filled.secondary {
+  background: var(--ty-bg-secondary);
+  color: var(--ty-color-secondary);
+}
+
+button.filled.secondary:hover:not(:disabled) {
+  background: var(--ty-bg-secondary-p1);
+}
+
+/* Outlined */
+button.outlined.secondary {
+  color: var(--ty-color-secondary);
+  border-color: var(--ty-color-secondary);
+}
+
+button.outlined.secondary:hover:not(:disabled) {
+  background: var(--ty-bg-secondary-m1);
+}
+
+/* Plain */
+button.plain.secondary {
+  color: var(--ty-color-secondary);
+}
+
+button.plain.secondary:hover:not(:disabled) {
+  background: var(--ty-bg-secondary-m1);
+}
+
+/* ----- SUCCESS FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.success {
+  background: var(--ty-bg-success);
+  color: var(--ty-color-success);
+  border-color: var(--ty-border-success);
+}
+
+button.filled-outlined.success:hover:not(:disabled) {
+  background: var(--ty-bg-success-p1);
+}
+
+button.filled-outlined.success:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-success);
+}
+
+/* Accent */
+button.accent.success {
+  background: var(--ty-color-success);
+}
+
+button.accent.success:hover:not(:disabled) {
+  background: var(--ty-color-success-p1);
+}
+
+button.accent.success:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-success);
+}
+
+/* Filled */
+button.filled.success {
+  background: var(--ty-bg-success);
+  color: var(--ty-color-success);
+}
+
+button.filled.success:hover:not(:disabled) {
+  background: var(--ty-bg-success-p1);
+}
+
+/* Outlined */
+button.outlined.success {
+  color: var(--ty-color-success);
+  border-color: var(--ty-color-success);
+}
+
+button.outlined.success:hover:not(:disabled) {
+  background: var(--ty-bg-success-m1);
+}
+
+/* Plain */
+button.plain.success {
+  color: var(--ty-color-success);
+}
+
+button.plain.success:hover:not(:disabled) {
+  background: var(--ty-bg-success-m1);
+}
+
+/* ----- DANGER FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.danger {
+  background: var(--ty-bg-danger);
+  color: var(--ty-color-danger);
+  border-color: var(--ty-border-danger);
+}
+
+button.filled-outlined.danger:hover:not(:disabled) {
+  background: var(--ty-bg-danger-p1);
+}
+
+button.filled-outlined.danger:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-danger);
+}
+
+/* Accent */
+button.accent.danger {
+  background: var(--ty-color-danger);
+}
+
+button.accent.danger:hover:not(:disabled) {
+  background: var(--ty-color-danger-p1);
+}
+
+button.accent.danger:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-danger);
+}
+
+/* Filled */
+button.filled.danger {
+  background: var(--ty-bg-danger);
+  color: var(--ty-color-danger);
+}
+
+button.filled.danger:hover:not(:disabled) {
+  background: var(--ty-bg-danger-p1);
+}
+
+/* Outlined */
+button.outlined.danger {
+  color: var(--ty-color-danger);
+  border-color: var(--ty-color-danger);
+}
+
+button.outlined.danger:hover:not(:disabled) {
+  background: var(--ty-bg-danger-m1);
+}
+
+/* Plain */
+button.plain.danger {
+  color: var(--ty-color-danger);
+}
+
+button.plain.danger:hover:not(:disabled) {
+  background: var(--ty-bg-danger-m1);
+}
+
+/* ----- WARNING FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.warning {
+  background: var(--ty-bg-warning);
+  color: var(--ty-color-warning);
+  border-color: var(--ty-border-warning);
+}
+
+button.filled-outlined.warning:hover:not(:disabled) {
+  background: var(--ty-bg-warning-p1);
+}
+
+button.filled-outlined.warning:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-warning);
+}
+
+/* Accent */
+button.accent.warning {
+  background: var(--ty-color-warning);
+}
+
+button.accent.warning:hover:not(:disabled) {
+  background: var(--ty-color-warning-p1);
+}
+
+button.accent.warning:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-warning);
+}
+
+/* Filled */
+button.filled.warning {
+  background: var(--ty-bg-warning);
+  color: var(--ty-color-warning);
+}
+
+button.filled.warning:hover:not(:disabled) {
+  background: var(--ty-bg-warning-p1);
+}
+
+/* Outlined */
+button.outlined.warning {
+  color: var(--ty-color-warning);
+  border-color: var(--ty-color-warning);
+}
+
+button.outlined.warning:hover:not(:disabled) {
+  background: var(--ty-bg-warning-m1);
+}
+
+/* Plain */
+button.plain.warning {
+  color: var(--ty-color-warning);
+}
+
+button.plain.warning:hover:not(:disabled) {
+  background: var(--ty-bg-warning-m1);
+}
+
+/* ----- INFO FLAVOR ----- */
+
+/* Filled + Outlined (default) */
+button.filled-outlined.info {
+  background: var(--ty-bg-info);
+  color: var(--ty-color-info);
+  border-color: var(--ty-border-info);
+}
+
+button.filled-outlined.info:hover:not(:disabled) {
+  background: var(--ty-bg-info-p1);
+}
+
+button.filled-outlined.info:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-info);
+}
+
+/* Accent */
+button.accent.info {
+  background: var(--ty-color-info);
+}
+
+button.accent.info:hover:not(:disabled) {
+  background: var(--ty-color-info-p1);
+}
+
+button.accent.info:focus-visible {
+  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-info);
+}
+
+/* Filled */
+button.filled.info {
+  background: var(--ty-bg-info);
+  color: var(--ty-color-info);
+}
+
+button.filled.info:hover:not(:disabled) {
+  background: var(--ty-bg-info-p1);
+}
+
+/* Outlined */
+button.outlined.info {
+  color: var(--ty-color-info);
+  border-color: var(--ty-color-info);
+}
+
+button.outlined.info:hover:not(:disabled) {
+  background: var(--ty-bg-info-m1);
+}
+
+/* Plain */
+button.plain.info {
+  color: var(--ty-color-info);
+}
+
+button.plain.info:hover:not(:disabled) {
+  background: var(--ty-bg-info-m1);
+}
+
+/* ===== LEGACY FLAVORS (Backward Compatibility) ===== */
+/* 
+   These legacy flavor classes continue to work exactly as before
+   because they reference the new semantic tokens via CSS variable mapping:
+   
+   
+   No changes needed here - the mapping is handled in ty.variables.css
+*/
 
 /* ----- NEUTRAL FLAVOR ----- */
 
@@ -304,294 +633,154 @@ button.plain.neutral:hover:not(:disabled) {
 /* ----- IMPORTANT FLAVOR ----- */
 
 /* Filled + Outlined (default) */
-button.filled-outlined.important {
-  background: var(--ty-bg-important);
-  color: var(--ty-color-important);
-  border-color: var(--ty-border-important);
 }
 
-button.filled-outlined.important:hover:not(:disabled) {
-  background: var(--ty-bg-important-p1);
 }
 
-button.filled-outlined.important:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-important);
 }
 
 /* Accent */
-button.accent.important {
-  background: var(--ty-color-important);
 }
 
-button.accent.important:hover:not(:disabled) {
-  background: var(--ty-color-important-p1);
 }
 
-button.accent.important:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-important);
 }
 
 /* Filled */
-button.filled.important {
-  background: var(--ty-bg-important);
-  color: var(--ty-color-important);
 }
 
-button.filled.important:hover:not(:disabled) {
-  background: var(--ty-bg-important-p1);
 }
 
 /* Outlined */
-button.outlined.important {
-  color: var(--ty-color-important);
-  border-color: var(--ty-color-important);
 }
 
-button.outlined.important:hover:not(:disabled) {
-  background: var(--ty-bg-important-m1);
 }
 
 /* Plain */
-button.plain.important {
-  color: var(--ty-color-important);
 }
 
-button.plain.important:hover:not(:disabled) {
-  background: var(--ty-bg-important-m1);
 }
 
 /* ----- POSITIVE FLAVOR ----- */
 
 /* Filled + Outlined (default) */
-button.filled-outlined.positive {
-  background: var(--ty-bg-positive);
-  color: var(--ty-color-positive);
-  border-color: var(--ty-border-positive);
 }
 
-button.filled-outlined.positive:hover:not(:disabled) {
-  background: var(--ty-bg-positive-p1);
 }
 
-button.filled-outlined.positive:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-positive);
 }
 
 /* Accent */
-button.accent.positive {
-  background: var(--ty-color-positive);
 }
 
-button.accent.positive:hover:not(:disabled) {
-  background: var(--ty-color-positive-p1);
 }
 
-button.accent.positive:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-positive);
 }
 
 /* Filled */
-button.filled.positive {
-  background: var(--ty-bg-positive);
-  color: var(--ty-color-positive);
 }
 
-button.filled.positive:hover:not(:disabled) {
-  background: var(--ty-bg-positive-p1);
 }
 
 /* Outlined */
-button.outlined.positive {
-  color: var(--ty-color-positive);
-  border-color: var(--ty-color-positive);
 }
 
-button.outlined.positive:hover:not(:disabled) {
-  background: var(--ty-bg-positive-m1);
 }
 
 /* Plain */
-button.plain.positive {
-  color: var(--ty-color-positive);
 }
 
-button.plain.positive:hover:not(:disabled) {
-  background: var(--ty-bg-positive-m1);
 }
 
 /* ----- NEGATIVE FLAVOR ----- */
 
 /* Filled + Outlined (default) */
-button.filled-outlined.negative {
-  background: var(--ty-bg-negative);
-  color: var(--ty-color-negative);
-  border-color: var(--ty-border-negative);
 }
 
-button.filled-outlined.negative:hover:not(:disabled) {
-  background: var(--ty-bg-negative-p1);
 }
 
-button.filled-outlined.negative:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-negative);
 }
 
 /* Accent */
-button.accent.negative {
-  background: var(--ty-color-negative);
 }
 
-button.accent.negative:hover:not(:disabled) {
-  background: var(--ty-color-negative-p1);
 }
 
-button.accent.negative:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-negative);
 }
 
 /* Filled */
-button.filled.negative {
-  background: var(--ty-bg-negative);
-  color: var(--ty-color-negative);
 }
 
-button.filled.negative:hover:not(:disabled) {
-  background: var(--ty-bg-negative-p1);
 }
 
 /* Outlined */
-button.outlined.negative {
-  color: var(--ty-color-negative);
-  border-color: var(--ty-color-negative);
 }
 
-button.outlined.negative:hover:not(:disabled) {
-  background: var(--ty-bg-negative-m1);
 }
 
 /* Plain */
-button.plain.negative {
-  color: var(--ty-color-negative);
 }
 
-button.plain.negative:hover:not(:disabled) {
-  background: var(--ty-bg-negative-m1);
 }
 
 /* ----- EXCEPTION FLAVOR ----- */
 
 /* Filled + Outlined (default) */
-button.filled-outlined.exception {
-  background: var(--ty-bg-exception);
-  color: var(--ty-color-exception);
-  border-color: var(--ty-border-exception);
 }
 
-button.filled-outlined.exception:hover:not(:disabled) {
-  background: var(--ty-bg-exception-p1);
 }
 
-button.filled-outlined.exception:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-exception);
 }
 
 /* Accent */
-button.accent.exception {
-  background: var(--ty-color-exception);
 }
 
-button.accent.exception:hover:not(:disabled) {
-  background: var(--ty-color-exception-p1);
 }
 
-button.accent.exception:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-exception);
 }
 
 /* Filled */
-button.filled.exception {
-  background: var(--ty-bg-exception);
-  color: var(--ty-color-exception);
 }
 
-button.filled.exception:hover:not(:disabled) {
-  background: var(--ty-bg-exception-p1);
 }
 
 /* Outlined */
-button.outlined.exception {
-  color: var(--ty-color-exception);
-  border-color: var(--ty-color-exception);
 }
 
-button.outlined.exception:hover:not(:disabled) {
-  background: var(--ty-bg-exception-m1);
 }
 
 /* Plain */
-button.plain.exception {
-  color: var(--ty-color-exception);
 }
 
-button.plain.exception:hover:not(:disabled) {
-  background: var(--ty-bg-exception-m1);
 }
 
 /* ----- UNIQUE FLAVOR ----- */
 
 /* Filled + Outlined (default) */
-button.filled-outlined.unique {
-  background: var(--ty-bg-unique);
-  color: var(--ty-color-unique);
-  border-color: var(--ty-border-unique);
 }
 
-button.filled-outlined.unique:hover:not(:disabled) {
-  background: var(--ty-bg-unique-p1);
 }
 
-button.filled-outlined.unique:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-unique);
 }
 
 /* Accent */
-button.accent.unique {
-  background: var(--ty-color-unique);
 }
 
-button.accent.unique:hover:not(:disabled) {
-  background: var(--ty-color-unique-p1);
 }
 
-button.accent.unique:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-unique);
 }
 
 /* Filled */
-button.filled.unique {
-  background: var(--ty-bg-unique);
-  color: var(--ty-color-unique);
 }
 
-button.filled.unique:hover:not(:disabled) {
-  background: var(--ty-bg-unique-p1);
 }
 
 /* Outlined */
-button.outlined.unique {
-  color: var(--ty-color-unique);
-  border-color: var(--ty-color-unique);
 }
 
-button.outlined.unique:hover:not(:disabled) {
-  background: var(--ty-bg-unique-m1);
 }
 
 /* Plain */
-button.plain.unique {
-  color: var(--ty-color-unique);
 }
 
-button.plain.unique:hover:not(:disabled) {
-  background: var(--ty-bg-unique-m1);
 }

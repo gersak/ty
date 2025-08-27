@@ -76,23 +76,24 @@
   margin: 0.0625rem;
   min-height: 2rem;
   flex-direction: column;
+  border: 1px solid transparent;
   /* Stack content vertically */
 }
 
 /* Hover effects */
 .calendar-day-cell:hover {
-  background-color: var(--ty-bg-neutral-p1, #f3f4f6);
+  background-color: var(--ty-bg-primary-m1, #f3f4f6);
 }
 
-/* TODAY STYLING - subtle unique semantic colors */
+/* TODAY STYLING - subtle secondary semantic colors */
 .calendar-day-cell.today {
-  color: var(--ty-color-unique, #10b981);
+  color: var(--ty-color-secondary, #10b981);
   font-weight: 500;
-  background-color: var(--ty-bg-unique-m1, #f0fdf4);
+  background-color: var(--ty-bg-secondary-m1, #f0fdf4);
 }
 
 .calendar-day-cell.today:hover {
-  background-color: var(--ty-bg-unique, #ecfdf5);
+  background-color: var(--ty-bg-secondary, #ecfdf5);
 }
 
 /* Today dot indicator - more subtle */
@@ -102,39 +103,28 @@
   bottom: 0.25rem;
   width: 0.1875rem;
   height: 0.1875rem;
-  background-color: var(--ty-color-unique-p1, #059669);
+  background-color: var(--ty-color-secondary-p1, #059669);
   border-radius: 50%;
 }
 
 /* SELECTED STYLING - subtle but clear selection */
 .calendar-day-cell.selected {
-  background-color: var(--ty-bg-unique-m1, #ecfdf5) !important;
-  color: var(--ty-color-unique-p2, #047857) !important;
-  font-weight: 500 !important;
-  box-shadow: inset 0 0 0 1px var(--ty-color-unique, #10b981) !important;
+  color: var(--ty-color-primary);
+  border-color: var(--ty-color-primary-p2);
+  background-color: var(--ty-bg-primary-m1);
 }
 
-.calendar-day-cell.selected:hover {
-  background-color: var(--ty-bg-unique, #d1fae5) !important;
-  box-shadow: inset 0 0 0 1px var(--ty-color-unique-p1, #059669) !important;
-}
+.calendar-day-cell.selected:hover {}
 
 /* Selected + Today combination - harmonious colors */
-.calendar-day-cell.selected.today {
-  background-color: var(--ty-bg-unique, #d1fae5) !important;
-  color: var(--ty-color-unique-p2, #047857) !important;
-  box-shadow: inset 0 0 0 1px var(--ty-color-unique-p1, #059669), 0 0 0 1px var(--ty-border-unique-p1, #059669) !important;
-}
+.calendar-day-cell.selected.today {}
 
 /* Weekend styling */
 .calendar-day-cell.weekend {
   color: var(--ty-color-neutral-m2, #9ca3af);
 }
 
-.calendar-day-cell.selected.weekend {
-  background-color: var(--ty-bg-unique-m1, #ecfdf5) !important;
-  color: var(--ty-color-unique-p1, #059669) !important;
-}
+.calendar-day-cell.selected.weekend {}
 
 /* Other month styling */
 .calendar-day-cell.other-month {
@@ -146,21 +136,13 @@
 }
 
 .calendar-day-cell.selected.other-month {
-  background-color: var(--ty-bg-unique-m2, #f0fdf4) !important;
-  color: var(--ty-color-unique, #10b981) !important;
   opacity: 0.7;
 }
 
 /* Combined states */
-.calendar-day-cell.today.weekend {
-  color: var(--ty-color-unique, #10b981);
-  background-color: var(--ty-bg-unique-m2, #f0fdf4);
-}
+.calendar-day-cell.today.weekend {}
 
-.calendar-day-cell.today.other-month {
-  color: var(--ty-color-unique, #10b981);
-  background-color: var(--ty-bg-unique-m2, #f0fdf4);
-}
+.calendar-day-cell.today.other-month {}
 
 /* BACKWARDS COMPATIBILITY - support old .calendar-day classes if they exist */
 .calendar-day {
@@ -204,17 +186,13 @@
 }
 
 /* Holiday styling */
-.calendar-day-cell.holiday {
-  background-color: var(--ty-bg-important-m2, #fef2f2);
-  color: var(--ty-color-important, #dc2626);
-}
+.calendar-day-cell.holiday {}
 
 .holiday-star {
   position: absolute;
   top: 0.125rem;
   right: 0.125rem;
   font-size: 0.625rem;
-  color: var(--ty-color-important, #dc2626);
 }
 
 /* Event dots */
@@ -228,7 +206,6 @@
 .event-dot {
   width: 0.25rem;
   height: 0.25rem;
-  background-color: var(--ty-color-positive, #059669);
   border-radius: 50%;
 }
 
@@ -254,15 +231,10 @@
   font-size: 0.625rem;
   font-weight: 500;
   padding: 0.125rem 0.25rem;
-  background-color: var(--ty-bg-positive-m2, #ecfdf5);
-  color: var(--ty-color-positive-p1, #047857);
   border-radius: 0.25rem;
 }
 
-.calendar-day-cell.weekend-pricing .price {
-  background-color: var(--ty-bg-important-m2, #fef2f2);
-  color: var(--ty-color-important-p1, #dc2626);
-}
+.calendar-day-cell.weekend-pricing .price {}
 
 .project-day .task-count {
   font-size: 0.5rem;
@@ -273,10 +245,7 @@
   border-radius: 0.25rem;
 }
 
-.calendar-day-cell.has-tasks .task-count {
-  background-color: var(--ty-bg-positive-m2, #ecfdf5);
-  color: var(--ty-color-positive-p1, #047857);
-}
+.calendar-day-cell.has-tasks .task-count {}
 
 /* Responsive and stress test support */
 .calendar-flex-container.oversized-test .calendar-day-row {

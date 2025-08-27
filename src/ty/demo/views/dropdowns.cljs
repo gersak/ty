@@ -161,7 +161,7 @@
     [:div
      [:ty-dropdown {:value "d1"
                     :label "Fourth Dropdown"
-                    :flavor "positive"
+                    :flavor "success"
                     :placeholder "Positive dropdown..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
@@ -172,7 +172,7 @@
     [:div
      [:ty-dropdown {:value "e1"
                     :label "Fifth Dropdown"
-                    :flavor "negative"
+                    :flavor "danger"
                     :placeholder "Negative dropdown..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
@@ -183,7 +183,7 @@
     [:div
      [:ty-dropdown {:value "f1"
                     :label "Sixth Dropdown"
-                    :flavor "important"
+                    :flavor "primary"
                     :placeholder "Important dropdown..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
@@ -228,7 +228,7 @@
       [:option {:value "neutral2"} "Neutral Option 2"]]]
 
     [:div
-     [:ty-dropdown {:flavor "positive"
+     [:ty-dropdown {:flavor "success"
                     :label "Positive (Green)"
                     :value "pos1"
                     :placeholder "Positive flavor"
@@ -237,7 +237,7 @@
       [:option {:value "pos2"} "Positive Option 2"]]]
 
     [:div
-     [:ty-dropdown {:flavor "negative"
+     [:ty-dropdown {:flavor "danger"
                     :label "Negative (Red)"
                     :value "neg1"
                     :placeholder "Negative flavor"
@@ -246,7 +246,7 @@
       [:option {:value "neg2"} "Negative Option 2"]]]
 
     [:div
-     [:ty-dropdown {:flavor "important"
+     [:ty-dropdown {:flavor "primary"
                     :label "Important (Blue)"
                     :value "imp1"
                     :placeholder "Important flavor"
@@ -255,7 +255,7 @@
       [:option {:value "imp2"} "Important Option 2"]]]
 
     [:div
-     [:ty-dropdown {:flavor "exception"
+     [:ty-dropdown {:flavor "warning"
                     :label "Exception (Yellow)"
                     :value "exc1"
                     :placeholder "Exception flavor"
@@ -264,7 +264,7 @@
       [:option {:value "exc2"} "Exception Option 2"]]]
 
     [:div
-     [:ty-dropdown {:flavor "unique"
+     [:ty-dropdown {:flavor "secondary"
                     :label "Unique (Purple)"
                     :value "unq1"
                     :placeholder "Unique flavor"
@@ -272,12 +272,12 @@
       [:option {:value "unq1"} "Unique Option 1"]
       [:option {:value "unq2"} "Unique Option 2"]]]]
 
-   (code-snippet "<ty-dropdown flavor=\"positive\" placeholder=\"Positive flavor\">
+   (code-snippet "<ty-dropdown flavor=\"success\" placeholder=\"Positive flavor\">
   <option value=\"pos1\">Positive Option 1</option>
   <option value=\"pos2\">Positive Option 2</option>
 </ty-dropdown>
 
-<ty-dropdown flavor=\"negative\" placeholder=\"Negative flavor\">
+<ty-dropdown flavor=\"danger\" placeholder=\"Negative flavor\">
   <option value=\"neg1\">Negative Option 1</option>
 </ty-dropdown>")])
 

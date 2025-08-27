@@ -38,11 +38,9 @@
 .option-content[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
-  background: none !important;
 }
 
 .option-content[hidden] {
-  display: none !important;
 }
 
 /* Ensure nested elements inherit proper styling */

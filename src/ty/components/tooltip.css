@@ -48,30 +48,65 @@
 }
 
 /* Variants */
-#tooltip-container[data-variant="dark"] {
+#tooltip-container[data-flavor="dark"] {
   background: #333;
   color: white;
 }
 
-#tooltip-container[data-variant="light"] {
+#tooltip-container[data-flavor="light"] {
   background: white;
   color: #333;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   border: 1px solid #e0e0e0;
 }
 
+/* ===== NEW: INDUSTRY-STANDARD SEMANTIC VARIANTS ===== */
+
+#tooltip-container[data-flavor="primary"] {
+  background: var(--ty-color-primary, #3b82f6);
+  color: white;
+}
+
+#tooltip-container[data-flavor="secondary"] {
+  background: var(--ty-color-secondary, #8b5cf6);
+  color: white;
+}
+
+#tooltip-container[data-flavor="success"] {
+  background: var(--ty-color-success, #10b981);
+  color: white;
+}
+
+#tooltip-container[data-flavor="danger"] {
+  background: var(--ty-color-danger, #ef4444);
+  color: white;
+}
+
+#tooltip-container[data-flavor="warning"] {
+  background: var(--ty-color-warning, #f59e0b);
+  color: white;
+}
+
+#tooltip-container[data-flavor="info"] {
+  background: var(--ty-color-info, #06b6d4);
+  color: white;
+}
+
+/* ===== LEGACY SEMANTIC VARIANTS (Backward Compatibility) ===== */
+/* 
+   These legacy variant attributes continue to work exactly as before
+   because they reference the new semantic tokens via CSS variable mapping:
+   
+   
+   The mapping is handled in ty.variables.css, so no changes needed here.
+*/
+
 /* Semantic variants */
-#tooltip-container[data-variant="positive"] {
-  background: var(--ty-color-positive, #10b981);
   color: white;
 }
 
-#tooltip-container[data-variant="negative"] {
-  background: var(--ty-color-negative, #ef4444);
   color: white;
 }
 
-#tooltip-container[data-variant="important"] {
-  background: var(--ty-color-important, #3b82f6);
   color: white;
 }

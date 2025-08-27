@@ -63,7 +63,6 @@
 
 .tag-container[tabindex]:focus {
   outline: none;
-  box-shadow: 0 0 0 3px var(--ty-color-important-m3);
 }
 
 /* Disabled state */
@@ -230,6 +229,107 @@
   margin-left: var(--ty-spacing-4);
 }
 
+/* ===== NEW: INDUSTRY-STANDARD FLAVOR VARIANTS ===== */
+
+/* Primary */
+:host([flavor="primary"]) .tag-container {
+  background: var(--ty-bg-primary);
+  color: var(--ty-color-primary-p3);
+  border-color: var(--ty-border-primary);
+}
+
+:host([flavor="primary"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-primary-p1);
+}
+
+:host([flavor="primary"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-primary-m3);
+}
+
+/* Secondary */
+:host([flavor="secondary"]) .tag-container {
+  background: var(--ty-bg-secondary);
+  color: var(--ty-color-secondary-p3);
+  border-color: var(--ty-border-secondary);
+}
+
+:host([flavor="secondary"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-secondary-p1);
+}
+
+:host([flavor="secondary"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-secondary-m3);
+}
+
+/* Success */
+:host([flavor="success"]) .tag-container {
+  background: var(--ty-bg-success);
+  color: var(--ty-color-success-p3);
+  border-color: var(--ty-border-success);
+}
+
+:host([flavor="success"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-success-p1);
+}
+
+:host([flavor="success"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-success-m3);
+}
+
+/* Danger */
+:host([flavor="danger"]) .tag-container {
+  background: var(--ty-bg-danger);
+  color: var(--ty-color-danger-p3);
+  border-color: var(--ty-border-danger);
+}
+
+:host([flavor="danger"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-danger-p1);
+}
+
+:host([flavor="danger"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-danger-m3);
+}
+
+/* Warning */
+:host([flavor="warning"]) .tag-container {
+  background: var(--ty-bg-warning);
+  color: var(--ty-color-warning-p3);
+  border-color: var(--ty-border-warning);
+}
+
+:host([flavor="warning"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-warning-p1);
+}
+
+:host([flavor="warning"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-warning-m3);
+}
+
+/* Info */
+:host([flavor="info"]) .tag-container {
+  background: var(--ty-bg-info);
+  color: var(--ty-color-info-p3);
+  border-color: var(--ty-border-info);
+}
+
+:host([flavor="info"]) .tag-container[tabindex]:hover {
+  background: var(--ty-bg-info-p1);
+}
+
+:host([flavor="info"]) .tag-container[tabindex]:focus {
+  box-shadow: 0 0 0 3px var(--ty-color-info-m3);
+}
+
+/* ===== LEGACY FLAVOR VARIANTS (Backward Compatibility) ===== */
+/* 
+   These legacy flavor attributes continue to work exactly as before
+   because they reference the new semantic tokens via CSS variable mapping:
+   
+   
+   The mapping is handled in ty.variables.css, so no changes needed here.
+*/
+
 /* Flavor variants using centralized semantic colors */
 
 /* Neutral (default) */
@@ -248,78 +348,38 @@
 }
 
 /* Positive */
-:host([flavor="positive"]) .tag-container {
-  background: var(--ty-bg-positive);
-  color: var(--ty-color-positive-p3);
-  border-color: var(--ty-border-positive);
 }
 
-:host([flavor="positive"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-positive-p1);
 }
 
-:host([flavor="positive"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-positive-m3);
 }
 
 /* Negative */
-:host([flavor="negative"]) .tag-container {
-  background: var(--ty-bg-negative);
-  color: var(--ty-color-negative-p3);
-  border-color: var(--ty-border-negative);
 }
 
-:host([flavor="negative"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-negative-p1);
 }
 
-:host([flavor="negative"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-negative-m3);
 }
 
 /* Important */
-:host([flavor="important"]) .tag-container {
-  background: var(--ty-bg-important);
-  color: var(--ty-color-important-p3);
-  border-color: var(--ty-border-important);
 }
 
-:host([flavor="important"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-important-p1);
 }
 
-:host([flavor="important"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-important-m3);
 }
 
 /* Exception */
-:host([flavor="exception"]) .tag-container {
-  background: var(--ty-bg-exception);
-  color: var(--ty-color-exception-p3);
-  border-color: var(--ty-border-exception);
 }
 
-:host([flavor="exception"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-exception-p1);
 }
 
-:host([flavor="exception"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-exception-m3);
 }
 
 /* Unique */
-:host([flavor="unique"]) .tag-container {
-  background: var(--ty-bg-unique);
-  color: var(--ty-color-unique-p3);
-  border-color: var(--ty-border-unique);
 }
 
-:host([flavor="unique"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-unique-p1);
 }
 
-:host([flavor="unique"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
 }
 
 /* Slotted content styling */

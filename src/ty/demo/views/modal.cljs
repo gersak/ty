@@ -87,7 +87,7 @@
          [:option {:value "svelte"} "Svelte"]]]
 
        [:div.flex.gap-2.pt-4
-        [:ty-button {:flavor "positive"
+        [:ty-button {:flavor "success"
                      :on {:click #(swap! state/state assoc :modal-dropdown-simple-open false)}}
          "Save"]
         [:ty-button {:flavor "neutral"
@@ -126,7 +126,7 @@
         [:div
          [:label.block.text-sm.font-medium.mb-1 "State/Province"]
          [:ty-dropdown {:placeholder "Select state..."
-                        :flavor "positive"
+                        :flavor "success"
                         :on {:change dropdown-event-handler}}
           [:option {:value "ca"} "California"]
           [:option {:value "ny"} "New York"]
@@ -169,7 +169,7 @@
          [:ty-dropdown {:value "dark"
                         :placeholder "Select theme..."
                         :searchable false
-                        :flavor "important"
+                        :flavor "primary"
                         :on {:change dropdown-event-handler}}
           [:option {:value "light"} "Light Mode"]
           [:option {:value "dark"} "Dark Mode"]
@@ -179,7 +179,7 @@
          [:label.block.text-sm.font-medium.mb-1 "Language"]
          [:ty-dropdown {:value "en"
                         :placeholder "Select language..."
-                        :flavor "unique"
+                        :flavor "secondary"
                         :on {:change dropdown-event-handler}}
           [:option {:value "en"} "English"]
           [:option {:value "es"} "Español"]
@@ -201,7 +201,7 @@
           [:div
            [:label.block.text-sm.font-medium.mb-1 "Time Zone"]
            [:ty-dropdown {:placeholder "Select timezone..."
-                          :flavor "exception"
+                          :flavor "warning"
                           :on {:change dropdown-event-handler}}
             [:option {:value "pst"} "Pacific Standard Time (PST)"]
             [:option {:value "mst"} "Mountain Standard Time (MST)"]
@@ -217,7 +217,7 @@
            [:ty-dropdown {:value "usd"
                           :placeholder "Select currency..."
                           :searchable false
-                          :flavor "negative"
+                          :flavor "danger"
                           :on {:change dropdown-event-handler}}
             [:option {:value "usd"} "US Dollar (USD)"]
             [:option {:value "eur"} "Euro (EUR)"]
@@ -231,7 +231,7 @@
         "Current selection: " [:code.bg-gray-100.px-2.py-1.rounded (:modal-dropdown-value @state/state "none")]]
 
        [:div.flex.gap-2
-        [:ty-button {:flavor "positive"
+        [:ty-button {:flavor "success"
                      :on {:click #(swap! state/state assoc :modal-dropdown-complex-open false)}}
          "Apply Settings"]
         [:ty-button {:flavor "neutral"

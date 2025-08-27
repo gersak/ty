@@ -20,7 +20,7 @@
                     (.appendChild target tooltip)
                     (js/setTimeout #(.removeChild target tooltip) 1500)))}}
    [:div.flex.flex-col.items-center.gap-3
-    [:ty-icon.text-gray-700.dark:text-gray-300.group-hover:text-ty-important.transition-colors
+    [:ty-icon.text-gray-700.dark:text-gray-300.group-hover:text-ty-primary.transition-colors
      {:name icon-key
       :size "xl"}]
     [:span.text-xs.text-gray-600.dark:text-gray-400.text-center.font-mono.break-all
@@ -28,7 +28,7 @@
 
 (defn search-input [{:keys [value on-change placeholder]}]
   [:div.relative
-   [:input.w-full.px-4.py-2.pl-10.bg-white.dark:bg-gray-800.border.border-gray-300.dark:border-gray-600.rounded-lg.focus:outline-none.focus:ring-2.focus:ring-ty-important.focus:border-transparent
+   [:input.w-full.px-4.py-2.pl-10.bg-white.dark:bg-gray-800.border.border-gray-300.dark:border-gray-600.rounded-lg.focus:outline-none.focus:ring-2.focus:ring-ty-primary.focus:border-transparent
     {:type "text"
      :placeholder placeholder
      :value value
@@ -126,19 +126,19 @@
      [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
       "Icons inherit color from their parent element"]
      [:div.flex.flex-wrap.gap-4
-      [:div.text-ty-positive
+      [:div.text-ty-success
        [:ty-icon {:name "check"
                   :size "xl"}]
        [:span.ml-2.text-sm "Success"]]
-      [:div.text-ty-negative
+      [:div.text-ty-danger
        [:ty-icon {:name "x"
                   :size "xl"}]
        [:span.ml-2.text-sm "Error"]]
-      [:div.text-ty-important
+      [:div.text-ty-primary
        [:ty-icon {:name "star"
                   :size "xl"}]
        [:span.ml-2.text-sm "Important"]]
-      [:div.text-ty-exception
+      [:div.text-ty-warning
        [:ty-icon {:name "alert"
                   :size "xl"}]
        [:span.ml-2.text-sm "Warning"]]]]
@@ -204,7 +204,7 @@
        [:div.flex.items-end.mb-1
         [:button.px-4.py-2.rounded-md.text-sm.font-medium.transition-colors
          {:class (if show-demo?
-                   [:bg-ty-important :text-white :dark:text-white]
+                   [:bg-ty-primary :text-white :dark:text-white]
                    [:bg-gray-100 "dark:bg-gray-700" :text-gray-700 "dark:text-gray-300"])
           :on {:click #(router/set-query! (merge (when-not (str/blank? search-term)
                                                    {:search search-term})

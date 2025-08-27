@@ -8,23 +8,44 @@
 (defstyles modal-styles)
 
 ;; =====================================================
+;; Semantic Flavor Normalization
+;; =====================================================
+
+(defn validate-flavor
+  "Validate that flavor uses new industry-standard semantic naming.
+   For modals, flavor indicates the semantic purpose and urgency of the dialog."
+  [flavor]
+  (let [valid-flavors #{"primary" "secondary" "success" "danger" "warning" "info" "neutral"}
+        normalized (or flavor "neutral")]
+    (when (and goog.DEBUG (not (contains? valid-flavors normalized)))
+      (js/console.warn (str "[ty-modal] Invalid flavor '" flavor "'. Using 'neutral'. "
+                            "Valid flavors: primary, secondary, success, danger, warning, info, neutral.")))
+    (if (contains? valid-flavors normalized)
+      normalized
+      "neutral")))
+
+;; =====================================================
 ;; Modal Attributes
 ;; =====================================================
 
 (defn modal-attributes
-  "Extract modal configuration from element attributes"
+  "Extract modal configuration from element attributes.
+   Only accepts new industry-standard semantic flavors."
   [^js el]
-  {:open (wcs/parse-bool-attr el "open")
-   :backdrop (if (wcs/attr el "backdrop")
-               (wcs/parse-bool-attr el "backdrop")
-               true) ; default to true if not specified
-   :close-on-outside-click (if (wcs/attr el "close-on-outside-click")
-                             (wcs/parse-bool-attr el "close-on-outside-click")
-                             true) ; default to true if not specified
-   :close-on-escape (if (wcs/attr el "close-on-escape")
-                      (wcs/parse-bool-attr el "close-on-escape")
-                      true) ; default to true if not specified
-   :protected (wcs/parse-bool-attr el "protected")})
+  (let [raw-flavor (wcs/attr el "flavor")
+        validated-flavor (validate-flavor raw-flavor)]
+    {:open (wcs/parse-bool-attr el "open")
+     :backdrop (if (wcs/attr el "backdrop")
+                 (wcs/parse-bool-attr el "backdrop")
+                 true) ; default to true if not specified
+     :close-on-outside-click (if (wcs/attr el "close-on-outside-click")
+                               (wcs/parse-bool-attr el "close-on-outside-click")
+                               true) ; default to true if not specified
+     :close-on-escape (if (wcs/attr el "close-on-escape")
+                        (wcs/parse-bool-attr el "close-on-escape")
+                        true) ; default to true if not specified
+     :protected (wcs/parse-bool-attr el "protected")
+     :flavor validated-flavor}))
 
 ;; =====================================================
 ;; Dialog Management
@@ -174,20 +195,28 @@
 ;; =====================================================
 
 (defn render! [^js el]
-  (let [{:keys [open backdrop close-on-outside-click close-on-escape]} (modal-attributes el)
+  (let [{:keys [open backdrop close-on-outside-click close-on-escape flavor size]} (modal-attributes el)
         root (wcs/ensure-shadow el)
         dialog (ensure-internal-dialog! root)]
 
     ;; Ensure styles are loaded
     (ensure-styles! root modal-styles "ty-modal")
 
-    ;; Apply basic dialog class (no size styling)
-    (set! (.-className dialog) "ty-modal-dialog")
+    ;; Apply dialog classes with semantic flavor and size
+    (let [class-list (str "ty-modal-dialog"
+                          (when flavor (str " " flavor))
+                          (when size (str " " size)))]
+      (set! (.-className dialog) class-list))
 
     ;; Apply backdrop attribute
     (if backdrop
       (.setAttribute dialog "data-backdrop" "true")
       (.removeAttribute dialog "data-backdrop"))
+
+    ;; Apply flavor as data attribute for CSS styling
+    (if flavor
+      (.setAttribute dialog "data-flavor" flavor)
+      (.removeAttribute dialog "data-flavor"))
 
     ;; Setup event handlers
     (setup-backdrop-click! el dialog close-on-outside-click)
@@ -220,7 +249,7 @@
 ;; =====================================================
 
 (wcs/define! "ty-modal"
-  {:observed [:open :backdrop :close-on-outside-click :close-on-escape :protected]
+  {:observed [:open :backdrop :close-on-outside-click :close-on-escape :protected :flavor :size]
    :connected render!
    :attr (fn [^js el _attr-name _old _new]
            (render! el))

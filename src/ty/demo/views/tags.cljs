@@ -29,7 +29,7 @@
      [:ty-tag "Svelte"]
      [:ty-tag {:not-pill true} "Rectangular"]
      [:ty-tag {:not-pill true
-               :flavor "positive"} "Rectangle"]]]
+               :flavor "success"} "Rectangle"]]]
 
    ;; Size Variants
    [:div.demo-section
@@ -40,24 +40,24 @@
       [:div.flex.flex-wrap.gap-2
        [:ty-tag {:size "xs"} "xs"]
        [:ty-tag {:size "xs"
-                 :flavor "positive"} "Success"]
+                 :flavor "success"} "Success"]
        [:ty-tag {:size "xs"
-                 :flavor "negative"} "Error"]]]
+                 :flavor "danger"} "Error"]]]
 
      [:div
       [:h3.text-sm.font-medium.mb-2 "Small (sm)"]
       [:div.flex.flex-wrap.gap-2
        [:ty-tag {:size "sm"} "sm"]
        [:ty-tag {:size "sm"
-                 :flavor "important"} "Important"]
+                 :flavor "primary"} "Important"]
        [:ty-tag {:size "sm"
-                 :flavor "exception"} "Warning"]]]
+                 :flavor "warning"} "Warning"]]]
 
      [:div
       [:h3.text-sm.font-medium.mb-2 "Medium (md) - Default"]
       [:div.flex.flex-wrap.gap-2
        [:ty-tag "md default"]
-       [:ty-tag {:flavor "unique"} "Unique"]
+       [:ty-tag {:flavor "secondary"} "Unique"]
        [:ty-tag {:flavor "neutral"} "Neutral"]]]
 
      [:div
@@ -65,16 +65,16 @@
       [:div.flex.flex-wrap.gap-2
        [:ty-tag {:size "lg"} "lg"]
        [:ty-tag {:size "lg"
-                 :flavor "positive"} "Large Success"]
+                 :flavor "success"} "Large Success"]
        [:ty-tag {:size "lg"
-                 :flavor "important"} "Large Important"]]]
+                 :flavor "primary"} "Large Important"]]]
 
      [:div
       [:h3.text-sm.font-medium.mb-2 "Extra Large (xl)"]
       [:div.flex.flex-wrap.gap-2
        [:ty-tag {:size "xl"} "xl"]
        [:ty-tag {:size "xl"
-                 :flavor "exception"} "Extra Large"]]]]]
+                 :flavor "warning"} "Extra Large"]]]]]
 
    ;; Shape Variants
    [:div.demo-section
@@ -84,17 +84,17 @@
       [:h3.text-sm.font-medium.mb-2 "Pill Shape (default)"]
       [:div.flex.flex-wrap.gap-2
        [:ty-tag "Default Pill"]
-       [:ty-tag {:flavor "positive"} "Success"]
-       [:ty-tag {:flavor "important"} "Important"]]]
+       [:ty-tag {:flavor "success"} "Success"]
+       [:ty-tag {:flavor "primary"} "Important"]]]
 
      [:div
       [:h3.text-sm.font-medium.mb-2 "Rectangular Shape"]
       [:div.flex.flex-wrap.gap-2
        [:ty-tag {:not-pill true} "Rectangular"]
        [:ty-tag {:not-pill true
-                 :flavor "positive"} "Success"]
+                 :flavor "success"} "Success"]
        [:ty-tag {:not-pill true
-                 :flavor "important"} "Important"]]]]]
+                 :flavor "primary"} "Important"]]]]]
 
    ;; Rich Tags with Icons
    [:div.demo-section
@@ -103,17 +103,17 @@
      [:div
       [:h3.text-sm.font-medium.mb-3 "Status Tags with Icons"]
       [:div.flex.flex-wrap.gap-2
-       [:ty-tag {:flavor "positive"}
+       [:ty-tag {:flavor "success"}
         [:ty-icon {:slot "start"
                    :name "check-circle"}]
         "Completed"]
 
-       [:ty-tag {:flavor "exception"}
+       [:ty-tag {:flavor "warning"}
         [:ty-icon {:slot "start"
                    :name "clock"}]
         "In Progress"]
 
-       [:ty-tag {:flavor "negative"}
+       [:ty-tag {:flavor "danger"}
         [:ty-icon {:slot "start"
                    :name "x-circle"}]
         "Failed"]
@@ -126,22 +126,22 @@
      [:div
       [:h3.text-sm.font-medium.mb-3 "Technology Tags"]
       [:div.flex.flex-wrap.gap-2
-       [:ty-tag {:flavor "important"}
+       [:ty-tag {:flavor "primary"}
         [:ty-icon {:slot "start"
                    :name "code"}]
         "JavaScript"]
 
-       [:ty-tag {:flavor "positive"}
+       [:ty-tag {:flavor "success"}
         [:ty-icon {:slot "start"
                    :name "check"}]
         "React"]
 
-       [:ty-tag {:flavor "exception"}
+       [:ty-tag {:flavor "warning"}
         [:ty-icon {:slot "start"
                    :name "lightning-bolt"}]
         "Node.js"]
 
-       [:ty-tag {:flavor "unique"}
+       [:ty-tag {:flavor "secondary"}
         [:ty-icon {:slot "start"
                    :name "star"}]
         "TypeScript"]]]
@@ -149,24 +149,24 @@
      [:div
       [:h3.text-sm.font-medium.mb-3 "Tags with Counts/Badges"]
       [:div.flex.flex-wrap.gap-2
-       [:ty-tag {:flavor "important"}
+       [:ty-tag {:flavor "primary"}
         "Issues"
         [:span {:slot "end"
                 :class "count"} "5"]]
 
-       [:ty-tag {:flavor "positive"}
+       [:ty-tag {:flavor "success"}
         [:ty-icon {:slot "start"
                    :name "check"}]
         "Completed"
         [:span {:slot "end"
                 :class "count"} "23"]]
 
-       [:ty-tag {:flavor "exception"}
+       [:ty-tag {:flavor "warning"}
         "Pending Review"
         [:span {:slot "end"
                 :class "count"} "8"]]
 
-       [:ty-tag {:flavor "unique"}
+       [:ty-tag {:flavor "secondary"}
         [:ty-icon {:slot "start"
                    :name "star"}]
         "Featured"
@@ -193,7 +193,7 @@
         [:span {:slot "end"
                 :class "count"} "Admin"]]
 
-       [:ty-tag {:flavor "important"}
+       [:ty-tag {:flavor "primary"}
         [:ty-icon {:slot "start"
                    :name "user"}]
         "Development Team"
@@ -210,25 +210,25 @@
       [:div.flex.flex-wrap.gap-2
        (when-not (contains? (:removed-tags @state/state #{}) "React")
          [:ty-tag {:dismissible true
-                   :flavor "positive"
+                   :flavor "success"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           "React"])
 
        (when-not (contains? (:removed-tags @state/state #{}) "Vue.js")
          [:ty-tag {:dismissible true
-                   :flavor "important"
+                   :flavor "primary"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           "Vue.js"])
 
        (when-not (contains? (:removed-tags @state/state #{}) "Angular")
          [:ty-tag {:dismissible true
-                   :flavor "exception"
+                   :flavor "warning"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           "Angular"])
 
        (when-not (contains? (:removed-tags @state/state #{}) "Svelte")
          [:ty-tag {:dismissible true
-                   :flavor "unique"
+                   :flavor "secondary"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           "Svelte"])]]
 
@@ -238,7 +238,7 @@
       [:div.flex.flex-wrap.gap-2
        (when-not (contains? (:removed-tags @state/state #{}) "Frontend Team")
          [:ty-tag {:dismissible true
-                   :flavor "positive"
+                   :flavor "success"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           [:ty-icon {:slot "start"
                      :name "code"}]
@@ -248,7 +248,7 @@
 
        (when-not (contains? (:removed-tags @state/state #{}) "Backend Team")
          [:ty-tag {:dismissible true
-                   :flavor "important"
+                   :flavor "primary"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           [:ty-icon {:slot "start"
                      :name "server"}]
@@ -258,7 +258,7 @@
 
        (when-not (contains? (:removed-tags @state/state #{}) "Design Team")
          [:ty-tag {:dismissible true
-                   :flavor "unique"
+                   :flavor "secondary"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           [:ty-icon {:slot "start"
                      :name "palette"}]
@@ -272,7 +272,7 @@
        (when-not (contains? (:removed-tags @state/state #{}) "Bug Report")
          [:ty-tag {:not-pill true
                    :dismissible true
-                   :flavor "negative"
+                   :flavor "danger"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           [:ty-icon {:slot "start"
                      :name "x-circle"}]
@@ -281,7 +281,7 @@
        (when-not (contains? (:removed-tags @state/state #{}) "Feature Request")
          [:ty-tag {:not-pill true
                    :dismissible true
-                   :flavor "exception"
+                   :flavor "warning"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           [:ty-icon {:slot "start"
                      :name "lightning-bolt"}]
@@ -290,7 +290,7 @@
        (when-not (contains? (:removed-tags @state/state #{}) "Enhancement")
          [:ty-tag {:not-pill true
                    :dismissible true
-                   :flavor "positive"
+                   :flavor "success"
                    :on {:ty-tag-dismiss (tag-event-handler "dismiss")}}
           [:ty-icon {:slot "start"
                      :name "check-circle"}]
@@ -312,7 +312,7 @@
          "All Items"]
 
         [:ty-tag {:clickable true
-                  :flavor "positive"
+                  :flavor "success"
                   :on {:ty-tag-click (tag-event-handler "click")}}
          [:ty-icon {:slot "start"
                     :name "check"}]
@@ -321,7 +321,7 @@
                  :class "count"} "12"]]
 
         [:ty-tag {:clickable true
-                  :flavor "exception"
+                  :flavor "warning"
                   :on {:ty-tag-click (tag-event-handler "click")}}
          [:ty-icon {:slot "start"
                     :name "clock"}]
@@ -330,7 +330,7 @@
                  :class "count"} "8"]]
 
         [:ty-tag {:clickable true
-                  :flavor "important"
+                  :flavor "primary"
                   :on {:ty-tag-click (tag-event-handler "click")}}
          [:ty-icon {:slot "start"
                     :name "exclamation"}]
@@ -344,7 +344,7 @@
        [:div.flex.flex-wrap.gap-2
         [:ty-tag {:clickable true
                   :dismissible true
-                  :flavor "positive"
+                  :flavor "success"
                   :on {:ty-tag-click (tag-event-handler "click")
                        :ty-tag-dismiss (tag-event-handler "dismiss")}}
          [:ty-icon {:slot "start"
@@ -353,7 +353,7 @@
 
         [:ty-tag {:clickable true
                   :dismissible true
-                  :flavor "important"
+                  :flavor "primary"
                   :on {:ty-tag-click (tag-event-handler "click")
                        :ty-tag-dismiss (tag-event-handler "dismiss")}}
          [:ty-icon {:slot "start"
@@ -365,7 +365,7 @@
         [:ty-tag {:not-pill true
                   :clickable true
                   :dismissible true
-                  :flavor "unique"
+                  :flavor "secondary"
                   :on {:ty-tag-click (tag-event-handler "click")
                        :ty-tag-dismiss (tag-event-handler "dismiss")}}
          [:ty-icon {:slot "start"
@@ -380,25 +380,25 @@
        [:h3.text-sm.font-medium.mb-3 "Skill Tags with Experience Levels"]
        [:div.flex.flex-wrap.gap-2
         [:ty-tag {:size "sm"
-                  :flavor "important"}
+                  :flavor "primary"}
          "JavaScript"
          [:span {:slot "end"
                  :class "count"} "5y"]]
 
         [:ty-tag {:size "sm"
-                  :flavor "positive"}
+                  :flavor "success"}
          "React"
          [:span {:slot "end"
                  :class "count"} "3y"]]
 
         [:ty-tag {:size "sm"
-                  :flavor "exception"}
+                  :flavor "warning"}
          "Node.js"
          [:span {:slot "end"
                  :class "count"} "4y"]]
 
         [:ty-tag {:size "sm"
-                  :flavor "unique"}
+                  :flavor "secondary"}
          "GraphQL"
          [:span {:slot "end"
                  :class "count"} "2y"]]]]
@@ -407,13 +407,13 @@
        [:h3.text-sm.font-medium.mb-3 "Project Status Dashboard"]
        [:div.flex.flex-wrap.gap-2
         [:ty-tag {:not-pill true
-                  :flavor "positive"}
+                  :flavor "success"}
          [:ty-icon {:slot "start"
                     :name "check-circle"}]
          "Deployed to Production"]
 
         [:ty-tag {:not-pill true
-                  :flavor "exception"}
+                  :flavor "warning"}
          [:ty-icon {:slot "start"
                     :name "clock"}]
          "Awaiting Code Review"
@@ -421,13 +421,13 @@
                  :class "count"} "2"]]
 
         [:ty-tag {:not-pill true
-                  :flavor "important"}
+                  :flavor "primary"}
          [:ty-icon {:slot "start"
                     :name "exclamation"}]
          "Needs Testing"]
 
         [:ty-tag {:not-pill true
-                  :flavor "negative"}
+                  :flavor "danger"}
          [:ty-icon {:slot "start"
                     :name "x-circle"}]
          "Build Failed"]]]]]]
@@ -440,13 +440,13 @@
       [:h4.text-sm.font-medium.mb-2 "Basic Usage"]
       [:pre.text-xs.text-gray-700.dark:text-gray-300
        "[:ty-tag \"JavaScript\"]\n"
-       "[:ty-tag {:flavor \"positive\"} \"Success\"]\n"
-       "[:ty-tag {:not-pill true :flavor \"important\"} \"Rectangle\"]"]]
+       "[:ty-tag {:flavor \"success\"} \"Success\"]\n"
+       "[:ty-tag {:not-pill true :flavor \"primary\"} \"Rectangle\"]"]]
 
      [:div.p-4.bg-gray-50.dark:bg-gray-800.rounded-lg
       [:h4.text-sm.font-medium.mb-2 "Rich Tags with Icons"]
       [:pre.text-xs.text-gray-700.dark:text-gray-300
-       "[:ty-tag {:flavor \"positive\"}\n"
+       "[:ty-tag {:flavor \"success\"}\n"
        " [:ty-icon {:slot \"start\" :name \"check\"}]\n"
        " \"Completed\"\n"
        " [:span {:slot \"end\" :class \"count\"} \"5\"]]"]]
@@ -457,7 +457,7 @@
        "[:ty-tag {:dismissible true :on {:ty-tag-dismiss handler}}\n"
        " \"Dismiss Me\"]\n\n"
        ";; With icons\n"
-       "[:ty-tag {:dismissible true :flavor \"negative\"}\n"
+       "[:ty-tag {:dismissible true :flavor \"danger\"}\n"
        " [:ty-icon {:slot \"start\" :name \"x-circle\"}]\n"
        " \"Error Tag\"]"]]
 

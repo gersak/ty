@@ -327,7 +327,7 @@
                     :currency "USD"
                     :value "3402.00"
                     :disabled true
-                    :flavor "important"}]]]]]]])
+                    :flavor "primary"}]]]]]]])
 
 (defn size-variants-demo []
   [:div.space-y-6
@@ -356,21 +356,21 @@
     [:ty-input {:flavor "neutral"
                 :label "Neutral (default)"
                 :placeholder "Default styling"}]
-    [:ty-input {:flavor "important"
-                :label "Important"
-                :placeholder "Important field"}]
-    [:ty-input {:flavor "positive"
+    [:ty-input {:flavor "primary"
+                :label "Primary Field"
+                :placeholder "Primary field"}]
+    [:ty-input {:flavor "success"
                 :label "Valid Input"
                 :placeholder "This looks good!"}]
-    [:ty-input {:flavor "negative"
+    [:ty-input {:flavor "danger"
                 :label "Error State"
                 :placeholder "Something went wrong"}]
-    [:ty-input {:flavor "exception"
+    [:ty-input {:flavor "warning"
                 :label "Warning State"
                 :placeholder "Be careful here"}]
-    [:ty-input {:flavor "unique"
-                :label "Special Field"
-                :placeholder "Something unique"}]]])
+    [:ty-input {:flavor "secondary"
+                :label "Secondary Field"
+                :placeholder "Secondary field"}]]])
 
 (defn container-aware-demo []
   [:div.space-y-6
@@ -400,9 +400,9 @@
         [:ty-input {:label "Dynamic Sizing"
                     :placeholder (str "Container is " (name (layout/container-breakpoint)))
                     :flavor (cond
-                              (layout/breakpoint>= :lg) "positive"
-                              (layout/breakpoint>= :md) "important"
-                              :else "exception")}]]])]])
+                              (layout/breakpoint>= :lg) "success"
+                              (layout/breakpoint>= :md) "primary"
+                              :else "warning")}]]])]])
 
 (defn form-layout-demo []
   [:div.space-y-6
@@ -466,7 +466,7 @@
                 :type "email"
                 :required true
                 :placeholder "Enter a valid email"
-                :flavor "important"}]]])
+                :flavor "primary"}]]])
 
 (defn view []
   (layout/with-window

@@ -135,7 +135,7 @@
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
     [:div
-     [:ty-multiselect {:flavor "positive"
+     [:ty-multiselect {:flavor "success"
                        :label "Positive (Green)"
                        :value "approved,verified"
                        :placeholder "Positive items..."
@@ -144,22 +144,22 @@
       [:ty-tag {:value "approved"
                 :pill true
                 :size "sm"
-                :flavor "positive"} "Approved"]
+                :flavor "success"} "Approved"]
       [:ty-tag {:value "verified"
                 :pill true
                 :size "sm"
-                :flavor "positive"} "Verified"]
+                :flavor "success"} "Verified"]
       [:ty-tag {:value "confirmed"
                 :pill true
                 :size "sm"
-                :flavor "positive"} "Confirmed"]
+                :flavor "success"} "Confirmed"]
       [:ty-tag {:value "validated"
                 :pill true
                 :size "sm"
-                :flavor "positive"} "Validated"]]]
+                :flavor "success"} "Validated"]]]
 
     [:div
-     [:ty-multiselect {:flavor "negative"
+     [:ty-multiselect {:flavor "danger"
                        :label "Negative (Red)"
                        :value "error,failed"
                        :placeholder "Negative items..."
@@ -168,22 +168,22 @@
       [:ty-tag {:value "error"
                 :pill true
                 :size "sm"
-                :flavor "negative"} "Error"]
+                :flavor "danger"} "Error"]
       [:ty-tag {:value "failed"
                 :pill true
                 :size "sm"
-                :flavor "negative"} "Failed"]
+                :flavor "danger"} "Failed"]
       [:ty-tag {:value "rejected"
                 :pill true
                 :size "sm"
-                :flavor "negative"} "Rejected"]
+                :flavor "danger"} "Rejected"]
       [:ty-tag {:value "invalid"
                 :pill true
                 :size "sm"
-                :flavor "negative"} "Invalid"]]]
+                :flavor "danger"} "Invalid"]]]
 
     [:div
-     [:ty-multiselect {:flavor "important"
+     [:ty-multiselect {:flavor "primary"
                        :label "Important (Blue)"
                        :value "urgent,priority"
                        :placeholder "Important items..."
@@ -192,19 +192,19 @@
       [:ty-tag {:value "urgent"
                 :pill true
                 :size "sm"
-                :flavor "important"} "Urgent"]
+                :flavor "primary"} "Urgent"]
       [:ty-tag {:value "priority"
                 :pill true
                 :size "sm"
-                :flavor "important"} "Priority"]
+                :flavor "primary"} "Priority"]
       [:ty-tag {:value "critical"
                 :pill true
                 :size "sm"
-                :flavor "important"} "Critical"]
+                :flavor "primary"} "Critical"]
       [:ty-tag {:value "essential"
                 :pill true
                 :size "sm"
-                :flavor "important"} "Essential"]]]
+                :flavor "primary"} "Essential"]]]
 
     [:div
      [:ty-multiselect {:label "Neutral (Default)"
@@ -225,14 +225,14 @@
                 :pill true
                 :size "sm"} "Waiting"]]]]
 
-   (code-snippet "<ty-multiselect flavor=\"positive\" placeholder=\"Positive items...\">
-  <ty-tag value=\"approved\" pill size=\"sm\" flavor=\"positive\">Approved</ty-tag>
-  <ty-tag value=\"verified\" pill size=\"sm\" flavor=\"positive\">Verified</ty-tag>
+   (code-snippet "<ty-multiselect flavor=\"success\" placeholder=\"Positive items...\">
+  <ty-tag value=\"approved\" pill size=\"sm\" flavor=\"success\">Approved</ty-tag>
+  <ty-tag value=\"verified\" pill size=\"sm\" flavor=\"success\">Verified</ty-tag>
 </ty-multiselect>
 
-<ty-multiselect flavor=\"negative\" placeholder=\"Negative items...\">
-  <ty-tag value=\"error\" pill size=\"sm\" flavor=\"negative\">Error</ty-tag>
-  <ty-tag value=\"failed\" pill size=\"sm\" flavor=\"negative\">Failed</ty-tag>
+<ty-multiselect flavor=\"danger\" placeholder=\"Negative items...\">
+  <ty-tag value=\"error\" pill size=\"sm\" flavor=\"danger\">Error</ty-tag>
+  <ty-tag value=\"failed\" pill size=\"sm\" flavor=\"danger\">Failed</ty-tag>
 </ty-multiselect>")])
 
 (defn state-examples []

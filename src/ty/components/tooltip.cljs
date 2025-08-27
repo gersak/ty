@@ -9,6 +9,23 @@
 ;; Load tooltip styles
 (defstyles tooltip-styles)
 
+;; =====================================================
+;; Semantic Flavor Normalization
+;; =====================================================
+
+(defn validate-flavor
+  "Validate that flavor uses new industry-standard semantic naming or standard tooltip flavors.
+   For tooltips, flavor indicates semantic meaning and visual styling."
+  [flavor]
+  (let [valid-flavors #{"dark" "light" "primary" "secondary" "success" "danger" "warning" "info" "neutral"}
+        normalized (or flavor "dark")]
+    (when (and goog.DEBUG (not (contains? valid-flavors normalized)))
+      (js/console.warn (str "[ty-tooltip] Invalid flavor '" flavor "'. Using 'dark'. "
+                            "Valid flavors: dark, light, primary, secondary, success, danger, warning, info, neutral.")))
+    (if (contains? valid-flavors normalized)
+      normalized
+      "dark")))
+
 ;; Store cleanup functions for auto-update
 (defonce auto-update-cleanup-fns (js/WeakMap.))
 
@@ -26,15 +43,17 @@
         state)))
 
 (defn tooltip-attributes
-  "Read all tooltip attributes directly from element"
+  "Read all tooltip attributes directly from element.
+   Only accepts new industry-standard semantic flavors."
   [^js el]
-  {:placement (or (wcs/attr el "placement") "top")
-   :offset (or (wcs/parse-int-attr el "offset") 8)
-   :delay (or (wcs/parse-int-attr el "delay") 600)
-   :disabled (wcs/parse-bool-attr el "disabled")
-   :variant (or (wcs/attr el "variant") "dark")
-   ;; Internal state - not a real attribute
-   :open (.-_open el)})
+  (let [raw-flavor (wcs/attr el "flavor")]
+    {:placement (or (wcs/attr el "placement") "top")
+     :offset (or (wcs/parse-int-attr el "offset") 8)
+     :delay (or (wcs/parse-int-attr el "delay") 600)
+     :disabled (wcs/parse-bool-attr el "disabled")
+     :flavor (validate-flavor raw-flavor)
+     ;; Internal state - not a real attribute
+     :open (.-_open el)}))
 
 (defn get-anchor-element
   "Get the parent element as anchor"
@@ -63,11 +82,11 @@
                           [:top :bottom :right :left])
             ;; Use positioning engine to find best position
             position-data (pos/find-best-position
-                            {:target-el anchor
-                             :floating-el container
-                             :preferences preferences
-                             :offset offset
-                             :padding 8})
+                           {:target-el anchor
+                            :floating-el container
+                            :preferences preferences
+                            :offset offset
+                            :padding 8})
             {:keys [x y]} position-data]
         ;; Update CSS variables
         (.setProperty (.-style el) "--x" (str x "px"))
@@ -92,10 +111,10 @@
                         (js/clearTimeout @timeout-id))
                       (reset! timeout-id
                               (js/setTimeout
-                                #(do
-                                   (reset! timeout-id nil)
-                                   (update-position! el shadow-root))
-                                10))))
+                               #(do
+                                  (reset! timeout-id nil)
+                                  (update-position! el shadow-root))
+                               10))))
         ;; ResizeObserver for anchor and container
         resize-observer (js/ResizeObserver. update-fn)
         ;; Scroll listener with requestAnimationFrame
@@ -104,9 +123,9 @@
                          (when-not @scroll-raf-id
                            (reset! scroll-raf-id
                                    (js/requestAnimationFrame
-                                     #(do
-                                        (reset! scroll-raf-id nil)
-                                        (update-position! el shadow-root))))))
+                                    #(do
+                                       (reset! scroll-raf-id nil)
+                                       (update-position! el shadow-root))))))
         ;; Cleanup function
         cleanup (fn []
                   (.disconnect resize-observer)
@@ -167,7 +186,7 @@
 (defn render! [^js el]
   (let [root (wcs/ensure-shadow el)
         existing-container (.querySelector root "#tooltip-container")
-        {:keys [open variant]} (tooltip-attributes el)]
+        {:keys [open flavor]} (tooltip-attributes el)]
     ;; Ensure styles are loaded
     (ensure-styles! root tooltip-styles "ty-tooltip")
 
@@ -176,7 +195,7 @@
       (let [container (js/document.createElement "div")
             content (js/document.createElement "slot")]
         (set! (.-id container) "tooltip-container")
-        (.setAttribute container "data-variant" variant)
+        (.setAttribute container "data-flavor" flavor)
         (.appendChild root container)
         (.appendChild container content)
         ;; Initialize position
@@ -185,7 +204,7 @@
 
     ;; Update variant if it changed
     (when-let [container (.querySelector root "#tooltip-container")]
-      (.setAttribute container "data-variant" variant)
+      (.setAttribute container "data-flavor" flavor)
       ;; Update visibility
       (if open
         (.add (.-classList container) "open")
@@ -239,7 +258,7 @@
   (.delete timeout-state el))
 
 (wcs/define! "ty-tooltip"
-  {:observed [:placement :offset :delay :disabled :variant]
+  {:observed [:placement :offset :delay :disabled :flavor]
    :connected (fn [^js el]
                 ;; Initialize open state
                 (set! (.-_open el) false)
@@ -250,9 +269,9 @@
    :disconnected cleanup!
    :attr (fn [^js el attr-name _old new]
            ;; Update variant in real-time if tooltip is visible
-           (when (and (= attr-name "variant") (.-_open el))
+           (when (and (= attr-name "flavor") (.-_open el))
              (when-let [container (.querySelector (.-shadowRoot el) "#tooltip-container")]
-               (.setAttribute container "data-variant" new)))
+               (.setAttribute container "data-flavor" new)))
            ;; Close tooltip if disabled
            (when (and (= attr-name "disabled") new)
              (hide-tooltip! el)))})

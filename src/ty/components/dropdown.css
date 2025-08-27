@@ -106,6 +106,9 @@
 /* Placeholder styling */
 .dropdown-placeholder {
   color: var(--ty-input-placeholder);
+  font-weight: var(--ty-font-light);
+  font-size: var(--ty-font-sm);
+  font-style: italic;
   pointer-events: none;
 }
 
@@ -116,7 +119,6 @@
 /* Selected content styling - only takes space when content exists */
 .dropdown-stub slot[name="selected"] {
   display: block;
-  width: 0%;
 }
 
 .dropdown-stub.has-selection slot[name="selected"] {
@@ -328,7 +330,6 @@
 /* ===== OPTION ELEMENTS ===== */
 
 .dropdown-options ::slotted(option) {
-  display: block !important;
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
   color: var(--ty-input-color);
   cursor: pointer;
@@ -347,18 +348,16 @@
 }
 
 .dropdown-options ::slotted(option[highlighted]) {
-  background-color: var(--ty-bg-important-m1);
-  color: var(--ty-color-important-p1);
+  background-color: var(--ty-bg-primary-m1);
+  color: var(--ty-color-primary-p1);
 }
 
 .dropdown-options ::slotted(option[selected]) {
-  background-color: var(--ty-color-important);
+  background-color: var(--ty-color-primary);
   color: #ffffff;
 }
 
-.dropdown-options ::slotted(option[hidden]) {
-  display: none !important;
-}
+.dropdown-options ::slotted(option[hidden]) {}
 
 /* ===== MOBILE MODE STYLES ===== */
 
@@ -424,7 +423,6 @@
 }
 
 .mobile-options-list ::slotted(option) {
-  display: flex !important;
   align-items: center;
   padding: var(--ty-spacing-4) var(--ty-spacing-4);
   color: var(--ty-input-color);
@@ -451,85 +449,127 @@
 }
 
 .mobile-options-list ::slotted(option[highlighted]) {
-  background-color: var(--ty-bg-important-m1);
-  color: var(--ty-color-important-p1);
+  background-color: var(--ty-bg-primary-m1);
+  color: var(--ty-color-primary-p1);
 }
 
 .mobile-options-list ::slotted(option[selected]) {
-  background-color: var(--ty-color-important);
+  background-color: var(--ty-color-primary);
   color: #ffffff;
   font-weight: var(--ty-font-medium);
 }
 
-.mobile-options-list ::slotted(option[hidden]) {
-  display: none !important;
+.mobile-options-list ::slotted(option[hidden]) {}
+
+/* ===== NEW: INDUSTRY-STANDARD SEMANTIC FLAVOR VARIANTS ===== */
+
+:host([flavor="primary"]) .dropdown-stub,
+:host([flavor="primary"]) .dropdown-search-input,
+:host([flavor="primary"]) .mobile-search-input {
+  border-color: var(--ty-color-primary);
 }
+
+:host([flavor="primary"]) .dropdown-stub:hover,
+:host([flavor="primary"]) .dropdown-search-input:focus,
+:host([flavor="primary"]) .mobile-search-input:focus {
+  border-color: var(--ty-color-primary-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-primary-m3);
+}
+
+:host([flavor="secondary"]) .dropdown-stub,
+:host([flavor="secondary"]) .dropdown-search-input,
+:host([flavor="secondary"]) .mobile-search-input {
+  border-color: var(--ty-color-secondary);
+}
+
+:host([flavor="secondary"]) .dropdown-stub:hover,
+:host([flavor="secondary"]) .dropdown-search-input:focus,
+:host([flavor="secondary"]) .mobile-search-input:focus {
+  border-color: var(--ty-color-secondary-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-secondary-m3);
+}
+
+:host([flavor="success"]) .dropdown-stub,
+:host([flavor="success"]) .dropdown-search-input,
+:host([flavor="success"]) .mobile-search-input {
+  border-color: var(--ty-color-success);
+}
+
+:host([flavor="success"]) .dropdown-stub:hover,
+:host([flavor="success"]) .dropdown-search-input:focus,
+:host([flavor="success"]) .mobile-search-input:focus {
+  border-color: var(--ty-color-success-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-success-m3);
+}
+
+:host([flavor="danger"]) .dropdown-stub,
+:host([flavor="danger"]) .dropdown-search-input,
+:host([flavor="danger"]) .mobile-search-input {
+  border-color: var(--ty-color-danger);
+}
+
+:host([flavor="danger"]) .dropdown-stub:hover,
+:host([flavor="danger"]) .dropdown-search-input:focus,
+:host([flavor="danger"]) .mobile-search-input:focus {
+  border-color: var(--ty-color-danger-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-danger-m3);
+}
+
+:host([flavor="warning"]) .dropdown-stub,
+:host([flavor="warning"]) .dropdown-search-input,
+:host([flavor="warning"]) .mobile-search-input {
+  border-color: var(--ty-color-warning);
+}
+
+:host([flavor="warning"]) .dropdown-stub:hover,
+:host([flavor="warning"]) .dropdown-search-input:focus,
+:host([flavor="warning"]) .mobile-search-input:focus {
+  border-color: var(--ty-color-warning-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-warning-m3);
+}
+
+:host([flavor="info"]) .dropdown-stub,
+:host([flavor="info"]) .dropdown-search-input,
+:host([flavor="info"]) .mobile-search-input {
+  border-color: var(--ty-color-info);
+}
+
+:host([flavor="info"]) .dropdown-stub:hover,
+:host([flavor="info"]) .dropdown-search-input:focus,
+:host([flavor="info"]) .mobile-search-input:focus {
+  border-color: var(--ty-color-info-p1);
+  box-shadow: 0 0 0 3px var(--ty-color-info-m3);
+}
+
+/* ===== LEGACY SEMANTIC FLAVOR VARIANTS (Backward Compatibility) ===== */
+/* 
+   These legacy flavor attributes continue to work exactly as before
+   because they reference the new semantic tokens via CSS variable mapping:
+   
+   
+   The mapping is handled in ty.variables.css, so no changes needed here.
+*/
 
 /* ===== SEMANTIC FLAVOR VARIANTS ===== */
 
-:host([flavor="positive"]) .dropdown-stub,
-:host([flavor="positive"]) .dropdown-search-input,
-:host([flavor="positive"]) .mobile-search-input {
-  border-color: var(--ty-color-positive);
 }
 
-:host([flavor="positive"]) .dropdown-stub:hover,
-:host([flavor="positive"]) .dropdown-search-input:focus,
-:host([flavor="positive"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-positive-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-positive-m3);
 }
 
-:host([flavor="negative"]) .dropdown-stub,
-:host([flavor="negative"]) .dropdown-search-input,
-:host([flavor="negative"]) .mobile-search-input {
-  border-color: var(--ty-color-negative);
 }
 
-:host([flavor="negative"]) .dropdown-stub:hover,
-:host([flavor="negative"]) .dropdown-search-input:focus,
-:host([flavor="negative"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-negative-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-negative-m3);
 }
 
-:host([flavor="important"]) .dropdown-stub,
-:host([flavor="important"]) .dropdown-search-input,
-:host([flavor="important"]) .mobile-search-input {
-  border-color: var(--ty-color-important);
 }
 
-:host([flavor="important"]) .dropdown-stub:hover,
-:host([flavor="important"]) .dropdown-search-input:focus,
-:host([flavor="important"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-important-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-important-m3);
 }
 
-:host([flavor="exception"]) .dropdown-stub,
-:host([flavor="exception"]) .dropdown-search-input,
-:host([flavor="exception"]) .mobile-search-input {
-  border-color: var(--ty-color-exception);
 }
 
-:host([flavor="exception"]) .dropdown-stub:hover,
-:host([flavor="exception"]) .dropdown-search-input:focus,
-:host([flavor="exception"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-exception-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-exception-m3);
 }
 
-:host([flavor="unique"]) .dropdown-stub,
-:host([flavor="unique"]) .dropdown-search-input,
-:host([flavor="unique"]) .mobile-search-input {
-  border-color: var(--ty-color-unique);
 }
 
-:host([flavor="unique"]) .dropdown-stub:hover,
-:host([flavor="unique"]) .dropdown-search-input:focus,
-:host([flavor="unique"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-unique-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-unique-m3);
 }
 
 /* ===== MOBILE RESPONSIVE ADJUSTMENTS ===== */

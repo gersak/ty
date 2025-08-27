@@ -8,38 +8,54 @@
 #_{:clj-kondo/ignore [:uninitialized-var]}
 (defstyles button-styles)
 
+(defn validate-flavor
+  "Validate that flavor uses new industry-standard semantic naming.
+   Only accepts: primary, secondary, success, danger, warning, info, neutral"
+  [flavor]
+  (let [valid-flavors #{"primary" "secondary" "success" "danger" "warning" "info" "neutral"}
+        normalized (or flavor "neutral")]
+    (when (and goog.DEBUG (not (contains? valid-flavors normalized)))
+      (js/console.warn (str "[ty-button] Invalid flavor '" flavor "'. Using 'neutral'. "
+                            "Valid flavors: primary, secondary, success, danger, warning, info, neutral.")))
+    (if (contains? valid-flavors normalized)
+      normalized
+      "neutral")))
+
 (defn button-attributes
-  "Read all button attributes directly from element"
+  "Read all button attributes directly from element.
+   Only accepts new industry-standard semantic flavors."
   [^js el]
-  {:flavor (wcs/attr el "flavor")
-   :disabled (wcs/parse-bool-attr el "disabled")
-   :label (wcs/attr el "label")
-   :class (wcs/attr el "class")
-   :size (wcs/attr el "size")
-   :filled (wcs/parse-bool-attr el "filled")
-   :outlined (wcs/parse-bool-attr el "outlined")
-   :accent (wcs/parse-bool-attr el "accent")
-   :pill (wcs/parse-bool-attr el "pill")
-   :action (wcs/parse-bool-attr el "action")})
+  (let [raw-flavor (wcs/attr el "flavor")]
+    {:flavor (validate-flavor raw-flavor)
+     :disabled (wcs/parse-bool-attr el "disabled")
+     :label (wcs/attr el "label")
+     :class (wcs/attr el "class")
+     :size (wcs/attr el "size")
+     :filled (wcs/parse-bool-attr el "filled")
+     :outlined (wcs/parse-bool-attr el "outlined")
+     :accent (wcs/parse-bool-attr el "accent")
+     :pill (wcs/parse-bool-attr el "pill")
+     :action (wcs/parse-bool-attr el "action")}))
 
 (defn build-class-list
-  "Build class list from attributes"
+  "Build class list from attributes.
+   Flavor is normalized to industry-standard semantics (primary, secondary, success, danger, warning, info, neutral)."
   [{:keys [flavor size filled outlined accent pill action class]}]
   (str/trim
-    (str (or flavor "neutral")
-         " "
-         (or size "md")
-         " "
+   (str (or flavor "neutral")
+        " "
+        (or size "md")
+        " "
         ;; Appearance logic
-         (cond
-           accent "accent"
-           (and filled outlined) "filled-outlined"
-           filled "filled"
-           outlined "outlined"
-           :else "plain")
-         (when pill " pill")
-         (when action " action")
-         (when class (str " " class)))))
+        (cond
+          accent "accent"
+          (and filled outlined) "filled-outlined"
+          filled "filled"
+          outlined "outlined"
+          :else "plain")
+        (when pill " pill")
+        (when action " action")
+        (when class (str " " class)))))
 
 (defn render! [^js el]
   (let [{:keys [disabled label]

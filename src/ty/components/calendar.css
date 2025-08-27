@@ -55,8 +55,6 @@
 
 .nav-btn:focus {
   outline: none;
-  border-color: var(--ty-border-unique, #3b82f6);
-  box-shadow: 0 0 0 3px var(--ty-bg-unique-m2, rgba(59, 130, 246, 0.1));
 }
 
 /* Year navigation buttons */
@@ -68,9 +66,6 @@
 
 /* Today button styling */
 .today-btn {
-  background: var(--ty-bg-unique-m1, #eff6ff);
-  border-color: var(--ty-border-unique, #3b82f6);
-  color: var(--ty-color-unique, #3b82f6);
   font-weight: 600;
   margin-left: 0.5rem;
   padding: 0.5rem 1rem;
@@ -78,13 +73,9 @@
 }
 
 .today-btn:hover {
-  background: var(--ty-bg-unique, #dbeafe);
-  border-color: var(--ty-border-unique-p1, #2563eb);
-  color: var(--ty-color-unique-p1, #2563eb);
 }
 
 .today-btn:active {
-  background: var(--ty-bg-unique-p1, #bfdbfe);
 }
 
 /* Navigation Dropdowns */
@@ -108,8 +99,6 @@
 }
 
 .nav-select:focus {
-  border-color: var(--ty-border-unique, #3b82f6);
-  box-shadow: 0 0 0 3px var(--ty-bg-unique-m2, rgba(59, 130, 246, 0.1));
 }
 
 /* Month dropdown - wider for month names */
@@ -204,14 +193,9 @@
 }
 
 .dark .today-btn {
-  background: var(--ty-bg-unique-m1, #1e40af);
-  border-color: var(--ty-border-unique, #3b82f6);
-  color: var(--ty-color-unique, #60a5fa);
 }
 
 .dark .today-btn:hover {
-  background: var(--ty-bg-unique, #2563eb);
-  color: var(--ty-color-unique-p1, #93c5fd);
 }
 
 /* High contrast mode support */
@@ -224,7 +208,6 @@
 
   .nav-btn:focus,
   .nav-select:focus {
-    box-shadow: 0 0 0 4px var(--ty-bg-unique-m2, rgba(59, 130, 246, 0.2));
   }
 }
 

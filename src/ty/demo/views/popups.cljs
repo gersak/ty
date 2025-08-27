@@ -44,15 +44,15 @@
                  [:ty-button
                   "Light"
                   [:ty-tooltip {:variant "light"} "Light tooltip"]]
-                 [:ty-button {:flavor "positive"}
+                 [:ty-button {:flavor "success"}
                   "Positive"
-                  [:ty-tooltip {:variant "positive"} "Positive tooltip"]]
-                 [:ty-button {:flavor "negative"}
+                  [:ty-tooltip {:variant "success"} "Positive tooltip"]]
+                 [:ty-button {:flavor "danger"}
                   "Negative"
-                  [:ty-tooltip {:variant "negative"} "Negative tooltip"]]
-                 [:ty-button {:flavor "important"}
+                  [:ty-tooltip {:variant "danger"} "Negative tooltip"]]
+                 [:ty-button {:flavor "primary"}
                   "Important"
-                  [:ty-tooltip {:variant "important"} "Important tooltip"]]]})
+                  [:ty-tooltip {:variant "primary"} "Important tooltip"]]]})
 
    ;; Rich content
    (demo-row
@@ -71,7 +71,7 @@
                     [:div "Line 1: Important info"]
                     [:div "Line 2: More details"]
                     [:div.text-xs.opacity-75 "Line 3: Additional note"]]]]
-                 [:ty-button {:flavor "important"}
+                 [:ty-button {:flavor "primary"}
                   "With Icon"
                   [:ty-tooltip
                    [:div.flex.items-center.gap-2
@@ -100,16 +100,16 @@
                              :slot "start"}]
                   "Save"
                   [:ty-tooltip "Save your changes"]]
-                 [:ty-button {:flavor "negative"}
+                 [:ty-button {:flavor "danger"}
                   [:ty-icon {:name "trash-2"
                              :slot "start"}]
                   "Delete"
-                  [:ty-tooltip {:variant "negative"}
+                  [:ty-tooltip {:variant "danger"}
                    [:div
                     [:strong "Warning!"]
                     [:br]
                     "This action cannot be undone"]]]
-                 [:ty-button {:flavor "important"
+                 [:ty-button {:flavor "primary"
                               :accent true}
                   [:ty-icon {:name "download"
                              :slot "start"}]
@@ -272,7 +272,7 @@
                     :placement "top"}
                    [:ty-button
                     {:slot "anchor"
-                     :flavor "positive"
+                     :flavor "success"
                      :on {:click #(toggle-popup! :multi-1)}}
                     [:div "Popup 1"]]
                    [:div.p-3.bg-green-100.dark:bg-green-900.rounded
@@ -281,7 +281,7 @@
                   [:ty-popup {:open (popup-open? :multi-2)
                               :placement "top"}
                    [:ty-button {:slot "anchor"
-                                :flavor "important"
+                                :flavor "primary"
                                 :on {:click #(toggle-popup! :multi-2)}}
                     "Popup 2"]
                    [:div.p-3.bg-blue-100.dark:bg-blue-900.rounded
@@ -291,7 +291,7 @@
                                {:open true})
                    {:placement "top"}
                    [:ty-button {:slot "anchor"
-                                :flavor "negative"
+                                :flavor "danger"
                                 :on {:click #(toggle-popup! :multi-3)}}
                     "Popup 3"]
                    [:div.p-3.bg-red-100.dark:bg-red-900.rounded
@@ -318,7 +318,7 @@
                      [:div.flex.gap-2
                       [:ty-button
                        {:size "sm"
-                        :flavor "positive"
+                        :flavor "success"
                         :on {:click (fn []
                                       (js/alert "Form submitted!")
                                       (toggle-popup! :interactive-demo))}}

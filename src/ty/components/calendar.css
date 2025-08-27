@@ -1,51 +1,81 @@
-/* Calendar Navigation Component Styles */
+/* Compact Calendar Navigation Component Styles */
 
 .calendar-container {
   display: flex;
+  align-items: center;
   flex-direction: column;
-  gap: 1rem;
   background: var(--ty-bg, white);
   border-radius: 0.5rem;
   font-family: system-ui, sans-serif;
   width: fit-content;
-  min-width: var(--calendar-min-width, 300px);
+  min-width: var(--calendar-min-width, 280px);
   max-width: var(--calendar-max-width, none);
 }
 
-/* Navigation Header */
+/* Navigation Header - Compact Layout */
 .calendar-navigation-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 1rem 1rem 0.5rem 1rem;
-  border-bottom: 1px solid var(--ty-border-neutral, #e5e7eb);
-  background: var(--ty-bg, white);
+  justify-content: space-between;
+  padding: 0.75rem;
+  color: var(--ty-color-p3);
+  width: 100%;
+  box-sizing: border-box;
 }
 
-/* Navigation Buttons */
+/* Navigation Button Groups */
+.calendar-navigation-header > .nav-btn:first-child,
+.calendar-navigation-header > .nav-btn:nth-child(2) {
+  /* Left side buttons */
+  margin-right: 0.25rem;
+}
+
+.calendar-navigation-header > .nav-btn:nth-last-child(2),
+.calendar-navigation-header > .nav-btn:last-child {
+  /* Right side buttons */
+  margin-left: 0.25rem;
+}
+
+/* Month/Year Display - Center - More prominent */
+.month-year-display {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--ty-color-neutral, #374151);
+  user-select: none;
+  margin: 0 0.75rem;
+  letter-spacing: 0.025em;
+}
+
+/* Navigation Buttons - Smaller and cleaner */
 .nav-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.5rem;
-  min-width: 2.25rem;
-  height: 2.25rem;
-  border: 1px solid var(--ty-border-neutral, #d1d5db);
-  border-radius: 0.375rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: none;
+  padding: 0px;
+  /* border: 1px solid var(--ty-border-neutral, #d1d5db); */
+  /* border-radius: 0.25rem; */
   background: var(--ty-bg, white);
-  color: var(--ty-color-neutral, #374151);
-  font-size: 0.875rem;
-  font-weight: 500;
+  color: var(--ty-color-neutral, #6b7280);
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
+  flex-shrink: 0;
+}
+
+.nav-btn svg {
+  width: 100%;
+  height: 100%;
 }
 
 .nav-btn:hover {
   background: var(--ty-bg-neutral-p1, #f3f4f6);
   border-color: var(--ty-border-neutral-p1, #9ca3af);
-  color: var(--ty-color-neutral-p1, #111827);
+  color: var(--ty-color-neutral-p1, #374151);
 }
 
 .nav-btn:active {
@@ -54,108 +84,35 @@
 }
 
 .nav-btn:focus {
-  outline: none;
-}
-
-/* Year navigation buttons */
-.nav-year-prev,
-.nav-year-next {
-  font-weight: 600;
-  min-width: 2.5rem;
-}
-
-/* Today button styling */
-.today-btn {
-  font-weight: 600;
-  margin-left: 0.5rem;
-  padding: 0.5rem 1rem;
-  min-width: auto;
-}
-
-.today-btn:hover {
-}
-
-.today-btn:active {
-}
-
-/* Navigation Dropdowns */
-.nav-select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid var(--ty-border-neutral, #d1d5db);
-  border-radius: 0.375rem;
-  background: var(--ty-bg, white);
-  color: var(--ty-color-neutral, #374151);
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  min-width: 0;
-  outline: none;
-}
-
-.nav-select:hover {
-  background: var(--ty-bg-neutral-m1, #f9fafb);
-  border-color: var(--ty-border-neutral-p1, #9ca3af);
-}
-
-.nav-select:focus {
-}
-
-/* Month dropdown - wider for month names */
-.nav-month-select {
-  min-width: 7rem;
-  max-width: 9rem;
-}
-
-/* Year dropdown - narrower for years */
-.nav-year-select {
-  min-width: 4.5rem;
-  max-width: 5rem;
+  outline: 2px solid var(--ty-color-unique, #3b82f6);
+  outline-offset: 2px;
 }
 
 /* Embedded calendar styling */
-.calendar-container>ty-calendar-month {
+.calendar-container > ty-calendar-month {
   align-self: center;
 }
 
-/* Responsive adjustments */
+/* Ensure consistent width between navigation and calendar */
+.calendar-container {
+  width: auto;
+}
+
+/* Responsive adjustments - More compact */
 @media (max-width: 640px) {
   .calendar-navigation-header {
-    flex-wrap: wrap;
-    gap: 0.375rem;
-    padding: 0.75rem 0.75rem 0.5rem 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .month-year-display {
+    font-size: 1rem;
+    margin: 0 0.5rem;
   }
 
   .nav-btn {
-    padding: 0.375rem;
-    min-width: 2rem;
-    height: 2rem;
-    font-size: 0.75rem;
-  }
-
-  .nav-year-prev,
-  .nav-year-next {
-    min-width: 2.25rem;
-  }
-
-  .nav-select {
-    padding: 0.375rem 0.5rem;
-    font-size: 0.75rem;
-  }
-
-  .nav-month-select {
-    min-width: 6rem;
-    max-width: 7rem;
-  }
-
-  .nav-year-select {
-    min-width: 4rem;
-    max-width: 4.5rem;
-  }
-
-  .today-btn {
-    padding: 0.375rem 0.75rem;
-    margin-left: 0.25rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    padding: 0.25rem;
   }
 }
 
@@ -169,54 +126,36 @@
   border-color: var(--ty-border-neutral, #374151);
 }
 
+.dark .month-year-display {
+  color: var(--ty-color-neutral, #d1d5db);
+}
+
 .dark .nav-btn {
   background: var(--ty-bg, #1f2937);
   border-color: var(--ty-border-neutral, #4b5563);
-  color: var(--ty-color-neutral, #d1d5db);
+  color: var(--ty-color-neutral, #9ca3af);
 }
 
 .dark .nav-btn:hover {
   background: var(--ty-bg-neutral-p1, #374151);
   border-color: var(--ty-border-neutral-p1, #6b7280);
-  color: var(--ty-color-neutral-p1, #f3f4f6);
-}
-
-.dark .nav-select {
-  background: var(--ty-bg, #1f2937);
-  border-color: var(--ty-border-neutral, #4b5563);
-  color: var(--ty-color-neutral, #d1d5db);
-}
-
-.dark .nav-select:hover {
-  background: var(--ty-bg-neutral-p1, #374151);
-  border-color: var(--ty-border-neutral-p1, #6b7280);
-}
-
-.dark .today-btn {
-}
-
-.dark .today-btn:hover {
+  color: var(--ty-color-neutral-p1, #d1d5db);
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-
-  .nav-btn,
-  .nav-select {
+  .nav-btn {
     border-width: 2px;
   }
 
-  .nav-btn:focus,
-  .nav-select:focus {
+  .nav-btn:focus {
+    outline-width: 3px;
   }
 }
 
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
-
-  .nav-btn,
-  .nav-select,
-  .today-btn {
+  .nav-btn {
     transition: none;
   }
 

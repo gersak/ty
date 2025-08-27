@@ -35,7 +35,7 @@
                "moon" lucide/moon
                "sun" lucide/sun
 
-               ;; Navigation icons
+               ;; Navigation icons (including calendar navigation)
                "click" lucide/mouse-pointer-click
                "type" lucide/type ; Icon for Inputs
                "image" lucide/image
@@ -46,6 +46,10 @@
                "layout" lucide/layout ; Icon for Layout
                "tag" lucide/tag
                "chevron-down" lucide/chevron-down
+               "chevron-left" lucide/chevron-left
+               "chevron-right" lucide/chevron-right
+               "chevrons-left" lucide/chevrons-left
+               "chevrons-right" lucide/chevrons-right
                "filter" lucide/filter
                "code" lucide/code
                "check-circle" lucide/check-circle

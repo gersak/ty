@@ -7,6 +7,22 @@
             [ty.value :as value])
   (:require-macros [ty.css :refer [defstyles]]))
 
+;; Default compact width for better out-of-box experience
+(def default-calendar-width "304px")
+
+;; Embedded SVG icons for calendar navigation - guaranteed to work with advanced compilation
+(def chevron-left-svg
+  "<svg stroke='currentColor' fill='none' stroke-linejoin='round' width='16' xmlns='http://www.w3.org/2000/svg' stroke-linecap='round' stroke-width='2' viewBox='0 0 24 24' height='16'><path d='m15 18-6-6 6-6'/></svg>")
+
+(def chevron-right-svg
+  "<svg stroke='currentColor' fill='none' stroke-linejoin='round' width='16' xmlns='http://www.w3.org/2000/svg' stroke-linecap='round' stroke-width='2' viewBox='0 0 24 24' height='16'><path d='m9 18 6-6-6-6'/></svg>")
+
+(def chevrons-left-svg
+  "<svg stroke='currentColor' fill='none' stroke-linejoin='round' width='16' xmlns='http://www.w3.org/2000/svg' stroke-linecap='round' stroke-width='2' viewBox='0 0 24 24' height='16'><path d='m11 17-5-5 5-5'/><path d='m18 17-5-5 5-5'/></svg>")
+
+(def chevrons-right-svg
+  "<svg stroke='currentColor' fill='none' stroke-linejoin='round' width='16' xmlns='http://www.w3.org/2000/svg' stroke-linecap='round' stroke-width='2' viewBox='0 0 24 24' height='16'><path d='m6 17 5-5-5-5'/><path d='m13 17 5-5-5-5'/></svg>")
+
 ;; Load calendar navigation styles
 (defstyles calendar-styles)
 
@@ -80,18 +96,6 @@
   (set-calendar-state! el {:display-year year})
   (render! el))
 
-(defn go-to-today!
-  "Navigate to current month and optionally select today"
-  [^js el]
-  (let [today (js/Date.)
-        today-year (.getFullYear today)
-        today-month (inc (.getMonth today))
-        should-select (wcs/parse-bool-attr el "select-today-on-navigate")]
-    (set-calendar-state! el (cond-> {:display-year today-year
-                                     :display-month today-month}
-                              should-select (assoc :value (date/today))))
-    (render! el)))
-
 (defn create-day-classes-with-selection
   "Create a day-classes function that adds 'selected' class for the selected date"
   [selected-value]
@@ -109,10 +113,10 @@
   "Forward events from embedded calendar with additional context"
   [^js el event-type detail]
   (let [calendar-detail (js/Object.assign
-                          #js {}
-                          detail
-                          #js {:calendar-type "ty-calendar"
-                               :has-navigation true})
+                         #js {}
+                         detail
+                         #js {:calendar-type "ty-calendar"
+                              :has-navigation true})
         event (js/CustomEvent. event-type
                                #js {:detail calendar-detail
                                     :bubbles true
@@ -120,94 +124,64 @@
     (.dispatchEvent el event)))
 
 (defn render-navigation-header
-  "Render calendar navigation controls"
-  [^js el state locale show-today?]
+  "Render clean calendar navigation controls using defined SVG constants"
+  [{:keys [^js el state locale width]}]
   (let [month-names (get-month-names locale)
-        year-range (get-year-range (:display-year state))
         current-month (:display-month state)
-        current-year (:display-year state)]
+        current-year (:display-year state)
+        current-month-name (nth month-names (dec current-month))]
 
     (let [header (.createElement js/document "div")]
       (set! (.-className header) "calendar-navigation-header")
 
-      ;; Year navigation buttons
+      ;; Set width if provided to match the calendar
+      (when width
+        (set! (.-style header) (str "width: " width ";")))
+
+      ;; Previous year button (double chevron left) - Using constant
       (let [prev-year-btn (.createElement js/document "button")]
         (set! (.-className prev-year-btn) "nav-btn nav-year-prev")
-        (set! (.-textContent prev-year-btn) "<<")
         (set! (.-title prev-year-btn) "Previous year")
+        (set! (.-innerHTML prev-year-btn) chevrons-left-svg)
         (.addEventListener prev-year-btn "click" #(navigate-year! el -1))
         (.appendChild header prev-year-btn))
 
-      ;; Month navigation buttons  
+      ;; Previous month button (single chevron left) - Using constant
       (let [prev-month-btn (.createElement js/document "button")]
         (set! (.-className prev-month-btn) "nav-btn nav-month-prev")
-        (set! (.-textContent prev-month-btn) "<")
         (set! (.-title prev-month-btn) "Previous month")
+        (set! (.-innerHTML prev-month-btn) chevron-left-svg)
         (.addEventListener prev-month-btn "click" #(navigate-month! el -1))
         (.appendChild header prev-month-btn))
 
-      ;; Month dropdown
-      (let [month-select (.createElement js/document "select")]
-        (set! (.-className month-select) "nav-select nav-month-select")
-        (set! (.-value month-select) current-month)
-        (doseq [[idx month-name] (map-indexed vector month-names)]
-          (let [option (.createElement js/document "option")]
-            (set! (.-value option) (inc idx))
-            (set! (.-textContent option) month-name)
-            (when (= (inc idx) current-month)
-              (set! (.-selected option) true))
-            (.appendChild month-select option)))
-        (.addEventListener month-select "change"
-                           #(set-month! el (js/parseInt (.-value (.-target %)))))
-        (.appendChild header month-select))
+      ;; Month and year display (center)
+      (let [month-year-display (.createElement js/document "div")]
+        (set! (.-className month-year-display) "month-year-display")
+        (set! (.-textContent month-year-display)
+              (str current-month-name " " current-year))
+        (.appendChild header month-year-display))
 
-      ;; Year dropdown
-      (let [year-select (.createElement js/document "select")]
-        (set! (.-className year-select) "nav-select nav-year-select")
-        (set! (.-value year-select) current-year)
-        (doseq [year year-range]
-          (let [option (.createElement js/document "option")]
-            (set! (.-value option) year)
-            (set! (.-textContent option) year)
-            (when (= year current-year)
-              (set! (.-selected option) true))
-            (.appendChild year-select option)))
-        (.addEventListener year-select "change"
-                           #(set-year! el (js/parseInt (.-value (.-target %)))))
-        (.appendChild header year-select))
-
-      ;; Month navigation buttons
+      ;; Next month button (single chevron right) - Using constant
       (let [next-month-btn (.createElement js/document "button")]
         (set! (.-className next-month-btn) "nav-btn nav-month-next")
-        (set! (.-textContent next-month-btn) ">")
         (set! (.-title next-month-btn) "Next month")
+        (set! (.-innerHTML next-month-btn) chevron-right-svg)
         (.addEventListener next-month-btn "click" #(navigate-month! el 1))
         (.appendChild header next-month-btn))
 
-      ;; Year navigation buttons
+      ;; Next year button (double chevron right) - Using constant
       (let [next-year-btn (.createElement js/document "button")]
         (set! (.-className next-year-btn) "nav-btn nav-year-next")
-        (set! (.-textContent next-year-btn) ">>")
         (set! (.-title next-year-btn) "Next year")
+        (set! (.-innerHTML next-year-btn) chevrons-right-svg)
         (.addEventListener next-year-btn "click" #(navigate-year! el 1))
         (.appendChild header next-year-btn))
 
-      ;; Today button (optional)
-      (when show-today?
-        (let [today-btn (.createElement js/document "button")]
-          (set! (.-className today-btn) "nav-btn today-btn")
-          (set! (.-textContent today-btn) "Today")
-          (set! (.-title today-btn) "Go to current month")
-          (.addEventListener today-btn "click" #(go-to-today! el))
-          (.appendChild header today-btn)))
-
       header)))
-
-(declare render!)
 
 (defn render-embedded-calendar
   "Render the embedded ty-calendar-month with current state"
-  [^js el state]
+  [{:keys [^js el state width]}]
   (let [calendar-month (.createElement js/document "ty-calendar-month")]
 
     ;; Set display attributes from state
@@ -219,7 +193,10 @@
       (when calendar-value
         (.setAttribute calendar-month "value" calendar-value)))
 
-    ;; Pass through other attributes from parent
+    ;; Set width (either user provided or default)
+    (when width
+      (.setAttribute calendar-month "width" width))
+
     ;; Set custom day-classes function for selection styling (unless user provided one)
     (let [selected-value (or (:selected-date state) (:value state))
           user-day-classes-fn (value/get-attribute el "day-classes-fn")]
@@ -227,8 +204,8 @@
         ;; Only set our selection function if user didn't provide their own
         (set! (.-dayClassesFn calendar-month) (create-day-classes-with-selection selected-value))))
 
-    ;; Pass through other attributes from parent
-    (doseq [attr ["min-width" "max-width" "width"
+    ;; Pass through other attributes from parent (excluding width since we handled it above)
+    (doseq [attr ["min-width" "max-width"
                   "day-content-fn" "day-classes-fn"
                   "min-date" "max-date" "disabled-dates"
                   "locale" "first-day-of-week"]]
@@ -255,8 +232,9 @@
   (let [root (wcs/ensure-shadow el)
         state (get-calendar-state el)
         locale (or (value/get-attribute el "locale") "en-US")
-        show-today? (wcs/parse-bool-attr el "show-today-button")
-        show-navigation? (not= (value/get-attribute el "show-navigation") "false")] ; Default true
+        show-navigation? (not= (value/get-attribute el "show-navigation") "false") ; Default true
+        ;; Determine width - user provided or default compact width
+        width (or (value/get-attribute el "width") default-calendar-width)]
 
     ;; Load styles
     (ensure-styles! root calendar-styles "ty-calendar")
@@ -268,12 +246,19 @@
     (let [container (.createElement js/document "div")]
       (set! (.-className container) "calendar-container")
 
-      ;; Add navigation header (if enabled)
+      ;; Add navigation header (if enabled) with width for consistent sizing
       (when show-navigation?
-        (.appendChild container (render-navigation-header el state locale show-today?)))
+        (.appendChild container
+                      (render-navigation-header {:el el
+                                                 :state state
+                                                 :locale locale
+                                                 :width width})))
 
-      ;; Add embedded calendar month
-      (.appendChild container (render-embedded-calendar el state))
+      ;; Add embedded calendar month with width
+      (.appendChild container
+                    (render-embedded-calendar {:el el
+                                               :state state
+                                               :width width}))
 
       (.appendChild root container))))
 
@@ -284,10 +269,9 @@
 
 ;; Component registration
 (wcs/define! "ty-calendar"
-  {:observed [:show-today-button :show-navigation :locale :value
+  {:observed [:show-navigation :locale :value
               :min-width :max-width :width :day-content-fn :day-classes-fn
-              :min-date :max-date :disabled-dates :first-day-of-week
-              :select-today-on-navigate]
+              :min-date :max-date :disabled-dates :first-day-of-week]
    :connected (fn [^js el] (render! el))
    :disconnected (fn [^js el] (cleanup! el))
    :attr (fn [^js el attr-name old-value new-value]

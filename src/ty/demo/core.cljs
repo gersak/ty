@@ -169,7 +169,8 @@
         [:h1.text-lg.font-bold.text-gray-900.dark:text-white "Ty Components"]
         [:button.p-2.rounded-md.hover:bg-gray-100.dark:hover:bg-gray-700
          {:on {:click toggle-mobile-menu!}}
-         [:ty-icon {:name "x" :size "sm"}]]]
+         [:ty-icon {:name "x"
+                    :size "sm"}]]]
        [:p.text-sm.text-gray-600.dark:text-gray-400.mb-6 "Web Components Library"]]
       [:nav.px-4.pb-6
        (nav-items)]]]))
@@ -181,7 +182,8 @@
      ;; Mobile menu button
      [:button.lg:hidden.p-1.5.rounded-md.hover:bg-gray-100.dark:hover:bg-gray-700.flex-shrink-0
       {:on {:click toggle-mobile-menu!}}
-      [:ty-icon {:name "menu" :size "sm"}]]
+      [:ty-icon {:name "menu"
+                 :size "sm"}]]
      [:h2.text-base.lg:text-xl.font-semibold.text-gray-900.dark:text-white.truncate
       (cond
         (router/rendered? ::home true) "Welcome to Ty"
@@ -258,6 +260,7 @@
              :else [:div "404"]))]]])))
 
 (defn render-app! []
+  (println "RE RENDERING!!!!")
   (binding [context/*roles* (:user/roles @state)]
     (rdom/render (js/document.getElementById "app") (app))))
 

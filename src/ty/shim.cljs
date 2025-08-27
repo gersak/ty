@@ -88,11 +88,11 @@
   "Batch set props (EDN map). Triggers per-key prop hook."
   [^js el m]
   (let [js-props (reduce-kv
-                  (fn [r k v]
-                    (aset r (name k) v)
-                    r)
-                  #js {}
-                  m)]
+                   (fn [r k v]
+                     (aset r (name k) v)
+                     r)
+                   #js {}
+                   m)]
     (shim/setProps el js-props))
   el)
 
@@ -101,10 +101,10 @@
   [^js el]
   (let [p (.-_props el)]
     (reduce
-     (fn [r k]
-       (assoc r (keyword k) (aget p k)))
-     {}
-     (js/Object.keys p))))
+      (fn [r k]
+        (assoc r (keyword k) (aget p k)))
+      {}
+      (js/Object.keys p))))
 
 ;; -----------------------------
 ;; Hooks adapter
@@ -205,16 +205,16 @@
   (when-not (.-tyInitialAttrsRead el)
     (set! (.-tyInitialAttrsRead el) true)
     (reduce-kv
-     (fn [acc attr-key parse-fn]
-       (when-let [attr-val (attr el (name attr-key))]
-         (try
-           (assoc acc attr-key (parse-fn attr-val))
-           (catch js/Error e
-             (js/console.warn (str "Failed to parse initial attribute "
-                                   (name attr-key) "=" attr-val ": " (.-message e)))
-             acc))))
-     {}
-     attr-map)))
+      (fn [acc attr-key parse-fn]
+        (when-let [attr-val (attr el (name attr-key))]
+          (try
+            (assoc acc attr-key (parse-fn attr-val))
+            (catch js/Error e
+              (js/console.warn (str "Failed to parse initial attribute "
+                                    (name attr-key) "=" attr-val ": " (.-message e)))
+              acc))))
+      {}
+      attr-map)))
 
 (defn ^:dev/after-load reload-all-components!
   "Force refresh all registered components after hot reload"
@@ -245,7 +245,7 @@
     (when-not (.-scheduled batch)
       (set! (.-scheduled batch) true)
       (js/requestAnimationFrame
-       #(flush-attribute-batch! el batch-callback)))))
+        #(flush-attribute-batch! el batch-callback)))))
 
 (defn define-batched! [tag opts]
   "Define component with batched attribute updates"
@@ -253,10 +253,10 @@
         regular-opts (dissoc opts :batch-attr)]
     (define! tag
       (assoc regular-opts
-             :attr (fn [^js el attr-name old-value new-value]
+        :attr (fn [^js el attr-name old-value new-value]
                 ;; Add to batch
-                     (let [batch (get-batch-queue el)]
-                       (aset (.-changes batch) attr-name new-value))
+                (let [batch (get-batch-queue el)]
+                  (aset (.-changes batch) attr-name new-value))
                 ;; Schedule flush
-                     (schedule-batch-flush! el batch-attr-fn))))))
+                (schedule-batch-flush! el batch-attr-fn))))))
 

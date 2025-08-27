@@ -1,108 +1,196 @@
-/* Minimal Calendar Month Styles */
+/* Unified Flex Calendar Month Styles - CLEANED UP */
 
-.calendar-month-container {
+/* Main container - flex column with 7 rows */
+.calendar-flex-container {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0;
   padding: 1rem;
   background: var(--ty-bg, white);
   border-radius: 0.5rem;
   font-family: system-ui, sans-serif;
   user-select: none;
-  max-width: fit-content;
+  width: var(--calendar-width, fit-content);
+  min-width: var(--calendar-min-width, 300px);
+  max-width: var(--calendar-max-width, none);
 }
 
-.calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;
-  padding-bottom: 0.5rem;
+/* Each row (header + 6 day rows) */
+.calendar-row {
+  display: flex;
+  flex: 1;
+  /* All rows grow equally */
+  min-height: 0;
+  /* Allow shrinking if needed */
+}
+
+/* Header row specific styling */
+.calendar-header-row {
+  flex: 0 0 auto;
+  /* Don't grow/shrink, keep natural size */
   border-bottom: 1px solid var(--ty-border-neutral, #e5e7eb);
+  margin-bottom: 0.25rem;
+  padding-bottom: 0.5rem;
 }
 
-.calendar-weekday {
+/* Day rows */
+.calendar-day-row {
+  flex: 1;
+  /* Each day row grows equally */
+  min-height: 2.5rem;
+  margin-bottom: 0.125rem;
+}
+
+/* BASE CELL - flex behavior for all cells */
+.calendar-cell {
+  flex: 1;
+  /* All cells in a row grow equally */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  /* Allow shrinking */
+  position: relative;
+  box-sizing: border-box;
+  /* Prevent borders from affecting layout */
+}
+
+/* HEADER CELLS - simple and clean */
+.calendar-header-cell {
   text-align: center;
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--ty-color-neutral-m1, #6b7280);
   text-transform: uppercase;
+  padding: 0.25rem;
 }
 
-.calendar-days-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 0.25rem;
-}
-
-.calendar-day {
-  aspect-ratio: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+/* DAY CELLS - unified styling (the main calendar days) */
+.calendar-day-cell {
+  /* Inherits flex from .calendar-cell */
   border-radius: 0.375rem;
   font-size: 0.875rem;
-  min-height: 2.5rem;
   color: var(--ty-color-neutral, #111827);
   cursor: pointer;
-  transition: background-color 0.15s ease;
-  position: relative;
+  transition: background-color 0.15s ease, border 0.15s ease;
+  margin: 0.0625rem;
+  min-height: 2rem;
+  flex-direction: column;
+  /* Stack content vertically */
 }
 
-.calendar-day:hover {
+/* Hover effects */
+.calendar-day-cell:hover {
   background-color: var(--ty-bg-neutral-p1, #f3f4f6);
-  color: var(--ty-color-p2) !important;
 }
 
-/* Today styling - unique semantic colors */
-.calendar-day.today {
-  color: var(--ty-color-unique-p1, #059669);
-  font-weight: 600;
-  background-color: var(--ty-bg-unique-m1, #ecfdf5);
+/* TODAY STYLING - subtle unique semantic colors */
+.calendar-day-cell.today {
+  color: var(--ty-color-unique, #10b981);
+  font-weight: 500;
+  background-color: var(--ty-bg-unique-m1, #f0fdf4);
 }
 
-.calendar-day.today:hover {
-  background-color: var(--ty-bg-unique, #d1fae5);
+.calendar-day-cell.today:hover {
+  background-color: var(--ty-bg-unique, #ecfdf5);
 }
 
-/* Today dot indicator */
-.calendar-day.today::after {
+/* Today dot indicator - more subtle */
+.calendar-day-cell.today::after {
   content: '';
   position: absolute;
   bottom: 0.25rem;
-  width: 0.25rem;
-  height: 0.25rem;
-  background-color: var(--ty-color-unique-p2, #047857);
+  width: 0.1875rem;
+  height: 0.1875rem;
+  background-color: var(--ty-color-unique-p1, #059669);
   border-radius: 50%;
 }
 
+/* SELECTED STYLING - subtle but clear selection */
+.calendar-day-cell.selected {
+  background-color: var(--ty-bg-unique-m1, #ecfdf5) !important;
+  color: var(--ty-color-unique-p2, #047857) !important;
+  font-weight: 500 !important;
+  box-shadow: inset 0 0 0 1px var(--ty-color-unique, #10b981) !important;
+}
+
+.calendar-day-cell.selected:hover {
+  background-color: var(--ty-bg-unique, #d1fae5) !important;
+  box-shadow: inset 0 0 0 1px var(--ty-color-unique-p1, #059669) !important;
+}
+
+/* Selected + Today combination - harmonious colors */
+.calendar-day-cell.selected.today {
+  background-color: var(--ty-bg-unique, #d1fae5) !important;
+  color: var(--ty-color-unique-p2, #047857) !important;
+  box-shadow: inset 0 0 0 1px var(--ty-color-unique-p1, #059669), 0 0 0 1px var(--ty-border-unique-p1, #059669) !important;
+}
+
 /* Weekend styling */
-.calendar-day.weekend {
+.calendar-day-cell.weekend {
   color: var(--ty-color-neutral-m2, #9ca3af);
 }
 
+.calendar-day-cell.selected.weekend {
+  background-color: var(--ty-bg-unique-m1, #ecfdf5) !important;
+  color: var(--ty-color-unique-p1, #059669) !important;
+}
+
 /* Other month styling */
-.calendar-day.other-month {
+.calendar-day-cell.other-month {
   color: var(--ty-color-neutral-m3, #d1d5db);
 }
 
-.calendar-day.other-month:hover {
+.calendar-day-cell.other-month:hover {
   background-color: var(--ty-bg-neutral-m1, #f9fafb);
 }
 
-/* Today + Weekend combination */
-.calendar-day.today.weekend {
-  color: var(--ty-color-unique-p1, #059669);
-  background-color: var(--ty-bg-unique-m1, #ecfdf5);
+.calendar-day-cell.selected.other-month {
+  background-color: var(--ty-bg-unique-m2, #f0fdf4) !important;
+  color: var(--ty-color-unique, #10b981) !important;
+  opacity: 0.7;
 }
 
-/* Today + Other Month combination */
-.calendar-day.today.other-month {
+/* Combined states */
+.calendar-day-cell.today.weekend {
   color: var(--ty-color-unique, #10b981);
   background-color: var(--ty-bg-unique-m2, #f0fdf4);
 }
 
-/* Custom render function styles */
+.calendar-day-cell.today.other-month {
+  color: var(--ty-color-unique, #10b981);
+  background-color: var(--ty-bg-unique-m2, #f0fdf4);
+}
+
+/* BACKWARDS COMPATIBILITY - support old .calendar-day classes if they exist */
+.calendar-day {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+/* Forward old calendar-day classes to calendar-day-cell */
+.calendar-day.today {
+  /* These will be overridden by .calendar-day-cell.today above */
+}
+
+.calendar-day.selected {
+  /* These will be overridden by .calendar-day-cell.selected above */
+}
+
+.calendar-day.weekend {
+  /* These will be overridden by .calendar-day-cell.weekend above */
+}
+
+.calendar-day.other-month {
+  /* These will be overridden by .calendar-day-cell.other-month above */
+}
+
+/* CUSTOM RENDER FUNCTION SUPPORT */
 
 /* Day content container for custom layouts */
 .day-content {
@@ -115,7 +203,12 @@
   position: relative;
 }
 
-/* Holiday star indicator */
+/* Holiday styling */
+.calendar-day-cell.holiday {
+  background-color: var(--ty-bg-important-m2, #fef2f2);
+  color: var(--ty-color-important, #dc2626);
+}
+
 .holiday-star {
   position: absolute;
   top: 0.125rem;
@@ -124,17 +217,7 @@
   color: var(--ty-color-important, #dc2626);
 }
 
-/* Holiday day styling */
-.calendar-day.holiday {
-  background-color: var(--ty-bg-important-m2, #fef2f2);
-  color: var(--ty-color-important, #dc2626);
-}
-
-.calendar-day.holiday:hover {
-  background-color: var(--ty-bg-important-m1, #fee2e2);
-}
-
-/* Event dots container */
+/* Event dots */
 .event-dots {
   position: absolute;
   bottom: 0.125rem;
@@ -142,7 +225,6 @@
   gap: 0.125rem;
 }
 
-/* Individual event dot */
 .event-dot {
   width: 0.25rem;
   height: 0.25rem;
@@ -150,13 +232,9 @@
   border-radius: 50%;
 }
 
-/* Days with events */
-.calendar-day:has(.event-dots) {
-  padding-bottom: 0.375rem;
-}
-
-/* Hotel day styles (DOM elements approach) */
-.hotel-day {
+/* Hotel/Project/Complex content styles */
+.hotel-day,
+.project-day {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -166,7 +244,8 @@
   gap: 0.125rem;
 }
 
-.hotel-day .day-num {
+.hotel-day .day-num,
+.project-day .day-num {
   font-weight: 600;
   font-size: 0.875rem;
 }
@@ -180,25 +259,9 @@
   border-radius: 0.25rem;
 }
 
-/* Weekend pricing styling */
-.calendar-day.weekend-pricing .price {
+.calendar-day-cell.weekend-pricing .price {
   background-color: var(--ty-bg-important-m2, #fef2f2);
   color: var(--ty-color-important-p1, #dc2626);
-}
-
-/* Project day styles */
-.project-day {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  gap: 0.125rem;
-}
-
-.project-day .day-num {
-  font-weight: 600;
 }
 
 .project-day .task-count {
@@ -210,7 +273,34 @@
   border-radius: 0.25rem;
 }
 
-.calendar-day.has-tasks .task-count {
+.calendar-day-cell.has-tasks .task-count {
   background-color: var(--ty-bg-positive-m2, #ecfdf5);
   color: var(--ty-color-positive-p1, #047857);
+}
+
+/* Responsive and stress test support */
+.calendar-flex-container.oversized-test .calendar-day-row {
+  min-height: 5rem;
+}
+
+.calendar-flex-container.minimal-test .calendar-day-row {
+  min-height: 2rem;
+}
+
+.calendar-flex-container.complex-test .calendar-day-row {
+  min-height: 4rem;
+}
+
+.calendar-day-cell.oversized-content {
+  min-height: 4rem;
+  max-height: 6rem;
+}
+
+.calendar-day-cell.minimal-content {
+  min-height: 1.5rem;
+}
+
+.calendar-day-cell.complex-content {
+  min-height: 3rem;
+  align-items: stretch;
 }

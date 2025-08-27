@@ -32,6 +32,32 @@
   (when day-classes-fn
     (set! (.-dayClassesFn el) day-classes-fn)))
 
+(defn normalize-size-value
+  "Normalize size value - add 'px' if just a number, otherwise use as-is"
+  [value]
+  (when (and value (not= (str value) ""))
+    (if (re-matches #"^\d+(\.\d+)?$" (str value))
+      (str value "px") ; Add px if just a number
+      (str value)))) ; Use as-is for other units (%, rem, vw, etc.)
+
+(defn apply-width-attributes!
+  "Apply width-related attributes as CSS custom properties"
+  [^js el]
+  (let [width (value/get-attribute el "width")
+        min-width (value/get-attribute el "min-width")
+        max-width (value/get-attribute el "max-width")]
+
+    ;; Only set CSS custom properties if attributes are present
+    ;; This allows CSS and responsive rules to take precedence when attributes are not set
+    (when-let [normalized-width (normalize-size-value width)]
+      (.setProperty (.-style el) "--calendar-width" normalized-width))
+
+    (when-let [normalized-min-width (normalize-size-value min-width)]
+      (.setProperty (.-style el) "--calendar-min-width" normalized-min-width))
+
+    (when-let [normalized-max-width (normalize-size-value max-width)]
+      (.setProperty (.-style el) "--calendar-max-width" normalized-max-width))))
+
 (defn get-render-function
   "Get render function from element property (direct) or attribute (name lookup)"
   [^js el attr-name]
@@ -117,7 +143,7 @@
     day-element))
 
 (defn render!
-  "Pure render function - no state"
+  "Pure render function - unified flex layout"
   [^js el]
   (let [root (wcs/ensure-shadow el)
         today (js/Date.)
@@ -127,7 +153,14 @@
                           (inc (.getMonth today)))
 
         ;; Generate days using date utils
-        days (date/calendar-month-days display-year display-month)]
+        days (date/calendar-month-days display-year display-month)
+
+        ;; Get render functions from attributes
+        day-content-fn (get-render-function el "day-content-fn")
+        day-classes-fn (get-render-function el "day-classes-fn")]
+
+    ;; Apply width attributes as CSS custom properties
+    (apply-width-attributes! el)
 
     ;; Load styles
     (ensure-styles! root calendar-month-styles "ty-calendar-month")
@@ -135,36 +168,39 @@
     ;; Clear and rebuild
     (set! (.-innerHTML root) "")
 
-    ;; Create container
-    (let [container (.createElement js/document "div")]
-      (set! (.-className container) "calendar-month-container")
+    ;; Create unified flex container
+    (let [calendar-container (.createElement js/document "div")]
+      (set! (.-className calendar-container) "calendar-flex-container")
 
-      ;; Add weekday headers (simple version)
+      ;; Create header row (Row 1)
       (let [header-row (.createElement js/document "div")]
-        (set! (.-className header-row) "calendar-weekdays")
+        (set! (.-className header-row) "calendar-row calendar-header-row")
         (doseq [weekday ["Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]]
           (let [header-cell (.createElement js/document "div")]
-            (set! (.-className header-cell) "calendar-weekday")
+            (set! (.-className header-cell) "calendar-cell calendar-header-cell")
             (set! (.-textContent header-cell) weekday)
             (.appendChild header-row header-cell)))
-        (.appendChild container header-row))
+        (.appendChild calendar-container header-row))
 
-      ;; Add day cells  
-      (let [days-grid (.createElement js/document "div")
-            ;; Get render functions from attributes
-            day-content-fn (get-render-function el "day-content-fn")
-            day-classes-fn (get-render-function el "day-classes-fn")]
-        (set! (.-className days-grid) "calendar-days-grid")
-        (doseq [day-context days]
-          (let [day-cell (render-day-cell day-context el day-content-fn day-classes-fn)]
-            (.appendChild days-grid day-cell)))
-        (.appendChild container days-grid))
+      ;; Create day rows (Rows 2-7) - 6 weeks of 7 days each
+      (let [day-weeks (partition 7 days)]
+        (doseq [week day-weeks]
+          (let [day-row (.createElement js/document "div")]
+            (set! (.-className day-row) "calendar-row calendar-day-row")
+            (doseq [day-context week]
+              (let [day-cell (render-day-cell day-context el day-content-fn day-classes-fn)]
+                ;; Add unified cell classes for flex layout
+                (set! (.-className day-cell)
+                      (str (.-className day-cell) " calendar-cell calendar-day-cell"))
+                (.appendChild day-row day-cell)))
+            (.appendChild calendar-container day-row))))
 
-      (.appendChild root container))))
+      (.appendChild root calendar-container))))
 
 ;; Simple web component registration
 (wcs/define! "ty-calendar-month"
-  {:observed [:display-year :display-month :day-content-fn :day-classes-fn]
+  {:observed [:display-year :display-month :day-content-fn :day-classes-fn
+              :width :min-width :max-width]
    :connected (fn [^js el] (render! el))
    :attr (fn [^js el attr-name old-value new-value]
            (render! el))})

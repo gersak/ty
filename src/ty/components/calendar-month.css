@@ -72,15 +72,16 @@
 
 /* Hover effects - subtle */
 .calendar-day-cell:hover {
-  background-color: var(--ty-bg-neutral-p1, #f3f4f6);
+  color: var(--ty-color-neutral-p3);
+  background-color: var(--ty-bg-neutral, #f3f4f6);
 }
 
 /* TODAY STYLING - minimal accent */
 .calendar-day-cell.today {
-  color: var(--ty-color-neutral, #374151);
+  color: var(--ty-color-neutral-p1, #374151);
   font-weight: 500;
-  background-color: var(--ty-bg-neutral, #f9fafb);
-  border-color: var(--ty-border-neutral, #d1d5db);
+  background-color: var(--ty-bg-neutral-m1, #f9fafb);
+  border-color: var(--ty-border-neutral-p1, #d1d5db);
 }
 
 .calendar-day-cell.today:hover {
@@ -91,9 +92,9 @@
 .calendar-day-cell.today::after {
   content: '';
   position: absolute;
-  bottom: 0.1875rem;
-  width: 0.125rem;
-  height: 0.125rem;
+  bottom: 0.2rem;
+  width: 0.15rem;
+  height: 0.15rem;
   background-color: var(--ty-color-neutral, #6b7280);
   border-radius: 50%;
 }

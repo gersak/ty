@@ -28,23 +28,69 @@
 
 (declare render!)
 
+(defn init-calendar-state!
+  "Initialize calendar state from initial value (uncontrolled pattern)"
+  [^js el]
+  (let [initial-value (or (value/get-attribute el "value")
+                          (.-value el))
+        parsed-value (when (and initial-value (not= initial-value ""))
+                       (date/parse-value initial-value))
+        today (js/Date.)
+        ;; Determine display month from initial value OR current month
+        display-context (if parsed-value
+                          (date/day-time-context parsed-value)
+                          {:year (.getFullYear today)
+                           :month (inc (.getMonth today))})
+        initial-state {:display-year (:year display-context)
+                       :display-month (:month display-context)
+                       :value parsed-value}]
+
+    ;; Set internal state
+    (set! (.-tyCalendarState el) initial-state)
+
+    ;; Set .value property for JS compatibility 
+    (set! (.-value el) parsed-value)
+
+    initial-state))
+
 (defn get-calendar-state
-  "Get or initialize calendar state as ClojureScript data"
+  "Get existing calendar state (should be initialized by init-calendar-state!)"
   [^js el]
   (or (.-tyCalendarState el)
-      (let [today (js/Date.)
-            initial-state {:display-year (.getFullYear today)
-                           :display-month (inc (.getMonth today))
-                           :value nil}]
-        (set! (.-tyCalendarState el) initial-state)
-        initial-state)))
+      ;; Fallback if somehow not initialized
+      (init-calendar-state! el)))
+
+(defn emit-value-change!
+  "Emit consistent value change event for uncontrolled component"
+  [^js el new-value source]
+  (let [event-detail #js {:value new-value
+                          :source source ; "day-click" | "navigation" | "external"
+                          :calendar-type "ty-calendar"
+                          :has-navigation true}
+        event (js/CustomEvent. "change"
+                               #js {:detail event-detail
+                                    :bubbles true
+                                    :cancelable true})]
+    ;; Update .value property for JS compatibility
+    (set! (.-value el) new-value)
+
+    ;; Dispatch change event
+    (.dispatchEvent el event)))
 
 (defn set-calendar-state!
-  "Update calendar state using ClojureScript data structures"
+  "Update calendar state and emit events if value changed"
   [^js el updates]
   (let [current-state (get-calendar-state el)
-        new-state (merge current-state updates)]
+        new-state (merge current-state updates)
+        value-changed? (not= (:value current-state) (:value new-state))]
+
+    ;; Update internal state
     (set! (.-tyCalendarState el) new-state)
+
+    ;; Emit change event if value changed
+    (when value-changed?
+      (emit-value-change! el (:value new-state) "internal"))
+
     new-state))
 
 (defn get-month-names
@@ -113,10 +159,10 @@
   "Forward events from embedded calendar with additional context"
   [^js el event-type detail]
   (let [calendar-detail (js/Object.assign
-                         #js {}
-                         detail
-                         #js {:calendar-type "ty-calendar"
-                              :has-navigation true})
+                          #js {}
+                          detail
+                          #js {:calendar-type "ty-calendar"
+                               :has-navigation true})
         event (js/CustomEvent. event-type
                                #js {:detail calendar-detail
                                     :bubbles true
@@ -189,16 +235,15 @@
     (.setAttribute calendar-month "display-month" (:display-month state))
 
     ;; Pass through value if set
-    (let [calendar-value (or (:selected-date state) (:value state))]
-      (when calendar-value
-        (.setAttribute calendar-month "value" calendar-value)))
+    (when-let [calendar-value (:value state)]
+      (.setAttribute calendar-month "value" calendar-value))
 
     ;; Set width (either user provided or default)
     (when width
       (.setAttribute calendar-month "width" width))
 
     ;; Set custom day-classes function for selection styling (unless user provided one)
-    (let [selected-value (or (:selected-date state) (:value state))
+    (let [selected-value (:value state)
           user-day-classes-fn (value/get-attribute el "day-classes-fn")]
       (when (not user-day-classes-fn)
         ;; Only set our selection function if user didn't provide their own
@@ -218,10 +263,11 @@
                          (.stopPropagation event) ; Prevent double bubbling
                          (let [detail (.-detail event)
                                selected-value (.-value detail)]
-                           ;; Update internal state with selected date
-                           (set-calendar-state! el {:selected-date selected-value})
-                           ;; Forward the event
+                           ;; Update internal state with selected date (this will emit change event)
+                           (set-calendar-state! el {:value selected-value})
+                           ;; Forward the original day-click event too
                            (dispatch-calendar-event! el "day-click" detail)
+                           ;; Re-render to update selection styling
                            (render! el))))
 
     calendar-month))
@@ -272,13 +318,15 @@
   {:observed [:show-navigation :locale :value
               :min-width :max-width :width :day-content-fn :day-classes-fn
               :min-date :max-date :disabled-dates :first-day-of-week]
-   :connected (fn [^js el] (render! el))
+   :connected (fn [^js el]
+                ;; Initialize state from initial attributes first
+                (init-calendar-state! el)
+                ;; Then render
+                (render! el))
    :disconnected (fn [^js el] (cleanup! el))
    :attr (fn [^js el attr-name old-value new-value]
-           ;; Handle value changes by updating state
-           (when (= attr-name "value")
-             (let [parsed-value (when (and new-value (not= new-value ""))
-                                  (date/parse-value new-value))]
-               (set-calendar-state! el {:value parsed-value})))
-           ;; Always re-render on attribute changes
-           (render! el))})
+           ;; For uncontrolled components, ignore external value changes after initialization
+           ;; The component manages its own state after initial setup
+           (when-not (= attr-name "value")
+             ;; Re-render for other attribute changes
+             (render! el)))})

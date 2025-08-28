@@ -170,58 +170,72 @@
     (.dispatchEvent el event)))
 
 (defn render-navigation-header
-  "Render clean calendar navigation controls using defined SVG constants"
+  "Render clean calendar navigation controls using 3-group flex layout"
   [{:keys [^js el state locale width]}]
   (let [month-names (get-month-names locale)
         current-month (:display-month state)
         current-year (:display-year state)
         current-month-name (nth month-names (dec current-month))]
 
-    (let [header (.createElement js/document "div")]
+    (let [header (.createElement js/document "div")
+          left-group (.createElement js/document "div")
+          center-group (.createElement js/document "div")
+          right-group (.createElement js/document "div")]
+
+      ;; Set up container classes
       (set! (.-className header) "calendar-navigation-header")
+      (set! (.-className left-group) "nav-group nav-group-left")
+      (set! (.-className center-group) "nav-group nav-group-center")
+      (set! (.-className right-group) "nav-group nav-group-right")
 
       ;; Set width if provided to match the calendar
       (when width
         (set! (.-style header) (str "width: " width ";")))
 
-      ;; Previous year button (double chevron left) - Using constant
+      ;; Create buttons
+      ;; Previous year button (double chevron left)
       (let [prev-year-btn (.createElement js/document "button")]
         (set! (.-className prev-year-btn) "nav-btn nav-year-prev")
         (set! (.-title prev-year-btn) "Previous year")
         (set! (.-innerHTML prev-year-btn) chevrons-left-svg)
         (.addEventListener prev-year-btn "click" #(navigate-year! el -1))
-        (.appendChild header prev-year-btn))
+        (.appendChild left-group prev-year-btn))
 
-      ;; Previous month button (single chevron left) - Using constant
+      ;; Previous month button (single chevron left)
       (let [prev-month-btn (.createElement js/document "button")]
         (set! (.-className prev-month-btn) "nav-btn nav-month-prev")
         (set! (.-title prev-month-btn) "Previous month")
         (set! (.-innerHTML prev-month-btn) chevron-left-svg)
         (.addEventListener prev-month-btn "click" #(navigate-month! el -1))
-        (.appendChild header prev-month-btn))
+        (.appendChild left-group prev-month-btn))
 
       ;; Month and year display (center)
       (let [month-year-display (.createElement js/document "div")]
         (set! (.-className month-year-display) "month-year-display")
         (set! (.-textContent month-year-display)
               (str current-month-name " " current-year))
-        (.appendChild header month-year-display))
+        (.appendChild center-group month-year-display))
 
-      ;; Next month button (single chevron right) - Using constant
+      ;; Next month button (single chevron right)
       (let [next-month-btn (.createElement js/document "button")]
         (set! (.-className next-month-btn) "nav-btn nav-month-next")
         (set! (.-title next-month-btn) "Next month")
         (set! (.-innerHTML next-month-btn) chevron-right-svg)
         (.addEventListener next-month-btn "click" #(navigate-month! el 1))
-        (.appendChild header next-month-btn))
+        (.appendChild right-group next-month-btn))
 
-      ;; Next year button (double chevron right) - Using constant
+      ;; Next year button (double chevron right)
       (let [next-year-btn (.createElement js/document "button")]
         (set! (.-className next-year-btn) "nav-btn nav-year-next")
         (set! (.-title next-year-btn) "Next year")
         (set! (.-innerHTML next-year-btn) chevrons-right-svg)
         (.addEventListener next-year-btn "click" #(navigate-year! el 1))
-        (.appendChild header next-year-btn))
+        (.appendChild right-group next-year-btn))
+
+      ;; Assemble the header with 3 groups
+      (.appendChild header left-group)
+      (.appendChild header center-group)
+      (.appendChild header right-group)
 
       header)))
 

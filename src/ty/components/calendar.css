@@ -12,44 +12,48 @@
   max-width: var(--calendar-max-width, none);
 }
 
-/* Navigation Header - Compact Layout */
+/* Navigation Header - Clean 3-Group Flex Layout */
 .calendar-navigation-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0.75rem;
-  color: var(--ty-color-neutral-p3);
+  color: var(--ty-color-neutral);
   font-size: var(--ty-font-sm);
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Navigation Button Groups */
-.calendar-navigation-header>.nav-btn:first-child,
-.calendar-navigation-header>.nav-btn:nth-child(2) {
-  /* Left side buttons */
-  margin-right: 0.25rem;
+/* Navigation Groups - Left/Center/Right */
+.nav-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
-.calendar-navigation-header>.nav-btn:nth-last-child(2),
-.calendar-navigation-header>.nav-btn:last-child {
-  /* Right side buttons */
-  margin-left: 0.25rem;
+.nav-group-left {
+  justify-content: flex-start;
+}
+
+.nav-group-center {
+  justify-content: center;
+  flex: 1;
+}
+
+.nav-group-right {
+  justify-content: flex-end;
 }
 
 /* Month/Year Display - Center - More prominent */
 .month-year-display {
-  flex: 1;
-  text-align: center;
   font-weight: 600;
   font-size: var(--ty-font-sm);
-  color: var(--ty-color-neutral, #374151);
   user-select: none;
-  margin: 0 0.75rem;
   letter-spacing: 0.025em;
+  text-align: center;
 }
 
-/* Navigation Buttons - Smaller and cleaner */
+/* Navigation Buttons - Clean and minimal */
 .nav-btn {
   display: inline-flex;
   align-items: center;
@@ -59,8 +63,8 @@
   border: none;
   padding: 0px;
   background: transparent;
-  /* border: 1px solid var(--ty-border-neutral, #d1d5db); */
-  /* border-radius: 0.25rem; */
+  color: var(--ty-color-neutral-m1);
+  font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.15s ease;
   user-select: none;
@@ -73,13 +77,11 @@
 }
 
 .nav-btn:hover {
-  background: var(--ty-bg-neutral-p1, #f3f4f6);
-  border-color: var(--ty-border-neutral-p1, #9ca3af);
-  color: var(--ty-color-neutral-p1, #374151);
+  color: var(--ty-color-neutral-p2, #374151);
 }
 
 .nav-btn:active {
-  background: var(--ty-bg-neutral-p2, #e5e7eb);
+  background: var(--ty-bg-neutral-p3, #e5e7eb);
   transform: translateY(1px);
 }
 
@@ -104,62 +106,17 @@
     padding: 0.5rem;
   }
 
+  .nav-group {
+    gap: 0.125rem;
+  }
+
   .month-year-display {
     font-size: 1rem;
-    margin: 0 0.5rem;
   }
 
   .nav-btn {
     width: 1.75rem;
     height: 1.75rem;
     padding: 0.25rem;
-  }
-}
-
-/* Dark mode support */
-.dark .calendar-container {
-  background: var(--ty-bg, #1f2937);
-}
-
-.dark .calendar-navigation-header {
-  background: var(--ty-bg, #1f2937);
-  border-color: var(--ty-border-neutral, #374151);
-}
-
-.dark .month-year-display {
-  color: var(--ty-color-neutral, #d1d5db);
-}
-
-.dark .nav-btn {
-  background: var(--ty-bg, #1f2937);
-  border-color: var(--ty-border-neutral, #4b5563);
-  color: var(--ty-color-neutral, #9ca3af);
-}
-
-.dark .nav-btn:hover {
-  background: var(--ty-bg-neutral-p1, #374151);
-  border-color: var(--ty-border-neutral-p1, #6b7280);
-  color: var(--ty-color-neutral-p1, #d1d5db);
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-  .nav-btn {
-    border-width: 2px;
-  }
-
-  .nav-btn:focus {
-    outline-width: 3px;
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  .nav-btn {
-    transition: none;
-  }
-
-  .nav-btn:active {
-    transform: none;
   }
 }

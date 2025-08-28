@@ -76,7 +76,7 @@
   outline: none;
 }
 
-.date-picker-stub:hover:not([disabled]) {
+.date-picker-stub:hover:not([disabled]):not(.open) {
   border-color: var(--ty-input-border-hover);
 }
 
@@ -283,8 +283,6 @@
   padding: 0;
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
-  /* Width set by JavaScript positioning */
-  border-color: var(--ty-color-unique-m1);
 }
 
 .calendar-dropdown.hidden {
@@ -304,56 +302,4 @@
   border: none !important;
   box-shadow: none !important;
   background: transparent !important;
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .calendar-dropdown {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.15);
-    border-color: var(--ty-color-neutral-m1);
-  }
-}
-
-/* Animation for dropdown */
-.calendar-dropdown {
-  opacity: 0;
-  transform: translateY(-4px) scale(0.98);
-  animation: dropdown-appear 0.15s ease forwards;
-}
-
-@keyframes dropdown-appear {
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.calendar-dropdown.position-below {
-  transform-origin: top center;
-}
-
-.calendar-dropdown.position-above {
-  transform-origin: bottom center;
-}
-
-/* Responsive adjustments */
-@media (max-width: 640px) {
-  .calendar-dropdown {
-    position: fixed;
-    left: 1rem !important;
-    right: 1rem !important;
-    width: auto !important;
-    max-width: none;
-  }
-}
-
-/* Accessibility */
-.date-picker-stub:focus-visible {
-  outline: 2px solid var(--ty-color-unique);
-  outline-offset: 2px;
-}
-
-/* Calendar spacing adjustments */
-.calendar-dropdown .calendar-navigation-header {
-  margin-bottom: 0.5rem;
 }

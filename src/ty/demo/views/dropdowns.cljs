@@ -8,6 +8,13 @@
         text (.-text detail)]
     (swap! state/state assoc :dropdown-value value)))
 
+(defn date-picker-event-handler [^js event]
+  (let [detail (.-detail event)
+        value (.-value detail)
+        formatted (.-formatted detail)]
+    (js/console.log "Date picker changed:" detail)
+    (swap! state/state assoc :date-picker-value value)))
+
 (defn demo-row [{:keys [title description children]}]
   [:div.mb-8
    (when title
@@ -115,6 +122,89 @@
                                          :style {:min-width "200px"}}
                            [:option {:value "readonly-value"} "Read-only Value"]
                            [:option {:value "other"} "Other Option"]]]]})])
+
+(defn date-picker-examples []
+  [:div.demo-section
+   [:h2.demo-title "🎉 NEW: Date Picker Component"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "Date picker combines input field with calendar dropdown - leverages ty-input styling and ty-calendar functionality."]
+
+   (demo-row {:title "Basic Date Pickers"
+              :description "Compare regular dropdown vs date picker side by side"
+              :children [[:div.max-w-xs
+                          [:ty-dropdown {:label "Country"
+                                         :placeholder "Select country..."
+                                         :style {:min-width "200px"}
+                                         :on {:change dropdown-event-handler}}
+                           [:option {:value "us"} "United States"]
+                           [:option {:value "ca"} "Canada"]
+                           [:option {:value "uk"} "United Kingdom"]]]
+                         [:div.max-w-xs
+                          [:ty-date-picker {:label "Birthday"
+                                            :placeholder "Select date..."
+                                            :on {:change date-picker-event-handler}}]]]})
+
+   (code-snippet "<!-- Regular dropdown -->
+<ty-dropdown label=\"Country\" placeholder=\"Select country...\">
+  <option value=\"us\">United States</option>
+</ty-dropdown>
+
+<!-- Date picker -->
+<ty-date-picker label=\"Birthday\" placeholder=\"Select date...\"></ty-date-picker>")
+
+   (demo-row {:title "With Initial Values"
+              :description "Pre-selected values in both components"
+              :children [[:div.max-w-xs
+                          [:ty-dropdown {:label "Size"
+                                         :value "medium"
+                                         :style {:min-width "180px"}
+                                         :on {:change dropdown-event-handler}}
+                           [:option {:value "small"} "Small"]
+                           [:option {:value "medium"} "Medium"]
+                           [:option {:value "large"} "Large"]]]
+                         [:div.max-w-xs
+                          [:ty-date-picker {:label "Start Date"
+                                            :value "2024-12-25" ; Pre-select Christmas
+                                            :on {:change date-picker-event-handler}}]]]})
+
+   (code-snippet "<ty-dropdown label=\"Size\" value=\"medium\">
+  <option value=\"medium\">Medium</option>
+</ty-dropdown>
+
+<ty-date-picker label=\"Start Date\" value=\"2024-12-25\"></ty-date-picker>")
+
+   (demo-row {:title "Required Fields"
+              :description "Both components support required field indicators"
+              :children [[:div.max-w-xs
+                          [:ty-dropdown {:label "Priority"
+                                         :required true
+                                         :placeholder "Select priority..."
+                                         :style {:min-width "180px"}
+                                         :on {:change dropdown-event-handler}}
+                           [:option {:value "low"} "Low"]
+                           [:option {:value "medium"} "Medium"]
+                           [:option {:value "high"} "High"]]]
+                         [:div.max-w-xs
+                          [:ty-date-picker {:label "Due Date"
+                                            :required true
+                                            :placeholder "When is this due?"
+                                            :on {:change date-picker-event-handler}}]]]})
+
+   (demo-row {:title "Clearable Date Picker"
+              :description "Date picker with clear button functionality"
+              :children [[:div.max-w-xs
+                          [:ty-date-picker {:label "Check-in Date"
+                                            :value "2024-12-22"
+                                            :clearable true
+                                            :placeholder "Select check-in..."
+                                            :on {:change date-picker-event-handler}}]]]})
+
+   (code-snippet "<ty-date-picker 
+  label=\"Check-in Date\" 
+  value=\"2024-12-22\"
+  clearable=\"true\" 
+  placeholder=\"Select check-in...\">
+</ty-date-picker>")])
 
 (defn multiple-dropdowns-test []
   [:div.demo-section
@@ -704,6 +794,7 @@
   <option value=\"event1\">Event Test 1</option>
 </ty-dropdown>")])
 
+
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
@@ -713,6 +804,7 @@
      "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and rich content support. Use inline styles for custom sizing and flavor attributes for semantic styling."]]
 
    [:div.space-y-12
+    (date-picker-examples)
     (basic-examples)
     (multiple-dropdowns-test)
     (flavor-variants)

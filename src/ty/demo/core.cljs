@@ -260,7 +260,6 @@
              :else [:div "404"]))]]])))
 
 (defn render-app! []
-  (println "RE RENDERING!!!!")
   (binding [context/*roles* (:user/roles @state)]
     (rdom/render (js/document.getElementById "app") (app))))
 

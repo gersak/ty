@@ -1,0 +1,359 @@
+/* Date Picker Component Styles */
+/* Uses dropdown styling patterns for consistency with ty design system */
+
+/* Import dropdown base styles by extending existing patterns */
+:host {
+  display: block;
+  width: auto;
+  min-width: 200px;
+}
+
+/* ===== CONTAINER STRUCTURE (reuses dropdown patterns) ===== */
+
+/* Container and label use same styles as dropdown */
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dropdown-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ty-label-color);
+  margin-bottom: 6px;
+  line-height: 1.25;
+  padding-left: 12px;
+}
+
+.required-icon {
+  display: inline-flex;
+  align-items: center;
+  color: #ef4444;
+  width: 12px;
+  height: 12px;
+  vertical-align: middle;
+  margin-left: 4px;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
+/* ===== DATE PICKER STUB (styled like dropdown stub) ===== */
+
+.date-picker-stub {
+  /* Layout - matches dropdown-stub */
+  width: 100%;
+  cursor: pointer;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  /* Visual styling using ty tokens (same as dropdown) */
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  border: 1px solid var(--ty-input-border);
+  border-radius: var(--ty-radius-md);
+
+  /* Typography (same as dropdown) */
+  font-family: var(--ty-font-sans);
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-normal);
+  line-height: var(--ty-line-height-tight);
+
+  /* Default size (md) - matches dropdown */
+  min-height: var(--ty-size-md);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+
+  /* Transitions */
+  transition: var(--ty-transition-all), opacity 0.2s ease;
+  outline: none;
+}
+
+.date-picker-stub:hover:not([disabled]) {
+  border-color: var(--ty-input-border-hover);
+}
+
+.date-picker-stub[disabled] {
+  background-color: var(--ty-input-disabled-bg);
+  color: var(--ty-input-disabled-color);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.date-picker-stub:focus,
+.date-picker-stub.open {
+  border-color: var(--ty-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
+}
+
+/* ===== SIZE MODIFIERS (same as dropdown) ===== */
+
+.date-picker-stub.xs {
+  min-height: var(--ty-size-xs);
+  font-size: var(--ty-font-xs);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding-right: calc(var(--ty-spacing-2) + 0.875rem + var(--ty-spacing-1));
+}
+
+.date-picker-stub.sm {
+  min-height: var(--ty-size-sm);
+  font-size: var(--ty-font-xs);
+  padding: var(--ty-spacing-1_5) var(--ty-spacing-2_5);
+  padding-right: calc(var(--ty-spacing-2_5) + 0.875rem + var(--ty-spacing-1_5));
+}
+
+.date-picker-stub.md {
+  min-height: var(--ty-size-md);
+  font-size: var(--ty-font-sm);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+}
+
+.date-picker-stub.lg {
+  min-height: var(--ty-size-lg);
+  font-size: var(--ty-font-base);
+  padding: var(--ty-spacing-2_5) var(--ty-spacing-3_5);
+  padding-right: calc(var(--ty-spacing-3_5) + 1.125rem + var(--ty-spacing-2_5));
+}
+
+.date-picker-stub.xl {
+  min-height: var(--ty-size-xl);
+  font-size: var(--ty-font-lg);
+  padding: var(--ty-spacing-3) var(--ty-spacing-4);
+  padding-right: calc(var(--ty-spacing-4) + 1.25rem + var(--ty-spacing-3));
+}
+
+/* ===== FLAVOR MODIFIERS (same as dropdown) ===== */
+
+.date-picker-stub.important:focus,
+.date-picker-stub.important.open {
+  border-color: var(--ty-color-important);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.date-picker-stub.positive:focus,
+.date-picker-stub.positive.open {
+  border-color: var(--ty-color-positive);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.date-picker-stub.negative:focus,
+.date-picker-stub.negative.open {
+  border-color: var(--ty-color-negative);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.date-picker-stub.exception:focus,
+.date-picker-stub.exception.open {
+  border-color: var(--ty-color-exception);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.date-picker-stub.unique:focus,
+.date-picker-stub.unique.open {
+  border-color: var(--ty-color-unique);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* ===== STUB CONTENT ELEMENTS ===== */
+
+.stub-text {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  color: inherit;
+}
+
+.stub-text.placeholder {
+  color: var(--ty-input-placeholder);
+}
+
+/* Icons container (right side) */
+.stub-icons {
+  display: flex;
+  align-items: center;
+  gap: var(--ty-spacing-1);
+  position: absolute;
+  right: var(--ty-spacing-3);
+  top: 50%;
+  transform: translateY(-50%);
+  height: 1rem;
+  pointer-events: none;
+}
+
+/* Clear button */
+.stub-clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ty-color-neutral-m1);
+  cursor: pointer;
+  border-radius: var(--ty-radius-sm);
+  transition: all 0.15s ease;
+  pointer-events: auto;
+}
+
+.stub-clear:hover {
+  color: var(--ty-color-negative);
+  background-color: var(--ty-bg-negative-m3);
+}
+
+/* Calendar icon (arrow position) */
+.stub-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  height: 1rem;
+  color: var(--ty-color-neutral-m1);
+}
+
+.date-picker-stub:hover .stub-arrow {
+  color: var(--ty-color-neutral);
+}
+
+/* ===== SIZE-SPECIFIC ICON ADJUSTMENTS ===== */
+
+.date-picker-stub.xs .stub-icons {
+  right: var(--ty-spacing-2);
+  height: 0.75rem;
+  gap: var(--ty-spacing-0_5);
+}
+
+.date-picker-stub.xs .stub-clear,
+.date-picker-stub.xs .stub-arrow {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.date-picker-stub.sm .stub-icons {
+  right: var(--ty-spacing-2_5);
+  height: 0.875rem;
+}
+
+.date-picker-stub.sm .stub-clear,
+.date-picker-stub.sm .stub-arrow {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.date-picker-stub.lg .stub-icons {
+  right: var(--ty-spacing-3_5);
+  height: 1.125rem;
+}
+
+.date-picker-stub.lg .stub-clear,
+.date-picker-stub.lg .stub-arrow {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.date-picker-stub.xl .stub-icons {
+  right: var(--ty-spacing-4);
+  height: 1.25rem;
+}
+
+.date-picker-stub.xl .stub-clear,
+.date-picker-stub.xl .stub-arrow {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* ===== CALENDAR DROPDOWN ===== */
+
+.calendar-dropdown {
+  position: fixed;
+  background-color: var(--ty-bg);
+  border: 1px solid var(--ty-color-neutral-m1);
+  border-radius: var(--ty-radius-lg);
+  padding: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* Width set by JavaScript positioning */
+  border-color: var(--ty-color-unique-m1);
+}
+
+.calendar-dropdown.hidden {
+  display: none;
+}
+
+/* Calendar inside dropdown should have no conflicting styles */
+.calendar-dropdown ty-calendar {
+  width: 100%;
+  display: block;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.calendar-dropdown ty-calendar .calendar-container {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .calendar-dropdown {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.15);
+    border-color: var(--ty-color-neutral-m1);
+  }
+}
+
+/* Animation for dropdown */
+.calendar-dropdown {
+  opacity: 0;
+  transform: translateY(-4px) scale(0.98);
+  animation: dropdown-appear 0.15s ease forwards;
+}
+
+@keyframes dropdown-appear {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.calendar-dropdown.position-below {
+  transform-origin: top center;
+}
+
+.calendar-dropdown.position-above {
+  transform-origin: bottom center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .calendar-dropdown {
+    position: fixed;
+    left: 1rem !important;
+    right: 1rem !important;
+    width: auto !important;
+    max-width: none;
+  }
+}
+
+/* Accessibility */
+.date-picker-stub:focus-visible {
+  outline: 2px solid var(--ty-color-unique);
+  outline-offset: 2px;
+}
+
+/* Calendar spacing adjustments */
+.calendar-dropdown .calendar-navigation-header {
+  margin-bottom: 0.5rem;
+}

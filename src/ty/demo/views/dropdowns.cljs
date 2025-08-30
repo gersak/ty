@@ -225,33 +225,33 @@
    (demo-row {:title "Size Variations"
               :description "All input sizes work with the internal ty-calendar integration"
               :children [[:div.space-y-4.w-full
-                          [:div.flex.flex-wrap.gap-4
-                           [:ty-date-picker {:size "xs"
-                                             :label "Extra Small"
-                                             :value "2024-01-15"
-                                             :style {:min-width "160px"}
-                                             :on {:change date-picker-event-handler}}]
-                           [:ty-date-picker {:size "sm"
-                                             :label "Small"
-                                             :value "2024-02-20"
-                                             :style {:min-width "180px"}
-                                             :on {:change date-picker-event-handler}}]
-                           [:ty-date-picker {:size "md"
-                                             :label "Medium (Default)"
-                                             :value "2024-03-25"
-                                             :style {:min-width "200px"}
-                                             :on {:change date-picker-event-handler}}]]
-                          [:div.flex.flex-wrap.gap-4
-                           [:ty-date-picker {:size "lg"
-                                             :label "Large"
-                                             :value "2024-04-10"
-                                             :style {:min-width "220px"}
-                                             :on {:change date-picker-event-handler}}]
-                           [:ty-date-picker {:size "xl"
-                                             :label "Extra Large"
-                                             :value "2024-05-30"
-                                             :style {:min-width "240px"}
-                                             :on {:change date-picker-event-handler}}]]]]})
+                          [:div.flex.flex-wrap.gap-4.items-end
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:size "xs"
+                                              :label "Extra Small"
+                                              :value "2024-01-15"
+                                              :on {:change date-picker-event-handler}}]]
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:size "sm"
+                                              :label "Small"
+                                              :value "2024-02-20"
+                                              :on {:change date-picker-event-handler}}]]
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:size "md"
+                                              :label "Medium (Default)"
+                                              :value "2024-03-25"
+                                              :on {:change date-picker-event-handler}}]]]
+                          [:div.flex.flex-wrap.gap-4.items-end
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:size "lg"
+                                              :label "Large"
+                                              :value "2024-04-10"
+                                              :on {:change date-picker-event-handler}}]]
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:size "xl"
+                                              :label "Extra Large"
+                                              :value "2024-05-30"
+                                              :on {:change date-picker-event-handler}}]]]]]})
 
    (code-snippet "<ty-date-picker size=\"xs\" label=\"Extra Small\" value=\"2024-01-15\"></ty-date-picker>
 <ty-date-picker size=\"sm\" label=\"Small\" value=\"2024-02-20\"></ty-date-picker>

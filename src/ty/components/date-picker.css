@@ -1,16 +1,11 @@
 /* Date Picker Component Styles */
-/* Uses dropdown styling patterns for consistency with ty design system */
-
-/* Import dropdown base styles by extending existing patterns */
 :host {
   display: block;
   width: auto;
   min-width: 200px;
 }
 
-/* ===== CONTAINER STRUCTURE (reuses dropdown patterns) ===== */
-
-/* Container and label use same styles as dropdown */
+/* Container structure (reuses dropdown patterns) */
 .dropdown-container {
   display: flex;
   flex-direction: column;
@@ -43,35 +38,25 @@
   width: 100%;
 }
 
-/* ===== DATE PICKER STUB (styled like dropdown stub) ===== */
-
+/* Date picker stub (styled like dropdown) */
 .date-picker-stub {
-  /* Layout - matches dropdown-stub */
   width: 100%;
   cursor: pointer;
   box-sizing: border-box;
   position: relative;
   display: flex;
   align-items: center;
-
-  /* Visual styling using ty tokens (same as dropdown) */
   background: var(--ty-input-bg);
   color: var(--ty-input-color);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-md);
-
-  /* Typography (same as dropdown) */
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-sm);
   font-weight: var(--ty-font-normal);
   line-height: var(--ty-line-height-tight);
-
-  /* Default size (md) - matches dropdown */
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
   padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
-
-  /* Transitions */
   transition: var(--ty-transition-all), opacity 0.2s ease;
   outline: none;
 }
@@ -93,8 +78,7 @@
   box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
 }
 
-/* ===== SIZE MODIFIERS (same as dropdown) ===== */
-
+/* Size variants */
 .date-picker-stub.xs {
   min-height: var(--ty-size-xs);
   font-size: var(--ty-font-xs);
@@ -105,22 +89,15 @@
 .date-picker-stub.sm {
   min-height: var(--ty-size-sm);
   font-size: var(--ty-font-xs);
-  padding: var(--ty-spacing-1_5) var(--ty-spacing-2_5);
-  padding-right: calc(var(--ty-spacing-2_5) + 0.875rem + var(--ty-spacing-1_5));
-}
-
-.date-picker-stub.md {
-  min-height: var(--ty-size-md);
-  font-size: var(--ty-font-sm);
-  padding: var(--ty-spacing-2) var(--ty-spacing-3);
-  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding-right: calc(var(--ty-spacing-2) + 0.875rem + var(--ty-spacing-1));
 }
 
 .date-picker-stub.lg {
   min-height: var(--ty-size-lg);
   font-size: var(--ty-font-base);
-  padding: var(--ty-spacing-2_5) var(--ty-spacing-3_5);
-  padding-right: calc(var(--ty-spacing-3_5) + 1.125rem + var(--ty-spacing-2_5));
+  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  padding-right: calc(var(--ty-spacing-4) + 1.125rem + var(--ty-spacing-2));
 }
 
 .date-picker-stub.xl {
@@ -130,40 +107,7 @@
   padding-right: calc(var(--ty-spacing-4) + 1.25rem + var(--ty-spacing-3));
 }
 
-/* ===== FLAVOR MODIFIERS (same as dropdown) ===== */
-
-.date-picker-stub.important:focus,
-.date-picker-stub.important.open {
-  border-color: var(--ty-color-important);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.date-picker-stub.positive:focus,
-.date-picker-stub.positive.open {
-  border-color: var(--ty-color-positive);
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
-.date-picker-stub.negative:focus,
-.date-picker-stub.negative.open {
-  border-color: var(--ty-color-negative);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-.date-picker-stub.exception:focus,
-.date-picker-stub.exception.open {
-  border-color: var(--ty-color-exception);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-}
-
-.date-picker-stub.unique:focus,
-.date-picker-stub.unique.open {
-  border-color: var(--ty-color-unique);
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-}
-
-/* ===== STUB CONTENT ELEMENTS ===== */
-
+/* Text content */
 .stub-text {
   flex: 1;
   white-space: nowrap;
@@ -177,7 +121,7 @@
   color: var(--ty-input-placeholder);
 }
 
-/* Icons container (right side) */
+/* Icons */
 .stub-icons {
   display: flex;
   align-items: center;
@@ -190,7 +134,6 @@
   pointer-events: none;
 }
 
-/* Clear button */
 .stub-clear {
   display: flex;
   align-items: center;
@@ -212,7 +155,6 @@
   background-color: var(--ty-bg-negative-m3);
 }
 
-/* Calendar icon (arrow position) */
 .stub-arrow {
   display: flex;
   align-items: center;
@@ -226,55 +168,12 @@
   color: var(--ty-color-neutral);
 }
 
-/* ===== SIZE-SPECIFIC ICON ADJUSTMENTS ===== */
-
-.date-picker-stub.xs .stub-icons {
-  right: var(--ty-spacing-2);
-  height: 0.75rem;
-  gap: var(--ty-spacing-0_5);
+.date-picker-stub:focus .stub-arrow,
+.date-picker-stub.open .stub-arrow {
+  color: var(--ty-input-border-focus);
 }
 
-.date-picker-stub.xs .stub-clear,
-.date-picker-stub.xs .stub-arrow {
-  width: 0.75rem;
-  height: 0.75rem;
-}
-
-.date-picker-stub.sm .stub-icons {
-  right: var(--ty-spacing-2_5);
-  height: 0.875rem;
-}
-
-.date-picker-stub.sm .stub-clear,
-.date-picker-stub.sm .stub-arrow {
-  width: 0.875rem;
-  height: 0.875rem;
-}
-
-.date-picker-stub.lg .stub-icons {
-  right: var(--ty-spacing-3_5);
-  height: 1.125rem;
-}
-
-.date-picker-stub.lg .stub-clear,
-.date-picker-stub.lg .stub-arrow {
-  width: 1.125rem;
-  height: 1.125rem;
-}
-
-.date-picker-stub.xl .stub-icons {
-  right: var(--ty-spacing-4);
-  height: 1.25rem;
-}
-
-.date-picker-stub.xl .stub-clear,
-.date-picker-stub.xl .stub-arrow {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-/* ===== CALENDAR DROPDOWN ===== */
-
+/* Calendar dropdown */
 .calendar-dropdown {
   position: fixed;
   background-color: var(--ty-bg);
@@ -287,19 +186,4 @@
 
 .calendar-dropdown.hidden {
   display: none;
-}
-
-/* Calendar inside dropdown should have no conflicting styles */
-.calendar-dropdown ty-calendar {
-  width: 100%;
-  display: block;
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-}
-
-.calendar-dropdown ty-calendar .calendar-container {
-  border: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
 }

@@ -37,6 +37,7 @@
               {:id ::multiselect
                :segment "multiselect"
                :name "Multiselect"}
+
               {:id ::calendar
                :segment "calendar"
                :name "Calendar"}
@@ -114,6 +115,7 @@
    (nav-item {:route-id ::multiselect
               :label "Multiselect"
               :icon "check-circle"})
+
    (nav-item {:route-id ::calendar
               :label "Calendar"
               :icon "lucide-calendar"})
@@ -191,6 +193,7 @@
         (router/rendered? ::inputs true) "Input Components"
         (router/rendered? ::dropdowns true) "Dropdown Components"
         (router/rendered? ::multiselect true) "Multiselect Components"
+
         (router/rendered? ::calendar true) "Calendar Components"
         (router/rendered? ::icons true) "Icon Library"
         (router/rendered? ::popups true) "Popup Components"
@@ -235,6 +238,7 @@
              (router/rendered? ::inputs true) (inputs/view)
              (router/rendered? ::dropdowns true) (dropdowns/view)
              (router/rendered? ::multiselect true) (multiselect/view)
+
              (router/rendered? ::calendar true) (calendar/view)
              (router/rendered? ::icons true) (icons/view)
              (router/rendered? ::popups true) (popups/view)

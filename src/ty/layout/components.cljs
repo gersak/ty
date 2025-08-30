@@ -1,7 +1,7 @@
 (ns ty.layout.components
   "Layout-aware components that demonstrate practical usage"
   (:require
-   [ty.layout :as layout]))
+    [ty.layout :as layout]))
 
 (defn responsive-card-grid
   "A card grid that adapts columns based on container size"
@@ -20,8 +20,10 @@
   "Layout with sidebar that changes based on breakpoint"
   [{:keys [sidebar content]}]
   (let [show-sidebar? (layout/breakpoint>= :lg)
-        sidebar-width (layout/responsive-value 
-                       {:lg 256 :xl 320 :2xl 384})]
+        sidebar-width (layout/responsive-value
+                        {:lg 256
+                         :xl 320
+                         :2xl 384})]
     [:div.flex.h-full
      (when show-sidebar?
        [:aside.border-r.border-gray-200
@@ -54,20 +56,20 @@
   "Text that changes size based on container"
   [{:keys [children element]
     :or {element :div}}]
-  (let [font-size (layout/responsive-value 
-                   {:xs "0.875rem"    ; 14px
-                    :sm "1rem"        ; 16px
-                    :md "1.125rem"    ; 18px
-                    :lg "1.25rem"     ; 20px
-                    :xl "1.5rem"      ; 24px
-                    :2xl "1.875rem"}) ; 30px
+  (let [font-size (layout/responsive-value
+                    {:xs "0.875rem" ; 14px
+                     :sm "1rem" ; 16px
+                     :md "1.125rem" ; 18px
+                     :lg "1.25rem" ; 20px
+                     :xl "1.5rem" ; 24px
+                     :2xl "1.875rem"}) ; 30px
         line-height (layout/responsive-value
-                     {:xs 1.5
-                      :sm 1.5
-                      :md 1.6
-                      :lg 1.6
-                      :xl 1.7
-                      :2xl 1.7})]
+                      {:xs 1.5
+                       :sm 1.5
+                       :md 1.6
+                       :lg 1.6
+                       :xl 1.7
+                       :2xl 1.7})]
     [element
      {:style {:fontSize font-size
               :lineHeight line-height}}
@@ -76,7 +78,7 @@
 (defn aspect-ratio-box
   "Maintains aspect ratio within container"
   [{:keys [ratio children class]
-    :or {ratio 16/9}}]
+    :or {ratio (/ 16 9)}}]
   (let [{:keys [width height]} (layout/maintain-aspect-ratio ratio)]
     [:div
      {:class class

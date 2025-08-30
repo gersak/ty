@@ -281,7 +281,90 @@
 
    (code-snippet "<ty-date-picker flavor=\"positive\" label=\"Success Date\" value=\"2024-06-15\"></ty-date-picker>
 <ty-date-picker flavor=\"negative\" label=\"Error Date\" value=\"2024-07-20\"></ty-date-picker>
-<ty-date-picker flavor=\"important\" label=\"Important Date\" value=\"2024-08-25\"></ty-date-picker>")])
+<ty-date-picker flavor=\"important\" label=\"Important Date\" value=\"2024-08-25\"></ty-date-picker>")
+
+   ;; NEW: Date + Time picker examples
+   [:div.mt-8.p-4.bg-green-50.dark:bg-green-900.rounded-lg
+    [:h3.text-lg.font-semibold.mb-3.text-green-800.dark:text-green-200 "🆕 NEW: Date + Time Support"]
+    [:p.text-sm.text-green-700.dark:text-green-300.mb-3
+     "Add with-time=\"true\" to get time input with masked validation:"]
+    [:div.text-sm.space-y-2.text-green-700.dark:text-green-300
+     [:div "⏰ Time input with HH:mm masking"]
+     [:div "📅 Combined date+time selection"]
+     [:div "✨ ISO datetime string output (2024-12-25T14:30)"]
+     [:div "🎯 Validates hours (00-23) and minutes (00-59)"]]]
+
+   (demo-row {:title "Date + Time Picker Examples"
+              :description "Date picker with integrated time input using masked field and datetime value output"
+              :children [[:div.space-y-4.w-full
+                          [:div.flex.flex-wrap.gap-4.items-end
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:label "Event DateTime"
+                                              :with-time true
+                                              :value "2024-12-25T14:30"
+                                              :on {:change date-picker-event-handler}}]
+                            [:div.mt-2.text-xs.text-gray-600.dark:text-gray-400
+                             "ISO datetime: "
+                             [:code.bg-gray-100.dark:bg-gray-800.px-1.py-0.5.rounded.text-xs
+                              (str (:date-picker-value @state/state))]]]
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:label "Meeting Time"
+                                              :with-time true
+                                              :size "sm"
+                                              :clearable true
+                                              :placeholder "Select meeting time"
+                                              :on {:change date-picker-event-handler}}]]]
+                          [:div.flex.flex-wrap.gap-4.items-end
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:label "Large Event"
+                                              :with-time true
+                                              :size "lg"
+                                              :flavor "important"
+                                              :value "2024-12-31T23:59"
+                                              :on {:change date-picker-event-handler}}]]
+                           [:div.min-w-0.flex-1
+                            [:ty-date-picker {:label "Deadline"
+                                              :with-time true
+                                              :size "xl"
+                                              :flavor "negative"
+                                              :required true
+                                              :on {:change date-picker-event-handler}}]]]]]})
+
+   (code-snippet "<!-- Basic date + time picker -->
+<ty-date-picker label=\"Event DateTime\" 
+                with-time=\"true\" 
+                value=\"2024-12-25T14:30\">
+</ty-date-picker>
+
+<!-- Clearable meeting time -->
+<ty-date-picker label=\"Meeting Time\" 
+                with-time=\"true\" 
+                size=\"sm\" 
+                clearable=\"true\" 
+                placeholder=\"Select meeting time\">
+</ty-date-picker>
+
+<!-- Large important event -->
+<ty-date-picker label=\"Large Event\" 
+                with-time=\"true\" 
+                size=\"lg\" 
+                flavor=\"important\" 
+                value=\"2024-12-31T23:59\">
+</ty-date-picker>")
+
+   (demo-row {:title "Time Validation Demo"
+              :description "Try entering invalid times - the mask prevents values like 25:70"
+              :children [[:div.max-w-xs
+                          [:ty-date-picker {:label "Time Validation Test"
+                                            :with-time true
+                                            :value "2024-01-01T12:00"
+                                            :on {:change date-picker-event-handler}}]
+                          [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                           "Try typing: 25:70, 99:99, etc. - they'll be rejected!"]
+                          [:div.mt-1.text-xs.text-blue-600.dark:text-blue-400
+                           "✅ Valid: 00-23 hours, 00-59 minutes"]
+                          [:div.mt-1.text-xs.text-red-600.dark:text-red-400
+                           "❌ Invalid: >23 hours, >59 minutes"]]]})])
 
 (defn multiple-dropdowns-test []
   [:div.demo-section

@@ -187,3 +187,57 @@
 .calendar-dropdown.hidden {
   display: none;
 }
+
+/* Time input section */
+.time-section {
+  display: flex;
+  align-items: center;
+  padding: var(--ty-spacing-3);
+  border-top: 1px solid var(--ty-color-neutral-m2);
+  background-color: var(--ty-bg-neutral-m3);
+  gap: var(--ty-spacing-2);
+}
+
+.time-label {
+  font-size: var(--ty-font-sm);
+  font-weight: 500;
+  color: var(--ty-color-neutral);
+  min-width: 3rem;
+  flex-shrink: 0;
+}
+
+.time-input {
+  flex: 1;
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  border: 1px solid var(--ty-input-border);
+  border-radius: var(--ty-radius-sm);
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  font-family: var(--ty-font-mono);
+  font-size: var(--ty-font-sm);
+  text-align: center;
+  outline: none;
+  transition: var(--ty-transition-all);
+}
+
+.time-input:hover {
+  border-color: var(--ty-input-border-hover);
+}
+
+.time-input:focus {
+  border-color: var(--ty-input-border-focus);
+  box-shadow: 0 0 0 2px var(--ty-input-shadow-focus);
+}
+
+.time-input::placeholder {
+  color: var(--ty-input-placeholder);
+}
+
+.time-icon {
+  display: flex;
+  align-items: center;
+  color: var(--ty-color-neutral-m1);
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}

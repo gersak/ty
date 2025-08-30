@@ -203,6 +203,8 @@
   (.preventDefault event)
   (.stopPropagation event)
   (update-component-state! el {:value nil})
+  ;; Update HTML attribute to reflect cleared state
+  (.removeAttribute el "value")
   (emit-change-event! el nil "clear")
   (render! el))
 

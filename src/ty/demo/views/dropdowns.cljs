@@ -1,18 +1,19 @@
 (ns ty.demo.views.dropdowns
-  (:require [ty.demo.state :as state]
+  (:require [ty.context :as context]
+            [ty.demo.state :as state]
+            [ty.i18n :as i18n]
             [ty.layout :as layout]))
 
-(defn dropdown-event-handler [event]
+(defn dropdown-event-handler [^js event]
   (let [detail (.-detail event)
-        value (.-value detail)
+        value (.. event -detail -option -value)
         text (.-text detail)]
-    (swap! state/state assoc :dropdown-value value)))
+    (swap! state/state assoc ::dropdown-value value)))
 
 (defn date-picker-event-handler [^js event]
   (let [detail (.-detail event)
         value (.-value detail)
         formatted (.-formatted detail)]
-    (js/console.log "Date picker changed:" detail)
     (swap! state/state assoc :date-picker-value value)))
 
 (defn demo-row [{:keys [title description children]}]
@@ -136,42 +137,61 @@
                                          :placeholder "Select country..."
                                          :style {:min-width "200px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "us"} "United States"]
-                           [:option {:value "ca"} "Canada"]
-                           [:option {:value "uk"} "United Kingdom"]]]
+                           [:option {:value "us"} "🇺🇸 United States"]
+                           [:option {:value "ja"} "🇯🇵 Japan"]
+                           [:option {:value "de"} "🇩🇪 Germany"]
+                           [:option {:value "au"} "🇦🇺 Australia"]
+                           [:option {:value "pt_BR"} "🇧🇷 Brazil"]
+                           [:option {:value "en_ZA"} "🇿🇦 South Africa"]]]
+                         [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                          "Selected: "
+                          [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
+                           (str (or (::dropdown-value @state/state) "none"))]]
                          [:div.max-w-xs
                           [:ty-date-picker {:label "Birthday"
                                             :placeholder "Select date..."
-                                            :on {:change date-picker-event-handler}}]]]})
+                                            :on {:change date-picker-event-handler}}]
+                          [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                           "Selected: "
+                           [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
+                            (if-let [date-val (:date-picker-value @state/state)]
+                              (i18n/translate
+                                (js/Date. date-val)
+                                (::dropdown-value @state/state "en")
+                                {:dateStyle "full"})
+                              "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
 <ty-dropdown label=\"Country\" placeholder=\"Select country...\">
-  <option value=\"us\">United States</option>
+  <option value=\"us\">🇺🇸 United States</option>
 </ty-dropdown>
 
 <!-- Date picker -->
 <ty-date-picker label=\"Birthday\" placeholder=\"Select date...\"></ty-date-picker>")
 
-   (demo-row {:title "With Initial Values"
-              :description "Pre-selected values in both components"
+   (demo-row {:title "Clearable Date Picker - Clear Button Test"
+              :description "Date picker with clear button functionality - test clearing values"
               :children [[:div.max-w-xs
-                          [:ty-dropdown {:label "Size"
-                                         :value "medium"
-                                         :style {:min-width "180px"}
-                                         :on {:change dropdown-event-handler}}
-                           [:option {:value "small"} "Small"]
-                           [:option {:value "medium"} "Medium"]
-                           [:option {:value "large"} "Large"]]]
-                         [:div.max-w-xs
-                          [:ty-date-picker {:label "Start Date"
-                                            :value "2024-12-25" ; Pre-select Christmas
-                                            :on {:change date-picker-event-handler}}]]]})
+                          [:ty-date-picker {:label "Check-in Date"
+                                            :value "2024-12-22"
+                                            :clearable true
+                                            :placeholder "Select check-in..."
+                                            :on {:change date-picker-event-handler}}]
+                          [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                           "Value: "
+                           [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
+                            (if-let [date-val (:date-picker-value @state/state)]
+                              (.toLocaleDateString (js/Date. date-val))
+                              "null")]]
+                          [:div.mt-1.text-xs.text-blue-600.dark:text-blue-400
+                           "💡 Look for X button when date is selected"]]]})
 
-   (code-snippet "<ty-dropdown label=\"Size\" value=\"medium\">
-  <option value=\"medium\">Medium</option>
-</ty-dropdown>
-
-<ty-date-picker label=\"Start Date\" value=\"2024-12-25\"></ty-date-picker>")
+   (code-snippet "<ty-date-picker 
+  label=\"Check-in Date\" 
+  value=\"2024-12-22\"
+  clearable=\"true\" 
+  placeholder=\"Select check-in...\">
+</ty-date-picker>")
 
    (demo-row {:title "Required Fields"
               :description "Both components support required field indicators"
@@ -189,22 +209,6 @@
                                             :required true
                                             :placeholder "When is this due?"
                                             :on {:change date-picker-event-handler}}]]]})
-
-   (demo-row {:title "Clearable Date Picker"
-              :description "Date picker with clear button functionality"
-              :children [[:div.max-w-xs
-                          [:ty-date-picker {:label "Check-in Date"
-                                            :value "2024-12-22"
-                                            :clearable true
-                                            :placeholder "Select check-in..."
-                                            :on {:change date-picker-event-handler}}]]]})
-
-   (code-snippet "<ty-date-picker 
-  label=\"Check-in Date\" 
-  value=\"2024-12-22\"
-  clearable=\"true\" 
-  placeholder=\"Select check-in...\">
-</ty-date-picker>")
 
    ;; NEW: Architecture explanation
    [:div.mt-8.p-4.bg-blue-50.dark:bg-blue-900.rounded-lg
@@ -847,10 +851,10 @@
    [:p.text-gray-600.dark:text-gray-400.mb-4
     "Open the browser console to see change events. Current value: "]
    [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-sm
-    (str (:dropdown-value @state/state))]
+    (str (::dropdown-value @state/state))]
 
    [:div.mt-6.max-w-sm
-    [:ty-dropdown {:value (:dropdown-value @state/state "")
+    [:ty-dropdown {:value (::dropdown-value @state/state "")
                    :placeholder "Select to see events..."
                    :on {:change dropdown-event-handler}}
      [:option {:value "event1"} "Event Test 1"]

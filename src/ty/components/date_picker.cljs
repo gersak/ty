@@ -104,18 +104,32 @@
 ;; === DISPLAY FORMATTING ===
 
 (defn format-display-value
-  "Format components for display in input using i18n"
-  [components format-type locale]
+  "Format components for display in input using i18n with time support"
+  [components format-type locale with-time?]
   (when components
     (let [date-obj (components->date-object components)
           locale-str (or locale "en-US")]
       (when date-obj
-        (case format-type
-          "short" (time/format-date-short date-obj locale-str)
-          "medium" (time/format-date-medium date-obj locale-str)
-          "long" (time/format-date-long date-obj locale-str)
-          "full" (time/format-date-full date-obj locale-str)
-          (time/format-date-short date-obj locale-str))))))
+        (if with-time?
+          ;; When with-time is enabled, show date + time
+          (case format-type
+            "short" (time/format-date date-obj locale-str {:dateStyle "short"
+                                                           :timeStyle "short"})
+            "medium" (time/format-date date-obj locale-str {:dateStyle "medium"
+                                                            :timeStyle "short"})
+            "long" (time/format-date date-obj locale-str {:dateStyle "long"
+                                                          :timeStyle "short"})
+            "full" (time/format-date date-obj locale-str {:dateStyle "full"
+                                                          :timeStyle "short"})
+            (time/format-date date-obj locale-str {:dateStyle "long"
+                                                   :timeStyle "short"}))
+          ;; When with-time is false, show date only
+          (case format-type
+            "short" (time/format-date-short date-obj locale-str)
+            "medium" (time/format-date-medium date-obj locale-str)
+            "long" (time/format-date-long date-obj locale-str)
+            "full" (time/format-date-full date-obj locale-str)
+            (time/format-date-long date-obj locale-str)))))))
 
 ;; ==== TIME INPUT STATE MANAGEMENT ====
 
@@ -226,14 +240,8 @@
   []
   [0 1 3 4])
 
-(defn find-nearest-editable-position
-  "Find nearest editable position to clicked position"
-  [clicked-pos]
-  (cond
-    (<= clicked-pos 1) clicked-pos ; Positions 0,1 are editable (hour)
-    (= clicked-pos 2) 3 ; Position 2 (delimiter) -> position 3
-    (<= clicked-pos 4) clicked-pos ; Positions 3,4 are editable (minute)
-    :else 5)) ; Position 5+ -> position 5 (after last digit) ; Positions 3,4 are editable (minute)
+;; Removed find-nearest-editable-position - no longer needed 
+;; since we always position cursor at position 0 on focus/click ; Position 5+ -> position 5 (after last digit) ; Positions 3,4 are editable (minute)
 
 (defn position->raw-digit-index
   "Convert internal position (0,1,3,4) to raw digits index (0,1,2,3)"
@@ -345,12 +353,11 @@
           (handle-time-change! date-picker-el time-input))))))
 
 (defn handle-time-click!
-  "Handle click with smart cursor positioning"
+  "Handle click - always position cursor at first digit for predictable UX"
   [^js time-input ^js event]
-  (let [clicked-pos (.-selectionStart time-input)
-        nearest-pos (find-nearest-editable-position clicked-pos)]
-    (when (not= clicked-pos nearest-pos)
-      (update-time-input-state! time-input {:caret-position nearest-pos}))))
+  ;; Always position cursor at the first digit (position 0) on click/focus
+  ;; This prevents twitchy behavior and provides consistent UX
+  (update-time-input-state! time-input {:caret-position 0}))
 
 ;; === EVENT HANDLING ===
 
@@ -367,8 +374,9 @@
                           :source source ; "selection" | "time-change" | "clear" | "external"
                           :formatted (when new-components
                                        (format-display-value new-components
-                                                             (or (value/get-attribute el "format") "short")
-                                                             (or (value/get-attribute el "locale") "en-US")))}
+                                                             (or (value/get-attribute el "format") "long")
+                                                             (or (value/get-attribute el "locale") "en-US")
+                                                             with-time?))}
         event (js/CustomEvent. "change"
                                #js {:detail event-detail
                                     :bubbles true
@@ -401,29 +409,19 @@
 
 (defn position-dropdown! [^js el]
   (let [root (wcs/ensure-shadow el)
-        stub (.querySelector root ".date-picker-stub")
         dropdown (.querySelector root ".calendar-dropdown")]
-    (when (and stub dropdown)
-      (let [stub-rect (.getBoundingClientRect stub)
-            stub-bottom (.-bottom stub-rect)
-            stub-left (.-left stub-rect)
-            stub-width (.-width stub-rect)
-            viewport-height (.-innerHeight js/window)
-            space-below (- viewport-height stub-bottom)
-            position-below (> space-below 400)
-            dropdown-width (max stub-width 320)]
+    (when dropdown
+      ;; Simple absolute positioning - dropdown will position relative to the wrapper
+      (set! (.-style dropdown)
+            (str "position: absolute;"
+                 "top: calc(100% + 4px);"
+                 "left: 0;"
+                 "right: 0;"
+                 "z-index: 1000;"))
 
-        (set! (.-style dropdown)
-              (str "position: fixed;"
-                   "left: " stub-left "px;"
-                   (if position-below
-                     (str "top: " (+ stub-bottom 4) "px;")
-                     (str "bottom: " (+ (- viewport-height (.-top stub-rect)) 4) "px;"))
-                   "width: " dropdown-width "px;"
-                   "z-index: 1000;"))
-
-        (.remove (.-classList dropdown) "position-above" "position-below")
-        (.add (.-classList dropdown) (if position-below "position-below" "position-above"))))))
+      ;; Remove any previous positioning classes
+      (.remove (.-classList dropdown) "position-above" "position-below")
+      (.add (.-classList dropdown) "position-below"))))
 
 (defn open-dropdown! [^js el]
   (let [state (get-component-state el)]
@@ -444,12 +442,12 @@
         disabled (= (value/get-attribute el "disabled") "true")
         clearable (= (value/get-attribute el "clearable") "true")
         with-time (= (value/get-attribute el "with-time") "true")
-        format-type (or (value/get-attribute el "format") "short")
+        format-type (or (value/get-attribute el "format") "long") ; Changed default to "long"
         locale (or (value/get-attribute el "locale") "en-US")
         state (get-component-state el)
         components (select-keys state [:year :month :day :hour :minute])
         formatted-value (when (and (:year state) (:month state) (:day state))
-                          (format-display-value components format-type locale))]
+                          (format-display-value components format-type locale with-time))]
 
     {:size size
      :flavor flavor
@@ -568,7 +566,12 @@
 
       (.addEventListener time-input "click"
                          (fn [^js event]
-                           ;; Enhanced click positioning with smart cursor placement
+                           ;; Always position cursor at first digit on click
+                           (handle-time-click! time-input event)))
+
+      (.addEventListener time-input "focus"
+                         (fn [^js event]
+                           ;; Always position cursor at first digit on focus (tab, programmatic focus, etc.)
                            (handle-time-click! time-input event))) ; Move to next digit
 
       time-input)))

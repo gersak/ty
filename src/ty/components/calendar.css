@@ -1,122 +1,66 @@
-/* Compact Calendar Navigation Component Styles */
+/* Orchestrated Calendar Component Styles */
 
 .calendar-container {
   display: flex;
-  align-items: center;
   flex-direction: column;
   background: var(--ty-bg, white);
   border-radius: 0.5rem;
   font-family: system-ui, sans-serif;
-  width: fit-content;
+  width: var(--calendar-width, auto);
   min-width: var(--calendar-min-width, 280px);
   max-width: var(--calendar-max-width, none);
+  box-shadow: var(--ty-shadow-sm, 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06));
 }
 
-/* Navigation Header - Clean 3-Group Flex Layout */
-.calendar-navigation-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem;
-  color: var(--ty-color-neutral);
-  font-size: var(--ty-font-sm);
+/* Navigation embedding - clean integration */
+.calendar-container > ty-calendar-navigation {
+  border-bottom: 1px solid var(--ty-border-neutral, #e5e7eb);
+}
+
+/* Month display embedding - seamless integration */  
+.calendar-container > ty-calendar-month {
   width: 100%;
-  box-sizing: border-box;
 }
 
-/* Navigation Groups - Left/Center/Right */
-.nav-group {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+/* Ensure child components inherit container width constraints */
+.calendar-container > ty-calendar-navigation,
+.calendar-container > ty-calendar-month {
+  min-width: inherit;
+  max-width: inherit;
 }
 
-.nav-group-left {
-  justify-content: flex-start;
+/* Remove duplicate styling since child components handle their own styles */
+.calendar-container > * {
+  border-radius: 0;
 }
 
-.nav-group-center {
-  justify-content: center;
-  flex: 1;
+/* First child (navigation) gets top border radius */
+.calendar-container > *:first-child {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
 }
 
-.nav-group-right {
-  justify-content: flex-end;
+/* Last child (month) gets bottom border radius */
+.calendar-container > *:last-child {
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
 }
 
-/* Month/Year Display - Center - More prominent */
-.month-year-display {
-  font-weight: 600;
-  font-size: var(--ty-font-sm);
-  user-select: none;
-  letter-spacing: 0.025em;
-  text-align: center;
-}
-
-/* Navigation Buttons - Clean and minimal */
-.nav-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border: none;
-  padding: 0px;
-  background: transparent;
-  color: var(--ty-color-neutral-m1);
-  font-size: 1.5rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  user-select: none;
-  flex-shrink: 0;
-}
-
-.nav-btn svg {
-  width: 100%;
-  height: 100%;
-}
-
-.nav-btn:hover {
-  color: var(--ty-color-neutral-p2, #374151);
-}
-
-.nav-btn:active {
-  background: var(--ty-bg-neutral-p3, #e5e7eb);
-  transform: translateY(1px);
-}
-
-.nav-btn:focus {
-  outline: 2px solid var(--ty-color-unique, #3b82f6);
-  outline-offset: 2px;
-}
-
-/* Embedded calendar styling */
-.calendar-container>ty-calendar-month {
-  align-self: center;
-}
-
-/* Ensure consistent width between navigation and calendar */
-.calendar-container {
-  width: auto;
-}
-
-/* Responsive adjustments - More compact */
+/* Responsive adjustments */
 @media (max-width: 640px) {
-  .calendar-navigation-header {
-    padding: 0.5rem;
+  .calendar-container {
+    min-width: 260px;
   }
+}
 
-  .nav-group {
-    gap: 0.125rem;
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .calendar-container {
+    background: var(--ty-bg-dark, #1f2937);
+    box-shadow: var(--ty-shadow-sm-dark, 0 1px 3px 0 rgba(0, 0, 0, 0.3));
   }
-
-  .month-year-display {
-    font-size: 1rem;
-  }
-
-  .nav-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-    padding: 0.25rem;
+  
+  .calendar-container > ty-calendar-navigation {
+    border-bottom-color: var(--ty-border-neutral-dark, #374151);
   }
 }

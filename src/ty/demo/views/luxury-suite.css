@@ -1,0 +1,48 @@
+/* Luxury Suite Demo - For customCSS property injection */
+.luxury-suite-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  background: linear-gradient(135deg, #fef3c7, #fbbf24);
+  border-radius: 8px;
+  border: 1px solid #f59e0b;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+}
+
+.suite-day-num {
+  font-weight: 700;
+  font-size: 14px;
+  color: #92400e;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.suite-price {
+  background: linear-gradient(135deg, #dc2626, #991b1b);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 800;
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transform: scale(1);
+  transition: transform 0.2s ease;
+  letter-spacing: 0.5px;
+}
+
+.suite-price:hover {
+  transform: scale(1.1);
+}
+
+/* Cell hover effects */
+.calendar-day-cell:has(.luxury-suite-day) {
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.calendar-day-cell:has(.luxury-suite-day):hover {
+  background: rgba(251, 191, 36, 0.2);
+  transform: scale(1.02);
+}

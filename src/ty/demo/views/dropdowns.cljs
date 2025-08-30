@@ -127,7 +127,7 @@
   [:div.demo-section
    [:h2.demo-title "🎉 NEW: Date Picker Component"]
    [:p.text-gray-600.dark:text-gray-400.mb-6
-    "Date picker combines input field with calendar dropdown - leverages ty-input styling and ty-calendar functionality."]
+    "Date picker combines input field with calendar dropdown - now uses ty-calendar internally with clean architecture separation."]
 
    (demo-row {:title "Basic Date Pickers"
               :description "Compare regular dropdown vs date picker side by side"
@@ -204,7 +204,80 @@
   value=\"2024-12-22\"
   clearable=\"true\" 
   placeholder=\"Select check-in...\">
-</ty-date-picker>")])
+</ty-date-picker>")
+
+   ;; NEW: Architecture explanation
+   [:div.mt-8.p-4.bg-blue-50.dark:bg-blue-900.rounded-lg
+    [:h3.text-lg.font-semibold.mb-3.text-blue-800.dark:text-blue-200 "🏗️ New Architecture"]
+    [:p.text-sm.text-blue-700.dark:text-blue-300.mb-3
+     "ty-date-picker now uses ty-calendar internally, creating a clean component hierarchy:"]
+    [:div.text-sm.space-y-2.text-blue-700.dark:text-blue-300
+     [:div "📅 ty-date-picker: Manages selected value + input styling + day selection styling"]
+     [:div "🧭 ty-calendar: Handles navigation controls + day-click events + passes through styling"]
+     [:div "🎨 ty-calendar-month: Pure rendering engine"]
+     [:p.mt-3.text-xs "This means consistent calendar behavior across date pickers and standalone calendars!"]]]
+
+   ;; NEW: Size variations showing the architecture works
+   (demo-row {:title "Size Variations"
+              :description "All input sizes work with the internal ty-calendar integration"
+              :children [[:div.space-y-4.w-full
+                          [:div.flex.flex-wrap.gap-4
+                           [:ty-date-picker {:size "xs"
+                                             :label "Extra Small"
+                                             :value "2024-01-15"
+                                             :style {:min-width "160px"}
+                                             :on {:change date-picker-event-handler}}]
+                           [:ty-date-picker {:size "sm"
+                                             :label "Small"
+                                             :value "2024-02-20"
+                                             :style {:min-width "180px"}
+                                             :on {:change date-picker-event-handler}}]
+                           [:ty-date-picker {:size "md"
+                                             :label "Medium (Default)"
+                                             :value "2024-03-25"
+                                             :style {:min-width "200px"}
+                                             :on {:change date-picker-event-handler}}]]
+                          [:div.flex.flex-wrap.gap-4
+                           [:ty-date-picker {:size "lg"
+                                             :label "Large"
+                                             :value "2024-04-10"
+                                             :style {:min-width "220px"}
+                                             :on {:change date-picker-event-handler}}]
+                           [:ty-date-picker {:size "xl"
+                                             :label "Extra Large"
+                                             :value "2024-05-30"
+                                             :style {:min-width "240px"}
+                                             :on {:change date-picker-event-handler}}]]]]})
+
+   (code-snippet "<ty-date-picker size=\"xs\" label=\"Extra Small\" value=\"2024-01-15\"></ty-date-picker>
+<ty-date-picker size=\"sm\" label=\"Small\" value=\"2024-02-20\"></ty-date-picker>
+<ty-date-picker size=\"md\" label=\"Medium\" value=\"2024-03-25\"></ty-date-picker>
+<ty-date-picker size=\"lg\" label=\"Large\" value=\"2024-04-10\"></ty-date-picker>
+<ty-date-picker size=\"xl\" label=\"Extra Large\" value=\"2024-05-30\"></ty-date-picker>")
+
+   ;; NEW: Flavor variations
+   (demo-row {:title "Semantic Flavors"
+              :description "Date pickers support all semantic flavors like other components"
+              :children [[:div.flex.flex-wrap.gap-4
+                          [:ty-date-picker {:label "Positive"
+                                            :flavor "positive"
+                                            :value "2024-06-15"
+                                            :style {:min-width "180px"}
+                                            :on {:change date-picker-event-handler}}]
+                          [:ty-date-picker {:label "Negative"
+                                            :flavor "negative"
+                                            :value "2024-07-20"
+                                            :style {:min-width "180px"}
+                                            :on {:change date-picker-event-handler}}]
+                          [:ty-date-picker {:label "Important"
+                                            :flavor "important"
+                                            :value "2024-08-25"
+                                            :style {:min-width "180px"}
+                                            :on {:change date-picker-event-handler}}]]]})
+
+   (code-snippet "<ty-date-picker flavor=\"positive\" label=\"Success Date\" value=\"2024-06-15\"></ty-date-picker>
+<ty-date-picker flavor=\"negative\" label=\"Error Date\" value=\"2024-07-20\"></ty-date-picker>
+<ty-date-picker flavor=\"important\" label=\"Important Date\" value=\"2024-08-25\"></ty-date-picker>")])
 
 (defn multiple-dropdowns-test []
   [:div.demo-section
@@ -793,7 +866,6 @@
 <ty-dropdown on:change={handleChange}>
   <option value=\"event1\">Event Test 1</option>
 </ty-dropdown>")])
-
 
 (defn view []
   [:div.max-w-6xl.mx-auto

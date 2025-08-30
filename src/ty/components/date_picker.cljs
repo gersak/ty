@@ -26,6 +26,31 @@
 (declare render!)
 
 ;; Mobile detection
+ ;; Create day-classes function for selection styling (for ty-date-picker)
+;; Create day-classes function for selection styling (for ty-date-picker)
+(defn create-date-picker-day-classes
+  "Create a day-classes function that adds 'selected' class for the selected date"
+  [selected-value]
+  (fn [^js day-context]
+    (let [context (->clj day-context)
+          base-classes (cond-> ["calendar-day"]
+                         (:today? context) (conj "today")
+                         (:weekend context) (conj "weekend")
+                         (:other-month context) (conj "other-month")
+                         ;; Add selected class if this day matches the selected value
+                         (and selected-value (= (:value context) selected-value)) (conj "selected"))]
+      (->js base-classes))))
+
+;; Set up global function for date picker selection styling
+(defn setup-date-picker-day-classes!
+  "Set up global day-classes function for a specific date picker instance"
+  [^js el selected-value]
+  (let [instance-id (str "datePicker_" (.-tyDatePickerId el))
+        fn-name (str "datePickerDayClasses_" (.-tyDatePickerId el))]
+    ;; Create unique function for this instance
+    (aset js/window fn-name (create-date-picker-day-classes selected-value))
+    fn-name))
+
 (defn is-mobile? []
   (or (< (.-innerWidth js/window) 768)
       (.-maxTouchPoints js/navigator)))
@@ -41,6 +66,10 @@
         initial-state {:value parsed-value
                        :open? false
                        :formatted-value nil}]
+
+    ;; Create unique ID for this instance (for day-classes function)
+    (when-not (.-tyDatePickerId el)
+      (set! (.-tyDatePickerId el) (str (random-uuid))))
 
     ;; Set internal state
     (set! (.-tyDatePickerState el) initial-state)
@@ -208,7 +237,7 @@
   (render! el))
 
 (defn handle-calendar-change!
-  "Handle date selection from calendar"
+  "Handle date selection from ty-calendar (now listens to day-click events)"
   [^js el ^js event]
   (let [detail (.-detail event)
         selected-value (.-value detail)]
@@ -322,7 +351,7 @@
 
 ;; Render calendar dropdown
 (defn render-calendar-dropdown
-  "Render the calendar dropdown"
+  "Render the calendar dropdown using ty-calendar with date picker styling"
   [^js el attrs]
   (let [{:keys [open? value locale]} attrs]
     (if open?
@@ -332,13 +361,17 @@
         ;; Set up dropdown container
         (set! (.-className dropdown) "calendar-dropdown")
 
-        ;; Set up calendar - no width attribute, CSS handles it
+        ;; Set up ty-calendar with date picker's value and styling
         (when value
           (.setAttribute calendar "value" value))
         (when locale
           (.setAttribute calendar "locale" locale))
 
-        ;; Event listener for calendar selection
+        ;; Set up day-classes function for selection styling
+        (let [day-classes-fn-name (setup-date-picker-day-classes! el value)]
+          (.setAttribute calendar "day-classes-fn" day-classes-fn-name))
+
+        ;; Event listener for day-click from ty-calendar
         (.addEventListener calendar "day-click" #(handle-calendar-change! el %))
 
         ;; Build structure
@@ -359,6 +392,10 @@
 
     ;; Ensure styles are loaded
     (ensure-styles! root date-picker-styles "ty-date-picker")
+
+    ;; Update day-classes function when value changes (for calendar styling)
+    (when (:open? attrs)
+      (setup-date-picker-day-classes! el (:value attrs)))
 
     ;; Clear and rebuild
     (set! (.-innerHTML root) "")
@@ -391,7 +428,13 @@
 (defn cleanup!
   "Clean up component state and event listeners"
   [^js el]
+  ;; Clean up global day-classes function for this instance
+  (when-let [picker-id (.-tyDatePickerId el)]
+    (let [fn-name (str "datePickerDayClasses_" picker-id)]
+      (js-delete js/window fn-name)))
+
   (set! (.-tyDatePickerState el) nil)
+  (set! (.-tyDatePickerId el) nil)
   ;; Remove global event listeners
   (.removeEventListener js/document "click" #(handle-outside-click! el %))
   (.removeEventListener js/document "keydown" #(handle-escape-key! el %)))

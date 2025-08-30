@@ -1,10 +1,16 @@
 (ns ty.components.calendar-month
-  "Minimal stateless calendar month renderer"
+  "Property-based stateless calendar month renderer with context integration.
+  
+  Uses the new property-controlled architecture:
+  - Direct property access (no attribute fallback)
+  - Automatic re-rendering via :prop hook
+  - Context integration for locale fallbacks
+  - Compatible with all modern frameworks"
   (:require [cljs-bean.core :refer [->js ->clj]]
+            [ty.context :as context]
             [ty.css :refer [ensure-styles!]]
             [ty.date.core :as date]
-            [ty.shim :as wcs]
-            [ty.value :as value])
+            [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load basic calendar styles
@@ -24,13 +30,10 @@
       (:weekend day-context) (conj "weekend")
       (:other-month day-context) (conj "other-month"))))
 
-(defn set-render-functions!
-  "Helper to set render functions as properties on element"
-  [^js el {:keys [day-content-fn day-classes-fn]}]
-  (when day-content-fn
-    (set! (.-dayContentFn el) day-content-fn))
-  (when day-classes-fn
-    (set! (.-dayClassesFn el) day-classes-fn)))
+(defn get-locale-with-fallback
+  "Get locale with context fallback"
+  [^js el]
+  (or (.-locale el) context/*locale* "en-US"))
 
 (defn normalize-size-value
   "Normalize size value - add 'px' if just a number, otherwise use as-is"
@@ -40,15 +43,14 @@
       (str value "px") ; Add px if just a number
       (str value)))) ; Use as-is for other units (%, rem, vw, etc.)
 
-(defn apply-width-attributes!
-  "Apply width-related attributes as CSS custom properties"
+(defn apply-width-properties!
+  "Apply width-related properties as CSS custom properties"
   [^js el]
-  (let [width (value/get-attribute el "width")
-        min-width (value/get-attribute el "min-width")
-        max-width (value/get-attribute el "max-width")]
-
-    ;; Only set CSS custom properties if attributes are present
-    ;; This allows CSS and responsive rules to take precedence when attributes are not set
+  (let [width (.-width el)
+        min-width (.-minWidth el)
+        max-width (.-maxWidth el)]
+    ;; Only set CSS custom properties if values are present
+    ;; This allows CSS and responsive rules to take precedence when not set
     (when-let [normalized-width (normalize-size-value width)]
       (.setProperty (.-style el) "--calendar-width" normalized-width))
 
@@ -56,23 +58,7 @@
       (.setProperty (.-style el) "--calendar-min-width" normalized-min-width))
 
     (when-let [normalized-max-width (normalize-size-value max-width)]
-      (.setProperty (.-style el) "--calendar-max-width" normalized-max-width))))
-
-(defn get-render-function
-  "Get render function from element property (direct) or attribute (name lookup)"
-  [^js el attr-name]
-  (let [prop-name (case attr-name
-                    "day-content-fn" "dayContentFn"
-                    "day-classes-fn" "dayClassesFn"
-                    attr-name)
-        ;; First try to get as property (direct function)
-        prop-fn (aget el prop-name)]
-    (if (fn? prop-fn)
-      prop-fn
-      ;; Fallback to attribute (function name lookup)
-      (when-let [fn-name (value/get-attribute el attr-name)]
-        (when (and (exists? js/window) (aget js/window fn-name))
-          (aget js/window fn-name))))))
+      (.setProperty (.-style el) "--calendar-max-width" normalized-max-width)))) ; Use as-is for other units (%, rem, vw, etc.)
 
 (defn dispatch-day-click!
   "Dispatch day-click custom event with day context"
@@ -143,27 +129,34 @@
     day-element))
 
 (defn render!
-  "Pure render function - unified flex layout"
+  "Pure render function - property-based approach with context integration"
   [^js el]
   (let [root (wcs/ensure-shadow el)
         today (js/Date.)
-        display-year (or (value/parse-integer (value/get-attribute el "display-year"))
-                         (.getFullYear today))
-        display-month (or (value/parse-integer (value/get-attribute el "display-month"))
-                          (inc (.getMonth today)))
+
+        ;; Direct property access with intelligent defaults
+        display-year (or (.-displayYear el) (.getFullYear today))
+        display-month (or (.-displayMonth el) (inc (.getMonth today)))
+        value (.-value el)
+        locale (get-locale-with-fallback el)
 
         ;; Generate days using date utils
         days (date/calendar-month-days display-year display-month)
 
-        ;; Get render functions from attributes
-        day-content-fn (get-render-function el "day-content-fn")
-        day-classes-fn (get-render-function el "day-classes-fn")]
+        ;; Direct function property access
+        day-content-fn (.-dayContentFn el)
+        day-classes-fn (.-dayClassesFn el)
+        custom-css (.-customCSS el)]
 
-    ;; Apply width attributes as CSS custom properties
-    (apply-width-attributes! el)
+    ;; Apply width properties as CSS custom properties
+    (apply-width-properties! el)
 
-    ;; Load styles
+    ;; Load default styles
     (ensure-styles! root calendar-month-styles "ty-calendar-month")
+
+    ;; Load custom CSS if provided
+    (when custom-css
+      (ensure-styles! root custom-css "ty-calendar-month-custom"))
 
     ;; Clear and rebuild
     (set! (.-innerHTML root) "")
@@ -197,10 +190,28 @@
 
       (.appendChild root calendar-container))))
 
-;; Simple web component registration
+;; Property-based web component definition
 (wcs/define! "ty-calendar-month"
-  {:observed [:display-year :display-month :day-content-fn :day-classes-fn
-              :width :min-width :max-width]
-   :connected (fn [^js el] (render! el))
-   :attr (fn [^js el attr-name old-value new-value]
+  {:observed [] ; Minimal attribute watching
+   :props {:displayMonth nil ; Property declarations install getters/setters
+           :displayYear nil ; Properties automatically trigger re-render via :prop hook
+           :value nil
+           :dayContentFn nil ; Direct function assignment
+           :dayClassesFn nil
+           :customCSS nil ; Custom CSS injection for render functions
+           :width nil
+           :minWidth nil
+           :maxWidth nil
+           :locale nil} ; Context integration
+   :connected (fn [^js el]
+                ;; Set defaults with context fallbacks
+                (when-not (.-displayMonth el)
+                  (set! (.-displayMonth el) (inc (.getMonth (js/Date.)))))
+                (when-not (.-displayYear el)
+                  (set! (.-displayYear el) (.getFullYear (js/Date.))))
+                (when-not (.-locale el)
+                  (set! (.-locale el) (or context/*locale* "en-US")))
+                (render! el))
+   :prop (fn [^js el prop-name old-value new-value]
+           ;; Property changed - re-render the component
            (render! el))})

@@ -212,8 +212,8 @@
     [:p.text-sm.text-blue-700.dark:text-blue-300.mb-3
      "ty-date-picker now uses ty-calendar internally, creating a clean component hierarchy:"]
     [:div.text-sm.space-y-2.text-blue-700.dark:text-blue-300
-     [:div "📅 ty-date-picker: Manages selected value + input styling + day selection styling"]
-     [:div "🧭 ty-calendar: Handles navigation controls + day-click events + passes through styling"]
+     [:div "📅 ty-date-picker: Manages selected value + input styling + dropdown behavior"]
+     [:div "🧭 ty-calendar: Handles navigation controls + change events + day selection styling"]
      [:div "🎨 ty-calendar-month: Pure rendering engine"]
      [:p.mt-3.text-xs "This means consistent calendar behavior across date pickers and standalone calendars!"]]]
 

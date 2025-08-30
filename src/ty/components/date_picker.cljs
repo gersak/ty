@@ -25,32 +25,6 @@
 
 (declare render!)
 
-;; Mobile detection
- ;; Create day-classes function for selection styling (for ty-date-picker)
-;; Create day-classes function for selection styling (for ty-date-picker)
-(defn create-date-picker-day-classes
-  "Create a day-classes function that adds 'selected' class for the selected date"
-  [selected-value]
-  (fn [^js day-context]
-    (let [context (->clj day-context)
-          base-classes (cond-> ["calendar-day"]
-                         (:today? context) (conj "today")
-                         (:weekend context) (conj "weekend")
-                         (:other-month context) (conj "other-month")
-                         ;; Add selected class if this day matches the selected value
-                         (and selected-value (= (:value context) selected-value)) (conj "selected"))]
-      (->js base-classes))))
-
-;; Set up global function for date picker selection styling
-(defn setup-date-picker-day-classes!
-  "Set up global day-classes function for a specific date picker instance"
-  [^js el selected-value]
-  (let [instance-id (str "datePicker_" (.-tyDatePickerId el))
-        fn-name (str "datePickerDayClasses_" (.-tyDatePickerId el))]
-    ;; Create unique function for this instance
-    (aset js/window fn-name (create-date-picker-day-classes selected-value))
-    fn-name))
-
 (defn is-mobile? []
   (or (< (.-innerWidth js/window) 768)
       (.-maxTouchPoints js/navigator)))
@@ -66,10 +40,6 @@
         initial-state {:value parsed-value
                        :open? false
                        :formatted-value nil}]
-
-    ;; Create unique ID for this instance (for day-classes function)
-    (when-not (.-tyDatePickerId el)
-      (set! (.-tyDatePickerId el) (str (random-uuid))))
 
     ;; Set internal state
     (set! (.-tyDatePickerState el) initial-state)
@@ -237,10 +207,14 @@
   (render! el))
 
 (defn handle-calendar-change!
-  "Handle date selection from ty-calendar (now listens to day-click events)"
+  "Handle date selection from ty-calendar (listens to change events)"
   [^js el ^js event]
   (let [detail (.-detail event)
-        selected-value (.-value detail)]
+        day-context (.-dayContext detail)
+        clj-context (->clj day-context)
+        selected-value (.getTime (js/Date. (:year clj-context)
+                                           (dec (:month clj-context)) ; JavaScript month is 0-based
+                                           (:day-in-month clj-context)))]
     ;; Update state with selected date
     (update-component-state! el {:value selected-value})
     ;; Emit change event
@@ -351,7 +325,7 @@
 
 ;; Render calendar dropdown
 (defn render-calendar-dropdown
-  "Render the calendar dropdown using ty-calendar with date picker styling"
+  "Render the calendar dropdown using ty-calendar with integrated selection handling"
   [^js el attrs]
   (let [{:keys [open? value locale]} attrs]
     (if open?
@@ -361,18 +335,22 @@
         ;; Set up dropdown container
         (set! (.-className dropdown) "calendar-dropdown")
 
-        ;; Set up ty-calendar with date picker's value and styling
+        ;; Set up ty-calendar with date picker's value
+        ;; ty-calendar expects year/month/day attributes for selection
         (when value
-          (.setAttribute calendar "value" value))
+          (let [date (js/Date. value)
+                year (.getFullYear date)
+                month (inc (.getMonth date)) ; Convert from 0-based to 1-based
+                day (.getDate date)]
+            (.setAttribute calendar "year" (str year))
+            (.setAttribute calendar "month" (str month))
+            (.setAttribute calendar "day" (str day))))
+
         (when locale
           (.setAttribute calendar "locale" locale))
 
-        ;; Set up day-classes function for selection styling
-        (let [day-classes-fn-name (setup-date-picker-day-classes! el value)]
-          (.setAttribute calendar "day-classes-fn" day-classes-fn-name))
-
-        ;; Event listener for day-click from ty-calendar
-        (.addEventListener calendar "day-click" #(handle-calendar-change! el %))
+        ;; Event listener for change events from ty-calendar
+        (.addEventListener calendar "change" #(handle-calendar-change! el %))
 
         ;; Build structure
         (.appendChild dropdown calendar)
@@ -392,10 +370,6 @@
 
     ;; Ensure styles are loaded
     (ensure-styles! root date-picker-styles "ty-date-picker")
-
-    ;; Update day-classes function when value changes (for calendar styling)
-    (when (:open? attrs)
-      (setup-date-picker-day-classes! el (:value attrs)))
 
     ;; Clear and rebuild
     (set! (.-innerHTML root) "")
@@ -428,13 +402,8 @@
 (defn cleanup!
   "Clean up component state and event listeners"
   [^js el]
-  ;; Clean up global day-classes function for this instance
-  (when-let [picker-id (.-tyDatePickerId el)]
-    (let [fn-name (str "datePickerDayClasses_" picker-id)]
-      (js-delete js/window fn-name)))
-
+  ;; Clean up component state
   (set! (.-tyDatePickerState el) nil)
-  (set! (.-tyDatePickerId el) nil)
   ;; Remove global event listeners
   (.removeEventListener js/document "click" #(handle-outside-click! el %))
   (.removeEventListener js/document "keydown" #(handle-escape-key! el %)))

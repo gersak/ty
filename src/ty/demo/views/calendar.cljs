@@ -59,6 +59,7 @@
    [:h2.demo-title "🎉 Orchestrated Calendar (ty-calendar)"]
    [:p.text-sm.text-gray-600.mb-6 "Year/Month/Day attribute-based API with property-based composition - intuitive and clean."]
 
+   ;; First row: Basic examples
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8.mb-8
 
     ;; Basic orchestrated calendar
@@ -66,8 +67,9 @@
      [:div
       [:h3.demo-subtitle.mb-2 "Basic Calendar with Navigation"]
       [:p.text-sm.text-gray-600.mb-4 "Simple year/month/day attributes, internal property coordination."]
-      [:ty-calendar {:width "350px"
-                     :on {:change handle-change}}]]
+      [:div.flex.justify-center
+       [:ty-calendar {:width "350px"
+                      :on {:change handle-change}}]]]
      [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
       [:code
        "<!-- Simple year/month/day attribute API -->\n"
@@ -82,11 +84,12 @@
      [:div
       [:h3.demo-subtitle.mb-2 "📅 With Pre-Selected Date"]
       [:p.text-sm.text-gray-600.mb-4 "Automatic navigation to selected month, year/month/day control."]
-      [:ty-calendar {:width "350px"
-                     :year "2024"
-                     :month "12"
-                     :day "25"
-                     :on {:change handle-change}}]]
+      [:div.flex.justify-center
+       [:ty-calendar {:width "350px"
+                      :year "2024"
+                      :month "12"
+                      :day "25"
+                      :on {:change handle-change}}]]]
      [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
       [:code
        "<!-- Pre-selected with auto-navigation -->\n"
@@ -95,54 +98,57 @@
        "  year=\"2024\"\n"
        "  month=\"12\"\n"
        "  day=\"25\">\n"
-       "</ty-calendar>"]]]
+       "</ty-calendar>"]]]]
+
+   ;; Second row: Advanced examples
+   [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8.mb-8
 
     ;; Property-based render functions (NEW APPROACH!)
     [:div.space-y-4
      [:div
-      [:h3.demo-subtitle.mb-2 "⚡ Property-Based Hotel Pricing (REAL customCSS!)"]
+      [:h3.demo-subtitle.mb-2 "⚡ Property-Based Hotel Pricing"]
       [:p.text-sm.text-gray-600.mb-4 "CSS injected via customCSS property - loaded with defstyles!"]
-      [:ty-calendar {:id "property-hotel-calendar"
-                     :width "420px"
-                     :year "2024"
-                     :month "12"
-                     :day "22"
-                     :replicant/on-mount (fn [{^js el :replicant/node}]
-                                           ;; Direct function assignment - much cleaner!
-                                           (set! (.-dayContentFn el)
-                                                 (fn [^js context]
-                                                   (let [{:keys [day-in-month weekend other-month]} (->clj context)
-                                                         base-price 150
-                                                         weekend-markup (if weekend 60 0)
-                                                         price (+ base-price weekend-markup)]
-                                                     (if other-month
-                                                       (let [span (.createElement js/document "span")]
-                                                         (set! (.-className span) "other-month")
-                                                         (set! (.-textContent span) (str day-in-month))
-                                                         span)
-                                                       (let [container (.createElement js/document "div")
-                                                             day-span (.createElement js/document "span")
-                                                             price-span (.createElement js/document "span")]
-                                                         (set! (.-className container) "modern-hotel-day")
-                                                         (set! (.-className day-span) "day-num")
-                                                         (set! (.-textContent day-span) (str day-in-month))
-                                                         (set! (.-className price-span) "price modern")
-                                                         (set! (.-textContent price-span) (str "€" price))
-                                                         (.appendChild container day-span)
-                                                         (.appendChild container price-span)
-                                                         container)))))
+      [:div.flex.justify-center
+       [:ty-calendar {:id "property-hotel-calendar"
+                      :width "380px"
+                      :year "2024"
+                      :month "12"
+                      :day "22"
+                      :replicant/on-mount (fn [{^js el :replicant/node}]
+                                            ;; Direct function assignment - much cleaner!
+                                            (set! (.-dayContentFn el)
+                                                  (fn [^js context]
+                                                    (let [{:keys [day-in-month weekend other-month]} (->clj context)
+                                                          base-price 150
+                                                          weekend-markup (if weekend 60 0)
+                                                          price (+ base-price weekend-markup)]
+                                                      (if other-month
+                                                        (let [span (.createElement js/document "span")]
+                                                          (set! (.-className span) "other-month")
+                                                          (set! (.-textContent span) (str day-in-month))
+                                                          span)
+                                                        (let [container (.createElement js/document "div")
+                                                              day-span (.createElement js/document "span")
+                                                              price-span (.createElement js/document "span")]
+                                                          (set! (.-className container) "modern-hotel-day")
+                                                          (set! (.-className day-span) "day-num")
+                                                          (set! (.-textContent day-span) (str day-in-month))
+                                                          (set! (.-className price-span) "price modern")
+                                                          (set! (.-textContent price-span) (str "€" price))
+                                                          (.appendChild container day-span)
+                                                          (.appendChild container price-span)
+                                                          container)))))
 
-                                           ;; REAL customCSS injection using defstyles!
-                                           (set! (.-customCSS el) hotel-pricing-styles))
-                     :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+                                            ;; REAL customCSS injection using defstyles!
+                                            (set! (.-customCSS el) hotel-pricing-styles))
+                      :on {:change handle-change}}]]]
+     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto.max-h-40
       [:code
-       "// NEW: Direct property assignment (preferred)\n"
+       "// Direct property assignment\n"
        "const cal = document.querySelector('ty-calendar');\n"
        "cal.dayContentFn = function(context) {\n"
        "  const {dayInMonth, weekend} = context;\n"
        "  const price = 150 + (weekend ? 60 : 0);\n"
-       "  // Return DOM element\n"
        "  return createPriceElement(dayInMonth, price);\n"
        "};\n\n"
        ";; ClojureScript with mount hook\n"
@@ -150,57 +156,58 @@
        " {:year \"2024\" :month \"12\" :day \"22\"\n"
        "  :replicant/on-mount\n"
        "  (fn [{^js el :replicant/node}]\n"
-       "    (set! (.-dayContentFn el) hotel-pricing-fn))}]"]]]
+       "    (set! (.-dayContentFn el) hotel-fn))}]"]]]
 
     ;; Property-based event calendar  
     [:div.space-y-4
      [:div
-      [:h3.demo-subtitle.mb-2 "📅 Property-Based Event Calendar (REAL customCSS!)"]
+      [:h3.demo-subtitle.mb-2 "📅 Property-Based Event Calendar"]
       [:p.text-sm.text-gray-600.mb-4 "Event styling via customCSS property - no global CSS needed!"]
-      [:ty-calendar {:id "property-event-calendar"
-                     :width "350px"
-                     :year "2024"
-                     :month "12"
-                     :day "18"
-                     :replicant/on-mount (fn [{^js el :replicant/node}]
-                                           (set! (.-dayContentFn el)
-                                                 (fn [^js context]
-                                                   (let [{:keys [day-in-month]} (->clj context)
-                                                         ;; Mock events for demo (15th, 18th, 22nd, 25th, 28th have events)
-                                                         has-events (#{15 18 22 25 28} day-in-month)
-                                                         event-types (get {15 "meeting"
-                                                                           18 "conference"
-                                                                           22 "deadline"
-                                                                           25 "holiday"
-                                                                           28 "workshop"} day-in-month)]
-                                                     (if has-events
-                                                       (let [container (.createElement js/document "div")
-                                                             day-span (.createElement js/document "span")
-                                                             dot (.createElement js/document "span")]
-                                                         (set! (.-className container) "modern-event-day")
-                                                         (set! (.-className day-span) "day-num")
-                                                         (set! (.-textContent day-span) (str day-in-month))
-                                                         (set! (.-className dot) (str "event-dot " event-types))
-                                                         (set! (.-title dot) (str "Event: " event-types))
-                                                         (.appendChild container day-span)
-                                                         (.appendChild container dot)
-                                                         container)
-                                                       (let [span (.createElement js/document "span")]
-                                                         (set! (.-textContent span) (str day-in-month))
-                                                         span)))))
-                                           (set! (.-dayClassesFn el)
-                                                 (fn [^js context]
-                                                   (let [{:keys [day-in-month weekend today]} (->clj context)
-                                                         has-events (#{15 18 22 25 28} day-in-month)]
-                                                     (cond-> ["calendar-day"]
-                                                       today (conj "today")
-                                                       weekend (conj "weekend")
-                                                       has-events (conj "has-events")))))
+      [:div.flex.justify-center
+       [:ty-calendar {:id "property-event-calendar"
+                      :width "350px"
+                      :year "2024"
+                      :month "12"
+                      :day "18"
+                      :replicant/on-mount (fn [{^js el :replicant/node}]
+                                            (set! (.-dayContentFn el)
+                                                  (fn [^js context]
+                                                    (let [{:keys [day-in-month]} (->clj context)
+                                                          ;; Mock events for demo (15th, 18th, 22nd, 25th, 28th have events)
+                                                          has-events (#{15 18 22 25 28} day-in-month)
+                                                          event-types (get {15 "meeting"
+                                                                            18 "conference"
+                                                                            22 "deadline"
+                                                                            25 "holiday"
+                                                                            28 "workshop"} day-in-month)]
+                                                      (if has-events
+                                                        (let [container (.createElement js/document "div")
+                                                              day-span (.createElement js/document "span")
+                                                              dot (.createElement js/document "span")]
+                                                          (set! (.-className container) "modern-event-day")
+                                                          (set! (.-className day-span) "day-num")
+                                                          (set! (.-textContent day-span) (str day-in-month))
+                                                          (set! (.-className dot) (str "event-dot " event-types))
+                                                          (set! (.-title dot) (str "Event: " event-types))
+                                                          (.appendChild container day-span)
+                                                          (.appendChild container dot)
+                                                          container)
+                                                        (let [span (.createElement js/document "span")]
+                                                          (set! (.-textContent span) (str day-in-month))
+                                                          span)))))
+                                            (set! (.-dayClassesFn el)
+                                                  (fn [^js context]
+                                                    (let [{:keys [day-in-month weekend today]} (->clj context)
+                                                          has-events (#{15 18 22 25 28} day-in-month)]
+                                                      (cond-> ["calendar-day"]
+                                                        today (conj "today")
+                                                        weekend (conj "weekend")
+                                                        has-events (conj "has-events")))))
 
-                                           ;; REAL customCSS injection using defstyles!
-                                           (set! (.-customCSS el) event-calendar-styles))
-                     :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+                                            ;; REAL customCSS injection using defstyles!
+                                            (set! (.-customCSS el) event-calendar-styles))
+                      :on {:change handle-change}}]]]
+     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto.max-h-40
       [:code
        "// Property-based event system\n"
        "cal.dayContentFn = (context) => {\n"
@@ -209,97 +216,7 @@
        "};\n"
        "cal.dayClassesFn = (context) => {\n"
        "  return ['calendar-day', context.today ? 'today' : ''];\n"
-       "};"]]]
-
-   ;; NEW: Year/Month/Day API benefits section  
-    [:div.p-4.bg-blue-50.rounded-lg.mb-6
-     [:h4.font-semibold.mb-3 "✨ NEW: Year/Month/Day Attribute API"]
-     [:div.text-sm.space-y-3
-      [:div
-       [:strong "Intuitive Interface:"] " Work directly with familiar year/month/day concepts instead of timestamps."]
-      [:div
-       [:strong "No Date Parsing:"] " All values are simple numbers - no more Date object complexity!"]
-      [:div.space-y-2
-       [:strong "Usage:"]
-       [:pre.text-xs.bg-white.p-3.rounded.mt-2
-        [:code
-         "<!-- OLD: Timestamp/ISO string approach -->\n"
-         "<ty-calendar value=\"2024-12-25T00:00:00Z\"></ty-calendar>\n"
-         "<ty-calendar value=\"1735084800000\"></ty-calendar>\n\n"
-         "<!-- NEW: Clean year/month/day approach -->\n"
-         "<ty-calendar year=\"2024\" month=\"12\" day=\"25\"></ty-calendar>\n\n"
-         "// JavaScript - Simple number attributes\n"
-         "cal.setAttribute('year', '2024');\n"
-         "cal.setAttribute('month', '12');\n"
-         "cal.setAttribute('day', '25');\n\n"
-         ";; ClojureScript - Direct attributes\n"
-         "[:ty-calendar {:year \"2024\" :month \"12\" :day \"25\"}]"]]]
-      [:div.text-xs.space-y-2
-       [:div "✅ No timestamp conversion needed"]
-       [:div "✅ Intuitive year/month/day semantics"]
-       [:div "✅ Automatic validation (1-12 months, correct day ranges)"]
-       [:div "✅ Defaults to current month when no attributes provided"]
-       [:div "✅ Single 'change' event with complete day context"]
-       [:div "✅ Clear separation between display and selection state"]]]]
-
-   ;; Live event monitoring
-    [:div.space-y-4.mb-8
-     [:h3.demo-subtitle.mb-2 "🎯 Live Event Monitoring"]
-     [:p.text-sm.text-gray-600.mb-4 "See the unified change event in action."]
-
-     [:div.grid.grid-cols-1.gap-4
-     ;; Single change event
-      [:div.p-3.bg-green-50.rounded.text-xs
-       [:div.font-semibold.mb-2.text-green-700 "Single Change Event (Unified)"]
-       (if-let [change (:calendar-change @state/state)]
-         [:div.space-y-1
-          [:div "📅 Date: " (:year change) "/" (:month change) "/" (:day change)]
-          [:div "🔗 Source: " (:source change)]
-          [:div "🌅 Weekend: " (if (:is-weekend change) "Yes" "No")]
-          [:div "✨ Today: " (if (:is-today change) "Yes" "No")]
-          [:div "⏰ Time: " (.toLocaleTimeString (js/Date. (:timestamp change)))]]
-         [:div.text-gray-500 "Select a date or navigate to see events..."])]]]
-
-   ;; Architecture summary
-    [:div.p-4.bg-yellow-50.rounded-lg.mb-6
-     [:h4.font-semibold.mb-3 "🏗️ Architecture Changes:"]
-     [:div.grid.grid-cols-1.md:grid-cols-2.gap-4.text-sm
-      [:div
-       [:p.font-medium.mb-2.text-red-700 "OLD: Timestamp/Value API"]
-       [:pre.text-xs.bg-white.p-3.rounded.mb-2
-        [:code
-         "<!-- Complex timestamp handling -->\n"
-         "<ty-calendar value=\"2024-12-25T00:00:00Z\">\n\n"
-         "// Multiple event types\n"
-         "cal.addEventListener('value-change', handler);\n"
-         "cal.addEventListener('navigation-change', handler);\n"
-         "cal.addEventListener('day-click', handler);\n\n"
-         "// Date parsing complexity\n"
-         "const date = new Date(event.detail.value);\n"
-         "const year = date.getFullYear();"]]
-       [:ul.space-y-1.ml-4.list-disc.text-xs
-        [:li "❌ Timestamp parsing complexity"]
-        [:li "❌ Multiple event types to handle"]
-        [:li "❌ Date object creation overhead"]
-        [:li "❌ Timezone confusion potential"]]]
-      [:div
-       [:p.font-medium.mb-2.text-green-700 "NEW: Year/Month/Day API"]
-       [:pre.text-xs.bg-white.p-3.rounded.mb-2
-        [:code
-         "<!-- Simple number attributes -->\n"
-         "<ty-calendar year=\"2024\" month=\"12\" day=\"25\">\n\n"
-         "// Single unified event\n"
-         "cal.addEventListener('change', handler);\n\n"
-         "// Direct access to values\n"
-         "const year = event.detail.year;\n"
-         "const month = event.detail.month;\n"
-         "const day = event.detail.day;"]]
-       [:ul.space-y-1.ml-4.list-disc.text-xs
-        [:li "✅ Simple number attributes"]
-        [:li "✅ Single unified change event"]
-        [:li "✅ No Date parsing needed"]
-        [:li "✅ Timezone-agnostic"]
-        [:li "✅ Automatic validation"]]]]]]])
+       "};"]]]]])
 
 (defn property-based-components-demo []
   [:div.demo-section
@@ -516,10 +433,60 @@
    [:div.mb-8
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white "Modern Calendar System"]
     [:p.text-lg.text-gray-600.dark:text-gray-400.mt-2
-     "Hybrid architecture: attribute-based API with property-based composition for optimal performance."]]
+     "Year/Month/Day architecture with property-based composition for optimal performance and intuitive API."]]
 
    ;; Main demos
    (orchestrated-calendar-demo)
+
+   ;; NEW: Year/Month/Day API benefits section  
+   [:div.p-4.bg-blue-50.rounded-lg.mb-6
+    [:h4.font-semibold.mb-3 "✨ NEW: Year/Month/Day Attribute API"]
+    [:div.text-sm.space-y-3
+     [:div
+      [:strong "Intuitive Interface:"] " Work directly with familiar year/month/day concepts instead of timestamps."]
+     [:div
+      [:strong "No Date Parsing:"] " All values are simple numbers - no more Date object complexity!"]
+     [:div.space-y-2
+      [:strong "Usage:"]
+      [:pre.text-xs.bg-white.p-3.rounded.mt-2
+       [:code
+        "<!-- OLD: Timestamp/ISO string approach -->\n"
+        "<ty-calendar value=\"2024-12-25T00:00:00Z\"></ty-calendar>\n"
+        "<ty-calendar value=\"1735084800000\"></ty-calendar>\n\n"
+        "<!-- NEW: Clean year/month/day approach -->\n"
+        "<ty-calendar year=\"2024\" month=\"12\" day=\"25\"></ty-calendar>\n\n"
+        "// JavaScript - Simple number attributes\n"
+        "cal.setAttribute('year', '2024');\n"
+        "cal.setAttribute('month', '12');\n"
+        "cal.setAttribute('day', '25');\n\n"
+        ";; ClojureScript - Direct attributes\n"
+        "[:ty-calendar {:year \"2024\" :month \"12\" :day \"25\"}]"]]]
+     [:div.text-xs.space-y-2
+      [:div "✅ No timestamp conversion needed"]
+      [:div "✅ Intuitive year/month/day semantics"]
+      [:div "✅ Automatic validation (1-12 months, correct day ranges)"]
+      [:div "✅ Defaults to current month when no attributes provided"]
+      [:div "✅ Single 'change' event with complete day context"]
+      [:div "✅ Clear separation between display and selection state"]]]]
+
+   ;; Live event monitoring
+   [:div.space-y-4.mb-8
+    [:h3.demo-subtitle.mb-2 "🎯 Live Event Monitoring"]
+    [:p.text-sm.text-gray-600.mb-4 "See the unified change event in action."]
+
+    [:div.grid.grid-cols-1.gap-4
+     ;; Single change event
+     [:div.p-3.bg-green-50.rounded.text-xs
+      [:div.font-semibold.mb-2.text-green-700 "Single Change Event (Unified)"]
+      (if-let [change (:calendar-change @state/state)]
+        [:div.space-y-1
+         [:div "📅 Date: " (:year change) "/" (:month change) "/" (:day change)]
+         [:div "🔗 Source: " (:source change)]
+         [:div "🌅 Weekend: " (if (:is-weekend change) "Yes" "No")]
+         [:div "✨ Today: " (if (:is-today change) "Yes" "No")]
+         [:div "⏰ Time: " (.toLocaleTimeString (js/Date. (:timestamp change)))]]
+        [:div.text-gray-500 "Select a date or navigate to see events..."])]]]
+
    (property-based-components-demo)
    (width-and-styling-demo)
    (integration-patterns-demo)
@@ -532,13 +499,13 @@
      [:div.p-4.bg-blue-50.rounded-lg
       [:h3.font-semibold.mb-3.text-blue-700 "ty-calendar"]
       [:div.text-sm.space-y-2
-       [:div "📝 HTML attribute API"]
+       [:div "📝 Year/Month/Day attribute API"]
        [:div "🎯 Internal state management"]
        [:div "🔄 Auto property distribution"]
        [:div "📊 Event coordination"]
        [:div "✅ User-friendly"]]
       [:pre.text-xs.bg-white.p-2.rounded.mt-3
-       [:code "<ty-calendar value=\"2024-12-25\">"]]]
+       [:code "<ty-calendar year=\"2024\" month=\"12\" day=\"25\">"]]]
 
      [:div.p-4.bg-purple-50.rounded-lg
       [:h3.font-semibold.mb-3.text-purple-700 "ty-calendar-navigation"]
@@ -577,11 +544,11 @@
       [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
        [:code
         "<!-- HTML -->\n"
-        "<ty-calendar value=\"2024-12-25\" width=\"350px\"></ty-calendar>\n\n"
+        "<ty-calendar year=\"2024\" month=\"12\" day=\"25\" width=\"350px\"></ty-calendar>\n\n"
         ";; ClojureScript\n"
-        "[:ty-calendar {:value \"2024-12-25\" :width \"350px\"}]\n\n"
+        "[:ty-calendar {:year \"2024\" :month \"12\" :day \"25\" :width \"350px\"}]\n\n"
         "// React JSX\n"
-        "<ty-calendar value=\"2024-12-25\" width=\"350px\" />"]]]
+        "<ty-calendar year=\"2024\" month=\"12\" day=\"25\" width=\"350px\" />"]]]
 
      [:div.space-y-4
       [:h3.demo-subtitle "For Advanced Use Cases: Property-Based Functions (NEW!)"]

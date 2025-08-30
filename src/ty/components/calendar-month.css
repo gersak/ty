@@ -26,7 +26,7 @@
 /* Header row - minimal spacing */
 .calendar-header-row {
   flex: 0 0 auto;
-  color: --ty-color-p3;
+  color: var(--ty-color-neutral-p3);
 }
 
 /* Day rows - compact */

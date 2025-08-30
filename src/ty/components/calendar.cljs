@@ -127,8 +127,7 @@
   [^js el updates]
   (let [current-state (get-calendar-state el)
         new-state (merge current-state updates)]
-    (set! (.-tyCalendarState el) new-state)
-    (render! el)))
+    (set! (.-tyCalendarState el) new-state)))
 
 (defn update-attributes-from-state!
   "Update HTML attributes to reflect current internal state"
@@ -163,19 +162,13 @@
                                year (.-year detail)]
                            ;; Update internal state - clear selection when navigating
                            (update-calendar-state! el {:display-month month
-                                                       :display-year year
-                                                       :selected-year nil
-                                                       :selected-month nil
-                                                       :selected-day nil})
+                                                       :display-year year})
                            ;; Update month display
                            (when-let [month-el (.-tyCalendarMonth el)]
                              (set! (.-displayMonth month-el) month)
                              (set! (.-displayYear month-el) year)
                              (set! (.-value month-el) nil)) ; Clear selection
-                           ;; Update attributes to reflect cleared selection
-                           (.removeAttribute el "year")
-                           (.removeAttribute el "month")
-                           (.removeAttribute el "day"))))
+                           (render! el))))
     nav))
 
 (defn create-month-element
@@ -211,7 +204,7 @@
                                      (= (:month day-context) sel-month)
                                      (= (:day-in-month day-context) sel-day))]
                 (cond-> ["calendar-day"]
-                  (:today day-context) (conj "today")
+                  (:today? day-context) (conj "today")
                   (:weekend day-context) (conj "weekend")
                   (:other-month day-context) (conj "other-month")
                   is-selected (conj "selected"))))))
@@ -247,7 +240,8 @@
                              el (js/CustomEvent. "change"
                                                  #js {:detail (.-detail event)
                                                       :bubbles true
-                                                      :cancelable true})))))
+                                                      :cancelable true}))
+                           (render! el))))
     cal))
 
 (defn should-show-navigation?

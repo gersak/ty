@@ -52,6 +52,7 @@
                                (< raw-month 1) [(+ raw-month 12) (dec current-year)]
                                (> raw-month 12) [(- raw-month 12) (inc current-year)]
                                :else [raw-month current-year])]
+    (println "NEXT: " new-month new-year)
     (emit-change-event! el new-month new-year)))
 
 (defn navigate-year!

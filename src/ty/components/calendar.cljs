@@ -1,17 +1,19 @@
 (ns ty.components.calendar
-  "Attribute-based orchestrated calendar component with property-based composition.
+  "Year/Month/Day attribute-based calendar component with property-based composition.
   
   Architecture:
-  - HTML attributes for user-friendly API
+  - year/month/day HTML attributes for intuitive API
   - Internal ClojureScript state management (immutable maps)
   - Distributes properties to child components (navigation + month)
   - Child components use property-based APIs for performance
-  - Event coordination between navigation and month display
+  - Single 'change' event with complete day context
   
   Internal State Format (ClojureScript):
-  {:display-month 12
-   :display-year 2024
-   :selected-value #inst \"2024-12-25T00:00:00Z\"}
+  {:display-year 2024
+   :display-month 12
+   :selected-year 2024    ; nil if no selection
+   :selected-month 12     ; nil if no selection  
+   :selected-day 25}      ; nil if no selection
    
   Render Functions (Property-first approach):
   - Properties: el.dayContentFn = function(context) { ... } (preferred)
@@ -36,16 +38,43 @@
 (defn get-current-date
   "Get current date for defaults"
   []
-  (js/Date.))
+  (let [now (js/Date.)]
+    {:year (.getFullYear now)
+     :month (inc (.getMonth now))
+     :day (.getDate now)}))
 
-(defn parse-date-value
-  "Parse date value from various formats"
-  [value]
-  (when (and value (not= value ""))
-    (cond
-      (string? value) (js/Date. value)
-      (number? value) (js/Date. value)
-      :else value)))
+(defn parse-year-month-day
+  "Parse and validate year/month/day from attributes"
+  [^js el]
+  (let [year-str (value/get-attribute el "year")
+        month-str (value/get-attribute el "month")
+        day-str (value/get-attribute el "day")
+        current-date (get-current-date)]
+
+    ;; Parse year with validation
+    (let [year (if (and year-str (re-matches #"^\d{4}$" year-str))
+                 (js/parseInt year-str 10)
+                 (:year current-date))
+
+          ;; Parse month with validation (1-12)
+          month (if (and month-str (re-matches #"^\d{1,2}$" month-str))
+                  (let [m (js/parseInt month-str 10)]
+                    (if (and (>= m 1) (<= m 12)) m (:month current-date)))
+                  (:month current-date))
+
+          ;; Calculate days in month for validation
+          days-in-month (.getDate (js/Date. year month 0))
+
+          ;; Parse day with validation (1-days-in-month)
+          day (when (and day-str (re-matches #"^\d{1,2}$" day-str))
+                (let [d (js/parseInt day-str 10)]
+                  (when (and (>= d 1) (<= d days-in-month)) d)))]
+
+      {:display-year year
+       :display-month month
+       :selected-year (when day year)
+       :selected-month (when day month)
+       :selected-day day})))
 
 (defn normalize-size-value
   "Normalize size value - add 'px' if just a number, otherwise use as-is"
@@ -73,29 +102,18 @@
   [^js el prop-name attr-name]
   (or
     ;; First try direct property (preferred method)
-   (aget el prop-name)
+    (aget el prop-name)
     ;; Fallback to attribute (function name lookup)
-   (when-let [fn-name (value/get-attribute el attr-name)]
-     (when (and (exists? js/window) (aget js/window fn-name))
-       (aget js/window fn-name)))))
+    (when-let [fn-name (value/get-attribute el attr-name)]
+      (when (and (exists? js/window) (aget js/window fn-name))
+        (aget js/window fn-name)))))
 
 (defn init-calendar-state!
-  "Initialize internal calendar state from attributes"
+  "Initialize internal calendar state from year/month/day attributes"
   [^js el]
-  (let [today (get-current-date)
-        initial-value (parse-date-value (value/get-attribute el "value"))
-        display-month (if initial-value
-                        (inc (.getMonth initial-value))
-                        (inc (.getMonth today)))
-        display-year (if initial-value
-                       (.getFullYear initial-value)
-                       (.getFullYear today))]
-
+  (let [parsed-state (parse-year-month-day el)]
     ;; Store internal state as ClojureScript map (not JS object)
-    (set! (.-tyCalendarState el)
-          {:display-month display-month
-           :display-year display-year
-           :selected-value initial-value})))
+    (set! (.-tyCalendarState el) parsed-state)))
 
 (defn get-calendar-state
   "Get current calendar internal state"
@@ -112,26 +130,17 @@
     (set! (.-tyCalendarState el) new-state)
     (render! el)))
 
-(defn emit-value-change!
-  "Emit value-change event when selection changes"
-  [^js el new-value source]
-  (let [event (js/CustomEvent. "value-change"
-                               #js {:detail #js {:value new-value
-                                                 :source source}
-                                    :bubbles true
-                                    :cancelable true})]
-    (.dispatchEvent el event)))
+(defn update-attributes-from-state!
+  "Update HTML attributes to reflect current internal state"
+  [^js el]
+  (let [state (get-calendar-state el)]
+    (when-let [year (:selected-year state)]
+      (.setAttribute el "year" (str year)))
+    (when-let [month (:selected-month state)]
+      (.setAttribute el "month" (str month)))
+    (when-let [day (:selected-day state)]
+      (.setAttribute el "day" (str day)))))
 
-(defn emit-navigation-change!
-  "Emit navigation-change event when display month/year changes"
-  [^js el month year source]
-  (let [event (js/CustomEvent. "navigation-change"
-                               #js {:detail #js {:month month
-                                                 :year year
-                                                 :source source}
-                                    :bubbles true
-                                    :cancelable true})]
-    (.dispatchEvent el event)))
 
 (defn create-navigation-element
   "Create and configure navigation element with property-based API"
@@ -152,15 +161,21 @@
                          (let [detail (.-detail event)
                                month (.-month detail)
                                year (.-year detail)]
-                           ;; Update internal state
+                           ;; Update internal state - clear selection when navigating
                            (update-calendar-state! el {:display-month month
-                                                       :display-year year})
+                                                       :display-year year
+                                                       :selected-year nil
+                                                       :selected-month nil
+                                                       :selected-day nil})
                            ;; Update month display
                            (when-let [month-el (.-tyCalendarMonth el)]
                              (set! (.-displayMonth month-el) month)
-                             (set! (.-displayYear month-el) year))
-                           ;; Emit navigation change event
-                           (emit-navigation-change! el month year "navigation"))))
+                             (set! (.-displayYear month-el) year)
+                             (set! (.-value month-el) nil)) ; Clear selection
+                           ;; Update attributes to reflect cleared selection
+                           (.removeAttribute el "year")
+                           (.removeAttribute el "month")
+                           (.removeAttribute el "day"))))
     nav))
 
 (defn create-month-element
@@ -170,15 +185,36 @@
     ;; Set properties (not attributes) for performance
     (set! (.-displayMonth cal) (:display-month state))
     (set! (.-displayYear cal) (:display-year state))
-    (set! (.-value cal) (:selected-value state))
+    ;; Convert year/month/day to Date for ty-calendar-month
+    (when (and (:selected-year state) (:selected-month state) (:selected-day state))
+      (set! (.-value cal) (.getTime (js/Date. (:selected-year state)
+                                              (dec (:selected-month state))
+                                              (:selected-day state)))))
     (set! (.-locale cal) (get-locale-with-fallback el))
     (set! (.-width cal) "100%")
 
     ;; Pass render functions as properties - check properties first, then attributes
-    (when-let [day-content-fn (get-render-function el "dayContentFn" "day-content-fn")]
+    (when-let [day-content-fn (.-dayContentFn el)]
       (set! (.-dayContentFn cal) day-content-fn))
-    (when-let [day-classes-fn (get-render-function el "dayClassesFn" "day-classes-fn")]
-      (set! (.-dayClassesFn cal) day-classes-fn))
+
+    ;; Set default day classes function if none provided
+    (if-let [day-classes-fn (.-dayClassesFn el)]
+      (set! (.-dayClassesFn cal) day-classes-fn)
+      (set! (.-dayClassesFn cal)
+            (fn [^js context]
+              (let [day-context (->clj context)
+                    {sel-year :selected-year
+                     sel-month :selected-month
+                     sel-day :selected-day} (get-calendar-state el)
+                    is-selected (and sel-year sel-month sel-day
+                                     (= (:year day-context) sel-year)
+                                     (= (:month day-context) sel-month)
+                                     (= (:day-in-month day-context) sel-day))]
+                (cond-> ["calendar-day"]
+                  (:today day-context) (conj "today")
+                  (:weekend day-context) (conj "weekend")
+                  (:other-month day-context) (conj "other-month")
+                  is-selected (conj "selected"))))))
 
     ;; Pass custom CSS as property - direct property passthrough
     (when-let [custom-css (.-customCSS el)]
@@ -187,17 +223,31 @@
     ;; Store reference for updates
     (set! (.-tyCalendarMonth el) cal)
 
-    ;; Day click handler - update selection and emit event
+    ;; Day click handler - update selection and emit event with complete context
     (.addEventListener cal "day-click"
                        (fn [^js event]
+                         (.stopPropagation event)
+                         (.preventDefault event)
                          (let [detail (.-detail event)
-                               new-value (.-value detail)]
-                           ;; Update internal state
-                           (update-calendar-state! el {:selected-value new-value})
-                           ;; Update HTML attribute to reflect state
-                           (.setAttribute el "value" (if new-value (.toISOString new-value) ""))
-                           ;; Emit value change event
-                           (emit-value-change! el new-value "day-click"))))
+                               day-context (.-dayContext detail)
+                               clj-context (->clj day-context)
+                               new-year (:year clj-context)
+                               new-month (:month clj-context)
+                               new-day (:day-in-month clj-context)]
+                           ;; Update internal state with new selection
+                           (update-calendar-state! el {:selected-year new-year
+                                                       :selected-month new-month
+                                                       :selected-day new-day
+                                                       :display-year new-year
+                                                       :display-month new-month})
+                           ;; Update HTML attributes to reflect state
+                           (update-attributes-from-state! el)
+                           ;; Emit change event with complete day context
+                           (.dispatchEvent
+                             el (js/CustomEvent. "change"
+                                                 #js {:detail (.-detail event)
+                                                      :bubbles true
+                                                      :cancelable true})))))
     cal))
 
 (defn should-show-navigation?
@@ -237,37 +287,31 @@
       (.appendChild root container))))
 
 (defn sync-with-attributes!
-  "Sync internal state with changed attributes"
+  "Sync internal state with changed year/month/day attributes"
   [^js el]
-  (let [state (get-calendar-state el)
-        new-value (parse-date-value (value/get-attribute el "value"))
-        current-value (:selected-value state)]
+  (let [current-state (get-calendar-state el)
+        new-state (parse-year-month-day el)]
 
-    ;; Check if value changed externally
-    (when (not= new-value current-value)
+    ;; Check if state changed externally
+    (when (not= current-state new-state)
       ;; Update internal state
-      (update-calendar-state! el {:selected-value new-value})
+      (update-calendar-state! el new-state)
 
-      ;; Navigate to month of new value if provided
-      (when new-value
-        (let [new-month (inc (.getMonth new-value))
-              new-year (.getFullYear new-value)]
-          (update-calendar-state! el {:display-month new-month
-                                      :display-year new-year})
+      ;; Update navigation if it exists
+      (when-let [nav (.-tyNavigation el)]
+        (set! (.-displayMonth nav) (:display-month new-state))
+        (set! (.-displayYear nav) (:display-year new-state)))
 
-          ;; Update navigation if it exists
-          (when-let [nav (.-tyNavigation el)]
-            (set! (.-displayMonth nav) new-month)
-            (set! (.-displayYear nav) new-year))
-
-          ;; Update month display if it exists  
-          (when-let [month-el (.-tyCalendarMonth el)]
-            (set! (.-displayMonth month-el) new-month)
-            (set! (.-displayYear month-el) new-year))))
-
-      ;; Update month display value
+      ;; Update month display if it exists  
       (when-let [month-el (.-tyCalendarMonth el)]
-        (set! (.-value month-el) new-value)))))
+        (set! (.-displayMonth month-el) (:display-month new-state))
+        (set! (.-displayYear month-el) (:display-year new-state))
+        ;; Update selection value
+        (if (and (:selected-year new-state) (:selected-month new-state) (:selected-day new-state))
+          (set! (.-value month-el) (.getTime (js/Date. (:selected-year new-state)
+                                                       (dec (:selected-month new-state))
+                                                       (:selected-day new-state))))
+          (set! (.-value month-el) nil))))))
 
 (defn cleanup!
   "Clean up component references"
@@ -276,9 +320,9 @@
   (set! (.-tyNavigation el) nil)
   (set! (.-tyCalendarMonth el) nil))
 
-;; Attribute-based web component registration with property support
+;; Year/Month/Day attribute-based web component registration with property support
 (wcs/define! "ty-calendar"
-  {:observed [:value :show-navigation :locale :width :min-width :max-width
+  {:observed [:year :month :day :show-navigation :locale :width :min-width :max-width
               :day-content-fn :day-classes-fn]
    :props {:dayContentFn nil ; Direct function properties (preferred)
            :dayClassesFn nil ; Functions passed as properties, not attribute names
@@ -295,3 +339,6 @@
    :prop (fn [^js el prop-name old-value new-value]
            ;; Property changes also trigger re-render
            (render! el))})
+
+;; Attribute-based web component registration with property support
+

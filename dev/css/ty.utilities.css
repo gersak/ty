@@ -1,0 +1,512 @@
+/* =================================================================
+   Ty Component Library - Theme Utilities
+   Semantic theming utilities that complement Tailwind CSS
+   Only includes classes that need theme-awareness
+   ================================================================= */
+
+/* =================================================================
+   THEME-AWARE BACKGROUND UTILITIES
+   These adapt automatically to light/dark themes
+   ================================================================= */
+
+/* Base backgrounds with emphasis levels */
+.ty-bg {
+  background-color: var(--ty-bg);
+}
+
+.ty-bg\+ {
+  background-color: var(--ty-bg-p1);
+}
+
+.ty-bg\+\+ {
+  background-color: var(--ty-bg-p2);
+}
+
+.ty-bg\+\+\+ {
+  background-color: var(--ty-bg-p3);
+}
+
+/* Semantic backgrounds - these are the key theme utilities */
+.ty-bg-primary {
+  background-color: var(--ty-bg-primary);
+}
+
+.ty-bg-primary\+ {
+  background-color: var(--ty-bg-primary-p1);
+}
+
+.ty-bg-primary- {
+  background-color: var(--ty-bg-primary-m1);
+}
+
+.ty-bg-secondary {
+  background-color: var(--ty-bg-secondary);
+}
+
+.ty-bg-secondary\+ {
+  background-color: var(--ty-bg-secondary-p1);
+}
+
+.ty-bg-secondary- {
+  background-color: var(--ty-bg-secondary-m1);
+}
+
+.ty-bg-success {
+  background-color: var(--ty-bg-success);
+}
+
+.ty-bg-success\+ {
+  background-color: var(--ty-bg-success-p1);
+}
+
+.ty-bg-success- {
+  background-color: var(--ty-bg-success-m1);
+}
+
+.ty-bg-danger {
+  background-color: var(--ty-bg-danger);
+}
+
+.ty-bg-danger\+ {
+  background-color: var(--ty-bg-danger-p1);
+}
+
+.ty-bg-danger- {
+  background-color: var(--ty-bg-danger-m1);
+}
+
+.ty-bg-warning {
+  background-color: var(--ty-bg-warning);
+}
+
+.ty-bg-warning\+ {
+  background-color: var(--ty-bg-warning-p1);
+}
+
+.ty-bg-warning- {
+  background-color: var(--ty-bg-warning-m1);
+}
+
+.ty-bg-info {
+  background-color: var(--ty-bg-info);
+}
+
+.ty-bg-info\+ {
+  background-color: var(--ty-bg-info-p1);
+}
+
+.ty-bg-info- {
+  background-color: var(--ty-bg-info-m1);
+}
+
+.ty-bg-neutral {
+  background-color: var(--ty-bg-neutral);
+}
+
+.ty-bg-neutral\+ {
+  background-color: var(--ty-bg-neutral-p1);
+}
+
+.ty-bg-neutral- {
+  background-color: var(--ty-bg-neutral-m1);
+}
+
+/* =================================================================
+   THEME-AWARE TEXT COLOR UTILITIES
+   ================================================================= */
+
+/* Primary colors with emphasis */
+.ty-text-primary {
+  color: var(--ty-color-primary);
+}
+
+.ty-text-primary\+ {
+  color: var(--ty-color-primary-p1);
+}
+
+.ty-text-primary\+\+ {
+  color: var(--ty-color-primary-p2);
+}
+
+.ty-text-primary\+\+\+ {
+  color: var(--ty-color-primary-p3);
+}
+
+.ty-text-primary- {
+  color: var(--ty-color-primary-m1);
+}
+
+.ty-text-primary-- {
+  color: var(--ty-color-primary-m2);
+}
+
+.ty-text-primary--- {
+  color: var(--ty-color-primary-m3);
+}
+
+/* Secondary colors */
+.ty-text-secondary {
+  color: var(--ty-color-secondary);
+}
+
+.ty-text-secondary\+ {
+  color: var(--ty-color-secondary-p1);
+}
+
+.ty-text-secondary\+\+ {
+  color: var(--ty-color-secondary-p2);
+}
+
+.ty-text-secondary- {
+  color: var(--ty-color-secondary-m1);
+}
+
+.ty-text-secondary-- {
+  color: var(--ty-color-secondary-m2);
+}
+
+/* Success colors */
+.ty-text-success {
+  color: var(--ty-color-success);
+}
+
+.ty-text-success\+ {
+  color: var(--ty-color-success-p1);
+}
+
+.ty-text-success\+\+ {
+  color: var(--ty-color-success-p2);
+}
+
+.ty-text-success- {
+  color: var(--ty-color-success-m1);
+}
+
+.ty-text-success-- {
+  color: var(--ty-color-success-m2);
+}
+
+/* Danger colors */
+.ty-text-danger {
+  color: var(--ty-color-danger);
+}
+
+.ty-text-danger\+ {
+  color: var(--ty-color-danger-p1);
+}
+
+.ty-text-danger\+\+ {
+  color: var(--ty-color-danger-p2);
+}
+
+.ty-text-danger- {
+  color: var(--ty-color-danger-m1);
+}
+
+.ty-text-danger-- {
+  color: var(--ty-color-danger-m2);
+}
+
+/* Warning colors */
+.ty-text-warning {
+  color: var(--ty-color-warning);
+}
+
+.ty-text-warning\+ {
+  color: var(--ty-color-warning-p1);
+}
+
+.ty-text-warning\+\+ {
+  color: var(--ty-color-warning-p2);
+}
+
+.ty-text-warning- {
+  color: var(--ty-color-warning-m1);
+}
+
+.ty-text-warning-- {
+  color: var(--ty-color-warning-m2);
+}
+
+/* Info colors */
+.ty-text-info {
+  color: var(--ty-color-info);
+}
+
+.ty-text-info\+ {
+  color: var(--ty-color-info-p1);
+}
+
+.ty-text-info\+\+ {
+  color: var(--ty-color-info-p2);
+}
+
+.ty-text-info- {
+  color: var(--ty-color-info-m1);
+}
+
+.ty-text-info-- {
+  color: var(--ty-color-info-m2);
+}
+
+/* Neutral colors */
+.ty-text-neutral {
+  color: var(--ty-color-neutral);
+}
+
+.ty-text-neutral\+ {
+  color: var(--ty-color-neutral-p1);
+}
+
+.ty-text-neutral\+\+ {
+  color: var(--ty-color-neutral-p2);
+}
+
+.ty-text-neutral- {
+  color: var(--ty-color-neutral-m1);
+}
+
+.ty-text-neutral-- {
+  color: var(--ty-color-neutral-m2);
+}
+
+/* =================================================================
+   THEME-AWARE BORDER UTILITIES
+   ================================================================= */
+
+/* Base border colors with emphasis */
+.ty-border {
+  border-color: var(--ty-border);
+}
+
+.ty-border\+ {
+  border-color: var(--ty-border-p1);
+}
+
+.ty-border\+\+ {
+  border-color: var(--ty-border-p2);
+}
+
+.ty-border\+\+\+ {
+  border-color: var(--ty-border-p3);
+}
+
+.ty-border- {
+  border-color: var(--ty-border-m1);
+}
+
+.ty-border-- {
+  border-color: var(--ty-border-m2);
+}
+
+/* Semantic border colors */
+.ty-border-primary {
+  border-color: var(--ty-border-primary);
+}
+
+.ty-border-secondary {
+  border-color: var(--ty-border-secondary);
+}
+
+.ty-border-success {
+  border-color: var(--ty-border-success);
+}
+
+.ty-border-danger {
+  border-color: var(--ty-border-danger);
+}
+
+.ty-border-warning {
+  border-color: var(--ty-border-warning);
+}
+
+.ty-border-info {
+  border-color: var(--ty-border-info);
+}
+
+.ty-border-neutral {
+  border-color: var(--ty-border-neutral);
+}
+
+/* =================================================================
+   COMPONENT-SPECIFIC THEME UTILITIES
+   For common UI patterns that need theme awareness
+   ================================================================= */
+
+/* Card/Panel utilities */
+.ty-card {
+  background-color: var(--ty-bg);
+  border: 1px solid var(--ty-border);
+  color: var(--ty-color-neutral-p1);
+}
+
+.ty-card-elevated {
+  background-color: var(--ty-bg-p1);
+  border: 1px solid var(--ty-border);
+  box-shadow: var(--ty-shadow-md);
+}
+
+/* Input-like utilities for custom form elements */
+.ty-input-bg {
+  background-color: var(--ty-input-bg);
+}
+
+.ty-input-border {
+  border-color: var(--ty-input-border);
+}
+
+.ty-input-focus {
+  border-color: var(--ty-input-border-focus);
+}
+
+/* Modal/overlay utilities */
+.ty-modal-bg {
+  background-color: var(--ty-modal-bg);
+}
+
+.ty-modal-backdrop {
+  background-color: var(--ty-modal-backdrop);
+}
+
+/* =================================================================
+   LEGACY SEMANTIC SUPPORT
+   Support for existing ty semantic names
+   ================================================================= */
+
+/* These might exist in current codebase - keeping for backward compatibility */
+.ty-bg-important {
+  background-color: var(--ty-color-primary, #3b82f6);
+}
+
+.ty-bg-positive {
+  background-color: var(--ty-color-success, #10b981);
+}
+
+.ty-bg-negative {
+  background-color: var(--ty-color-danger, #ef4444);
+}
+
+.ty-bg-exception {
+  background-color: var(--ty-color-warning, #f59e0b);
+}
+
+.ty-text-important {
+  color: var(--ty-color-primary, #3b82f6);
+}
+
+.ty-text-positive {
+  color: var(--ty-color-success, #10b981);
+}
+
+.ty-text-negative {
+  color: var(--ty-color-danger, #ef4444);
+}
+
+.ty-text-exception {
+  color: var(--ty-color-warning, #f59e0b);
+}
+
+.ty-border-important {
+  border-color: var(--ty-color-primary, #3b82f6);
+}
+
+.ty-border-positive {
+  border-color: var(--ty-color-success, #10b981);
+}
+
+.ty-border-negative {
+  border-color: var(--ty-color-danger, #ef4444);
+}
+
+.ty-border-exception {
+  border-color: var(--ty-color-warning, #f59e0b);
+}
+
+/* =================================================================
+   HOVER AND FOCUS STATES
+   Theme-aware interactive states
+   ================================================================= */
+
+/* Hover states for backgrounds */
+.hover\:ty-bg-primary:hover {
+  background-color: var(--ty-bg-primary);
+}
+
+.hover\:ty-bg-primary\+:hover {
+  background-color: var(--ty-bg-primary-p1);
+}
+
+.hover\:ty-bg-secondary:hover {
+  background-color: var(--ty-bg-secondary);
+}
+
+.hover\:ty-bg-success:hover {
+  background-color: var(--ty-bg-success);
+}
+
+.hover\:ty-bg-danger:hover {
+  background-color: var(--ty-bg-danger);
+}
+
+/* Focus states for borders */
+.focus\:ty-border-primary:focus {
+  border-color: var(--ty-border-primary);
+}
+
+.focus\:ty-border-success:focus {
+  border-color: var(--ty-border-success);
+}
+
+.focus\:ty-border-danger:focus {
+  border-color: var(--ty-border-danger);
+}
+
+/* =================================================================
+   RESPONSIVE VARIANTS
+   Only for the most essential theme utilities
+   ================================================================= */
+
+/* Small screens and up */
+@media (min-width: 640px) {
+  .sm\:ty-bg {
+    background-color: var(--ty-bg);
+  }
+
+  .sm\:ty-bg-primary {
+    background-color: var(--ty-bg-primary);
+  }
+
+  .sm\:ty-text-primary {
+    color: var(--ty-color-primary);
+  }
+}
+
+/* Medium screens and up */
+@media (min-width: 768px) {
+  .md\:ty-bg {
+    background-color: var(--ty-bg);
+  }
+
+  .md\:ty-bg-primary {
+    background-color: var(--ty-bg-primary);
+  }
+
+  .md\:ty-text-primary {
+    color: var(--ty-color-primary);
+  }
+}
+
+/* Large screens and up */
+@media (min-width: 1024px) {
+  .lg\:ty-bg {
+    background-color: var(--ty-bg);
+  }
+
+  .lg\:ty-bg-primary {
+    background-color: var(--ty-bg-primary);
+  }
+
+  .lg\:ty-text-primary {
+    color: var(--ty-color-primary);
+  }
+}

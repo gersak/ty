@@ -17,6 +17,7 @@
             [ty.demo.views.multiselect :as multiselect]
             [ty.demo.views.popups :as popups]
             [ty.demo.views.tags :as tags]
+            [ty.demo.views.theme-utilities :as theme-utilities]
             [ty.layout :as layout]
             [ty.router :as router]))
 
@@ -62,6 +63,9 @@
               {:id ::layout
                :segment "layout"
                :name "Layout"}
+              {:id ::theme-utilities
+               :segment "theme-utilities"
+               :name "Theme Utilities"}
               {:id ::admin-dashboard
                :segment "admin"
                :name "Admin Dashboard"
@@ -140,6 +144,9 @@
    (nav-item {:route-id ::layout
               :label "Layout"
               :icon "layout"})
+   (nav-item {:route-id ::theme-utilities
+              :label "Theme Utilities"
+              :icon "palette"})
    (when (router/authorized? ::admin-dashboard)
      (nav-item {:route-id ::admin-dashboard
                 :label "Admin Dashboard"
@@ -199,6 +206,10 @@
         (router/rendered? ::popups true) "Popup Components"
         (router/rendered? ::tags true) "Tag Components"
         (router/rendered? ::modal true) "Modal Dialogs"
+        (router/rendered? ::i18n true) "Internationalization"
+        (router/rendered? ::formatting true) "Number & Date Formatting"
+        (router/rendered? ::layout true) "Layout System"
+        (router/rendered? ::theme-utilities true) "Theme Utilities"
         (router/rendered? ::admin-dashboard true) "Admin Dashboard"
         (router/rendered? ::theming true) "Theming & Customization"
         :else "Ty Components")]]
@@ -247,6 +258,7 @@
              (router/rendered? ::i18n true) (i18n-views/view)
              (router/rendered? ::formatting true) (formatting/view)
              (router/rendered? ::layout true) (layout-views/view)
+             (router/rendered? ::theme-utilities true) (theme-utilities/view)
              (router/rendered? ::admin-dashboard true)
              [:div.max-w-4xl.mx-auto
               [:h1.text-2xl.lg:text-3xl.font-bold.text-gray-900.dark:text-white.mb-4

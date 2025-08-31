@@ -263,10 +263,10 @@
         {:keys [hour minute]} (parse-time-components new-digits)]
     (when (and hour minute) ; Only if valid time
       (assoc time-state
-             :raw-digits new-digits
-             :hour hour
-             :minute minute
-             :display-value (format-time-display hour minute)))))
+        :raw-digits new-digits
+        :hour hour
+        :minute minute
+        :display-value (format-time-display hour minute)))))
 
 (defn zero-digit-at-position
   "Set digit to 0 at specific position, return new state"
@@ -404,25 +404,30 @@
 (defn close-dropdown! [^js el]
   (let [state (get-component-state el)]
     (when (:open? state)
+      (let [root (wcs/ensure-shadow el)
+            dialog (.querySelector root ".calendar-dialog")]
+        (when dialog
+          (.remove (.-classList dialog) "position-above" "position-below")
+          (.close dialog)))
       (update-component-state! el {:open? false})
       (emit-close-event! el)
       (render! el))))
 
-(defn position-dropdown! [^js el]
+(defn update-calendar-position!
+  "Smart positioning for calendar dialog using CSS classes (like dropdown)"
+  [^js el]
   (let [root (wcs/ensure-shadow el)
-        dropdown (.querySelector root ".calendar-dropdown")]
-    (when dropdown
-      ;; Simple absolute positioning - dropdown will position relative to the wrapper
-      (set! (.-style dropdown)
-            (str "position: absolute;"
-                 "top: calc(100% + 4px);"
-                 "left: 0;"
-                 "right: 0;"
-                 "z-index: 1000;"))
-
-      ;; Remove any previous positioning classes
-      (.remove (.-classList dropdown) "position-above" "position-below")
-      (.add (.-classList dropdown) "position-below"))))
+        wrapper (.querySelector root ".dropdown-wrapper")
+        dialog (.querySelector root ".calendar-dialog")]
+    (when (and wrapper dialog)
+      (let [wrapper-rect (.getBoundingClientRect wrapper)
+            wrapper-bottom (.-bottom wrapper-rect)
+            viewport-height (.-innerHeight js/window)
+            space-below (- viewport-height wrapper-bottom)
+            ;; Calendar needs ~400px height, so require more space than regular dropdown
+            position-below (> space-below 420)]
+        (.remove (.-classList dialog) "position-above" "position-below")
+        (.add (.-classList dialog) (if position-below "position-below" "position-above"))))))
 
 (defn open-dropdown! [^js el]
   (let [state (get-component-state el)]
@@ -430,7 +435,13 @@
       (update-component-state! el {:open? true})
       (emit-open-event! el)
       (render! el)
-      (.requestAnimationFrame js/window (fn [] (position-dropdown! el))))))
+      (.requestAnimationFrame js/window
+                              (fn []
+                                (let [root (wcs/ensure-shadow el)
+                                      dialog (.querySelector root ".calendar-dialog")]
+                                  (when dialog
+                                    (.show dialog)
+                                    (update-calendar-position! el))))))))
 
 ;; === ATTRIBUTES PARSING ===
 
@@ -504,9 +515,9 @@
         state (get-component-state el)
         components (select-keys state [:year :month :day :hour :minute])
         new-components (assoc components
-                              :year (:year clj-context)
-                              :month (:month clj-context)
-                              :day (:day-in-month clj-context))]
+                         :year (:year clj-context)
+                         :month (:month clj-context)
+                         :day (:day-in-month clj-context))]
 
     (update-component-state! el new-components)
     (emit-change-event! el new-components "selection")
@@ -514,8 +525,11 @@
 
 (defn handle-outside-click! [^js el ^js event]
   (let [root (wcs/ensure-shadow el)
-        target (.-target event)]
-    (when-not (.contains el target)
+        target (.-target event)
+        dialog (.querySelector root ".calendar-dialog")]
+    ;; Only close if click is outside the date picker AND not inside the dialog
+    (when (and (not (.contains el target))
+               (or (not dialog) (not (.contains dialog target))))
       (close-dropdown! el))))
 
 (defn handle-escape-key! [^js el ^js event]
@@ -643,50 +657,51 @@
     container))
 
 (defn render-calendar-dropdown [^js el attrs]
-  (let [{:keys [open? components locale with-time]} attrs]
-    (if open?
-      (let [dropdown (.createElement js/document "div")
-            calendar (.createElement js/document "ty-calendar")]
+  (let [{:keys [components locale with-time]} attrs
+        dialog (.createElement js/document "dialog")
+        calendar (.createElement js/document "ty-calendar")]
 
-        (set! (.-className dropdown) "calendar-dropdown")
+    (set! (.-className dialog) "calendar-dialog")
 
-        ;; Set up ty-calendar with current date components
-        (when (and (:year components) (:month components) (:day components))
-          (.setAttribute calendar "year" (str (:year components)))
-          (.setAttribute calendar "month" (str (:month components)))
-          (.setAttribute calendar "day" (str (:day components))))
+    ;; Set up ty-calendar with current date components
+    (when (and (:year components) (:month components) (:day components))
+      (.setAttribute calendar "year" (str (:year components)))
+      (.setAttribute calendar "month" (str (:month components)))
+      (.setAttribute calendar "day" (str (:day components))))
 
-        (when locale
-          (.setAttribute calendar "locale" locale))
+    (when locale
+      (.setAttribute calendar "locale" locale))
 
-        (.addEventListener calendar "change" #(handle-calendar-change! el %))
-        (.appendChild dropdown calendar)
+    (.addEventListener calendar "change" #(handle-calendar-change! el %))
+    (.appendChild dialog calendar)
 
-        ;; Add time section if with-time enabled
-        (when with-time
-          (let [time-section (.createElement js/document "div")
-                time-label (.createElement js/document "label")
-                time-input (create-time-input el attrs)
-                time-icon (.createElement js/document "span")]
+    ;; Add time section if with-time enabled
+    (when with-time
+      (let [time-section (.createElement js/document "div")
+            time-label (.createElement js/document "label")
+            time-input (create-time-input el attrs)
+            time-icon (.createElement js/document "span")]
 
-            (set! (.-className time-section) "time-section")
-            (set! (.-className time-label) "time-label")
-            (set! (.-textContent time-label) (translate "Time:"))
+        (set! (.-className time-section) "time-section")
+        (set! (.-className time-label) "time-label")
+        (set! (.-textContent time-label) (translate "Time:"))
 
-            (set! (.-className time-icon) "time-icon")
-            (set! (.-innerHTML time-icon) schedule-icon-svg)
+        (set! (.-className time-icon) "time-icon")
+        (set! (.-innerHTML time-icon) schedule-icon-svg)
 
-            (.appendChild time-section time-label)
-            (when time-input
-              (.appendChild time-section time-input))
-            (.appendChild time-section time-icon)
-            (.appendChild dropdown time-section)))
+        (.appendChild time-section time-label)
+        (when time-input
+          (.appendChild time-section time-input))
+        (.appendChild time-section time-icon)
+        (.appendChild dialog time-section)))
 
-        dropdown)
+    ;; Add dialog close event handler
+    (.addEventListener dialog "close"
+                       (fn [^js event]
+                         (update-component-state! el {:open? false})
+                         (emit-close-event! el)))
 
-      (let [dropdown (.createElement js/document "div")]
-        (set! (.-className dropdown) "calendar-dropdown hidden")
-        dropdown))))
+    dialog))
 
 (defn render! [^js el]
   (let [root (wcs/ensure-shadow el)
@@ -704,9 +719,9 @@
       (.appendChild container wrapper)
       (.appendChild root container))
 
-    (when (:open? attrs)
-      (.addEventListener js/document "click" #(handle-outside-click! el %))
-      (.addEventListener js/document "keydown" #(handle-escape-key! el %)))
+;; Always set up event listeners - dialog handles its own visibility
+    (.addEventListener js/document "click" #(handle-outside-click! el %))
+    (.addEventListener js/document "keydown" #(handle-escape-key! el %))
 
     el))
 

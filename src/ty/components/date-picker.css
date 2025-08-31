@@ -173,19 +173,45 @@
   color: var(--ty-input-border-focus);
 }
 
-/* Calendar dropdown */
-.calendar-dropdown {
+/* Calendar dialog (replaces calendar-dropdown) */
+.calendar-dialog {
   position: absolute;
+  z-index: var(--ty-z-dropdown);
   background-color: var(--ty-bg);
   border: 1px solid var(--ty-color-neutral-m1);
   border-radius: var(--ty-radius-lg);
   padding: 0;
-  z-index: 1000;
+  margin: 0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* Natural width for calendar - no constraints */
+  width: auto;
+  max-width: 90vw;
+  min-width: 320px;
+  /* Comfortable minimum for calendar */
 }
 
-.calendar-dropdown.hidden {
+.calendar-dialog::backdrop {
   display: none;
+  /* We don't want the modal backdrop for dropdown-style dialogs */
+}
+
+/* Smart positioning classes */
+.calendar-dialog.position-below {
+  top: calc(100% + 0.25rem);
+  left: 0;
+}
+
+.calendar-dialog.position-above {
+  bottom: calc(100% + 0.25rem);
+  left: 0;
+}
+
+/* Responsive positioning */
+@media (max-width: 640px) {
+  .calendar-dialog {
+    min-width: 280px;
+    max-width: calc(100vw - 2rem);
+  }
 }
 
 /* Time input section */

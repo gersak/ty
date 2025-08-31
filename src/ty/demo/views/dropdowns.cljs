@@ -150,15 +150,16 @@
                          [:div.max-w-xs
                           [:ty-date-picker {:label "Birthday"
                                             :placeholder "Select date..."
+                                            :locale (or (::dropdown-value @state/state) "en")
                                             :on {:change date-picker-event-handler}}]
                           [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
                            "Selected: "
                            [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                                (js/Date. date-val)
-                                (::dropdown-value @state/state "en")
-                                {:dateStyle "full"})
+                               (js/Date. date-val)
+                               (::dropdown-value @state/state "en")
+                               {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -365,6 +366,99 @@
                            "✅ Valid: 00-23 hours, 00-59 minutes"]
                           [:div.mt-1.text-xs.text-red-600.dark:text-red-400
                            "❌ Invalid: >23 hours, >59 minutes"]]]})])
+
+(defn localized-date-picker-demo []
+  [:div.demo-section
+   [:h2.demo-title "🌍 Localized Date Picker"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "Date picker components automatically adapt to different locales - placeholder text, time labels, weekday names, and navigation tooltips all translate seamlessly."]
+
+   (demo-row {:title "Multi-Language Date Pickers"
+              :description "Each picker shows localized interface elements"
+              :children [;; English
+                         [:div.demo-item
+                          [:h4.font-semibold.mb-2 "English (en-US)"]
+                          [:ty-date-picker {:label "Meeting Date"
+                                            :locale "en-US"
+                                            :with-time true
+                                            :value "2024-12-25T14:30"
+                                            :on {:change date-picker-event-handler}}]]
+
+                ;; Croatian
+                         [:div.demo-item
+                          [:h4.font-semibold.mb-2 "Croatian (hr)"]
+                          [:ty-date-picker {:label "Datum sastanka"
+                                            :locale "hr"
+                                            :with-time true
+                                            :value "2024-12-25T14:30"
+                                            :on {:change date-picker-event-handler}}]]
+
+                ;; German
+                         [:div.demo-item
+                          [:h4.font-semibold.mb-2 "German (de-DE)"]
+                          [:ty-date-picker {:label "Besprechungstermin"
+                                            :locale "de-DE"
+                                            :with-time true
+                                            :value "2024-12-25T14:30"
+                                            :on {:change date-picker-event-handler}}]]
+
+                ;; French
+                         [:div.demo-item
+                          [:h4.font-semibold.mb-2 "French (fr-FR)"]
+                          [:ty-date-picker {:label "Date de réunion"
+                                            :locale "fr-FR"
+                                            :with-time true
+                                            :value "2024-12-25T14:30"
+                                            :on {:change date-picker-event-handler}}]]]})
+
+   (code-snippet "<!-- English date picker -->
+<ty-date-picker label=\"Meeting Date\" locale=\"en-US\" with-time=\"true\"></ty-date-picker>
+
+<!-- Croatian date picker -->
+<ty-date-picker label=\"Datum sastanka\" locale=\"hr\" with-time=\"true\"></ty-date-picker>
+
+<!-- German date picker -->
+<ty-date-picker label=\"Besprechungstermin\" locale=\"de-DE\" with-time=\"true\"></ty-date-picker>")
+
+   ;; Show what gets localized
+   [:div {:class "mt-6 p-4 bg-green-50 rounded-lg"}
+    [:h4.font-semibold.mb-2.text-green-800 "🎯 What Gets Localized"]
+    [:ul {:class "text-sm space-y-1 text-green-700"}
+     [:li "✅ Placeholder text: \"Select date...\" → \"Odaberite datum...\""]
+     [:li "✅ Time label: \"Time:\" → \"Vrijeme:\""]
+     [:li "✅ Weekday headers: \"Mon Tue Wed\" → \"pon uto sri\""]
+     [:li "✅ Navigation tooltips: \"Previous month\" → \"Prethodnji mjesec\""]
+     [:li "✅ Date formatting: Uses locale-specific formats"]
+     [:li "✅ Calendar layout: Respects local conventions"]]]
+
+   ;; Technical details
+   [:div {:class "mt-4 p-4 bg-blue-50 rounded-lg"}
+    [:h4.font-semibold.mb-2.text-blue-800 "⚙️ Implementation Details"]
+    [:div {:class "text-sm space-y-2 text-blue-700"}
+     [:div [:strong "String translations:"] " Custom ty.i18n.string system with fallback to original text"]
+     [:div [:strong "Date/time formatting:"] " Native Intl.DateTimeFormat for locale-aware display"]
+     [:div [:strong "Weekday names:"] " Intl API provides localized short names in Monday-first order"]
+     [:div [:strong "No external deps:"] " Built-in browser internationalization APIs only"]]]
+
+   (demo-row {:title "Supported Languages"
+              :description "Date picker currently supports 10+ languages with more coming"
+              :children [[:div {:class "grid grid-cols-2 md:grid-cols-5 gap-2 text-sm"}
+                          [:div.p-2.bg-gray-100.rounded "🇺🇸 English"]
+                          [:div.p-2.bg-gray-100.rounded "🇭🇷 Croatian"]
+                          [:div.p-2.bg-gray-100.rounded "🇩🇪 German"]
+                          [:div.p-2.bg-gray-100.rounded "🇫🇷 French"]
+                          [:div.p-2.bg-gray-100.rounded "🇪🇸 Spanish"]
+                          [:div.p-2.bg-gray-100.rounded "🇮🇹 Italian"]
+                          [:div.p-2.bg-gray-100.rounded "🇵🇹 Portuguese"]
+                          [:div.p-2.bg-gray-100.rounded "🇷🇺 Russian"]
+                          [:div.p-2.bg-gray-100.rounded "🇯🇵 Japanese"]
+                          [:div.p-2.bg-gray-100.rounded "🇰🇷 Korean"]
+                          [:div.p-2.bg-gray-100.rounded "🇨🇳 Chinese"]
+                          [:div.p-2.bg-gray-100.rounded "...more"]]]})
+
+   [:div {:class "mt-6 p-3 bg-yellow-50 rounded-lg"}
+    [:div {:class "text-sm text-yellow-800"}
+     [:strong "💡 Pro Tip:"] " Set locale at the component level or globally via ty.i18n/*locale*. Components automatically inherit locale from parent context if not explicitly set."]]])
 
 (defn multiple-dropdowns-test []
   [:div.demo-section
@@ -964,6 +1058,7 @@
 
    [:div.space-y-12
     (date-picker-examples)
+    (localized-date-picker-demo)
     (basic-examples)
     (multiple-dropdowns-test)
     (flavor-variants)

@@ -10,6 +10,7 @@
             [ty.context :as context]
             [ty.css :refer [ensure-styles!]]
             [ty.date.core :as date]
+            [ty.i18n.time :as time]
             [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
@@ -34,6 +35,16 @@
   "Get locale with context fallback"
   [^js el]
   (or (.-locale el) context/*locale* "en-US"))
+
+(defn get-localized-weekdays
+  "Get localized weekday names in Monday-first order (as used by calendar grid)"
+  [locale style]
+  (let [weekdays (time/get-weekday-names locale style)
+        ;; get-weekday-names returns Sunday-first: [Sun Mon Tue Wed Thu Fri Sat]
+        ;; We want Monday-first: [Mon Tue Wed Thu Fri Sat Sun]
+        ;; So we take indices [1 2 3 4 5 6 0]
+        monday-first-indices [1 2 3 4 5 6 0]]
+    (mapv #(nth weekdays %) monday-first-indices)))
 
 (defn normalize-size-value
   "Normalize size value - add 'px' if just a number, otherwise use as-is"
@@ -165,10 +176,11 @@
     (let [calendar-container (.createElement js/document "div")]
       (set! (.-className calendar-container) "calendar-flex-container")
 
-      ;; Create header row (Row 1)
-      (let [header-row (.createElement js/document "div")]
+;; Create header row (Row 1) with localized weekday names
+      (let [header-row (.createElement js/document "div")
+            weekdays (get-localized-weekdays locale "short")]
         (set! (.-className header-row) "calendar-row calendar-header-row")
-        (doseq [weekday ["Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun"]]
+        (doseq [weekday weekdays]
           (let [header-cell (.createElement js/document "div")]
             (set! (.-className header-cell) "calendar-cell calendar-header-cell")
             (set! (.-textContent header-cell) weekday)

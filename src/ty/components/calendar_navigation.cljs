@@ -2,6 +2,8 @@
   "Pure stateless calendar navigation component - controlled through JS properties"
   (:require [ty.context :as context]
             [ty.css :refer [ensure-styles!]]
+            [ty.i18n :refer [translate]]
+            [ty.i18n.time :as time]
             [ty.shim :as wcs])
   (:require-macros [ty.css :refer [defstyles]]))
 
@@ -21,14 +23,7 @@
 ;; Load calendar navigation styles (reuse existing CSS)
 (defstyles calendar-navigation-styles)
 
-(defn get-month-names
-  "Get localized month names for display"
-  [locale]
-  (let [formatter (js/Intl.DateTimeFormat. locale #js {:month "long"})]
-    (mapv (fn [month]
-            (let [date (js/Date. 2024 (dec month) 1)]
-              (.format formatter date)))
-          (range 1 13))))
+;; Use get-month-names from ty.i18n.time - it has proper locale normalization
 
 (defn emit-change-event!
   "Emit change event with current month/year values"
@@ -75,7 +70,7 @@
         width (.-width el)
 
         ;; Get localized month names
-        month-names (get-month-names locale)
+        month-names (time/get-month-names locale)
         current-month-name (nth month-names (dec display-month))]
 
     ;; Load styles
@@ -103,7 +98,7 @@
       ;; Previous year button (double chevron left)
       (let [prev-year-btn (.createElement js/document "button")]
         (set! (.-className prev-year-btn) "nav-btn nav-year-prev")
-        (set! (.-title prev-year-btn) "Previous year")
+        (set! (.-title prev-year-btn) (translate "Previous year"))
         (set! (.-innerHTML prev-year-btn) chevrons-left-svg)
         (.addEventListener prev-year-btn "click" #(navigate-year! el -1))
         (.appendChild left-group prev-year-btn))
@@ -111,7 +106,7 @@
       ;; Previous month button (single chevron left)
       (let [prev-month-btn (.createElement js/document "button")]
         (set! (.-className prev-month-btn) "nav-btn nav-month-prev")
-        (set! (.-title prev-month-btn) "Previous month")
+        (set! (.-title prev-month-btn) (translate "Previous month"))
         (set! (.-innerHTML prev-month-btn) chevron-left-svg)
         (.addEventListener prev-month-btn "click" #(navigate-month! el -1))
         (.appendChild left-group prev-month-btn))
@@ -126,7 +121,7 @@
       ;; Next month button (single chevron right)
       (let [next-month-btn (.createElement js/document "button")]
         (set! (.-className next-month-btn) "nav-btn nav-month-next")
-        (set! (.-title next-month-btn) "Next month")
+        (set! (.-title next-month-btn) (translate "Next month"))
         (set! (.-innerHTML next-month-btn) chevron-right-svg)
         (.addEventListener next-month-btn "click" #(navigate-month! el 1))
         (.appendChild right-group next-month-btn))
@@ -134,7 +129,7 @@
       ;; Next year button (double chevron right)
       (let [next-year-btn (.createElement js/document "button")]
         (set! (.-className next-year-btn) "nav-btn nav-year-next")
-        (set! (.-title next-year-btn) "Next year")
+        (set! (.-title next-year-btn) (translate "Next year"))
         (set! (.-innerHTML next-year-btn) chevrons-right-svg)
         (.addEventListener next-year-btn "click" #(navigate-year! el 1))
         (.appendChild right-group next-year-btn))

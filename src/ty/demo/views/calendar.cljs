@@ -218,6 +218,134 @@
        "  return ['calendar-day', context.today ? 'today' : ''];\n"
        "};"]]]]])
 
+(defn localized-calendar-demo []
+  [:div.demo-section
+   [:h2.demo-title "🌍 Localized Calendar Headers"]
+   [:p.text-sm.text-gray-600.mb-6 "Weekday names automatically adapt to locale settings using native Intl API."]
+
+   ;; Localized calendar examples in grid layout
+   [:div.grid.grid-cols-1.lg:grid-cols-2.xl:grid-cols-3.gap-6.mb-8
+
+    ;; English (US)
+    [:div.space-y-3
+     [:div
+      [:h4.font-semibold.mb-1 "English (en-US)"]
+      [:p.text-xs.text-gray-600.mb-3 "Standard Monday-first layout"]
+      [:ty-calendar {:width "280px"
+                     :locale "en-US"
+                     :on {:change handle-change}}]]
+     [:pre.text-xs.bg-gray-100.p-2.rounded
+      [:code "locale=\"en-US\""]]]
+
+    ;; Croatian
+    [:div.space-y-3
+     [:div
+      [:h4.font-semibold.mb-1 "Croatian (hr)"]
+      [:p.text-xs.text-gray-600.mb-3 "\"pon uto sri\" weekdays"]
+      [:ty-calendar {:width "280px"
+                     :locale "hr"
+                     :on {:change handle-change}}]]
+     [:pre.text-xs.bg-gray-100.p-2.rounded
+      [:code "locale=\"hr\""]]]
+
+    ;; German
+    [:div.space-y-3
+     [:div
+      [:h4.font-semibold.mb-1 "German (de-DE)"]
+      [:p.text-xs.text-gray-600.mb-3 "\"Mo Di Mi\" format"]
+      [:ty-calendar {:width "280px"
+                     :locale "de-DE"
+                     :on {:change handle-change}}]]
+     [:pre.text-xs.bg-gray-100.p-2.rounded
+      [:code "locale=\"de-DE\""]]]
+
+    ;; French
+    [:div.space-y-3
+     [:div
+      [:h4.font-semibold.mb-1 "French (fr-FR)"]
+      [:p.text-xs.text-gray-600.mb-3 "\"lun mar mer\" weekdays"]
+      [:ty-calendar {:width "280px"
+                     :locale "fr-FR"
+                     :on {:change handle-change}}]]
+     [:pre.text-xs.bg-gray-100.p-2.rounded
+      [:code "locale=\"fr-FR\""]]]
+
+    ;; Japanese
+    [:div.space-y-3
+     [:div
+      [:h4.font-semibold.mb-1 "Japanese (ja-JP)"]
+      [:p.text-xs.text-gray-600.mb-3 "Native kanji weekdays"]
+      [:ty-calendar {:width "280px"
+                     :locale "ja-JP"
+                     :on {:change handle-change}}]]
+     [:pre.text-xs.bg-gray-100.p-2.rounded
+      [:code "locale=\"ja-JP\""]]]
+
+    ;; Arabic
+    [:div.space-y-3
+     [:div
+      [:h4.font-semibold.mb-1 "Arabic (ar-SA)"]
+      [:p.text-xs.text-gray-600.mb-3 "Right-to-left support"]
+      [:ty-calendar {:width "280px"
+                     :locale "ar-SA"
+                     :on {:change handle-change}}]]
+     [:pre.text-xs.bg-gray-100.p-2.rounded
+      [:code "locale=\"ar-SA\""]]]]
+
+   ;; Usage example
+   [:div.mb-6
+    [:h3.demo-subtitle.mb-2 "Usage Examples"]
+    [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:code
+      "<!-- HTML -->
+<ty-calendar locale=\"en-US\" width=\"300px\"></ty-calendar>
+<ty-calendar locale=\"hr\" width=\"300px\"></ty-calendar>
+<ty-calendar locale=\"de-DE\" width=\"300px\"></ty-calendar>
+
+<!-- ClojureScript -->
+[:ty-calendar {:locale \"en-US\" :width \"300px\"}]
+[:ty-calendar {:locale \"hr\" :width \"300px\"}]
+[:ty-calendar {:locale \"de-DE\" :width \"300px\"}]"]]]
+
+   ;; Features explanation
+   [:div {:class "mt-6 p-4 bg-blue-50 rounded-lg"}
+    [:h4.font-semibold.mb-2 "🎯 Localization Features"]
+    [:ul {:class "text-sm space-y-1"}
+     [:li "✅ Weekday headers: Automatically localized using native Intl.DateTimeFormat"]
+     [:li "✅ Month names: Handled by navigation component"]
+     [:li "✅ Date formats: Configurable via format attribute"]
+     [:li "✅ Monday-first layout: European calendar standard"]
+     [:li "✅ RTL support: Works with Arabic and Hebrew locales"]
+     [:li "✅ Fallback: Defaults to browser locale if none specified"]]]
+
+   ;; Implementation details
+   [:div {:class "mt-4 p-4 bg-green-50 rounded-lg"}
+    [:h4.font-semibold.mb-2 "⚙️ Implementation Details"]
+    [:div {:class "text-sm space-y-2"}
+     [:div [:strong "Weekday Generation:"] " Uses Intl.DateTimeFormat with Monday-first reordering"]
+     [:div [:strong "Locale Inheritance:"] " Components respect locale attributes or inherit from context"]
+     [:div [:strong "Performance:"] " Weekday names cached per locale, minimal overhead"]
+     [:div [:strong "Browser Support:"] " Works with all modern browsers supporting Intl API"]]]
+
+   ;; Supported languages
+   [:div {:class "mt-4 p-4 bg-yellow-50 rounded-lg"}
+    [:h4.font-semibold.mb-2 "🌍 Supported Languages"]
+    [:div {:class "grid grid-cols-2 md:grid-cols-4 gap-2 text-sm"}
+     [:div.p-2.bg-white.rounded "🇺🇸 English"]
+     [:div.p-2.bg-white.rounded "🇭🇷 Croatian"]
+     [:div.p-2.bg-white.rounded "🇩🇪 German"]
+     [:div.p-2.bg-white.rounded "🇫🇷 French"]
+     [:div.p-2.bg-white.rounded "🇪🇸 Spanish"]
+     [:div.p-2.bg-white.rounded "🇮🇹 Italian"]
+     [:div.p-2.bg-white.rounded "🇵🇹 Portuguese"]
+     [:div.p-2.bg-white.rounded "🇷🇺 Russian"]
+     [:div.p-2.bg-white.rounded "🇯🇵 Japanese"]
+     [:div.p-2.bg-white.rounded "🇰🇷 Korean"]
+     [:div.p-2.bg-white.rounded "🇨🇳 Chinese"]
+     [:div.p-2.bg-white.rounded "... many more"]]
+    [:p.text-xs.text-gray-600.mt-2
+     "💡 Pro Tip: Set locale at component level or globally via ty.i18n/*locale*. Components automatically inherit locale from parent context."]]])
+
 (defn property-based-components-demo []
   [:div.demo-section
    [:h2.demo-title "🔧 Property-Based Components (Advanced)"]
@@ -435,8 +563,9 @@
     [:p.text-lg.text-gray-600.dark:text-gray-400.mt-2
      "Year/Month/Day architecture with property-based composition for optimal performance and intuitive API."]]
 
-   ;; Main demos
+;; Main demos
    (orchestrated-calendar-demo)
+   (localized-calendar-demo)
 
    ;; NEW: Year/Month/Day API benefits section  
    [:div.p-4.bg-blue-50.rounded-lg.mb-6

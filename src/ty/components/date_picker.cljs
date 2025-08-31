@@ -5,6 +5,7 @@
             [goog.string :as gstr]
             [ty.css :refer [ensure-styles!]]
             [ty.date.core :as date]
+            [ty.i18n :refer [translate]]
             [ty.i18n.time :as time]
             [ty.shim :as wcs]
             [ty.value :as value])
@@ -603,7 +604,7 @@
 
     (set! (.-className display-text) "stub-text")
     (set! (.-textContent display-text)
-          (or formatted-value placeholder "Select date..."))
+          (or formatted-value placeholder (translate "Select date...")))
     (when-not formatted-value
       (.add (.-classList display-text) "placeholder"))
 
@@ -670,7 +671,7 @@
 
             (set! (.-className time-section) "time-section")
             (set! (.-className time-label) "time-label")
-            (set! (.-textContent time-label) "Time:")
+            (set! (.-textContent time-label) (translate "Time:"))
 
             (set! (.-className time-icon) "time-icon")
             (set! (.-innerHTML time-icon) schedule-icon-svg)

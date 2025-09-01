@@ -111,8 +111,9 @@
   {:observed [:flavor :disabled :label :class :size :filled :outlined :accent :pill :action]
    ;; No need for props - we read directly from attributes
    :connected render!
-   :attr (fn [^js el _attr-name _old _new]
-           ;; Any attribute change triggers re-render
+   :attr (fn [^js el delta]
+           ;; Batched attribute changes trigger single re-render
+           (println "[ty-button] Batched attr update:" (keys delta))
            (render! el))})
 
 ;; -----------------------------

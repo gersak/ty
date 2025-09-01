@@ -44,7 +44,7 @@
 (defn numeric-formatting-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "🔢 Enhanced Numeric Formatting"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "Type numbers and blur to see automatic formatting. No parsing - uses shadow values!"]
+   [:p.text-sm.ty-text- "Type numbers and blur to see automatic formatting. No parsing - uses shadow values!"]
 
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
     [:div.space-y-4
@@ -83,7 +83,7 @@
 (defn currency-formatting-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "💰 Currency Formatting"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "Automatic currency symbols and locale-aware formatting."]
+   [:p.text-sm.ty-text- "Automatic currency symbols and locale-aware formatting."]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
     [:ty-input {:type "currency"
@@ -127,7 +127,7 @@
 (defn error-handling-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "⚠️ Error Handling & Validation"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "User-controlled error states with clean styling."]
+   [:p.text-sm.ty-text- "User-controlled error states with clean styling."]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
     [:div.space-y-4
@@ -180,7 +180,7 @@
               (set! (.-scrollTop log) 0)))]
     [:div.space-y-6
      [:h3.text-lg.font-semibold "🔄 External Value Changes"]
-     [:p.text-sm.text-gray-600.dark:text-gray-400 "Test shadow value synchronization with programmatic updates."]
+     [:p.text-sm.ty-text- "Test shadow value synchronization with programmatic updates."]
      [:div.space-y-4
       [:ty-input
        {:id "external-demo"
@@ -212,15 +212,15 @@
       [:div.mt-4
        [:h5.font-medium.text-sm "Event Log:"]
        [:pre#event-log.p-3.rounded.font-mono.text-xs.h-24.overflow-y-auto.transition-colors
-        {:class [:bg-gray-900 :text-green-400 :dark:bg-gray-800 :dark:text-green-300]}
+        {:class [:ty-bg :ty-text-success]}
         "Type in the input above or click buttons to see events..."]]]]))
 
 (defn comprehensive-form-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "💼 Professional Invoice Form"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "Real-world example showcasing various numeric input types in context."]
+   [:p.text-sm.ty-text- "Real-world example showcasing various numeric input types in context."]
 
-   [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
+   [:div.ty-surface-elevated.ty-elevated.p-6.rounded-lg
     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
      ;; Client Information
      [:div.space-y-4
@@ -375,7 +375,7 @@
 (defn container-aware-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "Container-Aware Inputs"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "These inputs adapt to their container size using the layout context."]
+   [:p.text-sm.ty-text- "These inputs adapt to their container size using the layout context."]
 
    ;; Resizable container demo
    [:ty-resize-observer#input-container.bg-blue-50.dark:bg-blue-900.border-2.border-b.dark:border-gray-600lue-200.dark:border-blue-700.rounded-lg.p-4.resize.overflow-auto
@@ -387,8 +387,8 @@
       [:div.space-y-4
        [:div.text-center
         [:h4.font-semibold "Resizable Container"]
-        [:p.text-sm.text-gray-600.dark:text-gray-400 "Container: " (layout/container-width) "×" (layout/container-height) "px"]
-        [:p.text-xs.text-gray-500.dark:text-gray-500 "Breakpoint: " (name (layout/container-breakpoint))]]
+        [:p.text-sm.ty-text- "Container: " (layout/container-width) "×" (layout/container-height) "px"]
+        [:p.text-xs.ty-text-- "Breakpoint: " (name (layout/container-breakpoint))]]
 
        [:div.space-y-3
         [:ty-input {:label "Responsive Input"
@@ -407,11 +407,11 @@
 (defn form-layout-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "Professional Form Layouts"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "Clean, elegant forms with proper spacing and visual hierarchy."]
+   [:p.text-sm.ty-text- "Clean, elegant forms with proper spacing and visual hierarchy."]
 
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
     ;; Contact form with refined spacing like toddler
-    [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
+    [:div.ty-surface-elevated.ty-elevated.p-6.rounded-lg
      [:h4.font-medium.mb-6 "Contact Information"]
      [:div.space-y-5
       [:div.grid.grid-cols-1.sm:grid-cols-2.gap-4
@@ -437,7 +437,7 @@
                   :placeholder "mm/dd/yyyy"}]]]
 
     ;; Login form with elegant styling
-    [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
+    [:div.ty-surface-elevated.ty-elevated.p-6.rounded-lg
      [:h4.font-medium.mb-6 "Account Access"]
      [:div.space-y-5
       [:ty-input {:type "email"
@@ -456,7 +456,7 @@
 (defn event-demo []
   [:div.space-y-6
    [:h3.text-lg.font-semibold "Event Handling"]
-   [:p.text-sm.text-gray-600.dark:text-gray-400 "Check the browser console to see custom events fired by inputs."]
+   [:p.text-sm.ty-text- "Check the browser console to see custom events fired by inputs."]
    [:div.space-y-3
     [:ty-input {:label "Input Events"
                 :placeholder "Type here and check console"
@@ -470,45 +470,45 @@
 
 (defn view []
   (layout/with-window
-    [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400
+    [:div.p-8.max-w-6xl.mx-auto.space-y-8.ty-text-
      [:div
       [:h1.text-3xl.font-bold.mb-4 "Enhanced Input Components"]
       [:p
        "Form inputs with sophisticated numeric formatting, shadow values, and layout integration."]
-      [:p.text-sm.text-gray-500.dark:text-gray-500.mt-2
+      [:p.text-sm.ty-text--.mt-2
        "✨ NEW: Auto-formatting on blur, currency support, locale-aware formatting, and error handling!"]]
 
      ;; Highlight the new numeric formatting capabilities first
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (numeric-formatting-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (currency-formatting-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (comprehensive-form-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (error-handling-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (external-value-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (event-demo)]
 
      ;; Keep existing demos but lower priority
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (basic-input-demos)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (size-variants-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (flavor-variants-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (container-aware-demo)]
 
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (form-layout-demo)]]))

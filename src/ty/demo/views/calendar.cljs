@@ -563,7 +563,7 @@
     [:p.text-lg.text-gray-600.dark:text-gray-400.mt-2
      "Year/Month/Day architecture with property-based composition for optimal performance and intuitive API."]]
 
-;; Main demos
+   ;; Main demos
    (orchestrated-calendar-demo)
    (localized-calendar-demo)
 

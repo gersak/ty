@@ -157,9 +157,9 @@
                            [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                               (js/Date. date-val)
-                               (::dropdown-value @state/state "en")
-                               {:dateStyle "full"})
+                                (js/Date. date-val)
+                                (::dropdown-value @state/state "en")
+                                {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -1049,6 +1049,7 @@
 </ty-dropdown>")])
 
 (defn view []
+  (println "rendering")
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
     [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2

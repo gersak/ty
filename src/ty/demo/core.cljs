@@ -89,8 +89,10 @@
   (let [active? (router/rendered? route-id true)]
     [:button.flex.items-center.gap-2.lg:gap-3.w-full.px-3.lg:px-4.py-2.text-left.rounded-md.transition-colors.text-sm.lg:text-base
      {:class (if active?
-               [:bg-blue-600 :text-white]
-               [:text-gray-700 "dark:text-gray-300" "hover:bg-gray-100" "dark:hover:bg-gray-700"])
+               ;; TAILWIND: Active state with proven color combination
+               [:bg-blue-600 :text-white "dark:bg-blue-500"]
+               ;; TAILWIND: Inactive state with proven hover patterns  
+               [:text-gray-700 :dark:text-gray-300 "hover:bg-gray-100" "dark:hover:bg-gray-700/50"])
       :on {:click (fn []
                     (when on-click (on-click))
                     (when (and (not on-click) route-id)
@@ -157,10 +159,10 @@
                 :icon "palette"}))])
 
 (defn sidebar []
-  [:aside.w-64.bg-white.dark:bg-gray-800.border-r.border-gray-200.dark:border-gray-700.h-full
+  [:aside.w-64.ty-elevated.border-r.ty-border+.h-full ; NEW: Short .ty-elevated includes both background + shadow
    [:div.p-4.lg:p-6
-    [:h1.text-lg.lg:text-2xl.font-bold.text-gray-900.dark:text-white.mb-1.lg:mb-2 "Ty Components"]
-    [:p.text-xs.lg:text-sm.text-gray-600.dark:text-gray-400 "Web Components Library"]]
+    [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"] ; NEW: ty-text
+    [:p.text-xs.lg:text-sm.ty-text- "Web Components Library"]] ; NEW: ty-text-
 
    [:nav.px-2.lg:px-4.pb-4.lg:pb-6
     (nav-items)]])
@@ -233,12 +235,12 @@
           sidebar-width (if show-sidebar? 256 0)
           header-height (if (layout/breakpoint>= :lg) 64 56) ; Smaller header on mobile
           content-padding (if (layout/breakpoint>= :lg) 48 32)] ; Less padding on mobile
-      [:div.h-screen.flex.bg-gray-50.dark:bg-gray-900
-       (mobile-menu) ; Add mobile menu
+      [:div.h-screen.flex.ty-canvas ; NEW: Short .ty-canvas for app background
+       (mobile-menu)
        (when show-sidebar? (sidebar))
-       [:div.flex-1.flex.flex-col.min-w-0 ; Prevent overflow
+       [:div.flex-1.flex.flex-col.min-w-0
         (header)
-        [:main.flex-1.overflow-auto.p-3.lg:p-6 ; Much smaller padding on mobile
+        [:main.flex-1.overflow-auto.p-3.lg:p-6.ty-content ; NEW: Short .ty-content for main content
          ;; Provide accurate container dimensions for the main content area
          (layout/with-container
            {:width (- (layout/container-width) sidebar-width content-padding)
@@ -261,14 +263,14 @@
              (router/rendered? ::theme-utilities true) (theme-utilities/view)
              (router/rendered? ::admin-dashboard true)
              [:div.max-w-4xl.mx-auto
-              [:h1.text-2xl.lg:text-3xl.font-bold.text-gray-900.dark:text-white.mb-4
+              [:h1.text-2xl.lg:text-3xl.font-bold.ty-text.mb-4 ; NEW: ty-text
                "Admin Dashboard"]
-              [:p.text-sm.lg:text-base.text-gray-600.dark:text-gray-400.mb-6
+              [:p.text-sm.lg:text-base.ty-text-.mb-6 ; NEW: ty-text-
                "This page is only visible to admin users. It has the highest landing priority (100)."]
-              [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-4.lg:p-6
+              [:div.ty-elevated.rounded-lg.p-4.lg:p-6 ; NEW: Short .ty-elevated includes background + shadow
                [:h2.text-lg.lg:text-xl.font-semibold.mb-4 "Landing System Demo"]
                [:p.text-sm.lg:text-base.mb-4 "Navigate to the root URL (/) to see the landing system in action:"]
-               [:ul.list-disc.list-inside.space-y-2.text-sm.lg:text-base.text-gray-600.dark:text-gray-400
+               [:ul.list-disc.list-inside.space-y-2.text-sm.lg:text-base.ty-text- ; NEW: ty-text-
                 [:li "Admin users will be redirected here (priority: 100)"]
                 [:li "Non-admin users will be redirected to Overview (priority: 10)"]
                 [:li "Try logging out and navigating to / to see the difference"]]]]

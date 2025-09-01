@@ -2,29 +2,103 @@
    Ty Component Library - Theme Utilities
    Semantic theming utilities that complement Tailwind CSS
    Only includes classes that need theme-awareness
+   
+   IMPORTANT: Higher specificity to override Tailwind
    ================================================================= */
 
 /* =================================================================
-   THEME-AWARE BACKGROUND UTILITIES
-   These adapt automatically to light/dark themes
+   THEME-AWARE ELEVATION UTILITIES
+   Professional shadows for proper card/component elevation
+   Now includes both background AND shadow for complete surface styling!
    ================================================================= */
 
-/* Base backgrounds with emphasis levels */
-.ty-bg {
-  background-color: var(--ty-bg);
+/* Elevated surfaces - cards, panels, components */
+.ty-elevated {
+  background-color: var(--ty-surface-elevated) !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+  border: 1px solid rgb(0 0 0 / 0.05) !important;
 }
 
-.ty-bg\+ {
-  background-color: var(--ty-bg-p1);
+/* Floating surfaces - modals, dropdowns, tooltips */
+.ty-floating {
+  background-color: var(--ty-surface-floating) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  border: 1px solid rgb(0 0 0 / 0.05) !important;
 }
 
-.ty-bg\+\+ {
-  background-color: var(--ty-bg-p2);
+/* Highly elevated - important dialogs, notifications */
+.ty-high-elevation {
+  background-color: var(--ty-surface-floating) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
+  border: 1px solid rgb(0 0 0 / 0.05) !important;
 }
 
-.ty-bg\+\+\+ {
-  background-color: var(--ty-bg-p3);
+/* Sunken surfaces - input fields, text areas */
+.ty-sunken {
+  background-color: var(--ty-surface-input) !important;
+  box-shadow: inset 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
+  border: 1px solid rgb(0 0 0 / 0.1) !important;
 }
+
+/* Dark theme adjustments for shadows */
+html.dark .ty-elevated {
+  background-color: var(--ty-surface-elevated) !important;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2) !important;
+  border: 1px solid rgb(255 255 255 / 0.1) !important;
+}
+
+html.dark .ty-floating {
+  background-color: var(--ty-surface-floating) !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3) !important;
+  border: 1px solid rgb(255 255 255 / 0.1) !important;
+}
+
+html.dark .ty-high-elevation {
+  background-color: var(--ty-surface-floating) !important;
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4) !important;
+  border: 1px solid rgb(255 255 255 / 0.1) !important;
+}
+
+html.dark .ty-sunken {
+  background-color: var(--ty-surface-input) !important;
+  box-shadow: inset 0 1px 2px 0 rgb(0 0 0 / 0.1) !important;
+  border: 1px solid rgb(255 255 255 / 0.1) !important;
+}
+
+/* =================================================================
+   SEMANTIC SURFACE UTILITIES - Short, clear utility classes
+   Optimized for brevity and clarity
+   ================================================================= */
+
+/* App and page backgrounds - the canvas for content */
+.ty-canvas {
+  background-color: var(--ty-surface-canvas) !important;
+}
+
+/* Main content areas - primary content background */
+.ty-content {
+  background-color: var(--ty-surface-content) !important;
+}
+
+/* NOTE: .ty-elevated and .ty-floating are defined in elevation section above and include:
+   - background-color: var(--ty-surface-*) 
+   - box-shadow + border for proper elevation
+   This is perfect - elevated/floating surfaces need both background and shadow! */
+
+/* Input surfaces - form controls, text areas, inputs */
+.ty-input {
+  background-color: var(--ty-surface-input) !important;
+}
+
+/* Sunken surfaces - depressed areas, wells */
+.ty-sunken {
+  background-color: var(--ty-surface-canvas) !important;
+  /* Use canvas for sunken effect */
+}
+
+/* =================================================================
+   SEMANTIC BACKGROUND UTILITIES
+   ================================================================= */
 
 /* Semantic backgrounds - these are the key theme utilities */
 .ty-bg-primary {
@@ -112,183 +186,86 @@
 }
 
 /* =================================================================
-   THEME-AWARE TEXT COLOR UTILITIES
+
+/* =================================================================
+   TEXT HIERARCHY UTILITIES
+   Emphasis-based text colors following surface pattern
    ================================================================= */
 
-/* Primary colors with emphasis */
+/* Base text hierarchy - emphasis based, not semantic */
+.ty-text {
+  color: var(--ty-text) !important;
+}
+
+.ty-text\+ {
+  color: var(--ty-text-p1) !important;
+}
+
+.ty-text\+\+ {
+  color: var(--ty-text-p2) !important;
+}
+
+.ty-text- {
+  color: var(--ty-text-m1) !important;
+}
+
+.ty-text-- {
+  color: var(--ty-text-m2) !important;
+}
+
+.ty-text--- {
+  color: var(--ty-text-m3) !important;
+}
+
+/* =================================================================
+   SEMANTIC TEXT COLORS 
+   Use for specific semantic meaning (success, error, etc.)
+   ================================================================= */
+
+/* Keep semantic text colors for specific use cases */
 .ty-text-primary {
-  color: var(--ty-color-primary);
+  color: var(--ty-color-primary) !important;
 }
 
-.ty-text-primary\+ {
-  color: var(--ty-color-primary-p1);
-}
-
-.ty-text-primary\+\+ {
-  color: var(--ty-color-primary-p2);
-}
-
-.ty-text-primary\+\+\+ {
-  color: var(--ty-color-primary-p3);
-}
-
-.ty-text-primary- {
-  color: var(--ty-color-primary-m1);
-}
-
-.ty-text-primary-- {
-  color: var(--ty-color-primary-m2);
-}
-
-.ty-text-primary--- {
-  color: var(--ty-color-primary-m3);
-}
-
-/* Secondary colors */
 .ty-text-secondary {
-  color: var(--ty-color-secondary);
+  color: var(--ty-color-secondary) !important;
 }
 
-.ty-text-secondary\+ {
-  color: var(--ty-color-secondary-p1);
-}
-
-.ty-text-secondary\+\+ {
-  color: var(--ty-color-secondary-p2);
-}
-
-.ty-text-secondary- {
-  color: var(--ty-color-secondary-m1);
-}
-
-.ty-text-secondary-- {
-  color: var(--ty-color-secondary-m2);
-}
-
-/* Success colors */
 .ty-text-success {
-  color: var(--ty-color-success);
+  color: var(--ty-color-success) !important;
 }
 
-.ty-text-success\+ {
-  color: var(--ty-color-success-p1);
-}
-
-.ty-text-success\+\+ {
-  color: var(--ty-color-success-p2);
-}
-
-.ty-text-success- {
-  color: var(--ty-color-success-m1);
-}
-
-.ty-text-success-- {
-  color: var(--ty-color-success-m2);
-}
-
-/* Danger colors */
 .ty-text-danger {
-  color: var(--ty-color-danger);
+  color: var(--ty-color-danger) !important;
 }
 
-.ty-text-danger\+ {
-  color: var(--ty-color-danger-p1);
-}
-
-.ty-text-danger\+\+ {
-  color: var(--ty-color-danger-p2);
-}
-
-.ty-text-danger- {
-  color: var(--ty-color-danger-m1);
-}
-
-.ty-text-danger-- {
-  color: var(--ty-color-danger-m2);
-}
-
-/* Warning colors */
 .ty-text-warning {
-  color: var(--ty-color-warning);
+  color: var(--ty-color-warning) !important;
 }
 
-.ty-text-warning\+ {
-  color: var(--ty-color-warning-p1);
-}
-
-.ty-text-warning\+\+ {
-  color: var(--ty-color-warning-p2);
-}
-
-.ty-text-warning- {
-  color: var(--ty-color-warning-m1);
-}
-
-.ty-text-warning-- {
-  color: var(--ty-color-warning-m2);
-}
-
-/* Info colors */
 .ty-text-info {
-  color: var(--ty-color-info);
-}
-
-.ty-text-info\+ {
-  color: var(--ty-color-info-p1);
-}
-
-.ty-text-info\+\+ {
-  color: var(--ty-color-info-p2);
-}
-
-.ty-text-info- {
-  color: var(--ty-color-info-m1);
-}
-
-.ty-text-info-- {
-  color: var(--ty-color-info-m2);
-}
-
-/* Neutral colors */
-.ty-text-neutral {
-  color: var(--ty-color-neutral);
-}
-
-.ty-text-neutral\+ {
-  color: var(--ty-color-neutral-p1);
-}
-
-.ty-text-neutral\+\+ {
-  color: var(--ty-color-neutral-p2);
-}
-
-.ty-text-neutral- {
-  color: var(--ty-color-neutral-m1);
-}
-
-.ty-text-neutral-- {
-  color: var(--ty-color-neutral-m2);
+  color: var(--ty-color-info) !important;
 }
 
 /* =================================================================
    THEME-AWARE BORDER UTILITIES
    ================================================================= */
 
-/* Base border colors with emphasis */
+/* Base border colors with emphasis - Higher specificity */
 .ty-border {
-  border-color: var(--ty-border);
+  border-color: var(--ty-border) !important;
 }
 
 .ty-border\+ {
-  border-color: var(--ty-border-p1);
+  border-color: var(--ty-border-p1) !important;
 }
 
 .ty-border\+\+ {
-  border-color: var(--ty-border-p2);
+  border-color: var(--ty-border-p2) !important;
 }
 
 .ty-border\+\+\+ {
-  border-color: var(--ty-border-p3);
+  border-color: var(--ty-border-p3) !important;
 }
 
 .ty-border- {

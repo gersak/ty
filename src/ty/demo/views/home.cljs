@@ -1,13 +1,13 @@
 (ns ty.demo.views.home)
 
 (defn feature-card [{:keys [title description icon]}]
-  [:div.bg-white.dark:bg-gray-800.p-6.rounded-lg.shadow-md
+  [:div.ty-surface-elevated.ty-elevated.p-6.rounded-lg ; SEMANTIC: Elevated card surface with shadow
    [:div.flex.items-center.gap-3.mb-3
     [:ty-icon {:name icon
                :size "lg"
                :class "text-ty-primary"}]
-    [:h3.text-lg.font-semibold.text-gray-900.dark:text-white title]]
-   [:p.text-gray-600.dark:text-gray-400 description]])
+    [:h3.text-lg.font-semibold.ty-text title]] ; NEW: ty-text
+   [:p.ty-text- description]]) ; NEW: ty-text- = muted text ; NEW: ty-text- = muted text ; NEW: ty-text- = muted text ; NEW: ty-text- = muted text
 
 (defn code-example [code]
   [:pre.code-block
@@ -17,9 +17,9 @@
   [:div.max-w-6xl.mx-auto
    ;; Hero section
    [:div.text-center.mb-12
-    [:h1.text-4xl.font-bold.text-gray-900.dark:text-white.mb-4
+    [:h1.text-4xl.font-bold.ty-text.mb-4 ; NEW: ty-text
      "Ty Components Library"]
-    [:p.text-xl.text-gray-600.dark:text-gray-400.mb-6
+    [:p.text-xl.ty-text-.mb-6 ; NEW: ty-text-
      "Modern Web Components built with ClojureScript"]
     [:div.flex.gap-4.justify-center
      [:ty-button {:flavor "primary"

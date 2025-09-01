@@ -174,6 +174,7 @@
   {:observed [:size :flavor :pill :not-pill :clickable :dismissible :disabled :slot :value]
    :connected render!
    :disconnected cleanup!
-   :attr (fn [^js el attr-name _old new]
-           ;; Re-render on attribute changes
+   :attr (fn [^js el delta]
+           ;; Batched attribute changes trigger single re-render
+           (println "[ty-tag] Batched attr update:" (keys delta))
            (render! el))})

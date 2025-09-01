@@ -7,25 +7,40 @@
    ;; Header
    [:div.text-center.mb-8
     [:h1.text-4xl.font-bold.ty-text-primary.mb-4 "Theme Utilities Demo"]
-    [:p.text-lg.ty-text-neutral "Test the ty-bg+, ty-text-, and ty-border- utility classes"]]
+    [:p.text-lg.ty-text "Test semantic surfaces, background utilities, and theme-aware classes"]]
 
-   ;; Background Utilities Demo
+   ;; NEW: Semantic Surface Classes Demo
+   [:div.demo-section
+    [:h2.demo-title "🆕 Semantic Surface Classes"]
+    [:p.demo-subtitle "Developer-friendly surface classes that match mental models"]
+    [:div.ty-surface-canvas.p-6.rounded.border
+     [:div.text-sm.font-mono.mb-4 ".ty-surface-canvas (App canvas background)"]
+     [:div.ty-surface-content.p-4.rounded.mb-4
+      [:div.text-sm.font-mono.mb-4 ".ty-surface-content (Main content background)"]
+      [:div.ty-surface-elevated.ty-elevated.p-4.rounded.mb-4
+       [:div.text-sm.font-mono.mb-2 ".ty-surface-elevated + .ty-elevated"]
+       [:div.text-xs.ty-text "Perfect for cards and panels"]]
+      [:div.ty-surface-floating.ty-floating.p-4.rounded
+       [:div.text-sm.font-mono.mb-2 ".ty-surface-floating + .ty-floating"]
+       [:div.text-xs.ty-text "Perfect for modals and overlays"]]]]]
+
+   ;; Background Utilities Demo (Legacy but still supported)
    [:div.demo-section
     [:h2.demo-title "Background Utilities (ty-bg+)"]
     [:p.demo-subtitle "Base background levels with + and - emphasis"]
     [:div.grid.grid-cols-2.md:grid-cols-4.gap-4.mb-6
      [:div.ty-bg.p-4.rounded.border.text-center
       [:div.font-mono.text-sm ".ty-bg"]
-      [:div.text-xs.ty-text-neutral "Base background"]]
+      [:div.text-xs.ty-text "Base background"]]
      [:div.ty-bg+.p-4.rounded.border.text-center
       [:div.font-mono.text-sm ".ty-bg+"]
-      [:div.text-xs.ty-text-neutral "Elevated"]]
+      [:div.text-xs.ty-text "Elevated"]]
      [:div.ty-bg++.p-4.rounded.border.text-center
       [:div.font-mono.text-sm ".ty-bg++"]
-      [:div.text-xs.ty-text-neutral "More elevated"]]
+      [:div.text-xs.ty-text "More elevated"]]
      [:div.ty-bg+++.p-4.rounded.border.text-center
       [:div.font-mono.text-sm ".ty-bg+++"]
-      [:div.text-xs.ty-text-neutral "Most elevated"]]]
+      [:div.text-xs.ty-text "Most elevated"]]]
 
     [:h3.demo-subtitle "Semantic Backgrounds"]
     [:div.grid.grid-cols-2.md:grid-cols-4.gap-4
@@ -79,13 +94,13 @@
     [:div.grid.grid-cols-2.md:grid-cols-3.gap-4
      [:div.p-4.border-2.ty-border.rounded
       [:div.font-mono.text-sm "ty-border"]
-      [:div.text-xs.ty-text-neutral "Base border"]]
+      [:div.text-xs.ty-text "Base border"]]
      [:div.p-4.border-2.ty-border+.rounded
       [:div.font-mono.text-sm "ty-border+"]
-      [:div.text-xs.ty-text-neutral "Stronger"]]
+      [:div.text-xs.ty-text "Stronger"]]
      [:div.p-4.border-2.ty-border++.rounded
       [:div.font-mono.text-sm "ty-border++"]
-      [:div.text-xs.ty-text-neutral "Even stronger"]]
+      [:div.text-xs.ty-text "Even stronger"]]
      [:div.p-4.border-2.ty-border-primary.rounded
       [:div.font-mono.text-sm.ty-text-primary "ty-border-primary"]
       [:div.text-xs.ty-text-primary- "Primary border"]]
@@ -105,12 +120,12 @@
      ;; Card example
      [:div.ty-card.rounded-lg.p-6
       [:h3.text-lg.font-semibold.ty-text-primary.mb-2 "Default Card"]
-      [:p.ty-text-neutral "This card uses .ty-card class which automatically adapts to light/dark themes."]]
+      [:p.ty-text "This card uses .ty-card class which automatically adapts to light/dark themes."]]
 
      ;; Elevated card
      [:div.ty-card-elevated.rounded-lg.p-6
       [:h3.text-lg.font-semibold.ty-text-primary.mb-2 "Elevated Card"]
-      [:p.ty-text-neutral "This card uses .ty-card-elevated with automatic shadow and theme support."]]
+      [:p.ty-text "This card uses .ty-card-elevated with automatic shadow and theme support."]]
 
      ;; Alert-style components
      [:div.ty-bg-success-.border.ty-border-success.rounded.p-4
@@ -152,7 +167,7 @@
        [:code
         "&lt;div class=\"ty-bg+ p-4 rounded\"&gt;\n"
         "  &lt;h3 class=\"ty-text-primary+ font-semibold\"&gt;Title&lt;/h3&gt;\n"
-        "  &lt;p class=\"ty-text-neutral\"&gt;Content&lt;/p&gt;\n"
+        "  &lt;p class=\"ty-text\"&gt;Content&lt;/p&gt;\n"
         "&lt;/div&gt;"]]]
      [:div
       [:h4.font-semibold.mb-2 "Replicant Usage (Clean Syntax):"]
@@ -160,7 +175,7 @@
        [:code
         "[:div.ty-bg+.p-4.rounded\n"
         "  [:h3.ty-text-primary+.font-semibold \"Title\"]\n"
-        "  [:p.ty-text-neutral \"Content\"]]"]]]
+        "  [:p.ty-text \"Content\"]]"]]]
      [:div
       [:h4.font-semibold.mb-2 "Complex Example:"]
       [:pre.code-block

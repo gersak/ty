@@ -2,7 +2,7 @@
   "Thin CLJS wrapper over wc-shim.js so you don't touch classes or js*.
    Provides helpers for attributes, props, shadow DOM, and hot reload support."
   (:require ["./shim.js" :as shim]
-            [cljs-bean.core :refer [->js]]
+            [cljs-bean.core :refer [->js ->clj]]
             [cljs.reader :as edn]
             [clojure.string :as str]))
 
@@ -62,7 +62,7 @@
 
 (defn parse-json-attr [el k]
   (when-let [v (attr el k)]
-    (-> v js/JSON.parse (js->clj :keywordize-keys true))))
+    (-> v js/JSON.parse (->clj :keywordize-keys true))))
 
 (defn parse-edn-attr [el k]
   (when-let [v (attr el k)]
@@ -131,49 +131,6 @@
        :prop (when prop (fn [el k o v] (prop el (keyword k) o v)))})
 
 ;; -----------------------------
-;; Public API with Hot Reload Support
-;; -----------------------------
-
-(defn define!
-  "Define a Custom Element with hot reload support.
-   In development: 
-   - Skips redefinition if component already exists
-   - Refreshes existing instances with new implementation
-   In production:
-   - Standard web component definition
-   
-   tag  - string tag name, e.g. \"x-counter\"
-   opts - hooks/options map, see ->hooks above.
-   
-   Returns the constructor (for completeness), but you rarely need it."
-  [tag opts]
-  (let [already-defined? (.get js/window.customElements tag)]
-    (cond
-      ;; In production or first definition - define normally
-      (or (not goog.DEBUG) (not already-defined?))
-      (let [constructor (shim/define tag (->hooks opts))]
-        ;; Store in registry for hot reload
-        (swap! component-registry assoc tag opts)
-        ;; Store render function if connected hook exists
-        (when-let [connected (:connected opts)]
-          (swap! component-renderers assoc tag connected))
-        constructor)
-
-      ;; In development and already defined - update and refresh
-      :else
-      (do
-        ;; Update registry with new implementation
-        (swap! component-registry assoc tag opts)
-        ;; Update render function
-        (when-let [connected (:connected opts)]
-          (swap! component-renderers assoc tag connected))
-        ;; Refresh all existing instances
-        (js/console.log (str "[Ty] Hot reloading component: " tag))
-        (refresh-instances! tag)
-        ;; Return the existing constructor
-        (.get js/window.customElements tag)))))
-
-;; -----------------------------
 ;; Development helpers
 ;; -----------------------------
 
@@ -231,6 +188,38 @@
       (set! (.-tyAttrBatch el) #js {:changes #js {}
                                     :scheduled false})))
 
+(defn- get-unified-batch-queue [^js el]
+  "Get or create unified batch queue for both attributes and properties"
+  (or (.-tyUnifiedBatch el)
+      (set! (.-tyUnifiedBatch el) {:attr-changes {}
+                                   :prop-changes {}
+                                   :scheduled false})))
+
+(defn- flush-unified-batch! [^js el batch-attr-fn batch-prop-fn]
+  "Flush both attribute and property batches"
+  (let [batch (.-tyUnifiedBatch el)]
+    (when batch
+      ;; Flush attributes if any and callback provided
+      (when (and batch-attr-fn (seq (:attr-changes batch)))
+        (batch-attr-fn el (:attr-changes batch)))
+
+      ;; Flush properties if any and callback provided  
+      (when (and batch-prop-fn (seq (:prop-changes batch)))
+        (batch-prop-fn el (:prop-changes batch)))
+
+      ;; Clear the batch
+      (set! (.-tyUnifiedBatch el) {:attr-changes {}
+                                   :prop-changes {}
+                                   :scheduled false}))))
+
+(defn- schedule-unified-batch-flush! [^js el batch-attr-fn batch-prop-fn]
+  "Schedule unified batch flush if not already scheduled"
+  (let [batch (get-unified-batch-queue el)]
+    (when-not (.-scheduled batch)
+      (set! (.-scheduled batch) true)
+      (js/requestAnimationFrame
+        #(flush-unified-batch! el batch-attr-fn batch-prop-fn)))))
+
 (defn- flush-attribute-batch! [^js el batch-callback]
   (let [batch (.-tyAttrBatch el)]
     (when (and batch (> (.-length (js/Object.keys (.-changes batch))) 0))
@@ -247,16 +236,74 @@
       (js/requestAnimationFrame
         #(flush-attribute-batch! el batch-callback)))))
 
-(defn define-batched! [tag opts]
-  "Define component with batched attribute updates"
-  (let [batch-attr-fn (:batch-attr opts)
-        regular-opts (dissoc opts :batch-attr)]
-    (define! tag
-      (assoc regular-opts
-        :attr (fn [^js el attr-name old-value new-value]
-                ;; Add to batch
-                (let [batch (get-batch-queue el)]
-                  (aset (.-changes batch) attr-name new-value))
-                ;; Schedule flush
-                (schedule-batch-flush! el batch-attr-fn))))))
+;; -----------------------------
+;; Public API with Hot Reload Support
+;; -----------------------------
 
+(defn define!
+  "Define a Custom Element with batched attribute/property updates by default.
+   
+   New batched API:
+   :attr (fn [el delta] ...)  ; delta = {'attr-name' 'new-value' ...}
+   :prop (fn [el delta] ...)  ; delta = {'prop-name' new-value ...}
+   
+   Batching happens automatically using requestAnimationFrame.
+   Multiple rapid changes are collected and delivered as a single delta.
+   
+   tag  - string tag name, e.g. \"x-counter\"
+   opts - hooks/options map with batched callbacks
+   
+   Returns the constructor (for completeness), but you rarely need it."
+  [tag opts]
+  (let [already-defined? (.get js/window.customElements tag)
+        ;; Extract batched callbacks
+        batch-attr-fn (:attr opts)
+        batch-prop-fn (:prop opts)
+        ;; Create modified opts with individual hooks that batch
+        batched-opts (-> opts
+                         (dissoc :attr :prop)
+                         (cond->
+                           batch-attr-fn
+                           (assoc :attr
+                             (fn [^js el attr-name old-value new-value]
+                                    ;; Add to attribute batch
+                               (let [batch (get-unified-batch-queue el)]
+                                 (set! (.-tyUnifiedBatch el)
+                                       (update batch :attr-changes assoc (name attr-name) new-value)))
+                                    ;; Schedule unified batch flush
+                               (schedule-unified-batch-flush! el batch-attr-fn batch-prop-fn)))
+
+                           batch-prop-fn
+                           (assoc :prop
+                             (fn [^js el prop-name old-value new-value]
+                                    ;; Add to property batch
+                               (let [batch (get-unified-batch-queue el)]
+                                 (set! (.-tyUnifiedBatch el)
+                                       (update batch :prop-changes assoc (name prop-name) new-value)))
+                                    ;; Schedule unified batch flush
+                               (schedule-unified-batch-flush! el batch-attr-fn batch-prop-fn)))))]
+
+    (cond
+      ;; In production or first definition - define with batching
+      (or (not goog.DEBUG) (not already-defined?))
+      (let [constructor (shim/define tag (->hooks batched-opts))]
+        ;; Store in registry for hot reload
+        (swap! component-registry assoc tag opts)
+        ;; Store render function if connected hook exists
+        (when-let [connected (:connected opts)]
+          (swap! component-renderers assoc tag connected))
+        constructor)
+
+      ;; In development and already defined - update and refresh
+      :else
+      (do
+        ;; Update registry with new implementation
+        (swap! component-registry assoc tag opts)
+        ;; Update render function
+        (when-let [connected (:connected opts)]
+          (swap! component-renderers assoc tag connected))
+        ;; Refresh all existing instances
+        (js/console.log (str "[Ty] Hot reloading component: " tag))
+        (refresh-instances! tag)
+        ;; Return the existing constructor
+        (.get js/window.customElements tag)))))

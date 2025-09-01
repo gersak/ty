@@ -140,7 +140,6 @@
     (when-let [day (:selected-day state)]
       (.setAttribute el "day" (str day)))))
 
-
 (defn create-navigation-element
   "Create and configure navigation element with property-based API"
   [^js el state]
@@ -253,6 +252,7 @@
 (defn render!
   "Render orchestrated calendar with navigation + month display"
   [^js el]
+  (println "RENDERING.... ")
   (let [root (wcs/ensure-shadow el)
         state (get-calendar-state el)]
 
@@ -326,11 +326,12 @@
                 (render! el))
    :disconnected (fn [^js el]
                    (cleanup! el))
-   :attr (fn [^js el attr-name old-value new-value]
-           ;; Sync state with attribute changes and re-render
+   :attr (fn [^js el delta]
+           ;; Batched attribute changes - sync state and render once
+           (println "[ty-calendar] Batched attr update:" (keys delta))
            (sync-with-attributes! el)
            (render! el))
-   :prop (fn [^js el prop-name old-value new-value]
+   :prop (fn [^js el delta]
            ;; Property changes also trigger re-render
            (render! el))})
 

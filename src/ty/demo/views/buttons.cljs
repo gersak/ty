@@ -5,7 +5,7 @@
    (when title
      [:h3.demo-subtitle title])
    (when description
-     [:p.text-gray-600.dark:text-gray-400.mb-4 description])
+     [:p.ty-text-.mb-4 description]) ; NEW: ty-text-
    (into [:div.flex.flex-wrap.gap-4.items-center] children)]) ;; <- Use 'into' to splice children
 
 (defn code-snippet [code]
@@ -16,9 +16,9 @@
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
-    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+    [:h1.text-3xl.font-bold.ty-text.mb-2 ; NEW: ty-text
      "Button Component"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400
+    [:p.text-lg.ty-text- ; NEW: ty-text-
      "A versatile button component with semantic flavors, multiple appearances, and size variants."]]
 
    ;; Flavors section
@@ -325,3 +325,4 @@
                                        :accent true
                                        :disabled true} "Disabled"]]})
     (code-snippet "<ty-button flavor=\"primary\" disabled>Disabled</ty-button>")]])
+

@@ -178,17 +178,17 @@
       [:div.flex.flex-wrap.gap-2
        [:ty-tag {:flavor "neutral"}
         [:div {:slot "start"
-               :class "w-4 h-4 bg-green-500 rounded-full"}]
+               :class "w-4 h-4 ty-bg-success rounded-full"}]
         "john@example.com"]
 
        [:ty-tag {:flavor "neutral"}
         [:div {:slot "start"
-               :class "w-4 h-4 bg-blue-500 rounded-full"}]
+               :class "w-4 h-4 ty-bg-primary rounded-full"}]
         "jane.designer"]
 
        [:ty-tag {:flavor "neutral"}
         [:div {:slot "start"
-               :class "w-4 h-4 bg-purple-500 rounded-full"}]
+               :class "w-4 h-4 ty-bg-secondary rounded-full"}]
         "mike.dev"
         [:span {:slot "end"
                 :class "count"} "Admin"]]

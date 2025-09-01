@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+
+  *,
+  ::before,
+  ::after {
+    border-color: var(--ty-border, #e5e7eb);
+  }
+}
+
 /* Custom component classes for the demo app */
 @layer components {
   body {

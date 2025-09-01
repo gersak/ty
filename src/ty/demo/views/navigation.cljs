@@ -4,16 +4,16 @@
 (defn view []
   [:div.demo-section
    [:h2.demo-title "Navigation Components"]
-   [:p.mb-6.text-gray-600.dark:text-gray-400
+   [:p.mb-6.ty-text-
     "Semantic navigation buttons with proper states, theming, and accessibility."]
 
    ;; Navigation States Demo
    [:div.mb-8
     [:h3.demo-subtitle "Navigation States"]
-    [:p.mb-4.text-sm.text-gray-500.dark:text-gray-400
+    [:p.mb-4.text-sm.ty-text--
      "Hover, focus, and active states with semantic styling using Ty variables."]
 
-    [:div.bg-gray-50.dark:bg-gray-800.p-6.rounded-lg.border
+    [:div.ty-content.p-6.rounded-lg.border
      [:div.ty-nav-list.max-w-sm
       ;; Regular navigation item
       [:button.ty-nav-item
@@ -40,12 +40,12 @@
    ;; Navigation Sizes Demo
    [:div.mb-8
     [:h3.demo-subtitle "Navigation Sizes"]
-    [:p.mb-4.text-sm.text-gray-500.dark:text-gray-400
+    [:p.mb-4.text-sm.ty-text--
      "Different size variants for different contexts."]
 
     [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
      ;; Compact size
-     [:div.bg-gray-50.dark:bg-gray-800.p-4.rounded-lg.border
+     [:div.ty-content.p-4.rounded-lg.border
       [:h4.text-sm.font-semibold.mb-3 "Compact (.compact)"]
       [:div.ty-nav-list.max-w-xs
        [:button.ty-nav-item.compact
@@ -56,7 +56,7 @@
         [:span.nav-text "Users"]]]]
 
      ;; Large size
-     [:div.bg-gray-50.dark:bg-gray-800.p-4.rounded-lg.border
+     [:div.ty-content.p-4.rounded-lg.border
       [:h4.text-sm.font-semibold.mb-3 "Large (.large)"]
       [:div.ty-nav-list.max-w-sm
        [:button.ty-nav-item.large
@@ -69,10 +69,10 @@
    ;; Navigation Layout Demo
    [:div.mb-8
     [:h3.demo-subtitle "Navigation Layout"]
-    [:p.mb-4.text-sm.text-gray-500.dark:text-gray-400
+    [:p.mb-4.text-sm.ty-text--
      "Complete navigation layouts with sections and dividers."]
 
-    [:div.bg-gray-50.dark:bg-gray-800.p-6.rounded-lg.border
+    [:div.ty-content.p-6.rounded-lg.border
      [:div.max-w-xs.mx-auto
       [:div.ty-nav-section-title "Main"]
       [:div.ty-nav-list
@@ -98,10 +98,10 @@
    ;; CSS Classes Documentation  
    [:div.mb-8
     [:h3.demo-subtitle "CSS Classes"]
-    [:p.mb-4.text-sm.text-gray-500.dark:text-gray-400
+    [:p.mb-4.text-sm.ty-text--
      "Available classes for navigation styling."]
 
-    [:div.bg-gray-900.text-gray-100.p-4.rounded-lg.text-sm.font-mono.overflow-x-auto
+    [:div.ty-elevated.ty-text.p-4.rounded-lg.text-sm.font-mono.overflow-x-auto
      [:pre
       ".ty-nav-item           /* Base navigation item */
 .ty-nav-item:hover     /* Hover state */
@@ -125,10 +125,10 @@
    ;; Interactive Example
    [:div.mb-8
     [:h3.demo-subtitle "Interactive Example"]
-    [:p.mb-4.text-sm.text-gray-500.dark:text-gray-400
+    [:p.mb-4.text-sm.ty-text--
      "Click to navigate between different demo sections (uses actual router)."]
 
-    [:div.bg-gray-50.dark:bg-gray-800.p-6.rounded-lg.border
+    [:div.ty-content.p-6.rounded-lg.border
      [:div.max-w-sm.mx-auto.ty-nav-list
       [:button.ty-nav-item
        {:class (when (router/rendered? :ty.demo.core/buttons true) "active")

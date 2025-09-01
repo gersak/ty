@@ -35,7 +35,7 @@
     ;; Simple modal
     [:ty-modal {:open (get @state/state :modal-basic-open false)
                 :on {:ty-modal-close #(swap! state/state assoc :modal-basic-open false)}}
-     [:div.p-6.max-w-md.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
+     [:div.p-6.max-w-md.ty-elevated.rounded-lg.shadow-xl
       [:h3.text-lg.font-semibold.mb-4 "Test Modal"]
       [:p.ty-text-.mb-4 "This is a test modal with user-defined styling."]
       [:ty-button {:on {:click #(swap! state/state assoc :modal-basic-open false)}}
@@ -57,7 +57,7 @@
     ;; Simple modal with dropdown
     [:ty-modal {:open (get @state/state :modal-dropdown-simple-open false)
                 :on {:ty-modal-close #(swap! state/state assoc :modal-dropdown-simple-open false)}}
-     [:div.p-6.max-w-lg.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
+     [:div.p-6.max-w-lg.ty-elevated.rounded-lg.shadow-xl
       [:h3.text-xl.font-semibold.mb-4 "Simple Dropdown Test"]
       [:p.ty-text-.mb-4
        "Test basic dropdown functionality inside a modal:"]
@@ -97,7 +97,7 @@
     ;; Complex modal with multiple dropdowns and edge cases
     [:ty-modal {:open (get @state/state :modal-dropdown-complex-open false)
                 :on {:ty-modal-close #(swap! state/state assoc :modal-dropdown-complex-open false)}}
-     [:div.p-6.max-w-4xl.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
+     [:div.p-6.max-w-4xl.ty-elevated.rounded-lg.shadow-xl
       [:h3.text-xl.font-semibold.mb-4 "Complex Dropdown Test"]
       [:p.ty-text-.mb-6
        "Test multiple dropdowns, positioning edge cases, and interactions:"]

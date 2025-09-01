@@ -170,15 +170,15 @@
      [:div.fixed.inset-0.bg-black.bg-opacity-50
       {:on {:click toggle-mobile-menu!}}]
      ;; Menu
-     [:div.fixed.inset-y-0.left-0.w-72.max-w-xs.bg-white.dark:bg-gray-800.shadow-xl.overflow-y-auto
+     [:div.fixed.inset-y-0.left-0.w-72.max-w-xs.ty-elevated.shadow-xl.overflow-y-auto
       [:div.p-4
        [:div.flex.items-center.justify-between.mb-4
         [:h1.text-lg.font-bold.ty-text "Ty Components"]
-        [:button.p-2.rounded-md.hover:bg-gray-100.dark:hover:bg-gray-700
+        [:button.p-2.rounded-md.hover:ty-content
          {:on {:click toggle-mobile-menu!}}
          [:ty-icon {:name "x"
                     :size "sm"}]]]
-       [:p.text-sm.text-gray-600.dark:text-gray-400.mb-6 "Web Components Library"]]
+       [:p.text-sm.ty-text-.mb-6 "Web Components Library"]]
       [:nav.px-4.pb-6
        (nav-items)]]]))
 
@@ -187,11 +187,11 @@
    [:div.flex.justify-between.items-center
     [:div.flex.items-center.gap-3.lg:gap-4.min-w-0.flex-1
      ;; Mobile menu button
-     [:button.lg:hidden.p-1.5.rounded-md.hover:bg-gray-100.dark:hover:bg-gray-700.flex-shrink-0
+     [:button.lg:hidden.p-1.5.rounded-md.hover:ty-content.flex-shrink-0
       {:on {:click toggle-mobile-menu!}}
       [:ty-icon {:name "menu"
                  :size "sm"}]]
-     [:h2.text-base.lg:text-xl.font-semibold.text-gray-900.dark:text-white.truncate
+     [:h2.text-base.lg:text-xl.font-semibold.ty-text.truncate
       (cond
         (router/rendered? ::home true) "Welcome to Ty"
         (router/rendered? ::buttons true) "Button Components"
@@ -213,14 +213,14 @@
         :else "Ty Components")]]
     [:div.flex.items-center.gap-2.lg:gap-4.flex-shrink-0
      ;; User info / auth toggle for testing
-     [:button.text-xs.lg:text-sm.px-2.lg:px-3.py-1.rounded.bg-gray-200.dark:bg-gray-700.dark:text-gray-200.hidden.sm:block
+     [:button.text-xs.lg:text-sm.px-2.lg:px-3.py-1.rounded.ty-bg-neutral.ty-text.hidden.sm:block
       {:on {:click #(if (:user/roles @state)
                       (swap! state dissoc :user/roles)
                       (swap! state assoc :user/roles #{:admin}))}}
       (if (:user/roles @state)
         "Logout"
         "Login as Admin")]
-     [:button.flex.items-center.justify-center.w-7.h-7.lg:w-8.lg:h-8.rounded-md.bg-gray-100.dark:bg-gray-700.hover:bg-gray-200.dark:hover:bg-gray-600.transition-colors.dark:text-gray-200
+     [:button.flex.items-center.justify-center.w-7.h-7.lg:w-8.lg:h-8.rounded-md.ty-content.hover:ty-content+.transition-colors.ty-text
       {:on {:click toggle-theme!}}
       [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
                  :size "sm"}]]]]])

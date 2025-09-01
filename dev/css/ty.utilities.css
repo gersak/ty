@@ -68,7 +68,7 @@ html.dark .ty-sunken {
 
 /* Input surfaces - form controls, text areas, inputs */
 .ty-input {
-  background-color: var(--ty-surface-input) !important;
+  background-color: var(--ty-input-bg) !important;
 }
 
 /* Sunken surfaces - depressed areas, wells */

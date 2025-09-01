@@ -54,7 +54,7 @@
   border: none;
   padding: 0px;
   background: transparent;
-  color: var(--ty-color-neutral-m1);
+  color: var(--ty-color-neutral-soft);
   font-size: 1.5rem;
   cursor: pointer;
   transition: all 0.15s ease;

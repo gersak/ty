@@ -287,7 +287,7 @@
 }
 
 .dropdown-close:hover {
-  background-color: var(--ty-bg-neutral-p1);
+  background-color: var(--ty-bg-neutral-mild);
 }
 
 .dropdown-close svg {
@@ -344,12 +344,12 @@
 }
 
 .dropdown-options ::slotted(option:hover) {
-  background-color: var(--ty-bg-neutral-m1);
+  background-color: var(--ty-bg-neutral-soft);
 }
 
 .dropdown-options ::slotted(option[highlighted]) {
-  background-color: var(--ty-bg-primary-m1);
-  color: var(--ty-color-primary-p1);
+  background-color: var(--ty-bg-primary-soft);
+  color: var(--ty-color-primary-mild);
 }
 
 .dropdown-options ::slotted(option[selected]) {
@@ -435,7 +435,7 @@
   width: 100%;
   text-align: left;
   box-sizing: border-box;
-  border-bottom: 1px solid var(--ty-border-m1);
+  border-bottom: 1px solid var(--ty-border-soft);
   min-height: var(--ty-size-lg);
 }
 
@@ -445,12 +445,12 @@
 
 .mobile-options-list ::slotted(option:hover),
 .mobile-options-list ::slotted(option:active) {
-  background-color: var(--ty-bg-neutral-m1);
+  background-color: var(--ty-bg-neutral-soft);
 }
 
 .mobile-options-list ::slotted(option[highlighted]) {
-  background-color: var(--ty-bg-primary-m1);
-  color: var(--ty-color-primary-p1);
+  background-color: var(--ty-bg-primary-soft);
+  color: var(--ty-color-primary-mild);
 }
 
 .mobile-options-list ::slotted(option[selected]) {
@@ -472,8 +472,8 @@
 :host([flavor="primary"]) .dropdown-stub:hover,
 :host([flavor="primary"]) .dropdown-search-input:focus,
 :host([flavor="primary"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-primary-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-primary-m3);
+  border-color: var(--ty-color-primary-mild);
+  box-shadow: 0 0 0 3px var(--ty-color-primary-faint);
 }
 
 :host([flavor="secondary"]) .dropdown-stub,
@@ -485,8 +485,8 @@
 :host([flavor="secondary"]) .dropdown-stub:hover,
 :host([flavor="secondary"]) .dropdown-search-input:focus,
 :host([flavor="secondary"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-secondary-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-secondary-m3);
+  border-color: var(--ty-color-secondary-mild);
+  box-shadow: 0 0 0 3px var(--ty-color-secondary-faint);
 }
 
 :host([flavor="success"]) .dropdown-stub,
@@ -498,8 +498,8 @@
 :host([flavor="success"]) .dropdown-stub:hover,
 :host([flavor="success"]) .dropdown-search-input:focus,
 :host([flavor="success"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-success-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-success-m3);
+  border-color: var(--ty-color-success-mild);
+  box-shadow: 0 0 0 3px var(--ty-color-success-faint);
 }
 
 :host([flavor="danger"]) .dropdown-stub,
@@ -511,8 +511,8 @@
 :host([flavor="danger"]) .dropdown-stub:hover,
 :host([flavor="danger"]) .dropdown-search-input:focus,
 :host([flavor="danger"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-danger-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-danger-m3);
+  border-color: var(--ty-color-danger-mild);
+  box-shadow: 0 0 0 3px var(--ty-color-danger-faint);
 }
 
 :host([flavor="warning"]) .dropdown-stub,
@@ -524,8 +524,8 @@
 :host([flavor="warning"]) .dropdown-stub:hover,
 :host([flavor="warning"]) .dropdown-search-input:focus,
 :host([flavor="warning"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-warning-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-warning-m3);
+  border-color: var(--ty-color-warning-mild);
+  box-shadow: 0 0 0 3px var(--ty-color-warning-faint);
 }
 
 :host([flavor="info"]) .dropdown-stub,
@@ -537,8 +537,8 @@
 :host([flavor="info"]) .dropdown-stub:hover,
 :host([flavor="info"]) .dropdown-search-input:focus,
 :host([flavor="info"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-info-p1);
-  box-shadow: 0 0 0 3px var(--ty-color-info-m3);
+  border-color: var(--ty-color-info-mild);
+  box-shadow: 0 0 0 3px var(--ty-color-info-faint);
 }
 
 /* ===== LEGACY SEMANTIC FLAVOR VARIANTS (Backward Compatibility) ===== */

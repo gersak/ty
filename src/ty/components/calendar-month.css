@@ -26,7 +26,7 @@
 /* Header row - minimal spacing */
 .calendar-header-row {
   flex: 0 0 auto;
-  color: var(--ty-color-neutral-p3);
+  color: var(--ty-color-neutral-strong);
 }
 
 /* Day rows - compact */
@@ -61,7 +61,7 @@
 .calendar-day-cell {
   border-radius: 0.25rem;
   font-size: 0.8125rem;
-  color: var(--ty-color-neutral, #374151);
+  color: var(--ty-color-neutral);
   cursor: pointer;
   transition: all 0.1s ease;
   margin: 0.0625rem;
@@ -73,13 +73,13 @@
 
 /* Hover effects - subtle */
 .calendar-day-cell:hover {
-  color: var(--ty-color-neutral-p3);
+  color: var(--ty-color-neutral-strong);
   background-color: var(--ty-bg-neutral);
 }
 
 /* TODAY STYLING - minimal accent */
 .calendar-day-cell.today {
-  color: var(--ty-color-primary-p1);
+  color: var(--ty-color-primary-mild);
   font-weight: 500;
 }
 
@@ -91,15 +91,15 @@
   bottom: 0.2rem;
   width: 0.15rem;
   height: 0.15rem;
-  background-color: var(--ty-color-primary-p1);
+  background-color: var(--ty-color-primary-mild);
   border-radius: 50%;
 }
 
 /* SELECTED STYLING - clean selection */
 .calendar-day-cell.selected {
-  color: var(--ty-color-neutral-p3) !important;
-  border-color: var(--ty-color-neutral-p3);
-  background-color: var(--ty-color-neutral-m3);
+  color: var(--ty-color-neutral-strong) !important;
+  border-color: var(--ty-color-neutral-strong);
+  background-color: var(--ty-color-neutral-faint);
   font-weight: 500;
 }
 
@@ -109,17 +109,17 @@
 
 /* Weekend styling - muted */
 .calendar-day-cell.weekend {
-  color: var(--ty-color-neutral-m1);
+  color: var(--ty-color-neutral-soft);
 }
 
 /* Other month styling - very muted */
 .calendar-day-cell.other-month {
-  color: var(--ty-color-neutral-m2);
+  color: var(--ty-color-neutral-faint);
   font-weight: 300;
 }
 
 .calendar-day-cell.other-month:hover {
-  background-color: var(--ty-bg-neutral-m1);
+  background-color: var(--ty-bg-neutral-soft);
 }
 
 .calendar-day-cell.selected.other-month {

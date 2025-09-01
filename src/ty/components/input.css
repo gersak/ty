@@ -46,11 +46,11 @@
 /* Error state for inputs */
 input.error {
   border-color: var(--ty-color-danger);
-  background: var(--ty-bg-danger-m1);
+  background: var(--ty-bg-danger-soft);
 }
 
 input.error:focus {
-  border-color: var(--ty-color-danger-p1);
+  border-color: var(--ty-color-danger-mild);
   box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
 }
 
@@ -149,7 +149,7 @@ input.primary {
 }
 
 input.primary:focus {
-  border-color: var(--ty-color-primary-p1);
+  border-color: var(--ty-color-primary-mild);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
@@ -159,7 +159,7 @@ input.secondary {
 }
 
 input.secondary:focus {
-  border-color: var(--ty-color-secondary-p1);
+  border-color: var(--ty-color-secondary-mild);
   box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
@@ -169,7 +169,7 @@ input.success {
 }
 
 input.success:focus {
-  border-color: var(--ty-color-success-p1);
+  border-color: var(--ty-color-success-mild);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
@@ -179,7 +179,7 @@ input.danger {
 }
 
 input.danger:focus {
-  border-color: var(--ty-color-danger-p1);
+  border-color: var(--ty-color-danger-mild);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
@@ -189,7 +189,7 @@ input.warning {
 }
 
 input.warning:focus {
-  border-color: var(--ty-color-warning-p1);
+  border-color: var(--ty-color-warning-mild);
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
@@ -199,7 +199,7 @@ input.info {
 }
 
 input.info:focus {
-  border-color: var(--ty-color-info-p1);
+  border-color: var(--ty-color-info-mild);
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
 }
 

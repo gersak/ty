@@ -33,9 +33,10 @@
   transition: var(--ty-transition-all);
 
   /* Default styling using semantic variables */
-  background: var(--ty-bg-neutral);
-  color: var(--ty-color-neutral-p3);
-  border: 1px solid transparent;
+  background: var(--ty-bg-neutral-mild);
+  color: var(--ty-color-neutral-strong);
+  border: 1px solid;
+  border-color: var(--ty-color-neutral);
 }
 
 /* Non-pill variant - rectangular with rounded corners */
@@ -51,7 +52,7 @@
 }
 
 .tag-container[tabindex]:not([aria-disabled="true"]):hover {
-  background: var(--ty-bg-neutral-p1);
+  background: var(--ty-bg-neutral-mild);
   transform: translateY(-1px);
   box-shadow: var(--ty-shadow-md);
 }
@@ -234,91 +235,91 @@
 /* Primary */
 :host([flavor="primary"]) .tag-container {
   background: var(--ty-bg-primary);
-  color: var(--ty-color-primary-p3);
+  color: var(--ty-color-primary-strong);
   border-color: var(--ty-border-primary);
 }
 
 :host([flavor="primary"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-primary-p1);
+  background: var(--ty-bg-primary-mild);
 }
 
 :host([flavor="primary"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-primary-m3);
+  box-shadow: 0 0 0 3px var(--ty-color-primary-faint);
 }
 
 /* Secondary */
 :host([flavor="secondary"]) .tag-container {
   background: var(--ty-bg-secondary);
-  color: var(--ty-color-secondary-p3);
+  color: var(--ty-color-secondary-strong);
   border-color: var(--ty-border-secondary);
 }
 
 :host([flavor="secondary"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-secondary-p1);
+  background: var(--ty-bg-secondary-mild);
 }
 
 :host([flavor="secondary"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-secondary-m3);
+  box-shadow: 0 0 0 3px var(--ty-color-secondary-faint);
 }
 
 /* Success */
 :host([flavor="success"]) .tag-container {
   background: var(--ty-bg-success);
-  color: var(--ty-color-success-p3);
+  color: var(--ty-color-success-strong);
   border-color: var(--ty-border-success);
 }
 
 :host([flavor="success"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-success-p1);
+  background: var(--ty-bg-success-mild);
 }
 
 :host([flavor="success"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-success-m3);
+  box-shadow: 0 0 0 3px var(--ty-color-success-faint);
 }
 
 /* Danger */
 :host([flavor="danger"]) .tag-container {
   background: var(--ty-bg-danger);
-  color: var(--ty-color-danger-p3);
+  color: var(--ty-color-danger-strong);
   border-color: var(--ty-border-danger);
 }
 
 :host([flavor="danger"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-danger-p1);
+  background: var(--ty-bg-danger-mild);
 }
 
 :host([flavor="danger"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-danger-m3);
+  box-shadow: 0 0 0 3px var(--ty-color-danger-faint);
 }
 
 /* Warning */
 :host([flavor="warning"]) .tag-container {
   background: var(--ty-bg-warning);
-  color: var(--ty-color-warning-p3);
+  color: var(--ty-color-warning-strong);
   border-color: var(--ty-border-warning);
 }
 
 :host([flavor="warning"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-warning-p1);
+  background: var(--ty-bg-warning-mild);
 }
 
 :host([flavor="warning"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-warning-m3);
+  box-shadow: 0 0 0 3px var(--ty-color-warning-faint);
 }
 
 /* Info */
 :host([flavor="info"]) .tag-container {
   background: var(--ty-bg-info);
-  color: var(--ty-color-info-p3);
+  color: var(--ty-color-info-strong);
   border-color: var(--ty-border-info);
 }
 
 :host([flavor="info"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-info-p1);
+  background: var(--ty-bg-info-mild);
 }
 
 :host([flavor="info"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-info-m3);
+  box-shadow: 0 0 0 3px var(--ty-color-info-faint);
 }
 
 /* ===== LEGACY FLAVOR VARIANTS (Backward Compatibility) ===== */
@@ -335,51 +336,16 @@
 /* Neutral (default) */
 :host([flavor="neutral"]) .tag-container {
   background: var(--ty-bg-neutral);
-  color: var(--ty-color-neutral-p3);
+  color: var(--ty-color-neutral-strong);
   border-color: var(--ty-border-neutral);
 }
 
 :host([flavor="neutral"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-neutral-p1);
+  background: var(--ty-bg-neutral-mild);
 }
 
 :host([flavor="neutral"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-neutral-m3);
-}
-
-/* Positive */
-}
-
-}
-
-}
-
-/* Negative */
-}
-
-}
-
-}
-
-/* Important */
-}
-
-}
-
-}
-
-/* Exception */
-}
-
-}
-
-}
-
-/* Unique */
-}
-
-}
-
+  box-shadow: 0 0 0 3px var(--ty-color-neutral-faint);
 }
 
 /* Slotted content styling */

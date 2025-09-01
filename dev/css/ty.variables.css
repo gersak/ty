@@ -6,157 +6,126 @@
 /* Default theme (light) */
 html {
   /* =================================================================
-     INDUSTRY-STANDARD SEMANTIC BASE COLORS
-     Primary, Secondary, Success, Danger, Warning, Info, Neutral
-     ================================================================= */
-
-  --ty-semantic-primary: #3b82f6;
-  /* Main brand color, primary actions, CTAs */
-  --ty-semantic-secondary: #8b5cf6;
-  /* Supporting actions, less prominent */
-  --ty-semantic-success: #10b981;
-  /* Positive outcomes, confirmations, "good" states */
-  --ty-semantic-danger: #ef4444;
-  /* Errors, destructive actions, critical issues */
-  --ty-semantic-warning: #f59e0b;
-  /* Caution, attention needed, "be careful" states */
-  --ty-semantic-info: #06b6d4;
-  /* Informational, neutral emphasis, helpful notes */
-  --ty-semantic-neutral: #6b7280;
-  /* Default, standard, muted states */
-
-
-
-  /* =================================================================
-     INDUSTRY-STANDARD COLOR VARIATIONS
-     Manually defined for precise control
-     p = plus (more emphasis), m = minus (less emphasis)
+     5-VARIANT COLOR SYSTEM
+     Simplified from 7 variants to 5 practical variants:
+     -strong = Strong emphasis - active states, strong borders
+     -mild = Moderate emphasis - hover states, focus rings  
+             = Base color - default appearance
+     -soft = Reduced emphasis - muted backgrounds, secondary
+     -faint = Minimal emphasis - subtle hints, disabled states
      ================================================================= */
 
   /* Primary */
-  --ty-color-primary: var(--ty-semantic-primary);
-  --ty-color-primary-p1: #2563eb;
-  --ty-color-primary-p2: #1d4ed8;
-  --ty-color-primary-p3: #1e40af;
-  --ty-color-primary-m1: #60a5fa;
-  --ty-color-primary-m2: #93c5fd;
-  --ty-color-primary-m3: #bfdbfe;
+  --ty-color-primary-strong: #1d4ed8;
+  --ty-color-primary-mild: #2563eb;
+  --ty-color-primary: #3b82f6;
+  --ty-color-primary-soft: #60a5fa;
+  --ty-color-primary-faint: #93c5fd;
 
   /* Secondary */
-  --ty-color-secondary: var(--ty-semantic-secondary);
-  --ty-color-secondary-p1: #7c3aed;
-  --ty-color-secondary-p2: #6d28d9;
-  --ty-color-secondary-p3: #5b21b6;
-  --ty-color-secondary-m1: #a78bfa;
-  --ty-color-secondary-m2: #c4b5fd;
-  --ty-color-secondary-m3: #ddd6fe;
+  --ty-color-secondary-strong: #6d28d9;
+  --ty-color-secondary-mild: #7c3aed;
+  --ty-color-secondary: #8b5cf6;
+  --ty-color-secondary-soft: #a78bfa;
+  --ty-color-secondary-faint: #c4b5fd;
 
   /* Success */
-  --ty-color-success: var(--ty-semantic-success);
-  --ty-color-success-p1: #059669;
-  --ty-color-success-p2: #047857;
-  --ty-color-success-p3: #064e3b;
-  --ty-color-success-m1: #34d399;
-  --ty-color-success-m2: #6ee7b7;
-  --ty-color-success-m3: #a7f3d0;
+  --ty-color-success-strong: #047857;
+  --ty-color-success-mild: #059669;
+  --ty-color-success: #10b981;
+  --ty-color-success-soft: #34d399;
+  --ty-color-success-faint: #6ee7b7;
 
   /* Danger */
-  --ty-color-danger: var(--ty-semantic-danger);
-  --ty-color-danger-p1: #dc2626;
-  --ty-color-danger-p2: #b91c1c;
-  --ty-color-danger-p3: #991b1b;
-  --ty-color-danger-m1: #f87171;
-  --ty-color-danger-m2: #fca5a5;
-  --ty-color-danger-m3: #fecaca;
+  --ty-color-danger-strong: #b91c1c;
+  --ty-color-danger-mild: #dc2626;
+  --ty-color-danger: #ef4444;
+  --ty-color-danger-soft: #f87171;
+  --ty-color-danger-faint: #fca5a5;
 
   /* Warning */
-  --ty-color-warning: var(--ty-semantic-warning);
-  --ty-color-warning-p1: #d97706;
-  --ty-color-warning-p2: #b45309;
-  --ty-color-warning-p3: #92400e;
-  --ty-color-warning-m1: #fbbf24;
-  --ty-color-warning-m2: #fcd34d;
-  --ty-color-warning-m3: #fde68a;
+  --ty-color-warning-strong: #b45309;
+  --ty-color-warning-mild: #d97706;
+  --ty-color-warning: #f59e0b;
+  --ty-color-warning-soft: #fbbf24;
+  --ty-color-warning-faint: #fcd34d;
 
   /* Info */
-  --ty-color-info: var(--ty-semantic-info);
-  --ty-color-info-p1: #0891b2;
-  --ty-color-info-p2: #0e7490;
-  --ty-color-info-p3: #155e75;
-  --ty-color-info-m1: #22d3ee;
-  --ty-color-info-m2: #67e8f9;
-  --ty-color-info-m3: #a5f3fc;
+  --ty-color-info-strong: #0e7490;
+  --ty-color-info-mild: #0891b2;
+  --ty-color-info: #06b6d4;
+  --ty-color-info-soft: #22d3ee;
+  --ty-color-info-faint: #67e8f9;
 
   /* Neutral */
-  --ty-color-neutral: var(--ty-semantic-neutral);
-  --ty-color-neutral-p1: #4b5563;
-  --ty-color-neutral-p2: #374151;
-  --ty-color-neutral-p3: #1f2937;
-  --ty-color-neutral-m1: #9ca3af;
-  --ty-color-neutral-m2: #d1d5db;
-  --ty-color-neutral-m3: #e5e7eb;
+  --ty-color-neutral-strong: #374151;
+  --ty-color-neutral-mild: #4b5563;
+  --ty-color-neutral: #6b7280;
+  --ty-color-neutral-soft: #9ca3af;
+  --ty-color-neutral-faint: #d1d5db;
 
 
-  /* PHASE 1: UX-OPTIMIZED Base backgrounds - Light theme with white-primary approach */
-  --ty-bg-m2: #f8fafc;
+
+
+  --ty-bg-faint: #f8fafc;
   /* Very light canvas - for minimal backgrounds */
-  --ty-bg-m1: #f1f5f9;
+  --ty-bg-soft: #f1f5f9;
   /* Light canvas - app backgrounds */
   --ty-bg: #ffffff;
   /* WHITE - primary content baseline */
-  --ty-bg-p1: #f8fafc;
+  --ty-bg-mild: #f8fafc;
   /* Subtle elevation - cards with light tint */
-  --ty-bg-p2: #f1f5f9;
+  --ty-bg-strong: #f1f5f9;
   /* More elevation - stronger contrast */
-  --ty-bg-p3: #e2e8f0;
+  --ty-bg-strong: #e2e8f0;
   /* Maximum elevation - clear distinction */
 
   /* Primary backgrounds */
   --ty-bg-primary: #dbeafe;
-  --ty-bg-primary-p1: #bfdbfe;
-  --ty-bg-primary-m1: #eff6ff;
+  --ty-bg-primary-mild: #bfdbfe;
+  --ty-bg-primary-soft: #eff6ff;
 
   /* Secondary backgrounds */
   --ty-bg-secondary: #e9d5ff;
-  --ty-bg-secondary-p1: #ddd6fe;
-  --ty-bg-secondary-m1: #f3e8ff;
+  --ty-bg-secondary-mild: #ddd6fe;
+  --ty-bg-secondary-soft: #f3e8ff;
 
   /* Success backgrounds */
   --ty-bg-success: #d1fae5;
-  --ty-bg-success-p1: #a7f3d0;
-  --ty-bg-success-m1: #ecfdf5;
+  --ty-bg-success-mild: #a7f3d0;
+  --ty-bg-success-soft: #ecfdf5;
 
   /* Danger backgrounds */
   --ty-bg-danger: #fee2e2;
-  --ty-bg-danger-p1: #fecaca;
-  --ty-bg-danger-m1: #fef2f2;
+  --ty-bg-danger-mild: #fecaca;
+  --ty-bg-danger-soft: #fef2f2;
 
   /* Warning backgrounds */
   --ty-bg-warning: #fef3c7;
-  --ty-bg-warning-p1: #fde68a;
-  --ty-bg-warning-m1: #fffbeb;
+  --ty-bg-warning-mild: #fde68a;
+  --ty-bg-warning-soft: #fffbeb;
 
   /* Info backgrounds */
   --ty-bg-info: #cffafe;
-  --ty-bg-info-p1: #a5f3fc;
-  --ty-bg-info-m1: #ecfeff;
+  --ty-bg-info-mild: #a5f3fc;
+  --ty-bg-info-soft: #ecfeff;
 
   /* Neutral backgrounds */
   --ty-bg-neutral: #f3f4f6;
-  --ty-bg-neutral-p1: #e5e7eb;
-  --ty-bg-neutral-m1: #f9fafb;
+  --ty-bg-neutral-mild: #e5e7eb;
+  --ty-bg-neutral-soft: #f9fafb;
 
   /* =================================================================
      INDUSTRY-STANDARD BORDER COLORS
      ================================================================= */
 
   --ty-border: #e5e7eb;
-  --ty-border-p1: #d1d5db;
-  --ty-border-p2: #9ca3af;
-  --ty-border-p3: #6b7280;
-  --ty-border-m1: #f3f4f6;
-  --ty-border-m2: #f9fafb;
-  --ty-border-m3: #fafafa;
+  --ty-border-mild: #d1d5db;
+  --ty-border-strong: #9ca3af;
+  --ty-border-strong: #6b7280;
+  --ty-border-soft: #f3f4f6;
+  --ty-border-faint: #f9fafb;
+  --ty-border-faint: #fafafa;
 
   /* Semantic borders */
   --ty-border-primary: var(--ty-color-primary);
@@ -380,15 +349,15 @@ html {
   /* Text hierarchy - emphasis based, not semantic */
   --ty-text: #111827;
   /* Primary text - highest emphasis */
-  --ty-text-p1: #000000;
+  --ty-text-mild: #000000;
   /* Maximum emphasis - true black */
-  --ty-text-p2: #000000;
+  --ty-text-strong: #000000;
   /* Maximum emphasis - true black */
-  --ty-text-m1: #374151;
+  --ty-text-soft: #374151;
   /* Less emphasis - medium gray */
-  --ty-text-m2: #6b7280;
+  --ty-text-faint: #6b7280;
   /* Even less emphasis - light gray */
-  --ty-text-m3: #9ca3af;
+  --ty-text-faint: #9ca3af;
   /* Minimum emphasis - very light gray */
 
   /* Z-Index Scale */
@@ -415,147 +384,109 @@ html {
 html.dark,
 html[data-theme="dark"] {
   /* =================================================================
-     INDUSTRY-STANDARD SEMANTIC COLORS - DARK THEME
+     5-VARIANT COLOR SYSTEM - DARK THEME
+     Emphasis logic inverts: lighter = more emphasis
      ================================================================= */
 
-  /* Semantic colors - adjusted for dark mode */
-  --ty-semantic-primary: #60a5fa;
-  /* Lighter blue for better contrast on dark */
-  --ty-semantic-secondary: #a78bfa;
-  /* Lighter purple for better contrast on dark */
-  --ty-semantic-success: #34d399;
-  /* Lighter green for better contrast on dark */
-  --ty-semantic-danger: #f87171;
-  /* Lighter red for better contrast on dark */
-  --ty-semantic-warning: #fbbf24;
-  /* Lighter amber for better contrast on dark */
-  --ty-semantic-info: #22d3ee;
-  /* Lighter cyan for better contrast on dark */
-  --ty-semantic-neutral: #9ca3af;
-  /* Lighter gray for better contrast on dark */
-
-
-
-  /* Color variations - emphasis inverted for dark mode */
-  /* In dark mode, "more emphasis" often means lighter */
-
   /* Primary */
-  --ty-color-primary: var(--ty-semantic-primary);
-  --ty-color-primary-p1: #93c5fd;
-  /* Lighter = more emphasis */
-  --ty-color-primary-p2: #bfdbfe;
-  --ty-color-primary-p3: #dbeafe;
-  --ty-color-primary-m1: #3b82f6;
-  /* Darker = less emphasis */
-  --ty-color-primary-m2: #2563eb;
-  --ty-color-primary-m3: #1d4ed8;
+  --ty-color-primary-strong: #bfdbfe;
+  --ty-color-primary-mild: #93c5fd;
+  --ty-color-primary: #60a5fa;
+  --ty-color-primary-soft: #3b82f6;
+  --ty-color-primary-faint: #2563eb;
 
   /* Secondary */
-  --ty-color-secondary: var(--ty-semantic-secondary);
-  --ty-color-secondary-p1: #c4b5fd;
-  --ty-color-secondary-p2: #ddd6fe;
-  --ty-color-secondary-p3: #e9d5ff;
-  --ty-color-secondary-m1: #8b5cf6;
-  --ty-color-secondary-m2: #7c3aed;
-  --ty-color-secondary-m3: #6d28d9;
+  --ty-color-secondary-strong: #ddd6fe;
+  --ty-color-secondary-mild: #c4b5fd;
+  --ty-color-secondary: #a78bfa;
+  --ty-color-secondary-soft: #8b5cf6;
+  --ty-color-secondary-faint: #7c3aed;
 
   /* Success */
-  --ty-color-success: var(--ty-semantic-success);
-  --ty-color-success-p1: #6ee7b7;
-  --ty-color-success-p2: #a7f3d0;
-  --ty-color-success-p3: #d1fae5;
-  --ty-color-success-m1: #10b981;
-  --ty-color-success-m2: #059669;
-  --ty-color-success-m3: #047857;
+  --ty-color-success-strong: #a7f3d0;
+  --ty-color-success-mild: #6ee7b7;
+  --ty-color-success: #34d399;
+  --ty-color-success-soft: #10b981;
+  --ty-color-success-faint: #059669;
 
   /* Danger */
-  --ty-color-danger: var(--ty-semantic-danger);
-  --ty-color-danger-p1: #fca5a5;
-  --ty-color-danger-p2: #fecaca;
-  --ty-color-danger-p3: #fee2e2;
-  --ty-color-danger-m1: #ef4444;
-  --ty-color-danger-m2: #dc2626;
-  --ty-color-danger-m3: #b91c1c;
+  --ty-color-danger-strong: #fecaca;
+  --ty-color-danger-mild: #fca5a5;
+  --ty-color-danger: #f87171;
+  --ty-color-danger-soft: #ef4444;
+  --ty-color-danger-faint: #dc2626;
 
   /* Warning */
-  --ty-color-warning: var(--ty-semantic-warning);
-  --ty-color-warning-p1: #fcd34d;
-  --ty-color-warning-p2: #fde68a;
-  --ty-color-warning-p3: #fef3c7;
-  --ty-color-warning-m1: #f59e0b;
-  --ty-color-warning-m2: #d97706;
-  --ty-color-warning-m3: #b45309;
+  --ty-color-warning-strong: #fde68a;
+  --ty-color-warning-mild: #fcd34d;
+  --ty-color-warning: #fbbf24;
+  --ty-color-warning-soft: #f59e0b;
+  --ty-color-warning-faint: #d97706;
 
   /* Info */
-  --ty-color-info: var(--ty-semantic-info);
-  --ty-color-info-p1: #67e8f9;
-  --ty-color-info-p2: #a5f3fc;
-  --ty-color-info-p3: #cffafe;
-  --ty-color-info-m1: #06b6d4;
-  --ty-color-info-m2: #0891b2;
-  --ty-color-info-m3: #0e7490;
+  --ty-color-info-strong: #a5f3fc;
+  --ty-color-info-mild: #67e8f9;
+  --ty-color-info: #22d3ee;
+  --ty-color-info-soft: #06b6d4;
+  --ty-color-info-faint: #0891b2;
 
   /* Neutral */
-  --ty-color-neutral: var(--ty-semantic-neutral);
-  --ty-color-neutral-p1: #d1d5db;
-  --ty-color-neutral-p2: #e5e7eb;
-  --ty-color-neutral-p3: #f3f4f6;
-  --ty-color-neutral-m1: #6b7280;
-  --ty-color-neutral-m2: #4b5563;
-  --ty-color-neutral-m3: #374151;
+  --ty-color-neutral-strong: #f3f4f6;
+  --ty-color-neutral-mild: #d1d5db;
+  --ty-color-neutral: #9ca3af;
+  --ty-color-neutral-soft: #6b7280;
+  --ty-color-neutral-faint: #4b5563;
 
   /* Backgrounds for dark mode */
   /* PHASE 1: UX-OPTIMIZED Base backgrounds - Dark theme with contrast-focused approach */
-  --ty-bg-m2: #0f1419;
+  --ty-bg-faint: #0f1419;
   /* Near black - minimal backgrounds */
-  --ty-bg-m1: #111827;
+  --ty-bg-soft: #111827;
   /* Very dark canvas - app backgrounds */
   --ty-bg: #;
   /* Dark gray - primary content baseline */
-  --ty-bg-p1: #374151;
+  --ty-bg-mild: #374151;
   /* Medium gray - card elevation */
-  --ty-bg-p2: #4b5563;
+  --ty-bg-strong: #4b5563;
   /* Lighter gray - strong elevation */
-  --ty-bg-p3: #6b7280;
+  --ty-bg-strong: #6b7280;
   /* Light gray - maximum contrast */
 
   /* Semantic bgs - much darker in dark mode */
-  --ty-bg-primary: #1e3a8a;
-  --ty-bg-primary-p1: #1e40af;
-  --ty-bg-primary-m1: #172554;
+  --ty-bg-primary: #394159;
+  --ty-bg-primary-mild: #43517a;
+  --ty-bg-primary-soft: #323a4f;
 
-  --ty-bg-secondary: #4c1d95;
-  --ty-bg-secondary-p1: #5b21b6;
-  --ty-bg-secondary-m1: #2e1065;
+  --ty-bg-secondary: #4a3c65;
+  --ty-bg-secondary-mild: #5b21b6;
+  --ty-bg-secondary-soft: #3b3645;
 
-  --ty-bg-success: #064e3b;
-  --ty-bg-success-p1: #047857;
-  --ty-bg-success-m1: #022c22;
+  --ty-bg-success: #3a4442;
+  --ty-bg-success-mild: #405752;
+  --ty-bg-success-soft: #2f3b38;
 
-  --ty-bg-danger: #7f1d1d;
-  --ty-bg-danger-p1: #991b1b;
-  --ty-bg-danger-m1: #450a0a;
+  --ty-bg-danger: #815555;
+  --ty-bg-danger-mild: #653e3e;
+  --ty-bg-danger-soft: #4b3131;
 
-  --ty-bg-warning: #78350f;
-  --ty-bg-warning-p1: #92400e;
-  --ty-bg-warning-m1: #451a03;
+  --ty-bg-warning: #743953;
+  --ty-bg-warning-mild: #694555;
+  --ty-bg-warning-soft: #45333b;
 
   --ty-bg-info: #164e63;
-  --ty-bg-info-p1: #155e75;
-  --ty-bg-info-m1: #083344;
+  --ty-bg-info-mild: #155e75;
+  --ty-bg-info-soft: #083344;
 
-  --ty-bg-neutral: #1f2937;
-  --ty-bg-neutral-p1: #374151;
-  --ty-bg-neutral-m1: #111827;
+  --ty-bg-neutral: #454545;
+  --ty-bg-neutral-mild: #737373;
+  --ty-bg-neutral-soft: #1a1a1a;
 
   /* Borders for dark mode */
+  --ty-border-strong: #6b7280;
+  --ty-border-mild: #4b5563;
   --ty-border: #374151;
-  --ty-border-p1: #4b5563;
-  --ty-border-p2: #6b7280;
-  --ty-border-p3: #9ca3af;
-  --ty-border-m1: #1f2937;
-  --ty-border-m2: #111827;
-  --ty-border-m3: #030712;
+  --ty-border-soft: #1f2937;
+  --ty-border-faint: #030712;
 
   /* Shadows need to be darker/more prominent in dark mode */
   --ty-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
@@ -585,8 +516,8 @@ html[data-theme="dark"] {
   --ty-input-info-border: var(--ty-color-info);
 
   /* Modal - dark mode */
-  --ty-modal-bg: var(--ty-bg-p1);
-  --ty-modal-color: var(--ty-color-neutral-p1);
+  --ty-modal-bg: var(--ty-bg-mild);
+  --ty-modal-color: var(--ty-color-neutral-mild);
   --ty-modal-border: var(--ty-border);
   --ty-modal-backdrop: rgba(0, 0, 0, 0.7);
   --ty-modal-backdrop-blur: blur(2px);
@@ -646,14 +577,14 @@ html[data-theme="dark"] {
   /* Text hierarchy - inverted for dark theme */
   --ty-text: #f9fafb;
   /* Primary text - highest contrast on dark */
-  --ty-text-p1: #ffffff;
+  --ty-text-mild: #ffffff;
   /* Maximum emphasis - pure white */
-  --ty-text-p2: #ffffff;
+  --ty-text-strong: #ffffff;
   /* Maximum emphasis - pure white */
-  --ty-text-m1: #d1d5db;
+  --ty-text-soft: #d1d5db;
   /* Less emphasis - light gray */
-  --ty-text-m2: #9ca3af;
+  --ty-text-faint: #9ca3af;
   /* Even less emphasis - medium gray */
-  --ty-text-m3: #6b7280;
+  --ty-text-faint: #6b7280;
   /* Minimum emphasis - dark gray */
 }

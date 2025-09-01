@@ -87,11 +87,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-primary\+ {
-  background-color: var(--ty-bg-primary-p1);
+  background-color: var(--ty-bg-primary-mild);
 }
 
 .ty-bg-primary- {
-  background-color: var(--ty-bg-primary-m1);
+  background-color: var(--ty-bg-primary-soft);
 }
 
 .ty-bg-secondary {
@@ -99,11 +99,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-secondary\+ {
-  background-color: var(--ty-bg-secondary-p1);
+  background-color: var(--ty-bg-secondary-mild);
 }
 
 .ty-bg-secondary- {
-  background-color: var(--ty-bg-secondary-m1);
+  background-color: var(--ty-bg-secondary-soft);
 }
 
 .ty-bg-success {
@@ -111,11 +111,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-success\+ {
-  background-color: var(--ty-bg-success-p1);
+  background-color: var(--ty-bg-success-mild);
 }
 
 .ty-bg-success- {
-  background-color: var(--ty-bg-success-m1);
+  background-color: var(--ty-bg-success-soft);
 }
 
 .ty-bg-danger {
@@ -123,11 +123,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-danger\+ {
-  background-color: var(--ty-bg-danger-p1);
+  background-color: var(--ty-bg-danger-mild);
 }
 
 .ty-bg-danger- {
-  background-color: var(--ty-bg-danger-m1);
+  background-color: var(--ty-bg-danger-soft);
 }
 
 .ty-bg-warning {
@@ -135,11 +135,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-warning\+ {
-  background-color: var(--ty-bg-warning-p1);
+  background-color: var(--ty-bg-warning-mild);
 }
 
 .ty-bg-warning- {
-  background-color: var(--ty-bg-warning-m1);
+  background-color: var(--ty-bg-warning-soft);
 }
 
 .ty-bg-info {
@@ -147,11 +147,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-info\+ {
-  background-color: var(--ty-bg-info-p1);
+  background-color: var(--ty-bg-info-mild);
 }
 
 .ty-bg-info- {
-  background-color: var(--ty-bg-info-m1);
+  background-color: var(--ty-bg-info-soft);
 }
 
 .ty-bg-neutral {
@@ -159,11 +159,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-neutral\+ {
-  background-color: var(--ty-bg-neutral-p1);
+  background-color: var(--ty-bg-neutral-mild);
 }
 
 .ty-bg-neutral- {
-  background-color: var(--ty-bg-neutral-m1);
+  background-color: var(--ty-bg-neutral-soft);
 }
 
 /* =================================================================
@@ -179,23 +179,23 @@ html.dark .ty-sunken {
 }
 
 .ty-text\+ {
-  color: var(--ty-text-p1) !important;
+  color: var(--ty-text-mild) !important;
 }
 
 .ty-text\+\+ {
-  color: var(--ty-text-p2) !important;
+  color: var(--ty-text-strong) !important;
 }
 
 .ty-text- {
-  color: var(--ty-text-m1) !important;
+  color: var(--ty-text-soft) !important;
 }
 
 .ty-text-- {
-  color: var(--ty-text-m2) !important;
+  color: var(--ty-text-faint) !important;
 }
 
 .ty-text--- {
-  color: var(--ty-text-m3) !important;
+  color: var(--ty-text-faint) !important;
 }
 
 /* =================================================================
@@ -238,23 +238,23 @@ html.dark .ty-sunken {
 }
 
 .ty-border\+ {
-  border-color: var(--ty-border-p1) !important;
+  border-color: var(--ty-border-mild) !important;
 }
 
 .ty-border\+\+ {
-  border-color: var(--ty-border-p2) !important;
+  border-color: var(--ty-border-strong) !important;
 }
 
 .ty-border\+\+\+ {
-  border-color: var(--ty-border-p3) !important;
+  border-color: var(--ty-border-strong) !important;
 }
 
 .ty-border- {
-  border-color: var(--ty-border-m1);
+  border-color: var(--ty-border-soft);
 }
 
 .ty-border-- {
-  border-color: var(--ty-border-m2);
+  border-color: var(--ty-border-faint);
 }
 
 /* Semantic border colors */
@@ -294,11 +294,11 @@ html.dark .ty-sunken {
 /* Card/Panel utilities */
 .ty-card {
   background-color: var(--ty-bg);
-  color: var(--ty-color-neutral-p1);
+  color: var(--ty-color-neutral-mild);
 }
 
 .ty-card-elevated {
-  background-color: var(--ty-bg-p1);
+  background-color: var(--ty-bg-mild);
   box-shadow: var(--ty-shadow-md);
 }
 
@@ -339,11 +339,11 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-positive\+ {
-  background-color: var(--ty-bg-success-p1);
+  background-color: var(--ty-bg-success-mild);
 }
 
 .ty-bg-positive- {
-  background-color: var(--ty-bg-success-m1);
+  background-color: var(--ty-bg-success-soft);
 }
 
 .ty-bg-negative {
@@ -397,7 +397,7 @@ html.dark .ty-sunken {
 }
 
 .hover\:ty-bg-primary\+:hover {
-  background-color: var(--ty-bg-primary-p1);
+  background-color: var(--ty-bg-primary-mild);
 }
 
 .hover\:ty-bg-secondary:hover {

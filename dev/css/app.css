@@ -610,7 +610,7 @@ body {
 
 .demo-section h3,
   h4 {
-  color: var(--ty-color-neutral-m1)
+  color: var(--ty-color-neutral-soft)
 }
 
 .demo-title {
@@ -618,7 +618,7 @@ body {
   font-size: 1.5rem;
   line-height: 2rem;
   font-weight: 700;
-  color: var(--ty-text-p2);
+  color: var(--ty-text-strong);
 }
 
 .demo-subtitle {
@@ -635,8 +635,8 @@ body {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.875rem;
   line-height: 1.25rem;
-  color: var(--ty-text-p1);
-  background: var(--ty-bg-neutral-m1);
+  color: var(--ty-text-mild);
+  background: var(--ty-bg-neutral-soft);
 }
 
 .demo-grid {

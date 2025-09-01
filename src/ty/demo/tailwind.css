@@ -24,12 +24,12 @@
 
   .demo-section h3,
   h4 {
-    color: var(--ty-color-neutral-m1)
+    color: var(--ty-color-neutral-soft)
   }
 
   .demo-title {
     @apply text-2xl font-bold mb-4;
-    color: var(--ty-text-p2);
+    color: var(--ty-text-strong);
   }
 
   .demo-subtitle {
@@ -39,8 +39,8 @@
 
   .code-block {
     @apply rounded-md overflow-x-auto font-mono text-sm;
-    color: var(--ty-text-p1);
-    background: var(--ty-bg-neutral-m1);
+    color: var(--ty-text-mild);
+    background: var(--ty-bg-neutral-soft);
   }
 
   .demo-grid {

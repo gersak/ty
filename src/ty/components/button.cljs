@@ -42,20 +42,20 @@
    Flavor is normalized to industry-standard semantics (primary, secondary, success, danger, warning, info, neutral)."
   [{:keys [flavor size filled outlined accent pill action class]}]
   (str/trim
-   (str (or flavor "neutral")
-        " "
-        (or size "md")
-        " "
+    (str (or flavor "neutral")
+         " "
+         (or size "md")
+         " "
         ;; Appearance logic
-        (cond
-          accent "accent"
-          (and filled outlined) "filled-outlined"
-          filled "filled"
-          outlined "outlined"
-          :else "plain")
-        (when pill " pill")
-        (when action " action")
-        (when class (str " " class)))))
+         (cond
+           accent "accent"
+           (and filled outlined) "filled-outlined"
+           filled "filled"
+           outlined "outlined"
+           :else "plain")
+         (when pill " pill")
+         (when action " action")
+         (when class (str " " class)))))
 
 (defn render! [^js el]
   (let [{:keys [disabled label]
@@ -112,8 +112,6 @@
    ;; No need for props - we read directly from attributes
    :connected render!
    :attr (fn [^js el delta]
-           ;; Batched attribute changes trigger single re-render
-           (println "[ty-button] Batched attr update:" (keys delta))
            (render! el))})
 
 ;; -----------------------------

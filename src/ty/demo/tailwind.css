@@ -7,20 +7,45 @@
   .demo-section {
     @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6;
   }
-  
+
   .demo-title {
     @apply text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4;
   }
-  
+
   .demo-subtitle {
     @apply text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3;
   }
-  
+
   .code-block {
     @apply bg-gray-900 text-gray-100 p-4 rounded-md overflow-x-auto font-mono text-sm;
   }
-  
+
   .demo-grid {
     @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  /* Menu Item Component */
+  .menu-item {
+    @apply flex items-center gap-2 lg:gap-3 w-full px-3 lg:px-4 py-2 text-left rounded-md transition-colors text-sm lg:text-base text-gray-700 dark:text-gray-300;
+  }
+
+  .menu-item:hover {
+    @apply bg-gray-100 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100;
+  }
+
+  .menu-item:focus {
+    @apply outline-none ring-2 ring-blue-500/20 bg-gray-100 dark:bg-gray-700/50;
+  }
+
+  .menu-item.active {
+    @apply bg-blue-600 dark:bg-blue-500 text-white;
+  }
+
+  .menu-item.active:hover {
+    @apply bg-blue-700 dark:bg-blue-600;
+  }
+
+  .menu-item.active:focus {
+    @apply ring-blue-300 dark:ring-blue-400;
   }
 }

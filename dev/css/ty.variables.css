@@ -384,12 +384,18 @@ html {
      ================================================================= */
 
   /* Text hierarchy - emphasis based, not semantic */
-  --ty-text: #111827;           /* Primary text - highest emphasis */
-  --ty-text-p1: #000000;        /* Maximum emphasis - true black */
-  --ty-text-p2: #000000;        /* Maximum emphasis - true black */
-  --ty-text-m1: #374151;        /* Less emphasis - medium gray */
-  --ty-text-m2: #6b7280;        /* Even less emphasis - light gray */
-  --ty-text-m3: #9ca3af;        /* Minimum emphasis - very light gray */
+  --ty-text: #111827;
+  /* Primary text - highest emphasis */
+  --ty-text-p1: #000000;
+  /* Maximum emphasis - true black */
+  --ty-text-p2: #000000;
+  /* Maximum emphasis - true black */
+  --ty-text-m1: #374151;
+  /* Less emphasis - medium gray */
+  --ty-text-m2: #6b7280;
+  /* Even less emphasis - light gray */
+  --ty-text-m3: #9ca3af;
+  /* Minimum emphasis - very light gray */
 
   /* Z-Index Scale */
   --ty-z-auto: auto;
@@ -618,19 +624,20 @@ html[data-theme="dark"] {
      ================================================================= */
 
   /* App and page backgrounds - very dark canvas */
-  --ty-surface-canvas: #111827;
+  --ty-surface-canvas: black;
+  ;
   /* Very dark gray canvas for dark theme */
 
   /* Main content areas - dark content background */
-  --ty-surface-content: #1f2937;
+  --ty-surface-content: #1a1a1a;
   /* Dark gray for main content, good contrast */
 
   /* Elevated surfaces - medium gray for elevation */
-  --ty-surface-elevated: #374151;
+  --ty-surface-elevated: #282828;
   /* Medium gray elevated surfaces, clear elevation */
 
   /* Floating surfaces - lighter gray for highest elevation */
-  --ty-surface-floating: #4b5563;
+  --ty-surface-floating: #343434;
   /* Light gray floating surfaces, maximum contrast */
 
   /* Input surfaces - match content for consistency */
@@ -643,10 +650,16 @@ html[data-theme="dark"] {
      ================================================================= */
 
   /* Text hierarchy - inverted for dark theme */
-  --ty-text: #f9fafb;           /* Primary text - highest contrast on dark */
-  --ty-text-p1: #ffffff;        /* Maximum emphasis - pure white */
-  --ty-text-p2: #ffffff;        /* Maximum emphasis - pure white */
-  --ty-text-m1: #d1d5db;        /* Less emphasis - light gray */
-  --ty-text-m2: #9ca3af;        /* Even less emphasis - medium gray */
-  --ty-text-m3: #6b7280;        /* Minimum emphasis - dark gray */
+  --ty-text: #f9fafb;
+  /* Primary text - highest contrast on dark */
+  --ty-text-p1: #ffffff;
+  /* Maximum emphasis - pure white */
+  --ty-text-p2: #ffffff;
+  /* Maximum emphasis - pure white */
+  --ty-text-m1: #d1d5db;
+  /* Less emphasis - light gray */
+  --ty-text-m2: #9ca3af;
+  /* Even less emphasis - medium gray */
+  --ty-text-m3: #6b7280;
+  /* Minimum emphasis - dark gray */
 }

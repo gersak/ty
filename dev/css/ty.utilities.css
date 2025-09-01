@@ -6,63 +6,49 @@
    IMPORTANT: Higher specificity to override Tailwind
    ================================================================= */
 
-/* =================================================================
-   THEME-AWARE ELEVATION UTILITIES
-   Professional shadows for proper card/component elevation
-   Now includes both background AND shadow for complete surface styling!
-   ================================================================= */
-
 /* Elevated surfaces - cards, panels, components */
 .ty-elevated {
   background-color: var(--ty-surface-elevated) !important;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
-  border: 1px solid rgb(0 0 0 / 0.05) !important;
 }
 
 /* Floating surfaces - modals, dropdowns, tooltips */
 .ty-floating {
   background-color: var(--ty-surface-floating) !important;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
-  border: 1px solid rgb(0 0 0 / 0.05) !important;
 }
 
 /* Highly elevated - important dialogs, notifications */
 .ty-high-elevation {
   background-color: var(--ty-surface-floating) !important;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1) !important;
-  border: 1px solid rgb(0 0 0 / 0.05) !important;
 }
 
 /* Sunken surfaces - input fields, text areas */
 .ty-sunken {
   background-color: var(--ty-surface-input) !important;
   box-shadow: inset 0 1px 2px 0 rgb(0 0 0 / 0.05) !important;
-  border: 1px solid rgb(0 0 0 / 0.1) !important;
 }
 
 /* Dark theme adjustments for shadows */
 html.dark .ty-elevated {
   background-color: var(--ty-surface-elevated) !important;
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2) !important;
-  border: 1px solid rgb(255 255 255 / 0.1) !important;
 }
 
 html.dark .ty-floating {
   background-color: var(--ty-surface-floating) !important;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3) !important;
-  border: 1px solid rgb(255 255 255 / 0.1) !important;
 }
 
 html.dark .ty-high-elevation {
   background-color: var(--ty-surface-floating) !important;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4) !important;
-  border: 1px solid rgb(255 255 255 / 0.1) !important;
 }
 
 html.dark .ty-sunken {
   background-color: var(--ty-surface-input) !important;
   box-shadow: inset 0 1px 2px 0 rgb(0 0 0 / 0.1) !important;
-  border: 1px solid rgb(255 255 255 / 0.1) !important;
 }
 
 /* =================================================================
@@ -79,11 +65,6 @@ html.dark .ty-sunken {
 .ty-content {
   background-color: var(--ty-surface-content) !important;
 }
-
-/* NOTE: .ty-elevated and .ty-floating are defined in elevation section above and include:
-   - background-color: var(--ty-surface-*) 
-   - box-shadow + border for proper elevation
-   This is perfect - elevated/floating surfaces need both background and shadow! */
 
 /* Input surfaces - form controls, text areas, inputs */
 .ty-input {
@@ -313,13 +294,11 @@ html.dark .ty-sunken {
 /* Card/Panel utilities */
 .ty-card {
   background-color: var(--ty-bg);
-  border: 1px solid var(--ty-border);
   color: var(--ty-color-neutral-p1);
 }
 
 .ty-card-elevated {
   background-color: var(--ty-bg-p1);
-  border: 1px solid var(--ty-border);
   box-shadow: var(--ty-shadow-md);
 }
 

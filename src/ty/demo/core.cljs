@@ -87,12 +87,8 @@
 
 (defn nav-item [{:keys [route-id label icon on-click]}]
   (let [active? (router/rendered? route-id true)]
-    [:button.flex.items-center.gap-2.lg:gap-3.w-full.px-3.lg:px-4.py-2.text-left.rounded-md.transition-colors.text-sm.lg:text-base
-     {:class (if active?
-               ;; TAILWIND: Active state with proven color combination
-               [:bg-blue-600 :text-white "dark:bg-blue-500"]
-               ;; TAILWIND: Inactive state with proven hover patterns  
-               [:text-gray-700 :dark:text-gray-300 "hover:bg-gray-100" "dark:hover:bg-gray-700/50"])
+    [:button.menu-item
+     {:class (when active? "active")
       :on {:click (fn []
                     (when on-click (on-click))
                     (when (and (not on-click) route-id)
@@ -177,7 +173,7 @@
      [:div.fixed.inset-y-0.left-0.w-72.max-w-xs.bg-white.dark:bg-gray-800.shadow-xl.overflow-y-auto
       [:div.p-4
        [:div.flex.items-center.justify-between.mb-4
-        [:h1.text-lg.font-bold.text-gray-900.dark:text-white "Ty Components"]
+        [:h1.text-lg.font-bold.ty-text "Ty Components"]
         [:button.p-2.rounded-md.hover:bg-gray-100.dark:hover:bg-gray-700
          {:on {:click toggle-mobile-menu!}}
          [:ty-icon {:name "x"
@@ -187,7 +183,7 @@
        (nav-items)]]]))
 
 (defn header []
-  [:header.bg-white.dark:bg-gray-800.border-b.border-gray-200.dark:border-gray-700.px-3.py-3.lg:px-6.lg:py-4
+  [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4
    [:div.flex.justify-between.items-center
     [:div.flex.items-center.gap-3.lg:gap-4.min-w-0.flex-1
      ;; Mobile menu button

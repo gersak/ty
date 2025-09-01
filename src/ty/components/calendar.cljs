@@ -252,7 +252,6 @@
 (defn render!
   "Render orchestrated calendar with navigation + month display"
   [^js el]
-  (println "RENDERING.... ")
   (let [root (wcs/ensure-shadow el)
         state (get-calendar-state el)]
 
@@ -328,7 +327,6 @@
                    (cleanup! el))
    :attr (fn [^js el delta]
            ;; Batched attribute changes - sync state and render once
-           (println "[ty-calendar] Batched attr update:" (keys delta))
            (sync-with-attributes! el)
            (render! el))
    :prop (fn [^js el delta]

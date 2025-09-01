@@ -175,6 +175,4 @@
    :connected render!
    :disconnected cleanup!
    :attr (fn [^js el delta]
-           ;; Batched attribute changes trigger single re-render
-           (println "[ty-tag] Batched attr update:" (keys delta))
            (render! el))})

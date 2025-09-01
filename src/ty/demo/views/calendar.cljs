@@ -197,9 +197,10 @@
                                                           span)))))
                                             (set! (.-dayClassesFn el)
                                                   (fn [^js context]
-                                                    (let [{:keys [day-in-month weekend today]} (->clj context)
+                                                    (let [{:keys [day-in-month weekend today other-month]} (->clj context)
                                                           has-events (#{15 18 22 25 28} day-in-month)]
                                                       (cond-> ["calendar-day"]
+                                                        other-month (conj "other-month")
                                                         today (conj "today")
                                                         weekend (conj "weekend")
                                                         has-events (conj "has-events")))))

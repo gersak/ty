@@ -98,18 +98,14 @@
 /* SELECTED STYLING - clean selection */
 .calendar-day-cell.selected {
   color: var(--ty-color-neutral-strong) !important;
-  border-color: var(--ty-color-neutral-strong);
-  background-color: var(--ty-color-neutral-faint);
+  border-color: var(--ty-border-mild);
+  background-color: var(--ty-bg-neutral);
   font-weight: 500;
-}
-
-.calendar-day-cell.selected:hover {
-  background-color: var(--ty-color-neutral-m);
 }
 
 /* Weekend styling - muted */
 .calendar-day-cell.weekend {
-  color: var(--ty-color-neutral-soft);
+  color: var(--ty-color-danger-soft);
 }
 
 /* Other month styling - very muted */

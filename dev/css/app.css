@@ -610,7 +610,7 @@ body {
 
 .demo-section h3,
   h4 {
-  color: var(--ty-color-neutral-soft)
+  color: var(--ty-color-neutral-mild)
 }
 
 .demo-title {
@@ -630,8 +630,10 @@ body {
 }
 
 .code-block {
+  margin-bottom: 1rem;
   overflow-x: auto;
   border-radius: 0.375rem;
+  padding: 1rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.875rem;
   line-height: 1.25rem;

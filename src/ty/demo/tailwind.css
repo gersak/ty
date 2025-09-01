@@ -24,7 +24,7 @@
 
   .demo-section h3,
   h4 {
-    color: var(--ty-color-neutral-soft)
+    color: var(--ty-color-neutral-mild)
   }
 
   .demo-title {
@@ -38,7 +38,7 @@
   }
 
   .code-block {
-    @apply rounded-md overflow-x-auto font-mono text-sm;
+    @apply rounded-md overflow-x-auto font-mono text-sm p-4 mb-4;
     color: var(--ty-text-mild);
     background: var(--ty-bg-neutral-soft);
   }

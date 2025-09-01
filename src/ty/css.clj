@@ -25,7 +25,12 @@
    :clj-kondo/ignore [:uninitialized-var]} ; Tell clj-kondo this defines a var
   ([name]
    ;; Infer CSS filename from the def name
-   (let [css-filename (str "./" (str/replace (str *ns*) #"\." "/") ".css")]
+   (let [css-filename (str "./"
+                           (->
+                             (str *ns*)
+                             (str/replace #"\." "/")
+                             (str/replace #"-" "_"))
+                           ".css")]
      `(defstyles ~name ~css-filename)))
   ([name path]
    ;; Get the current namespace to build full path if needed

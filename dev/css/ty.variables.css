@@ -111,7 +111,7 @@ html {
   --ty-bg-info-soft: #ecfeff;
 
   /* Neutral backgrounds */
-  --ty-bg-neutral: #f3f4f6;
+  --ty-bg-neutral: #f2f2f2;
   --ty-bg-neutral-mild: #e5e7eb;
   --ty-bg-neutral-soft: #f9fafb;
 
@@ -397,8 +397,8 @@ html[data-theme="dark"] {
   --ty-color-secondary-strong: #ddd6fe;
   --ty-color-secondary-mild: #c4b5fd;
   --ty-color-secondary: #a78bfa;
-  --ty-color-secondary-soft: #8b5cf6;
-  --ty-color-secondary-faint: #7c3aed;
+  --ty-color-secondary-soft: #8269bc;
+  --ty-color-secondary-faint: #9c7da7;
 
   /* Success */
   --ty-color-success-strong: #a7f3d0;
@@ -410,9 +410,9 @@ html[data-theme="dark"] {
   /* Danger */
   --ty-color-danger-strong: #fecaca;
   --ty-color-danger-mild: #fca5a5;
-  --ty-color-danger: #f87171;
-  --ty-color-danger-soft: #ef4444;
-  --ty-color-danger-faint: #dc2626;
+  --ty-color-danger: #cf7171;
+  --ty-color-danger-soft: #b06666;
+  --ty-color-danger-faint: #aa6e6e;
 
   /* Warning */
   --ty-color-warning-strong: #fde68a;
@@ -475,7 +475,8 @@ html[data-theme="dark"] {
   --ty-bg-info-mild: #155e75;
   --ty-bg-info-soft: #083344;
 
-  --ty-bg-neutral: #1b1b1b;
+  --ty-bg-neutral: #323232;
+  /* #1b1b1b;*/
   --ty-bg-neutral-mild: #1a1a1a;
   --ty-bg-neutral-soft: #242424;
 

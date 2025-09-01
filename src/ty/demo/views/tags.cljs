@@ -13,9 +13,9 @@
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
-    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+    [:h1.text-3xl.font-bold.ty-text.mb-2
      "Tag Component"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400
+    [:p.text-lg.ty-text-
      "Flexible tag component with three slots and semantic flavors."]]
 
    ;; Basic Examples
@@ -206,7 +206,7 @@
     [:div.space-y-6
      [:div
       [:h3.text-sm.font-medium.mb-3 "Simple Dismissible Tags"]
-      [:p.text-sm.text-gray-600.mb-3 "Click the × to remove these tags"]
+      [:p.text-sm.ty-text-.mb-3 "Click the × to remove these tags"]
       [:div.flex.flex-wrap.gap-2
        (when-not (contains? (:removed-tags @state/state #{}) "React")
          [:ty-tag {:dismissible true
@@ -234,7 +234,7 @@
 
      [:div
       [:h3.text-sm.font-medium.mb-3 "Dismissible Tags with Icons"]
-      [:p.text-sm.text-gray-600.mb-3 "Rich dismissible tags with icons and counts"]
+      [:p.text-sm.ty-text-.mb-3 "Rich dismissible tags with icons and counts"]
       [:div.flex.flex-wrap.gap-2
        (when-not (contains? (:removed-tags @state/state #{}) "Frontend Team")
          [:ty-tag {:dismissible true
@@ -302,7 +302,7 @@
      [:div.space-y-6
       [:div
        [:h3.text-sm.font-medium.mb-3 "Clickable Filter Tags"]
-       [:p.text-sm.text-gray-600.mb-3 "Click these tags to filter content"]
+       [:p.text-sm.ty-text-.mb-3 "Click these tags to filter content"]
        [:div.flex.flex-wrap.gap-2
         [:ty-tag {:clickable true
                   :flavor "neutral"
@@ -340,7 +340,7 @@
 
       [:div
        [:h3.text-sm.font-medium.mb-3 "Combined: Clickable + Dismissible"]
-       [:p.text-sm.text-gray-600.mb-3 "These tags are both clickable and dismissible"]
+       [:p.text-sm.ty-text-.mb-3 "These tags are both clickable and dismissible"]
        [:div.flex.flex-wrap.gap-2
         [:ty-tag {:clickable true
                   :dismissible true
@@ -436,24 +436,24 @@
    [:div.demo-section
     [:h2.demo-title "Code Examples"]
     [:div.space-y-4
-     [:div.p-4.bg-gray-50.dark:bg-gray-800.rounded-lg
+     [:div.p-4.ty-content.rounded-lg
       [:h4.text-sm.font-medium.mb-2 "Basic Usage"]
-      [:pre.text-xs.text-gray-700.dark:text-gray-300
+      [:pre.text-xs.ty-text-
        "[:ty-tag \"JavaScript\"]\n"
        "[:ty-tag {:flavor \"success\"} \"Success\"]\n"
        "[:ty-tag {:not-pill true :flavor \"primary\"} \"Rectangle\"]"]]
 
-     [:div.p-4.bg-gray-50.dark:bg-gray-800.rounded-lg
+     [:div.p-4.ty-content.rounded-lg
       [:h4.text-sm.font-medium.mb-2 "Rich Tags with Icons"]
-      [:pre.text-xs.text-gray-700.dark:text-gray-300
+      [:pre.text-xs.ty-text-
        "[:ty-tag {:flavor \"success\"}\n"
        " [:ty-icon {:slot \"start\" :name \"check\"}]\n"
        " \"Completed\"\n"
        " [:span {:slot \"end\" :class \"count\"} \"5\"]]"]]
 
-     [:div.p-4.bg-gray-50.dark:bg-gray-800.rounded-lg
+     [:div.p-4.ty-content.rounded-lg
       [:h4.text-sm.font-medium.mb-2 "Dismissible Tags"]
-      [:pre.text-xs.text-gray-700.dark:text-gray-300
+      [:pre.text-xs.ty-text-
        "[:ty-tag {:dismissible true :on {:ty-tag-dismiss handler}}\n"
        " \"Dismiss Me\"]\n\n"
        ";; With icons\n"
@@ -461,9 +461,9 @@
        " [:ty-icon {:slot \"start\" :name \"x-circle\"}]\n"
        " \"Error Tag\"]"]]
 
-     [:div.p-4.bg-gray-50.dark:bg-gray-800.rounded-lg
+     [:div.p-4.ty-content.rounded-lg
       [:h4.text-sm.font-medium.mb-2 "Interactive Tags"]
-      [:pre.text-xs.text-gray-700.dark:text-gray-300
+      [:pre.text-xs.ty-text-
        "[:ty-tag {:clickable true :on {:ty-tag-click handler}}\n"
        " \"Click Me\"]\n\n"
        ";; Combined: clickable + dismissible\n"
@@ -481,5 +481,5 @@
       "Reset Dismissed Tags"]
 
      (when (seq (:removed-tags @state/state))
-       [:div.text-sm.text-gray-600
+       [:div.text-sm.ty-text-
         "Removed tags: " (clojure.string/join ", " (:removed-tags @state/state))])]]])

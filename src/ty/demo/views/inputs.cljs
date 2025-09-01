@@ -1,8 +1,8 @@
 (ns ty.demo.views.inputs
   "Demonstrates input components with enhanced numeric formatting"
   (:require
-   [ty.i18n :as i18n]
-   [ty.layout :as layout]))
+    [ty.i18n :as i18n]
+    [ty.layout :as layout]))
 
 (defn basic-input-demos []
   [:div.space-y-6
@@ -160,7 +160,7 @@
                   :value "123.45"
                   :placeholder "Enter price"}]
       [:button.px-4.py-2.rounded.transition-colors
-       {:class [:bg-blue-500 :hover:bg-blue-600 :text-white :dark:bg-blue-600 :dark:hover:bg-blue-700]
+       {:class [:ty-bg-primary :hover:ty-bg-primary+ :text-white]
         :on {:click #(let [input (.getElementById js/document "toggle-error-demo")
                            has-error (.hasAttribute input "error")]
                        (if has-error
@@ -193,19 +193,19 @@
 
       [:div.flex.flex-wrap.gap-2
        [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:bg-green-500.dark:bg-green-600 :hover:bg-green-600 :text-white :dark:bg-green-600 :dark:hover:bg-green-700]
+        {:class [:ty-bg-success :hover:ty-bg-success+ :text-white]
          :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "250.75")}}
         "Set $250.75"]
        [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:bg-blue-500 :hover:bg-blue-600 :text-white :dark:bg-blue-600 :dark:hover:bg-blue-700]
+        {:class [:ty-bg-primary :hover:ty-bg-primary+ :text-white]
          :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "1000")}}
         "Set $1,000"]
        [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:bg-purple-500 :hover:bg-purple-600 :text-white :dark:bg-purple-600 :dark:hover:bg-purple-700]
+        {:class [:ty-bg-secondary :hover:ty-bg-secondary+ :text-white]
          :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "99.99")}}
         "Set $99.99"]
        [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:bg-gray-500 :hover:bg-gray-600 :text-white :dark:bg-gray-600 :dark:hover:bg-gray-700]
+        {:class [:ty-bg-neutral :hover:ty-bg-neutral+ :text-white]
          :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "")}}
         "Clear"]]
 
@@ -224,7 +224,7 @@
     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
      ;; Client Information
      [:div.space-y-4
-      [:h4.font-medium.border-b.dark:border-gray-600.pb-2 "Client Information"]
+      [:h4.font-medium.border-b.ty-border.pb-2 "Client Information"]
       [:ty-input {:type "text"
                   :label "Company Name"
                   :required true
@@ -239,7 +239,7 @@
 
      ;; Invoice Details  
      [:div.space-y-4
-      [:h4.font-medium.border-b.dark:border-gray-600.pb-2 "Invoice Details"]
+      [:h4.font-medium.border-b.ty-border.pb-2 "Invoice Details"]
       [:ty-input {:type "text"
                   :label "Invoice Number"
                   :value "INV-001"
@@ -255,7 +255,7 @@
 
     ;; Line Items with Numeric Formatting
     [:div.mt-6.space-y-4
-     [:h4.font-medium.border-b.dark:border-gray-600.pb-2 "Line Items"]
+     [:h4.font-medium.border-b.ty-border.pb-2 "Line Items"]
      [:div.grid.grid-cols-1.md:grid-cols-12.gap-4.items-end
       [:div.md:col-span-5
        [:ty-input {:type "text"
@@ -303,7 +303,7 @@
                    :disabled true}]]]]
 
     ;; Summary with formatted totals
-    [:div.mt-6.pt-4.border-t.dark:border-gray-600
+    [:div.mt-6.pt-4.border-t.ty-border
      [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
       [:div] ;; Spacer
       [:div.space-y-3
@@ -321,7 +321,7 @@
                     :value "252.00"
                     :disabled true
                     :size "sm"}]]
-       [:div.flex.justify-between.items-center.border-t.dark:border-gray-600.pt-2
+       [:div.flex.justify-between.items-center.border-t.ty-border.pt-2
         [:span.font-bold.text-lg "Total:"]
         [:ty-input {:type "currency"
                     :currency "USD"
@@ -378,7 +378,7 @@
    [:p.text-sm.ty-text- "These inputs adapt to their container size using the layout context."]
 
    ;; Resizable container demo
-   [:ty-resize-observer#input-container.bg-blue-50.dark:bg-blue-900.border-2.border-b.dark:border-gray-600lue-200.dark:border-blue-700.rounded-lg.p-4.resize.overflow-auto
+   [:ty-resize-observer#input-container.ty-bg-primary-.border-2.ty-border-primary.rounded-lg.p-4.resize.overflow-auto
     {:style {:min-width "200px"
              :min-height "200px"
              :width "400px"

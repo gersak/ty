@@ -17,7 +17,7 @@
    (when title
      [:h3.demo-subtitle title])
    (when description
-     [:p.text-gray-600.dark:text-gray-400.mb-4 description])
+     [:p.ty-text-.mb-4 description])
    (into [:div.flex.flex-wrap.gap-4.items-start] children)])
 
 (defn code-snippet [code]
@@ -130,7 +130,7 @@
 (defn flavor-examples []
   [:div.demo-section
    [:h2.demo-title "Flavor Variants"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "Semantic flavors affect both the dropdown border and tag colors"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
@@ -294,9 +294,9 @@
 (defn event-debugging []
   [:div.demo-section
    [:h2.demo-title "Event Debugging"]
-   [:p.text-gray-600.dark:text-gray-400.mb-4
+   [:p.ty-text-.mb-4
     "Open browser console to see change events. Current values: "]
-   [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-sm
+   [:code.ty-content.px-2.py-1.rounded.text-sm
     (str (vec (:multiselect-values @state/state)))]
 
    [:div.mt-6.max-w-md
@@ -328,9 +328,9 @@
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
-    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+    [:h1.text-3xl.font-bold.ty-text.mb-2
      "Multiselect Component"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400
+    [:p.text-lg.ty-text-
      "A multiselect component that allows selecting multiple options. Built on top of the dropdown component with ty-tag-based selection display. Tags automatically move between slots and update their dismissible state based on selection."]]
 
    [:div.space-y-12

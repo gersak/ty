@@ -1,12 +1,12 @@
 (ns ty.demo.views.icons
   (:require
-    [clojure.string :as str]
-    [ty.demo.state :refer [state]]
-    [ty.icons :as icons]
-    [ty.router :as router]))
+   [clojure.string :as str]
+   [ty.demo.state :refer [state]]
+   [ty.icons :as icons]
+   [ty.router :as router]))
 
 (defn icon-card [{:keys [name icon-key]}]
-  [:div.p-4.bg-white.dark:bg-gray-800.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
+  [:div.p-4.ty-elevated.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
    {:on {:click (fn [e]
                   (js/navigator.clipboard.writeText (str "<ty-icon name=\"" icon-key "\"></ty-icon>"))
                   ;; Show a temporary tooltip
@@ -20,15 +20,15 @@
                     (.appendChild target tooltip)
                     (js/setTimeout #(.removeChild target tooltip) 1500)))}}
    [:div.flex.flex-col.items-center.gap-3
-    [:ty-icon.text-gray-700.dark:text-gray-300.group-hover:text-ty-primary.transition-colors
+    [:ty-icon.ty-text-.group-hover:text-ty-primary.transition-colors
      {:name icon-key
       :size "xl"}]
-    [:span.text-xs.text-gray-600.dark:text-gray-400.text-center.font-mono.break-all
+    [:span.text-xs.ty-text--.text-center.font-mono.break-all
      icon-key]]])
 
 (defn search-input [{:keys [value on-change placeholder]}]
   [:div.relative
-   [:input.w-full.px-4.py-2.pl-10.bg-white.dark:bg-gray-800.border.border-gray-300.dark:border-gray-600.rounded-lg.focus:outline-none.focus:ring-2.focus:ring-ty-primary.focus:border-transparent
+   [:input.w-full.px-4.py-2.pl-10.ty-input.border.ty-border.rounded-lg.focus:outline-none.focus:ring-2.focus:ring-ty-primary.focus:border-transparent
     {:type "text"
      :placeholder placeholder
      :value value
@@ -180,9 +180,9 @@
     [:div.max-w-7xl.mx-auto
      ;; Header
      [:div.mb-8
-      [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+      [:h1.text-3xl.font-bold.ty-text.mb-2
        "Icon Library"]
-      [:p.text-lg.text-gray-600.dark:text-gray-400
+      [:p.text-lg.ty-text-
        (str "Explore " total-count " icons from multiple libraries. Click any icon to copy its code.")]]
 
      ;; Controls

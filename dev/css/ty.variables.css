@@ -36,17 +36,11 @@ html {
   /* Primary */
   --ty-color-primary: var(--ty-semantic-primary);
   --ty-color-primary-p1: #2563eb;
-  /* Darker/stronger */
   --ty-color-primary-p2: #1d4ed8;
-  /* Even darker/stronger */
   --ty-color-primary-p3: #1e40af;
-  /* Maximum emphasis */
   --ty-color-primary-m1: #60a5fa;
-  /* Lighter/weaker */
   --ty-color-primary-m2: #93c5fd;
-  /* Even lighter/weaker */
   --ty-color-primary-m3: #bfdbfe;
-  /* Minimum emphasis */
 
   /* Secondary */
   --ty-color-secondary: var(--ty-semantic-secondary);
@@ -572,16 +566,16 @@ html[data-theme="dark"] {
   --ty-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
   /* Input component tokens - dark mode */
-  --ty-input-bg: #1f2937;
+  --ty-input-bg: #1b1b1b;
   --ty-input-color: #f9fafb;
-  --ty-input-border: #374151;
-  --ty-input-border-hover: #4b5563;
+  --ty-input-border: #505050;
+  --ty-input-border-hover: #7f7f7f;
   --ty-input-border-focus: var(--ty-color-primary);
   --ty-input-shadow-focus: rgba(96, 165, 250, 0.1);
-  --ty-input-placeholder: #6b7280;
-  --ty-input-disabled-bg: #111827;
-  --ty-input-disabled-border: #1f2937;
-  --ty-input-disabled-color: #6b7280;
+  --ty-input-placeholder: #717171;
+  --ty-input-disabled-bg: #282828;
+  --ty-input-disabled-border: #2e2e2e;
+  --ty-input-disabled-color: #717171;
   --ty-label-color: #d1d5db;
 
   /* Input semantic states - dark mode */

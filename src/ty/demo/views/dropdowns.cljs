@@ -21,7 +21,7 @@
    (when title
      [:h3.demo-subtitle title])
    (when description
-     [:p.text-gray-600.dark:text-gray-400.mb-4 description])
+     [:p.ty-text-.mb-4 description])
    (into [:div.flex.flex-wrap.gap-4.items-start] children)])
 
 (defn code-snippet [code]
@@ -127,7 +127,7 @@
 (defn date-picker-examples []
   [:div.demo-section
    [:h2.demo-title "🎉 NEW: Date Picker Component"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "Date picker combines input field with calendar dropdown - now uses ty-calendar internally with clean architecture separation."]
 
    (demo-row {:title "Basic Date Pickers"
@@ -152,14 +152,14 @@
                                             :placeholder "Select date..."
                                             :locale (or (::dropdown-value @state/state) "en")
                                             :on {:change date-picker-event-handler}}]
-                          [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                          [:div.mt-2.text-sm.ty-text-
                            "Selected: "
                            [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                                (js/Date. date-val)
-                                (::dropdown-value @state/state "en")
-                                {:dateStyle "full"})
+                               (js/Date. date-val)
+                               (::dropdown-value @state/state "en")
+                               {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -1052,9 +1052,9 @@
   (println "rendering")
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
-    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+    [:h1.text-3xl.font-bold.ty-text.mb-2
      "Dropdown Component"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400
+    [:p.text-lg.ty-text-
      "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and rich content support. Use inline styles for custom sizing and flavor attributes for semantic styling."]]
 
    [:div.space-y-12

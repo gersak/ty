@@ -5,19 +5,29 @@
 /* Custom component classes for the demo app */
 @layer components {
   .demo-section {
-    @apply bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6;
+    @apply rounded-lg shadow-md p-6 mb-6;
+    background: var(--ty-surface-elevated);
+  }
+
+  .demo-section h3,
+  h4 {
+    color: var(--ty-color-neutral-m1)
   }
 
   .demo-title {
-    @apply text-2xl font-bold text-gray-900 dark:text-gray-100 mb-4;
+    @apply text-2xl font-bold mb-4;
+    color: var(--ty-text-p2);
   }
 
   .demo-subtitle {
-    @apply text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3;
+    @apply text-lg font-semibold mb-3;
+    color: var(--ty-text);
   }
 
   .code-block {
-    @apply bg-gray-900 text-gray-100 p-4 rounded-md overflow-x-auto font-mono text-sm;
+    @apply rounded-md overflow-x-auto font-mono text-sm;
+    color: var(--ty-text-p1);
+    background: var(--ty-bg-neutral-m1);
   }
 
   .demo-grid {
@@ -26,15 +36,15 @@
 
   /* Menu Item Component */
   .menu-item {
-    @apply flex items-center gap-2 lg:gap-3 w-full px-3 lg:px-4 py-2 text-left rounded-md transition-colors text-sm lg:text-base text-gray-700 dark:text-gray-300;
+    @apply flex items-center gap-2 lg:gap-3 w-full px-3 lg:px-4 py-2 text-left rounded-md transition-colors text-sm lg:text-base text-neutral-700 dark:text-neutral-300;
   }
 
   .menu-item:hover {
-    @apply bg-gray-100 dark:bg-gray-700/50 text-gray-900 dark:text-gray-100;
+    @apply bg-neutral-100 dark:bg-neutral-700/50 text-neutral-900 dark:text-neutral-100;
   }
 
   .menu-item:focus {
-    @apply outline-none ring-2 ring-blue-500/20 bg-gray-100 dark:bg-gray-700/50;
+    @apply outline-none ring-2 ring-blue-500/20 bg-neutral-100 dark:bg-neutral-700/50;
   }
 
   .menu-item.active {

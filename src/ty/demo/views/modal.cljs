@@ -11,13 +11,13 @@
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
-    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white.mb-2
+    [:h1.text-3xl.font-bold.ty-text.mb-2
      "Modal Component"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400.mb-4
+    [:p.text-lg.ty-text-.mb-4
      "A pure modal wrapper component that provides backdrop, focus management, and keyboard interaction without imposing any styling on your content."]
-    [:div.p-4.bg-blue-50.dark:bg-blue-900.border.border-blue-200.dark:border-blue-700.rounded
-     [:h4.text-sm.font-medium.text-blue-800.dark:text-blue-200.mb-2 "Key Features:"]
-     [:ul.text-sm.text-blue-700.dark:text-blue-300.space-y-1
+    [:div.p-4.ty-bg-primary-.border.ty-border-primary.rounded
+     [:h4.text-sm.font-medium.ty-text-primary.mb-2 "Key Features:"]
+     [:ul.text-sm.ty-text-primary.space-y-1
       [:li "• No built-in sizing - content determines its own dimensions"]
       [:li "• No background or styling imposed - pure content wrapper"]
       [:li "• Focus management and keyboard navigation"]
@@ -27,7 +27,7 @@
    ;; Basic test
    [:div.demo-section
     [:h2.demo-title "Basic Modal Test"]
-    [:p.text-gray-600.dark:text-gray-400.mb-4
+    [:p.ty-text-.mb-4
      "The modal component is a pure wrapper - all styling (size, background, borders, etc.) is applied by user content."]
     [:ty-button {:on {:click #(swap! state/state assoc :modal-basic-open true)}}
      "Open Modal"]
@@ -37,14 +37,14 @@
                 :on {:ty-modal-close #(swap! state/state assoc :modal-basic-open false)}}
      [:div.p-6.max-w-md.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
       [:h3.text-lg.font-semibold.mb-4 "Test Modal"]
-      [:p.text-gray-600.dark:text-gray-400.mb-4 "This is a test modal with user-defined styling."]
+      [:p.ty-text-.mb-4 "This is a test modal with user-defined styling."]
       [:ty-button {:on {:click #(swap! state/state assoc :modal-basic-open false)}}
        "Close"]]]]
 
    ;; Dropdown in Modal Test
    [:div.demo-section
     [:h2.demo-title "Dropdown in Modal Test - CSS Variable Inheritance"]
-    [:p.text-gray-600.dark:text-gray-400.mb-4
+    [:p.ty-text-.mb-4
      "Test dropdown positioning, z-index stacking, and behavior inside modal dialogs. This specifically tests the automatic CSS variable inheritance system that ensures nested web components have access to all design tokens."]
 
     [:div.grid.grid-cols-1.md:grid-cols-2.gap-4.mb-6
@@ -59,7 +59,7 @@
                 :on {:ty-modal-close #(swap! state/state assoc :modal-dropdown-simple-open false)}}
      [:div.p-6.max-w-lg.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
       [:h3.text-xl.font-semibold.mb-4 "Simple Dropdown Test"]
-      [:p.text-gray-600.mb-4
+      [:p.ty-text-.mb-4
        "Test basic dropdown functionality inside a modal:"]
 
       [:div.space-y-4
@@ -99,13 +99,13 @@
                 :on {:ty-modal-close #(swap! state/state assoc :modal-dropdown-complex-open false)}}
      [:div.p-6.max-w-4xl.bg-white.dark:bg-gray-800.rounded-lg.shadow-xl
       [:h3.text-xl.font-semibold.mb-4 "Complex Dropdown Test"]
-      [:p.text-gray-600.mb-6
+      [:p.ty-text-.mb-6
        "Test multiple dropdowns, positioning edge cases, and interactions:"]
 
       [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
        ;; Left column
        [:div.space-y-4
-        [:h4.font-medium.text-gray-900 "Top Section (should position down)"]
+        [:h4.font-medium.ty-text "Top Section (should position down)"]
 
         [:div
          [:label.block.text-sm.font-medium.mb-1 "Country"]
@@ -162,7 +162,7 @@
 
        ;; Right column
        [:div.space-y-4
-        [:h4.font-medium.text-gray-900 "Settings"]
+        [:h4.font-medium.ty-text "Settings"]
 
         [:div
          [:label.block.text-sm.font-medium.mb-1 "Theme"]
@@ -193,8 +193,8 @@
           [:option {:value "ko"} "한국어"]]]
 
         [:div.mt-8
-         [:h4.font-medium.text-gray-900.mb-2 "Bottom Section (should position up)"]
-         [:p.text-sm.text-gray-600.mb-4
+         [:h4.font-medium.ty-text.mb-2 "Bottom Section (should position up)"]
+         [:p.text-sm.ty-text-.mb-4
           "These dropdowns should flip upward when near the bottom of the modal."]
 
          [:div.space-y-3
@@ -227,8 +227,8 @@
             [:option {:value "aud"} "Australian Dollar (AUD)"]]]]]]]
 
       [:div.flex.justify-between.items-center.pt-6.border-t
-       [:div.text-sm.text-gray-600
-        "Current selection: " [:code.bg-gray-100.px-2.py-1.rounded (:modal-dropdown-value @state/state "none")]]
+       [:div.text-sm.ty-text-
+        "Current selection: " [:code.ty-content.px-2.py-1.rounded (:modal-dropdown-value @state/state "none")]]
 
        [:div.flex.gap-2
         [:ty-button {:flavor "success"
@@ -242,9 +242,9 @@
    [:div.demo-section
     [:h2.demo-title "Expected Behavior in Modals"]
     [:div.space-y-4
-     [:div.p-4.bg-blue-50.dark:bg-blue-900.border.border-blue-200.dark:border-blue-700.rounded
-      [:h4.text-sm.font-medium.text-blue-800.dark:text-blue-200.mb-2 "✅ Should Work Correctly:"]
-      [:ul.text-sm.text-blue-700.dark:text-blue-300.space-y-1
+     [:div.p-4.ty-bg-primary-.border.ty-border-primary.rounded
+      [:h4.text-sm.font-medium.ty-text-primary.mb-2 "✅ Should Work Correctly:"]
+      [:ul.text-sm.ty-text-primary.space-y-1
        [:li "• Dropdown options appear above modal backdrop (higher z-index)"]
        [:li "• Smart positioning works (flips up/down based on available space)"]
        [:li "• Global dropdown management (only one dropdown open at a time)"]
@@ -253,18 +253,18 @@
        [:li "• ESC key closes dropdown first, then modal on second press"]
        [:li "• Smooth scrolling and positioning transitions"]]]
 
-     [:div.p-4.bg-yellow-50.dark:bg-yellow-900.border.border-yellow-200.dark:border-yellow-700.rounded
-      [:h4.text-sm.font-medium.text-yellow-800.dark:text-yellow-200.mb-2 "⚠️ Potential Issues to Test:"]
-      [:ul.text-sm.text-yellow-700.dark:text-yellow-300.space-y-1
+     [:div.p-4.ty-bg-warning-.border.ty-border-warning.rounded
+      [:h4.text-sm.font-medium.ty-text-warning.mb-2 "⚠️ Potential Issues to Test:"]
+      [:ul.text-sm.ty-text-warning.space-y-1
        [:li "• Z-index conflicts between modal and dropdown"]
        [:li "• Positioning calculations with modal scroll"]
        [:li "• Focus management between modal and dropdown"]
        [:li "• Event bubbling and modal close behavior"]
        [:li "• Backdrop click interactions"]]]
 
-     [:div.p-4.bg-gray-50.dark:bg-gray-800.border.border-gray-200.dark:border-gray-700.rounded
-      [:h4.text-sm.font-medium.text-gray-800.dark:text-gray-200.mb-2 "🧪 Test Cases:"]
-      [:ul.text-sm.text-gray-700.dark:text-gray-300.space-y-1
+     [:div.p-4.ty-content.border.ty-border.rounded
+      [:h4.text-sm.font-medium.ty-text.mb-2 "🧪 Test Cases:"]
+      [:ul.text-sm.ty-text-.space-y-1
        [:li "1. Open modal → Open dropdown → Check z-index stacking"]
        [:li "2. Open dropdown near top → Should position downward"]
        [:li "3. Open dropdown near bottom → Should position upward"]

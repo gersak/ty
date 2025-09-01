@@ -57,7 +57,7 @@
 (defn orchestrated-calendar-demo []
   [:div.demo-section
    [:h2.demo-title "🎉 Orchestrated Calendar (ty-calendar)"]
-   [:p.text-sm.text-gray-600.mb-6 "Year/Month/Day attribute-based API with property-based composition - intuitive and clean."]
+   [:p.text-sm.ty-text-.mb-6 "Year/Month/Day attribute-based API with property-based composition - intuitive and clean."]
 
    ;; First row: Basic examples
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8.mb-8
@@ -66,11 +66,11 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "Basic Calendar with Navigation"]
-      [:p.text-sm.text-gray-600.mb-4 "Simple year/month/day attributes, internal property coordination."]
+      [:p.text-sm.ty-text-.mb-4 "Simple year/month/day attributes, internal property coordination."]
       [:div.flex.justify-center
        [:ty-calendar {:width "350px"
                       :on {:change handle-change}}]]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
       [:code
        "<!-- Simple year/month/day attribute API -->\n"
        "<ty-calendar width=\"350px\"></ty-calendar>\n\n"
@@ -83,14 +83,14 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "📅 With Pre-Selected Date"]
-      [:p.text-sm.text-gray-600.mb-4 "Automatic navigation to selected month, year/month/day control."]
+      [:p.text-sm.ty-text-.mb-4 "Automatic navigation to selected month, year/month/day control."]
       [:div.flex.justify-center
        [:ty-calendar {:width "350px"
                       :year "2024"
                       :month "12"
                       :day "25"
                       :on {:change handle-change}}]]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
       [:code
        "<!-- Pre-selected with auto-navigation -->\n"
        "<ty-calendar\n"
@@ -107,7 +107,7 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "⚡ Property-Based Hotel Pricing"]
-      [:p.text-sm.text-gray-600.mb-4 "CSS injected via customCSS property - loaded with defstyles!"]
+      [:p.text-sm.ty-text-.mb-4 "CSS injected via customCSS property - loaded with defstyles!"]
       [:div.flex.justify-center
        [:ty-calendar {:id "property-hotel-calendar"
                       :width "380px"
@@ -142,7 +142,7 @@
                                             ;; REAL customCSS injection using defstyles!
                                             (set! (.-customCSS el) hotel-pricing-styles))
                       :on {:change handle-change}}]]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto.max-h-40
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto.max-h-40
       [:code
        "// Direct property assignment\n"
        "const cal = document.querySelector('ty-calendar');\n"
@@ -162,7 +162,7 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "📅 Property-Based Event Calendar"]
-      [:p.text-sm.text-gray-600.mb-4 "Event styling via customCSS property - no global CSS needed!"]
+      [:p.text-sm.ty-text-.mb-4 "Event styling via customCSS property - no global CSS needed!"]
       [:div.flex.justify-center
        [:ty-calendar {:id "property-event-calendar"
                       :width "350px"
@@ -207,7 +207,7 @@
                                             ;; REAL customCSS injection using defstyles!
                                             (set! (.-customCSS el) event-calendar-styles))
                       :on {:change handle-change}}]]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto.max-h-40
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto.max-h-40
       [:code
        "// Property-based event system\n"
        "cal.dayContentFn = (context) => {\n"
@@ -221,7 +221,7 @@
 (defn localized-calendar-demo []
   [:div.demo-section
    [:h2.demo-title "🌍 Localized Calendar Headers"]
-   [:p.text-sm.text-gray-600.mb-6 "Weekday names automatically adapt to locale settings using native Intl API."]
+   [:p.text-sm.ty-text-.mb-6 "Weekday names automatically adapt to locale settings using native Intl API."]
 
    ;; Localized calendar examples in grid layout
    [:div.grid.grid-cols-1.lg:grid-cols-2.xl:grid-cols-3.gap-6.mb-8
@@ -230,72 +230,72 @@
     [:div.space-y-3
      [:div
       [:h4.font-semibold.mb-1 "English (en-US)"]
-      [:p.text-xs.text-gray-600.mb-3 "Standard Monday-first layout"]
+      [:p.text-xs.ty-text-.mb-3 "Standard Monday-first layout"]
       [:ty-calendar {:width "280px"
                      :locale "en-US"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "locale=\"en-US\""]]]
 
     ;; Croatian
     [:div.space-y-3
      [:div
       [:h4.font-semibold.mb-1 "Croatian (hr)"]
-      [:p.text-xs.text-gray-600.mb-3 "\"pon uto sri\" weekdays"]
+      [:p.text-xs.ty-text-.mb-3 "\"pon uto sri\" weekdays"]
       [:ty-calendar {:width "280px"
                      :locale "hr"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "locale=\"hr\""]]]
 
     ;; German
     [:div.space-y-3
      [:div
       [:h4.font-semibold.mb-1 "German (de-DE)"]
-      [:p.text-xs.text-gray-600.mb-3 "\"Mo Di Mi\" format"]
+      [:p.text-xs.ty-text-.mb-3 "\"Mo Di Mi\" format"]
       [:ty-calendar {:width "280px"
                      :locale "de-DE"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "locale=\"de-DE\""]]]
 
     ;; French
     [:div.space-y-3
      [:div
       [:h4.font-semibold.mb-1 "French (fr-FR)"]
-      [:p.text-xs.text-gray-600.mb-3 "\"lun mar mer\" weekdays"]
+      [:p.text-xs.ty-text-.mb-3 "\"lun mar mer\" weekdays"]
       [:ty-calendar {:width "280px"
                      :locale "fr-FR"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "locale=\"fr-FR\""]]]
 
     ;; Japanese
     [:div.space-y-3
      [:div
       [:h4.font-semibold.mb-1 "Japanese (ja-JP)"]
-      [:p.text-xs.text-gray-600.mb-3 "Native kanji weekdays"]
+      [:p.text-xs.ty-text-.mb-3 "Native kanji weekdays"]
       [:ty-calendar {:width "280px"
                      :locale "ja-JP"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "locale=\"ja-JP\""]]]
 
     ;; Arabic
     [:div.space-y-3
      [:div
       [:h4.font-semibold.mb-1 "Arabic (ar-SA)"]
-      [:p.text-xs.text-gray-600.mb-3 "Right-to-left support"]
+      [:p.text-xs.ty-text-.mb-3 "Right-to-left support"]
       [:ty-calendar {:width "280px"
                      :locale "ar-SA"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "locale=\"ar-SA\""]]]]
 
    ;; Usage example
    [:div.mb-6
     [:h3.demo-subtitle.mb-2 "Usage Examples"]
-    [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+    [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
      [:code
       "<!-- HTML -->
 <ty-calendar locale=\"en-US\" width=\"300px\"></ty-calendar>
@@ -308,7 +308,7 @@
 [:ty-calendar {:locale \"de-DE\" :width \"300px\"}]"]]]
 
    ;; Features explanation
-   [:div {:class "mt-6 p-4 bg-blue-50 rounded-lg"}
+   [:div {:class "mt-6 p-4 ty-bg-primary- rounded-lg"}
     [:h4.font-semibold.mb-2 "🎯 Localization Features"]
     [:ul {:class "text-sm space-y-1"}
      [:li "✅ Weekday headers: Automatically localized using native Intl.DateTimeFormat"]
@@ -319,7 +319,7 @@
      [:li "✅ Fallback: Defaults to browser locale if none specified"]]]
 
    ;; Implementation details
-   [:div {:class "mt-4 p-4 bg-green-50 rounded-lg"}
+   [:div {:class "mt-4 p-4 ty-bg-success- rounded-lg"}
     [:h4.font-semibold.mb-2 "⚙️ Implementation Details"]
     [:div {:class "text-sm space-y-2"}
      [:div [:strong "Weekday Generation:"] " Uses Intl.DateTimeFormat with Monday-first reordering"]
@@ -328,28 +328,28 @@
      [:div [:strong "Browser Support:"] " Works with all modern browsers supporting Intl API"]]]
 
    ;; Supported languages
-   [:div {:class "mt-4 p-4 bg-yellow-50 rounded-lg"}
+   [:div {:class "mt-4 p-4 ty-bg-warning- rounded-lg"}
     [:h4.font-semibold.mb-2 "🌍 Supported Languages"]
     [:div {:class "grid grid-cols-2 md:grid-cols-4 gap-2 text-sm"}
-     [:div.p-2.bg-white.rounded "🇺🇸 English"]
-     [:div.p-2.bg-white.rounded "🇭🇷 Croatian"]
-     [:div.p-2.bg-white.rounded "🇩🇪 German"]
-     [:div.p-2.bg-white.rounded "🇫🇷 French"]
-     [:div.p-2.bg-white.rounded "🇪🇸 Spanish"]
-     [:div.p-2.bg-white.rounded "🇮🇹 Italian"]
-     [:div.p-2.bg-white.rounded "🇵🇹 Portuguese"]
-     [:div.p-2.bg-white.rounded "🇷🇺 Russian"]
-     [:div.p-2.bg-white.rounded "🇯🇵 Japanese"]
-     [:div.p-2.bg-white.rounded "🇰🇷 Korean"]
-     [:div.p-2.bg-white.rounded "🇨🇳 Chinese"]
-     [:div.p-2.bg-white.rounded "... many more"]]
-    [:p.text-xs.text-gray-600.mt-2
+     [:div.p-2.ty-elevated.rounded "🇺🇸 English"]
+     [:div.p-2.ty-elevated.rounded "🇭🇷 Croatian"]
+     [:div.p-2.ty-elevated.rounded "🇩🇪 German"]
+     [:div.p-2.ty-elevated.rounded "🇫🇷 French"]
+     [:div.p-2.ty-elevated.rounded "🇪🇸 Spanish"]
+     [:div.p-2.ty-elevated.rounded "🇮🇹 Italian"]
+     [:div.p-2.ty-elevated.rounded "🇵🇹 Portuguese"]
+     [:div.p-2.ty-elevated.rounded "🇷🇺 Russian"]
+     [:div.p-2.ty-elevated.rounded "🇯🇵 Japanese"]
+     [:div.p-2.ty-elevated.rounded "🇰🇷 Korean"]
+     [:div.p-2.ty-elevated.rounded "🇨🇳 Chinese"]
+     [:div.p-2.ty-elevated.rounded "... many more"]]
+    [:p.text-xs.ty-text-.mt-2
      "💡 Pro Tip: Set locale at component level or globally via ty.i18n/*locale*. Components automatically inherit locale from parent context."]]])
 
 (defn property-based-components-demo []
   [:div.demo-section
    [:h2.demo-title "🔧 Property-Based Components (Advanced)"]
-   [:p.text-sm.text-gray-600.mb-6 "Direct property control for maximum performance and flexibility."]
+   [:p.text-sm.ty-text-.mb-6 "Direct property control for maximum performance and flexibility."]
 
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8.mb-8
 
@@ -357,7 +357,7 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "🎛️ Standalone Navigation"]
-      [:p.text-sm.text-gray-600.mb-4 "Property-controlled navigation component."]
+      [:p.text-sm.ty-text-.mb-4 "Property-controlled navigation component."]
       [:ty-calendar-navigation {:id "demo-nav"
                                 :replicant/on-mount (fn [{^js el :replicant/node}]
                                                       (set! (.-displayMonth el) 12)
@@ -365,7 +365,7 @@
                                                       (set! (.-width el) "350px"))
                                 :on {:change #(let [detail (.-detail %)]
                                                 (js/console.log "Navigation change:" detail))}}]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
       [:code
        "// Direct property control\n"
        "const nav = document.querySelector('ty-calendar-navigation');\n"
@@ -377,7 +377,7 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "📅 Property-Based Month Display"]
-      [:p.text-sm.text-gray-600.mb-4 "Direct property control with scoped render functions."]
+      [:p.text-sm.ty-text-.mb-4 "Direct property control with scoped render functions."]
       [:ty-calendar-month {:id "demo-month"
                            :replicant/on-mount (fn [{^js el :replicant/node}]
                                                  (set! (.-displayMonth el) 12)
@@ -407,7 +407,7 @@
                                                                container))))))
                            :on {:day-click #(let [detail (.-detail %)]
                                               (js/console.log "Day click:" detail))}}]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
       [:code
        "// Property-based month component\n"
        "const month = document.querySelector('ty-calendar-month');\n"
@@ -422,7 +422,7 @@
 (defn width-and-styling-demo []
   [:div.demo-section
    [:h2.demo-title "📏 Width Control & Styling"]
-   [:p.text-sm.text-gray-600.mb-6 "Flexible sizing with CSS custom properties."]
+   [:p.text-sm.ty-text-.mb-6 "Flexible sizing with CSS custom properties."]
 
    [:div.grid.grid-cols-1.lg:grid-cols-3.gap-6.mb-8
 
@@ -430,20 +430,20 @@
     [:div.space-y-3
      [:div
       [:h4.font-medium.mb-1 "Fixed Width"]
-      [:p.text-xs.text-gray-600.mb-3 "Exact calendar dimensions"]
+      [:p.text-xs.ty-text-.mb-3 "Exact calendar dimensions"]
       [:ty-calendar {:width "320px"
                      :year "2024"
                      :month "12"
                      :day "15"
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "year=\"2024\" month=\"12\" day=\"15\"\nwidth=\"320px\""]]]
 
     ;; Responsive width
     [:div.space-y-3
      [:div
       [:h4.font-medium.mb-1 "Responsive Width"]
-      [:p.text-xs.text-gray-600.mb-3 "Adapts to container with property-based content"]
+      [:p.text-xs.ty-text-.mb-3 "Adapts to container with property-based content"]
       [:ty-calendar {:id "responsive-width-cal"
                      :width "clamp(300px, 50vw, 450px)"
                      :year "2024"
@@ -466,14 +466,14 @@
                                                          (.appendChild container day-span)
                                                          container))))))
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "year=\"2024\" month=\"12\" day=\"20\"\nwidth=\"clamp(300px, 50vw, 450px)\""]]]
 
     ;; Constrained width
     [:div.space-y-3
      [:div
       [:h4.font-medium.mb-1 "Min/Max Width"]
-      [:p.text-xs.text-gray-600.mb-3 "With constraints and property-based events"]
+      [:p.text-xs.ty-text-.mb-3 "With constraints and property-based events"]
       [:ty-calendar {:id "constrained-width-cal"
                      :min-width "280px"
                      :max-width "400px"
@@ -502,13 +502,13 @@
                                                          (set! (.-textContent span) (str day-in-month))
                                                          span))))))
                      :on {:change handle-change}}]]
-     [:pre.text-xs.bg-gray-100.p-2.rounded
+     [:pre.text-xs.ty-content.p-2.rounded
       [:code "year=\"2024\" month=\"12\" day=\"25\"\nmin-width=\"280px\"\nmax-width=\"400px\""]]]]])
 
 (defn integration-patterns-demo []
   [:div.demo-section
    [:h2.demo-title "🔗 Integration Patterns"]
-   [:p.text-sm.text-gray-600.mb-6 "Real-world integration examples for different use cases."]
+   [:p.text-sm.ty-text-.mb-6 "Real-world integration examples for different use cases."]
 
    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8.mb-8
 
@@ -516,7 +516,7 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "📝 Form Integration"]
-      [:p.text-sm.text-gray-600.mb-4 "Calendar as form input with validation."]
+      [:p.text-sm.ty-text-.mb-4 "Calendar as form input with validation."]
       [:form.space-y-4 {:on {:submit (fn [e] (.preventDefault e))}}
        [:div
         [:label.block.text-sm.font-medium.mb-2 "Select Date"]
@@ -524,7 +524,7 @@
                        :value ""
                        :on {:value-change #(js/console.log "Form value:" (.-value (.-detail %)))}}]]
        [:button.btn.btn-primary {:type "submit"} "Submit"]]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
       [:code
        "<!-- Form integration -->\n"
        "<form>\n"
@@ -539,7 +539,7 @@
     [:div.space-y-4
      [:div
       [:h3.demo-subtitle.mb-2 "🔄 Dynamic Updates"]
-      [:p.text-sm.text-gray-600.mb-4 "Programmatic calendar control."]
+      [:p.text-sm.ty-text-.mb-4 "Programmatic calendar control."]
       [:div.space-y-4
        [:ty-calendar {:id "dynamic-calendar"
                       :width "350px"
@@ -549,7 +549,7 @@
         [:button.btn.btn-sm {:on {:click #(.setAttribute (.getElementById js/document "dynamic-calendar") "value" "2024-12-25")}} "Christmas"]
         [:button.btn.btn-sm {:on {:click #(.setAttribute (.getElementById js/document "dynamic-calendar") "value" "2024-12-31")}} "New Year"]
         [:button.btn.btn-sm {:on {:click #(.setAttribute (.getElementById js/document "dynamic-calendar") "value" "")}} "Clear"]]]]
-     [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+     [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
       [:code
        "// Programmatic updates\n"
        "const cal = document.querySelector('#my-calendar');\n"
@@ -559,8 +559,8 @@
 (defn view []
   [:div.p-6
    [:div.mb-8
-    [:h1.text-3xl.font-bold.text-gray-900.dark:text-white "Modern Calendar System"]
-    [:p.text-lg.text-gray-600.dark:text-gray-400.mt-2
+    [:h1.text-3xl.font-bold.ty-text "Modern Calendar System"]
+    [:p.text-lg.ty-text-.mt-2
      "Year/Month/Day architecture with property-based composition for optimal performance and intuitive API."]]
 
    ;; Main demos
@@ -568,7 +568,7 @@
    (localized-calendar-demo)
 
    ;; NEW: Year/Month/Day API benefits section  
-   [:div.p-4.bg-blue-50.rounded-lg.mb-6
+   [:div.p-4.ty-bg-primary-.rounded-lg.mb-6
     [:h4.font-semibold.mb-3 "✨ NEW: Year/Month/Day Attribute API"]
     [:div.text-sm.space-y-3
      [:div
@@ -577,7 +577,7 @@
       [:strong "No Date Parsing:"] " All values are simple numbers - no more Date object complexity!"]
      [:div.space-y-2
       [:strong "Usage:"]
-      [:pre.text-xs.bg-white.p-3.rounded.mt-2
+      [:pre.text-xs.ty-elevated.p-3.rounded.mt-2
        [:code
         "<!-- OLD: Timestamp/ISO string approach -->\n"
         "<ty-calendar value=\"2024-12-25T00:00:00Z\"></ty-calendar>\n"
@@ -601,12 +601,12 @@
    ;; Live event monitoring
    [:div.space-y-4.mb-8
     [:h3.demo-subtitle.mb-2 "🎯 Live Event Monitoring"]
-    [:p.text-sm.text-gray-600.mb-4 "See the unified change event in action."]
+    [:p.text-sm.ty-text-.mb-4 "See the unified change event in action."]
 
     [:div.grid.grid-cols-1.gap-4
      ;; Single change event
-     [:div.p-3.bg-green-50.rounded.text-xs
-      [:div.font-semibold.mb-2.text-green-700 "Single Change Event (Unified)"]
+     [:div.p-3.ty-bg-positive.rounded.text-xs
+      [:div.font-semibold.mb-2.ty-text-positive "Single Change Event (Unified)"]
       (if-let [change (:calendar-change @state/state)]
         [:div.space-y-1
          [:div "📅 Date: " (:year change) "/" (:month change) "/" (:day change)]
@@ -625,37 +625,37 @@
     [:h2.demo-title "🏗️ Architecture Summary"]
     [:div.grid.grid-cols-1.lg:grid-cols-3.gap-6
 
-     [:div.p-4.bg-blue-50.rounded-lg
-      [:h3.font-semibold.mb-3.text-blue-700 "ty-calendar"]
+     [:div.p-4.ty-bg-primary-.rounded-lg
+      [:h3.font-semibold.mb-3.ty-text-primary "ty-calendar"]
       [:div.text-sm.space-y-2
        [:div "📝 Year/Month/Day attribute API"]
        [:div "🎯 Internal state management"]
        [:div "🔄 Auto property distribution"]
        [:div "📊 Event coordination"]
        [:div "✅ User-friendly"]]
-      [:pre.text-xs.bg-white.p-2.rounded.mt-3
+      [:pre.text-xs.ty-elevated.p-2.rounded.mt-3
        [:code "<ty-calendar year=\"2024\" month=\"12\" day=\"25\">"]]]
 
-     [:div.p-4.bg-purple-50.rounded-lg
-      [:h3.font-semibold.mb-3.text-purple-700 "ty-calendar-navigation"]
+     [:div.p-4.ty-bg-secondary-.rounded-lg
+      [:h3.font-semibold.mb-3.ty-text-secondary "ty-calendar-navigation"]
       [:div.text-sm.space-y-2
        [:div "⚡ Property-based API"]
        [:div "🚀 High performance"]
        [:div "🎯 Direct control"]
        [:div "🔄 Auto re-rendering"]
        [:div "🧩 Composable"]]
-      [:pre.text-xs.bg-white.p-2.rounded.mt-3
+      [:pre.text-xs.ty-elevated.p-2.rounded.mt-3
        [:code "nav.displayMonth = 12;"]]]
 
-     [:div.p-4.bg-green-50.rounded-lg
-      [:h3.font-semibold.mb-3.text-green-700 "ty-calendar-month"]
+     [:div.p-4.ty-bg-success-.rounded-lg
+      [:h3.font-semibold.mb-3.ty-text-success "ty-calendar-month"]
       [:div.text-sm.space-y-2
        [:div "⚡ Property-based API"]
        [:div "🎨 Custom render functions"]
        [:div "📊 Rich event system"]
        [:div "🔄 Stateless rendering"]
        [:div "🏗️ Maximum flexibility"]]
-      [:pre.text-xs.bg-white.p-2.rounded.mt-3
+      [:pre.text-xs.ty-elevated.p-2.rounded.mt-3
        [:code "cal.dayContentFn = fn;"]]]]]
 
    ;; Quick start guide
@@ -670,7 +670,7 @@
        [:div "✅ Internal selection state management"]
        [:div "✅ Works great out of the box"]
        [:div "✅ Perfect for forms, date pickers, simple UIs"]]
-      [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+      [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
        [:code
         "<!-- HTML -->\n"
         "<ty-calendar year=\"2024\" month=\"12\" day=\"25\" width=\"350px\"></ty-calendar>\n\n"
@@ -686,7 +686,7 @@
        [:div "🔒 No global namespace pollution"]
        [:div "🧪 Easy testing and mocking"]
        [:div "🔧 Perfect for modern frameworks"]]
-      [:pre.text-xs.bg-gray-100.p-3.rounded.overflow-x-auto
+      [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
        [:code
         "// JavaScript - Direct property assignment (RECOMMENDED)\n"
         "const cal = document.querySelector('ty-calendar');\n"

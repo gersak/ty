@@ -335,7 +335,15 @@ html.dark .ty-sunken {
 }
 
 .ty-bg-positive {
-  background-color: var(--ty-color-success, #10b981);
+  background-color: var(--ty-bg-success);
+}
+
+.ty-bg-positive\+ {
+  background-color: var(--ty-bg-success-p1);
+}
+
+.ty-bg-positive- {
+  background-color: var(--ty-bg-success-m1);
 }
 
 .ty-bg-negative {

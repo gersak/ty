@@ -12,7 +12,7 @@
                   ;; Show a temporary tooltip
                   (let [target (.-currentTarget e)
                         tooltip (js/document.createElement "div")]
-                    (set! (.-className tooltip) "absolute bg-gray-900 text-white px-2 py-1 rounded text-xs whitespace-nowrap")
+                    (set! (.-className tooltip) "absolute ty-elevated text-white px-2 py-1 rounded text-xs whitespace-nowrap")
                     (set! (.-textContent tooltip) "Copied!")
                     (set! (.. tooltip -style -bottom) "100%")
                     (set! (.. tooltip -style -left) "50%")
@@ -33,7 +33,7 @@
      :placeholder placeholder
      :value value
      :on {:input (fn [e] (on-change (.. e -target -value)))}}]
-   [:ty-icon.absolute.text-gray-400
+   [:ty-icon.absolute.ty-text--
     {:name "search"
      :size "sm"
      :style {:top 14
@@ -42,7 +42,7 @@
 (defn icon-section [{:keys [title icons]}]
   (when (seq icons)
     [:div.mb-8
-     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white.mb-4 title]
+     [:h3.text-lg.font-semibold.ty-text.mb-4 title]
      [:div.grid.grid-cols-2.sm:grid-cols-3.md:grid-cols-4.lg:grid-cols-6.xl:grid-cols-8.gap-3
       (for [[icon-key _icon-svg] icons]
         [:div {:key icon-key}
@@ -91,39 +91,39 @@
      :other other-icons}))
 
 (defn demo-section []
-  [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
-   [:h2.text-2xl.font-bold.text-gray-900.dark:text-white.mb-6 "Icon Features"]
+  [:div.ty-elevated.rounded-lg.shadow-md.p-6
+   [:h2.text-2xl.font-bold.ty-text.mb-6 "Icon Features"]
 
    [:div.space-y-8
     ;; Sizes
     [:div
-     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white.mb-4 "Sizes"]
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Sizes"]
      [:div.flex.flex-wrap.gap-4.items-end
       (for [s ["xs" "sm" "md" "lg" "xl" "2xl"]]
         [:div.text-center {:key s}
          [:ty-icon {:name "star"
                     :size s}]
-         [:div.text-xs.text-gray-500.mt-1 s]])]]
+         [:div.text-xs.ty-text--.mt-1 s]])]]
 
     ;; Animations
     [:div
-     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white.mb-4 "Animations"]
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Animations"]
      [:div.flex.gap-6
       [:div.text-center
        [:ty-icon {:name "settings"
                   :size "xl"
                   :spin true}]
-       [:div.text-sm.text-gray-600.dark:text-gray-400.mt-2 "spin"]]
+       [:div.text-sm.ty-text-.mt-2 "spin"]]
       [:div.text-center
        [:ty-icon {:name "heart"
                   :size "xl"
                   :pulse true}]
-       [:div.text-sm.text-gray-600.dark:text-gray-400.mt-2 "pulse"]]]]
+       [:div.text-sm.ty-text-.mt-2 "pulse"]]]]
 
     ;; Color inheritance
     [:div
-     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white.mb-4 "Color Inheritance"]
-     [:p.text-sm.text-gray-600.dark:text-gray-400.mb-3
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Color Inheritance"]
+     [:p.text-sm.ty-text-.mb-3
       "Icons inherit color from their parent element"]
      [:div.flex.flex-wrap.gap-4
       [:div.text-ty-success
@@ -145,19 +145,19 @@
 
     ;; Usage examples
     [:div
-     [:h3.text-lg.font-semibold.text-gray-900.dark:text-white.mb-4 "Usage Examples"]
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Usage Examples"]
      [:div.space-y-4
-      [:div.bg-gray-50.dark:bg-gray-900.p-4.rounded-md
-       [:p.text-sm.font-semibold.text-gray-700.dark:text-gray-300.mb-2 "Basic usage:"]
-       [:code.text-sm.text-gray-600.dark:text-gray-400.font-mono
+      [:div.ty-content.p-4.rounded-md
+       [:p.text-sm.font-semibold.ty-text-.mb-2 "Basic usage:"]
+       [:code.text-sm.ty-text--.font-mono
         "<ty-icon name=\"home\"></ty-icon>"]]
-      [:div.bg-gray-50.dark:bg-gray-900.p-4.rounded-md
-       [:p.text-sm.font-semibold.text-gray-700.dark:text-gray-300.mb-2 "With attributes:"]
-       [:code.text-sm.text-gray-600.dark:text-gray-400.font-mono
+      [:div.ty-content.p-4.rounded-md
+       [:p.text-sm.font-semibold.ty-text-.mb-2 "With attributes:"]
+       [:code.text-sm.ty-text--.font-mono
         "<ty-icon name=\"star\" size=\"xl\" spin></ty-icon>"]]
-      [:div.bg-gray-50.dark:bg-gray-900.p-4.rounded-md
-       [:p.text-sm.font-semibold.text-gray-700.dark:text-gray-300.mb-2 "In a button:"]
-       [:code.text-sm.text-gray-600.dark:text-gray-400.font-mono
+      [:div.ty-content.p-4.rounded-md
+       [:p.text-sm.font-semibold.ty-text-.mb-2 "In a button:"]
+       [:code.text-sm.ty-text--.font-mono
         "<ty-button><ty-icon name=\"plus\"></ty-icon> Add Item</ty-button>"]]]]]])
 
 (defn view []
@@ -186,11 +186,11 @@
        (str "Explore " total-count " icons from multiple libraries. Click any icon to copy its code.")]]
 
      ;; Controls
-     [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.mb-8
+     [:div.ty-elevated.rounded-lg.shadow-md.p-6.mb-8
       [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
        ;; Search
        [:div
-        [:label.block.text-sm.font-medium.text-gray-700.dark:text-gray-300.mb-2
+        [:label.block.text-sm.font-medium.ty-text-.mb-2
          "Search Icons"]
         (search-input {:value search-term
                        :placeholder "Search by name..."
@@ -205,7 +205,7 @@
         [:button.px-4.py-2.rounded-md.text-sm.font-medium.transition-colors
          {:class (if show-demo?
                    [:bg-ty-primary :text-white :dark:text-white]
-                   [:bg-gray-100 "dark:bg-gray-700" :text-gray-700 "dark:text-gray-300"])
+                   [:ty-content :ty-text-])
           :on {:click #(router/set-query! (merge (when-not (str/blank? search-term)
                                                    {:search search-term})
                                                  {:show-demo (str (not show-demo?))}))}}
@@ -213,7 +213,7 @@
 
      ;; Results count
      (when-not (str/blank? search-term)
-       [:div.mb-4.text-sm.text-gray-600.dark:text-gray-400
+       [:div.mb-4.text-sm.ty-text-
         (str "Found " filtered-count " icons matching \"" search-term "\"")])
 
      ;; Demo section

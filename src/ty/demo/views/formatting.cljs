@@ -1,10 +1,10 @@
 (ns ty.demo.views.formatting
   "Demonstrates number and date formatting"
   (:require
-    [ty.demo.state :refer [state]]
-    [ty.i18n :as i18n]
-    [ty.i18n.number :as number]
-    [ty.i18n.time :as time]))
+   [ty.demo.state :refer [state]]
+   [ty.i18n :as i18n]
+   [ty.i18n.number :as number]
+   [ty.i18n.time :as time]))
 
 (defn number-formatting-examples []
   (let [locale (:locale @state i18n/*locale*)
@@ -140,7 +140,7 @@
        [:code "(i18n/locale :" (name locale) " :weekdays)"]
        [:div.flex.flex-wrap.gap-2.mt-2
         (for [day (i18n/locale locale :weekdays)]
-          [:span.px-2.py-1.bg-gray-100.rounded {:key day} day])]]]
+          [:span.px-2.py-1.ty-content.rounded {:key day} day])]]]
 
      [:div.space-y-2
       [:h4.font-medium "Months"]
@@ -148,18 +148,18 @@
        [:code "(i18n/locale :" (name locale) " :months)"]
        [:div.flex.flex-wrap.gap-2.mt-2
         (for [month (i18n/locale locale :months)]
-          [:span.px-2.py-1.bg-gray-100.rounded {:key month} month])]]]]))
+          [:span.px-2.py-1.ty-content.rounded {:key month} month])]]]]))
 
 (defn view []
   (let [locale (:locale @state i18n/*locale*)]
     (binding [i18n/*locale* locale]
-      [:div.p-8.max-w-6xl.mx-auto.space-y-8.text-gray-600.dark:text-gray-400
+      [:div.p-8.max-w-6xl.mx-auto.space-y-8.ty-text-
        [:div
         [:h1.text-3xl.font-bold.mb-4 "Number & Date Formatting"]
         [:p
          "Format numbers, currencies, dates, and times using native Intl API."]]
 
-       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6.text
+       [:div.ty-elevated.rounded-lg.shadow-md.p-6.text
         [:div.flex.items-center.gap-4.mb-6
          [:span.font-medium "Current locale:"]
          [:select.px-3.py-2.border.rounded-md
@@ -173,14 +173,14 @@
           [:option {:value "es"} "Español"]
           [:option {:value "ja"} "日本語"]]]]
 
-       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+       [:div.ty-elevated.rounded-lg.shadow-md.p-6
         (number-formatting-examples)]
 
-       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+       [:div.ty-elevated.rounded-lg.shadow-md.p-6
         (date-formatting-examples)]
 
-       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+       [:div.ty-elevated.rounded-lg.shadow-md.p-6
         (relative-time-examples)]
 
-       [:div.bg-white.dark:bg-gray-800.rounded-lg.shadow-md.p-6
+       [:div.ty-elevated.rounded-lg.shadow-md.p-6
         (locale-info-examples)]])))

@@ -3,7 +3,8 @@
 .calendar-container {
   display: flex;
   flex-direction: column;
-  background: var(--ty-bg, white);
+  color: var(--ty-input-color);
+  background: var(--ty-input-bg);
   border-radius: 0.5rem;
   font-family: system-ui, sans-serif;
   width: var(--calendar-width, auto);
@@ -13,35 +14,35 @@
 }
 
 /* Navigation embedding - clean integration */
-.calendar-container > ty-calendar-navigation {
-  border-bottom: 1px solid var(--ty-border-neutral, #e5e7eb);
+.calendar-container>ty-calendar-navigation {
+  border-bottom: 1px solid var(--ty-input-border, #e5e7eb);
 }
 
-/* Month display embedding - seamless integration */  
-.calendar-container > ty-calendar-month {
+/* Month display embedding - seamless integration */
+.calendar-container>ty-calendar-month {
   width: 100%;
 }
 
 /* Ensure child components inherit container width constraints */
-.calendar-container > ty-calendar-navigation,
-.calendar-container > ty-calendar-month {
+.calendar-container>ty-calendar-navigation,
+.calendar-container>ty-calendar-month {
   min-width: inherit;
   max-width: inherit;
 }
 
 /* Remove duplicate styling since child components handle their own styles */
-.calendar-container > * {
+.calendar-container>* {
   border-radius: 0;
 }
 
 /* First child (navigation) gets top border radius */
-.calendar-container > *:first-child {
+.calendar-container>*:first-child {
   border-top-left-radius: 0.5rem;
   border-top-right-radius: 0.5rem;
 }
 
 /* Last child (month) gets bottom border radius */
-.calendar-container > *:last-child {
+.calendar-container>*:last-child {
   border-bottom-left-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
 }
@@ -50,17 +51,5 @@
 @media (max-width: 640px) {
   .calendar-container {
     min-width: 260px;
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .calendar-container {
-    background: var(--ty-bg-dark, #1f2937);
-    box-shadow: var(--ty-shadow-sm-dark, 0 1px 3px 0 rgba(0, 0, 0, 0.3));
-  }
-  
-  .calendar-container > ty-calendar-navigation {
-    border-bottom-color: var(--ty-border-neutral-dark, #374151);
   }
 }

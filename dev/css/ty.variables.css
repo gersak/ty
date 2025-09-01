@@ -510,7 +510,7 @@ html[data-theme="dark"] {
   /* Near black - minimal backgrounds */
   --ty-bg-m1: #111827;
   /* Very dark canvas - app backgrounds */
-  --ty-bg: #1f2937;
+  --ty-bg: #;
   /* Dark gray - primary content baseline */
   --ty-bg-p1: #374151;
   /* Medium gray - card elevation */

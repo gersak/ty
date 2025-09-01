@@ -143,9 +143,9 @@
                            [:option {:value "au"} "🇦🇺 Australia"]
                            [:option {:value "pt_BR"} "🇧🇷 Brazil"]
                            [:option {:value "en_ZA"} "🇿🇦 South Africa"]]]
-                         [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                         [:div.mt-2.text-sm.ty-text-
                           "Selected: "
-                          [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
+                          [:code.ty-content.px-2.py-1.rounded.text-xs
                            (str (or (::dropdown-value @state/state) "none"))]]
                          [:div.max-w-xs
                           [:ty-date-picker {:label "Birthday"
@@ -154,12 +154,12 @@
                                             :on {:change date-picker-event-handler}}]
                           [:div.mt-2.text-sm.ty-text-
                            "Selected: "
-                           [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
+                           [:code.ty-content.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                               (js/Date. date-val)
-                               (::dropdown-value @state/state "en")
-                               {:dateStyle "full"})
+                                (js/Date. date-val)
+                                (::dropdown-value @state/state "en")
+                                {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -178,13 +178,13 @@
                                             :clearable true
                                             :placeholder "Select check-in..."
                                             :on {:change date-picker-event-handler}}]
-                          [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                          [:div.mt-2.text-sm.ty-text-
                            "Value: "
-                           [:code.bg-gray-100.dark:bg-gray-800.px-2.py-1.rounded.text-xs
+                           [:code.ty-content.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (.toLocaleDateString (js/Date. date-val))
                               "null")]]
-                          [:div.mt-1.text-xs.text-blue-600.dark:text-blue-400
+                          [:div.mt-1.text-xs.ty-text-primary
                            "💡 Look for X button when date is selected"]]]})
 
    (code-snippet "<ty-date-picker 
@@ -212,11 +212,11 @@
                                             :on {:change date-picker-event-handler}}]]]})
 
    ;; NEW: Architecture explanation
-   [:div.mt-8.p-4.bg-blue-50.dark:bg-blue-900.rounded-lg
-    [:h3.text-lg.font-semibold.mb-3.text-blue-800.dark:text-blue-200 "🏗️ New Architecture"]
-    [:p.text-sm.text-blue-700.dark:text-blue-300.mb-3
+   [:div.mt-8.p-4.ty-bg-primary-.rounded-lg
+    [:h3.text-lg.font-semibold.mb-3.ty-text-primary "🏗️ New Architecture"]
+    [:p.text-sm.ty-text-primary.mb-3
      "ty-date-picker now uses ty-calendar internally, creating a clean component hierarchy:"]
-    [:div.text-sm.space-y-2.text-blue-700.dark:text-blue-300
+    [:div.text-sm.space-y-2.ty-text-primary
      [:div "📅 ty-date-picker: Manages selected value + input styling + dropdown behavior"]
      [:div "🧭 ty-calendar: Handles navigation controls + change events + day selection styling"]
      [:div "🎨 ty-calendar-month: Pure rendering engine"]
@@ -285,11 +285,11 @@
 <ty-date-picker flavor=\"important\" label=\"Important Date\" value=\"2024-08-25\"></ty-date-picker>")
 
    ;; NEW: Date + Time picker examples
-   [:div.mt-8.p-4.bg-green-50.dark:bg-green-900.rounded-lg
-    [:h3.text-lg.font-semibold.mb-3.text-green-800.dark:text-green-200 "🆕 NEW: Date + Time Support"]
-    [:p.text-sm.text-green-700.dark:text-green-300.mb-3
+   [:div.mt-8.p-4.ty-bg-success-.rounded-lg
+    [:h3.text-lg.font-semibold.mb-3.ty-text-success "🆕 NEW: Date + Time Support"]
+    [:p.text-sm.ty-text-success.mb-3
      "Add with-time=\"true\" to get time input with masked validation:"]
-    [:div.text-sm.space-y-2.text-green-700.dark:text-green-300
+    [:div.text-sm.space-y-2.ty-text-success
      [:div "⏰ Time input with HH:mm masking"]
      [:div "📅 Combined date+time selection"]
      [:div "✨ ISO datetime string output (2024-12-25T14:30)"]
@@ -304,9 +304,9 @@
                                               :with-time true
                                               :value "2024-12-25T14:30"
                                               :on {:change date-picker-event-handler}}]
-                            [:div.mt-2.text-xs.text-gray-600.dark:text-gray-400
+                            [:div.mt-2.text-xs.ty-text-
                              "ISO datetime: "
-                             [:code.bg-gray-100.dark:bg-gray-800.px-1.py-0.5.rounded.text-xs
+                             [:code.ty-content.px-1.py-0.5.rounded.text-xs
                               (str (:date-picker-value @state/state))]]]
                            [:div.min-w-0.flex-1
                             [:ty-date-picker {:label "Meeting Time"
@@ -360,17 +360,17 @@
                                             :with-time true
                                             :value "2024-01-01T12:00"
                                             :on {:change date-picker-event-handler}}]
-                          [:div.mt-2.text-sm.text-gray-600.dark:text-gray-400
+                          [:div.mt-2.text-sm.ty-text-
                            "Try typing: 25:70, 99:99, etc. - they'll be rejected!"]
-                          [:div.mt-1.text-xs.text-blue-600.dark:text-blue-400
+                          [:div.mt-1.text-xs.ty-text-primary
                            "✅ Valid: 00-23 hours, 00-59 minutes"]
-                          [:div.mt-1.text-xs.text-red-600.dark:text-red-400
+                          [:div.mt-1.text-xs.ty-text-danger
                            "❌ Invalid: >23 hours, >59 minutes"]]]})])
 
 (defn localized-date-picker-demo []
   [:div.demo-section
    [:h2.demo-title "🌍 Localized Date Picker"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "Date picker components automatically adapt to different locales - placeholder text, time labels, weekday names, and navigation tooltips all translate seamlessly."]
 
    (demo-row {:title "Multi-Language Date Pickers"
@@ -421,9 +421,9 @@
 <ty-date-picker label=\"Besprechungstermin\" locale=\"de-DE\" with-time=\"true\"></ty-date-picker>")
 
    ;; Show what gets localized
-   [:div {:class "mt-6 p-4 bg-green-50 rounded-lg"}
-    [:h4.font-semibold.mb-2.text-green-800 "🎯 What Gets Localized"]
-    [:ul {:class "text-sm space-y-1 text-green-700"}
+   [:div {:class "mt-6 p-4 ty-bg-success- rounded-lg"}
+    [:h4.font-semibold.mb-2.ty-text-success "🎯 What Gets Localized"]
+    [:ul {:class "text-sm space-y-1 ty-text-success"}
      [:li "✅ Placeholder text: \"Select date...\" → \"Odaberite datum...\""]
      [:li "✅ Time label: \"Time:\" → \"Vrijeme:\""]
      [:li "✅ Weekday headers: \"Mon Tue Wed\" → \"pon uto sri\""]
@@ -432,9 +432,9 @@
      [:li "✅ Calendar layout: Respects local conventions"]]]
 
    ;; Technical details
-   [:div {:class "mt-4 p-4 bg-blue-50 rounded-lg"}
-    [:h4.font-semibold.mb-2.text-blue-800 "⚙️ Implementation Details"]
-    [:div {:class "text-sm space-y-2 text-blue-700"}
+   [:div {:class "mt-4 p-4 ty-bg-primary- rounded-lg"}
+    [:h4.font-semibold.mb-2.ty-text-primary "⚙️ Implementation Details"]
+    [:div {:class "text-sm space-y-2 ty-text-primary"}
      [:div [:strong "String translations:"] " Custom ty.i18n.string system with fallback to original text"]
      [:div [:strong "Date/time formatting:"] " Native Intl.DateTimeFormat for locale-aware display"]
      [:div [:strong "Weekday names:"] " Intl API provides localized short names in Monday-first order"]
@@ -443,27 +443,27 @@
    (demo-row {:title "Supported Languages"
               :description "Date picker currently supports 10+ languages with more coming"
               :children [[:div {:class "grid grid-cols-2 md:grid-cols-5 gap-2 text-sm"}
-                          [:div.p-2.bg-gray-100.rounded "🇺🇸 English"]
-                          [:div.p-2.bg-gray-100.rounded "🇭🇷 Croatian"]
-                          [:div.p-2.bg-gray-100.rounded "🇩🇪 German"]
-                          [:div.p-2.bg-gray-100.rounded "🇫🇷 French"]
-                          [:div.p-2.bg-gray-100.rounded "🇪🇸 Spanish"]
-                          [:div.p-2.bg-gray-100.rounded "🇮🇹 Italian"]
-                          [:div.p-2.bg-gray-100.rounded "🇵🇹 Portuguese"]
-                          [:div.p-2.bg-gray-100.rounded "🇷🇺 Russian"]
-                          [:div.p-2.bg-gray-100.rounded "🇯🇵 Japanese"]
-                          [:div.p-2.bg-gray-100.rounded "🇰🇷 Korean"]
-                          [:div.p-2.bg-gray-100.rounded "🇨🇳 Chinese"]
-                          [:div.p-2.bg-gray-100.rounded "...more"]]]})
+                          [:div.p-2.ty-bg-neutral+.rounded "🇺🇸 English"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇭🇷 Croatian"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇩🇪 German"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇫🇷 French"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇪🇸 Spanish"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇮🇹 Italian"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇵🇹 Portuguese"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇷🇺 Russian"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇯🇵 Japanese"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇰🇷 Korean"]
+                          [:div.p-2.ty-bg-neutral+.rounded "🇨🇳 Chinese"]
+                          [:div.p-2.ty-bg-neutral+.rounded "...more"]]]})
 
-   [:div {:class "mt-6 p-3 bg-yellow-50 rounded-lg"}
-    [:div {:class "text-sm text-yellow-800"}
+   [:div {:class "mt-6 p-3 ty-bg-warning- rounded-lg"}
+    [:div {:class "text-sm ty-text-warning"}
      [:strong "💡 Pro Tip:"] " Set locale at the component level or globally via ty.i18n/*locale*. Components automatically inherit locale from parent context if not explicitly set."]]])
 
 (defn multiple-dropdowns-test []
   [:div.demo-section
    [:h2.demo-title "Global Dropdown Management"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "Test global dropdown behavior - opening one dropdown automatically closes others. This ensures only one dropdown can be open at a time across the entire page."]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
@@ -559,7 +559,7 @@
 (defn flavor-variants []
   [:div.demo-section
    [:h2.demo-title "Flavor Variants"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "Semantic flavors convey meaning and context through border colors"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-4
@@ -628,7 +628,7 @@
 (defn search-examples []
   [:div.demo-section
    [:h2.demo-title "Search & Filtering"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "Powerful search functionality helps users find options quickly"]
 
    (demo-row {:title "Programming Languages"
@@ -686,7 +686,7 @@
 (defn blur-clear-demo []
   [:div.demo-section
    [:h2.demo-title "Blur Clear Search (Desktop Only)"]
-   [:p.text-gray-600.dark:text-gray-400.mb-6
+   [:p.ty-text-.mb-6
     "On desktop, clicking outside the search input clears the search and shows all options. This feature helps users reset their search without having to manually clear the input."]
 
    [:div.space-y-6

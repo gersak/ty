@@ -4,6 +4,10 @@
 
 /* Custom component classes for the demo app */
 @layer components {
+  body {
+    color: var(--ty-text);
+  }
+
   .demo-section {
     @apply rounded-lg shadow-md p-6 mb-6;
     background: var(--ty-surface-elevated);

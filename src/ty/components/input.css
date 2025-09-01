@@ -27,7 +27,7 @@
 .required-icon {
   display: inline-flex;
   align-items: center;
-  color: #ef4444;
+  color: var(--ty-color-danger);
   width: 12px;
   height: 12px;
   vertical-align: middle;
@@ -51,7 +51,7 @@ input.error {
 
 input.error:focus {
   border-color: var(--ty-color-danger-p1);
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
 }
 
 /* ===== INPUT BASE STYLING ===== */

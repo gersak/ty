@@ -82,11 +82,11 @@
                           [:top :bottom :right :left])
             ;; Use positioning engine to find best position
             position-data (pos/find-best-position
-                           {:target-el anchor
-                            :floating-el container
-                            :preferences preferences
-                            :offset offset
-                            :padding 8})
+                            {:target-el anchor
+                             :floating-el container
+                             :preferences preferences
+                             :offset offset
+                             :padding 8})
             {:keys [x y]} position-data]
         ;; Update CSS variables
         (.setProperty (.-style el) "--x" (str x "px"))
@@ -111,10 +111,10 @@
                         (js/clearTimeout @timeout-id))
                       (reset! timeout-id
                               (js/setTimeout
-                               #(do
-                                  (reset! timeout-id nil)
-                                  (update-position! el shadow-root))
-                               10))))
+                                #(do
+                                   (reset! timeout-id nil)
+                                   (update-position! el shadow-root))
+                                10))))
         ;; ResizeObserver for anchor and container
         resize-observer (js/ResizeObserver. update-fn)
         ;; Scroll listener with requestAnimationFrame
@@ -123,9 +123,9 @@
                          (when-not @scroll-raf-id
                            (reset! scroll-raf-id
                                    (js/requestAnimationFrame
-                                    #(do
-                                       (reset! scroll-raf-id nil)
-                                       (update-position! el shadow-root))))))
+                                     #(do
+                                        (reset! scroll-raf-id nil)
+                                        (update-position! el shadow-root))))))
         ;; Cleanup function
         cleanup (fn []
                   (.disconnect resize-observer)

@@ -33,7 +33,7 @@
   transition: var(--ty-transition-all);
 
   /* Default styling using semantic variables */
-  background: var(--ty-bg-neutral-mild);
+  background: var(--ty-bg-neutral);
   color: var(--ty-color-neutral-strong);
   border: 1px solid;
   border-color: var(--ty-color-neutral);

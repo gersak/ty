@@ -121,10 +121,8 @@ html {
 
   --ty-border: #e5e7eb;
   --ty-border-mild: #d1d5db;
-  --ty-border-strong: #9ca3af;
   --ty-border-strong: #6b7280;
   --ty-border-soft: #f3f4f6;
-  --ty-border-faint: #f9fafb;
   --ty-border-faint: #fafafa;
 
   /* Semantic borders */
@@ -477,9 +475,9 @@ html[data-theme="dark"] {
   --ty-bg-info-mild: #155e75;
   --ty-bg-info-soft: #083344;
 
-  --ty-bg-neutral: #454545;
-  --ty-bg-neutral-mild: #737373;
-  --ty-bg-neutral-soft: #1a1a1a;
+  --ty-bg-neutral: #1b1b1b;
+  --ty-bg-neutral-mild: #1a1a1a;
+  --ty-bg-neutral-soft: #242424;
 
   /* Borders for dark mode */
   --ty-border-strong: #6b7280;

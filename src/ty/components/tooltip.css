@@ -30,12 +30,14 @@
 /* Default tooltip content styles */
 #tooltip-container {
   /* Base styles */
-  background: var(--ty-tooltip-bg, #333);
-  color: var(--ty-tooltip-color, white);
+  background: var(--ty-bg-neutral-mild);
+  color: var(--ty-color-neutral-strong);
   padding: var(--ty-tooltip-padding, 6px 10px);
   border-radius: var(--ty-tooltip-radius, 4px);
+  border: 1px solid var(--ty-border-strong);
   max-width: var(--ty-tooltip-max-width, 250px);
-  font-size: var(--ty-tooltip-font-size, 12px);
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-semibold);
   line-height: 1.5;
 }
 
@@ -47,66 +49,38 @@
   line-height: inherit;
 }
 
-/* Variants */
-#tooltip-container[data-flavor="dark"] {
-  background: #333;
-  color: white;
-}
-
-#tooltip-container[data-flavor="light"] {
-  background: white;
-  color: #333;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e0e0e0;
-}
-
-/* ===== NEW: INDUSTRY-STANDARD SEMANTIC VARIANTS ===== */
-
 #tooltip-container[data-flavor="primary"] {
-  background: var(--ty-color-primary, #3b82f6);
-  color: white;
+  background: var(--ty-bg-primary);
+  color: var(--ty-color-primary-strong);
+  border-color: var(--ty-border-primary);
 }
 
 #tooltip-container[data-flavor="secondary"] {
-  background: var(--ty-color-secondary, #8b5cf6);
-  color: white;
+  background: var(--ty-bg-secondary);
+  color: var(--ty-color-secondary-strong);
+  border-color: var(--ty-border-secondary);
 }
 
 #tooltip-container[data-flavor="success"] {
-  background: var(--ty-color-success, #10b981);
-  color: white;
+  background: var(--ty-bg-success-mild);
+  color: var(--ty-color-success-strong);
+  border-color: var(--ty-border-success);
 }
 
 #tooltip-container[data-flavor="danger"] {
-  background: var(--ty-color-danger, #ef4444);
-  color: white;
+  background: var(--ty-bg-danger);
+  color: var(--ty-color-danger-strong);
+  border-color: var(--ty-border-danger);
 }
 
 #tooltip-container[data-flavor="warning"] {
-  background: var(--ty-color-warning, #f59e0b);
-  color: white;
+  background: var(--ty-bg-warning);
+  color: var(--ty-color-warning-strong);
+  border-color: var(--ty-border-warning);
 }
 
 #tooltip-container[data-flavor="info"] {
-  background: var(--ty-color-info, #06b6d4);
-  color: white;
-}
-
-/* ===== LEGACY SEMANTIC VARIANTS (Backward Compatibility) ===== */
-/* 
-   These legacy variant attributes continue to work exactly as before
-   because they reference the new semantic tokens via CSS variable mapping:
-   
-   
-   The mapping is handled in ty.variables.css, so no changes needed here.
-*/
-
-/* Semantic variants */
-  color: white;
-}
-
-  color: white;
-}
-
-  color: white;
+  background: var(--ty-bg-info);
+  color: var(--ty-text-strong);
+  border-color: var(--ty-border-info);
 }

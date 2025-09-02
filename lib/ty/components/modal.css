@@ -80,6 +80,7 @@
 /* Minimal container - no styling imposed on user content */
 
 .modal-content {
+  color: var(--ty-text);
   padding: 30px;
 }
 

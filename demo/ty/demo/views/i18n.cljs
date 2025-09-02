@@ -1,9 +1,9 @@
 (ns ty.demo.views.i18n
   "Demonstrates the i18n functionality"
   (:require
-   [ty.demo.state :refer [state]]
-   [ty.i18n :as i18n]
-   [ty.i18n.keyword :as i18n-kw]))
+    [ty.demo.state :refer [state]]
+    [ty.i18n :as i18n]
+    [ty.i18n.keyword :as i18n-kw]))
 
 (defn translation-example []
   [:div.space-y-2
@@ -25,7 +25,7 @@
 (defn locale-switcher []
   [:div.flex.items-center.gap-4
    [:span.font-medium "Current locale:"]
-   [:select.px-3.py-2.border.rounded-md
+   [:select.px-3.py-2.border.rounded-md.ty-bg.ty-text++.ty-border+
     {:value (name @(atom i18n/*locale*))
      :on {:change (fn [e]
                     (let [locale (keyword (.. e -target -value))]
@@ -40,20 +40,24 @@
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Load Translations"]
    [:div.flex.gap-4
-    [:button.px-4.py-2.rounded-md.transition-colors.ty-bg-primary.hover:ty-bg-primary+.text-white
-     {:on {:click (fn []
+    [:ty-button
+     {:flavor "neutral"
+      :accent true
+      :on {:click (fn []
                     (-> (i18n-kw/load-translations!
-                         {:format :edn
-                          :path "/i18n/common.edn"})
+                          {:format :edn
+                           :path "/i18n/common.edn"})
                         (.then #(js/console.log "Loaded EDN translations:" %))
                         (.catch #(js/console.error "Failed to load:" %))))}}
      "Load EDN Translations"]
-    [:button.px-4.py-2.rounded-md.transition-colors.ty-bg-success.hover:ty-bg-success+.text-white
-     {:on {:click (fn []
+    [:ty-button
+     {:flavor "success"
+      :accent true
+      :on {:click (fn []
                     (-> (i18n-kw/load-translations!
-                         {:format :json
-                          :path "/i18n/en.json"
-                          :locale :en})
+                          {:format :json
+                           :path "/i18n/en.json"
+                           :locale :en})
                         (.then #(js/console.log "Loaded JSON translations:" %))
                         (.catch #(js/console.error "Failed to load:" %))))}}
      "Load JSON (English)"]]
@@ -63,20 +67,22 @@
 (defn manual-translations-demo []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Manual Translation Management"]
-   [:button.px-4.py-2.ty-bg-secondary.text-white.rounded-md.hover:ty-bg-secondary+
-    {:on {:click (fn []
+   [:ty-button
+    {:flavor "secondary"
+     :accent true
+     :on {:click (fn []
                    ;; Using qualified keywords directly
                    (i18n-kw/add-translations
-                    {:hello/default "Hello"
-                     :hello/hr "Bok"
-                     :hello/de "Hallo"
-                     :hello/fr "Bonjour"
-                     :hello/es "Hola"
-                     :goodbye/default "Goodbye"
-                     :goodbye/hr "Doviđenja"
-                     :goodbye/de "Auf Wiedersehen"
-                     :goodbye/fr "Au revoir"
-                     :goodbye/es "Adiós"})
+                     {:hello/default "Hello"
+                      :hello/hr "Bok"
+                      :hello/de "Hallo"
+                      :hello/fr "Bonjour"
+                      :hello/es "Hola"
+                      :goodbye/default "Goodbye"
+                      :goodbye/hr "Doviđenja"
+                      :goodbye/de "Auf Wiedersehen"
+                      :goodbye/fr "Au revoir"
+                      :goodbye/es "Adiós"})
                    (js/console.log "Added manual translations"))}}
     "Add Manual Translations"]
    [:div.grid.grid-cols-2.gap-4.mt-4
@@ -92,17 +98,19 @@
 (defn namespaced-map-demo []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Namespaced Map Syntax"]
-   [:button.px-4.py-2.ty-bg-primary.text-white.rounded-md.hover:ty-bg-primary+
-    {:on {:click (fn []
+   [:ty-button
+    {:flavor "primary"
+     :accent true
+     :on {:click (fn []
                    ;; Using Clojure's namespaced map syntax
                    (i18n-kw/add-translations
-                    (merge
-                     #:button {:default "Button"
-                               :hr "Gumb"
-                               :de "Schaltfläche"}
-                     #:form {:default "Form"
-                             :hr "Obrazac"
-                             :de "Formular"}))
+                     (merge
+                       #:button {:default "Button"
+                                 :hr "Gumb"
+                                 :de "Schaltfläche"}
+                       #:form {:default "Form"
+                               :hr "Obrazac"
+                               :de "Formular"}))
                    (js/console.log "Added namespaced translations"))}}
     "Add with Namespaced Maps"]
    [:div.grid.grid-cols-2.gap-4.mt-4
@@ -139,8 +147,10 @@
 (defn current-translations-view []
   [:div.space-y-4
    [:h3.text-lg.font-semibold "Current Translations in Memory"]
-   [:button.px-4.py-2.ty-bg-neutral.text-white.rounded-md.hover:ty-bg-neutral+
-    {:on {:click #(js/console.log "Current translations:" @i18n-kw/translations)}}
+   [:ty-button
+    {:flavor "neutral"
+     :accent true
+     :on {:click #(js/console.log "Current translations:" @i18n-kw/translations)}}
     "Log Translations to Console"]
    [:div.text-sm.ty-text-
     "Open browser console to see the translations atom"]])

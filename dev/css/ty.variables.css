@@ -50,13 +50,6 @@ html {
   --ty-color-warning-soft: #fbbf24;
   --ty-color-warning-faint: #fcd34d;
 
-  /* Info */
-  --ty-color-info-strong: #0e7490;
-  --ty-color-info-mild: #0891b2;
-  --ty-color-info: #06b6d4;
-  --ty-color-info-soft: #22d3ee;
-  --ty-color-info-faint: #67e8f9;
-
   /* Neutral */
   --ty-color-neutral-strong: #374151;
   --ty-color-neutral-mild: #4b5563;
@@ -105,11 +98,6 @@ html {
   --ty-bg-warning-mild: #fde68a;
   --ty-bg-warning-soft: #fffbeb;
 
-  /* Info backgrounds */
-  --ty-bg-info: #cffafe;
-  --ty-bg-info-mild: #a5f3fc;
-  --ty-bg-info-soft: #ecfeff;
-
   /* Neutral backgrounds */
   --ty-bg-neutral: #f2f2f2;
   --ty-bg-neutral-mild: #e5e7eb;
@@ -131,7 +119,6 @@ html {
   --ty-border-success: var(--ty-color-success);
   --ty-border-danger: var(--ty-color-danger);
   --ty-border-warning: var(--ty-color-warning);
-  --ty-border-info: var(--ty-color-info);
   --ty-border-neutral: var(--ty-color-neutral);
 
   /* =================================================================
@@ -172,7 +159,6 @@ html {
   --ty-accent-success: #3bb68d;
   --ty-accent-danger: #df5b5b;
   --ty-accent-warning: #e1a644;
-  --ty-accent-info: #06b6d4;
   --ty-accent-neutral: #414141;
 
 
@@ -196,7 +182,6 @@ html {
   --ty-input-success-border: var(--ty-color-success);
   --ty-input-danger-border: var(--ty-color-danger);
   --ty-input-warning-border: var(--ty-color-warning);
-  --ty-input-info-border: var(--ty-color-info);
 
   /* =================================================================
      NON-COLOR PROPERTIES
@@ -431,13 +416,6 @@ html[data-theme="dark"] {
   --ty-color-warning-soft: #f59e0b;
   --ty-color-warning-faint: #a06726;
 
-  /* Info */
-  --ty-color-info-strong: #a5f3fc;
-  --ty-color-info-mild: #67e8f9;
-  --ty-color-info: #22d3ee;
-  --ty-color-info-soft: #06b6d4;
-  --ty-color-info-faint: #0891b2;
-
   /* Neutral */
   --ty-color-neutral-strong: #f3f4f6;
   --ty-color-neutral-mild: #d1d5db;
@@ -480,10 +458,6 @@ html[data-theme="dark"] {
   --ty-bg-warning: #743953;
   --ty-bg-warning-soft: #45333b;
 
-  --ty-bg-info-mild: #155e75;
-  --ty-bg-info: #164e63;
-  --ty-bg-info-soft: #083344;
-
   --ty-bg-neutral-mild: #1a1a1a;
   --ty-bg-neutral: #323232;
   --ty-bg-neutral-soft: #242424;
@@ -509,7 +483,6 @@ html[data-theme="dark"] {
   --ty-accent-success: #3f7a66;
   --ty-accent-danger: #ab5050;
   --ty-accent-warning: #d0852f;
-  --ty-accent-info: #0891b2;
   --ty-accent-neutral: #4d4d4d;
 
   /* Input component tokens - dark mode */
@@ -529,7 +502,6 @@ html[data-theme="dark"] {
   --ty-input-success-border: var(--ty-color-success);
   --ty-input-danger-border: var(--ty-color-danger);
   --ty-input-warning-border: var(--ty-color-warning);
-  --ty-input-info-border: var(--ty-color-info);
 
   /* Modal - dark mode */
   --ty-modal-bg: var(--ty-bg-mild);

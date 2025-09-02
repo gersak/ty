@@ -142,18 +142,6 @@ html.dark .ty-sunken {
   background-color: var(--ty-bg-warning-soft);
 }
 
-.ty-bg-info {
-  background-color: var(--ty-bg-info);
-}
-
-.ty-bg-info\+ {
-  background-color: var(--ty-bg-info-mild);
-}
-
-.ty-bg-info- {
-  background-color: var(--ty-bg-info-soft);
-}
-
 .ty-bg-neutral {
   background-color: var(--ty-bg-neutral);
 }
@@ -309,27 +297,6 @@ html.dark .ty-sunken {
   color: var(--ty-color-warning-faint) !important;
 }
 
-/* Info text colors */
-.ty-text-info-strong {
-  color: var(--ty-color-info-strong) !important;
-}
-
-.ty-text-info-mild {
-  color: var(--ty-color-info-mild) !important;
-}
-
-.ty-text-info {
-  color: var(--ty-color-info) !important;
-}
-
-.ty-text-info-soft {
-  color: var(--ty-color-info-soft) !important;
-}
-
-.ty-text-info-faint {
-  color: var(--ty-color-info-faint) !important;
-}
-
 /* Neutral text colors */
 .ty-text-neutral-strong {
   color: var(--ty-color-neutral-strong) !important;
@@ -401,10 +368,6 @@ html.dark .ty-sunken {
   border-color: var(--ty-border-warning);
 }
 
-.ty-border-info {
-  border-color: var(--ty-border-info);
-}
-
 .ty-border-neutral {
   border-color: var(--ty-border-neutral);
 }
@@ -453,6 +416,18 @@ html.dark .ty-sunken {
    ================================================================= */
 
 /* These might exist in current codebase - keeping for backward compatibility */
+.ty-bg {
+  background-color: var(--ty-bg);
+}
+
+.ty-bg\+ {
+  background-color: var(--ty-bg-mild);
+}
+
+.ty-bg\- {
+  background-color: var(--ty-bg-soft);
+}
+
 .ty-bg-important {
   background-color: var(--ty-color-primary, #3b82f6);
 }

@@ -10,7 +10,7 @@ button {
   gap: var(--ty-spacing-1);
   /* Base styles */
   min-height: var(--ty-size-md);
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding: var(--ty-spacing-1) var(--ty-spacing-4);
   font-size: var(--ty-font-xs);
   font-weight: var(--ty-font-medium);
   line-height: var(--ty-line-height-normal);
@@ -90,23 +90,23 @@ button.sm {
 
 /* Medium (default) */
 button.md {
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding: var(--ty-spacing-1) var(--ty-spacing-4);
   font-size: var(--ty-font-base);
   gap: var(--ty-spacing-1);
 }
 
 /* Large */
 button.lg {
-  padding: var(--ty-spacing-1_5) var(--ty-spacing-3);
+  padding: var(--ty-spacing-2) var(--ty-spacing-6);
   font-size: var(--ty-font-lg);
-  gap: var(--ty-spacing-1_5);
+  gap: var(--ty-spacing-2);
 }
 
 /* Extra Large */
 button.xl {
-  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  padding: var(--ty-spacing-3) var(--ty-spacing-8);
   font-size: var(--ty-font-xl);
-  gap: var(--ty-spacing-2);
+  gap: var(--ty-spacing-4);
 }
 
 /* ===== PILL MODIFIER ===== */
@@ -477,61 +477,6 @@ button.plain.warning {
 
 button.plain.warning:hover:not(:disabled) {
   background: var(--ty-bg-warning-soft);
-}
-
-/* ----- INFO FLAVOR ----- */
-
-/* Filled + Outlined (default) */
-button.filled-outlined.info {
-  background: var(--ty-bg-info);
-  color: var(--ty-color-info);
-  border-color: var(--ty-border-info);
-}
-
-button.filled-outlined.info:hover:not(:disabled) {
-  background: var(--ty-bg-info-mild);
-}
-
-button.filled-outlined.info:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-info);
-}
-
-/* Accent */
-button.accent.info {
-  background: var(--ty-accent-info);
-}
-
-button.accent.info:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-info);
-}
-
-/* Filled */
-button.filled.info {
-  background: var(--ty-bg-info);
-  color: var(--ty-color-info);
-}
-
-button.filled.info:hover:not(:disabled) {
-  background: var(--ty-bg-info-mild);
-}
-
-/* Outlined */
-button.outlined.info {
-  color: var(--ty-color-info);
-  border-color: var(--ty-color-info);
-}
-
-button.outlined.info:hover:not(:disabled) {
-  background: var(--ty-bg-info-soft);
-}
-
-/* Plain */
-button.plain.info {
-  color: var(--ty-color-info);
-}
-
-button.plain.info:hover:not(:disabled) {
-  background: var(--ty-bg-info-soft);
 }
 
 /* ===== LEGACY FLAVORS (Backward Compatibility) ===== */

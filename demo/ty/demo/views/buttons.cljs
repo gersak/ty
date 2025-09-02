@@ -30,7 +30,6 @@
                           [:ty-button {:flavor "success"} "Success"]
                           [:ty-button {:flavor "danger"} "Danger"]
                           [:ty-button {:flavor "warning"} "Warning"]
-                          [:ty-button {:flavor "info"} "Info"]
                           [:ty-button {:flavor "neutral"} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\">Success</ty-button>")]
 
@@ -78,8 +77,6 @@
                                        :filled true} "Danger"]
                           [:ty-button {:flavor "warning"
                                        :filled true} "Warning"]
-                          [:ty-button {:flavor "info"
-                                       :filled true} "Info"]
                           [:ty-button {:flavor "neutral"
                                        :filled true} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\" filled>Filled</ty-button>")
@@ -96,8 +93,6 @@
                                        :outlined true} "Danger"]
                           [:ty-button {:flavor "warning"
                                        :outlined true} "Warning"]
-                          [:ty-button {:flavor "info"
-                                       :outlined true} "Info"]
                           [:ty-button {:flavor "neutral"
                                        :outlined true} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\" outlined>Outlined</ty-button>")
@@ -114,8 +109,6 @@
                                        :accent true} "Danger"]
                           [:ty-button {:flavor "warning"
                                        :accent true} "Warning"]
-                          [:ty-button {:flavor "info"
-                                       :accent true} "Info"]
                           [:ty-button {:flavor "neutral"
                                        :accent true} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\" accent>Accent</ty-button>")

@@ -27,12 +27,13 @@
                                 (str "ty-text-" color-name)
                                 (str "ty-text-" color-name "-" variant))
                    variant-label (if (empty? variant) "base" variant)]
-               [:div {:key variant :class (str text-class " flex justify-between items-center")}
+               [:div {:key variant
+                      :class (str text-class " flex justify-between items-center")}
                 [:span (str "." text-class)]
                 [:span.text-sm.font-mono variant-label]]))
 
            ;; Sample text content
-           [:div.pt-3.border-t.border-current.border-opacity-20
+           [:div.pt-3.border-t.border-opacity-20
             [:p {:class (str "ty-text-" color-name)}
              "Sample paragraph text to demonstrate readability and contrast on this background."]]]]))]))
 
@@ -57,7 +58,7 @@
          [:div.ty-text-neutral-soft "Soft neutral text (.ty-text-neutral-soft)"]
          [:div.ty-text-neutral-faint "Faint neutral text (.ty-text-neutral-faint)"]
 
-         [:div.pt-3.border-t.border-current.border-opacity-20
+         [:div.pt-3.border-t.border-opacity-20
           [:p.ty-text-neutral "This paragraph demonstrates how neutral text hierarchy works on neutral backgrounds with proper contrast ratios."]]]]))])
 
 (defn cross-semantic-combinations
@@ -67,7 +68,7 @@
    [:h3.text-lg.font-semibold.ty-text "Cross-Semantic Combinations"]
    [:p.text-sm.ty-text- "How different semantic text colors look on various semantic backgrounds"]
 
-   (let [colors ["primary" "secondary" "success" "danger" "warning" "info"]
+   (let [colors ["primary" "secondary" "success" "danger" "warning"]
          text-colors ["primary" "success" "danger" "warning" "neutral"]]
      [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
       (for [bg-color colors]
@@ -75,7 +76,8 @@
          [:h4.text-sm.font-medium.ty-text-.mb-3 (str (clojure.string/capitalize bg-color) " Background")]
          [:div {:class (str "ty-bg-" bg-color "- p-4 rounded-lg border space-y-2")}
           (for [text-color text-colors]
-            [:div {:key text-color :class (str "ty-text-" text-color)}
+            [:div {:key text-color
+                   :class (str "ty-text-" text-color)}
              (str "." text-color " text on " bg-color " background")])]])])])
 
 (defn accessibility-checker
@@ -107,11 +109,7 @@
      [:div.space-y-3
       [:div.ty-bg-warning.p-3.rounded.border
        [:div.ty-text-warning-faint "Faint warning text on base warning background"]
-       [:div.ty-text-warning-strong.text-xs.mt-1 "Low contrast - avoid for body text"]]
-
-      [:div.ty-bg-info.p-3.rounded.border
-       [:div.ty-text-info-soft "Soft info text on base info background"]
-       [:div.ty-text-info-strong.text-xs.mt-1 "May not meet WCAG AA standards"]]]]]])
+       [:div.ty-text-warning-strong.text-xs.mt-1 "Low contrast - avoid for body text"]]]]]])
 
 (defn live-theme-switcher
   "Interactive theme switching to see all combinations in both themes"
@@ -217,10 +215,6 @@
    ;; Warning combinations
    [:div.demo-section
     (text-variant-grid "warning")]
-
-   ;; Info combinations
-   [:div.demo-section
-    (text-variant-grid "info")]
 
    ;; Secondary combinations
    [:div.demo-section

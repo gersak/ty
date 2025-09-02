@@ -139,8 +139,8 @@
       [:div.font-mono.text-sm.ty-text-secondary ".ty-bg-secondary-"]
       [:div.text-xs.ty-text-secondary- "Secondary actions"]]
      [:div.ty-bg-neutral.p-4.rounded.text-center.border
-      [:div.font-mono.text-sm.text-white ".ty-bg-neutral"]
-      [:div.text-xs.text-white "Neutral elements"]]]
+      [:div.font-mono.text-sm.ty-text-neutral-mild ".ty-bg-neutral"]
+      [:div.text-xs.ty-text-neutral-soft "Neutral elements"]]]
 
     [:h3.demo-subtitle "Text Colors"]
     [:div.space-y-3

@@ -137,19 +137,6 @@
                   "Disabled"
                   [:ty-tooltip {:disabled true} "You won't see this"]]]})])
 
-(defn dropdown-demos []
-  [:div
-   [:div.text-center.ty-text-.py-8
-    [:ty-icon {:name "package"
-               :size "xl"}]
-    [:p.mt-2 "Dropdown component coming soon"]]])
-
-(defn popover-demos []
-  [:div
-   [:div.text-center.ty-text-.py-8
-    [:ty-icon {:name "message-square"
-               :size "xl"}]
-    [:p.mt-2 "Popover component coming soon"]]])
 
 (defn edge-case-demos []
   [:div
@@ -383,18 +370,6 @@
   Quick Info
   <ty-tooltip delay=\"100\">Shows quickly</ty-tooltip>
 </ty-button>")]]
-
-   ;; Dropdowns section
-   [:section.mb-12
-    [:h2.text-2xl.font-semibold.ty-text.mb-6 "Dropdowns"]
-    [:div.ty-elevated.rounded-lg.shadow-md.p-6
-     (dropdown-demos)]]
-
-   ;; Popovers section
-   [:section.mb-12
-    [:h2.text-2xl.font-semibold.ty-text.mb-6 "Popovers"]
-    [:div.ty-elevated.rounded-lg.shadow-md.p-6
-     (popover-demos)]]
 
    ;; Edge cases section
    [:section

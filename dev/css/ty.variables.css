@@ -171,6 +171,8 @@ html {
   --ty-accent-secondary: #8461d5;
   --ty-accent-success: #3bb68d;
   --ty-accent-danger: #df5b5b;
+  --ty-accent-warning: #e1a644;
+  --ty-accent-info: #06b6d4;
   --ty-accent-neutral: #414141;
 
 
@@ -506,6 +508,8 @@ html[data-theme="dark"] {
   --ty-accent-secondary: #8461d5;
   --ty-accent-success: #3f7a66;
   --ty-accent-danger: #ab5050;
+  --ty-accent-warning: #d0852f;
+  --ty-accent-info: #0891b2;
   --ty-accent-neutral: #4d4d4d;
 
   /* Input component tokens - dark mode */

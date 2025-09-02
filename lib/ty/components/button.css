@@ -226,7 +226,6 @@ button.accent.primary {
   background: var(--ty-accent-primary);
 }
 
-
 button.accent.primary:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-primary);
 }
@@ -281,7 +280,6 @@ button.filled-outlined.secondary:focus-visible {
 button.accent.secondary {
   background: var(--ty-accent-secondary);
 }
-
 
 button.accent.secondary:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-secondary);
@@ -338,7 +336,6 @@ button.accent.success {
   background: var(--ty-accent-success);
 }
 
-
 button.accent.success:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-success);
 }
@@ -393,7 +390,6 @@ button.filled-outlined.danger:focus-visible {
 button.accent.danger {
   background: var(--ty-accent-danger);
 }
-
 
 button.accent.danger:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-danger);
@@ -450,7 +446,6 @@ button.accent.warning {
   background: var(--ty-accent-warning);
 }
 
-
 button.accent.warning:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-warning);
 }
@@ -503,9 +498,8 @@ button.filled-outlined.info:focus-visible {
 
 /* Accent */
 button.accent.info {
-  background: var(--ty-color-info);
+  background: var(--ty-accent-info);
 }
-
 
 button.accent.info:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-info);
@@ -568,9 +562,8 @@ button.filled-outlined.neutral:focus-visible {
 
 /* Accent */
 button.accent.neutral {
-  background: var(--ty-color-neutral);
+  background: var(--ty-accent-neutral);
 }
-
 
 button.accent.neutral:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-neutral);

@@ -26,10 +26,11 @@
     [:h2.demo-title "Semantic Flavors"]
     (demo-row {:description "Buttons use semantic naming to convey meaning, not just color."
                :children [[:ty-button {:flavor "primary"} "Primary"]
+                          [:ty-button {:flavor "secondary"} "Secondary"]
                           [:ty-button {:flavor "success"} "Success"]
                           [:ty-button {:flavor "danger"} "Danger"]
                           [:ty-button {:flavor "warning"} "Warning"]
-                          [:ty-button {:flavor "secondary"} "Secondary"]
+                          [:ty-button {:flavor "info"} "Info"]
                           [:ty-button {:flavor "neutral"} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\">Success</ty-button>")]
 
@@ -37,34 +38,86 @@
    [:div.demo-section
     [:h2.demo-title "Appearances"]
 
+    ;; Overview comparison table
+    (demo-row {:title "Appearance Comparison"
+               :description "Same semantic colors across different appearances"
+               :children [;; Primary row
+                          [:div.ty-elevated.p-4.rounded-lg.space-y-2.min-w-max
+                           [:div.ty-text-.text-sm.font-medium "Primary"]
+                           [:div.flex.gap-2
+                            [:ty-button {:flavor "primary"} "Plain"]
+                            [:ty-button {:flavor "primary" :filled true} "Filled"]
+                            [:ty-button {:flavor "primary" :outlined true} "Outlined"]
+                            [:ty-button {:flavor "primary" :accent true} "Accent"]]]
+                          ;; Success row  
+                          [:div.ty-elevated.p-4.rounded-lg.space-y-2.min-w-max
+                           [:div.ty-text-.text-sm.font-medium "Success"]
+                           [:div.flex.gap-2
+                            [:ty-button {:flavor "success"} "Plain"]
+                            [:ty-button {:flavor "success" :filled true} "Filled"]
+                            [:ty-button {:flavor "success" :outlined true} "Outlined"]
+                            [:ty-button {:flavor "success" :accent true} "Accent"]]]
+                          ;; Danger row
+                          [:div.ty-elevated.p-4.rounded-lg.space-y-2.min-w-max
+                           [:div.ty-text-.text-sm.font-medium "Danger"]
+                           [:div.flex.gap-2
+                            [:ty-button {:flavor "danger"} "Plain"]
+                            [:ty-button {:flavor "danger" :filled true} "Filled"]
+                            [:ty-button {:flavor "danger" :outlined true} "Outlined"]
+                            [:ty-button {:flavor "danger" :accent true} "Accent"]]]]})
+
     (demo-row {:title "Filled"
                :description "Adds a tonal background color"
                :children [[:ty-button {:flavor "primary"
                                        :filled true} "Primary"]
+                          [:ty-button {:flavor "secondary"
+                                       :filled true} "Secondary"]
                           [:ty-button {:flavor "success"
                                        :filled true} "Success"]
                           [:ty-button {:flavor "danger"
-                                       :filled true} "Danger"]]})
+                                       :filled true} "Danger"]
+                          [:ty-button {:flavor "warning"
+                                       :filled true} "Warning"]
+                          [:ty-button {:flavor "info"
+                                       :filled true} "Info"]
+                          [:ty-button {:flavor "neutral"
+                                       :filled true} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\" filled>Filled</ty-button>")
 
     (demo-row {:title "Outlined"
                :description "Adds a colored border"
                :children [[:ty-button {:flavor "primary"
                                        :outlined true} "Primary"]
+                          [:ty-button {:flavor "secondary"
+                                       :outlined true} "Secondary"]
                           [:ty-button {:flavor "success"
                                        :outlined true} "Success"]
                           [:ty-button {:flavor "danger"
-                                       :outlined true} "Danger"]]})
+                                       :outlined true} "Danger"]
+                          [:ty-button {:flavor "warning"
+                                       :outlined true} "Warning"]
+                          [:ty-button {:flavor "info"
+                                       :outlined true} "Info"]
+                          [:ty-button {:flavor "neutral"
+                                       :outlined true} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\" outlined>Outlined</ty-button>")
 
     (demo-row {:title "Accent"
                :description "Full color background (overrides other appearances)"
                :children [[:ty-button {:flavor "primary"
                                        :accent true} "Primary"]
+                          [:ty-button {:flavor "secondary"
+                                       :accent true} "Secondary"]
                           [:ty-button {:flavor "success"
                                        :accent true} "Success"]
                           [:ty-button {:flavor "danger"
-                                       :accent true} "Danger"]]})
+                                       :accent true} "Danger"]
+                          [:ty-button {:flavor "warning"
+                                       :accent true} "Warning"]
+                          [:ty-button {:flavor "info"
+                                       :accent true} "Info"]
+                          [:ty-button {:flavor "neutral"
+                                       :accent true} "Neutral"]]})
     (code-snippet "<ty-button flavor=\"success\" accent>Accent</ty-button>")
 
     (demo-row {:title "Combined"

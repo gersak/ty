@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}HTMX + Ty Components Demo{% endblock %}</title>
+    
+    <!-- Ty Component CSS System -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='./css/ty.css') }}">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    
+    <!-- HTMX Extensions -->
+    <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="ty-canvas h-full antialiased">
+    <!-- Navigation -->
+    <nav class="ty-elevated border-b ty-border-neutral-soft backdrop-blur-md">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-8">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-xl font-bold">
+                            <a href="{{ url_for('index') }}" class="text-gradient-primary hover:scale-105 transition-transform duration-200 inline-block">
+                                ✨ Ty + HTMX Demo
+                            </a>
+                        </h1>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-1">
+                            <a href="{{ url_for('index') }}" 
+                               class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}">
+                                <ty-icon name="home" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                Home
+                            </a>
+                            <a href="{{ url_for('forms') }}" 
+                               class="nav-link {{ 'active' if request.endpoint == 'forms' else '' }}">
+                                <ty-icon name="edit" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                Forms
+                            </a>
+                            <a href="{{ url_for('calendar') }}" 
+                               class="nav-link {{ 'active' if request.endpoint == 'calendar' else '' }}">
+                                <ty-icon name="calendar" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                Calendar
+                            </a>
+                            <a href="{{ url_for('components') }}" 
+                               class="nav-link {{ 'active' if request.endpoint == 'components' else '' }}">
+                                <ty-icon name="layers" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                Components
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Theme Toggle -->
+                    <ty-button size="sm" flavor="secondary" onclick="toggleTheme()" class="group">
+                        <ty-icon name="sun" class="dark:hidden group-hover:rotate-180 transition-transform duration-300"></ty-icon>
+                        <ty-icon name="moon" class="hidden dark:inline group-hover:rotate-180 transition-transform duration-300"></ty-icon>
+                    </ty-button>
+                    
+                    <!-- Demo Notification Trigger -->
+                    <ty-button size="sm" flavor="primary" 
+                               hx-get="/api/notifications/demo"
+                               hx-target="#notification-area"
+                               hx-swap="innerHTML"
+                               class="hidden sm:inline-flex hover:scale-105 transition-transform duration-200">
+                        <ty-icon name="bell" class="mr-2"></ty-icon>
+                        Test Notification
+                    </ty-button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Notification Area -->
+    <div id="notification-area" class="fixed top-20 right-4 z-50"></div>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="ty-content border-t ty-border mt-12">
+        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center">
+                <div class="ty-text-">
+                    <p>&copy; 2025 Ty Components + HTMX Demo</p>
+                </div>
+                <div class="ty-text-">
+                    <p>Built with ❤️ using Ty Components, HTMX, and Flask</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Ty Components JavaScript -->
+    <script src="{{ url_for('static', filename='./js/main.js') }}"></script>
+    
+    <!-- Ty Icons Registration -->
+    <script src="{{ url_for('static', filename='js/icons.js') }}"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    
+    <!-- Global Theme Management -->
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        }
+
+        // Initialize theme from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        });
+
+        // Enhanced HTMX loading states
+        document.body.addEventListener('htmx:beforeRequest', function(event) {
+            const target = event.detail.target;
+            if (target) {
+                target.style.opacity = '0.7';
+                target.style.transform = 'scale(0.98)';
+            }
+        });
+
+        document.body.addEventListener('htmx:afterRequest', function(event) {
+            const target = event.detail.target;
+            if (target) {
+                target.style.opacity = '1';
+                target.style.transform = 'scale(1)';
+                target.classList.add('animate-fade-in');
+            }
+        });
+    </script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

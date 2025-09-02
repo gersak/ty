@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+
+{% block title %}Calendar Components - Ty Components Demo{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Page Header -->
+    <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+            <span class="text-gradient-primary">📅 Calendar</span>
+            <span class="ty-text-primary-strong"> Components</span>
+        </h1>
+        <p class="text-xl ty-text-neutral-mild max-w-3xl mx-auto">
+            Explore Ty's powerful calendar components with date selection, 
+            event handling, and server-side integration.
+        </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Basic Calendar -->
+        <div class="glass-card">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-primary-soft mr-4">
+                    <ty-icon name="calendar" class="ty-text-primary-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-primary-strong">Basic Calendar</h3>
+                    <p class="ty-text-neutral-mild">Simple date selection with today highlighting</p>
+                </div>
+            </div>
+            
+            <div class="ty-elevated rounded-xl p-6 mb-6">
+                <ty-calendar-month id="basic-calendar"></ty-calendar-month>
+            </div>
+            
+            <div class="space-y-3">
+                <h4 class="font-semibold ty-text-neutral-strong">Features:</h4>
+                <ul class="space-y-2 ty-text-neutral-mild">
+                    <li class="flex items-center">
+                        <ty-icon name="check" class="w-4 h-4 mr-2 ty-text-success"></ty-icon>
+                        Today highlighting with red dot indicator
+                    </li>
+                    <li class="flex items-center">
+                        <ty-icon name="check" class="w-4 h-4 mr-2 ty-text-success"></ty-icon>
+                        Previous/next month navigation
+                    </li>
+                    <li class="flex items-center">
+                        <ty-icon name="check" class="w-4 h-4 mr-2 ty-text-success"></ty-icon>
+                        Consistent 6-week grid layout
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Interactive Calendar with Selection -->
+        <div class="glass-card">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-success-soft mr-4">
+                    <ty-icon name="calendar-check" class="ty-text-success-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-success-strong">Interactive Calendar</h3>
+                    <p class="ty-text-neutral-mild">Date selection with event handling</p>
+                </div>
+            </div>
+            
+            <div class="ty-elevated rounded-xl p-6 mb-6">
+                <ty-calendar-month 
+                    id="interactive-calendar"
+                    class="w-full">
+                </ty-calendar-month>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold ty-text-neutral-strong">Selected Dates</h4>
+                    <ty-button size="sm" flavor="secondary" 
+                               onclick="clearSelectedDates()">
+                        Clear All
+                    </ty-button>
+                </div>
+                <div id="calendar-selected-dates" class="space-y-2 max-h-40 overflow-y-auto ty-bg-neutral-soft rounded-lg p-4">
+                    <p class="ty-text-neutral-mild text-center italic">No dates selected</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Server-Integrated Calendar -->
+        <div class="glass-card">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-info-soft mr-4">
+                    <ty-icon name="server" class="ty-text-info-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-info-strong">Server Integration</h3>
+                    <p class="ty-text-neutral-mild">HTMX-powered date handling</p>
+                </div>
+            </div>
+            
+            <div class="ty-elevated rounded-xl p-6 mb-6">
+                <ty-calendar-month 
+                    id="server-calendar"
+                    hx-post="/api/calendar/date-select"
+                    hx-target="#server-response"
+                    hx-swap="innerHTML"
+                    hx-trigger="date-select from:body"
+                    hx-indicator="#calendar-loading">
+                </ty-calendar-month>
+            </div>
+            
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h4 class="font-semibold ty-text-neutral-strong">Server Response</h4>
+                    <div id="calendar-loading" class="htmx-indicator">
+                        <div class="spinner ty-text-primary"></div>
+                    </div>
+                </div>
+                <div id="server-response" class="ty-bg-neutral-soft rounded-lg p-4 min-h-16">
+                    <p class="ty-text-neutral-mild text-center italic">Select a date to see server response</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Event Calendar -->
+        <div class="glass-card">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-warning-soft mr-4">
+                    <ty-icon name="calendar-days" class="ty-text-warning-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-warning-strong">Event Calendar</h3>
+                    <p class="ty-text-neutral-mild">Calendar with event indicators</p>
+                </div>
+            </div>
+            
+            <div class="ty-elevated rounded-xl p-6 mb-6">
+                <ty-calendar-month 
+                    id="event-calendar"
+                    value="1735171200000">
+                </ty-calendar-month>
+            </div>
+            
+            <div class="space-y-3">
+                <h4 class="font-semibold ty-text-neutral-strong">Sample Events:</h4>
+                <div class="space-y-2">
+                    <div class="flex items-center space-x-3 ty-bg-primary-soft rounded-lg p-3">
+                        <div class="w-3 h-3 rounded-full ty-bg-primary"></div>
+                        <span class="font-medium">Team Meeting</span>
+                        <span class="ty-text-neutral-mild text-sm">Jan 15, 2025</span>
+                    </div>
+                    <div class="flex items-center space-x-3 ty-bg-success-soft rounded-lg p-3">
+                        <div class="w-3 h-3 rounded-full ty-bg-success"></div>
+                        <span class="font-medium">Product Launch</span>
+                        <span class="ty-text-neutral-mild text-sm">Jan 20, 2025</span>
+                    </div>
+                    <div class="flex items-center space-x-3 ty-bg-warning-soft rounded-lg p-3">
+                        <div class="w-3 h-3 rounded-full ty-bg-warning"></div>
+                        <span class="font-medium">Deadline</span>
+                        <span class="ty-text-neutral-mild text-sm">Jan 25, 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Code Examples -->
+    <div class="mt-20">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl font-bold ty-text-primary-strong mb-6">
+                Implementation Examples
+            </h2>
+            <p class="text-lg ty-text-neutral-mild">
+                Ready-to-use code snippets for your projects
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- HTML Usage -->
+            <div class="ty-elevated rounded-xl p-8">
+                <h3 class="text-xl font-bold ty-text-neutral-strong mb-4 flex items-center">
+                    <ty-icon name="code" class="mr-3"></ty-icon>
+                    HTML Usage
+                </h3>
+                <pre class="ty-bg-neutral-soft rounded-lg p-4 text-sm overflow-x-auto"><code class="ty-text-neutral-strong">&lt;!-- Basic calendar --&gt;
+&lt;ty-calendar-month&gt;&lt;/ty-calendar-month&gt;
+
+&lt;!-- With selected date --&gt;
+&lt;ty-calendar-month value="1735171200000"&gt;
+&lt;/ty-calendar-month&gt;
+
+&lt;!-- HTMX integration --&gt;
+&lt;ty-calendar-month 
+    hx-post="/api/date/select"
+    hx-target="#result"
+    hx-trigger="date-select from:body"&gt;
+&lt;/ty-calendar-month&gt;</code></pre>
+            </div>
+
+            <!-- JavaScript Usage -->
+            <div class="ty-elevated rounded-xl p-8">
+                <h3 class="text-xl font-bold ty-text-neutral-strong mb-4 flex items-center">
+                    <ty-icon name="zap" class="mr-3"></ty-icon>
+                    JavaScript Events
+                </h3>
+                <pre class="ty-bg-neutral-soft rounded-lg p-4 text-sm overflow-x-auto"><code class="ty-text-neutral-strong">// Listen for date selection
+document.addEventListener('date-select', (event) => {
+  const { date, value, context } = event.detail;
+  
+  console.log('Selected:', date.toLocaleDateString());
+  console.log('Value:', value);
+  console.log('Context:', context);
+});
+
+// Set date programmatically
+const calendar = document.querySelector('ty-calendar-month');
+calendar.value = Date.now();</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhanced calendar date selection
+document.body.addEventListener('date-select', function(event) {
+    const { date, value } = event.detail;
+    const calendar = event.target;
+    
+    // Handle interactive calendar
+    if (calendar.id === 'interactive-calendar') {
+        const formattedDate = new Intl.DateTimeFormat('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
+        
+        const selectedDates = document.getElementById('calendar-selected-dates');
+        
+        // Clear "no dates" message
+        if (selectedDates.innerHTML.includes('No dates selected')) {
+            selectedDates.innerHTML = '';
+        }
+        
+        // Add new date with animation
+        const dateElement = document.createElement('div');
+        dateElement.className = 'flex items-center justify-between ty-bg-white/50 rounded-lg p-3 animate-scale-in';
+        dateElement.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <div class="w-3 h-3 rounded-full ty-bg-primary"></div>
+                <span class="font-medium">${formattedDate}</span>
+            </div>
+            <ty-button size="xs" flavor="danger" 
+                       onclick="this.parentElement.remove(); checkEmptyDates();">
+                <ty-icon name="x"></ty-icon>
+            </ty-button>
+        `;
+        
+        selectedDates.appendChild(dateElement);
+    }
+});
+
+// Clear selected dates
+function clearSelectedDates() {
+    document.getElementById('calendar-selected-dates').innerHTML = 
+        '<p class="ty-text-neutral-mild text-center italic">No dates selected</p>';
+}
+
+// Check if dates list is empty
+function checkEmptyDates() {
+    const container = document.getElementById('calendar-selected-dates');
+    if (container.children.length === 0) {
+        clearSelectedDates();
+    }
+}
+</script>
+{% endblock %}

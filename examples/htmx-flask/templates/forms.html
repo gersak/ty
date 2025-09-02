@@ -1,0 +1,431 @@
+{% extends "base.html" %}
+
+{% block title %}Forms - HTMX + Ty Components Demo{% endblock %}
+
+{% block content %}
+<div class="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+    <!-- Page Header -->
+    <div class="mb-8">
+        <h1 class="ty-text++ font-bold mb-4">Form Examples with Ty Components</h1>
+        <p class="ty-text- max-w-3xl">
+            These examples demonstrate how to use Ty form components with HTMX for 
+            server-side validation, dynamic updates, and enhanced user experience.
+        </p>
+        
+        <!-- Debug Panel Toggle -->
+        <div class="mt-4 p-4 ty-bg-info-soft rounded-lg">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h3 class="font-medium ty-text-info-strong">🔧 HTMX Debugging</h3>
+                    <p class="text-sm ty-text-info-mild">Toggle detailed HTMX request/response logging in the browser console.</p>
+                </div>
+                <div class="flex space-x-2">
+                    <ty-button size="sm" flavor="secondary" 
+                               hx-get="/api/test-debug" 
+                               hx-target="#debug-test-result">
+                        Test Request
+                    </ty-button>
+                    <ty-button size="sm" flavor="info" onclick="toggleHTMXDebugging()" id="debug-toggle">
+                        Enable Debug Logging
+                    </ty-button>
+                </div>
+            </div>
+            <div id="debug-status" class="mt-2 text-sm ty-text-info-mild">
+                Debug logging is currently <span id="debug-state">disabled</span>. 
+                Open browser console (F12) to see logs when enabled.
+            </div>
+            <div id="debug-test-result" class="mt-2"></div>
+        </div>
+    </div>
+
+    <div class="space-y-8">
+        <!-- Real-time Validation Form -->
+        <div class="ty-elevated rounded-lg p-6">
+            <h2 class="ty-text+ font-semibold mb-6">📋 Real-time Form Validation</h2>
+            
+            <form hx-post="/api/form/validate"
+                  hx-target="#form-feedback"
+                  hx-swap="innerHTML"
+                  hx-trigger="submit"
+                  hx-on::response-error="
+                    if(event.detail.xhr.status === 400) {
+                        document.getElementById('form-feedback').innerHTML = event.detail.xhr.responseText;
+                    }
+                  "
+                  class="space-y-6">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-2">
+                        <label for="name" class="ty-text font-medium">Full Name</label>
+                        <ty-input 
+                            name="name" 
+                            id="name"
+                            placeholder="Enter your full name"
+                            required
+                            hx-post="/api/form/validate"
+                            hx-target="#name-feedback"
+                            hx-trigger="change, keyup changed delay:500ms"
+                            hx-include="closest form"
+                            hx-on::response-error="
+                                if(event.detail.xhr.status === 400) {
+                                    document.getElementById('name-feedback').innerHTML = event.detail.xhr.responseText;
+                                }
+                            ">
+                        </ty-input>
+                        <div id="name-feedback" class="min-h-5"></div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label for="email" class="ty-text font-medium">Email Address</label>
+                        <ty-input 
+                            name="email" 
+                            id="email"
+                            type="email"
+                            placeholder="you@example.com"
+                            required
+                            hx-post="/api/form/validate"
+                            hx-target="#email-feedback"
+                            hx-trigger="change, keyup changed delay:500ms"
+                            hx-include="closest form"
+                            hx-on::response-error="
+                                if(event.detail.xhr.status === 400) {
+                                    document.getElementById('email-feedback').innerHTML = event.detail.xhr.responseText;
+                                }
+                            ">
+                        </ty-input>
+                        <div id="email-feedback" class="min-h-5"></div>
+                    </div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="age" class="ty-text font-medium">Age</label>
+                    <ty-input 
+                        name="age" 
+                        id="age"
+                        type="number"
+                        placeholder="25"
+                        min="13"
+                        max="120"
+                        hx-post="/api/form/validate"
+                        hx-target="#age-feedback"
+                        hx-trigger="change, keyup changed delay:500ms"
+                        hx-include="closest form"
+                        hx-on::response-error="
+                            if(event.detail.xhr.status === 400) {
+                                document.getElementById('age-feedback').innerHTML = event.detail.xhr.responseText;
+                            }
+                        ">
+                    </ty-input>
+                    <div id="age-feedback" class="min-h-5"></div>
+                </div>
+
+                <div class="space-y-2">
+                    <label for="role" class="ty-text font-medium">Role</label>
+                    <ty-dropdown name="role" id="role" placeholder="Select your role">
+                        <ty-option value="developer">Developer</ty-option>
+                        <ty-option value="designer">Designer</ty-option>
+                        <ty-option value="manager">Manager</ty-option>
+                        <ty-option value="analyst">Analyst</ty-option>
+                        <ty-option value="other">Other</ty-option>
+                    </ty-dropdown>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="ty-text font-medium">Skills</label>
+                    <ty-multiselect name="skills" placeholder="Select your skills">
+                        <ty-option value="javascript">JavaScript</ty-option>
+                        <ty-option value="python">Python</ty-option>
+                        <ty-option value="react">React</ty-option>
+                        <ty-option value="vue">Vue.js</ty-option>
+                        <ty-option value="angular">Angular</ty-option>
+                        <ty-option value="node">Node.js</ty-option>
+                        <ty-option value="docker">Docker</ty-option>
+                        <ty-option value="kubernetes">Kubernetes</ty-option>
+                        <ty-option value="aws">AWS</ty-option>
+                        <ty-option value="design">UI/UX Design</ty-option>
+                    </ty-multiselect>
+                </div>
+
+                <div class="flex justify-end space-x-3">
+                    <ty-button type="button" flavor="secondary" onclick="this.closest('form').reset()">
+                        Reset Form
+                    </ty-button>
+                    <ty-button type="submit" flavor="primary">
+                        Validate & Submit
+                    </ty-button>
+                </div>
+            </form>
+
+            <!-- Form Feedback Area -->
+            <div id="form-feedback" class="mt-6"></div>
+        </div>
+
+        <!-- Dynamic Form Builder -->
+        <div class="ty-elevated rounded-lg p-6">
+            <h2 class="ty-text+ font-semibold mb-6">🔧 Dynamic Form Builder</h2>
+            <p class="ty-text- mb-4">
+                Build forms dynamically by adding/removing fields with HTMX.
+            </p>
+
+            <div id="dynamic-form-container">
+                <form class="space-y-4">
+                    <div class="form-field-group" data-field-id="1">
+                        <div class="flex space-x-3 items-end">
+                            <div class="flex-1 space-y-2">
+                                <label class="ty-text font-medium">Field Name</label>
+                                <ty-input placeholder="Enter field name"></ty-input>
+                            </div>
+                            <div class="flex-1 space-y-2">
+                                <label class="ty-text font-medium">Field Type</label>
+                                <ty-dropdown placeholder="Select type">
+                                    <ty-option value="text">Text</ty-option>
+                                    <ty-option value="email">Email</ty-option>
+                                    <ty-option value="number">Number</ty-option>
+                                    <ty-option value="textarea">Textarea</ty-option>
+                                    <ty-option value="select">Select</ty-option>
+                                </ty-dropdown>
+                            </div>
+                            <ty-button type="button" flavor="danger" size="sm" 
+                                       onclick="removeFormField(this)">
+                                Remove
+                            </ty-button>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-4 flex space-x-3">
+                    <ty-button type="button" flavor="secondary" onclick="addFormField()">
+                        Add Field
+                    </ty-button>
+                    <ty-button type="button" flavor="primary" onclick="previewForm()">
+                        Preview Form
+                    </ty-button>
+                </div>
+
+                <!-- Preview Area -->
+                <div id="form-preview" class="mt-6 ty-content rounded p-4 hidden">
+                    <h3 class="ty-text+ font-semibold mb-4">Form Preview</h3>
+                    <div id="preview-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- File Upload with Progress -->
+        <div class="ty-elevated rounded-lg p-6">
+            <h2 class="ty-text+ font-semibold mb-6">📎 File Upload Example</h2>
+            <p class="ty-text- mb-4">
+                File upload simulation with progress indication using Ty components.
+            </p>
+
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label class="ty-text font-medium">Choose Files</label>
+                    <div class="border-2 border-dashed ty-border rounded-lg p-6 text-center ty-bg-neutral-">
+                        <input type="file" multiple accept="image/*,.pdf,.doc,.docx" 
+                               class="hidden" id="file-input">
+                        <label for="file-input" class="cursor-pointer">
+                            <div class="space-y-2">
+                                <ty-icon name="upload" size="lg" class="ty-text-"></ty-icon>
+                                <p class="ty-text">Click to upload files or drag and drop</p>
+                                <p class="ty-text-- text-sm">PNG, JPG, PDF up to 10MB</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="upload-progress" class="space-y-3 hidden">
+                    <div class="flex justify-between items-center">
+                        <span class="ty-text font-medium">Uploading files...</span>
+                        <span class="ty-text-" id="progress-percent">0%</span>
+                    </div>
+                    <div class="w-full ty-bg-neutral- rounded-full h-2">
+                        <div class="ty-bg-primary h-2 rounded-full transition-all duration-300" 
+                             id="progress-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div id="uploaded-files" class="space-y-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let fieldCounter = 1;
+
+function addFormField() {
+    fieldCounter++;
+    const container = document.querySelector('#dynamic-form-container form');
+    const newField = document.createElement('div');
+    newField.className = 'form-field-group';
+    newField.setAttribute('data-field-id', fieldCounter);
+    newField.innerHTML = `
+        <div class="flex space-x-3 items-end">
+            <div class="flex-1 space-y-2">
+                <label class="ty-text font-medium">Field Name</label>
+                <ty-input placeholder="Enter field name"></ty-input>
+            </div>
+            <div class="flex-1 space-y-2">
+                <label class="ty-text font-medium">Field Type</label>
+                <ty-dropdown placeholder="Select type">
+                    <ty-option value="text">Text</ty-option>
+                    <ty-option value="email">Email</ty-option>
+                    <ty-option value="number">Number</ty-option>
+                    <ty-option value="textarea">Textarea</ty-option>
+                    <ty-option value="select">Select</ty-option>
+                </ty-dropdown>
+            </div>
+            <ty-button type="button" flavor="danger" size="sm" 
+                       onclick="removeFormField(this)">
+                Remove
+            </ty-button>
+        </div>
+    `;
+    container.appendChild(newField);
+}
+
+function removeFormField(button) {
+    const fieldGroup = button.closest('.form-field-group');
+    if (document.querySelectorAll('.form-field-group').length > 1) {
+        fieldGroup.remove();
+    }
+}
+
+function previewForm() {
+    const fieldGroups = document.querySelectorAll('.form-field-group');
+    const preview = document.querySelector('#form-preview');
+    const content = document.querySelector('#preview-content');
+    
+    let formHTML = '<form class="space-y-4">';
+    
+    fieldGroups.forEach(group => {
+        const nameInput = group.querySelector('ty-input');
+        const typeSelect = group.querySelector('ty-dropdown');
+        const fieldName = nameInput.value || 'Untitled Field';
+        const fieldType = typeSelect.value || 'text';
+        
+        formHTML += `
+            <div class="space-y-2">
+                <label class="ty-text font-medium">${fieldName}</label>
+        `;
+        
+        switch(fieldType) {
+            case 'textarea':
+                formHTML += '<ty-textarea placeholder="Enter text..."></ty-textarea>';
+                break;
+            case 'select':
+                formHTML += `
+                    <ty-dropdown placeholder="Choose option">
+                        <ty-option value="option1">Option 1</ty-option>
+                        <ty-option value="option2">Option 2</ty-option>
+                    </ty-dropdown>
+                `;
+                break;
+            default:
+                formHTML += `<ty-input type="${fieldType}" placeholder="Enter ${fieldName.toLowerCase()}..."></ty-input>`;
+        }
+        
+        formHTML += '</div>';
+    });
+    
+    formHTML += `
+        <div class="flex justify-end">
+            <ty-button type="submit" flavor="primary">Submit</ty-button>
+        </div>
+    </form>`;
+    
+    content.innerHTML = formHTML;
+    preview.classList.remove('hidden');
+}
+
+// File upload simulation
+document.getElementById('file-input').addEventListener('change', function(e) {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
+    simulateUpload(files);
+});
+
+function simulateUpload(files) {
+    const progressContainer = document.getElementById('upload-progress');
+    const progressBar = document.getElementById('progress-bar');
+    const progressPercent = document.getElementById('progress-percent');
+    const uploadedContainer = document.getElementById('uploaded-files');
+    
+    progressContainer.classList.remove('hidden');
+    uploadedContainer.innerHTML = '';
+    
+    let progress = 0;
+    const interval = setInterval(() => {
+        progress += Math.random() * 15;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            
+            // Show uploaded files
+            setTimeout(() => {
+                progressContainer.classList.add('hidden');
+                files.forEach(file => {
+                    const fileItem = document.createElement('div');
+                    fileItem.className = 'flex items-center space-x-3 ty-content rounded p-3';
+                    fileItem.innerHTML = `
+                        <ty-icon name="file" class="ty-text-success"></ty-icon>
+                        <div class="flex-1">
+                            <p class="ty-text font-medium">${file.name}</p>
+                            <p class="ty-text-- text-sm">${(file.size / 1024).toFixed(1)} KB</p>
+                        </div>
+                        <ty-button size="sm" flavor="danger">Remove</ty-button>
+                    `;
+                    uploadedContainer.appendChild(fileItem);
+                });
+            }, 500);
+        }
+        
+        progressBar.style.width = progress + '%';
+        progressPercent.textContent = Math.round(progress) + '%';
+    }, 200);
+}
+
+// HTMX Debugging Toggle Function
+let htmxDebugEnabled = false;
+
+function toggleHTMXDebugging() {
+    const button = document.getElementById('debug-toggle');
+    const state = document.getElementById('debug-state');
+    
+    if (htmxDebugEnabled) {
+        // Disable debugging
+        htmx.logger = null;
+        htmxDebugEnabled = false;
+        button.textContent = 'Enable Debug Logging';
+        state.textContent = 'disabled';
+        console.log('🔇 HTMX debugging disabled');
+    } else {
+        // Enable debugging
+        htmx.logger = function(elt, event, data) {
+            if(console) {
+                console.log("🔍 HTMX Logger:", event, elt, data);
+            }
+        }
+        htmxDebugEnabled = true;
+        button.textContent = 'Disable Debug Logging';
+        state.textContent = 'enabled';
+        console.log('🔊 HTMX debugging enabled - all requests will be logged');
+    }
+}
+
+// Initialize debug state
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if debugging was enabled in localStorage
+    const savedDebugState = localStorage.getItem('htmx-debug-enabled');
+    if (savedDebugState === 'true') {
+        toggleHTMXDebugging();
+    }
+    
+    // Save debug state
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('htmx-debug-enabled', htmxDebugEnabled.toString());
+    });
+});
+</script>
+{% endblock %}

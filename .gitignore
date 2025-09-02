@@ -4,3 +4,7 @@
 .shadow-cljs/
 dev/js/cljs-runtime/
 node_modules/
+
+
+.venv/
+__pycache__/

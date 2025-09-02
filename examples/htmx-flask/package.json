@@ -1,0 +1,22 @@
+{
+  "name": "ty-htmx-flask-example",
+  "version": "1.0.0",
+  "description": "Beautiful Flask + HTMX + Ty Components example with Tailwind CSS",
+  "private": true,
+  "scripts": {
+    "build:css": "tailwindcss -i ./src/input.css -o ./static/css/app.css --watch",
+    "build:css:prod": "tailwindcss -i ./src/input.css -o ./static/css/app.css --minify",
+    "dev": "concurrently \"npm run build:css\" \"npm run sync:ty:watch\" \"python app.py\"",
+    "copy:ty": "cp ../../../dev/css/ty.css ./static/css/ && cp ../../../dev/js/main.js ./static/js/",
+    "sync:ty:watch": "chokidar '../../../dev/css/ty.css' '../../../dev/js/main.js' -c 'npm run copy:ty'",
+    "setup": "npm run copy:ty && npm run build:css:prod",
+    "start": "python app.py"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "tailwindcss": "^3.4.0",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "chokidar-cli": "^3.0.0"
+  }
+}

@@ -1,0 +1,411 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Beautiful Ty Components Demo{% endblock %}
+
+{% block content %}
+<!-- Hero Section with Modern Design -->
+<div class="relative overflow-hidden bg-gradient-hero">
+    <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23f0f0f0" fill-opacity="0.1"%3E%3Ccircle cx="7" cy="7" r="1"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24">
+        <div class="text-center animate-fade-in">
+            <h1 class="text-5xl md:text-6xl font-bold mb-8">
+                <span class="text-gradient-primary">Beautiful</span>
+                <span class="ty-text-primary-strong"> Web Components</span>
+            </h1>
+            <p class="text-xl md:text-2xl ty-text-neutral-mild max-w-3xl mx-auto mb-12 leading-relaxed">
+                Experience the perfect fusion of 
+                <span class="ty-text-primary-strong font-semibold">Ty Components</span>,
+                <span class="ty-text-success-strong font-semibold">HTMX</span>, and 
+                <span class="ty-text-warning-strong font-semibold">Tailwind CSS</span>
+                creating dynamic, server-rendered applications that feel magical.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-6 animate-slide-up">
+                <ty-button flavor="primary" size="lg" 
+                           class="transform hover:scale-105 transition-transform duration-200 shadow-lg"
+                           onclick="window.location.href='{{ url_for('forms') }}'">
+                    <ty-icon name="zap" class="mr-2"></ty-icon>
+                    Explore Interactive Forms
+                </ty-button>
+                <ty-button flavor="secondary" size="lg"
+                           class="transform hover:scale-105 transition-transform duration-200"
+                           onclick="window.location.href='{{ url_for('components') }}'">
+                    <ty-icon name="layers" class="mr-2"></ty-icon>
+                    View Components
+                </ty-button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Decorative Elements -->
+    <div class="absolute top-20 left-10 w-72 h-72 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-600/20 blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-gradient-to-r from-green-400/20 to-blue-600/20 blur-3xl"></div>
+</div>
+
+<!-- Interactive Features Grid -->
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold ty-text-primary-strong mb-6">
+            Live Interactive Demos
+        </h2>
+        <p class="text-xl ty-text-neutral-mild max-w-2xl mx-auto">
+            See real-world patterns in action. Every interaction is powered by server-side logic.
+        </p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+        <!-- Interactive User Search -->
+        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-primary-soft mr-4">
+                    <ty-icon name="search" class="ty-text-primary-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-primary-strong mb-2">
+                        🔍 Smart User Search
+                    </h3>
+                    <p class="ty-text-neutral-mild">
+                        Live server-side filtering with beautiful results
+                    </p>
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="relative">
+                    <ty-input
+                        placeholder="Search users by name or email..."
+                        class="w-full pr-12 text-lg"
+                        hx-get="/api/users/search"
+                        hx-target="#user-results"
+                        hx-trigger="input changed delay:300ms, focus"
+                        hx-indicator="#search-loading"
+                        name="q">
+                    </ty-input>
+                    <div id="search-loading" class="absolute right-4 top-1/2 transform -translate-y-1/2 htmx-indicator">
+                        <div class="spinner ty-text-primary"></div>
+                    </div>
+                </div>
+                
+                <div id="user-results" class="min-h-32 ty-bg-neutral-soft rounded-xl p-6 transition-all duration-300">
+                    <div class="text-center ty-text-neutral-mild">
+                        <ty-icon name="users" class="w-8 h-8 mx-auto mb-3 opacity-50"></ty-icon>
+                        <p>Start typing to discover amazing users...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Task Management -->
+        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-success-soft mr-4">
+                    <ty-icon name="check-circle" class="ty-text-success-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-success-strong mb-2">
+                        📋 Task Dashboard
+                    </h3>
+                    <p class="ty-text-neutral-mild">
+                        Real-time filtering and status management
+                    </p>
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <label class="form-label">Status Filter</label>
+                        <ty-dropdown id="status-filter" 
+                                     placeholder="All Statuses"
+                                     class="w-full"
+                                     hx-get="/api/tasks/filter"
+                                     hx-target="#task-results"
+                                     hx-include="#priority-filter"
+                                     hx-trigger="change"
+                                     hx-indicator="#task-loading">
+                            <ty-option value="">All Statuses</ty-option>
+                            <ty-option value="pending">⏳ Pending</ty-option>
+                            <ty-option value="in-progress">🚀 In Progress</ty-option>
+                            <ty-option value="completed">✅ Completed</ty-option>
+                        </ty-dropdown>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <label class="form-label">Priority Filter</label>
+                        <ty-dropdown id="priority-filter"
+                                     placeholder="All Priorities"
+                                     class="w-full"
+                                     hx-get="/api/tasks/filter"
+                                     hx-target="#task-results"
+                                     hx-include="#status-filter"
+                                     hx-trigger="change"
+                                     hx-indicator="#task-loading">
+                            <ty-option value="">All Priorities</ty-option>
+                            <ty-option value="low">🔵 Low</ty-option>
+                            <ty-option value="medium">🟡 Medium</ty-option>
+                            <ty-option value="high">🟠 High</ty-option>
+                            <ty-option value="critical">🔴 Critical</ty-option>
+                        </ty-dropdown>
+                    </div>
+                </div>
+                
+                <div class="relative">
+                    <div id="task-loading" class="absolute top-2 right-2 htmx-indicator">
+                        <div class="spinner ty-text-primary"></div>
+                    </div>
+                    <div id="task-results" class="space-y-3">
+                        {% include 'partials/task_list.html' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendar Integration -->
+        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-warning-soft mr-4">
+                    <ty-icon name="calendar" class="ty-text-warning-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-warning-strong mb-2">
+                        📅 Smart Calendar
+                    </h3>
+                    <p class="ty-text-neutral-mild">
+                        Interactive date selection with server integration
+                    </p>
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="ty-elevated rounded-xl p-4">
+                    <ty-calendar-month 
+                        id="demo-calendar"
+                        class="w-full"
+                        hx-post="/api/date/select"
+                        hx-target="#selected-dates"
+                        hx-swap="beforeend"
+                        hx-trigger="date-select from:body">
+                    </ty-calendar-month>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h4 class="font-semibold ty-text-neutral-strong">Selected Dates</h4>
+                        <ty-button size="sm" flavor="secondary" 
+                                   onclick="document.getElementById('selected-dates').innerHTML = '<p class=\'ty-text-neutral-mild text-center italic\'>No dates selected</p>'">
+                            Clear All
+                        </ty-button>
+                    </div>
+                    <div id="selected-dates" class="space-y-2 max-h-40 overflow-y-auto ty-bg-neutral-soft rounded-lg p-4">
+                        <p class="ty-text-neutral-mild text-center italic">No dates selected</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dynamic Modals -->
+        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+            <div class="flex items-center mb-6">
+                <div class="feature-icon ty-bg-info-soft mr-4">
+                    <ty-icon name="window" class="ty-text-info-strong"></ty-icon>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-bold ty-text-info-strong mb-2">
+                        🎭 Dynamic Modals
+                    </h3>
+                    <p class="ty-text-neutral-mild">
+                        Server-powered content loading in beautiful dialogs
+                    </p>
+                </div>
+            </div>
+            
+            <div class="space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <ty-button flavor="primary" size="lg"
+                               class="w-full"
+                               hx-get="/api/modal/content/user-profile?user_id=1"
+                               hx-target="#modal-content"
+                               onclick="document.getElementById('demo-modal').show()">
+                        <ty-icon name="user" class="mr-2"></ty-icon>
+                        User Profile
+                    </ty-button>
+                    
+                    <ty-button flavor="secondary" size="lg"
+                               class="w-full"
+                               hx-get="/api/modal/content/task-details?task_id=1"
+                               hx-target="#modal-content"
+                               onclick="document.getElementById('demo-modal').show()">
+                        <ty-icon name="clipboard" class="mr-2"></ty-icon>
+                        Task Details
+                    </ty-button>
+                </div>
+                
+                <div class="ty-bg-neutral-soft rounded-xl p-6 text-center">
+                    <ty-icon name="sparkles" class="w-12 h-12 mx-auto mb-3 ty-text-info-mild"></ty-icon>
+                    <p class="ty-text-neutral-mild">
+                        Click the buttons above to see dynamic content loading in action!
+                    </p>
+                </div>
+                
+                <ty-modal id="demo-modal" size="lg">
+                    <div id="modal-content" class="p-6">
+                        <div class="text-center">
+                            <div class="spinner ty-text-primary mb-4"></div>
+                            <p class="ty-text-neutral-mild">Loading amazing content...</p>
+                        </div>
+                    </div>
+                </ty-modal>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technology Showcase -->
+    <div class="ty-elevated rounded-2xl p-12 mb-16 bg-gradient-primary">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold ty-text-primary-strong mb-6">
+                Powered by Modern Technologies
+            </h2>
+            <p class="text-xl ty-text-neutral-mild max-w-3xl mx-auto">
+                See how beautifully these technologies work together to create amazing user experiences.
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center group">
+                <div class="feature-icon ty-bg-primary-soft group-hover:scale-110 transition-transform duration-300">
+                    <ty-icon name="zap" class="ty-text-primary-strong"></ty-icon>
+                </div>
+                <h3 class="text-xl font-bold ty-text-primary-strong mb-3">Real-time Validation</h3>
+                <p class="ty-text-neutral-mild">
+                    Server-side form validation with instant feedback and beautiful error states.
+                </p>
+            </div>
+            
+            <div class="text-center group">
+                <div class="feature-icon ty-bg-success-soft group-hover:scale-110 transition-transform duration-300">
+                    <ty-icon name="search" class="ty-text-success-strong"></ty-icon>
+                </div>
+                <h3 class="text-xl font-bold ty-text-success-strong mb-3">Dynamic Search</h3>
+                <p class="ty-text-neutral-mild">
+                    Live search with server-side filtering, debouncing, and beautiful result presentation.
+                </p>
+            </div>
+            
+            <div class="text-center group">
+                <div class="feature-icon ty-bg-warning-soft group-hover:scale-110 transition-transform duration-300">
+                    <ty-icon name="calendar" class="ty-text-warning-strong"></ty-icon>
+                </div>
+                <h3 class="text-xl font-bold ty-text-warning-strong mb-3">Calendar Events</h3>
+                <p class="ty-text-neutral-mild">
+                    Date selection with custom event handling and server-side processing.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <div class="inline-block p-8 glass-card">
+            <h2 class="text-3xl font-bold ty-text-primary-strong mb-4">
+                Ready to Build Something Amazing?
+            </h2>
+            <p class="text-lg ty-text-neutral-mild mb-6">
+                Explore all the features and see the source code.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <ty-button flavor="primary" size="lg"
+                           onclick="window.location.href='{{ url_for('forms') }}'">
+                    <ty-icon name="play" class="mr-2"></ty-icon>
+                    Try Interactive Forms
+                </ty-button>
+                <ty-button flavor="outline" size="lg"
+                           onclick="window.open('https://github.com/yourusername/ty', '_blank')">
+                    <ty-icon name="github" class="mr-2"></ty-icon>
+                    View Source Code
+                </ty-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enhanced JavaScript -->
+<script>
+// Enhanced calendar date selection with beautiful animations
+document.body.addEventListener('date-select', function(event) {
+    const { date, value } = event.detail;
+    
+    // Create beautiful date display
+    const formattedDate = new Intl.DateTimeFormat('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    }).format(date);
+    
+    // Add to selected dates with animation
+    const selectedDates = document.getElementById('selected-dates');
+    
+    // Clear the "no dates" message if it exists
+    if (selectedDates.innerHTML.includes('No dates selected')) {
+        selectedDates.innerHTML = '';
+    }
+    
+    // Create new date element with animation
+    const dateElement = document.createElement('div');
+    dateElement.className = 'flex items-center justify-between ty-bg-white/50 rounded-lg p-3 animate-scale-in';
+    dateElement.innerHTML = `
+        <div class="flex items-center space-x-3">
+            <div class="w-3 h-3 rounded-full ty-bg-primary"></div>
+            <span class="font-medium">${formattedDate}</span>
+        </div>
+        <ty-button size="xs" flavor="danger" 
+                   onclick="this.parentElement.remove(); 
+                           if(document.getElementById('selected-dates').children.length === 0) {
+                               document.getElementById('selected-dates').innerHTML = '<p class=\"ty-text-neutral-mild text-center italic\">No dates selected</p>';
+                           }">
+            <ty-icon name="x"></ty-icon>
+        </ty-button>
+    `;
+    
+    selectedDates.appendChild(dateElement);
+    
+    // Send to server
+    htmx.ajax('POST', '/api/date/select', {
+        values: { date: date.toISOString().split('T')[0] }
+    });
+});
+
+// Add loading states and animations
+document.body.addEventListener('htmx:beforeRequest', function(event) {
+    const target = event.detail.target;
+    if (target) {
+        target.style.opacity = '0.7';
+        target.style.transform = 'scale(0.98)';
+    }
+});
+
+document.body.addEventListener('htmx:afterRequest', function(event) {
+    const target = event.detail.target;
+    if (target) {
+        target.style.opacity = '1';
+        target.style.transform = 'scale(1)';
+        target.classList.add('animate-fade-in');
+    }
+});
+
+// Theme toggle enhancement
+function toggleTheme() {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+}
+
+// Initialize theme from localStorage
+document.addEventListener('DOMContentLoaded', function() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+
+{% block title %}Component Gallery - Ty Components Demo{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Page Header -->
+    <div class="text-center mb-16">
+        <h1 class="text-4xl md:text-5xl font-bold mb-6">
+            <span class="text-gradient-primary">⚡ Component</span>
+            <span class="ty-text-primary-strong"> Gallery</span>
+        </h1>
+        <p class="text-xl ty-text-neutral-mild max-w-3xl mx-auto">
+            Explore all Ty components in action. Each component showcases 
+            different variants, sizes, and interactive states.
+        </p>
+    </div>
+
+    <!-- Buttons Section -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-primary-strong mb-8 flex items-center">
+            <ty-icon name="mouse-pointer" class="mr-3"></ty-icon>
+            Buttons
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Button Variants -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Button Variants</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-3">
+                        <ty-button flavor="primary">Primary</ty-button>
+                        <ty-button flavor="secondary">Secondary</ty-button>
+                        <ty-button flavor="success">Success</ty-button>
+                        <ty-button flavor="danger">Danger</ty-button>
+                        <ty-button flavor="warning">Warning</ty-button>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <ty-button flavor="outline">Outline</ty-button>
+                        <ty-button flavor="ghost">Ghost</ty-button>
+                        <ty-button disabled>Disabled</ty-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button Sizes -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Button Sizes</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <ty-button size="xs" flavor="primary">Extra Small</ty-button>
+                        <ty-button size="sm" flavor="primary">Small</ty-button>
+                        <ty-button size="md" flavor="primary">Medium</ty-button>
+                        <ty-button size="lg" flavor="primary">Large</ty-button>
+                        <ty-button size="xl" flavor="primary">Extra Large</ty-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Button with Icons -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Buttons with Icons</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-3">
+                        <ty-button flavor="primary">
+                            <ty-icon name="plus" class="mr-2"></ty-icon>
+                            Add Item
+                        </ty-button>
+                        <ty-button flavor="secondary">
+                            <ty-icon name="edit" class="mr-2"></ty-icon>
+                            Edit
+                        </ty-button>
+                        <ty-button flavor="danger">
+                            <ty-icon name="trash" class="mr-2"></ty-icon>
+                            Delete
+                        </ty-button>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <ty-button flavor="outline">
+                            Download
+                            <ty-icon name="download" class="ml-2"></ty-icon>
+                        </ty-button>
+                        <ty-button flavor="ghost" size="sm">
+                            <ty-icon name="settings"></ty-icon>
+                        </ty-button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading States -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Loading States</h3>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-3">
+                        <ty-button flavor="primary" class="loading-demo" onclick="showLoading(this)">
+                            <span class="btn-text">Click to Load</span>
+                            <span class="btn-loading hidden">
+                                <div class="spinner mr-2"></div>
+                                Loading...
+                            </span>
+                        </ty-button>
+                        <ty-button flavor="secondary" class="loading-demo" onclick="showLoading(this)">
+                            <span class="btn-text">Save Changes</span>
+                            <span class="btn-loading hidden">
+                                <div class="spinner mr-2"></div>
+                                Saving...
+                            </span>
+                        </ty-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Input Components -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-success-strong mb-8 flex items-center">
+            <ty-icon name="edit" class="mr-3"></ty-icon>
+            Input Components
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Basic Inputs -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Text Inputs</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Default Input</label>
+                        <ty-input placeholder="Enter some text"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">With Value</label>
+                        <ty-input value="Pre-filled value"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Disabled Input</label>
+                        <ty-input value="Disabled" disabled></ty-input>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Sizes -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Input Sizes</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Small Input</label>
+                        <ty-input size="sm" placeholder="Small size"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Medium Input</label>
+                        <ty-input size="md" placeholder="Medium size"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Large Input</label>
+                        <ty-input size="lg" placeholder="Large size"></ty-input>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Validation States -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Validation States</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Valid Input</label>
+                        <ty-input value="valid@email.com" class="border-green-500"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Error State</label>
+                        <ty-input value="invalid-email" class="border-red-500"></ty-input>
+                        <p class="text-sm ty-text-danger mt-1">Please enter a valid email address</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input Types -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Input Types</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Email Input</label>
+                        <ty-input type="email" placeholder="email@example.com"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password Input</label>
+                        <ty-input type="password" placeholder="Enter password"></ty-input>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Number Input</label>
+                        <ty-input type="number" placeholder="123" min="0" max="100"></ty-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-warning-strong mb-8 flex items-center">
+            <ty-icon name="tag" class="mr-3"></ty-icon>
+            Tags
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Tag Variants -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Tag Variants</h3>
+                <div class="flex flex-wrap gap-3">
+                    <ty-tag flavor="primary">Primary</ty-tag>
+                    <ty-tag flavor="secondary">Secondary</ty-tag>
+                    <ty-tag flavor="success">Success</ty-tag>
+                    <ty-tag flavor="danger">Danger</ty-tag>
+                    <ty-tag flavor="warning">Warning</ty-tag>
+                    <ty-tag flavor="info">Info</ty-tag>
+                    <ty-tag flavor="neutral">Neutral</ty-tag>
+                </div>
+            </div>
+
+            <!-- Tag Sizes -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Tag Sizes</h3>
+                <div class="flex flex-wrap items-center gap-3">
+                    <ty-tag size="sm" flavor="primary">Small</ty-tag>
+                    <ty-tag size="md" flavor="primary">Medium</ty-tag>
+                    <ty-tag size="lg" flavor="primary">Large</ty-tag>
+                </div>
+            </div>
+
+            <!-- Interactive Tags -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Interactive Tags</h3>
+                <div class="flex flex-wrap gap-3">
+                    <ty-tag flavor="primary" removable>Removable</ty-tag>
+                    <ty-tag flavor="success" removable>React</ty-tag>
+                    <ty-tag flavor="info" removable>JavaScript</ty-tag>
+                    <ty-tag flavor="warning" removable>CSS</ty-tag>
+                </div>
+            </div>
+
+            <!-- Tag Usage Examples -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Usage Examples</h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-sm ty-text-neutral-mild mb-2">Skills:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <ty-tag size="sm" flavor="info">JavaScript</ty-tag>
+                            <ty-tag size="sm" flavor="info">TypeScript</ty-tag>
+                            <ty-tag size="sm" flavor="info">React</ty-tag>
+                            <ty-tag size="sm" flavor="info">Node.js</ty-tag>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-sm ty-text-neutral-mild mb-2">Status:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <ty-tag flavor="success">Active</ty-tag>
+                            <ty-tag flavor="warning">Pending</ty-tag>
+                            <ty-tag flavor="danger">Inactive</ty-tag>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-info-strong mb-8 flex items-center">
+            <ty-icon name="window" class="mr-3"></ty-icon>
+            Modals
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Modal Sizes -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Modal Sizes</h3>
+                <div class="space-y-3">
+                    <ty-button flavor="primary" onclick="showModal('modal-sm')">Small Modal</ty-button>
+                    <ty-button flavor="primary" onclick="showModal('modal-md')">Medium Modal</ty-button>
+                    <ty-button flavor="primary" onclick="showModal('modal-lg')">Large Modal</ty-button>
+                    <ty-button flavor="primary" onclick="showModal('modal-xl')">Extra Large Modal</ty-button>
+                </div>
+            </div>
+
+            <!-- Modal Types -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Modal Types</h3>
+                <div class="space-y-3">
+                    <ty-button flavor="info" onclick="showModal('modal-info')">Info Modal</ty-button>
+                    <ty-button flavor="success" onclick="showModal('modal-success')">Success Modal</ty-button>
+                    <ty-button flavor="warning" onclick="showModal('modal-warning')">Warning Modal</ty-button>
+                    <ty-button flavor="danger" onclick="showModal('modal-danger')">Danger Modal</ty-button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Icons -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-secondary-strong mb-8 flex items-center">
+            <ty-icon name="star" class="mr-3"></ty-icon>
+            Icons
+        </h2>
+        
+        <div class="glass-card">
+            <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Popular Icons</h3>
+            <div class="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-6 text-center">
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-primary-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="home" class="ty-text-primary-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">home</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-success-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="check" class="ty-text-success-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">check</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-danger-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="x" class="ty-text-danger-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">x</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-warning-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="star" class="ty-text-warning-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">star</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-info-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="info" class="ty-text-info-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">info</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-neutral-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="settings" class="ty-text-neutral-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">settings</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-primary-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="user" class="ty-text-primary-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">user</p>
+                </div>
+                <div class="group">
+                    <div class="w-12 h-12 ty-bg-secondary-soft rounded-lg flex items-center justify-center mx-auto mb-2 group-hover:scale-110 transition-transform">
+                        <ty-icon name="heart" class="ty-text-secondary-strong"></ty-icon>
+                    </div>
+                    <p class="text-xs ty-text-neutral-mild">heart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Definitions -->
+<ty-modal id="modal-sm" size="sm">
+    <div class="p-6 text-center">
+        <ty-icon name="info" class="w-12 h-12 mx-auto mb-4 ty-text-info"></ty-icon>
+        <h3 class="text-lg font-semibold ty-text-neutral-strong mb-2">Small Modal</h3>
+        <p class="ty-text-neutral-mild mb-4">This is a small modal perfect for simple confirmations.</p>
+        <ty-button flavor="primary" onclick="hideModal('modal-sm')">Got it</ty-button>
+    </div>
+</ty-modal>
+
+<ty-modal id="modal-md" size="md">
+    <div class="p-8">
+        <h3 class="text-xl font-semibold ty-text-neutral-strong mb-4">Medium Modal</h3>
+        <p class="ty-text-neutral-mild mb-6">This medium-sized modal provides more space for content while remaining focused and easy to read.</p>
+        <div class="flex justify-end space-x-3">
+            <ty-button flavor="secondary" onclick="hideModal('modal-md')">Cancel</ty-button>
+            <ty-button flavor="primary" onclick="hideModal('modal-md')">Confirm</ty-button>
+        </div>
+    </div>
+</ty-modal>
+
+<ty-modal id="modal-lg" size="lg">
+    <div class="p-8">
+        <h3 class="text-2xl font-semibold ty-text-neutral-strong mb-6">Large Modal</h3>
+        <div class="space-y-4 mb-8">
+            <p class="ty-text-neutral-mild">This large modal can accommodate more complex content, forms, or detailed information.</p>
+            <div class="ty-bg-neutral-soft rounded-lg p-4">
+                <h4 class="font-medium ty-text-neutral-strong mb-2">Example Content</h4>
+                <p class="ty-text-neutral-mild text-sm">Large modals are perfect for detailed forms, settings panels, or rich content that requires more space to be properly displayed.</p>
+            </div>
+        </div>
+        <div class="flex justify-end space-x-3">
+            <ty-button flavor="secondary" onclick="hideModal('modal-lg')">Cancel</ty-button>
+            <ty-button flavor="primary" onclick="hideModal('modal-lg')">Save Changes</ty-button>
+        </div>
+    </div>
+</ty-modal>
+
+<ty-modal id="modal-xl" size="xl">
+    <div class="p-12">
+        <h3 class="text-3xl font-semibold ty-text-neutral-strong mb-8">Extra Large Modal</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div>
+                <h4 class="text-lg font-medium ty-text-neutral-strong mb-4">Left Column</h4>
+                <p class="ty-text-neutral-mild mb-4">Extra large modals provide maximum space for complex interfaces, dashboards, or multi-section content.</p>
+                <div class="space-y-3">
+                    <div class="ty-bg-primary-soft rounded-lg p-3">
+                        <p class="font-medium">Feature 1</p>
+                        <p class="text-sm ty-text-neutral-mild">Description of feature</p>
+                    </div>
+                    <div class="ty-bg-success-soft rounded-lg p-3">
+                        <p class="font-medium">Feature 2</p>
+                        <p class="text-sm ty-text-neutral-mild">Description of feature</p>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-lg font-medium ty-text-neutral-strong mb-4">Right Column</h4>
+                <div class="ty-bg-neutral-soft rounded-lg p-6">
+                    <p class="ty-text-neutral-mild">This demonstrates how extra large modals can accommodate complex layouts with multiple sections and rich content.</p>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-end space-x-3">
+            <ty-button flavor="secondary" onclick="hideModal('modal-xl')">Cancel</ty-button>
+            <ty-button flavor="primary" onclick="hideModal('modal-xl')">Apply Changes</ty-button>
+        </div>
+    </div>
+</ty-modal>
+
+<script>
+// Modal controls
+function showModal(modalId) {
+    document.getElementById(modalId).show();
+}
+
+function hideModal(modalId) {
+    document.getElementById(modalId).hide();
+}
+
+// Loading button demo
+function showLoading(button) {
+    const text = button.querySelector('.btn-text');
+    const loading = button.querySelector('.btn-loading');
+    
+    text.classList.add('hidden');
+    loading.classList.remove('hidden');
+    button.disabled = true;
+    
+    setTimeout(() => {
+        text.classList.remove('hidden');
+        loading.classList.add('hidden');
+        button.disabled = false;
+    }, 2000);
+}
+
+// Add some interactive features
+document.addEventListener('DOMContentLoaded', function() {
+    // Tag removal demo
+    document.addEventListener('tag-remove', function(event) {
+        console.log('Tag removed:', event.detail);
+        event.target.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => {
+            event.target.remove();
+        }, 300);
+    });
+});
+</script>
+
+<style>
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.8); }
+}
+</style>
+{% endblock %}

@@ -79,7 +79,7 @@
 
 /* TODAY STYLING - minimal accent */
 .calendar-day-cell.today {
-  color: var(--ty-color-primary-mild);
+  color: var(--ty-color-secondary);
   font-weight: 500;
 }
 
@@ -91,7 +91,7 @@
   bottom: 0.2rem;
   width: 0.15rem;
   height: 0.15rem;
-  background-color: var(--ty-color-primary-mild);
+  background-color: var(--ty-color-secondary);
   border-radius: 50%;
 }
 

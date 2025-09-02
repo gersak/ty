@@ -40,7 +40,7 @@
   .code-block {
     @apply rounded-md overflow-x-auto font-mono text-sm p-4 mb-4;
     color: var(--ty-text-mild);
-    background: var(--ty-bg-neutral-soft);
+    background: var(--ty-bg-neutral);
   }
 
   .demo-grid {

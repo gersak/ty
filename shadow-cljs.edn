@@ -1,4 +1,4 @@
-{:source-paths ["src" "gen"]
+{:source-paths ["lib" "gen" "demo"]
 
  :nrepl {:port 7888}
  :dependencies [[no.cjohansen/replicant "2025.06.21"]

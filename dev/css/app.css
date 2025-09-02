@@ -1252,10 +1252,6 @@ body {
   border-color: rgb(191 219 254 / var(--tw-border-opacity, 1));
 }
 
-.border-current {
-  border-color: currentColor;
-}
-
 .border-white {
   --tw-border-opacity: 1;
   border-color: rgb(255 255 255 / var(--tw-border-opacity, 1));
@@ -1436,11 +1432,6 @@ body {
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-}
-
-.py-8 {
-  padding-top: 2rem;
-  padding-bottom: 2rem;
 }
 
 .pb-2 {

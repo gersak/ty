@@ -63,8 +63,8 @@
     [:h2.demo-title "Quick Start"]
 
     [:div.mb-6
-     [:h3.demo-subtitle "1. Include CSS Variables"]
-     (code-example "<link rel=\"stylesheet\" href=\"css/ty.variables.css\">")]
+     [:h3.demo-subtitle "1. Include Ty CSS System"]
+     (code-example "<link rel=\"stylesheet\" href=\"css/ty.css\">")]
 
     [:div.mb-6
      [:h3.demo-subtitle "2. Include the Library"]

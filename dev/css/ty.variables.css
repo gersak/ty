@@ -16,9 +16,9 @@ html {
      ================================================================= */
 
   /* Primary */
-  --ty-color-primary-strong: #1d4ed8;
-  --ty-color-primary-mild: #2563eb;
-  --ty-color-primary: #3b82f6;
+  --ty-color-primary-strong: #0034c7;
+  --ty-color-primary-mild: #1c40a8;
+  --ty-color-primary: #4367cd;
   --ty-color-primary-soft: #60a5fa;
   --ty-color-primary-faint: #93c5fd;
 
@@ -30,11 +30,11 @@ html {
   --ty-color-secondary-faint: #c4b5fd;
 
   /* Success */
-  --ty-color-success-strong: #047857;
-  --ty-color-success-mild: #059669;
-  --ty-color-success: #10b981;
-  --ty-color-success-soft: #34d399;
-  --ty-color-success-faint: #6ee7b7;
+  --ty-color-success-strong: #006e49;
+  --ty-color-success-mild: #2b8f6d;
+  --ty-color-success: #3eaa86;
+  --ty-color-success-soft: #64b399;
+  --ty-color-success-faint: #7fd4b2;
 
   /* Danger */
   --ty-color-danger-strong: #b91c1c;
@@ -165,6 +165,14 @@ html {
 
   /* Animation */
   --ty-modal-duration: 200ms;
+
+
+  --ty-accent-primary: #367cd2;
+  --ty-accent-secondary: #8461d5;
+  --ty-accent-success: #3bb68d;
+  --ty-accent-danger: #df5b5b;
+  --ty-accent-neutral: #414141;
+
 
   /* =================================================================
      INPUT COMPONENT TOKENS
@@ -387,30 +395,30 @@ html[data-theme="dark"] {
      ================================================================= */
 
   /* Primary */
-  --ty-color-primary-strong: #bfdbfe;
-  --ty-color-primary-mild: #93c5fd;
-  --ty-color-primary: #60a5fa;
-  --ty-color-primary-soft: #3b82f6;
-  --ty-color-primary-faint: #2563eb;
+  --ty-color-primary-strong: #c9dff9;
+  --ty-color-primary-mild: #68a5f0;
+  --ty-color-primary: #4784d0;
+  --ty-color-primary-soft: #4573ac;
+  --ty-color-primary-faint: #4d6888;
 
   /* Secondary */
   --ty-color-secondary-strong: #ddd6fe;
   --ty-color-secondary-mild: #c4b5fd;
   --ty-color-secondary: #a78bfa;
   --ty-color-secondary-soft: #8269bc;
-  --ty-color-secondary-faint: #9c7da7;
+  --ty-color-secondary-faint: #76619f;
 
   /* Success */
-  --ty-color-success-strong: #a7f3d0;
+  --ty-color-success-strong: #c2f0df;
   --ty-color-success-mild: #6ee7b7;
-  --ty-color-success: #34d399;
-  --ty-color-success-soft: #10b981;
-  --ty-color-success-faint: #059669;
+  --ty-color-success: #3aba8b;
+  --ty-color-success-soft: #459679;
+  --ty-color-success-faint: #1b795c;
 
   /* Danger */
-  --ty-color-danger-strong: #fecaca;
-  --ty-color-danger-mild: #fca5a5;
-  --ty-color-danger: #cf7171;
+  --ty-color-danger-strong: #ffabab;
+  --ty-color-danger-mild: #e58787;
+  --ty-color-danger: #d06f6f;
   --ty-color-danger-soft: #b06666;
   --ty-color-danger-faint: #aa6e6e;
 
@@ -419,7 +427,7 @@ html[data-theme="dark"] {
   --ty-color-warning-mild: #fcd34d;
   --ty-color-warning: #fbbf24;
   --ty-color-warning-soft: #f59e0b;
-  --ty-color-warning-faint: #d97706;
+  --ty-color-warning-faint: #a06726;
 
   /* Info */
   --ty-color-info-strong: #a5f3fc;
@@ -436,7 +444,6 @@ html[data-theme="dark"] {
   --ty-color-neutral-faint: #4b5563;
 
   /* Backgrounds for dark mode */
-  /* PHASE 1: UX-OPTIMIZED Base backgrounds - Dark theme with contrast-focused approach */
   --ty-bg-faint: #0f1419;
   /* Near black - minimal backgrounds */
   --ty-bg-soft: #111827;
@@ -451,39 +458,38 @@ html[data-theme="dark"] {
   /* Light gray - maximum contrast */
 
   /* Semantic bgs - much darker in dark mode */
-  --ty-bg-primary: #394159;
   --ty-bg-primary-mild: #43517a;
+  --ty-bg-primary: #394159;
   --ty-bg-primary-soft: #323a4f;
 
-  --ty-bg-secondary: #4a3c65;
   --ty-bg-secondary-mild: #5b21b6;
+  --ty-bg-secondary: #4a3c65;
   --ty-bg-secondary-soft: #3b3645;
 
   --ty-bg-success: #3a4442;
   --ty-bg-success-mild: #405752;
   --ty-bg-success-soft: #2f3b38;
 
-  --ty-bg-danger: #815555;
-  --ty-bg-danger-mild: #653e3e;
-  --ty-bg-danger-soft: #4b3131;
+  --ty-bg-danger-mild: #853535;
+  --ty-bg-danger: #522828;
+  --ty-bg-danger-soft: #483c3c;
 
-  --ty-bg-warning: #743953;
   --ty-bg-warning-mild: #694555;
+  --ty-bg-warning: #743953;
   --ty-bg-warning-soft: #45333b;
 
-  --ty-bg-info: #164e63;
   --ty-bg-info-mild: #155e75;
+  --ty-bg-info: #164e63;
   --ty-bg-info-soft: #083344;
 
-  --ty-bg-neutral: #323232;
-  /* #1b1b1b;*/
   --ty-bg-neutral-mild: #1a1a1a;
+  --ty-bg-neutral: #323232;
   --ty-bg-neutral-soft: #242424;
 
   /* Borders for dark mode */
-  --ty-border-strong: #6b7280;
-  --ty-border-mild: #4b5563;
-  --ty-border: #374151;
+  --ty-border-strong: #8c8c8c;
+  --ty-border-mild: #666666;
+  --ty-border: #535353;
   --ty-border-soft: #1f2937;
   --ty-border-faint: #030712;
 
@@ -494,6 +500,13 @@ html[data-theme="dark"] {
   --ty-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
   --ty-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   --ty-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+
+
+  --ty-accent-primary: #415b7a;
+  --ty-accent-secondary: #8461d5;
+  --ty-accent-success: #3f7a66;
+  --ty-accent-danger: #ab5050;
+  --ty-accent-neutral: #4d4d4d;
 
   /* Input component tokens - dark mode */
   --ty-input-bg: #1b1b1b;
@@ -582,8 +595,6 @@ html[data-theme="dark"] {
   /* Maximum emphasis - pure white */
   --ty-text-soft: #d1d5db;
   /* Less emphasis - light gray */
-  --ty-text-faint: #9ca3af;
-  /* Even less emphasis - medium gray */
   --ty-text-faint: #6b7280;
   /* Minimum emphasis - dark gray */
 }

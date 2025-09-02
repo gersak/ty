@@ -199,33 +199,156 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   SEMANTIC TEXT COLORS 
+   SEMANTIC TEXT COLORS - 5-VARIANT SYSTEM
    Use for specific semantic meaning (success, error, etc.)
+   --ty-color-* variables are for TEXT colors
    ================================================================= */
 
-/* Keep semantic text colors for specific use cases */
+/* Primary text colors with full 5-variant system */
+.ty-text-primary-strong {
+  color: var(--ty-color-primary-strong) !important;
+}
+
+.ty-text-primary-mild {
+  color: var(--ty-color-primary-mild) !important;
+}
+
 .ty-text-primary {
   color: var(--ty-color-primary) !important;
+}
+
+.ty-text-primary-soft {
+  color: var(--ty-color-primary-soft) !important;
+}
+
+.ty-text-primary-faint {
+  color: var(--ty-color-primary-faint) !important;
+}
+
+/* Secondary text colors */
+.ty-text-secondary-strong {
+  color: var(--ty-color-secondary-strong) !important;
+}
+
+.ty-text-secondary-mild {
+  color: var(--ty-color-secondary-mild) !important;
 }
 
 .ty-text-secondary {
   color: var(--ty-color-secondary) !important;
 }
 
+.ty-text-secondary-soft {
+  color: var(--ty-color-secondary-soft) !important;
+}
+
+.ty-text-secondary-faint {
+  color: var(--ty-color-secondary-faint) !important;
+}
+
+/* Success text colors */
+.ty-text-success-strong {
+  color: var(--ty-color-success-strong) !important;
+}
+
+.ty-text-success-mild {
+  color: var(--ty-color-success-mild) !important;
+}
+
 .ty-text-success {
   color: var(--ty-color-success) !important;
+}
+
+.ty-text-success-soft {
+  color: var(--ty-color-success-soft) !important;
+}
+
+.ty-text-success-faint {
+  color: var(--ty-color-success-faint) !important;
+}
+
+/* Danger text colors */
+.ty-text-danger-strong {
+  color: var(--ty-color-danger-strong) !important;
+}
+
+.ty-text-danger-mild {
+  color: var(--ty-color-danger-mild) !important;
 }
 
 .ty-text-danger {
   color: var(--ty-color-danger) !important;
 }
 
+.ty-text-danger-soft {
+  color: var(--ty-color-danger-soft) !important;
+}
+
+.ty-text-danger-faint {
+  color: var(--ty-color-danger-faint) !important;
+}
+
+/* Warning text colors */
+.ty-text-warning-strong {
+  color: var(--ty-color-warning-strong) !important;
+}
+
+.ty-text-warning-mild {
+  color: var(--ty-color-warning-mild) !important;
+}
+
 .ty-text-warning {
   color: var(--ty-color-warning) !important;
 }
 
+.ty-text-warning-soft {
+  color: var(--ty-color-warning-soft) !important;
+}
+
+.ty-text-warning-faint {
+  color: var(--ty-color-warning-faint) !important;
+}
+
+/* Info text colors */
+.ty-text-info-strong {
+  color: var(--ty-color-info-strong) !important;
+}
+
+.ty-text-info-mild {
+  color: var(--ty-color-info-mild) !important;
+}
+
 .ty-text-info {
   color: var(--ty-color-info) !important;
+}
+
+.ty-text-info-soft {
+  color: var(--ty-color-info-soft) !important;
+}
+
+.ty-text-info-faint {
+  color: var(--ty-color-info-faint) !important;
+}
+
+/* Neutral text colors */
+.ty-text-neutral-strong {
+  color: var(--ty-color-neutral-strong) !important;
+}
+
+.ty-text-neutral-mild {
+  color: var(--ty-color-neutral-mild) !important;
+}
+
+.ty-text-neutral {
+  color: var(--ty-color-neutral) !important;
+}
+
+.ty-text-neutral-soft {
+  color: var(--ty-color-neutral-soft) !important;
+}
+
+.ty-text-neutral-faint {
+  color: var(--ty-color-neutral-faint) !important;
 }
 
 /* =================================================================

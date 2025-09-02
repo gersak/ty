@@ -1,16 +1,16 @@
 (ns ty.demo.icons
   "Icon registration for the demo application"
   (:require
-   [ty.fav6.brands :as fa-brands]
-   [ty.fav6.regular :as fa-regular]
-   [ty.fav6.solid :as fa-solid]
-   [ty.heroicons.mini :as hero-mini]
-   [ty.heroicons.outline :as hero-outline]
-   [ty.heroicons.solid :as hero-solid]
-   [ty.icons :as icons]
-   [ty.lucide :as lucide]
-   [ty.material.filled :as mat-filled]
-   [ty.material.outlined :as mat-outlined]))
+    [ty.fav6.brands :as fa-brands]
+    [ty.fav6.regular :as fa-regular]
+    [ty.fav6.solid :as fa-solid]
+    [ty.heroicons.mini :as hero-mini]
+    [ty.heroicons.outline :as hero-outline]
+    [ty.heroicons.solid :as hero-solid]
+    [ty.icons :as icons]
+    [ty.lucide :as lucide]
+    [ty.material.filled :as mat-filled]
+    [ty.material.outlined :as mat-outlined]))
 
 (defn register-demo-icons!
   "Register all icons used in the demo application"
@@ -30,6 +30,7 @@
                "plus" lucide/plus
                "shield" lucide/shield
                "save" lucide/save
+               "brush" lucide/paintbrush
 
                ;; Theme icons
                "moon" lucide/moon

@@ -11,8 +11,8 @@ button {
   /* Base styles */
   min-height: var(--ty-size-md);
   padding: var(--ty-spacing-1) var(--ty-spacing-2);
-  font-size: var(--ty-font-base);
-  font-weight: var(--ty-font-semibold);
+  font-size: var(--ty-font-xs);
+  font-weight: var(--ty-font-medium);
   line-height: var(--ty-line-height-normal);
   cursor: pointer;
   user-select: none;
@@ -178,8 +178,8 @@ button.pill.xl:has(ty-icon:only-child) {
 
 /* Accent - Full colored background with white text */
 button.accent {
-  border: none;
   color: white;
+  border: none;
 }
 
 /* Filled - Tonal background, no border */
@@ -223,12 +223,9 @@ button.filled-outlined.primary:focus-visible {
 
 /* Accent */
 button.accent.primary {
-  background: var(--ty-color-primary);
+  background: var(--ty-accent-primary);
 }
 
-button.accent.primary:hover:not(:disabled) {
-  background: var(--ty-color-primary-mild);
-}
 
 button.accent.primary:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-primary);
@@ -282,12 +279,9 @@ button.filled-outlined.secondary:focus-visible {
 
 /* Accent */
 button.accent.secondary {
-  background: var(--ty-color-secondary);
+  background: var(--ty-accent-secondary);
 }
 
-button.accent.secondary:hover:not(:disabled) {
-  background: var(--ty-color-secondary-mild);
-}
 
 button.accent.secondary:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-secondary);
@@ -326,13 +320,13 @@ button.plain.secondary:hover:not(:disabled) {
 
 /* Filled + Outlined (default) */
 button.filled-outlined.success {
-  background: var(--ty-bg-success);
+  background: var(--ty-bg-success-soft);
   color: var(--ty-color-success);
   border-color: var(--ty-border-success);
 }
 
 button.filled-outlined.success:hover:not(:disabled) {
-  background: var(--ty-bg-success-mild);
+  background: var(--ty-bg-success);
 }
 
 button.filled-outlined.success:focus-visible {
@@ -341,12 +335,9 @@ button.filled-outlined.success:focus-visible {
 
 /* Accent */
 button.accent.success {
-  background: var(--ty-color-success);
+  background: var(--ty-accent-success);
 }
 
-button.accent.success:hover:not(:disabled) {
-  background: var(--ty-color-success-mild);
-}
 
 button.accent.success:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-success);
@@ -400,12 +391,9 @@ button.filled-outlined.danger:focus-visible {
 
 /* Accent */
 button.accent.danger {
-  background: var(--ty-color-danger);
+  background: var(--ty-accent-danger);
 }
 
-button.accent.danger:hover:not(:disabled) {
-  background: var(--ty-color-danger-mild);
-}
 
 button.accent.danger:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-danger);
@@ -459,12 +447,9 @@ button.filled-outlined.warning:focus-visible {
 
 /* Accent */
 button.accent.warning {
-  background: var(--ty-color-warning);
+  background: var(--ty-accent-warning);
 }
 
-button.accent.warning:hover:not(:disabled) {
-  background: var(--ty-color-warning-mild);
-}
 
 button.accent.warning:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-warning);
@@ -521,9 +506,6 @@ button.accent.info {
   background: var(--ty-color-info);
 }
 
-button.accent.info:hover:not(:disabled) {
-  background: var(--ty-color-info-mild);
-}
 
 button.accent.info:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-info);
@@ -589,9 +571,6 @@ button.accent.neutral {
   background: var(--ty-color-neutral);
 }
 
-button.accent.neutral:hover:not(:disabled) {
-  background: var(--ty-color-neutral-mild);
-}
 
 button.accent.neutral:focus-visible {
   box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-neutral);

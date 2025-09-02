@@ -6,6 +6,7 @@
             [ty.demo.state :refer [state]]
             [ty.demo.views.buttons :as buttons]
             [ty.demo.views.calendar :as calendar]
+            [ty.demo.views.color-combinations :as color-combinations]
             [ty.demo.views.dropdowns :as dropdowns]
             [ty.demo.views.formatting :as formatting]
             [ty.demo.views.home :as home]
@@ -66,6 +67,9 @@
               {:id ::theme-utilities
                :segment "theme-utilities"
                :name "Theme Utilities"}
+              {:id ::color-combinations
+               :segment "color-combinations"
+               :name "Color Combinations"}
               {:id ::admin-dashboard
                :segment "admin"
                :name "Admin Dashboard"
@@ -145,6 +149,9 @@
    (nav-item {:route-id ::theme-utilities
               :label "Theme Utilities"
               :icon "palette"})
+   (nav-item {:route-id ::color-combinations
+              :label "Color Combinations"
+              :icon "brush"})
    (when (router/authorized? ::admin-dashboard)
      (nav-item {:route-id ::admin-dashboard
                 :label "Admin Dashboard"
@@ -208,6 +215,7 @@
         (router/rendered? ::formatting true) "Number & Date Formatting"
         (router/rendered? ::layout true) "Layout System"
         (router/rendered? ::theme-utilities true) "Theme Utilities"
+        (router/rendered? ::color-combinations true) "Color Combinations"
         (router/rendered? ::admin-dashboard true) "Admin Dashboard"
         (router/rendered? ::theming true) "Theming & Customization"
         :else "Ty Components")]]
@@ -257,6 +265,7 @@
              (router/rendered? ::formatting true) (formatting/view)
              (router/rendered? ::layout true) (layout-views/view)
              (router/rendered? ::theme-utilities true) (theme-utilities/view)
+             (router/rendered? ::color-combinations true) (color-combinations/view)
              (router/rendered? ::admin-dashboard true)
              [:div.max-w-4xl.mx-auto
               [:h1.text-2xl.lg:text-3xl.font-bold.ty-text.mb-4 ; NEW: ty-text

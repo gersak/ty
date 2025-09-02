@@ -7,7 +7,7 @@
   *,
   ::before,
   ::after {
-    border-color: var(--ty-border, #e5e7eb);
+    border-color: var(--ty-border);
   }
 }
 

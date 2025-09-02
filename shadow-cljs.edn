@@ -13,4 +13,7 @@
                                  :depends-on #{:main}}}
                 :devtools {:http-root "dev"
                            :http-port 8000
-                           :watch-dirs ["src"]}}}}
+                           :watch-dirs ["src"]}}
+          :lib {:target :browser
+                :output-dir "dist/"
+                :modules {:main {:init-fn ty.core/init}}}}}

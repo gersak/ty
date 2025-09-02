@@ -12,7 +12,8 @@
   "scripts": {
     "dev": "shadow-cljs watch app",
     "build": "shadow-cljs release app",
-    "css:watch": "npx tailwindcss -i ./src/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
-    "css:build": "npx tailwindcss -i ./src/ty/demo/tailwind.css -o ./dev/css/app.css --minify"
+    "release": "shadow-cljs release lib",
+    "css:watch": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
+    "css:build": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --minify"
   }
 }

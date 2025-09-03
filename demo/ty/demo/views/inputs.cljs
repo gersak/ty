@@ -159,13 +159,12 @@
                   :label "Price Field"
                   :value "123.45"
                   :placeholder "Enter price"}]
-      [:button.px-4.py-2.rounded.transition-colors
-       {:class [:ty-bg-primary :hover:ty-bg-primary+ :text-white]
-        :on {:click #(let [input (.getElementById js/document "toggle-error-demo")
-                           has-error (.hasAttribute input "error")]
-                       (if has-error
-                         (.removeAttribute input "error")
-                         (.setAttribute input "error" "Custom validation error")))}}
+      [:ty-button {:flavor "primary"
+                   :on {:click #(let [input (.getElementById js/document "toggle-error-demo")
+                                      has-error (.hasAttribute input "error")]
+                                  (if has-error
+                                    (.removeAttribute input "error")
+                                    (.setAttribute input "error" "Custom validation error")))}}
        "Toggle Error State"]]]]])
 
 (defn external-value-demo []
@@ -192,21 +191,21 @@
         :on {:change process}}]
 
       [:div.flex.flex-wrap.gap-2
-       [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:ty-bg-success :hover:ty-bg-success+ :text-white]
-         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "250.75")}}
+       [:ty-button {:flavor "success"
+                    :size "sm"
+                    :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "250.75")}}
         "Set $250.75"]
-       [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:ty-bg-primary :hover:ty-bg-primary+ :text-white]
-         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "1000")}}
+       [:ty-button {:flavor "primary"
+                    :size "sm"
+                    :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "1000")}}
         "Set $1,000"]
-       [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:ty-bg-secondary :hover:ty-bg-secondary+ :text-white]
-         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "99.99")}}
+       [:ty-button {:flavor "secondary"
+                    :size "sm"
+                    :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "99.99")}}
         "Set $99.99"]
-       [:button.px-3.py-1.rounded.text-sm.transition-colors
-        {:class [:ty-bg-neutral :hover:ty-bg-neutral+ :text-white]
-         :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "")}}
+       [:ty-button {:flavor "neutral"
+                    :size "sm"
+                    :on {:click #(.setAttribute (.getElementById js/document "external-demo") "value" "")}}
         "Clear"]]
 
       [:div.mt-4
@@ -468,6 +467,162 @@
                 :placeholder "Enter a valid email"
                 :flavor "primary"}]]])
 
+(defn form-association-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "🔗 Form Association & HTMX Integration"]
+   [:p.text-sm.ty-text- "Test form participation using ElementInternals API for HTMX compatibility."]
+
+   [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+    ;; Test form with FormData extraction
+    [:div.space-y-4
+     [:h4.font-medium "FormData Test"]
+     [:p.text-xs.ty-text-- "Tests that ty-input values appear in FormData (required for HTMX)"]
+
+     [:form#form-test.space-y-3.p-4.border.ty-border.rounded
+      [:ty-input {:name "username"
+                  :type "text"
+                  :label "Username"
+                  :value "john_doe"
+                  :placeholder "Enter username"}]
+      [:ty-input {:name "email"
+                  :type "email"
+                  :label "Email"
+                  :value "john@example.com"
+                  :placeholder "your@email.com"}]
+      [:ty-input {:name "price"
+                  :type "currency"
+                  :currency "USD"
+                  :label "Price"
+                  :value "1234.56"
+                  :placeholder "Enter price"}]
+      [:ty-input {:name "discount"
+                  :type "percent"
+                  :label "Discount Rate"
+                  :value "0.15"
+                  :precision "2"
+                  :placeholder "0.15 = 15%"}]
+      [:ty-input {:name "quantity"
+                  :type "number"
+                  :label "Quantity"
+                  :value "42"
+                  :placeholder "Enter quantity"}]
+
+      [:ty-button {:flavor "primary"
+                   :on {:click #(let [form (.getElementById js/document "form-test")
+                                      form-data (js/FormData. form)
+                                      results (.getElementById js/document "formdata-results")
+                                      entries ^js (js/Array.from (.entries form-data))
+
+                                      ;; 🔍 DEBUGGING INFO with Console Logging
+                                      inputs ^js (.querySelectorAll js/document "ty-input")]
+
+                                  ;; Log everything to console first
+                                  (.log js/console "=== FormData Debug ===")
+                                  (.log js/console "Form found:" form)
+                                  (.log js/console "FormData entries:" entries)
+                                  (.log js/console "Found" (.-length inputs) "ty-input elements:")
+
+                                  (set! (.-innerHTML results)
+                                        (str "<strong>FormData contents:</strong><br>"
+                                             (if (> (.-length entries) 0)
+                                               (.join (.map entries
+                                                            (fn [[name value]]
+                                                              (str name " = " value " (" (type value) ")")))
+                                                      "<br>")
+                                               "❌ NO FORMDATA ENTRIES FOUND"))))}}
+       "Extract FormData + Debug"]
+
+      [:div#formdata-results.mt-4.p-3.rounded.font-mono.text-xs
+       {:class [:ty-bg-neutral- :ty-text-]}
+       "Click 'Extract FormData' to see form values..."]]]
+
+    ;; Property access test  
+    [:div.space-y-4
+     [:h4.font-medium "Property Access Test"]
+     [:p.text-xs.ty-text-- "Tests .value property access (standard DOM behavior)"]
+
+     [:div.space-y-3.p-4.border.ty-border.rounded
+      [:ty-input {:id "prop-test-input"
+                  :name "test-value"
+                  :type "currency"
+                  :currency "USD"
+                  :label "Test Input"
+                  :value "999.99"
+                  :placeholder "Enter amount"}]
+
+      [:ty-button {:flavor "success"
+                   :on {:click #(let [input (.getElementById js/document "prop-test-input")
+                                      value (.-value input)
+                                      results (.getElementById js/document "property-results")]
+                                  (set! (.-innerHTML results)
+                                        (str "<strong>Property Access:</strong><br>"
+                                             "input.value = " value " (" (type value) ")<br>"
+                                             "input.getAttribute('value') = " (.getAttribute input "value") "<br>"
+                                             "input.getAttribute('name') = " (.getAttribute input "name"))))}}
+       "Read .value Property"]
+
+      [:div.flex.gap-2.flex-wrap
+       [:ty-button {:flavor "warning"
+                    :size "sm"
+                    :on {:click #(set! (.-value (.getElementById js/document "prop-test-input")) 500.00)}}
+        "Set to 500"]
+       [:ty-button {:flavor "info"
+                    :size "sm"
+                    :on {:click #(.setAttribute (.getElementById js/document "prop-test-input") "value" "750.25")}}
+        "Set Attr to 750.25"]
+       [:ty-button {:flavor "neutral"
+                    :size "sm"
+                    :on {:click #(set! (.-value (.getElementById js/document "prop-test-input")) nil)}}
+        "Clear"]]
+
+      [:div#property-results.mt-4.p-3.rounded.font-mono.text-xs
+       {:class [:ty-bg-neutral- :ty-text-]}
+       "Click 'Read .value Property' to see current values..."]]]]
+
+   ;; HTMX simulation
+   [:div.mt-6.space-y-4
+    [:h4.font-medium "HTMX Simulation"]
+    [:p.text-xs.ty-text-- "Simulates how HTMX would serialize the form"]
+
+    [:form#htmx-test.space-y-3.p-4.border.ty-border-primary.rounded
+     {:data-testform "true"}
+     [:ty-input {:name "customer"
+                 :type "text"
+                 :label "Customer Name"
+                 :value "Acme Corp"
+                 :required true}]
+     [:ty-input {:name "amount"
+                 :type "currency"
+                 :currency "USD"
+                 :label "Invoice Amount"
+                 :value "1500.00"}]
+     [:ty-input {:name "tax_rate"
+                 :type "percent"
+                 :label "Tax Rate"
+                 :value "0.08"
+                 :precision "3"}]
+
+     [:ty-button {:flavor "secondary"
+                  :on {:click #(let [form (.getElementById js/document "htmx-test")
+                                     form-data (js/FormData. form)
+                                     url-params (js/URLSearchParams. form-data)
+                                     results (.getElementById js/document "htmx-results")]
+                                 (set! (.-innerHTML results)
+                                       (str "<strong>HTMX would send:</strong><br>"
+                                            "Content-Type: application/x-www-form-urlencoded<br><br>"
+                                            "<code>" (.toString url-params) "</code><br><br>"
+                                            "<strong>Parsed data:</strong><br>"
+                                            (let [entries (js/Array.from (.entries form-data))]
+                                              (.join (.map entries
+                                                           (fn [[name value]]
+                                                             (str "• " name ": " value)))
+                                                     "<br>")))))}}
+      "Simulate HTMX POST"]
+
+     [:div#htmx-results.mt-4.p-3.rounded.font-mono.text-xs
+      {:class [:ty-bg-info- :ty-text-]}
+      "Click 'Simulate HTMX POST' to see what would be sent to server..."]]]])
+
 (defn view []
   (layout/with-window
     [:div.p-8.max-w-6xl.mx-auto.space-y-8.ty-text-
@@ -511,4 +666,8 @@
       (container-aware-demo)]
 
      [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
-      (form-layout-demo)]]))
+      (form-layout-demo)]
+
+     ;; 🔗 NEW: Form Association & HTMX Integration Testing
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
+      (form-association-demo)]]))

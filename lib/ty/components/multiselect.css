@@ -85,11 +85,6 @@
   }
 }
 
-/* Focus management for stub */
-.multiselect-stub:focus-within {
-  outline: 2px solid var(--ty-focus-ring, #3b82f6);
-  outline-offset: 2px;
-}
 
 /* Ensure proper spacing in container layouts */
 .multiselect-container {

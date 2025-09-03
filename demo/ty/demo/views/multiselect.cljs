@@ -325,6 +325,120 @@
   <ty-tag value=\"event1\" pill size=\"sm\">Event Test 1</ty-tag>
 </ty-multiselect>")])
 
+(defn htmx-integration-demo []
+  (demo-section
+    {:title "HTMX & Form Integration"
+     :description "Test form data serialization for HTMX compatibility. The multiselect component uses ElementInternals to participate in form data collection."
+     :children
+     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+
+      ;; Form data extraction test
+      [:div.space-y-4
+       [:h4.font-medium "FormData Extraction Test"]
+       [:p.text-sm.ty-text-- "Tests that multiselect values appear in FormData as multiple entries with the same name (HTMX standard)."]
+
+       [:form#multiselect-form-test.space-y-4.p-4.border.ty-border.rounded
+        [:ty-multiselect {:name "categories"
+                          :label "Categories"
+                          :placeholder "Select categories..."
+                          :value "tech,design"}
+         [:ty-tag {:value "tech"} "Technology"]
+         [:ty-tag {:value "design"} "Design"]
+         [:ty-tag {:value "business"} "Business"]
+         [:ty-tag {:value "marketing"} "Marketing"]
+         [:ty-tag {:value "finance"} "Finance"]]
+
+        [:ty-multiselect {:name "skills"
+                          :label "Skills"
+                          :placeholder "Select skills..."}
+         [:ty-tag {:value "javascript"} "JavaScript"]
+         [:ty-tag {:value "python"} "Python"]
+         [:ty-tag {:value "clojure"} "Clojure"]
+         [:ty-tag {:value "react"} "React"]
+         [:ty-tag {:value "css"} "CSS"]]
+
+        [:ty-button {:flavor "primary"
+                     :on {:click #(let [form (.getElementById js/document "multiselect-form-test")
+                                        form-data (js/FormData. form)
+                                        results (.getElementById js/document "multiselect-formdata-results")
+                                        entries (js/Array.from (.entries form-data))]
+                                    (.log js/console "=== Multiselect FormData Debug ===")
+                                    (.log js/console "Form found:" form)
+                                    (.log js/console "FormData entries:" entries)
+                                    (set! (.-innerHTML results)
+                                          (str "<strong>FormData contents:</strong><br>"
+                                               (if (> (.-length entries) 0)
+                                                 (.join (.map entries
+                                                              (fn [[name value]]
+                                                                (str name " = " value)))
+                                                        "<br>")
+                                                 "❌ NO FORMDATA ENTRIES FOUND"))))}}
+         "Extract FormData"]
+
+        [:div#multiselect-formdata-results.mt-4.p-3.rounded.font-mono.text-xs
+         {:class [:ty-bg-neutral- :ty-text-]}
+         "Click 'Extract FormData' to see form values..."]]
+
+       [:div.text-xs.ty-text--
+        [:strong "Expected HTMX format:"] [:br]
+        [:code "categories=tech&categories=design&skills=javascript&skills=python"]]]
+
+      ;; Property access test  
+      [:div.space-y-4
+       [:h4.font-medium "Property Access Test"]
+       [:p.text-sm.ty-text-- "Tests JavaScript property access and programmatic control."]
+
+       [:div.space-y-3.p-4.border.ty-border.rounded
+        [:ty-multiselect {:id "prop-test-multiselect"
+                          :name "test-values"
+                          :label "Test Multiselect"
+                          :placeholder "Select options..."}
+         [:ty-tag {:value "option1"} "Option 1"]
+         [:ty-tag {:value "option2"} "Option 2"]
+         [:ty-tag {:value "option3"} "Option 3"]
+         [:ty-tag {:value "option4"} "Option 4"]]
+
+        [:div.flex.gap-2.flex-wrap
+         [:ty-button {:flavor "success"
+                      :size "sm"
+                      :on {:click #(let [element (.getElementById js/document "prop-test-multiselect")]
+                                     (.setAttribute element "value" "option1,option3")
+                                     (.dispatchEvent element (js/Event. "change")))}}
+          "Set option1,option3"]
+         [:ty-button {:flavor "warning"
+                      :size "sm"
+                      :on {:click #(let [element (.getElementById js/document "prop-test-multiselect")]
+                                     (.setAttribute element "value" "option2,option4"))}}
+          "Set option2,option4"]
+         [:ty-button {:flavor "neutral"
+                      :size "sm"
+                      :on {:click #(let [element (.getElementById js/document "prop-test-multiselect")]
+                                     (.setAttribute element "value" ""))}}
+          "Clear All"]]
+
+        [:ty-button {:flavor "info"
+                     :on {:click #(let [element (.getElementById js/document "prop-test-multiselect")
+                                        form-data (js/FormData.)
+                                        selected-values (js/Array.from (.querySelectorAll element "ty-tag[selected]"))
+                                        results (.getElementById js/document "multiselect-property-results")]
+                                    ;; Simulate FormData extraction
+                                    (doseq [tag selected-values]
+                                      (.append form-data "test-values" (.getAttribute tag "value")))
+                                    (let [entries (js/Array.from (.entries form-data))]
+                                      (set! (.-innerHTML results)
+                                            (str "<strong>Current State:</strong><br>"
+                                                 "value attribute: " (or (.getAttribute element "value") "(none)") "<br>"
+                                                 "selected tags: " (.-length selected-values) "<br>"
+                                                 "<strong>FormData simulation:</strong><br>"
+                                                 (if (> (.-length entries) 0)
+                                                   (.join (.map entries (fn [[name value]] (str name "=" value))) "&")
+                                                   "(no values)")))))}}
+         "Check Current State"]
+
+        [:div#multiselect-property-results.mt-4.p-3.rounded.font-mono.text-xs
+         {:class [:ty-bg-neutral- :ty-text-]}
+         "Click 'Check Current State' to see current values..."]]]]}))
+
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
@@ -337,4 +451,5 @@
     (basic-examples)
     (flavor-examples)
     (state-examples)
+    (htmx-integration-demo)
     (event-debugging)]])

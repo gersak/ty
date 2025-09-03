@@ -77,6 +77,17 @@ input {
   padding: 8px 12px;
 }
 
+/* Remove number input spinner arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
 /* Focus state - elegant blue glow like toddler */
 input:focus {
   border-color: var(--ty-input-border-focus);

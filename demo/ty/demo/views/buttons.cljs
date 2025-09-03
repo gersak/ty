@@ -360,6 +360,57 @@
                                        :size "xl"}
                            [:ty-icon {:name "settings"}]]]})]
    [:div.demo-section
+    [:h2.demo-title "Form Integration"]
+    [:div.mb-4
+     [:p.ty-text-.mb-2 "ty-button now supports form submission and reset functionality using the `type` attribute."]
+     [:p.ty-text-.text-sm "✅ Form submission works! Check browser console to see form data."]
+     [:p.ty-text-.text-xs.ty-text--
+      "Note: Due to Web Component shadow DOM boundaries, individual button name/value pairs aren't included in the form data, but form submission and reset work perfectly."]]
+
+    (demo-row {:title "Submit Button"
+               :description "type=\"submit\" (default) submits the form when clicked"
+               :children [[:form {:class "ty-elevated p-4 rounded-lg space-y-3"
+                                  :onsubmit "event.preventDefault(); const formData = new FormData(event.target); const data = Object.fromEntries(formData); console.log('Form submitted with data:', data); alert('Form submitted successfully! Data: ' + JSON.stringify(data));"}
+                           [:div.space-y-2
+                            [:label.ty-text-.text-sm "Sample Input:"]
+                            [:input {:type "text" :name "sampleInput" :class "px-3 py-2 border rounded" :placeholder "Enter some data..."}]
+                            [:label.ty-text-.text-sm "Select Option:"]
+                            [:select {:name "sampleSelect" :class "px-3 py-2 border rounded"}
+                             [:option {:value "option1"} "Option 1"]
+                             [:option {:value "option2"} "Option 2"]
+                             [:option {:value "option3"} "Option 3"]]]
+                           [:div.flex.gap-2
+                            [:ty-button {:type "submit" :flavor "primary"} "Submit Form"]
+                            [:ty-button {:type "submit" :flavor "success" :filled true} "Submit Alt"]]]]})
+
+    (demo-row {:title "Reset Button"
+               :description "type=\"reset\" clears all form fields"
+               :children [[:form {:class "ty-elevated p-4 rounded-lg space-y-3"
+                                  :onsubmit "event.preventDefault();"}
+                           [:div.space-y-2
+                            [:label.ty-text-.text-sm "Try typing and then reset:"]
+                            [:input {:type "text" :name "resetInput" :class "px-3 py-2 border rounded" :placeholder "Type something here..."}]
+                            [:textarea {:name "resetTextarea" :class "px-3 py-2 border rounded w-full h-20" :placeholder "Or here..."}]]
+                           [:div.flex.gap-2
+                            [:ty-button {:type "reset" :flavor "warning" :outlined true} "Reset Form"]
+                            [:ty-button {:type "submit" :flavor "primary"} "Submit"]]]]})
+
+    (demo-row {:title "Button Type"
+               :description "type=\"button\" does nothing special, just dispatches click events"
+               :children [[:div.ty-elevated.p-4.rounded-lg.space-y-3
+                           [:p.ty-text-.text-sm "These buttons won't submit or reset forms:"]
+                           [:div.flex.gap-2
+                            [:ty-button {:type "button"
+                                         :flavor "neutral"
+                                         :onclick "alert('Just a regular button click!')"} "Regular Button"]
+                            [:ty-button {:type "button"
+                                         :flavor "secondary"
+                                         :filled true
+                                         :onclick "console.log('Button clicked but no form action')"} "Another Button"]]]]})
+
+    (code-snippet "<form>\n  <!-- Submit button (default) -->\n  <ty-button type=\"submit\" name=\"action\" value=\"save\">Save</ty-button>\n  \n  <!-- Reset button -->\n  <ty-button type=\"reset\">Clear Form</ty-button>\n  \n  <!-- Regular button -->\n  <ty-button type=\"button\">Just a Button</ty-button>\n</form>")]
+
+   [:div.demo-section
     [:h2.demo-title "States"]
     (demo-row {:title "Disabled"
                :children [[:ty-button {:flavor "primary"

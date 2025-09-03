@@ -557,6 +557,74 @@
        "cal.setAttribute('value', '2024-12-25');\n\n"
        "// Automatically triggers re-render and navigation"]]]]])
 
+(defn form-integration-demo []
+  "Demo showcasing new form integration with HTMX compatibility"
+  [:div.demo-section
+   [:h2.demo-title "📝 NEW: Form Integration & HTMX Compatibility"]
+   [:div.text-sm.ty-text-.mb-6
+    "Calendar now supports form-associated custom elements with ElementInternals, making it fully compatible with forms and HTMX!"]
+
+   [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+
+    ;; Form integration example
+    [:div.p-4.ty-elevated.rounded-lg
+     [:h3.font-semibold.mb-3 "Form Integration"]
+     [:div.text-sm.space-y-3
+      [:div "✅ Automatic form value setting as ISO date string"]
+      [:div "✅ Value attribute synchronization"]
+      [:div "✅ Works with any server framework"]
+      [:div "✅ HTMX-ready out of the box"]]
+
+     ;; Live form demo
+     [:form.mt-4.space-y-4 {:id "calendar-form"}
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Select Date:"]
+       [:ty-calendar {:name "selected-date"
+                      :year "2024"
+                      :month "12"
+                      :day "25"
+                      :width "300px"}]]
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Event Name:"]
+       [:input.w-full.p-2.border.rounded {:type "text"
+                                          :name "event-name"
+                                          :placeholder "Enter event name..."}]]
+      [:ty-button
+       {:type "button"
+        :on {:click (fn [_]
+                      (println "HIII")
+                      (let [form (.getElementById js/document "calendar-form")
+                            form-data (js/FormData. form)]
+                        (js/alert (str "Form Data:\n"
+                                       "Selected Date: " (.get form-data "selected-date") "\n"
+                                       "Event Name: " (.get form-data "event-name")))))}}
+       "Show Form Data"]]]
+
+    ;; HTMX example code
+    [:div.p-4.ty-elevated.rounded-lg
+     [:h3.font-semibold.mb-3 "HTMX Integration"]
+     [:div.text-sm.space-y-3
+      [:div "Calendar automatically includes selected date in form submissions"]
+      [:div "ISO date format (YYYY-MM-DD) for easy server parsing"]
+      [:div "Standard HTML form behavior - no special handling needed"]]
+
+     [:pre.text-xs.ty-content.p-3.rounded.mt-3.overflow-x-auto
+      [:code
+       "<!-- HTMX Form Example -->\n"
+       "<form hx-post=\"/api/events\" hx-target=\"#result\">\n"
+       "  <ty-calendar name=\"event-date\" year=\"2024\" month=\"12\" day=\"25\"></ty-calendar>\n"
+       "  <input name=\"title\" placeholder=\"Event title\">\n"
+       "  <button type=\"submit\">Create Event</button>\n"
+       "</form>\n\n"
+       "<!-- Server receives: -->\n"
+       "event-date=2024-12-25&title=Meeting\n\n"
+       "<!-- Python/Django -->\n"
+       "selected_date = request.POST['event-date']  # \"2024-12-25\"\n"
+       "datetime.fromisoformat(selected_date)       # Parse easily\n\n"
+       "<!-- Node.js/Express -->\n"
+       "const selectedDate = req.body['event-date']; // \"2024-12-25\"\n"
+       "new Date(selectedDate);                      // Parse easily"]]]]])
+
 (defn view []
   [:div.p-6
    [:div.mb-8
@@ -620,6 +688,7 @@
    (property-based-components-demo)
    (width-and-styling-demo)
    (integration-patterns-demo)
+   (form-integration-demo)
 
    ;; Architecture summary
    [:div.demo-section

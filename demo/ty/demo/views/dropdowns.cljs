@@ -367,6 +367,114 @@
                           [:div.mt-1.text-xs.ty-text-danger
                            "❌ Invalid: >23 hours, >59 minutes"]]]})])
 
+(defn date-picker-form-integration-demo []
+  "Demo showcasing new form integration with HTMX compatibility for date picker"
+  [:div.demo-section
+   [:h2.demo-title "📝 NEW: Date Picker Form Integration & HTMX Compatibility"]
+   [:div.text-sm.ty-text-.mb-6
+    "Date picker now supports form-associated custom elements with ElementInternals, making it fully compatible with forms and HTMX! Works for both date-only and date+time modes."]
+
+   [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+
+    ;; Form integration example
+    [:div.p-4.ty-elevated.rounded-lg
+     [:h3.font-semibold.mb-3 "Form Integration"]
+     [:div.text-sm.space-y-3
+      [:div "✅ Automatic form value setting as ISO date/datetime string"]
+      [:div "✅ Value attribute synchronization"]
+      [:div "✅ Works with any server framework"]
+      [:div "✅ HTMX-ready out of the box"]
+      [:div "✅ Supports both date-only and date+time modes"]]
+
+     ;; Live form demo
+     [:form.mt-4.space-y-4 {:id "date-picker-form"}
+      [:div
+       [:ty-date-picker {:name "event-date"
+                         :label "Event Date"
+                         :value "2024-12-25"
+                         :clearable true
+                         :style {:min-width "200px"}}]]
+      [:div
+       [:ty-date-picker {:name "meeting-datetime"
+                         :label "Meeting Date & Time"
+                         :with-time true
+                         :value "2024-12-25T14:30"
+                         :clearable true
+                         :style {:min-width "200px"}}]]
+      [:div
+       [:label.block.text-sm.font-medium.mb-2 "Event Description:"]
+       [:textarea.w-full.p-2.border.rounded {:name "description"
+                                             :placeholder "Enter event description..."
+                                             :rows 3}]]
+      [:button.px-4.py-2.bg-blue-500.text-white.rounded.hover:bg-blue-600
+       {:type "button"
+        :on {:click (fn [_]
+                      (let [form (.getElementById js/document "date-picker-form")
+                            form-data (js/FormData. form)]
+                        (js/alert (str "Form Data:\n"
+                                       "Event Date: " (.get form-data "event-date") "\n"
+                                       "Meeting DateTime: " (.get form-data "meeting-datetime") "\n"
+                                       "Description: " (.get form-data "description")))))}}
+       "Show Form Data"]]]
+
+    ;; HTMX example code
+    [:div.p-4.ty-elevated.rounded-lg
+     [:h3.font-semibold.mb-3 "HTMX Integration"]
+     [:div.text-sm.space-y-3
+      [:div "Date picker automatically includes selected date/datetime in form submissions"]
+      [:div "ISO format: Date (YYYY-MM-DD) or DateTime (YYYY-MM-DDTHH:mm)"]
+      [:div "Standard HTML form behavior - no special handling needed"]]
+
+     [:pre.text-xs.ty-content.p-3.rounded.mt-3.overflow-x-auto
+      [:code
+       "<!-- HTMX Form Example -->\n"
+       "<form hx-post=\"/api/events\" hx-target=\"#result\">\n"
+       "  <!-- Date only -->\n"
+       "  <ty-date-picker name=\"event-date\" \n"
+       "                  label=\"Event Date\" \n"
+       "                  value=\"2024-12-25\">\n"
+       "  </ty-date-picker>\n"
+       "\n"
+       "  <!-- Date + Time -->\n"
+       "  <ty-date-picker name=\"meeting-time\" \n"
+       "                  label=\"Meeting Time\" \n"
+       "                  with-time=\"true\"\n"
+       "                  value=\"2024-12-25T14:30\">\n"
+       "  </ty-date-picker>\n"
+       "\n"
+       "  <button type=\"submit\">Create Event</button>\n"
+       "</form>\n\n"
+       "<!-- Server receives: -->\n"
+       "event-date=2024-12-25&meeting-time=2024-12-25T14:30\n\n"
+       "<!-- Python/Django -->\n"
+       "event_date = request.POST['event-date']  # \"2024-12-25\"\n"
+       "meeting_time = request.POST['meeting-time']  # \"2024-12-25T14:30\"\n"
+       "datetime.fromisoformat(event_date)  # Parse date\n"
+       "datetime.fromisoformat(meeting_time)  # Parse datetime\n\n"
+       "<!-- Node.js/Express -->\n"
+       "const eventDate = req.body['event-date'];  // \"2024-12-25\"\n"
+       "const meetingTime = req.body['meeting-time'];  // \"2024-12-25T14:30\"\n"
+       "new Date(eventDate);  // Parse easily\n"
+       "new Date(meetingTime);  // Parse with time"]]]
+
+    ;; Value format comparison
+    [:div.p-4.ty-elevated.rounded-lg
+     [:h3.font-semibold.mb-3 "Value Format Examples"]
+     [:div.text-sm.space-y-3
+      [:div "Compare output formats for different modes:"]
+      [:div.space-y-2
+       [:div.flex.justify-between.items-center.py-1.px-2.ty-bg-neutral+.rounded
+        [:span.font-mono.text-xs "date-only"]
+        [:code.text-xs "2024-12-25"]]
+       [:div.flex.justify-between.items-center.py-1.px-2.ty-bg-neutral+.rounded
+        [:span.font-mono.text-xs "with-time"]
+        [:code.text-xs "2024-12-25T14:30"]]
+       [:div.flex.justify-between.items-center.py-1.px-2.ty-bg-neutral+.rounded
+        [:span.font-mono.text-xs "cleared"]
+        [:code.text-xs "\"\" (empty string)"]]]]
+     [:div.text-xs.mt-3.ty-text-
+      "💡 Server-side frameworks automatically parse these standard ISO formats"]]]])
+
 (defn localized-date-picker-demo []
   [:div.demo-section
    [:h2.demo-title "🌍 Localized Date Picker"]
@@ -1022,6 +1130,267 @@
   </ty-option>
 </ty-dropdown>")])
 
+(defn htmx-reactive-demo []
+  [:div.demo-section
+   [:h2.demo-title "🚀 HTMX & Reactive Integration"]
+   [:p.text-gray-600.dark:text-gray-400.mb-6
+    "Demonstrates the new reactive dropdown capabilities with HTMX form integration, property/attribute reactivity, and framework-ready behavior."]
+
+   ;; Form Integration Demo
+   (demo-row {:title "Form Integration & Serialization"
+              :description "Dropdowns with name attributes participate in form data serialization"
+              :children [[:div.max-w-2xl.w-full
+                          [:form.space-y-4.p-6.ty-elevated.rounded-lg
+                           [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+                            [:ty-dropdown {:name "category"
+                                           :label "Category"
+                                           :value "tech"
+                                           :required true
+                                           :style {:min-width "180px"}
+                                           :on {:change dropdown-event-handler}}
+                             [:option {:value "tech"} "Technology"]
+                             [:option {:value "design"} "Design"]
+                             [:option {:value "business"} "Business"]
+                             [:option {:value "marketing"} "Marketing"]]
+
+                            [:ty-dropdown {:name "priority"
+                                           :label "Priority"
+                                           :value "high"
+                                           :style {:min-width "150px"}
+                                           :on {:change dropdown-event-handler}}
+                             [:option {:value "low"} "Low"]
+                             [:option {:value "medium"} "Medium"]
+                             [:option {:value "high"} "High"]
+                             [:option {:value "critical"} "Critical"]]]
+
+                           [:button.ty-button.ty-button-primary {:type "button"
+                                                                 :on {:click #(let [form (.-target %)
+                                                                                    form (-> % .-target (.closest "form"))
+                                                                                    form-data (js/FormData. form)
+                                                                                    data (js/Object.fromEntries form-data)]
+                                                                                (js/console.log "Form Data:" data)
+                                                                                (js/alert (str "Form Data: " (js/JSON.stringify data nil 2))))}}
+                            "Test Form Serialization"]
+
+                           [:div.text-sm.ty-text-
+                            "Click the button to see form data in console and alert. The dropdowns automatically participate in form serialization with their " [:code.ty-content.px-1.py-0.5.rounded "name"] " attributes."]]]]})
+
+   (code-snippet "<!-- Form integration with name attributes -->
+<form>
+  <ty-dropdown name=\"category\" label=\"Category\" value=\"tech\" required>
+    <option value=\"tech\">Technology</option>
+    <option value=\"design\">Design</option>
+  </ty-dropdown>
+  
+  <ty-dropdown name=\"priority\" label=\"Priority\" value=\"high\">
+    <option value=\"low\">Low</option>
+    <option value=\"high\">High</option>
+  </ty-dropdown>
+  
+  <button type=\"submit\">Submit</button>
+</form>
+
+<script>
+// Form data automatically includes dropdown values:
+// { category: 'tech', priority: 'high' }
+</script>")
+
+   ;; Property/Attribute Reactivity Demo
+   (demo-row {:title "Property & Attribute Reactivity"
+              :description "External JavaScript can now set values and trigger reactive updates"
+              :children [[:div.max-w-2xl.w-full
+                          [:div.space-y-4
+                           [:div.p-6.ty-elevated.rounded-lg
+                            [:ty-dropdown {:id "reactive-dropdown"
+                                           :name "reactive-test"
+                                           :label "Reactive Test Dropdown"
+                                           :value "option1"
+                                           :style {:min-width "220px"}
+                                           :on {:change dropdown-event-handler}}
+                             [:option {:value "option1"} "Option 1"]
+                             [:option {:value "option2"} "Option 2"]
+                             [:option {:value "option3"} "Option 3"]
+                             [:option {:value "option4"} "Option 4"]
+                             [:option {:value "option5"} "Option 5"]]
+
+                            [:div.mt-4.text-sm.ty-text-
+                             "Current value: "
+                             [:code.ty-content.px-2.py-1.rounded.text-xs {:id "reactive-value-display"}
+                              "option1"]]]
+
+                           [:div.grid.grid-cols-2.md:grid-cols-4.gap-2
+                            [:button.ty-button.ty-button-sm {:on {:click #(let [dropdown (js/document.getElementById "reactive-dropdown")
+                                                                                display (js/document.getElementById "reactive-value-display")]
+                                                                            (set! (.-value dropdown) "option2")
+                                                                            (set! (.-textContent display) "option2")
+                                                                            (js/console.log "Set property: dropdown.value = 'option2'"))}}
+                             "Set Property"]
+                            [:button.ty-button.ty-button-sm {:on {:click #(let [dropdown (js/document.getElementById "reactive-dropdown")
+                                                                                display (js/document.getElementById "reactive-value-display")]
+                                                                            (.setAttribute dropdown "value" "option3")
+                                                                            (set! (.-textContent display) "option3")
+                                                                            (js/console.log "Set attribute: dropdown.setAttribute('value', 'option3')"))}}
+                             "Set Attribute"]
+                            [:button.ty-button.ty-button-sm {:on {:click #(let [dropdown (js/document.getElementById "reactive-dropdown")
+                                                                                display (js/document.getElementById "reactive-value-display")]
+                                                                            (set! (.-value dropdown) "option4")
+                                                                            (set! (.-textContent display) "option4")
+                                                                            (js/console.log "Property update: dropdown.value = 'option4'"))}}
+                             "Property Update"]
+                            [:button.ty-button.ty-button-sm {:on {:click #(let [dropdown (js/document.getElementById "reactive-dropdown")
+                                                                                display (js/document.getElementById "reactive-value-display")]
+                                                                            (.setAttribute dropdown "value" "option5")
+                                                                            (set! (.-textContent display) "option5")
+                                                                            (js/console.log "Attribute update: dropdown.setAttribute('value', 'option5')"))}}
+                             "Attr Update"]]
+
+                           [:div.p-4.ty-bg-info-.rounded-lg
+                            [:h4.font-semibold.ty-text-info.mb-2 "✨ Reactive Features"]
+                            [:ul.text-sm.ty-text-info.space-y-1
+                             [:li "🔄 " [:strong "Property Reactivity:"] " " [:code.ty-content.px-1.py-0.5.rounded.text-xs "dropdown.value = 'newValue'"]]
+                             [:li "📝 " [:strong "Attribute Reactivity:"] " " [:code.ty-content.px-1.py-0.5.rounded.text-xs "dropdown.setAttribute('value', 'newValue')"]]
+                             [:li "⚡ " [:strong "Smart Updates:"] " Only re-renders when value actually changes"]
+                             [:li "🎯 " [:strong "Framework Ready:"] " Works with React, Vue, Angular property binding"]
+                             [:li "📊 " [:strong "State Sync:"] " Internal state stays synchronized with DOM"]]]]]]})
+
+   (code-snippet "// Property reactivity (NEW!)
+const dropdown = document.querySelector('ty-dropdown');
+dropdown.value = 'newValue'; // ✅ Triggers state update & re-render
+
+// Attribute reactivity (NEW!)
+dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
+
+// Framework integration (NEW!)
+// React: <ty-dropdown value={dynamicValue} onChange={handler} />
+// Vue: <ty-dropdown :value=\"dynamicValue\" @change=\"handler\" />
+// Angular: <ty-dropdown [value]=\"dynamicValue\" (change)=\"handler($event)\" />")
+
+   ;; HTMX Integration Demo
+   (demo-row
+     {:title "HTMX Integration Simulation"
+      :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
+      :children [[:div.max-w-2xl.w-full
+                  [:div.space-y-4
+                   [:form.p-6.ty-elevated.rounded-lg
+                    {:on {:submit #(do
+                                     (.preventDefault %)
+                                     (let [form (.-target %)
+                                           form-data (js/FormData. form)
+                                           data (js/Object.fromEntries form-data)
+                                           result-div (js/document.getElementById "htmx-result")]
+                                       (set! (.-innerHTML result-div)
+                                             (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
+                                                  "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
+                                                  "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
+                                                  (js/JSON.stringify data nil 2)
+                                                  "</pre>"
+                                                  "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
+                                                  "</div>"))
+                                       (js/console.log "HTMX simulation - would POST to server:" data)))}}
+                    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+                     [:ty-dropdown {:name "department"
+                                    :label "Department"
+                                    :value "engineering"
+                                    :required true
+                                    :flavor "primary"
+                                    :style {:min-width "180px"}}
+                      [:option {:value "engineering"} "🔧 Engineering"]
+                      [:option {:value "design"} "🎨 Design"]
+                      [:option {:value "marketing"} "📢 Marketing"]
+                      [:option {:value "sales"} "💼 Sales"]
+                      [:option {:value "hr"} "👥 Human Resources"]]
+
+                     [:ty-dropdown {:name "role"
+                                    :label "Role"
+                                    :value "developer"
+                                    :required true
+                                    :flavor "secondary"
+                                    :style {:min-width "180px"}}
+                      [:option {:value "intern"} "👨‍💻 Intern"]
+                      [:option {:value "developer"} "⚡ Developer"]
+                      [:option {:value "senior"} "🚀 Senior Developer"]
+                      [:option {:value "lead"} "👑 Team Lead"]
+                      [:option {:value "manager"} "📊 Manager"]]]
+
+                    [:div.mt-6.flex.justify-center.grow
+                     [:ty-button {:type "submit"}
+                      "Submit Form (HTMX Simulation)"]]]
+
+                   [:div#htmx-result.mt-4]
+
+                   [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
+                    [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
+                    [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
+                     "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
+
+   (code-snippet "<!-- HTMX form integration -->
+<form hx-post=\"/api/form/submit\" hx-target=\"#result\">
+  <ty-dropdown name=\"category\" label=\"Category\" required>
+    <option value=\"tech\">Technology</option>
+    <option value=\"design\">Design</option>
+  </ty-dropdown>
+  
+  <ty-dropdown name=\"priority\" label=\"Priority\">
+    <option value=\"high\">High</option>
+    <option value=\"low\">Low</option>
+  </ty-dropdown>
+  
+  <button type=\"submit\">Submit</button>
+</form>
+
+<!-- Server automatically receives form data -->
+<!-- POST /api/form/submit -->
+<!-- Content-Type: application/x-www-form-urlencoded -->
+<!-- category=tech&priority=high -->")
+
+   ;; Framework Integration Demo
+   (demo-row {:title "Framework Integration Examples"
+              :description "Code examples showing how the reactive dropdown works with popular frameworks"
+              :children [[:div.w-full.space-y-6
+                          ;; React Example
+                          [:div.p-6.ty-elevated.rounded-lg
+                           [:h4.font-semibold.mb-3.flex.items-center.gap-2
+                            [:span.text-blue-500 "⚛️"] "React Integration"]
+                           [:pre.code-block.text-sm.overflow-x-auto
+                            "// React component with reactive ty-dropdown\nfunction MyComponent() {\n  const [category, setCategory] = useState('tech');\n  const [priority, setPriority] = useState('high');\n\n  return (\n    <form>\n      <ty-dropdown \n        value={category}\n        onChange={e => setCategory(e.detail.value)}\n        name=\"category\"\n        label=\"Category\"\n        required>\n        <option value=\"tech\">Technology</option>\n        <option value=\"design\">Design</option>\n      </ty-dropdown>\n      \n      <ty-dropdown \n        value={priority}\n        onChange={e => setPriority(e.detail.value)}\n        name=\"priority\"\n        label=\"Priority\">\n        <option value=\"high\">High</option>\n        <option value=\"low\">Low</option>\n      </ty-dropdown>\n    </form>\n  );\n}"]]
+
+                          ;; Vue Example  
+                          [:div.p-6.ty-elevated.rounded-lg
+                           [:h4.font-semibold.mb-3.flex.items-center.gap-2
+                            [:span.text-green-500 "🟢"] "Vue Integration"]
+                           [:pre.code-block.text-sm.overflow-x-auto
+                            "<!-- Vue component with reactive ty-dropdown -->\n<template>\n  <form>\n    <ty-dropdown \n      :value=\"category\"\n      @change=\"category = $event.detail.value\"\n      name=\"category\"\n      label=\"Category\"\n      required>\n      <option value=\"tech\">Technology</option>\n      <option value=\"design\">Design</option>\n    </ty-dropdown>\n    \n    <ty-dropdown \n      :value=\"priority\"\n      @change=\"priority = $event.detail.value\"\n      name=\"priority\"\n      label=\"Priority\">\n      <option value=\"high\">High</option>\n      <option value=\"low\">Low</option>\n    </ty-dropdown>\n  </form>\n</template>\n\n<script>\nexport default {\n  data() {\n    return {\n      category: 'tech',\n      priority: 'high'\n    }\n  }\n}\n</script>"]]
+
+                          ;; Angular Example
+                          [:div.p-6.ty-elevated.rounded-lg
+                           [:h4.font-semibold.mb-3.flex.items-center.gap-2
+                            [:span.text-red-500 "🅰️"] "Angular Integration"]
+                           [:pre.code-block.text-sm.overflow-x-auto
+                            "// Angular component with reactive ty-dropdown\n@Component({\n  selector: 'app-form',\n  template: `\n    <form>\n      <ty-dropdown \n        [value]=\"category\"\n        (change)=\"onCategoryChange($event)\"\n        name=\"category\"\n        label=\"Category\"\n        required>\n        <option value=\"tech\">Technology</option>\n        <option value=\"design\">Design</option>\n      </ty-dropdown>\n      \n      <ty-dropdown \n        [value]=\"priority\"\n        (change)=\"onPriorityChange($event)\"\n        name=\"priority\"\n        label=\"Priority\">\n        <option value=\"high\">High</option>\n        <option value=\"low\">Low</option>\n      </ty-dropdown>\n    </form>\n  `\n})\nexport class FormComponent {\n  category = 'tech';\n  priority = 'high';\n  \n  onCategoryChange(event: CustomEvent) {\n    this.category = event.detail.value;\n  }\n  \n  onPriorityChange(event: CustomEvent) {\n    this.priority = event.detail.value;\n  }\n}"]]]]})
+
+   ;; Benefits Summary
+   [:div.mt-8.p-6.ty-bg-success-.rounded-lg
+    [:h3.text-xl.font-semibold.mb-4.ty-text-success "🎯 Migration Benefits Summary"]
+    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
+     [:div
+      [:h4.font-semibold.mb-3.ty-text-success "✨ New Reactive Features"]
+      [:ul.text-sm.space-y-2.ty-text-success
+       [:li "🔄 Property & attribute reactivity"]
+       [:li "⚡ Smart re-rendering optimization"]
+       [:li "🎯 Framework integration ready"]
+       [:li "📝 Form data serialization"]
+       [:li "🌐 HTMX compatibility"]
+       [:li "🔄 External state management"]]]
+     [:div
+      [:h4.font-semibold.mb-3.ty-text-success "🏗️ Technical Improvements"]
+      [:ul.text-sm.space-y-2.ty-text-success
+       [:li "📦 Self-contained functions"]
+       [:li "🧠 Reactive state management"]
+       [:li "🎨 Consistent with other components"]
+       [:li "⚙️ Batched delta processing"]
+       [:li "🔧 Property/attribute sync"]
+       [:li "📊 Better developer experience"]]]]]])
+
 (defn event-debugging []
   [:div.demo-section
    [:h2.demo-title "Event Debugging"]
@@ -1049,7 +1418,6 @@
 </ty-dropdown>")])
 
 (defn view []
-  (println "rendering")
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2
@@ -1058,7 +1426,9 @@
      "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and rich content support. Use inline styles for custom sizing and flavor attributes for semantic styling."]]
 
    [:div.space-y-12
+    (htmx-reactive-demo)
     (date-picker-examples)
+    (date-picker-form-integration-demo)
     (localized-date-picker-demo)
     (basic-examples)
     (multiple-dropdowns-test)

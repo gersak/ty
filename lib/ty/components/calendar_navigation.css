@@ -11,7 +11,6 @@
   width: 100%;
   box-sizing: border-box;
   font-family: system-ui, sans-serif;
-  background: var(--ty-bg, white);
   border-radius: 0.5rem;
 }
 
@@ -68,18 +67,9 @@
 }
 
 .nav-btn:hover {
-  color: var(--ty-color-neutral-p2, #374151);
+  color: var(--ty-text-strong);
 }
 
-.nav-btn:active {
-  background: var(--ty-bg-neutral-p3, #e5e7eb);
-  transform: translateY(1px);
-}
-
-.nav-btn:focus {
-  outline: 2px solid var(--ty-color-unique, #3b82f6);
-  outline-offset: 2px;
-}
 
 /* Responsive adjustments - More compact */
 @media (max-width: 640px) {

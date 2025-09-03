@@ -511,14 +511,26 @@
                    :on {:click #(let [form (.getElementById js/document "form-test")
                                       form-data (js/FormData. form)
                                       results (.getElementById js/document "formdata-results")
-                                      entries (js/Array.from (.entries form-data))]
+                                      entries ^js (js/Array.from (.entries form-data))
+
+                                      ;; 🔍 DEBUGGING INFO with Console Logging
+                                      inputs ^js (.querySelectorAll js/document "ty-input")]
+
+                                  ;; Log everything to console first
+                                  (.log js/console "=== FormData Debug ===")
+                                  (.log js/console "Form found:" form)
+                                  (.log js/console "FormData entries:" entries)
+                                  (.log js/console "Found" (.-length inputs) "ty-input elements:")
+
                                   (set! (.-innerHTML results)
                                         (str "<strong>FormData contents:</strong><br>"
-                                             (.join (.map entries
-                                                          (fn [[name value]]
-                                                            (str name " = " value " (" (type value) ")")))
-                                                    "<br>"))))}}
-       "Extract FormData"]
+                                             (if (> (.-length entries) 0)
+                                               (.join (.map entries
+                                                            (fn [[name value]]
+                                                              (str name " = " value " (" (type value) ")")))
+                                                      "<br>")
+                                               "❌ NO FORMDATA ENTRIES FOUND"))))}}
+       "Extract FormData + Debug"]
 
       [:div#formdata-results.mt-4.p-3.rounded.font-mono.text-xs
        {:class [:ty-bg-neutral- :ty-text-]}

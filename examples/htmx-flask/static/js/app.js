@@ -1,8 +1,7 @@
 /**
  * Main Application JavaScript for Flask + HTMX + Ty Components Demo
  * 
- * This file contains application-specific JavaScript that works with
- * Ty components and HTMX interactions.
+ * Clean implementation using HTMX json-enc extension for reliable form serialization.
  */
 
 // Application initialization
@@ -22,96 +21,41 @@ document.addEventListener('DOMContentLoaded', function() {
 // Listen for icons ready event
 window.addEventListener('ty-icons-ready', function(event) {
     console.log('🎨 Icons loaded:', event.detail.count, 'icons ready');
-    
-    // Update any loading states or enable icon-dependent features
     document.body.classList.add('icons-ready');
 });
 
-// Enhanced HTMX integration with comprehensive debugging
-document.body.addEventListener('htmx:configRequest', function(event) {
-    console.log('🚀 HTMX Request Config:', {
-        url: event.detail.path,
-        verb: event.detail.verb,
-        headers: event.detail.headers,
-        parameters: event.detail.parameters,
-        element: event.detail.elt,
-        triggeringEvent: event.detail.triggeringEvent
-    });
-});
-
-document.body.addEventListener('htmx:beforeRequest', function(event) {
-    console.log('📤 HTMX Before Request:', {
-        url: event.detail.path,
-        method: event.detail.xhr?.method || 'GET',
-        requestConfig: event.detail.requestConfig,
-        element: event.detail.elt.tagName + (event.detail.elt.id ? '#' + event.detail.elt.id : ''),
-        formData: event.detail.elt.closest('form') ? new FormData(event.detail.elt.closest('form')) : null
-    });
-    
-    // Log form data for debugging
-    if (event.detail.elt.closest('form')) {
-        const formData = new FormData(event.detail.elt.closest('form'));
-        console.log('📋 Form Data:', Object.fromEntries(formData.entries()));
-    }
-});
-
-document.body.addEventListener('htmx:afterRequest', function(event) {
-    const xhr = event.detail.xhr;
-    console.log('📥 HTMX After Request:', {
-        url: xhr.responseURL || event.detail.pathInfo?.requestPath,
-        status: xhr.status,
-        statusText: xhr.statusText,
-        responseText: xhr.responseText?.substring(0, 200) + (xhr.responseText?.length > 200 ? '...' : ''),
-        successful: event.detail.successful,
-        failed: event.detail.failed,
-        headers: xhr.getAllResponseHeaders()
-    });
-});
-
+// HTMX error handling
 document.body.addEventListener('htmx:responseError', function(event) {
     const xhr = event.detail.xhr;
     console.error('❌ HTMX Response Error:', {
-        url: xhr.responseURL || event.detail.pathInfo?.requestPath,
         status: xhr.status,
-        statusText: xhr.statusText,
-        responseText: xhr.responseText,
-        element: event.detail.elt.tagName + (event.detail.elt.id ? '#' + event.detail.elt.id : ''),
-        headers: xhr.getAllResponseHeaders()
+        url: xhr.responseURL
     });
     
-    // Handle 400 validation errors - insert the response HTML into the target
-    if (xhr.status === 400 && xhr.responseText) {
-        const targetSelector = event.detail.elt.getAttribute('hx-target');
-        if (targetSelector) {
-            const targetElement = document.querySelector(targetSelector);
-            if (targetElement) {
-                targetElement.innerHTML = xhr.responseText;
-                console.log('✅ Inserted validation error HTML into target:', targetSelector);
-            } else {
-                console.error('❌ Target element not found:', targetSelector);
-            }
+    // Show generic error message for actual errors (5xx, network issues, etc.)
+    showErrorMessage('Request failed. Please try again.');
+});
+
+// Success response handling
+document.body.addEventListener('htmx:afterRequest', function(event) {
+    if (event.detail.successful && event.detail.xhr.status === 200) {
+        // Reset form on successful submission
+        const form = event.detail.elt.closest('form');
+        if (form && form.querySelector('ty-button[type="submit"]')) {
+            // Small delay to let user see the success message
+            setTimeout(() => {
+                form.reset();
+                // Clear any remaining feedback
+                form.querySelectorAll('[id$="-feedback"]').forEach(el => {
+                    el.innerHTML = '';
+                });
+            }, 2000);
         }
-    } else if (xhr.status !== 400) {
-        showErrorMessage('Request failed. Please try again.');
     }
-});
-
-document.body.addEventListener('htmx:timeout', function(event) {
-    console.warn('⏱️ HTMX Timeout:', event.detail.path);
-    showErrorMessage('Request timed out. Please check your connection.');
-});
-
-// Add debugging for successful responses
-document.body.addEventListener('htmx:load', function(event) {
-    console.log('✅ HTMX Content Loaded:', {
-        element: event.detail.elt,
-        xhr: event.detail.xhr?.status
-    });
 });
 
 // Utility functions
 function showErrorMessage(message, duration = 5000) {
-    // Create a simple error notification
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 ty-bg-danger-soft ty-text-danger-strong px-6 py-4 rounded-lg shadow-lg z-50 animate-slide-up';
     notification.innerHTML = `
@@ -126,7 +70,6 @@ function showErrorMessage(message, duration = 5000) {
     
     document.body.appendChild(notification);
     
-    // Auto remove after duration
     setTimeout(() => {
         if (notification.parentNode) {
             notification.style.animation = 'fadeOut 0.3s ease-out forwards';
@@ -136,7 +79,6 @@ function showErrorMessage(message, duration = 5000) {
 }
 
 function showSuccessMessage(message, duration = 3000) {
-    // Create a simple success notification
     const notification = document.createElement('div');
     notification.className = 'fixed top-4 right-4 ty-bg-success-soft ty-text-success-strong px-6 py-4 rounded-lg shadow-lg z-50 animate-slide-up';
     notification.innerHTML = `
@@ -151,7 +93,6 @@ function showSuccessMessage(message, duration = 3000) {
     
     document.body.appendChild(notification);
     
-    // Auto remove after duration
     setTimeout(() => {
         if (notification.parentNode) {
             notification.style.animation = 'fadeOut 0.3s ease-out forwards';
@@ -160,7 +101,7 @@ function showSuccessMessage(message, duration = 3000) {
     }, duration);
 }
 
-// Enhanced form handling
+// Form enhancements
 document.body.addEventListener('submit', function(event) {
     const form = event.target;
     if (!form.matches('form')) return;
@@ -170,93 +111,63 @@ document.body.addEventListener('submit', function(event) {
     submitButtons.forEach(button => {
         button.disabled = true;
         const originalText = button.textContent;
-        button.innerHTML = '<div class="spinner mr-2"></div>Submitting...';
+        button.innerHTML = '<ty-icon name="loader-2" class="animate-spin mr-2"></ty-icon>Submitting...';
         
-        // Reset after a delay (in case HTMX doesn't handle the response)
-        setTimeout(() => {
+        // Reset after response or timeout
+        const resetButton = () => {
             button.disabled = false;
             button.textContent = originalText;
-        }, 10000);
+        };
+        
+        // Listen for HTMX response
+        const responseHandler = () => {
+            resetButton();
+            document.body.removeEventListener('htmx:afterRequest', responseHandler);
+            document.body.removeEventListener('htmx:responseError', responseHandler);
+        };
+        
+        document.body.addEventListener('htmx:afterRequest', responseHandler);
+        document.body.addEventListener('htmx:responseError', responseHandler);
+        
+        // Fallback timeout
+        setTimeout(resetButton, 10000);
     });
 });
 
-// Form validation helpers
-function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-}
-
-function validateRequired(value) {
-    return value && value.trim().length > 0;
-}
-
-// Ty component event handlers
-document.body.addEventListener('input', function(event) {
-    if (event.target.matches('ty-input[type="email"]')) {
-        const input = event.target;
-        const email = input.value;
-        
-        if (email && !validateEmail(email)) {
-            input.classList.add('border-red-500');
-            showValidationError(input, 'Please enter a valid email address');
-        } else {
-            input.classList.remove('border-red-500');
-            clearValidationError(input);
-        }
-    }
-});
-
-function showValidationError(input, message) {
-    // Remove existing error
-    clearValidationError(input);
-    
-    // Add error message
-    const error = document.createElement('p');
-    error.className = 'validation-error text-sm ty-text-danger mt-1';
-    error.textContent = message;
-    
-    input.parentNode.appendChild(error);
-}
-
-function clearValidationError(input) {
-    const existing = input.parentNode.querySelector('.validation-error');
-    if (existing) {
-        existing.remove();
-    }
-}
-
-// Debug helpers (only in development)
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    window.debugTy = function() {
-        console.log('🔍 Ty Debug Info:');
-        console.log('- Components loaded:', typeof ty !== 'undefined');
-        console.log('- Icons available:', typeof ty !== 'undefined' && ty.icons ? 'Yes' : 'No');
-        
-        if (typeof ty !== 'undefined' && ty.icons) {
-            console.log('- Try: listTyIcons() to see all available icons');
-            console.log('- Try: checkTyIcon("home") to check a specific icon');
-        }
-        
-        // Count registered components
-        const tyComponents = document.querySelectorAll('[is^="ty-"], ty-');
-        console.log(`- Found ${tyComponents.length} Ty components on page`);
-        
-        return {
-            components: tyComponents.length,
-            iconsLoaded: typeof ty !== 'undefined' && !!ty.icons
-        };
-    };
-    
-    // Add debug info to console
-    setTimeout(() => {
-        console.log('🛠️ Development mode - type debugTy() for debug info');
-    }, 1000);
-}
-
-// Export useful functions globally
+// Export useful functions
 window.tyApp = {
     showError: showErrorMessage,
-    showSuccess: showSuccessMessage,
-    validateEmail,
-    validateRequired
+    showSuccess: showSuccessMessage
 };
+
+// Development helpers
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    window.testForm = function() {
+        console.log('🧪 Testing form data collection...');
+        
+        const form = document.querySelector('form[hx-ext="json-enc"]');
+        if (!form) {
+            console.error('❌ No JSON form found');
+            return;
+        }
+        
+        const formData = new FormData(form);
+        const jsonData = {};
+        
+        // Collect ty-component values
+        form.querySelectorAll('ty-input[name], ty-dropdown[name], ty-multiselect[name]').forEach(el => {
+            const name = el.getAttribute('name');
+            const value = el.value;
+            if (name && value !== null && value !== undefined) {
+                jsonData[name] = value;
+            }
+        });
+        
+        console.log('📋 Form data as JSON:', jsonData);
+        console.log('📋 Native FormData:', Object.fromEntries(formData));
+        
+        return jsonData;
+    };
+    
+    console.log('🛠️ Dev mode - try testForm() in console');
+}

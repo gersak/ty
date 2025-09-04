@@ -47,11 +47,8 @@
                   hx-target="#form-feedback"
                   hx-swap="innerHTML"
                   hx-trigger="submit"
-                  hx-on::response-error="
-                    if(event.detail.xhr.status === 400) {
-                        document.getElementById('form-feedback').innerHTML = event.detail.xhr.responseText;
-                    }
-                  "
+                  hx-ext="json-enc"
+                  hx-on:submit="event.preventDefault()"
                   class="space-y-6">
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -61,16 +58,7 @@
                             name="name" 
                             id="name"
                             placeholder="Enter your full name"
-                            required
-                            hx-post="/api/form/validate"
-                            hx-target="#name-feedback"
-                            hx-trigger="change, keyup changed delay:500ms"
-                            hx-include="closest form"
-                            hx-on::response-error="
-                                if(event.detail.xhr.status === 400) {
-                                    document.getElementById('name-feedback').innerHTML = event.detail.xhr.responseText;
-                                }
-                            ">
+                            required>
                         </ty-input>
                         <div id="name-feedback" class="min-h-5"></div>
                     </div>
@@ -82,16 +70,7 @@
                             id="email"
                             type="email"
                             placeholder="you@example.com"
-                            required
-                            hx-post="/api/form/validate"
-                            hx-target="#email-feedback"
-                            hx-trigger="change, keyup changed delay:500ms"
-                            hx-include="closest form"
-                            hx-on::response-error="
-                                if(event.detail.xhr.status === 400) {
-                                    document.getElementById('email-feedback').innerHTML = event.detail.xhr.responseText;
-                                }
-                            ">
+                            required>
                         </ty-input>
                         <div id="email-feedback" class="min-h-5"></div>
                     </div>
@@ -105,16 +84,7 @@
                         type="number"
                         placeholder="25"
                         min="13"
-                        max="120"
-                        hx-post="/api/form/validate"
-                        hx-target="#age-feedback"
-                        hx-trigger="change, keyup changed delay:500ms"
-                        hx-include="closest form"
-                        hx-on::response-error="
-                            if(event.detail.xhr.status === 400) {
-                                document.getElementById('age-feedback').innerHTML = event.detail.xhr.responseText;
-                            }
-                        ">
+                        max="120">
                     </ty-input>
                     <div id="age-feedback" class="min-h-5"></div>
                 </div>
@@ -133,26 +103,55 @@
                 <div class="space-y-2">
                     <label class="ty-text font-medium">Skills</label>
                     <ty-multiselect name="skills" placeholder="Select your skills">
-                        <ty-option value="javascript">JavaScript</ty-option>
-                        <ty-option value="python">Python</ty-option>
-                        <ty-option value="react">React</ty-option>
-                        <ty-option value="vue">Vue.js</ty-option>
-                        <ty-option value="angular">Angular</ty-option>
-                        <ty-option value="node">Node.js</ty-option>
-                        <ty-option value="docker">Docker</ty-option>
-                        <ty-option value="kubernetes">Kubernetes</ty-option>
-                        <ty-option value="aws">AWS</ty-option>
-                        <ty-option value="design">UI/UX Design</ty-option>
+                        <ty-tag value="javascript" pill size="sm">JavaScript</ty-tag>
+                        <ty-tag value="python" pill size="sm">Python</ty-tag>
+                        <ty-tag value="react" pill size="sm">React</ty-tag>
+                        <ty-tag value="vue" pill size="sm">Vue.js</ty-tag>
+                        <ty-tag value="angular" pill size="sm">Angular</ty-tag>
+                        <ty-tag value="node" pill size="sm">Node.js</ty-tag>
+                        <ty-tag value="docker" pill size="sm">Docker</ty-tag>
+                        <ty-tag value="kubernetes" pill size="sm">Kubernetes</ty-tag>
+                        <ty-tag value="aws" pill size="sm">AWS</ty-tag>
+                        <ty-tag value="design" pill size="sm">UI/UX Design</ty-tag>
                     </ty-multiselect>
                 </div>
 
                 <div class="flex justify-end space-x-3">
-                    <ty-button type="button" flavor="secondary" onclick="this.closest('form').reset()">
+                    <ty-button flavor="secondary" type="reset" onclick="this.closest('form').reset()">
                         Reset Form
                     </ty-button>
                     <ty-button type="submit" flavor="primary">
                         Validate & Submit
                     </ty-button>
+                </div>
+                
+                <!-- 🧪 ATTRIBUTE CHANGE TEST SECTION -->
+                <div class="mt-6 p-4 ty-bg-neutral-soft rounded-lg border-2 border-dashed ty-border">
+                    <h4 class="font-medium ty-text mb-3">🧪 Attribute Change Propagation Test</h4>
+                    <p class="text-sm ty-text-soft mb-4">
+                        Test if external attribute changes on ty-input components trigger the internal attribute change hooks.
+                        Open browser console (F12) to see hook execution logs.
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-2">
+                        <ty-button type="button" flavor="success" size="sm" onclick="fillAllInputs()">
+                            📝 Fill All Inputs
+                        </ty-button>
+                        <ty-button type="button" flavor="warning" size="sm" onclick="clearAllInputs()">
+                            🗑️ Clear All Inputs  
+                        </ty-button>
+                        <ty-button type="button" flavor="primary" size="sm" onclick="setSpecificValues()">
+                            🎯 Set Specific Values
+                        </ty-button>
+                        <ty-button type="button" flavor="info" size="sm" onclick="testPropertyVsAttribute()">
+                            ⚖️ Property vs Attribute
+                        </ty-button>
+                    </div>
+                    
+                    <div id="test-results" class="mt-4 p-3 ty-bg-neutral rounded text-sm font-mono ty-text-neutral-strong">
+                        <strong>Test Results:</strong><br>
+                        Click buttons above to test attribute change propagation. Check console for detailed logs.
+                    </div>
                 </div>
             </form>
 
@@ -426,6 +425,183 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('beforeunload', function() {
         localStorage.setItem('htmx-debug-enabled', htmxDebugEnabled.toString());
     });
+    
+    // 🔧 PREVENT FORM RESET AFTER HTMX VALIDATION
+    // Add event listeners to prevent form reset while keeping validation
+    document.body.addEventListener('htmx:beforeRequest', function(event) {
+        console.log('🔄 HTMX Before Request:', event.detail);
+        
+        // If this is our validation form, prevent default form behavior
+        if (event.detail.elt.matches('form[hx-post="/api/form/validate"]')) {
+            console.log('🛡️ Preventing form submission default behavior');
+            
+            // Store form values before request
+            const formEl = event.detail.elt;
+            const formData = new FormData(formEl);
+            const originalValues = {};
+            
+            // Capture current form values from ty-input components
+            formEl.querySelectorAll('ty-input[name]').forEach(input => {
+                originalValues[input.getAttribute('name')] = input.value;
+            });
+            
+            // Store for restoration if needed
+            formEl.tyOriginalValues = originalValues;
+            console.log('💾 Stored form values:', originalValues);
+        }
+    });
+    
+    document.body.addEventListener('htmx:afterSwap', function(event) {
+        console.log('✅ HTMX After Swap:', event.detail);
+        
+        // If this was our validation form, ensure values are preserved
+        if (event.detail.elt.matches('#form-feedback')) {
+            const formEl = event.detail.elt.closest('form') || 
+                          document.querySelector('form[hx-post="/api/form/validate"]');
+            
+            if (formEl && formEl.tyOriginalValues) {
+                console.log('🔄 Restoring form values after validation...');
+                
+                // Small delay to ensure HTMX processing is complete
+                setTimeout(() => {
+                    Object.entries(formEl.tyOriginalValues).forEach(([name, value]) => {
+                        const input = formEl.querySelector(`ty-input[name="${name}"]`);
+                        if (input && value) {
+                            console.log(`🔧 Restoring ${name} = "${value}"`);
+                            input.value = value;
+                            input.setAttribute('value', value);
+                        }
+                    });
+                    
+                    console.log('✅ Form values restored successfully');
+                }, 50);
+            }
+        }
+    });
+    
+    // Additional safety net - prevent any form resets
+    document.body.addEventListener('reset', function(event) {
+        if (event.target.matches('form[hx-post="/api/form/validate"]')) {
+            console.log('🚫 Blocking form reset on validation form');
+            event.preventDefault();
+            return false;
+        }
+    });
 });
+
+// 🧪 ATTRIBUTE CHANGE PROPAGATION TEST FUNCTIONS
+function logToTestResults(message) {
+    const results = document.getElementById('test-results');
+    const timestamp = new Date().toLocaleTimeString();
+    results.innerHTML += `<br>[${timestamp}] ${message}`;
+    console.log(`🧪 [ATTR TEST] ${message}`);
+}
+
+function fillAllInputs() {
+    console.log('🧪 === FILL ALL INPUTS TEST ===');
+    logToTestResults('🟢 Starting Fill All Inputs test...');
+    
+    const inputs = document.querySelectorAll('form ty-input[name]');
+    console.log(`Found ${inputs.length} ty-input elements`);
+    
+    const testData = {
+        'name': 'John Doe',
+        'email': 'john.doe@example.com', 
+        'age': '28'
+    };
+    
+    inputs.forEach((input, index) => {
+        const name = input.getAttribute('name');
+        const testValue = testData[name] || `Test Value ${index + 1}`;
+        
+        console.log(`Setting ${name} via setAttribute: "${testValue}"`);
+        logToTestResults(`Setting ${name} = "${testValue}"`);
+        
+        // Test setAttribute (should trigger attributeChangedCallback)
+        input.setAttribute('value', testValue);
+    });
+    
+    console.log('🧪 Fill All Inputs test completed - check console for hook logs');
+}
+
+function clearAllInputs() {
+    console.log('🧪 === CLEAR ALL INPUTS TEST ===');
+    logToTestResults('🟡 Starting Clear All Inputs test...');
+    
+    const inputs = document.querySelectorAll('form ty-input[name]');
+    console.log(`Found ${inputs.length} ty-input elements`);
+    
+    inputs.forEach(input => {
+        const name = input.getAttribute('name');
+        console.log(`Clearing ${name} via removeAttribute`);
+        logToTestResults(`Clearing ${name}`);
+        
+        // Test removeAttribute (should trigger attributeChangedCallback)  
+        input.removeAttribute('value');
+    });
+    
+    console.log('🧪 Clear All Inputs test completed - check console for hook logs');
+}
+
+function setSpecificValues() {
+    console.log('🧪 === SET SPECIFIC VALUES TEST ===');
+    logToTestResults('🔵 Starting Set Specific Values test...');
+    
+    const nameInput = document.querySelector('ty-input[name="name"]');
+    const emailInput = document.querySelector('ty-input[name="email"]');
+    const ageInput = document.querySelector('ty-input[name="age"]');
+    
+    if (nameInput) {
+        console.log('Setting name to "Alice Smith"');
+        logToTestResults('name = "Alice Smith"');
+        nameInput.setAttribute('value', 'Alice Smith');
+    }
+    
+    if (emailInput) {
+        console.log('Setting email to "alice@test.com"');
+        logToTestResults('email = "alice@test.com"');
+        emailInput.setAttribute('value', 'alice@test.com');
+    }
+    
+    if (ageInput) {
+        console.log('Setting age to "32"');
+        logToTestResults('age = "32"');
+        ageInput.setAttribute('value', '32');
+    }
+    
+    console.log('🧪 Set Specific Values test completed - check console for hook logs');
+}
+
+function testPropertyVsAttribute() {
+    console.log('🧪 === PROPERTY VS ATTRIBUTE TEST ===');
+    logToTestResults('⚖️ Starting Property vs Attribute test...');
+    
+    const nameInput = document.querySelector('ty-input[name="name"]');
+    if (!nameInput) {
+        logToTestResults('❌ Name input not found');
+        return;
+    }
+    
+    console.log('=== Testing Property Assignment ===');
+    logToTestResults('Testing property assignment...');
+    nameInput.value = 'Property Set Value';
+    console.log('Set via property: nameInput.value = "Property Set Value"');
+    
+    setTimeout(() => {
+        console.log('=== Testing Attribute Assignment ===');
+        logToTestResults('Testing attribute assignment...');
+        nameInput.setAttribute('value', 'Attribute Set Value');
+        console.log('Set via attribute: nameInput.setAttribute("value", "Attribute Set Value")');
+        
+        setTimeout(() => {
+            console.log('=== Current State Check ===');
+            console.log(`Property value: "${nameInput.value}"`);
+            console.log(`Attribute value: "${nameInput.getAttribute('value')}"`);
+            logToTestResults(`Property: "${nameInput.value}", Attribute: "${nameInput.getAttribute('value')}"`);
+            
+            console.log('🧪 Property vs Attribute test completed - check console for hook logs');
+        }, 100);
+    }, 100);
+}
 </script>
 {% endblock %}

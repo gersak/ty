@@ -129,62 +129,65 @@ def test_debug():
     print(f"Request method: {request.method}")
     print(f"Headers: {dict(request.headers)}")
     print("===========================")
-    
+
     return """
     <div class="ty-bg-success-soft p-3 rounded text-sm">
         <ty-icon name="check-circle" class="inline mr-1 ty-text-success"></ty-icon>
         <strong>Debug test successful!</strong> Check console for HTMX logs.
         <br><small class="ty-text-success-mild">Timestamp: {}</small>
     </div>
-    """.format(datetime.now().strftime('%H:%M:%S'))
+    """.format(datetime.now().strftime("%H:%M:%S"))
 
 
 @app.route("/api/form/validate", methods=["POST"])
 def validate_form():
-    """Server-side form validation with Ty components."""
-    # Debug logging - print received data
-    print("=== FORM VALIDATION DEBUG ===")
-    print(f"Request method: {request.method}")
+    """Server-side form validation with Ty components using JSON."""
+    # Simple debug logging
+    print("=== FORM VALIDATION (JSON) ===")
     print(f"Content-Type: {request.content_type}")
-    print(f"Form data: {dict(request.form)}")
-    print(f"Request data: {request.data}")
-    print(f"Request args: {dict(request.args)}")
-    print(f"Headers: {dict(request.headers)}")
     print(f"Is HTMX request: {'HX-Request' in request.headers}")
-    print("===========================")
+    
+    # Get data from JSON (when using hx-ext="json-enc") or form data (fallback)
+    if request.is_json:
+        data = request.get_json()
+        print(f"JSON data: {data}")
+    else:
+        data = request.form.to_dict()
+        print(f"Form data: {data}")
     
     errors = {}
 
     # Validate email
-    email = request.form.get("email", "")
+    email = data.get("email", "")
     if not email:
         errors["email"] = "Email is required"
     elif "@" not in email:
         errors["email"] = "Please enter a valid email address"
 
     # Validate name
-    name = request.form.get("name", "")
+    name = data.get("name", "")
     if not name or len(name.strip()) < 2:
         errors["name"] = "Name must be at least 2 characters"
 
     # Validate age
-    age = request.form.get("age", "")
-    if age and not age.isdigit():
-        errors["age"] = "Age must be a number"
-    elif age and (int(age) < 13 or int(age) > 120):
-        errors["age"] = "Age must be between 13 and 120"
+    age = data.get("age", "")
+    if age:
+        try:
+            age_num = int(age)
+            if age_num < 13 or age_num > 120:
+                errors["age"] = "Age must be between 13 and 120"
+        except ValueError:
+            errors["age"] = "Age must be a number"
+
+    # Handle role and skills (dropdown/multiselect data)
+    role = data.get("role", "")
+    skills = data.get("skills", "")
+    print(f"Role: {role}, Skills: {skills}")
 
     if errors:
         print(f"Validation errors: {errors}")
-        
-        # For HTMX requests, return 200 with error HTML (so HTMX processes it)
-        # For regular form submissions, return 400 (traditional behavior)
-        if 'HX-Request' in request.headers:
-            print("Returning validation errors with 200 status for HTMX")
-            return render_template("partials/form_errors.html", errors=errors), 200
-        else:
-            print("Returning validation errors with 400 status for regular form")
-            return render_template("partials/form_errors.html", errors=errors), 400
+        # Return 200 with error HTML so HTMX processes it normally
+        return render_template("partials/form_errors.html", errors=errors), 200
 
     # Success case
     print("Validation successful!")
@@ -193,6 +196,8 @@ def validate_form():
             "name": name,
             "email": email,
             "age": age,
+            "role": role,
+            "skills": skills,
             "timestamp": datetime.now().isoformat(),
         }
     )
@@ -354,39 +359,42 @@ def test_icons():
 def calendar_date_select():
     """Handle calendar page date selection with server response."""
     # Get date from the custom date-select event
-    date_value = request.form.get('date-value')  # timestamp
-    date_str = request.form.get('date')          # ISO date string
-    
+    date_value = request.form.get("date-value")  # timestamp
+    date_str = request.form.get("date")  # ISO date string
+
     if not date_str:
         return "<p class='ty-text-danger'>❌ No date received</p>"
-    
+
     try:
         # Parse the date
         from datetime import datetime
-        date_obj = datetime.fromisoformat(date_str.replace('Z', '+00:00'))
-        
+
+        date_obj = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+
         # Format for display
-        formatted_date = date_obj.strftime('%A, %B %d, %Y')
-        
+        formatted_date = date_obj.strftime("%A, %B %d, %Y")
+
         # Simulate some server processing
         import random
+
         processing_time = random.uniform(0.1, 0.5)
         import time
+
         time.sleep(processing_time)
-        
+
         # Generate response
-        day_name = date_obj.strftime('%A')
-        is_weekend = day_name in ['Saturday', 'Sunday']
-        
+        day_name = date_obj.strftime("%A")
+        is_weekend = day_name in ["Saturday", "Sunday"]
+
         response_html = f"""
         <div class="animate-fade-in space-y-3">
             <div class="flex items-center space-x-3">
                 <div class="w-3 h-3 rounded-full ty-bg-success"></div>
                 <span class="font-medium">Date Selected: {formatted_date}</span>
             </div>
-            <div class="ty-bg-{'warning' if is_weekend else 'info'}-soft rounded-lg p-3">
+            <div class="ty-bg-{"warning" if is_weekend else "info"}-soft rounded-lg p-3">
                 <p class="text-sm">
-                    {'🎉 Weekend day! Perfect for relaxation.' if is_weekend else '💼 Weekday - great for productivity!'}
+                    {"🎉 Weekend day! Perfect for relaxation." if is_weekend else "💼 Weekday - great for productivity!"}
                 </p>
                 <p class="text-xs ty-text-neutral-mild mt-1">
                     Server processed in {processing_time:.2f}s
@@ -394,9 +402,9 @@ def calendar_date_select():
             </div>
         </div>
         """
-        
+
         return response_html
-        
+
     except Exception as e:
         return f"<p class='ty-text-danger'>❌ Error processing date: {str(e)}</p>"
 

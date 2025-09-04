@@ -860,38 +860,38 @@
                      :on {:change dropdown-event-handler}}
        [:ty-option {:value "javascript"}
         [:div.flex.items-center.gap-3
-         [:div.w-6.h-6.rounded.bg-yellow-400.flex.items-center.justify-center.text-black.text-xs.font-bold "JS"]
+         [:div.w-6.h-6.rounded.bg-yellow-400.flex.items-center.justify-center.ty-text++.text-xs.font-bold "JS"]
          [:div
-          [:div.font-medium "JavaScript"]
-          [:div.text-sm.text-gray-500 "Dynamic scripting language"]]]]
+          [:div.font-medium.ty-text "JavaScript"]
+          [:div.text-sm.ty-text-- "Dynamic scripting language"]]]]
 
        [:ty-option {:value "typescript"}
         [:div.flex.items-center.gap-3
-         [:div.w-6.h-6.rounded.bg-blue-600.flex.items-center.justify-center.text-white.text-xs.font-bold "TS"]
+         [:div.w-6.h-6.rounded.bg-blue-600.flex.items-center.justify-center.ty-text++ "TS"]
          [:div
-          [:div.font-medium "TypeScript"]
-          [:div.text-sm.text-gray-500 "JavaScript with static typing"]]]]
+          [:div.font-medium.ty-text "TypeScript"]
+          [:div.text-sm.ty-text-- "JavaScript with static typing"]]]]
 
        [:ty-option {:value "clojure"}
         [:div.flex.items-center.gap-3
-         [:div.w-6.h-6.rounded.bg-green-600.flex.items-center.justify-center.text-white.text-xs.font-bold "λ"]
+         [:div.w-6.h-6.rounded.bg-green-600.flex.items-center.justify-center.ty-text++.text-xs.font-bold "λ"]
          [:div
-          [:div.font-medium "Clojure"]
-          [:div.text-sm.text-gray-500 "Functional Lisp for the JVM"]]]]
+          [:div.font-medium.ty-text "Clojure"]
+          [:div.text-sm.ty-text-- "Functional Lisp for the JVM"]]]]
 
        [:ty-option {:value "rust"}
         [:div.flex.items-center.gap-3
-         [:div.w-6.h-6.rounded.bg-orange-600.flex.items-center.justify-center.text-white.text-xs.font-bold "R"]
+         [:div.w-6.h-6.rounded.bg-orange-600.flex.items-center.justify-center.ty-text++.text-xs.font-bold "R"]
          [:div
-          [:div.font-medium "Rust"]
-          [:div.text-sm.text-gray-500 "Memory-safe systems programming"]]]]
+          [:div.font-medium.ty-text "Rust"]
+          [:div.text-sm.ty-text-- "Memory-safe systems programming"]]]]
 
        [:ty-option {:value "python"}
         [:div.flex.items-center.gap-3
-         [:div.w-6.h-6.rounded.bg-blue-500.flex.items-center.justify-center.text-white.text-xs.font-bold "Py"]
+         [:div.w-6.h-6.rounded.bg-blue-500.flex.items-center.justify-center.ty-text++.text-xs.font-bold "Py"]
          [:div
-          [:div.font-medium "Python"]
-          [:div.text-sm.text-gray-500 "Versatile high-level language"]]]]]]]
+          [:div.font-medium.ty-text "Python"]
+          [:div.text-sm.ty-text-- "Versatile high-level language"]]]]]]]
 
     ;; Team Members with Avatars and Status
     [:div
@@ -910,7 +910,7 @@
           [:div.absolute.-top-1.-right-1.w-3.h-3.bg-green-500.rounded-full.border-2.border-white]]
          [:div.flex-1.min-w-0
           [:div.font-medium "Alice Johnson"]
-          [:div.text-sm.text-gray-500 "Senior Developer"]]
+          [:div.text-sm.ty-text "Senior Developer"]]
          [:span.px-2.py-1.text-xs.bg-green-100.text-green-800.rounded-full.flex-shrink-0 "Online"]]]
 
        [:ty-option {:value "bob"}
@@ -920,7 +920,7 @@
           [:div.absolute.-top-1.-right-1.w-3.h-3.bg-yellow-500.rounded-full.border-2.border-white]]
          [:div.flex-1.min-w-0
           [:div.font-medium "Bob Smith"]
-          [:div.text-sm.text-gray-500 "Product Manager"]]
+          [:div.text-sm.ty-text "Product Manager"]]
          [:span.px-2.py-1.text-xs.bg-yellow-100.text-yellow-800.rounded-full.flex-shrink-0 "Away"]]]
 
        [:ty-option {:value "carol"}
@@ -930,7 +930,7 @@
           [:div.absolute.-top-1.-right-1.w-3.h-3.bg-gray-400.rounded-full.border-2.border-white]]
          [:div.flex-1.min-w-0
           [:div.font-medium "Carol Davis"]
-          [:div.text-sm.text-gray-500 "UX Designer"]]
+          [:div.text-sm.ty-text "UX Designer"]]
          [:span.px-2.py-1.text-xs.bg-gray-100.text-gray-800.rounded-full.flex-shrink-0 "Offline"]]]]]]
 
     ;; System Status with Indicators
@@ -948,7 +948,7 @@
          [:div.w-3.h-3.bg-green-500.rounded-full]
          [:div.flex-1
           [:div.font-medium "Production"]
-          [:div.text-sm.text-gray-500 "99.9% uptime • 1.2k users"]]
+          [:div.text-sm.ty-text "99.9% uptime • 1.2k users"]]
          [:span.px-2.py-1.text-xs.bg-green-100.text-green-800.rounded "Healthy"]]]
 
        [:ty-option {:value "staging"}
@@ -956,7 +956,7 @@
          [:div.w-3.h-3.bg-yellow-500.rounded-full]
          [:div.flex-1
           [:div.font-medium "Staging"]
-          [:div.text-sm.text-gray-500 "95.2% uptime • 12 users"]]
+          [:div.text-sm.ty-text "95.2% uptime • 12 users"]]
          [:span.px-2.py-1.text-xs.bg-yellow-100.text-yellow-800.rounded "Warning"]]]
 
        [:ty-option {:value "dev"}
@@ -964,7 +964,7 @@
          [:div.w-3.h-3.bg-red-500.rounded-full]
          [:div.flex-1
           [:div.font-medium "Development"]
-          [:div.text-sm.text-gray-500 "78.1% uptime • 3 users"]]
+          [:div.text-sm.ty-text "78.1% uptime • 3 users"]]
          [:span.px-2.py-1.text-xs.bg-red-100.text-red-800.rounded "Error"]]]]]]
 
     ;; Files with Icons and Metadata
@@ -983,7 +983,7 @@
           [:span.text-red-600.text-xs.font-bold "PDF"]]
          [:div.flex-1
           [:div.font-medium "Annual Report 2024.pdf"]
-          [:div.text-sm.text-gray-500 "2.4 MB • Modified 2 hours ago"]]]]
+          [:div.text-sm.ty-text "2.4 MB • Modified 2 hours ago"]]]]
 
        [:ty-option {:value "spreadsheet.xlsx"}
         [:div.flex.items-center.gap-3
@@ -991,7 +991,7 @@
           [:span.text-green-600.text-xs.font-bold "XLS"]]
          [:div.flex-1
           [:div.font-medium "Budget_Q4.xlsx"]
-          [:div.text-sm.text-gray-500 "856 KB • Modified yesterday"]]]]
+          [:div.text-sm.ty-text "856 KB • Modified yesterday"]]]]
 
        [:ty-option {:value "presentation.pptx"}
         [:div.flex.items-center.gap-3
@@ -999,7 +999,7 @@
           [:span.text-orange-600.text-xs.font-bold "PPT"]]
          [:div.flex-1
           [:div.font-medium "Project_Kickoff.pptx"]
-          [:div.text-sm.text-gray-500 "12.3 MB • Modified last week"]]]]]]]
+          [:div.text-sm.ty-text "12.3 MB • Modified last week"]]]]]]]
 
     ;; Benefits callout
     [:div {:class "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6"}
@@ -1018,7 +1018,7 @@
       <div class=\"w-6 h-6 rounded bg-yellow-400 flex items-center justify-center text-black text-xs font-bold\">JS</div>
       <div>
         <div class=\"font-medium\">JavaScript</div>
-        <div class=\"text-sm text-gray-500\">Dynamic scripting language</div>
+        <div class=\"text-sm ty-text\">Dynamic scripting language</div>
       </div>
     </div>
   </ty-option>
@@ -1095,21 +1095,21 @@
           [:span.text-blue-600.text-xl "⚛️"]]
          [:div
           [:div.font-medium.text-lg "React"]
-          [:div.text-sm.text-gray-500 "A JavaScript library for building user interfaces"]]]]
+          [:div.text-sm.ty-text "A JavaScript library for building user interfaces"]]]]
        [:ty-option {:value "vue"}
         [:div.flex.items-center.gap-4
          [:div.w-10.h-10.bg-green-100.rounded-lg.flex.items-center.justify-center
           [:span.text-green-600.text-xl "🟢"]]
          [:div
           [:div.font-medium.text-lg "Vue.js"]
-          [:div.text-sm.text-gray-500 "The progressive JavaScript framework"]]]]
+          [:div.text-sm.ty-text "The progressive JavaScript framework"]]]]
        [:ty-option {:value "svelte"}
         [:div.flex.items-center.gap-4
          [:div.w-10.h-10.bg-orange-100.rounded-lg.flex.items-center.justify-center
           [:span.text-orange-600.text-xl "🔥"]]
          [:div
           [:div.font-medium.text-lg "Svelte"]
-          [:div.text-sm.text-gray-500 "Cybernetically enhanced web apps"]]]]]]]]
+          [:div.text-sm.ty-text "Cybernetically enhanced web apps"]]]]]]]]
 
    (code-snippet "<!-- Custom sizing with inline styles -->
 <ty-dropdown placeholder=\"Compact...\" style=\"min-width: 160px; font-size: 0.875rem;\">
@@ -1124,7 +1124,7 @@
       </div>
       <div>
         <div class=\"font-medium text-lg\">React</div>
-        <div class=\"text-sm text-gray-500\">A JavaScript library for building user interfaces</div>
+        <div class=\"text-sm ty-text\">A JavaScript library for building user interfaces</div>
       </div>
     </div>
   </ty-option>

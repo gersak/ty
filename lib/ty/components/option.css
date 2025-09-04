@@ -4,7 +4,6 @@
   display: block;
   box-sizing: border-box;
   width: 100%;
-  padding: var(--ty-spacing-2) var(--ty-spacing-3);
 
   /* Ensure content is clickable */
   cursor: pointer;
@@ -18,6 +17,11 @@
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-sm);
   line-height: var(--ty-line-height-normal);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+}
+
+:host([cloned]) .option-content {
+  padding: 0px;
 }
 
 .option-content:hover {
@@ -40,8 +44,7 @@
   cursor: not-allowed;
 }
 
-.option-content[hidden] {
-}
+.option-content[hidden] {}
 
 /* Ensure nested elements inherit proper styling */
 .option-content * {

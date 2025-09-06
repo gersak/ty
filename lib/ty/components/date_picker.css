@@ -173,37 +173,63 @@
   color: var(--ty-input-border-focus);
 }
 
-/* Calendar dialog (replaces calendar-dropdown) */
+/* Calendar dialog (showModal positioning system) */
 .calendar-dialog {
-  position: absolute;
-  z-index: var(--ty-z-dropdown);
-  background-color: var(--ty-bg);
-  border: 1px solid var(--ty-color-neutral-soft);
-  border-radius: var(--ty-radius-lg);
-  padding: 0;
-  margin: 0;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
-  /* Natural width for calendar - no constraints */
-  width: auto;
+  position: fixed;
+  flex-direction: column;
   max-width: 90vw;
-  min-width: 320px;
-  /* Comfortable minimum for calendar */
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-sizing: border-box;
+  padding: var(--calendar-padding, 8px);
+
+  /* Hidden by default */
+  opacity: 0;
+  transition: opacity 200ms ease;
+
+  transform: translate(var(--calendar-offset-x, 0px), var(--calendar-offset-y, 0px));
+  top: -1000px;
+  left: -1000px;
+}
+
+/* Direction-based positioning with CSS classes */
+.calendar-dialog.position-below {
+  left: var(--calendar-x);
+  top: var(--calendar-y);
+}
+
+.calendar-dialog.position-above {
+  left: var(--calendar-x);
+  bottom: var(--calendar-y);
+  top: auto;
+  flex-direction: column-reverse;
+}
+
+.calendar-dialog.open {
+  opacity: 1;
 }
 
 .calendar-dialog::backdrop {
   display: none;
+}
+
+/* Calendar content container */
+.calendar-content {
+  background-color: var(--ty-bg);
+  border: 1px solid var(--ty-color-neutral-soft);
+  border-radius: var(--ty-radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-width: 320px;
+}
+
+/* Calendar container positioning */
+
+.calendar-dialog::backdrop {
+  display: none;
   /* We don't want the modal backdrop for dropdown-style dialogs */
-}
-
-/* Smart positioning classes */
-.calendar-dialog.position-below {
-  top: calc(100% + 0.25rem);
-  left: 0;
-}
-
-.calendar-dialog.position-above {
-  bottom: calc(100% + 0.25rem);
-  left: 0;
 }
 
 /* Responsive positioning */

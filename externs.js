@@ -51,7 +51,7 @@ hooks.formStateRestore;
  * Web Component internal properties that should be preserved
  * @constructor
  */
-function TyElement() {}
+function TyElement() { }
 
 // Internal state properties used by ty components
 TyElement.prototype._hooks;
@@ -77,6 +77,50 @@ TyElement.prototype.value;
 TyElement.prototype.shadowValue;
 TyElement.prototype.formattedValue;
 TyElement.prototype.selected;
+
+/**
+ * HTML Dialog Element and Modal API
+ * @constructor
+ * @extends {HTMLElement}
+ */
+var HTMLDialogElement = function() { };
+
+/**
+ * Shows the dialog as a modal
+ * @return {undefined}
+ */
+HTMLDialogElement.prototype.showModal = function() { };
+
+/**
+ * Shows the dialog non-modally
+ * @return {undefined}
+ */
+HTMLDialogElement.prototype.show = function() { };
+
+/**
+ * Closes the dialog
+ * @param {string=} returnValue
+ * @return {undefined}
+ */
+HTMLDialogElement.prototype.close = function(returnValue) { };
+
+/**
+ * Whether the dialog is open
+ * @type {boolean}
+ */
+HTMLDialogElement.prototype.open;
+
+/**
+ * The return value of the dialog
+ * @type {string}
+ */
+HTMLDialogElement.prototype.returnValue;
+
+/**
+ * Event fired when dialog closes
+ * @type {Function}
+ */
+HTMLDialogElement.prototype.onclose;
 
 /**
  * Properties that should be preserved on regular JavaScript objects

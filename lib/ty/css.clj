@@ -50,14 +50,18 @@
                                           :namespace current-ns}))))]
      `(defonce ~name
         ;; At runtime, create CSSStyleSheet if supported, otherwise return string
-        (if (~'exists? js/CSSStyleSheet)
-          (let [sheet# (js/CSSStyleSheet.)]
-            (try
-              (.replaceSync sheet# ~css-content)
-              sheet#
-              (catch js/Error e#
-                ;; If CSS parsing fails, fall back to string
-                (js/console.warn "Failed to create CSSStyleSheet:" e#)
-                ~css-content)))
-          ;; Fallback for browsers without Constructable Stylesheets
-          ~css-content)))))
+        (let [sheet# (js/CSSStyleSheet.)]
+          (.replaceSync sheet# ~css-content)
+          sheet#)
+        #_(let [content ~css-content]
+            (if (~'exists? js/CSSStyleSheet)
+              (let [sheet# (js/CSSStyleSheet.)]
+                (try
+                  (.replaceSync sheet# content#)
+                  sheet#
+                  (catch js/Error e#
+                  ;; If CSS parsing fails, fall back to string
+                    (js/console.warn "Failed to create CSSStyleSheet:" e#)
+                    content#)))
+            ;; Fallback for browsers without Constructable Stylesheets
+              content#))))))

@@ -240,7 +240,7 @@
 }
 
 .dropdown-dialog::backdrop {
-  display: none;
+  background: transparent;
 }
 
 /* ===== DIALOG HEADER ===== */

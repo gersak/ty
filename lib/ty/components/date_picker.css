@@ -212,7 +212,7 @@
 }
 
 .calendar-dialog::backdrop {
-  display: none;
+  background: transparent
 }
 
 /* Calendar content container */
@@ -226,11 +226,6 @@
 }
 
 /* Calendar container positioning */
-
-.calendar-dialog::backdrop {
-  display: none;
-  /* We don't want the modal backdrop for dropdown-style dialogs */
-}
 
 /* Responsive positioning */
 @media (max-width: 640px) {

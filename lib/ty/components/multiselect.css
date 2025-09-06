@@ -61,7 +61,7 @@
 }
 
 .dropdown-dialog::backdrop {
-  display: none;
+  background: transparent;
 }
 
 /* ===== DIALOG HEADER ===== */
@@ -226,13 +226,13 @@
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  
+
   /* Animation properties */
   transform: translateY(-8px) scale(0.95);
-  transition: 
+  transition:
     opacity 200ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
-  
+
   /* Multiselect-specific: flex wrap for tags */
   display: flex;
   flex-wrap: wrap;

@@ -307,13 +307,13 @@ html {
   --ty-z-30: 30;
   --ty-z-40: 40;
   --ty-z-50: 50;
-  --ty-z-dropdown: 1000;
   --ty-z-sticky: 1020;
   --ty-z-fixed: 1030;
   --ty-z-modal-backdrop: 1040;
   --ty-z-modal: 1050;
   --ty-z-popover: 1060;
   --ty-z-tooltip: 1070;
+  --ty-z-dropdown: 1080;
 }
 
 /* =================================================================

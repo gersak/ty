@@ -135,25 +135,11 @@ html {
      SURFACE SYSTEM
      ================================================================= */
 
-  /* App and page backgrounds - the canvas for everything */
   --ty-surface-canvas: #ebebeb;
-  /* Light gray canvas, optimal for light theme */
-
-  /* Main content areas - primary content background */
   --ty-surface-content: #f4f4f4;
-  /* Pure white for clean content areas */
-
-  /* Elevated surfaces - cards, panels, components */
   --ty-surface-elevated: #ffffff;
-  /* White elevated surfaces with shadow for definition */
-
-  /* Floating surfaces - modals, dropdowns, tooltips */
   --ty-surface-floating: #ffffff;
-  /* White floating surfaces, rely on shadow for elevation */
-
-  /* Input surfaces - form controls */
   --ty-surface-input: #ffffff;
-  /* Clean white inputs matching content */
 
   /* =================================================================
      TEXT HIERARCHY
@@ -228,31 +214,31 @@ html {
   /* Spacing Scale */
   --ty-spacing-0: 0;
   --ty-spacing-px: 1px;
-  --ty-spacing-mini: 0.125rem; /* 2px */
-  --ty-spacing-1: 0.25rem;     /* 4px */
-  --ty-spacing-2: 0.5rem;      /* 8px */
-  --ty-spacing-3: 0.75rem;     /* 12px */
-  --ty-spacing-4: 1rem;        /* 16px */
-  --ty-spacing-5: 1.25rem;     /* 20px */
-  --ty-spacing-6: 1.5rem;      /* 24px */
-  --ty-spacing-7: 1.75rem;     /* 28px */
-  --ty-spacing-8: 2rem;        /* 32px */
-  --ty-spacing-9: 2.25rem;     /* 36px */
-  --ty-spacing-10: 2.5rem;     /* 40px */
-  --ty-spacing-12: 3rem;       /* 48px */
-  --ty-spacing-16: 4rem;       /* 64px */
-  --ty-spacing-20: 5rem;       /* 80px */
-  --ty-spacing-24: 6rem;       /* 96px */
+  --ty-spacing-mini: 0.125rem;
+  --ty-spacing-1: 0.25rem;
+  --ty-spacing-2: 0.5rem;
+  --ty-spacing-3: 0.75rem;
+  --ty-spacing-4: 1rem;
+  --ty-spacing-5: 1.25rem;
+  --ty-spacing-6: 1.5rem;
+  --ty-spacing-7: 1.75rem;
+  --ty-spacing-8: 2rem;
+  --ty-spacing-9: 2.25rem;
+  --ty-spacing-10: 2.5rem;
+  --ty-spacing-12: 3rem;
+  --ty-spacing-16: 4rem;
+  --ty-spacing-20: 5rem;
+  --ty-spacing-24: 6rem;
 
   /* Border Radius */
   --ty-radius-none: 0;
-  --ty-radius-sm: 0.125rem;    /* 2px */
-  --ty-radius-base: 0.25rem;   /* 4px */
-  --ty-radius-md: 0.375rem;    /* 6px */
-  --ty-radius-lg: 0.5rem;      /* 8px */
-  --ty-radius-xl: 0.75rem;     /* 12px */
-  --ty-radius-2xl: 1rem;       /* 16px */
-  --ty-radius-3xl: 1.5rem;     /* 24px */
+  --ty-radius-sm: 0.125rem;
+  --ty-radius-base: 0.25rem;
+  --ty-radius-md: 0.375rem;
+  --ty-radius-lg: 0.5rem;
+  --ty-radius-xl: 0.75rem;
+  --ty-radius-2xl: 1rem;
+  --ty-radius-3xl: 1.5rem;
   --ty-radius-full: 9999px;
 
   /* Shadows */
@@ -268,16 +254,16 @@ html {
   --ty-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --ty-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
 
-  --ty-font-xxs: 0.625rem;     /* 10px */
-  --ty-font-xs: 0.75rem;       /* 12px */
-  --ty-font-sm: 0.875rem;      /* 14px */
-  --ty-font-base: 1rem;        /* 16px */
-  --ty-font-lg: 1.125rem;      /* 18px */
-  --ty-font-xl: 1.25rem;       /* 20px */
-  --ty-font-2xl: 1.5rem;       /* 24px */
-  --ty-font-3xl: 1.875rem;     /* 30px */
-  --ty-font-4xl: 2.25rem;      /* 36px */
-  --ty-font-5xl: 3rem;         /* 48px */
+  --ty-font-xxs: 0.625rem;
+  --ty-font-xs: 0.75rem;
+  --ty-font-sm: 0.875rem;
+  --ty-font-base: 1rem;
+  --ty-font-lg: 1.125rem;
+  --ty-font-xl: 1.25rem;
+  --ty-font-2xl: 1.5rem;
+  --ty-font-3xl: 1.875rem;
+  --ty-font-4xl: 2.25rem;
+  --ty-font-5xl: 3rem;
 
   --ty-font-thin: 100;
   --ty-font-light: 300;
@@ -302,11 +288,16 @@ html {
   --ty-transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Component Sizes */
-  --ty-size-xs: 1.5rem;        /* 24px */
-  --ty-size-sm: 2rem;          /* 32px */
-  --ty-size-md: 2.5rem;        /* 40px */
-  --ty-size-lg: 3rem;          /* 48px */
-  --ty-size-xl: 3.5rem;        /* 56px */
+  --ty-size-xs: 1.5rem;
+  /* 24px */
+  --ty-size-sm: 2rem;
+  /* 32px */
+  --ty-size-md: 2.5rem;
+  /* 40px */
+  --ty-size-lg: 3rem;
+  /* 48px */
+  --ty-size-xl: 3.5rem;
+  /* 56px */
 
   /* Z-Index Scale */
   --ty-z-auto: auto;
@@ -379,11 +370,11 @@ html[data-theme="dark"] {
   --ty-color-neutral-faint: #4b5563;
 
   /* Backgrounds for dark mode */
-  --ty-bg-faint: #0f1419;      /* Near black - minimal backgrounds */
-  --ty-bg-soft: #111827;       /* Very dark canvas - app backgrounds */
-  --ty-bg: #1f2937;            /* Dark gray - primary content baseline */
-  --ty-bg-mild: #374151;       /* Medium gray - card elevation */
-  --ty-bg-strong: #6b7280;     /* Light gray - maximum contrast */
+  --ty-bg-faint: #0f1419;
+  --ty-bg-soft: #111827;
+  --ty-bg: #1f2937;
+  --ty-bg-mild: #374151;
+  --ty-bg-strong: #6b7280;
 
   /* Semantic backgrounds - much darker in dark mode */
   --ty-bg-primary-mild: #43517a;
@@ -417,19 +408,17 @@ html[data-theme="dark"] {
   --ty-border-soft: #1f2937;
   --ty-border-faint: #030712;
 
-  /* Surface system for dark mode */
-  --ty-surface-canvas: black;      /* Very dark app canvas */
-  --ty-surface-content: #1a1a1a;   /* Dark content areas */
-  --ty-surface-elevated: #282828;  /* Medium gray for elevation */
-  --ty-surface-floating: #343434;  /* Light gray for maximum elevation */
-  --ty-surface-input: #1f2937;     /* Dark form controls */
+  --ty-surface-canvas: black;
+  --ty-surface-content: #1a1a1a;
+  --ty-surface-elevated: #282828;
+  --ty-surface-floating: #343434;
+  --ty-surface-input: #1f2937;
 
-  /* Text hierarchy - inverted for dark theme */
-  --ty-text: #f9fafb;          /* Primary text - highest contrast on dark */
-  --ty-text-mild: #ffffff;     /* Maximum emphasis - pure white */
-  --ty-text-strong: #ffffff;   /* Maximum emphasis - pure white */
-  --ty-text-soft: #d1d5db;     /* Less emphasis - light gray */
-  --ty-text-faint: #6b7280;    /* Minimum emphasis - dark gray */
+  --ty-text-mild: #f9fafb;
+  --ty-text-strong: #ffffff;
+  --ty-text: #d6d6d6;
+  --ty-text-soft: #7f8590;
+  --ty-text-faint: #555a63;
 
   /* Shadows need to be darker/more prominent in dark mode */
   --ty-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);

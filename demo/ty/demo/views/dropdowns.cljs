@@ -157,9 +157,9 @@
                            [:code.ty-content.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                                (js/Date. date-val)
-                                (::dropdown-value @state/state "en")
-                                {:dateStyle "full"})
+                               (js/Date. date-val)
+                               (::dropdown-value @state/state "en")
+                               {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -1267,61 +1267,61 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
 
    ;; HTMX Integration Demo
    (demo-row
-     {:title "HTMX Integration Simulation"
-      :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
-      :children [[:div.max-w-2xl.w-full
-                  [:div.space-y-4
-                   [:form.p-6.ty-elevated.rounded-lg
-                    {:on {:submit #(do
-                                     (.preventDefault %)
-                                     (let [form (.-target %)
-                                           form-data (js/FormData. form)
-                                           data (js/Object.fromEntries form-data)
-                                           result-div (js/document.getElementById "htmx-result")]
-                                       (set! (.-innerHTML result-div)
-                                             (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
-                                                  "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
-                                                  "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
-                                                  (js/JSON.stringify data nil 2)
-                                                  "</pre>"
-                                                  "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
-                                                  "</div>"))
-                                       (js/console.log "HTMX simulation - would POST to server:" data)))}}
-                    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-                     [:ty-dropdown {:name "department"
-                                    :label "Department"
-                                    :value "engineering"
-                                    :required true
-                                    :flavor "primary"
-                                    :style {:min-width "180px"}}
-                      [:option {:value "engineering"} "🔧 Engineering"]
-                      [:option {:value "design"} "🎨 Design"]
-                      [:option {:value "marketing"} "📢 Marketing"]
-                      [:option {:value "sales"} "💼 Sales"]
-                      [:option {:value "hr"} "👥 Human Resources"]]
+    {:title "HTMX Integration Simulation"
+     :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
+     :children [[:div.max-w-2xl.w-full
+                 [:div.space-y-4
+                  [:form.p-6.ty-elevated.rounded-lg
+                   {:on {:submit #(do
+                                    (.preventDefault %)
+                                    (let [form (.-target %)
+                                          form-data (js/FormData. form)
+                                          data (js/Object.fromEntries form-data)
+                                          result-div (js/document.getElementById "htmx-result")]
+                                      (set! (.-innerHTML result-div)
+                                            (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
+                                                 "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
+                                                 "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
+                                                 (js/JSON.stringify data nil 2)
+                                                 "</pre>"
+                                                 "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
+                                                 "</div>"))
+                                      (js/console.log "HTMX simulation - would POST to server:" data)))}}
+                   [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+                    [:ty-dropdown {:name "department"
+                                   :label "Department"
+                                   :value "engineering"
+                                   :required true
+                                   :flavor "primary"
+                                   :style {:min-width "180px"}}
+                     [:option {:value "engineering"} "🔧 Engineering"]
+                     [:option {:value "design"} "🎨 Design"]
+                     [:option {:value "marketing"} "📢 Marketing"]
+                     [:option {:value "sales"} "💼 Sales"]
+                     [:option {:value "hr"} "👥 Human Resources"]]
 
-                     [:ty-dropdown {:name "role"
-                                    :label "Role"
-                                    :value "developer"
-                                    :required true
-                                    :flavor "secondary"
-                                    :style {:min-width "180px"}}
-                      [:option {:value "intern"} "👨‍💻 Intern"]
-                      [:option {:value "developer"} "⚡ Developer"]
-                      [:option {:value "senior"} "🚀 Senior Developer"]
-                      [:option {:value "lead"} "👑 Team Lead"]
-                      [:option {:value "manager"} "📊 Manager"]]]
+                    [:ty-dropdown {:name "role"
+                                   :label "Role"
+                                   :value "developer"
+                                   :required true
+                                   :flavor "secondary"
+                                   :style {:min-width "180px"}}
+                     [:option {:value "intern"} "👨‍💻 Intern"]
+                     [:option {:value "developer"} "⚡ Developer"]
+                     [:option {:value "senior"} "🚀 Senior Developer"]
+                     [:option {:value "lead"} "👑 Team Lead"]
+                     [:option {:value "manager"} "📊 Manager"]]]
 
-                    [:div.mt-6.flex.justify-center.grow
-                     [:ty-button {:type "submit"}
-                      "Submit Form (HTMX Simulation)"]]]
+                   [:div.mt-6.flex.justify-center.grow
+                    [:ty-button {:type "submit"}
+                     "Submit Form (HTMX Simulation)"]]]
 
-                   [:div#htmx-result.mt-4]
+                  [:div#htmx-result.mt-4]
 
-                   [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
-                    [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
-                    [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
-                     "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
+                  [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
+                   [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
+                   [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
+                    "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
 
    (code-snippet "<!-- HTMX form integration -->
 <form hx-post=\"/api/form/submit\" hx-target=\"#result\">
@@ -1417,6 +1417,238 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
   <option value=\"event1\">Event Test 1</option>
 </ty-dropdown>")])
 
+(defn showmodal-z-index-tests
+  "Test dropdowns in challenging CSS environments that would break fixed positioning"
+  []
+  [:div.demo-section.mb-12
+   [:h2.demo-title.text-xl.font-semibold.mb-4.text-blue-600 "🚀 showModal() Z-Index Resistance Tests"]
+   [:p.text-gray-600.mb-6
+    "These tests verify the dropdown works in CSS environments that create stacking contexts and would break traditional fixed positioning."]
+
+   ;; Transform context test
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "1. Transform Context (scale + rotate)"]
+    [:p.text-sm.text-gray-500.mb-3 "Dropdown inside element with CSS transforms - would break fixed positioning"]
+    [:div {:style {:transform "scale(0.9) rotate(1deg)"
+                   :background "linear-gradient(45deg, #f0f9ff, #ecfeff)"
+                   :padding "1.5rem"
+                   :border-radius "12px"
+                   :border "2px solid #0ea5e9"}}
+     [:ty-dropdown
+      {:placeholder "Select inside transform context"
+       :style {:width "250px"}}
+      [:option {:value "transform-1"} "Transform Test Option 1"]
+      [:option {:value "transform-2"} "Transform Test Option 2"]
+      [:option {:value "transform-3"} "Transform Test Option 3"]
+      [:option {:value "transform-4"} "Should appear above everything ✨"]]]]
+
+   ;; Overflow hidden test
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "2. Overflow Hidden Container"]
+    [:p.text-sm.text-gray-500.mb-3 "Dropdown inside container with overflow: hidden - would be clipped"]
+    [:div {:style {:overflow "hidden"
+                   :height "120px"
+                   :background "#fef3c7"
+                   :padding "1rem"
+                   :border-radius "8px"
+                   :border "2px solid #f59e0b"}}
+     [:ty-dropdown
+      {:placeholder "Select in overflow:hidden"
+       :style {:width "220px"}}
+      [:option {:value "overflow-1"} "Overflow Test 1"]
+      [:option {:value "overflow-2"} "Overflow Test 2"]
+      [:option {:value "overflow-3"} "Should not be clipped! 🎯"]]]]
+
+   ;; High z-index competition
+   [:div.test-scenario.mb-8.relative
+    [:h3.font-semibold.mb-3 "3. High Z-Index Competition"]
+    [:p.text-sm.text-gray-500.mb-3 "Multiple elements with high z-index values competing"]
+    [:div.relative
+     ;; High z-index competitor
+     [:div {:style {:position "absolute"
+                    :top "40px"
+                    :left "200px"
+                    :width "100px"
+                    :height "50px"
+                    :background "#dc2626"
+                    :color "white"
+                    :z-index "9999"
+                    :padding "0.5rem"
+                    :border-radius "4px"
+                    :font-size "12px"
+                    :line-height "1.2"}}
+      "z-index: 9999"]
+     [:ty-dropdown
+      {:placeholder "Dropdown vs z-index 9999"
+       :style {:width "200px"}}
+      [:option {:value "zindex-1"} "Z-Index Test 1"]
+      [:option {:value "zindex-2"} "Z-Index Test 2"]
+      [:option {:value "zindex-3"} "Top layer wins! 🏆"]]]]
+
+   ;; Multiple stacking contexts
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "4. Complex Stacking Context"]
+    [:p.text-sm.text-gray-500.mb-3 "Nested elements with filter, opacity, and perspective"]
+    [:div {:style {:filter "drop-shadow(4px 4px 8px rgba(0,0,0,0.1))"
+                   :opacity "0.95"
+                   :perspective "1000px"}}
+     [:div {:style {:background "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                    :padding "1.5rem"
+                    :border-radius "12px"
+                    :transform "rotateX(5deg)"}}
+      [:ty-dropdown
+       {:placeholder "Complex context dropdown"
+        :style {:width "240px"}}
+       [:option {:value "complex-1"} "Complex Context 1"]
+       [:option {:value "complex-2"} "Complex Context 2"]
+       [:option {:value "complex-3"} "Pierces all contexts! ⚡"]]]]]])
+
+(defn scroll-to-close-tests
+  "Test the scroll-to-close functionality"
+  []
+  [:div.demo-section.mb-12
+   [:h2.demo-title.text-xl.font-semibold.mb-4.text-green-600 "📜 Scroll-to-Close Behavior Tests"]
+   [:p.text-gray-600.mb-6
+    "Open the dropdowns below, then scroll the page or containers. Dropdowns should close automatically when scrolling outside them."]
+
+   ;; Page scroll test
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "1. Page Scroll Detection"]
+    [:p.text-sm.text-gray-500.mb-3 "Open dropdown, then scroll the page. Should close automatically."]
+    [:ty-dropdown
+     {:placeholder "Open me, then scroll page"
+      :style {:width "250px"}}
+     [:option {:value "scroll-1"} "Page Scroll Test 1"]
+     [:option {:value "scroll-2"} "Page Scroll Test 2"]
+     [:option {:value "scroll-3"} "Closes on scroll 🔄"]]]
+
+   ;; Container scroll test
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "2. Container Scroll Detection"]
+    [:p.text-sm.text-gray-500.mb-3 "Open dropdown inside scrollable container"]
+    [:div {:style {:height "200px"
+                   :overflow-y "auto"
+                   :background "#f8fafc"
+                   :padding "1rem"
+                   :border "1px solid #e2e8f0"
+                   :border-radius "8px"}}
+     [:div {:style {:height "400px"}}
+      [:ty-dropdown
+       {:placeholder "Scroll container to test"
+        :style {:width "220px"}}
+       [:option {:value "container-1"} "Container Scroll 1"]
+       [:option {:value "container-2"} "Container Scroll 2"]
+       [:option {:value "container-3"} "Detects container scroll 📦"]]
+      [:div.mt-8.p-4.bg-blue-50.rounded
+       "Scroll this container after opening the dropdown above"]
+      [:div.mt-4.p-4.bg-green-50.rounded
+       "The dropdown should close when you scroll this container"]]]]])
+
+(defn backdrop-escape-tests
+  "Test native modal backdrop clicks and ESC key behavior"
+  []
+  [:div.demo-section.mb-12
+   [:h2.demo-title.text-xl.font-semibold.mb-4.text-purple-600 "🎭 Backdrop & ESC Key Tests"]
+   [:p.text-gray-600.mb-6
+    "Test the native modal behavior: click outside the dropdown or press ESC to close."]
+
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "1. Click Backdrop to Close"]
+    [:p.text-sm.text-gray-500.mb-3 "Open dropdown, then click anywhere outside. Should close immediately."]
+    [:div.flex.gap-4.items-center
+     [:ty-dropdown
+      {:placeholder "Click outside to close"
+       :style {:width "200px"}}
+      [:option {:value "backdrop-1"} "Backdrop Test 1"]
+      [:option {:value "backdrop-2"} "Backdrop Test 2"]
+      [:option {:value "backdrop-3"} "Click anywhere! 👆"]]
+     [:div.p-4.bg-yellow-50.rounded.border-2.border-dashed.border-yellow-300
+      "Click this area"]]]
+
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "2. ESC Key to Close"]
+    [:p.text-sm.text-gray-500.mb-3 "Open dropdown, then press ESC key. Should close immediately."]
+    [:ty-dropdown
+     {:placeholder "Press ESC to close"
+      :style {:width "200px"}}
+     [:option {:value "esc-1"} "ESC Test 1"]
+     [:option {:value "esc-2"} "ESC Test 2"]
+     [:option {:value "esc-3"} "Press ESC! ⌨️"]]]])
+
+(defn positioning-accuracy-tests
+  "Test that dropdowns appear over the stub with exact positioning"
+  []
+  [:div.demo-section.mb-12
+   [:h2.demo-title.text-xl.font-semibold.mb-4.text-red-600 "📐 Positioning Accuracy Tests"]
+   [:p.text-gray-600.mb-6
+    "Verify dropdowns appear exactly over their input field (stub) with pixel-perfect alignment."]
+
+   ;; Different sizes test
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "1. Different Width Dropdowns"]
+    [:p.text-sm.text-gray-500.mb-3 "Dropdown should match the width of each input exactly"]
+    [:div.flex.flex-col.gap-4
+     [:ty-dropdown
+      {:placeholder "Narrow dropdown"
+       :style {:width "150px"}}
+      [:option {:value "narrow-1"} "Fits exactly"]]
+     [:ty-dropdown
+      {:placeholder "Medium width dropdown"
+       :style {:width "250px"}}
+      [:option {:value "medium-1"} "Should align perfectly"]]
+     [:ty-dropdown
+      {:placeholder "Wide dropdown for testing alignment precision"
+       :style {:width "400px"}}
+      [:option {:value "wide-1"} "Perfect width matching"]]]]
+
+   ;; Edge positioning test
+   [:div.test-scenario.mb-8
+    [:h3.font-semibold.mb-3 "2. Viewport Edge Behavior"]
+    [:p.text-sm.text-gray-500.mb-3 "Dropdown near viewport edges should position intelligently"]
+    [:div.flex.justify-between.items-center
+     [:ty-dropdown
+      {:placeholder "Left edge"
+       :style {:width "180px"}}
+      [:option {:value "left-1"} "Left edge test"]]
+     [:ty-dropdown
+      {:placeholder "Right edge"
+       :style {:width "180px"}}
+      [:option {:value "right-1"} "Right edge test"]]]]])
+
+(defn showmodal-comprehensive-tests
+  "All showModal() implementation tests in one section"
+  []
+  [:div.container.mx-auto.px-4.py-8
+   [:div.text-center.mb-8
+    [:h1.text-3xl.font-bold.text-gray-800.mb-2 "🚀 showModal() Implementation Tests"]
+    [:p.text-lg.text-gray-600.mb-4
+     "Comprehensive tests for the new dropdown showModal() positioning system"]
+    [:div.inline-flex.items-center.gap-2.px-4.py-2.bg-green-100.text-green-800.rounded-lg.text-sm
+     [:span "✅"] "Phase 3: Event Integration - Complete"]]
+
+   (showmodal-z-index-tests)
+   (scroll-to-close-tests)
+   (backdrop-escape-tests)
+   (positioning-accuracy-tests)
+
+   [:div.mt-12.p-6.bg-blue-50.rounded-lg.border.border-blue-200
+    [:h3.font-semibold.text-blue-800.mb-2 "🎯 Testing Instructions:"]
+    [:ul.text-sm.text-blue-700.space-y-1
+     [:li "1. Try opening dropdowns in challenging CSS contexts"]
+     [:li "2. Test scroll-to-close by scrolling after opening dropdowns"]
+     [:li "3. Test backdrop clicks and ESC key functionality"]
+     [:li "4. Verify positioning accuracy and width matching"]
+     [:li "5. Check that all dropdowns appear above other content"]]]
+
+   [:div.mt-6.p-6.bg-gray-50.rounded-lg.border.border-gray-200
+    [:h3.font-semibold.text-gray-800.mb-2 "📊 Expected Results:"]
+    [:ul.text-sm.text-gray-700.space-y-1
+     [:li "• All dropdowns should appear in browser's top layer"]
+     [:li "• No z-index issues regardless of parent CSS"]
+     [:li "• Dropdowns close automatically when scrolling outside"]
+     [:li "• Native modal behavior (ESC key, backdrop clicks)"]
+     [:li "• Perfect positioning alignment over input fields"]]]])
+
 (defn view []
   [:div.max-w-6xl.mx-auto
    [:div.mb-8
@@ -1424,6 +1656,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      "Dropdown Component"]
     [:p.text-lg.ty-text-
      "A powerful dropdown component with smart positioning, search filtering, keyboard navigation, global management, and rich content support. Use inline styles for custom sizing and flavor attributes for semantic styling."]]
+
+   ;; NEW: showModal() comprehensive tests section
+   (showmodal-comprehensive-tests)
 
    [:div.space-y-12
     (htmx-reactive-demo)

@@ -12,8 +12,107 @@
         </h1>
         <p class="text-xl ty-text-neutral-mild max-w-3xl mx-auto">
             Explore all Ty components in action. Each component showcases 
-            different variants, sizes, and interactive states.
+            different variants, sizes, and interactive states with flashy animations and effects.
         </p>
+    </div>
+
+    <!-- Interactive Playground -->
+    <div class="mb-20">
+        <div class="component-section p-8 rounded-xl">
+            <h2 class="text-3xl font-bold ty-text-primary-strong mb-8 flex items-center section-header">
+                <ty-icon name="play" class="mr-3"></ty-icon>
+                Interactive Playground
+            </h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Left Column: Dropdowns -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-semibold ty-text-primary-strong">Smart Dropdowns</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Choose Your Favorite Framework</label>
+                        <ty-dropdown value="react" placeholder="Pick a framework..." style="min-width: 280px;">
+                            <ty-option value="react">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-sm">⚛️</div>
+                                    <div>
+                                        <div class="font-medium">React</div>
+                                        <div class="text-sm ty-text-neutral-soft">The library for web and native interfaces</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="vue">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-sm">🟢</div>
+                                    <div>
+                                        <div class="font-medium">Vue.js</div>
+                                        <div class="text-sm ty-text-neutral-soft">The progressive JavaScript framework</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="angular">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-sm">🅰️</div>
+                                    <div>
+                                        <div class="font-medium">Angular</div>
+                                        <div class="text-sm ty-text-neutral-soft">The web development platform</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                        </ty-dropdown>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Project Priority</label>
+                        <ty-dropdown flavor="warning" required placeholder="Set priority level..." style="min-width: 280px;">
+                            <ty-option value="critical">🔴 Critical - Drop everything!</ty-option>
+                            <ty-option value="high">🟠 High - Important stuff</ty-option>
+                            <ty-option value="medium">🟡 Medium - Standard work</ty-option>
+                            <ty-option value="low">🟢 Low - When you have time</ty-option>
+                        </ty-dropdown>
+                    </div>
+                </div>
+
+                <!-- Right Column: Multiselect -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-semibold ty-text-secondary-strong">Dynamic Multiselect</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Build Your Dream Team</label>
+                        <ty-multiselect clearable value="alice,bob" placeholder="Select team members..." style="min-width: 280px;">
+                            <ty-tag value="alice" flavor="primary" pill size="sm">👩‍💻 Alice (Frontend)</ty-tag>
+                            <ty-tag value="bob" flavor="success" pill size="sm">👨‍💼 Bob (Manager)</ty-tag>
+                            <ty-tag value="carol" flavor="info" pill size="sm">🎨 Carol (Designer)</ty-tag>
+                            <ty-tag value="dave" flavor="warning" pill size="sm">🔧 Dave (DevOps)</ty-tag>
+                            <ty-tag value="eve" flavor="secondary" pill size="sm">📊 Eve (Data)</ty-tag>
+                            <ty-tag value="frank" flavor="neutral" pill size="sm">🧪 Frank (QA)</ty-tag>
+                        </ty-multiselect>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Required Skills</label>
+                        <ty-multiselect flavor="danger" required placeholder="Select required skills..." style="min-width: 280px;">
+                            <ty-tag value="javascript" flavor="danger" pill size="sm">📜 JavaScript</ty-tag>
+                            <ty-tag value="react" flavor="danger" pill size="sm">⚛️ React</ty-tag>
+                            <ty-tag value="node" flavor="danger" pill size="sm">💚 Node.js</ty-tag>
+                            <ty-tag value="css" flavor="danger" pill size="sm">🎨 CSS</ty-tag>
+                            <ty-tag value="testing" flavor="danger" pill size="sm">🧪 Testing</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Live Feedback -->
+            <div class="mt-8 p-6 ty-bg-neutral-soft rounded-lg border-l-4 ty-border-primary">
+                <h4 class="font-semibold ty-text-primary-strong mb-2">Component Features:</h4>
+                <ul class="text-sm ty-text-neutral-strong space-y-1">
+                    <li>• <strong>Dropdowns:</strong> Type to search, rich content support, semantic flavors</li>
+                    <li>• <strong>Multiselect:</strong> Click tags to toggle, clear all functionality, form integration</li>
+                    <li>• <strong>Visual Feedback:</strong> Subtle hover effects and selection animations</li>
+                    <li>• <strong>Accessibility:</strong> Keyboard navigation and screen reader support</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <!-- Buttons Section -->
@@ -189,6 +288,301 @@
                     <div class="form-group">
                         <label class="form-label">Number Input</label>
                         <ty-input type="number" placeholder="123" min="0" max="100"></ty-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dropdowns -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-primary-strong mb-8 flex items-center section-header">
+            <ty-icon name="chevron-down" class="mr-3"></ty-icon>
+            Smart Dropdowns
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Basic Dropdown -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Basic Dropdown</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Select Color</label>
+                        <ty-dropdown value="blue" placeholder="Choose a color..." style="min-width: 200px;">
+                            <ty-option value="red">🔴 Red</ty-option>
+                            <ty-option value="blue">🔵 Blue</ty-option>
+                            <ty-option value="green">🟢 Green</ty-option>
+                            <ty-option value="yellow">🟡 Yellow</ty-option>
+                            <ty-option value="purple">🟣 Purple</ty-option>
+                        </ty-dropdown>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Programming Language</label>
+                        <ty-dropdown placeholder="Select language..." style="min-width: 200px;">
+                            <ty-option value="javascript">JavaScript</ty-option>
+                            <ty-option value="python">Python</ty-option>
+                            <ty-option value="clojure">Clojure</ty-option>
+                            <ty-option value="rust">Rust</ty-option>
+                        </ty-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rich Content Dropdown -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Rich Content</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Team Member</label>
+                        <ty-dropdown value="alice" placeholder="Select team member..." style="min-width: 250px;">
+                            <ty-option value="alice">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">A</div>
+                                    <div>
+                                        <div class="font-medium">Alice Johnson</div>
+                                        <div class="text-sm ty-text-neutral-soft">Senior Developer</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="bob">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white font-medium">B</div>
+                                    <div>
+                                        <div class="font-medium">Bob Smith</div>
+                                        <div class="text-sm ty-text-neutral-soft">Product Manager</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="carol">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white font-medium">C</div>
+                                    <div>
+                                        <div class="font-medium">Carol Davis</div>
+                                        <div class="text-sm ty-text-neutral-soft">UX Designer</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                        </ty-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dropdown Flavors -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Dropdown Flavors</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Success Dropdown</label>
+                        <ty-dropdown flavor="success" value="approved" placeholder="Select status..." style="min-width: 180px;">
+                            <ty-option value="approved">✅ Approved</ty-option>
+                            <ty-option value="verified">🟢 Verified</ty-option>
+                            <ty-option value="confirmed">✓ Confirmed</ty-option>
+                        </ty-dropdown>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Danger Dropdown</label>
+                        <ty-dropdown flavor="danger" value="error" placeholder="Select error..." style="min-width: 180px;">
+                            <ty-option value="error">❌ Error</ty-option>
+                            <ty-option value="failed">🔴 Failed</ty-option>
+                            <ty-option value="rejected">❌ Rejected</ty-option>
+                        </ty-dropdown>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dropdown States -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Dropdown States</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Required Field</label>
+                        <ty-dropdown required placeholder="This field is required..." style="min-width: 200px;">
+                            <ty-option value="option1">Option 1</ty-option>
+                            <ty-option value="option2">Option 2</ty-option>
+                        </ty-dropdown>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Disabled State</label>
+                        <ty-dropdown disabled value="disabled" placeholder="Disabled dropdown" style="min-width: 200px;">
+                            <ty-option value="disabled">Disabled Option</ty-option>
+                        </ty-dropdown>
+                    </div>
+                </div>
+            </div>
+            <!-- Interactive Demo -->
+            <div class="glass-card component-section">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Interactive Demo</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Live Search Framework</label>
+                        <ty-dropdown placeholder="Start typing to search..." style="min-width: 280px;">
+                            <ty-option value="react">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded bg-cyan-500 flex items-center justify-center text-white text-xs font-bold">R</div>
+                                    <div>
+                                        <div class="font-medium">⚛️ React</div>
+                                        <div class="text-sm ty-text-neutral-soft">A JavaScript library for building user interfaces</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="vue">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded bg-green-500 flex items-center justify-center text-white text-xs font-bold">V</div>
+                                    <div>
+                                        <div class="font-medium">🟢 Vue.js</div>
+                                        <div class="text-sm ty-text-neutral-soft">The Progressive JavaScript Framework</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="angular">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded bg-red-500 flex items-center justify-center text-white text-xs font-bold">A</div>
+                                    <div>
+                                        <div class="font-medium">🅰️ Angular</div>
+                                        <div class="text-sm ty-text-neutral-soft">The modern web developer's platform</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                            <ty-option value="svelte">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-6 h-6 rounded bg-orange-500 flex items-center justify-center text-white text-xs font-bold">S</div>
+                                    <div>
+                                        <div class="font-medium">🔥 Svelte</div>
+                                        <div class="text-sm ty-text-neutral-soft">Cybernetically enhanced web apps</div>
+                                    </div>
+                                </div>
+                            </ty-option>
+                        </ty-dropdown>
+                    </div>
+                    <div class="p-3 ty-bg-info-soft rounded-lg border-l-4 ty-border-info">
+                        <p class="text-sm ty-text-info-strong">Try searching by typing framework names to see live filtering</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multiselect -->
+    <div class="mb-20">
+        <h2 class="text-3xl font-bold ty-text-secondary-strong mb-8 flex items-center section-header">
+            <ty-icon name="list" class="mr-3"></ty-icon>
+            Dynamic Multiselect
+        </h2>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Live Demo Section -->
+            <div class="glass-card component-section">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Live Demo</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Tech Stack Builder</label>
+                        <ty-multiselect value="javascript,react,node" placeholder="Build your tech stack..." style="min-width: 320px;">
+                            <ty-tag value="javascript" flavor="warning" pill size="sm">📜 JavaScript</ty-tag>
+                            <ty-tag value="typescript" flavor="primary" pill size="sm">🔷 TypeScript</ty-tag>
+                            <ty-tag value="react" flavor="info" pill size="sm">⚛️ React</ty-tag>
+                            <ty-tag value="vue" flavor="success" pill size="sm">🟢 Vue.js</ty-tag>
+                            <ty-tag value="angular" flavor="danger" pill size="sm">🅰️ Angular</ty-tag>
+                            <ty-tag value="node" flavor="secondary" pill size="sm">💚 Node.js</ty-tag>
+                            <ty-tag value="python" flavor="neutral" pill size="sm">🐍 Python</ty-tag>
+                            <ty-tag value="rust" flavor="warning" pill size="sm">🦀 Rust</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                    <div class="p-3 ty-bg-secondary-soft rounded-lg border-l-4 ty-border-secondary">
+                        <p class="text-sm ty-text-secondary-strong">Click tags to select/deselect multiple technologies</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Basic Multiselect -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Basic Multiselect</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Select Technologies</label>
+                        <ty-multiselect value="javascript,react" placeholder="Choose technologies..." style="min-width: 280px;">
+                            <ty-tag value="javascript" flavor="warning" pill size="sm">JavaScript</ty-tag>
+                            <ty-tag value="react" flavor="primary" pill size="sm">React</ty-tag>
+                            <ty-tag value="vue" flavor="success" pill size="sm">Vue.js</ty-tag>
+                            <ty-tag value="angular" flavor="danger" pill size="sm">Angular</ty-tag>
+                            <ty-tag value="svelte" flavor="info" pill size="sm">Svelte</ty-tag>
+                            <ty-tag value="node" flavor="neutral" pill size="sm">Node.js</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Programming Languages</label>
+                        <ty-multiselect placeholder="Select languages..." style="min-width: 280px;">
+                            <ty-tag value="python" flavor="primary" pill size="sm">🐍 Python</ty-tag>
+                            <ty-tag value="javascript" flavor="warning" pill size="sm">📜 JavaScript</ty-tag>
+                            <ty-tag value="rust" flavor="danger" pill size="sm">🦀 Rust</ty-tag>
+                            <ty-tag value="go" flavor="info" pill size="sm">🔵 Go</ty-tag>
+                            <ty-tag value="clojure" flavor="success" pill size="sm">λ Clojure</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiselect with Preselected -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Preselected Items</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Skills</label>
+                        <ty-multiselect placeholder="Select your skills..." style="min-width: 300px;">
+                            <ty-tag value="frontend" flavor="primary" pill size="sm" selected>Frontend Development</ty-tag>
+                            <ty-tag value="backend" flavor="success" pill size="sm" selected>Backend Development</ty-tag>
+                            <ty-tag value="design" flavor="info" pill size="sm">UI/UX Design</ty-tag>
+                            <ty-tag value="devops" flavor="warning" pill size="sm">DevOps</ty-tag>
+                            <ty-tag value="mobile" flavor="secondary" pill size="sm">Mobile Development</ty-tag>
+                            <ty-tag value="testing" flavor="neutral" pill size="sm">Testing</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multiselect Flavors -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Multiselect Flavors</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Project Status (Success)</label>
+                        <ty-multiselect flavor="success" value="completed,verified" placeholder="Select status..." style="min-width: 280px;">
+                            <ty-tag value="completed" flavor="success" pill size="sm">✅ Completed</ty-tag>
+                            <ty-tag value="verified" flavor="success" pill size="sm">🟢 Verified</ty-tag>
+                            <ty-tag value="approved" flavor="success" pill size="sm">✓ Approved</ty-tag>
+                            <ty-tag value="published" flavor="success" pill size="sm">🚀 Published</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Error Types (Danger)</label>
+                        <ty-multiselect flavor="danger" value="critical,error" placeholder="Select errors..." style="min-width: 280px;">
+                            <ty-tag value="critical" flavor="danger" pill size="sm">🔴 Critical</ty-tag>
+                            <ty-tag value="error" flavor="danger" pill size="sm">❌ Error</ty-tag>
+                            <ty-tag value="warning" flavor="warning" pill size="sm">⚠️ Warning</ty-tag>
+                            <ty-tag value="issue" flavor="danger" pill size="sm">🚫 Issue</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Features -->
+            <div class="glass-card">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong mb-6">Advanced Features</h3>
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Required Multiselect</label>
+                        <ty-multiselect required placeholder="Must select at least one..." style="min-width: 280px;">
+                            <ty-tag value="option1" flavor="primary" pill size="sm">Option 1</ty-tag>
+                            <ty-tag value="option2" flavor="secondary" pill size="sm">Option 2</ty-tag>
+                            <ty-tag value="option3" flavor="success" pill size="sm">Option 3</ty-tag>
+                        </ty-multiselect>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">With Clear All Button</label>
+                        <ty-multiselect clearable value="feature1,feature2" placeholder="Select features..." style="min-width: 280px;">
+                            <ty-tag value="feature1" flavor="info" pill size="sm">Feature 1</ty-tag>
+                            <ty-tag value="feature2" flavor="warning" pill size="sm">Feature 2</ty-tag>
+                            <ty-tag value="feature3" flavor="success" pill size="sm">Feature 3</ty-tag>
+                            <ty-tag value="feature4" flavor="primary" pill size="sm">Feature 4</ty-tag>
+                        </ty-multiselect>
                     </div>
                 </div>
             </div>
@@ -465,6 +859,102 @@ document.addEventListener('DOMContentLoaded', function() {
             event.target.remove();
         }, 300);
     });
+
+    // Dropdown change events
+    document.addEventListener('change', function(event) {
+        if (event.target.tagName === 'TY-DROPDOWN') {
+            console.log('Dropdown changed:', {
+                element: event.target,
+                value: event.detail?.value || event.detail?.option?.value,
+                text: event.detail?.text || event.detail?.option?.textContent
+            });
+            
+            // Add a subtle visual feedback effect
+            const dropdown = event.target;
+            dropdown.style.transform = 'scale(1.01)';
+            dropdown.style.transition = 'transform 0.15s ease';
+            setTimeout(() => {
+                dropdown.style.transform = 'scale(1)';
+            }, 150);
+        }
+        
+        if (event.target.tagName === 'TY-MULTISELECT') {
+            console.log('Multiselect changed:', {
+                element: event.target,
+                values: event.detail?.values,
+                action: event.detail?.action,
+                item: event.detail?.item
+            });
+            
+            // Add a subtle visual feedback effect
+            const multiselect = event.target;
+            multiselect.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.2)';
+            multiselect.style.transition = 'box-shadow 0.2s ease';
+            setTimeout(() => {
+                multiselect.style.boxShadow = '';
+            }, 300);
+        }
+    });
+
+    // Add gentle hover effects to dropdown and multiselect components
+    const dropdownsAndMultiselects = document.querySelectorAll('ty-dropdown, ty-multiselect');
+    dropdownsAndMultiselects.forEach(component => {
+        component.addEventListener('mouseenter', function() {
+            this.style.transition = 'transform 0.15s ease';
+            this.style.transform = 'translateY(-1px)';
+        });
+        
+        component.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+
+    // Add subtle demo notification system
+    let notificationCount = 0;
+    function showNotification(message, type = 'info') {
+        // Only show notifications occasionally to avoid spam
+        if (Math.random() > 0.3) return; // 30% chance to show
+        
+        notificationCount++;
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 p-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 translate-x-full ty-bg-${type}-soft border-l-4 ty-border-${type}`;
+        notification.style.marginTop = `${notificationCount * 60}px`;
+        notification.innerHTML = `
+            <div class="flex items-center gap-2">
+                <ty-icon name="${type === 'success' ? 'check' : type === 'danger' ? 'x' : 'info'}" class="ty-text-${type}-strong text-sm"></ty-icon>
+                <span class="ty-text-${type}-strong text-sm">${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                    notificationCount = Math.max(0, notificationCount - 1);
+                }
+            }, 300);
+        }, 2000); // Shorter display time
+    }
+
+    // Less frequent demo notifications for component interactions
+    document.addEventListener('change', function(event) {
+        if (event.target.tagName === 'TY-DROPDOWN') {
+            const value = event.detail?.value || event.detail?.option?.value;
+            showNotification(`${value}`, 'success');
+        }
+        if (event.target.tagName === 'TY-MULTISELECT') {
+            const action = event.detail?.action;
+            const item = event.detail?.item;
+            showNotification(`${action}: ${item}`, 'info');
+        }
+    });
 });
 </script>
 
@@ -472,6 +962,136 @@ document.addEventListener('DOMContentLoaded', function() {
 @keyframes fadeOut {
     from { opacity: 1; transform: scale(1); }
     to { opacity: 0; transform: scale(0.8); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200px 0; }
+    100% { background-position: calc(200px + 100%) 0; }
+}
+
+@keyframes gentleGlow {
+    from { box-shadow: 0 0 5px rgba(59, 130, 246, 0.2); }
+    to { box-shadow: 0 0 15px rgba(59, 130, 246, 0.4); }
+}
+
+/* Glass card enhancement - much more subtle */
+.glass-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+}
+
+.glass-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Subtle section headers */
+.section-header {
+    position: relative;
+    overflow: hidden;
+}
+
+.section-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    animation: shimmer 4s infinite;
+}
+
+/* Gentle component effects */
+ty-dropdown, ty-multiselect {
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+ty-dropdown:hover, ty-multiselect:hover {
+    transform: translateY(-1px);
+}
+
+/* Subtle tag animations */
+ty-tag {
+    transition: all 0.15s ease;
+}
+
+ty-tag:hover {
+    transform: scale(1.05);
+}
+
+/* Gentle component focus glow */
+ty-dropdown:focus-within, ty-multiselect:focus-within {
+    animation: gentleGlow 2s ease-in-out infinite alternate;
+}
+
+/* Demo notification animations */
+.demo-notification {
+    animation: slideInRight 0.3s ease-out, slideOutRight 0.3s ease-in 3s forwards;
+}
+
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutRight {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Subtle flavor hints */
+ty-dropdown[flavor="success"], ty-multiselect[flavor="success"] {
+    box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.15);
+}
+
+ty-dropdown[flavor="danger"], ty-multiselect[flavor="danger"] {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.15);
+}
+
+ty-dropdown[flavor="primary"], ty-multiselect[flavor="primary"] {
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
+}
+
+/* Simple required field indicator */
+ty-dropdown[required]::after, ty-multiselect[required]::after {
+    content: '⚡';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    font-size: 12px;
+    animation: pulse 3s infinite;
+    z-index: 10;
+    opacity: 0.7;
+}
+
+/* Simple component sections - NO MORE SPINNING! */
+.component-section {
+    position: relative;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.2s ease;
+}
+
+.component-section:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
 }
 </style>
 {% endblock %}

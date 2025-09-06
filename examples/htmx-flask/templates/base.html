@@ -11,11 +11,55 @@
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
     
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <!-- HTMX - Full Debug Version -->
+    <script src="https://unpkg.com/htmx.org@2.0.6/dist/htmx.js"></script>
     
     <!-- HTMX Extensions -->
-    <script src="https://unpkg.com/htmx.org@1.9.10/dist/ext/json-enc.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.6/dist/ext/json-enc.js"></script>
+    
+    <!-- HTMX Debug Configuration -->
+    <script>
+        // Enable comprehensive HTMX debugging
+        htmx.logger = function(elt, event, data) { if (console) console.log("🔧 HTMX 2.x Debug:", event, elt, data); };
+        
+        // Add detailed event logging
+        document.addEventListener('htmx:load', function(event) {
+            console.log('🔧 HTMX Load:', event.detail);
+        });
+        
+        document.addEventListener('htmx:configRequest', function(event) {
+            console.log('⚙️ HTMX Config Request:', event.detail);
+        });
+        
+        document.addEventListener('htmx:beforeRequest', function(event) {
+            console.log('📤 HTMX Before Request:', event.detail);
+            console.log('   - Parameters:', event.detail.requestConfig?.parameters);
+            console.log('   - URL:', event.detail.requestConfig?.path);
+        });
+        
+        document.addEventListener('htmx:afterRequest', function(event) {
+            console.log('📥 HTMX After Request:', event.detail);
+            if (event.detail.xhr?.status >= 400) {
+                console.error('❌ HTTP Error:', event.detail.xhr?.status, event.detail.xhr?.statusText);
+            }
+        });
+        
+        document.addEventListener('htmx:responseError', function(event) {
+            console.error('💥 HTMX Response Error:', event.detail);
+        });
+        
+        document.addEventListener('htmx:sendError', function(event) {
+            console.error('📡 HTMX Send Error:', event.detail);
+        });
+        
+        document.addEventListener('htmx:beforeSwap', function(event) {
+            console.log('🔄 HTMX Before Swap:', event.detail);
+        });
+        
+        document.addEventListener('htmx:afterSwap', function(event) {
+            console.log('✅ HTMX After Swap:', event.detail);
+        });
+    </script>
     
     {% block extra_head %}{% endblock %}
 </head>

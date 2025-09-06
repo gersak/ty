@@ -14,6 +14,24 @@ import random
 app = Flask(__name__)
 app.secret_key = "demo-key-change-in-production"
 
+# Month names for calendar functionality - FIXES month_names UndefinedError
+MONTH_NAMES = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+]
+
+# Global template context processor - ensures month_names is always available
+@app.context_processor
+def inject_global_vars():
+    """Inject global variables into all templates to prevent UndefinedError"""
+    current_date = datetime.now()
+    return {
+        'month_names': MONTH_NAMES,
+        'current_year': current_date.year,
+        'current_month': current_date.month,
+        'current_day': current_date.day,
+    }
+
 # Sample data for demonstrations
 SAMPLE_USERS = [
     {"id": 1, "name": "Alice Johnson", "email": "alice@example.com", "role": "Admin"},
@@ -65,7 +83,54 @@ def forms():
 @app.route("/calendar")
 def calendar():
     """Calendar component demonstrations."""
-    return render_template("calendar.html")
+    # Generate initial events for current month
+    current_date = datetime.now()
+    current_year = current_date.year
+    current_month = current_date.month
+    
+    # Set random seed for consistent demo events
+    random.seed(current_year * 100 + current_month)
+    
+    # Generate some sample events for the current month
+    initial_events = []
+    event_types = [
+        {"title": "Team Meeting", "icon": "users", "color": "primary", "time": "10:00 AM"},
+        {"title": "Code Review", "icon": "code", "color": "info", "time": "2:00 PM"},
+        {"title": "Client Call", "icon": "phone", "color": "success", "time": "3:30 PM"},
+        {"title": "Project Deadline", "icon": "calendar-x", "color": "danger", "time": "11:59 PM"},
+        {"title": "Workshop", "icon": "book-open", "color": "warning", "time": "9:00 AM"},
+        {"title": "Planning Session", "icon": "target", "color": "secondary", "time": "1:00 PM"},
+    ]
+    
+    # Ensure we have at least 3 events
+    guaranteed_days = [5, 12, 20]  # Days that will always have events
+    for day in guaranteed_days:
+        event_data = random.choice(event_types)
+        initial_events.append({
+            "day": day,
+            "date": f"{current_year}-{current_month:02d}-{day:02d}",
+            **event_data
+        })
+    
+    # Add some random events
+    for day in range(1, 29):
+        if day not in guaranteed_days and random.random() < 0.25:  # 25% chance for other days
+            event_data = random.choice(event_types)
+            initial_events.append({
+                "day": day,
+                "date": f"{current_year}-{current_month:02d}-{day:02d}",
+                **event_data
+            })
+    # Sort events by day
+    initial_events.sort(key=lambda x: x["day"])
+    
+    # Debug: Print events count for current month
+    print(f"📅 Calendar route: Generated {len(initial_events)} events for {current_month}/{current_year}")
+    
+    return render_template("calendar.html", 
+                         initial_events=initial_events,
+                         current_month=current_month,
+                         current_year=current_year)
 
 
 @app.route("/components")
@@ -207,33 +272,57 @@ def validate_form():
 
 @app.route("/api/calendar/events")
 def calendar_events():
-    """Get calendar events for a specific month."""
+    """Get calendar events for a specific month - returns HTML for HTMX."""
     year = int(request.args.get("year", datetime.now().year))
     month = int(request.args.get("month", datetime.now().month))
 
-    # Generate some sample events
-    events = []
-    for day in range(1, 29):  # Avoid month-end complexities for demo
-        if random.random() < 0.3:  # 30% chance of event
-            events.append(
-                {
-                    "date": f"{year}-{month:02d}-{day:02d}",
-                    "title": random.choice(
-                        [
-                            "Team Meeting",
-                            "Code Review",
-                            "Client Call",
-                            "Project Deadline",
-                            "Workshop",
-                            "Planning Session",
-                        ]
-                    ),
-                }
-            )
+    # Set random seed for consistent demo events based on year/month
+    random.seed(year * 100 + month)
 
-    return jsonify(events)
+    # Event types available
+    event_types = [
+        {"title": "Team Meeting", "icon": "users", "color": "primary", "time": "10:00 AM"},
+        {"title": "Code Review", "icon": "code", "color": "info", "time": "2:00 PM"},
+        {"title": "Client Call", "icon": "phone", "color": "success", "time": "3:30 PM"},
+        {"title": "Project Deadline", "icon": "calendar-x", "color": "danger", "time": "11:59 PM"},
+        {"title": "Workshop", "icon": "book-open", "color": "warning", "time": "9:00 AM"},
+        {"title": "Planning Session", "icon": "target", "color": "secondary", "time": "1:00 PM"},
+    ]
 
+    # Generate events with enhanced data for display
+    initial_events = []
+    
+    # Ensure we have at least 3 events
+    guaranteed_days = [5, 12, 20]  # Days that will always have events
+    for day in guaranteed_days:
+        event_data = random.choice(event_types)
+        initial_events.append({
+            "day": day,
+            "date": f"{year}-{month:02d}-{day:02d}",
+            **event_data
+        })
+    
+    # Add some random events
+    for day in range(1, 29):
+        if day not in guaranteed_days and random.random() < 0.25:  # 25% chance for other days
+            event_data = random.choice(event_types)
+            initial_events.append({
+                "day": day,
+                "date": f"{year}-{month:02d}-{day:02d}",
+                **event_data
+            })
 
+    # Sort events by day
+    initial_events.sort(key=lambda x: x["day"])
+
+    # Debug: Print events count for API call
+    print(f"🌐 API call: Generated {len(initial_events)} events for {month}/{year}")
+
+    # Return HTML template for HTMX
+    return render_template("partials/event_list.html", 
+                         initial_events=initial_events,
+                         current_month=month,
+                         current_year=year)
 @app.route("/api/date/select", methods=["POST"])
 def select_date():
     """Handle date selection from calendar."""

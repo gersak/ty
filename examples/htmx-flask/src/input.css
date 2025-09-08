@@ -1,20 +1,23 @@
-/* Tailwind CSS Input File for Ty + HTMX Flask Example */
+/* Import Ty CSS variables first */
+@import '../static/css/ty.css';
+
+/* Tailwind CSS layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom base styles that work with Ty components */
+/* Custom base styles */
 @layer base {
   html {
     @apply h-full;
   }
-  
+
   body {
     @apply h-full font-sans antialiased;
     color: var(--ty-color-neutral-strong);
     background-color: var(--ty-surface-canvas);
   }
-  
+
   /* Ensure smooth theme transitions */
   * {
     transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
@@ -25,136 +28,128 @@
 
 /* Custom component classes */
 @layer components {
-  /* Modern card component that works with Ty surfaces */
+
+  /* Modern card component using Ty variables */
   .card {
-    @apply ty-elevated rounded-xl p-6 transition-all duration-200;
+    @apply rounded-xl p-6 shadow-sm transition-all duration-200;
+    background-color: var(--ty-surface-elevated);
   }
-  
+
   .card:hover {
     @apply shadow-lg transform translate-y-[-1px];
   }
-  
-  /* Hero section with gradient background */
-  .hero-gradient {
-    background: linear-gradient(135deg, 
-      rgba(var(--ty-color-primary-faint), 0.1) 0%, 
-      rgba(var(--ty-color-secondary-faint), 0.1) 100%
-    );
-  }
-  
+
   /* Glass morphism card */
   .glass-card {
     @apply backdrop-blur-sm border border-white/20 rounded-2xl p-6;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   }
-  
+
   .dark .glass-card {
     @apply border-white/10;
     background: rgba(0, 0, 0, 0.2);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
   }
-  
+
   /* Feature icon containers */
   .feature-icon {
     @apply w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-200;
   }
-  
+
   .feature-icon:hover {
     @apply scale-110 rotate-3;
   }
-  
-  /* Status badges */
+
+  /* Status badges using Ty colors */
   .status-badge {
     @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
   }
-  
+
   .status-pending {
     @apply status-badge;
     background-color: var(--ty-bg-warning-soft);
     color: var(--ty-color-warning-strong);
   }
-  
+
   .status-completed {
     @apply status-badge;
     background-color: var(--ty-bg-success-soft);
     color: var(--ty-color-success-strong);
   }
-  
+
   .status-in-progress {
     @apply status-badge;
     background-color: var(--ty-bg-info-soft);
     color: var(--ty-color-info-strong);
   }
-  
+
   /* Priority badges */
   .priority-critical {
     @apply status-badge;
     background-color: var(--ty-bg-danger-soft);
     color: var(--ty-color-danger-strong);
   }
-  
+
   .priority-high {
     @apply status-badge;
     background-color: var(--ty-bg-danger-soft);
     color: var(--ty-color-danger-mild);
   }
-  
+
   .priority-medium {
     @apply status-badge;
     background-color: var(--ty-bg-warning-soft);
     color: var(--ty-color-warning-strong);
   }
-  
+
   .priority-low {
     @apply status-badge;
     background-color: var(--ty-bg-neutral-soft);
     color: var(--ty-color-neutral-strong);
   }
-  
-  /* Modern button styles that complement Ty buttons */
-  .btn-ghost {
-    @apply px-4 py-2 rounded-lg transition-all duration-200 hover:bg-black/5 dark:hover:bg-white/5;
-  }
-  
+
   /* Loading spinner */
   .spinner {
     @apply animate-spin inline-block w-4 h-4 border-2 border-current border-t-transparent rounded-full;
   }
-  
+
   /* Form enhancements */
   .form-section {
-    @apply space-y-6 ty-elevated rounded-xl p-8;
+    @apply space-y-6 rounded-xl p-8;
+    background-color: var(--ty-surface-elevated);
+    box-shadow: var(--ty-shadow-base);
   }
-  
+
   .form-group {
     @apply space-y-2;
   }
-  
+
   .form-label {
     @apply block text-sm font-medium;
     color: var(--ty-color-neutral-strong);
   }
-  
+
   /* Navigation improvements */
   .nav-link {
     @apply px-4 py-2 rounded-md text-sm font-medium transition-all duration-200;
     color: var(--ty-color-neutral-mild);
   }
-  
+
   .nav-link:hover {
     color: var(--ty-color-primary);
     background-color: var(--ty-bg-primary-soft);
   }
-  
+
   .nav-link.active {
     color: var(--ty-color-primary-strong);
     background-color: var(--ty-bg-primary-soft);
   }
 }
 
-/* Utility enhancements */
+/* Utility enhancements using Ty variables */
 @layer utilities {
+
   /* Text gradient utilities */
   .text-gradient-primary {
     background: linear-gradient(135deg, var(--ty-color-primary-strong), var(--ty-color-primary-mild));
@@ -162,39 +157,72 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
+
   .text-gradient-success {
     background: linear-gradient(135deg, var(--ty-color-success-strong), var(--ty-color-success-mild));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  
-  /* Background gradients using Ty colors */
+
+  /* Background gradients */
   .bg-gradient-primary {
-    background: linear-gradient(135deg, 
-      var(--ty-bg-primary-soft) 0%, 
-      var(--ty-bg-primary) 100%
-    );
+    background: linear-gradient(135deg,
+        var(--ty-bg-primary-soft) 0%,
+        var(--ty-bg-primary) 100%);
   }
-  
+
   .bg-gradient-hero {
-    background: linear-gradient(135deg, 
-      rgba(var(--ty-color-primary-faint), 0.05) 0%, 
-      rgba(var(--ty-color-secondary-faint), 0.05) 100%
-    );
+    background: linear-gradient(135deg,
+        rgba(var(--ty-color-primary-faint), 0.05) 0%,
+        rgba(var(--ty-color-secondary-faint), 0.05) 100%);
   }
-  
+
   /* Animation utilities */
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
   }
-  
+
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
   }
-  
+
   .animate-scale-in {
     animation: scaleIn 0.2s ease-out;
+  }
+}
+
+/* Define animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
   }
 }

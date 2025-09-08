@@ -58,9 +58,6 @@
         <!-- Interactive User Search -->
         <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
-                <div class="feature-icon ty-bg-primary-soft mr-4">
-                    <ty-icon name="search" class="ty-text-primary-strong"></ty-icon>
-                </div>
                 <div>
                     <h3 class="text-2xl font-bold ty-text-primary-strong mb-2">
                         🔍 Smart User Search
@@ -75,11 +72,12 @@
                 <div class="relative">
                     <ty-input
                         placeholder="Search users by name or email..."
-                        class="w-full pr-12 text-lg"
+                        class="w-full text-lg"
                         hx-get="/api/users/search"
                         hx-target="#user-results"
                         hx-trigger="input changed delay:300ms, focus"
                         hx-indicator="#search-loading"
+                        autocomplete="off"
                         name="q">
                     </ty-input>
                     <div id="search-loading" class="absolute right-4 top-1/2 transform -translate-y-1/2 htmx-indicator">
@@ -88,10 +86,7 @@
                 </div>
                 
                 <div id="user-results" class="min-h-32 ty-bg-neutral-soft rounded-xl p-6 transition-all duration-300">
-                    <div class="text-center ty-text-neutral-mild">
-                        <ty-icon name="users" class="w-8 h-8 mx-auto mb-3 opacity-50"></ty-icon>
-                        <p>Start typing to discover amazing users...</p>
-                    </div>
+                    {% include 'partials/user_search_results.html' %}
                 </div>
             </div>
         </div>
@@ -99,9 +94,6 @@
         <!-- Dynamic Task Management -->
         <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
-                <div class="feature-icon ty-bg-success-soft mr-4">
-                    <ty-icon name="check-circle" class="ty-text-success-strong"></ty-icon>
-                </div>
                 <div>
                     <h3 class="text-2xl font-bold ty-text-success-strong mb-2">
                         📋 Task Dashboard

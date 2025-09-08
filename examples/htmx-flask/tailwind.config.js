@@ -2,7 +2,9 @@
 module.exports = {
   content: [
     "./templates/**/*.html",
-    "./static/js/**/*.js"
+    "./templates/**/*.{html,jinja2}",
+    "./static/js/**/*.js",
+    "./src/**/*.{html,js}"
   ],
   darkMode: 'class', // Matches Ty's dark theme implementation
   theme: {

@@ -1,9 +1,9 @@
 {% if users %}
     <div class="space-y-3 animate-fade-in">
         {% for user in users %}
-        <div class="group flex items-center space-x-4 p-4 ty-bg-white/50 dark:ty-bg-white/5 rounded-xl border ty-border-neutral-soft hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+        <div class="group flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-sm hover:scale-[1.02] transition-all duration-200 cursor-pointer">
             <!-- User Avatar -->
-            <div class="relative">
+            <div class="relative flex-shrink-0">
                 <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
                     {{ user.name.split()[0][0] }}{{ user.name.split()[-1][0] if user.name.split()|length > 1 else '' }}
                 </div>
@@ -18,29 +18,30 @@
             
             <!-- User Info -->
             <div class="flex-1 min-w-0">
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-2 mb-1">
                     <h4 class="font-semibold ty-text-neutral-strong truncate">
                         {{ user.name }}
                     </h4>
-                    <span class="status-badge {% if user.role == 'Admin' %}ty-bg-danger-soft ty-text-danger-strong
-                                             {% elif user.role == 'Editor' %}ty-bg-warning-soft ty-text-warning-strong  
-                                             {% else %}ty-bg-neutral-soft ty-text-neutral-strong{% endif %}">
+                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium uppercase tracking-wide
+                                {% if user.role == 'Admin' %}ty-bg-danger-soft ty-text-danger-strong
+                                {% elif user.role == 'Editor' %}ty-bg-warning-soft ty-text-warning-strong  
+                                {% else %}ty-bg-neutral-soft ty-text-neutral-strong{% endif %}">
                         {{ user.role }}
                     </span>
                 </div>
                 <p class="ty-text-neutral-mild text-sm truncate">
-                    <ty-icon name="mail" class="w-3 h-3 inline mr-1"></ty-icon>
+                    <ty-icon name="mail" class="w-3 h-3 inline mr-1 align-text-top"></ty-icon>
                     {{ user.email }}
                 </p>
             </div>
             
             <!-- Action Button (shown on hover) -->
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex-shrink-0">
                 <ty-button size="sm" flavor="primary"
                            hx-get="/api/modal/content/user-profile?user_id={{ user.id }}"
                            hx-target="#modal-content"
                            onclick="document.getElementById('demo-modal').show()">
-                    <ty-icon name="eye" class="w-4 h-4 mr-2"></ty-icon>
+                    <ty-icon name="eye" class="w-4 h-4 mr-0"></ty-icon>
                     View Profile
                 </ty-button>
             </div>
@@ -50,7 +51,11 @@
         <!-- Results Summary -->
         <div class="text-center py-3 border-t ty-border-neutral-soft">
             <p class="ty-text-neutral-mild text-sm">
-                Found {{ users|length }} user{{ 's' if users|length != 1 else '' }}
+                {% if users|length == 5 %}
+                    Showing all {{ users|length }} users - start typing to search!
+                {% else %}
+                    Found {{ users|length }} user{{ 's' if users|length != 1 else '' }}
+                {% endif %}
             </p>
         </div>
     </div>

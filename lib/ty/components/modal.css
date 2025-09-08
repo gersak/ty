@@ -55,7 +55,7 @@
 
   /* No sizing - let user content determine size */
   max-width: 80vw;
-  max-height: 80vh;
+  max-height: 90vh;
 
   /* Remove any default focus styling */
   outline: none;

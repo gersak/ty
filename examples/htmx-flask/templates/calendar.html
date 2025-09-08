@@ -191,7 +191,6 @@ document.addEventListener('navigate', function(event) {
 
 document.addEventListener('change', function(event) {
     if (event.target.matches('ty-calendar')) {
-        console.log('🔄 Calendar change event (enhanced):', event.detail);
         if (event.detail.action === 'select') {
             console.log('   - Selected date:', event.detail.year + '-' + 
                        (event.detail.month < 10 ? '0' : '') + event.detail.month + '-' +
@@ -201,7 +200,6 @@ document.addEventListener('change', function(event) {
         console.log('   - HTMX should trigger on this event!');
         
         }
-    }
 });
 
 // Initialize header with current month when page loads
@@ -215,6 +213,71 @@ document.addEventListener('DOMContentLoaded', function() {
     if (headerElement) {
         const monthName = monthNames[now.getMonth()];
         headerElement.textContent = `${monthName} ${now.getFullYear()} Events`;
+    }
+    
+    // 🎯 ENHANCED: Add day content function to event calendar
+    const eventCalendar = document.getElementById('event-calendar');
+    if (eventCalendar) {
+        console.log('🎨 Setting up day content function for event calendar');
+        
+        // Custom CSS for day badges
+        eventCalendar.customCSS = `
+            .simple-day {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 2px;
+                width: 100%;
+                height: 100%;
+            }
+            
+            .day-number {
+                font-size: inherit;
+                line-height: 1;
+            }
+            
+            .day-badge-container {
+                min-height: 12px;
+                display: flex;
+                justify-content: center;
+            }
+            
+            .event-badge {
+                font-size: 9px;
+                padding: 1px 4px;
+                border-radius: 6px;
+                color: white;
+                background: var(--ty-color-primary);
+                font-weight: 500;
+                white-space: nowrap;
+            }
+        `;
+        
+        // Day content function with HTMX loading
+        eventCalendar.dayContentFn = function(dayContext) {
+            const dayDiv = document.createElement('div');
+            dayDiv.className = 'simple-day';
+            
+            // Create day number
+            const dayNumber = document.createElement('span');
+            dayNumber.className = 'day-number';
+            dayNumber.textContent = dayContext['day-in-month'];
+            
+            // Create badge container with HTMX
+            const badgeContainer = document.createElement('div');
+            badgeContainer.className = 'day-badge-container';
+            badgeContainer.setAttribute('hx-get', `/api/day-events/${dayContext['year']}-${dayContext['month']}-${dayContext['day-in-month']})`);
+            badgeContainer.setAttribute('hx-trigger', 'load');
+            badgeContainer.setAttribute('hx-swap', 'innerHTML');
+            
+            // Append elements
+            dayDiv.appendChild(dayNumber);
+            dayDiv.appendChild(badgeContainer);
+            
+            return dayDiv;
+        };
+        
+        console.log('✅ Day content function configured with HTMX badges');
     }
 });
 

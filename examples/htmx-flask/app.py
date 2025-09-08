@@ -139,6 +139,12 @@ def components():
     return render_template("components.html")
 
 
+@app.route("/modals")
+def modals():
+    """Modal examples with HTMX integration."""
+    return render_template("modals.html", users=SAMPLE_USERS[:3], tasks=SAMPLE_TASKS[:4])
+
+
 # HTMX API endpoints
 
 
@@ -498,20 +504,568 @@ def calendar_date_select():
         return f"<p class='ty-text-danger'>❌ Error processing date: {str(e)}</p>"
 
 
+@app.route("/api/day-events/<date>")
+def day_events(date):
+    """Get events for a specific day - returns HTML badge for calendar day content."""
+    try:
+        # Simple mock data based on date for consistent results
+        import hashlib
+        # Use date as seed for consistent results across reloads
+        seed = int(hashlib.md5(date.encode()).hexdigest()[:8], 16)
+        random.seed(seed)
+        
+        event_count = random.randint(0, 3)
+        
+        if event_count == 0:
+            return ""  # No badge for days with no events
+        else:
+            return f'<span class="event-badge">{event_count}</span>'
+            
+    except Exception as e:
+        print(f"Error generating day events for {date}: {e}")
+        return ""
+
+
 @app.route("/api/modal/content/<content_type>")
 def modal_content(content_type):
     """Dynamic modal content loading."""
     if content_type == "user-profile":
         user_id = request.args.get("user_id")
+        if not user_id:
+            return "User ID required", 400
         user = next((u for u in SAMPLE_USERS if u["id"] == int(user_id)), None)
+        if not user:
+            return "User not found", 404
         return render_template("partials/user_profile_modal.html", user=user)
 
     elif content_type == "task-details":
         task_id = request.args.get("task_id")
+        if not task_id:
+            return "Task ID required", 400
         task = next((t for t in SAMPLE_TASKS if t["id"] == int(task_id)), None)
+        if not task:
+            return "Task not found", 404
         return render_template("partials/task_details_modal.html", task=task)
 
+    elif content_type == "weather-report":
+        # Simulate weather data
+        import time
+        time.sleep(0.5)  # Simulate API delay
+        weather_data = {
+            "location": "Zagreb, Croatia",
+            "temperature": random.randint(15, 25),
+            "condition": random.choice(["Sunny", "Partly Cloudy", "Overcast", "Light Rain"]),
+            "humidity": random.randint(40, 80),
+            "wind": random.randint(5, 20)
+        }
+        return f"""
+        <div class="p-8">
+            <div class="text-center mb-6">
+                <ty-icon name="cloud" class="w-16 h-16 mx-auto mb-4 ty-text-info"></ty-icon>
+                <h3 class="text-xl font-semibold ty-text-neutral-strong">Weather Report</h3>
+                <p class="ty-text-neutral-mild">{weather_data['location']}</p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="text-center ty-bg-primary-soft rounded-lg p-4">
+                    <div class="text-3xl font-bold ty-text-primary-strong">{weather_data['temperature']}°C</div>
+                    <div class="text-sm ty-text-neutral-mild">Temperature</div>
+                </div>
+                <div class="text-center ty-bg-info-soft rounded-lg p-4">
+                    <div class="text-lg font-semibold ty-text-info-strong">{weather_data['condition']}</div>
+                    <div class="text-sm ty-text-neutral-mild">Conditions</div>
+                </div>
+                <div class="text-center ty-bg-success-soft rounded-lg p-4">
+                    <div class="text-lg font-bold ty-text-success-strong">{weather_data['humidity']}%</div>
+                    <div class="text-sm ty-text-neutral-mild">Humidity</div>
+                </div>
+                <div class="text-center ty-bg-warning-soft rounded-lg p-4">
+                    <div class="text-lg font-bold ty-text-warning-strong">{weather_data['wind']} km/h</div>
+                    <div class="text-sm ty-text-neutral-mild">Wind Speed</div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end">
+                <ty-button flavor="info" onclick="document.getElementById('dynamic-modal').removeAttribute('open')">
+                    <ty-icon name="check" class="mr-2"></ty-icon>
+                    Close
+                </ty-button>
+            </div>
+        </div>
+        """
+
+    elif content_type == "system-status":
+        # Simulate system status data
+        import time
+        time.sleep(0.3)
+        services = [
+            {"name": "Web Server", "status": "online", "uptime": "99.9%"},
+            {"name": "Database", "status": "online", "uptime": "99.7%"},
+            {"name": "API Gateway", "status": "warning", "uptime": "98.5%"},
+            {"name": "File Storage", "status": "online", "uptime": "99.8%"},
+            {"name": "Email Service", "status": "offline", "uptime": "97.2%"}
+        ]
+        
+        services_html = ""
+        for service in services:
+            status_color = "success" if service["status"] == "online" else ("warning" if service["status"] == "warning" else "danger")
+            status_icon = "check-circle" if service["status"] == "online" else ("alert-triangle" if service["status"] == "warning" else "x-circle")
+            
+            services_html += f"""
+            <div class="flex items-center justify-between py-3 border-b ty-border-soft last:border-b-0">
+                <div class="flex items-center space-x-3">
+                    <ty-icon name="{status_icon}" class="w-5 h-5 ty-text-{status_color}"></ty-icon>
+                    <span class="font-medium">{service['name']}</span>
+                </div>
+                <div class="text-right">
+                    <div class="text-sm font-semibold ty-text-{status_color}-strong capitalize">{service['status']}</div>
+                    <div class="text-xs ty-text-neutral-mild">{service['uptime']} uptime</div>
+                </div>
+            </div>
+            """
+        
+        return f"""
+        <div class="p-8">
+            <div class="text-center mb-6">
+                <ty-icon name="activity" class="w-16 h-16 mx-auto mb-4 ty-text-warning"></ty-icon>
+                <h3 class="text-xl font-semibold ty-text-neutral-strong">System Status</h3>
+                <p class="ty-text-neutral-mild">Real-time service monitoring</p>
+            </div>
+            
+            <div class="mb-6">
+                {services_html}
+            </div>
+            
+            <div class="ty-bg-neutral-soft rounded-lg p-4 mb-6">
+                <div class="flex items-center space-x-2 mb-2">
+                    <ty-icon name="info" class="w-4 h-4 ty-text-info"></ty-icon>
+                    <span class="text-sm font-medium">Last Updated</span>
+                </div>
+                <p class="text-sm ty-text-neutral-mild">{datetime.now().strftime('%Y-%m-%d %H:%M:%S UTC')}</p>
+            </div>
+            
+            <div class="flex justify-end">
+                <ty-button flavor="warning" onclick="document.getElementById('dynamic-modal').removeAttribute('open')">
+                    <ty-icon name="x" class="mr-2"></ty-icon>
+                    Close
+                </ty-button>
+            </div>
+        </div>
+        """
+
+    elif content_type == "random-quote":
+        # Random inspirational quotes
+        quotes = [
+            {"text": "The only way to do great work is to love what you do.", "author": "Steve Jobs"},
+            {"text": "Innovation distinguishes between a leader and a follower.", "author": "Steve Jobs"},
+            {"text": "Life is what happens to you while you're busy making other plans.", "author": "John Lennon"},
+            {"text": "The future belongs to those who believe in the beauty of their dreams.", "author": "Eleanor Roosevelt"},
+            {"text": "It is during our darkest moments that we must focus to see the light.", "author": "Aristotle"},
+            {"text": "Success is not final, failure is not fatal: it is the courage to continue that counts.", "author": "Winston Churchill"}
+        ]
+        
+        quote = random.choice(quotes)
+        return f"""
+        <div class="p-8 text-center">
+            <ty-icon name="message-circle" class="w-16 h-16 mx-auto mb-6 ty-text-secondary"></ty-icon>
+            <blockquote class="text-xl ty-text-neutral-strong font-medium mb-4 leading-relaxed">
+                "{quote['text']}"
+            </blockquote>
+            <cite class="text-lg ty-text-secondary-mild font-semibold">— {quote['author']}</cite>
+            
+            <div class="flex justify-center space-x-3 mt-8">
+                <ty-button flavor="secondary" 
+                           hx-get="/api/modal/content/random-quote"
+                           hx-target="#dynamic-modal-content"
+                           hx-swap="innerHTML">
+                    <ty-icon name="refresh-cw" class="mr-2"></ty-icon>
+                    Another Quote
+                </ty-button>
+                <ty-button flavor="primary" onclick="document.getElementById('dynamic-modal').removeAttribute('open')">
+                    <ty-icon name="heart" class="mr-2"></ty-icon>
+                    Love It!
+                </ty-button>
+            </div>
+        </div>
+        """
+
+    elif content_type == "slow-loading":
+        # Simulate slow loading
+        import time
+        time.sleep(2)
+        return f"""
+        <div class="p-8 text-center">
+            <ty-icon name="check-circle" class="w-16 h-16 mx-auto mb-4 ty-text-success animate-bounce"></ty-icon>
+            <h3 class="text-xl font-semibold ty-text-success-strong mb-2">Content Loaded!</h3>
+            <p class="ty-text-neutral-mild mb-4">
+                This content took 2 seconds to load, demonstrating loading states and indicators.
+            </p>
+            <div class="ty-bg-success-soft rounded-lg p-4 mb-6">
+                <p class="text-sm ty-text-neutral-mild">
+                    <strong>Pro tip:</strong> Use loading indicators to keep users informed during longer operations.
+                </p>
+            </div>
+            <ty-button flavor="success" onclick="document.getElementById('loading-modal').removeAttribute('open')">
+                <ty-icon name="thumbs-up" class="mr-2"></ty-icon>
+                Got it!
+            </ty-button>
+        </div>
+        """
+
+    elif content_type == "error-demo":
+        # Simulate different types of errors
+        error_type = random.choice(["network", "server", "validation", "timeout"])
+        
+        if error_type == "network":
+            return """
+            <div class="p-8 text-center">
+                <ty-icon name="wifi-off" class="w-16 h-16 mx-auto mb-4 ty-text-danger"></ty-icon>
+                <h3 class="text-xl font-semibold ty-text-danger-strong mb-2">Network Error</h3>
+                <p class="ty-text-neutral-mild mb-4">
+                    Unable to connect to the server. Please check your internet connection.
+                </p>
+                <div class="ty-bg-danger-soft rounded-lg p-4 mb-6 text-left">
+                    <div class="text-sm font-mono ty-text-danger-strong">Error Code: NET_001</div>
+                    <div class="text-xs ty-text-neutral-mild mt-1">Connection timeout after 30 seconds</div>
+                </div>
+                <div class="flex justify-center space-x-3">
+                    <ty-button flavor="secondary" onclick="document.getElementById('error-modal').removeAttribute('open')">
+                        Cancel
+                    </ty-button>
+                    <ty-button flavor="danger">
+                        <ty-icon name="refresh-cw" class="mr-2"></ty-icon>
+                        Retry
+                    </ty-button>
+                </div>
+            </div>
+            """, 503
+        
+        return """
+        <div class="p-8 text-center">
+            <ty-icon name="alert-triangle" class="w-16 h-16 mx-auto mb-4 ty-text-danger"></ty-icon>
+            <h3 class="text-xl font-semibold ty-text-danger-strong mb-2">Something Went Wrong</h3>
+            <p class="ty-text-neutral-mild mb-4">
+                An unexpected error occurred while processing your request.
+            </p>
+            <div class="ty-bg-danger-soft rounded-lg p-4 mb-6 text-left">
+                <div class="text-sm font-mono ty-text-danger-strong">Error Code: SRV_500</div>
+                <div class="text-xs ty-text-neutral-mild mt-1">Internal server error - please try again later</div>
+            </div>
+            <ty-button flavor="danger" onclick="document.getElementById('error-modal').removeAttribute('open')">
+                <ty-icon name="x" class="mr-2"></ty-icon>
+                Close
+            </ty-button>
+        </div>
+        """, 500
+
     return "Content not found", 404
+
+
+@app.route("/api/modal/contact/submit", methods=["POST"])
+def submit_contact_form():
+    """Handle contact form submission in modal."""
+    name = request.form.get("name", "").strip()
+    email = request.form.get("email", "").strip() 
+    message = request.form.get("message", "").strip()
+    
+    errors = []
+    
+    # Validation
+    if not name or len(name) < 2:
+        errors.append("Name must be at least 2 characters")
+    if not email or "@" not in email:
+        errors.append("Please enter a valid email address")
+    if not message or len(message) < 10:
+        errors.append("Message must be at least 10 characters")
+    
+    if errors:
+        error_html = "<br>".join([f"• {error}" for error in errors])
+        return f"""
+        <div class="ty-bg-danger-soft border border-danger rounded-lg p-3 mb-4">
+            <div class="flex items-start space-x-2">
+                <ty-icon name="x-circle" class="w-5 h-5 ty-text-danger flex-shrink-0 mt-0.5"></ty-icon>
+                <div>
+                    <div class="font-medium ty-text-danger-strong mb-1">Please fix the following errors:</div>
+                    <div class="text-sm ty-text-danger-mild">{error_html}</div>
+                </div>
+            </div>
+        </div>
+        """
+    
+    # Success - simulate form submission
+    import time
+    time.sleep(0.5)  # Simulate processing
+    
+    return f"""
+    <div class="ty-bg-success-soft border border-success rounded-lg p-4 mb-4 text-center">
+        <ty-icon name="check-circle" class="w-8 h-8 mx-auto mb-2 ty-text-success"></ty-icon>
+        <div class="font-medium ty-text-success-strong mb-1">Message Sent Successfully!</div>
+        <div class="text-sm ty-text-success-mild">Thank you {name}, we'll get back to you soon.</div>
+    </div>
+    <script>
+        setTimeout(function() {{
+            document.getElementById('form-modal').removeAttribute('open');
+        }}, 2000);
+    </script>
+    """
+
+
+@app.route("/api/modal/wizard/start")
+def start_wizard():
+    """Start the multi-step wizard."""
+    return """
+    <div class="p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold ty-text-neutral-strong">Setup Wizard</h3>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm ty-text-neutral-mild">Step</span>
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ty-bg-primary text-white text-sm font-medium">1</span>
+                <span class="text-sm ty-text-neutral-mild">of 3</span>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="w-full ty-bg-neutral-soft rounded-full h-2 mb-8">
+            <div class="ty-bg-primary h-2 rounded-full" style="width: 33.33%"></div>
+        </div>
+        
+        <div class="mb-8">
+            <h4 class="text-lg font-medium ty-text-neutral-strong mb-4">Personal Information</h4>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium ty-text-neutral-strong mb-2">Full Name</label>
+                    <ty-input name="wizard_name" placeholder="Enter your full name" value=""></ty-input>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium ty-text-neutral-strong mb-2">Email Address</label>
+                    <ty-input name="wizard_email" type="email" placeholder="your@email.com" value=""></ty-input>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium ty-text-neutral-strong mb-2">Company</label>
+                    <ty-input name="wizard_company" placeholder="Your company name" value=""></ty-input>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-between">
+            <ty-button flavor="secondary" onclick="document.getElementById('wizard-modal').removeAttribute('open')">
+                Cancel
+            </ty-button>
+            <ty-button flavor="primary" 
+                       hx-post="/api/modal/wizard/step2"
+                       hx-target="#wizard-modal-content"
+                       hx-include="[name^='wizard_']">
+                <ty-icon name="arrow-right" class="mr-2"></ty-icon>
+                Next Step
+            </ty-button>
+        </div>
+    </div>
+    """
+
+
+@app.route("/api/modal/wizard/step2", methods=["POST"])
+def wizard_step2():
+    """Second step of the wizard."""
+    # Get data from previous step
+    name = request.form.get("wizard_name", "")
+    email = request.form.get("wizard_email", "")
+    company = request.form.get("wizard_company", "")
+    
+    return f"""
+    <div class="p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold ty-text-neutral-strong">Setup Wizard</h3>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm ty-text-neutral-mild">Step</span>
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ty-bg-primary text-white text-sm font-medium">2</span>
+                <span class="text-sm ty-text-neutral-mild">of 3</span>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="w-full ty-bg-neutral-soft rounded-full h-2 mb-8">
+            <div class="ty-bg-primary h-2 rounded-full" style="width: 66.66%"></div>
+        </div>
+        
+        <div class="mb-8">
+            <h4 class="text-lg font-medium ty-text-neutral-strong mb-4">Preferences</h4>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium ty-text-neutral-strong mb-2">Notification Frequency</label>
+                    <select name="wizard_notifications" class="w-full p-3 border rounded-md ty-bg-elevated ty-text-neutral-strong ty-border focus:ty-border-primary focus:outline-none">
+                        <option value="daily">Daily</option>
+                        <option value="weekly" selected>Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="never">Never</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium ty-text-neutral-strong mb-2">Theme Preference</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="wizard_theme" value="light" checked class="ty-text-primary">
+                            <span class="text-sm">Light</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="wizard_theme" value="dark" class="ty-text-primary">
+                            <span class="text-sm">Dark</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="radio" name="wizard_theme" value="auto" class="ty-text-primary">
+                            <span class="text-sm">Auto</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label class="flex items-center space-x-2 cursor-pointer">
+                        <input type="checkbox" name="wizard_newsletter" value="yes" class="ty-text-primary">
+                        <span class="text-sm">Subscribe to newsletter</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Hidden fields to carry forward data -->
+        <input type="hidden" name="wizard_name" value="{name}">
+        <input type="hidden" name="wizard_email" value="{email}">
+        <input type="hidden" name="wizard_company" value="{company}">
+        
+        <div class="flex justify-between">
+            <ty-button flavor="secondary" 
+                       hx-get="/api/modal/wizard/start"
+                       hx-target="#wizard-modal-content">
+                <ty-icon name="arrow-left" class="mr-2"></ty-icon>
+                Previous
+            </ty-button>
+            <ty-button flavor="primary" 
+                       hx-post="/api/modal/wizard/step3"
+                       hx-target="#wizard-modal-content"
+                       hx-include="[name^='wizard_']">
+                <ty-icon name="arrow-right" class="mr-2"></ty-icon>
+                Next Step
+            </ty-button>
+        </div>
+    </div>
+    """
+
+
+@app.route("/api/modal/wizard/step3", methods=["POST"])
+def wizard_step3():
+    """Final step of the wizard."""
+    # Get all data
+    name = request.form.get("wizard_name", "")
+    email = request.form.get("wizard_email", "")
+    company = request.form.get("wizard_company", "")
+    notifications = request.form.get("wizard_notifications", "")
+    theme = request.form.get("wizard_theme", "")
+    newsletter = request.form.get("wizard_newsletter", "") == "yes"
+    
+    return f"""
+    <div class="p-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-semibold ty-text-neutral-strong">Setup Wizard</h3>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm ty-text-neutral-mild">Step</span>
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full ty-bg-primary text-white text-sm font-medium">3</span>
+                <span class="text-sm ty-text-neutral-mild">of 3</span>
+            </div>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="w-full ty-bg-neutral-soft rounded-full h-2 mb-8">
+            <div class="ty-bg-primary h-2 rounded-full" style="width: 100%"></div>
+        </div>
+        
+        <div class="mb-8">
+            <h4 class="text-lg font-medium ty-text-neutral-strong mb-4">Review & Confirm</h4>
+            <div class="ty-bg-neutral-soft rounded-lg p-6 space-y-3">
+                <div class="flex justify-between">
+                    <span class="font-medium">Name:</span>
+                    <span>{name}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Email:</span>
+                    <span>{email}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Company:</span>
+                    <span>{company}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Notifications:</span>
+                    <span class="capitalize">{notifications}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Theme:</span>
+                    <span class="capitalize">{theme}</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="font-medium">Newsletter:</span>
+                    <span>{"Yes" if newsletter else "No"}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="flex justify-between">
+            <ty-button flavor="secondary" 
+                       hx-post="/api/modal/wizard/step2"
+                       hx-target="#wizard-modal-content"
+                       hx-include="[name^='wizard_']">
+                <ty-icon name="arrow-left" class="mr-2"></ty-icon>
+                Previous
+            </ty-button>
+            <ty-button flavor="success" 
+                       hx-post="/api/modal/wizard/complete"
+                       hx-target="#wizard-modal-content"
+                       hx-include="[name^='wizard_']">
+                <ty-icon name="check" class="mr-2"></ty-icon>
+                Complete Setup
+            </ty-button>
+        </div>
+    </div>
+    """
+
+
+@app.route("/api/modal/wizard/complete", methods=["POST"])
+def wizard_complete():
+    """Complete the wizard setup."""
+    # Simulate processing
+    import time
+    time.sleep(1)
+    
+    name = request.form.get("wizard_name", "User")
+    
+    return f"""
+    <div class="p-8 text-center">
+        <ty-icon name="check-circle" class="w-20 h-20 mx-auto mb-6 ty-text-success animate-bounce"></ty-icon>
+        <h3 class="text-2xl font-semibold ty-text-success-strong mb-2">Setup Complete!</h3>
+        <p class="ty-text-neutral-mild mb-6">
+            Welcome aboard, {name}! Your account has been configured successfully.
+        </p>
+        
+        <div class="ty-bg-success-soft rounded-lg p-4 mb-8">
+            <div class="flex items-center justify-center space-x-2 mb-2">
+                <ty-icon name="gift" class="w-5 h-5 ty-text-success-strong"></ty-icon>
+                <span class="font-medium ty-text-success-strong">What's Next?</span>
+            </div>
+            <p class="text-sm ty-text-neutral-mild">
+                Check your email for a confirmation link and start exploring all the features!
+            </p>
+        </div>
+        
+        <ty-button flavor="success" onclick="document.getElementById('wizard-modal').removeAttribute('open')">
+            <ty-icon name="arrow-right" class="mr-2"></ty-icon>
+            Get Started
+        </ty-button>
+    </div>
+    
+    <script>
+        // Auto-close after 3 seconds
+        setTimeout(function() {{
+            document.getElementById('wizard-modal').removeAttribute('open');
+        }}, 3000);
+    </script>
+    """
 
 
 @app.route("/api/notifications/demo")

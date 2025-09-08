@@ -162,24 +162,30 @@
                 <div class="space-y-4">
                     <div class="flex flex-wrap gap-3">
                         <ty-button flavor="primary">
-                            <ty-icon name="plus" class="mr-2"></ty-icon>
+                            <ty-icon name="plus" class="mr-1"></ty-icon>
                             Add Item
                         </ty-button>
                         <ty-button flavor="secondary">
-                            <ty-icon name="edit" class="mr-2"></ty-icon>
+                            <ty-icon name="edit" class="mr-1"></ty-icon>
                             Edit
                         </ty-button>
                         <ty-button flavor="danger">
-                            <ty-icon name="trash" class="mr-2"></ty-icon>
+                            <ty-icon name="trash" class="mr-1"></ty-icon>
                             Delete
                         </ty-button>
                     </div>
                     <div class="flex flex-wrap gap-3">
                         <ty-button flavor="outline">
                             Download
-                            <ty-icon name="download" class="ml-2"></ty-icon>
+                            <ty-icon name="download" class="ml-1"></ty-icon>
                         </ty-button>
-                        <ty-button flavor="ghost" size="sm">
+                        <ty-button flavor="neutral" size="sm" action>
+                            <ty-icon name="settings"></ty-icon>
+                        </ty-button>
+                        <ty-button flavor="neutral" size="md" action>
+                            <ty-icon name="settings"></ty-icon>
+                        </ty-button>
+                        <ty-button flavor="neutral" size="lg" action>
                             <ty-icon name="settings"></ty-icon>
                         </ty-button>
                     </div>
@@ -194,14 +200,14 @@
                         <ty-button flavor="primary" class="loading-demo" onclick="showLoading(this)">
                             <span class="btn-text">Click to Load</span>
                             <span class="btn-loading hidden">
-                                <div class="spinner mr-2"></div>
+                                <div class="spinner mr-1"></div>
                                 Loading...
                             </span>
                         </ty-button>
                         <ty-button flavor="secondary" class="loading-demo" onclick="showLoading(this)">
                             <span class="btn-text">Save Changes</span>
                             <span class="btn-loading hidden">
-                                <div class="spinner mr-2"></div>
+                                <div class="spinner mr-1"></div>
                                 Saving...
                             </span>
                         </ty-button>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +10,44 @@
     
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    
+    <!-- Dialog-friendly layout styles -->
+    <style>
+        /* 
+         * Dialog-Friendly Layout for HTMX + Ty Components
+         * 
+         * Previous: html.h-full + body.h-full (height: 100%) caused conflicts 
+         * with native dialog scroll prevention in showModal()
+         * 
+         * Solution: Use min-height: 100vh instead of height: 100% to allow
+         * the browser's native dialog scroll-locking to work properly
+         */
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh; /* Use min-height instead of height: 100% */
+        }
+        
+        /* Layout container for proper flex behavior */
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Ensure main content grows to fill space */
+        .main-content {
+            flex: 1;
+        }
+        
+        /* Ensure dialogs work properly with body scroll prevention */
+        body:has(dialog[open]) {
+            overflow: hidden; /* Additional fallback for dialog scroll prevention */
+        }
+        
+        /* Modern browsers with :has() selector support the above,
+           for older browsers, the native dialog behavior should still work */
+    </style>
     
     <!-- HTMX - Full Debug Version -->
     <script src="https://unpkg.com/htmx.org@2.0.6/dist/htmx.js"></script>
@@ -63,87 +101,94 @@
     
     {% block extra_head %}{% endblock %}
 </head>
-<body class="ty-canvas h-full antialiased">
-    <!-- Navigation -->
-    <nav class="ty-elevated border-b ty-border-neutral-soft backdrop-blur-md">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex items-center space-x-8">
-                    <div class="flex-shrink-0">
-                        <h1 class="text-xl font-bold">
-                            <a href="{{ url_for('index') }}" class="text-gradient-primary hover:scale-105 transition-transform duration-200 inline-block">
-                                ✨ Ty + HTMX Demo
-                            </a>
-                        </h1>
-                    </div>
-                    <div class="hidden md:block">
-                        <div class="ml-10 flex items-baseline space-x-1">
-                            <a href="{{ url_for('index') }}" 
-                               class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}">
-                                <ty-icon name="home" class="w-3.5 h-3.5 mr-2"></ty-icon>
-                                Home
-                            </a>
-                            <a href="{{ url_for('forms') }}" 
-                               class="nav-link {{ 'active' if request.endpoint == 'forms' else '' }}">
-                                <ty-icon name="edit" class="w-3.5 h-3.5 mr-2"></ty-icon>
-                                Forms
-                            </a>
-                            <a href="{{ url_for('calendar') }}" 
-                               class="nav-link {{ 'active' if request.endpoint == 'calendar' else '' }}">
-                                <ty-icon name="calendar" class="w-3.5 h-3.5 mr-2"></ty-icon>
-                                Calendar
-                            </a>
-                            <a href="{{ url_for('components') }}" 
-                               class="nav-link {{ 'active' if request.endpoint == 'components' else '' }}">
-                                <ty-icon name="layers" class="w-3.5 h-3.5 mr-2"></ty-icon>
-                                Components
-                            </a>
+<body class="ty-canvas antialiased">
+    <div class="app-container">
+        <!-- Navigation -->
+        <nav class="ty-elevated border-b ty-border-neutral-soft backdrop-blur-md">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center space-x-8">
+                        <div class="flex-shrink-0">
+                            <h1 class="text-xl font-bold">
+                                <a href="{{ url_for('index') }}" class="text-gradient-primary hover:scale-105 transition-transform duration-200 inline-block">
+                                    ✨ Ty + HTMX Demo
+                                </a>
+                            </h1>
+                        </div>
+                        <div class="hidden md:block">
+                            <div class="ml-10 flex items-baseline space-x-1">
+                                <a href="{{ url_for('index') }}" 
+                                   class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}">
+                                    <ty-icon name="home" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    Home
+                                </a>
+                                <a href="{{ url_for('forms') }}" 
+                                   class="nav-link {{ 'active' if request.endpoint == 'forms' else '' }}">
+                                    <ty-icon name="edit" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    Forms
+                                </a>
+                                <a href="{{ url_for('calendar') }}" 
+                                   class="nav-link {{ 'active' if request.endpoint == 'calendar' else '' }}">
+                                    <ty-icon name="calendar" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    Calendar
+                                </a>
+                                <a href="{{ url_for('modals') }}" 
+                                   class="nav-link {{ 'active' if request.endpoint == 'modals' else '' }}">
+                                    <ty-icon name="window" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    Modals
+                                </a>
+                                <a href="{{ url_for('components') }}" 
+                                   class="nav-link {{ 'active' if request.endpoint == 'components' else '' }}">
+                                    <ty-icon name="layers" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    Components
+                                </a>
+                            </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <!-- Theme Toggle -->
-                    <ty-button size="sm" flavor="secondary" onclick="toggleTheme()" class="group">
-                        <ty-icon name="sun" class="dark:hidden group-hover:rotate-180 transition-transform duration-300"></ty-icon>
-                        <ty-icon name="moon" class="hidden dark:inline group-hover:rotate-180 transition-transform duration-300"></ty-icon>
-                    </ty-button>
                     
-                    <!-- Demo Notification Trigger -->
-                    <ty-button size="sm" flavor="primary" 
-                               hx-get="/api/notifications/demo"
-                               hx-target="#notification-area"
-                               hx-swap="innerHTML"
-                               class="hidden sm:inline-flex hover:scale-105 transition-transform duration-200">
-                        <ty-icon name="bell" class="mr-2"></ty-icon>
-                        Test Notification
-                    </ty-button>
+                    <div class="flex items-center space-x-4">
+                        <!-- Theme Toggle -->
+                        <ty-button size="sm" flavor="secondary" onclick="toggleTheme()" class="group">
+                            <ty-icon name="sun" class="dark:hidden group-hover:rotate-180 transition-transform duration-300"></ty-icon>
+                            <ty-icon name="moon" class="hidden dark:inline group-hover:rotate-180 transition-transform duration-300"></ty-icon>
+                        </ty-button>
+                        
+                        <!-- Demo Notification Trigger -->
+                        <ty-button size="sm" flavor="primary" 
+                                   hx-get="/api/notifications/demo"
+                                   hx-target="#notification-area"
+                                   hx-swap="innerHTML"
+                                   class="hidden sm:inline-flex hover:scale-105 transition-transform duration-200">
+                            <ty-icon name="bell" class="mr-2"></ty-icon>
+                            Test Notification
+                        </ty-button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <!-- Notification Area -->
-    <div id="notification-area" class="fixed top-20 right-4 z-50"></div>
+        <!-- Notification Area -->
+        <div id="notification-area" class="fixed top-20 right-4 z-50"></div>
 
-    <!-- Main Content -->
-    <main class="flex-1">
-        {% block content %}{% endblock %}
-    </main>
+        <!-- Main Content -->
+        <main class="main-content">
+            {% block content %}{% endblock %}
+        </main>
 
-    <!-- Footer -->
-    <footer class="ty-content border-t ty-border mt-12">
-        <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center">
-                <div class="ty-text-">
-                    <p>&copy; 2025 Ty Components + HTMX Demo</p>
-                </div>
-                <div class="ty-text-">
-                    <p>Built with ❤️ using Ty Components, HTMX, and Flask</p>
+        <!-- Footer -->
+        <footer class="ty-content border-t ty-border mt-12">
+            <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center">
+                    <div class="ty-text-">
+                        <p>&copy; 2025 Ty Components + HTMX Demo</p>
+                    </div>
+                    <div class="ty-text-">
+                        <p>Built with ❤️ using Ty Components, HTMX, and Flask</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
+    </div>
 
     <!-- Ty Components JavaScript -->
     <script src="{{ url_for('static', filename='./js/main.js') }}"></script>

@@ -23,13 +23,13 @@
             
             <div class="flex flex-col sm:flex-row justify-center gap-6 animate-slide-up">
                 <ty-button flavor="primary" size="lg" 
-                           class="transform hover:scale-105 transition-transform duration-200 shadow-lg"
+                           class="transform hover:scale-[1.02] transition-transform duration-200 shadow-lg"
                            onclick="window.location.href='{{ url_for('forms') }}'">
                     <ty-icon name="zap" class="mr-1"></ty-icon>
                     Explore Interactive Forms
                 </ty-button>
                 <ty-button flavor="secondary" size="lg"
-                           class="transform hover:scale-105 transition-transform duration-200"
+                           class="transform hover:scale-[1.02] transition-transform duration-200"
                            onclick="window.location.href='{{ url_for('components') }}'">
                     <ty-icon name="layers" class="mr-1"></ty-icon>
                     View Components
@@ -56,7 +56,7 @@
     
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
         <!-- Interactive User Search -->
-        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+        <div class="glass-card group hover:scale-[1.02] transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
                 <div>
                     <h3 class="text-2xl font-bold ty-text-primary-strong mb-2">
@@ -92,7 +92,7 @@
         </div>
 
         <!-- Dynamic Task Management -->
-        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+        <div class="glass-card group hover:scale-[1.02] transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
                 <div>
                     <h3 class="text-2xl font-bold ty-text-success-strong mb-2">
@@ -154,7 +154,7 @@
         </div>
 
         <!-- Calendar Integration -->
-        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+        <div class="glass-card group hover:scale-[1.02] transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
                 <div class="feature-icon ty-bg-warning-soft mr-4">
                     <ty-icon name="calendar" class="ty-text-warning-strong"></ty-icon>
@@ -197,7 +197,7 @@
         </div>
 
         <!-- Dynamic Modals -->
-        <div class="glass-card group hover:scale-105 transition-all duration-300 animate-slide-up">
+        <div class="glass-card group hover:scale-[1.02] transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
                 <div class="feature-icon ty-bg-info-soft mr-4">
                     <ty-icon name="window" class="ty-text-info-strong"></ty-icon>
@@ -240,8 +240,8 @@
                     </p>
                 </div>
                 
-                <ty-modal id="demo-modal" size="lg">
-                    <div id="modal-content" class="p-6">
+                <ty-modal id="demo-modal">
+                    <div id="modal-content">
                         <div class="text-center">
                             <div class="spinner ty-text-primary mb-4"></div>
                             <p class="ty-text-neutral-mild">Loading amazing content...</p>
@@ -265,7 +265,7 @@
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="text-center group">
-                <div class="feature-icon ty-bg-primary-soft group-hover:scale-110 transition-transform duration-300">
+                <div class="feature-icon ty-bg-primary-soft group-hover:scale-[1.05] transition-transform duration-300">
                     <ty-icon name="zap" class="ty-text-primary-strong"></ty-icon>
                 </div>
                 <h3 class="text-xl font-bold ty-text-primary-strong mb-3">Real-time Validation</h3>
@@ -275,7 +275,7 @@
             </div>
             
             <div class="text-center group">
-                <div class="feature-icon ty-bg-success-soft group-hover:scale-110 transition-transform duration-300">
+                <div class="feature-icon ty-bg-success-soft group-hover:scale-[1.05] transition-transform duration-300">
                     <ty-icon name="search" class="ty-text-success-strong"></ty-icon>
                 </div>
                 <h3 class="text-xl font-bold ty-text-success-strong mb-3">Dynamic Search</h3>
@@ -285,7 +285,7 @@
             </div>
             
             <div class="text-center group">
-                <div class="feature-icon ty-bg-warning-soft group-hover:scale-110 transition-transform duration-300">
+                <div class="feature-icon ty-bg-warning-soft group-hover:scale-[1.05] transition-transform duration-300">
                     <ty-icon name="calendar" class="ty-text-warning-strong"></ty-icon>
                 </div>
                 <h3 class="text-xl font-bold ty-text-warning-strong mb-3">Calendar Events</h3>
@@ -372,8 +372,8 @@ document.body.addEventListener('date-select', function(event) {
 document.body.addEventListener('htmx:beforeRequest', function(event) {
     const target = event.detail.target;
     if (target) {
-        target.style.opacity = '0.7';
-        target.style.transform = 'scale(0.98)';
+        target.style.opacity = '0.8';
+        target.style.transform = 'scale(0.99)';
     }
 });
 

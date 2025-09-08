@@ -71,7 +71,7 @@ selected_dates = []
 @app.route("/")
 def index():
     """Home page showcasing various Ty components."""
-    return render_template("index.html", users=SAMPLE_USERS[:3], tasks=SAMPLE_TASKS[:2])
+    return render_template("index.html", users=SAMPLE_USERS[:5], tasks=SAMPLE_TASKS[:2])
 
 
 @app.route("/forms")

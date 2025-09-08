@@ -4,11 +4,11 @@
         <div class="group flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-sm hover:scale-[1.02] transition-all duration-200 cursor-pointer">
             <!-- User Avatar -->
             <div class="relative flex-shrink-0">
-                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
                     {{ user.name.split()[0][0] }}{{ user.name.split()[-1][0] if user.name.split()|length > 1 else '' }}
                 </div>
                 <!-- Role Badge -->
-                <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-lg
+                <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-sm
                            {% if user.role == 'Admin' %}ty-bg-danger ty-text-white
                            {% elif user.role == 'Editor' %}ty-bg-warning ty-text-white
                            {% else %}ty-bg-neutral ty-text-white{% endif %}">
@@ -41,7 +41,7 @@
                            hx-get="/api/modal/content/user-profile?user_id={{ user.id }}"
                            hx-target="#modal-content"
                            onclick="document.getElementById('demo-modal').show()">
-                    <ty-icon name="eye" class="w-4 h-4 mr-0"></ty-icon>
+                    <ty-icon name="eye" class="w-4 h-4 mr-2"></ty-icon>
                     View Profile
                 </ty-button>
             </div>

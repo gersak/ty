@@ -29,36 +29,49 @@
 /* Custom component classes */
 @layer components {
 
-  /* Modern card component using Ty variables */
+  /* Modern card component using Ty variables - Subtle Professional Version */
   .card {
     @apply rounded-xl p-6 shadow-sm transition-all duration-200;
     background-color: var(--ty-surface-elevated);
   }
 
   .card:hover {
-    @apply shadow-lg transform translate-y-[-1px];
+    @apply shadow-md;
+    transform: translateY(-1px);
   }
 
-  /* Glass morphism card */
+  /* Glass morphism card - Subtle Professional Version */
   .glass-card {
     @apply backdrop-blur-sm border border-white/20 rounded-2xl p-6;
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .glass-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
   }
 
   .dark .glass-card {
     @apply border-white/10;
-    background: rgba(0, 0, 0, 0.2);
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  /* Feature icon containers */
+  .dark .glass-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Feature icon containers - Subtle Professional Effects */
   .feature-icon {
     @apply w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-200;
   }
 
   .feature-icon:hover {
-    @apply scale-110 rotate-3;
+    @apply scale-105;
+    transform: scale(1.05) translateY(-1px);
   }
 
   /* Status badges using Ty colors */

@@ -13,7 +13,7 @@
   transition: var(--ty-transition-all);
 
   /* Text styling */
-  color: var(--ty-text-primary);
+  color: var(--ty-text);
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-sm);
   line-height: var(--ty-line-height-normal);
@@ -25,17 +25,17 @@
 }
 
 .option-content:hover {
-  background: var(--ty-bg-hover);
+  background: var(--ty-bg-primary-soft);
 }
 
 .option-content[highlighted] {
-  background: var(--ty-primary-100);
-  color: var(--ty-primary-900);
+  background: var(--ty-bg-primary-mild);
+  color: var(--ty-text-strong);
 }
 
 .option-content[selected] {
-  background: var(--ty-primary-50);
-  color: var(--ty-primary-900);
+  background: var(--ty-bg-primary-mild);
+  color: var(--ty-text-strong);
   font-weight: var(--ty-font-medium);
 }
 

@@ -145,7 +145,7 @@
 
   /* Navigation improvements */
   .nav-link {
-    @apply px-4 py-2 rounded-md text-sm font-medium transition-all duration-200;
+    @apply flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200;
     color: var(--ty-color-neutral-mild);
   }
 
@@ -157,6 +157,62 @@
   .nav-link.active {
     color: var(--ty-color-primary-strong);
     background-color: var(--ty-bg-primary-soft);
+  }
+
+  /* Theme toggle button specific styling */
+  .theme-toggle {
+    border: 1px solid var(--ty-border-neutral) !important;
+    background-color: var(--ty-surface-elevated) !important;
+  }
+
+  .theme-toggle:hover {
+    background-color: var(--ty-bg-primary-soft) !important;
+    border-color: var(--ty-border-primary) !important;
+  }
+
+  .dark .theme-toggle {
+    border-color: var(--ty-border-neutral) !important;
+    background-color: var(--ty-surface-elevated) !important;
+  }
+
+  .dark .theme-toggle:hover {
+    background-color: var(--ty-bg-primary-soft) !important;
+    border-color: var(--ty-border-primary) !important;
+  }
+
+  /* Theme icon visibility - Light mode shows moon, Dark mode shows sun */
+  .theme-icon-sun {
+    display: none;
+  }
+
+  .theme-icon-moon {
+    display: block;
+  }
+
+  .dark .theme-icon-sun {
+    display: block;
+  }
+
+  .dark .theme-icon-moon {
+    display: none;
+  }
+
+  /* Dropdown option text color fixes for dark mode */
+  ty-option {
+    color: var(--ty-color-neutral-strong) !important;
+  }
+
+  .dark ty-option {
+    color: var(--ty-color-neutral-faint) !important;
+  }
+
+  /* Alternative selector if the above doesn't work */
+  ty-dropdown ty-option {
+    color: var(--ty-color-neutral-strong) !important;
+  }
+
+  .dark ty-dropdown ty-option {
+    color: var(--ty-color-neutral-faint) !important;
   }
 }
 

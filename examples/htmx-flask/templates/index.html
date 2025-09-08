@@ -109,6 +109,7 @@
                     <div class="space-y-2">
                         <label class="form-label">Status Filter</label>
                         <ty-dropdown id="status-filter" 
+                                     name="status"
                                      placeholder="All Statuses"
                                      class="w-full"
                                      hx-get="/api/tasks/filter"
@@ -126,6 +127,7 @@
                     <div class="space-y-2">
                         <label class="form-label">Priority Filter</label>
                         <ty-dropdown id="priority-filter"
+                                     name="priority"
                                      placeholder="All Priorities"
                                      class="w-full"
                                      hx-get="/api/tasks/filter"
@@ -153,44 +155,74 @@
             </div>
         </div>
 
-        <!-- Calendar Integration -->
+        <!-- Event Scheduler -->
         <div class="glass-card group hover:scale-[1.02] transition-all duration-300 animate-slide-up">
             <div class="flex items-center mb-6">
                 <div class="feature-icon ty-bg-warning-soft mr-4">
-                    <ty-icon name="calendar" class="ty-text-warning-strong"></ty-icon>
+                    <ty-icon name="calendar-plus" class="ty-text-warning-strong"></ty-icon>
                 </div>
                 <div>
                     <h3 class="text-2xl font-bold ty-text-warning-strong mb-2">
-                        📅 Smart Calendar
+                        📅 Event Scheduler
                     </h3>
                     <p class="ty-text-neutral-mild">
-                        Interactive date selection with server integration
+                        Interactive calendar with real-time event management
                     </p>
                 </div>
             </div>
             
             <div class="space-y-6">
+                <!-- Calendar with Navigation -->
                 <div class="ty-elevated rounded-xl p-4">
-                    <ty-calendar-month 
-                        id="demo-calendar"
+                    <ty-calendar 
+                        id="event-calendar"
+                        name="event_date"
                         class="w-full"
-                        hx-post="/api/date/select"
-                        hx-target="#selected-dates"
-                        hx-swap="beforeend"
-                        hx-trigger="date-select from:body">
-                    </ty-calendar-month>
+                        show-navigation="true">
+                    </ty-calendar>
                 </div>
                 
-                <div class="space-y-3">
+                <!-- Quick Event Creation -->
+                <div class="space-y-4">
                     <div class="flex items-center justify-between">
-                        <h4 class="font-semibold ty-text-neutral-strong">Selected Dates</h4>
-                        <ty-button size="sm" flavor="secondary" 
-                                   onclick="document.getElementById('selected-dates').innerHTML = '<p class=\'ty-text-neutral-mild text-center italic\'>No dates selected</p>'">
-                            Clear All
-                        </ty-button>
+                        <h4 class="font-semibold ty-text-neutral-strong">Quick Event</h4>
+                        <div id="calendar-loading" class="htmx-indicator">
+                            <div class="spinner ty-text-primary"></div>
+                        </div>
                     </div>
-                    <div id="selected-dates" class="space-y-2 max-h-40 overflow-y-auto ty-bg-neutral-soft rounded-lg p-4">
-                        <p class="ty-text-neutral-mild text-center italic">No dates selected</p>
+                    
+                    <form id="event-form" class="flex gap-3 items-center" 
+                          hx-post="/api/calendar/create-event"
+                          hx-target="#calendar-events"
+                          hx-swap="innerHTML">
+                        <input type="hidden" name="event_date" id="selected-date-input" value="">
+                        <ty-input name="event_title" 
+                                  placeholder="Enter event title..." 
+                                  class="flex-1"
+                                  required>
+                        </ty-input>
+                        <ty-dropdown name="event_type" class="w-32">
+                            <ty-option value="meeting">🤝 Meeting</ty-option>
+                            <ty-option value="deadline">📋 Deadline</ty-option>
+                            <ty-option value="personal">👤 Personal</ty-option>
+                            <ty-option value="reminder">⏰ Reminder</ty-option>
+                        </ty-dropdown>
+                        <ty-button type="submit" flavor="primary" size="lg">
+                            <ty-icon name="plus"></ty-icon>
+                            Add
+                        </ty-button>
+                    </form>
+                    
+                    <div id="date-selection-status" class="text-sm ty-text-neutral-mild">
+                        📅 Click on a date above to start scheduling events
+                    </div>
+                </div>
+                
+                <!-- Events Display -->
+                <div class="space-y-3">
+                    <h4 class="font-semibold ty-text-neutral-strong">Scheduled Events</h4>
+                    <div id="calendar-events" class="space-y-2 max-h-48 overflow-y-auto ty-bg-neutral-soft rounded-lg p-4">
+                        {% include 'partials/event_list.html' %}
                     </div>
                 </div>
             </div>
@@ -286,11 +318,11 @@
             
             <div class="text-center group">
                 <div class="feature-icon ty-bg-warning-soft group-hover:scale-[1.05] transition-transform duration-300">
-                    <ty-icon name="calendar" class="ty-text-warning-strong"></ty-icon>
+                    <ty-icon name="calendar-plus" class="ty-text-warning-strong"></ty-icon>
                 </div>
-                <h3 class="text-xl font-bold ty-text-warning-strong mb-3">Calendar Events</h3>
+                <h3 class="text-xl font-bold ty-text-warning-strong mb-3">Event Scheduler</h3>
                 <p class="ty-text-neutral-mild">
-                    Date selection with custom event handling and server-side processing.
+                    Interactive calendar with real-time event creation, management, and server-side persistence.
                 </p>
             </div>
         </div>
@@ -323,49 +355,193 @@
 
 <!-- Enhanced JavaScript -->
 <script>
-// Enhanced calendar date selection with beautiful animations
-document.body.addEventListener('date-select', function(event) {
-    const { date, value } = event.detail;
+// Enhanced calendar event handling with ty-calendar
+document.body.addEventListener('change', function(event) {
+    // Only handle calendar change events
+    if (event.target.id !== 'event-calendar') return;
     
-    // Create beautiful date display
-    const formattedDate = new Intl.DateTimeFormat('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    }).format(date);
+    console.log('📅 Calendar change event received:', event.detail);
     
-    // Add to selected dates with animation
-    const selectedDates = document.getElementById('selected-dates');
+    const { month, year, day, action, source } = event.detail;
     
-    // Clear the "no dates" message if it exists
-    if (selectedDates.innerHTML.includes('No dates selected')) {
-        selectedDates.innerHTML = '';
+    if (action === 'select' && day) {
+        console.log(`✅ Date selected: ${year}-${month}-${day}`);
+        
+        // Format the date as ISO string (YYYY-MM-DD)
+        const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        
+        // Update the hidden form field
+        const hiddenInput = document.getElementById('selected-date-input');
+        if (hiddenInput) {
+            hiddenInput.value = dateStr;
+            console.log(`📝 Updated hidden input with: ${dateStr}`);
+        }
+        
+        // Update the status display
+        updateDateSelectionStatus(year, month, day);
+        
+        // Add visual feedback to calendar
+        const calendar = event.target;
+        calendar.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+            calendar.style.transform = 'scale(1)';
+        }, 150);
+        
+        // Trigger the calendar select-date endpoint to load events
+        htmx.ajax('POST', '/api/calendar/select-date', {
+            values: { 
+                event_date: dateStr,
+                year: year,
+                month: month,
+                day: day
+            },
+            target: '#calendar-events',
+            swap: 'innerHTML'
+        });
+        
+    } else if (action === 'navigate') {
+        console.log(`🧭 Navigation: ${year}-${month}`);
+        // Clear selection when navigating to different month
+        const hiddenInput = document.getElementById('selected-date-input');
+        if (hiddenInput) {
+            hiddenInput.value = '';
+        }
+        updateDateSelectionStatus(null, null, null);
     }
+});
+
+function updateDateSelectionStatus(year, month, day) {
+    const statusDiv = document.getElementById('date-selection-status');
+    if (!statusDiv) return;
     
-    // Create new date element with animation
-    const dateElement = document.createElement('div');
-    dateElement.className = 'flex items-center justify-between ty-bg-white/50 rounded-lg p-3 animate-scale-in';
-    dateElement.innerHTML = `
-        <div class="flex items-center space-x-3">
-            <div class="w-3 h-3 rounded-full ty-bg-primary"></div>
-            <span class="font-medium">${formattedDate}</span>
+    if (year && month && day) {
+        const date = new Date(year, month - 1, day);
+        const formattedDate = new Intl.DateTimeFormat('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }).format(date);
+        
+        statusDiv.innerHTML = `✅ Selected: <strong>${formattedDate}</strong> - Ready to add events!`;
+        statusDiv.className = 'text-sm ty-text-success-strong';
+        
+        // Show success toast
+        showDateSelectedToast(formattedDate);
+    } else {
+        statusDiv.innerHTML = '📅 Click on a date above to start scheduling events';
+        statusDiv.className = 'text-sm ty-text-neutral-mild';
+    }
+}
+
+function showDateSelectedToast(dateStr) {
+    // Create a temporary toast notification
+    const toast = document.createElement('div');
+    toast.className = 'fixed top-4 right-4 ty-bg-success rounded-lg p-3 text-white shadow-lg z-50 animate-slide-in-right';
+    toast.innerHTML = `
+        <div class="flex items-center space-x-2">
+            <ty-icon name="calendar-check" class="text-white"></ty-icon>
+            <span class="font-medium">Selected: ${dateStr}</span>
         </div>
-        <ty-button size="xs" flavor="danger" 
-                   onclick="this.parentElement.remove(); 
-                           if(document.getElementById('selected-dates').children.length === 0) {
-                               document.getElementById('selected-dates').innerHTML = '<p class=\"ty-text-neutral-mild text-center italic\">No dates selected</p>';
-                           }">
-            <ty-icon name="x"></ty-icon>
-        </ty-button>
     `;
     
-    selectedDates.appendChild(dateElement);
+    document.body.appendChild(toast);
     
-    // Send to server
-    htmx.ajax('POST', '/api/date/select', {
-        values: { date: date.toISOString().split('T')[0] }
-    });
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.transform = 'translateX(100%)';
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            if (toast.parentNode) {
+                toast.parentNode.removeChild(toast);
+            }
+        }, 300);
+    }, 3000);
+}
+
+// Form submission enhancement
+document.body.addEventListener('htmx:beforeRequest', function(event) {
+    if (event.target.matches('form[hx-post*="/api/calendar/create-event"]')) {
+        // Check if a date is selected
+        const hiddenInput = document.getElementById('selected-date-input');
+        if (!hiddenInput || !hiddenInput.value) {
+            event.preventDefault();
+            
+            // Show error feedback
+            const statusDiv = document.getElementById('date-selection-status');
+            if (statusDiv) {
+                statusDiv.innerHTML = '❌ Please select a date from the calendar first!';
+                statusDiv.className = 'text-sm ty-text-danger-strong';
+                
+                // Reset after 3 seconds
+                setTimeout(() => {
+                    statusDiv.innerHTML = '📅 Click on a date above to start scheduling events';
+                    statusDiv.className = 'text-sm ty-text-neutral-mild';
+                }, 3000);
+            }
+            
+            return false;
+        }
+        
+        console.log('📤 Submitting event with date:', hiddenInput.value);
+    }
+});
+
+document.body.addEventListener('htmx:afterRequest', function(event) {
+    if (event.target.matches('form[hx-post*="/api/calendar/create-event"]')) {
+        if (event.detail.xhr.status === 200) {
+            // Clear the form after successful submission
+            const form = event.target;
+            const titleInput = form.querySelector('ty-input[name="event_title"]');
+            if (titleInput) {
+                titleInput.value = '';
+                titleInput.setAttribute('value', '');
+            }
+            
+            // Reset dropdown
+            const dropdown = form.querySelector('ty-dropdown[name="event_type"]');
+            if (dropdown) {
+                dropdown.value = 'meeting';
+            }
+            
+            // Show success feedback
+            if (titleInput) {
+                titleInput.style.boxShadow = '0 0 0 2px var(--ty-color-success)';
+                setTimeout(() => {
+                    titleInput.style.boxShadow = '';
+                }, 1000);
+            }
+            
+            console.log('✅ Event created successfully');
+        } else {
+            console.error('❌ Failed to create event:', event.detail.xhr.status);
+        }
+    }
+});
+
+// Calendar component initialization check
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔍 Checking event calendar setup...');
+    
+    const calendar = document.getElementById('event-calendar');
+    if (calendar) {
+        console.log('✅ Event calendar found');
+        
+        // Check if the calendar is properly initialized
+        setTimeout(() => {
+            const hasNavigation = calendar.querySelector('ty-calendar-navigation');
+            const hasMonth = calendar.querySelector('ty-calendar-month');
+            
+            console.log('🧭 Navigation component:', hasNavigation ? '✅' : '❌');
+            console.log('📅 Month component:', hasMonth ? '✅' : '❌');
+            
+            if (!hasNavigation || !hasMonth) {
+                console.warn('⚠️ Calendar components not fully initialized');
+            }
+        }, 1000);
+    } else {
+        console.error('❌ Event calendar element not found!');
+    }
 });
 
 // Add loading states and animations

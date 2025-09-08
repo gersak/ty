@@ -1,0 +1,195 @@
+<div class="p-8 bg-white dark:bg-gray-800 rounded-lg">
+    <div class="flex items-start space-x-4 mb-6">
+        <!-- Priority Indicator -->
+        <div class="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center
+                   {% if task.priority == 'critical' %}ty-bg-danger-soft
+                   {% elif task.priority == 'high' %}ty-bg-warning-soft
+                   {% elif task.priority == 'medium' %}ty-bg-info-soft
+                   {% else %}ty-bg-neutral-soft{% endif %}">
+            <ty-icon name="{% if task.priority == 'critical' %}alert-triangle
+                          {% elif task.priority == 'high' %}arrow-up
+                          {% elif task.priority == 'medium' %}minus
+                          {% else %}arrow-down{% endif %}" 
+                     class="w-6 h-6 
+                           {% if task.priority == 'critical' %}ty-text-danger-strong
+                           {% elif task.priority == 'high' %}ty-text-warning-strong
+                           {% elif task.priority == 'medium' %}ty-text-info-strong
+                           {% else %}ty-text-neutral-strong{% endif %}"></ty-icon>
+        </div>
+        
+        <!-- Task Header -->
+        <div class="flex-1">
+            <div class="flex items-center space-x-3 mb-2">
+                <h3 class="text-xl font-semibold ty-text-neutral-strong">{{ task.title }}</h3>
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+                           {% if task.status == 'completed' %}ty-bg-success-soft ty-text-success-strong
+                           {% elif task.status == 'in-progress' %}ty-bg-warning-soft ty-text-warning-strong
+                           {% else %}ty-bg-neutral-soft ty-text-neutral-strong{% endif %}">
+                    {% if task.status == 'completed' %}✅ Completed
+                    {% elif task.status == 'in-progress' %}🔄 In Progress
+                    {% else %}⏸️ Pending{% endif %}
+                </span>
+            </div>
+            
+            <div class="flex items-center space-x-4 text-sm ty-text-neutral-mild">
+                <div class="flex items-center space-x-1">
+                    <ty-icon name="flag" class="w-4 h-4"></ty-icon>
+                    <span class="capitalize">{{ task.priority }} Priority</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <ty-icon name="hash" class="w-4 h-4"></ty-icon>
+                    <span>Task #{{ task.id }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Task Description -->
+    <div class="mb-6">
+        <h4 class="text-lg font-medium ty-text-neutral-strong mb-3">Description</h4>
+        <div class="ty-bg-neutral-soft rounded-lg p-4">
+            <p class="ty-text-neutral-mild leading-relaxed">
+                {% if task.title == "Design new homepage" %}
+                Create a modern, responsive homepage design that showcases our latest features and improves user engagement. 
+                The design should follow our brand guidelines and include sections for hero content, feature highlights, 
+                testimonials, and a clear call-to-action.
+                {% elif task.title == "Fix login bug" %}
+                Investigate and resolve the authentication issue where users are experiencing intermittent login failures. 
+                The bug appears to be related to session management and affects approximately 5% of login attempts. 
+                Priority is critical due to user experience impact.
+                {% elif task.title == "Update documentation" %}
+                Review and update all API documentation to reflect the latest changes in version 2.1. 
+                Include new endpoint specifications, updated authentication flows, and revised error handling examples. 
+                Ensure all code samples are tested and functional.
+                {% elif task.title == "Optimize database queries" %}
+                Analyze slow-performing database queries and implement optimizations to improve application response times. 
+                Focus on the user dashboard queries which are currently taking 3-5 seconds to load. 
+                Target is to reduce query time to under 1 second.
+                {% else %}
+                This is a sample task description that provides detailed information about the work to be completed. 
+                In a real application, this would contain the actual task requirements and specifications.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    
+    <!-- Task Metadata -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+            <h4 class="text-lg font-medium ty-text-neutral-strong mb-3">Details</h4>
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm ty-text-neutral-mild">Created</span>
+                    <span class="text-sm font-medium">{{ "2025-01-" + (task.id|string|length * 5)|string + "-15" }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm ty-text-neutral-mild">Due Date</span>
+                    <span class="text-sm font-medium">{{ "2025-02-" + ((task.id * 3) % 28 + 1)|string + "-15" }}</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm ty-text-neutral-mild">Assignee</span>
+                    <span class="text-sm font-medium">
+                        {% if task.id == 1 %}Alice Johnson
+                        {% elif task.id == 2 %}Bob Smith
+                        {% elif task.id == 3 %}Carol Williams
+                        {% else %}David Brown{% endif %}
+                    </span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm ty-text-neutral-mild">Estimated Hours</span>
+                    <span class="text-sm font-medium">{{ task.id * 4 + 8 }}h</span>
+                </div>
+            </div>
+        </div>
+        
+        <div>
+            <h4 class="text-lg font-medium ty-text-neutral-strong mb-3">Progress</h4>
+            <div class="space-y-4">
+                <!-- Progress Bar -->
+                <div>
+                    <div class="flex justify-between text-sm ty-text-neutral-mild mb-1">
+                        <span>Completion</span>
+                        <span>{{ 75 if task.status == 'in-progress' else (100 if task.status == 'completed' else 25) }}%</span>
+                    </div>
+                    <div class="w-full ty-bg-neutral-soft rounded-full h-2">
+                        <div class="{% if task.status == 'completed' %}ty-bg-success
+                                   {% elif task.status == 'in-progress' %}ty-bg-warning
+                                   {% else %}ty-bg-neutral{% endif %} h-2 rounded-full" 
+                             style="width: {{ 75 if task.status == 'in-progress' else (100 if task.status == 'completed' else 25) }}%"></div>
+                    </div>
+                </div>
+                
+                <!-- Subtasks -->
+                <div>
+                    <span class="text-sm ty-text-neutral-mild mb-2 block">Subtasks</span>
+                    <div class="space-y-2">
+                        <div class="flex items-center space-x-2 text-sm">
+                            <ty-icon name="check-circle" class="w-4 h-4 ty-text-success"></ty-icon>
+                            <span class="ty-text-neutral-mild">Research requirements</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <ty-icon name="{% if task.status == 'completed' %}check-circle{% else %}circle{% endif %}" 
+                                     class="w-4 h-4 {% if task.status == 'completed' %}ty-text-success{% else %}ty-text-neutral-mild{% endif %}"></ty-icon>
+                            <span class="ty-text-neutral-mild">Implementation</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-sm">
+                            <ty-icon name="{% if task.status == 'completed' %}check-circle{% else %}circle{% endif %}" 
+                                     class="w-4 h-4 {% if task.status == 'completed' %}ty-text-success{% else %}ty-text-neutral-mild{% endif %}"></ty-icon>
+                            <span class="ty-text-neutral-mild">Testing & Review</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Comments/Activity -->
+    <div class="mb-6">
+        <h4 class="text-lg font-medium ty-text-neutral-strong mb-3">Recent Activity</h4>
+        <div class="space-y-3">
+            <div class="flex items-start space-x-3 py-3 border-l-2 border-l-success pl-4 ty-bg-success-soft rounded-r">
+                <ty-icon name="message-circle" class="w-4 h-4 ty-text-success mt-0.5"></ty-icon>
+                <div>
+                    <p class="text-sm ty-text-neutral-mild">Progress update: Implementation phase completed successfully.</p>
+                    <p class="text-xs ty-text-neutral-faint mt-1">2 hours ago</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-3 py-3 border-l-2 border-l-info pl-4 ty-bg-info-soft rounded-r">
+                <ty-icon name="edit" class="w-4 h-4 ty-text-info mt-0.5"></ty-icon>
+                <div>
+                    <p class="text-sm ty-text-neutral-mild">Task details updated with new requirements.</p>
+                    <p class="text-xs ty-text-neutral-faint mt-1">1 day ago</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-3 py-3 border-l-2 border-l-warning pl-4 ty-bg-warning-soft rounded-r">
+                <ty-icon name="clock" class="w-4 h-4 ty-text-warning mt-0.5"></ty-icon>
+                <div>
+                    <p class="text-sm ty-text-neutral-mild">Due date extended by 3 days due to scope changes.</p>
+                    <p class="text-xs ty-text-neutral-faint mt-1">3 days ago</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Buttons -->
+    <div class="flex justify-between items-center pt-6 border-t ty-border">
+        <div class="flex space-x-3">
+            <ty-button flavor="secondary" size="sm">
+                <ty-icon name="edit" class="mr-2"></ty-icon>
+                Edit Task
+            </ty-button>
+            <ty-button flavor="{% if task.status == 'completed' %}warning{% else %}success{% endif %}" 
+                       size="sm"
+                       hx-post="/api/tasks/{{ task.id }}/toggle"
+                       hx-target="#dynamic-modal-content"
+                       hx-swap="outerHTML">
+                <ty-icon name="{% if task.status == 'completed' %}rotate-ccw{% else %}check{% endif %}" class="mr-2"></ty-icon>
+                {% if task.status == 'completed' %}Reopen Task{% else %}Mark Complete{% endif %}
+            </ty-button>
+        </div>
+        
+        <ty-button flavor="neutral" onclick="document.getElementById('demo-modal').hide()">
+            Close
+        </ty-button>
+    </div>
+</div>

@@ -1,65 +1,61 @@
-<div class="group ty-bg-white/50 dark:ty-bg-white/5 rounded-xl p-4 border ty-border-neutral-soft hover:shadow-md transition-all duration-200 mb-3 animate-fade-in">
-    <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-4 flex-1">
-            <!-- Task Status Toggle -->
-            <ty-button size="sm" 
-                       flavor="{% if task.status == 'completed' %}success{% else %}secondary{% endif %}"
-                       class="flex-shrink-0"
-                       hx-post="/api/tasks/{{ task.id }}/toggle"
-                       hx-target="closest div"
-                       hx-swap="outerHTML">
-                {% if task.status == 'completed' %}
-                    <ty-icon name="check-circle" class="w-4 h-4"></ty-icon>
-                {% else %}
-                    <ty-icon name="circle" class="w-4 h-4"></ty-icon>
+<div class="group flex items-center space-x-4 p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-sm hover:scale-[1.02] transition-all duration-200 mb-3 animate-fade-in">
+    <!-- Task Status Toggle -->
+    <ty-button size="sm" 
+               flavor="{% if task.status == 'completed' %}success{% else %}secondary{% endif %}"
+               class="flex-shrink-0"
+               hx-post="/api/tasks/{{ task.id }}/toggle"
+               hx-target="closest div"
+               hx-swap="outerHTML">
+        {% if task.status == 'completed' %}
+            <ty-icon name="check-circle" class="w-4 h-4"></ty-icon>
+        {% else %}
+            <ty-icon name="circle" class="w-4 h-4"></ty-icon>
+        {% endif %}
+    </ty-button>
+    
+    <!-- Task Content -->
+    <div class="flex-1 min-w-0">
+        <h4 class="font-semibold ty-text-neutral-strong truncate 
+                 {% if task.status == 'completed' %}line-through opacity-60{% endif %}">
+            {{ task.title }}
+        </h4>
+        <div class="flex items-center space-x-2 mt-1">
+            <!-- Status Badge -->
+            <span class="status-{{ task.status }}">
+                {% if task.status == 'pending' %}
+                    ⏳ Pending
+                {% elif task.status == 'in-progress' %}
+                    🚀 In Progress  
+                {% elif task.status == 'completed' %}
+                    ✅ Completed
                 {% endif %}
-            </ty-button>
+            </span>
             
-            <!-- Task Content -->
-            <div class="flex-1 min-w-0">
-                <h4 class="font-semibold ty-text-neutral-strong truncate 
-                         {% if task.status == 'completed' %}line-through opacity-60{% endif %}">
-                    {{ task.title }}
-                </h4>
-                <div class="flex items-center space-x-2 mt-1">
-                    <!-- Status Badge -->
-                    <span class="status-{{ task.status }}">
-                        {% if task.status == 'pending' %}
-                            ⏳ Pending
-                        {% elif task.status == 'in-progress' %}
-                            🚀 In Progress  
-                        {% elif task.status == 'completed' %}
-                            ✅ Completed
-                        {% endif %}
-                    </span>
-                    
-                    <!-- Priority Badge -->
-                    <span class="priority-{{ task.priority }}">
-                        {% if task.priority == 'critical' %}
-                            🔴 Critical
-                        {% elif task.priority == 'high' %}
-                            🟠 High
-                        {% elif task.priority == 'medium' %}
-                            🟡 Medium
-                        {% elif task.priority == 'low' %}
-                            🔵 Low
-                        {% endif %}
-                    </span>
-                </div>
-            </div>
-            
-            <!-- Task Actions (shown on hover) -->
-            <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
-                <ty-button size="xs" flavor="secondary"
-                           hx-get="/api/modal/content/task-details?task_id={{ task.id }}"
-                           hx-target="#modal-content"
-                           onclick="document.getElementById('demo-modal').show()">
-                    <ty-icon name="eye" class="w-3 h-3"></ty-icon>
-                </ty-button>
-                <ty-button size="xs" flavor="outline">
-                    <ty-icon name="edit" class="w-3 h-3"></ty-icon>
-                </ty-button>
-            </div>
+            <!-- Priority Badge -->
+            <span class="priority-{{ task.priority }}">
+                {% if task.priority == 'critical' %}
+                    🔴 Critical
+                {% elif task.priority == 'high' %}
+                    🟠 High
+                {% elif task.priority == 'medium' %}
+                    🟡 Medium
+                {% elif task.priority == 'low' %}
+                    🔵 Low
+                {% endif %}
+            </span>
         </div>
+    </div>
+    
+    <!-- Task Actions (shown on hover) -->
+    <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex space-x-2">
+        <ty-button size="xs" flavor="secondary"
+                   hx-get="/api/modal/content/task-details?task_id={{ task.id }}"
+                   hx-target="#modal-content"
+                   onclick="document.getElementById('demo-modal').show()">
+            <ty-icon name="eye" class="w-3 h-3"></ty-icon>
+        </ty-button>
+        <ty-button size="xs" flavor="outline">
+            <ty-icon name="edit" class="w-3 h-3"></ty-icon>
+        </ty-button>
     </div>
 </div>

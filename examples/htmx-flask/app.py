@@ -67,11 +67,85 @@ SAMPLE_TASKS = [
 form_submissions = []
 selected_dates = []
 
+# Event scheduler storage
+user_events = {}  # Format: {"2025-01-15": [event1, event2, ...]}
+event_counter = 1
+
+# Event type configuration
+EVENT_TYPES = {
+    "meeting": {"icon": "users", "color": "primary", "name": "Meeting"},
+    "deadline": {"icon": "calendar-x", "color": "danger", "name": "Deadline"}, 
+    "personal": {"icon": "user", "color": "info", "name": "Personal"},
+    "reminder": {"icon": "bell", "color": "warning", "name": "Reminder"}
+}
+
+# Add some demo events to show persistence
+def initialize_demo_events():
+    """Add some sample events to demonstrate persistence."""
+    global event_counter, user_events
+    
+    demo_events = [
+        {
+            "date": "2025-01-15",
+            "title": "Team Standup",
+            "type": "meeting",
+            "time": "9:00 AM"
+        },
+        {
+            "date": "2025-01-15", 
+            "title": "Project Deadline",
+            "type": "deadline",
+            "time": "5:00 PM"
+        },
+        {
+            "date": "2025-01-20",
+            "title": "Doctor Appointment", 
+            "type": "personal",
+            "time": "2:00 PM"
+        },
+        {
+            "date": "2025-01-20",
+            "title": "Call Mom",
+            "type": "reminder",
+            "time": "7:00 PM"
+        }
+    ]
+    
+    for demo_event in demo_events:
+        date_str = demo_event["date"]
+        type_config = EVENT_TYPES.get(demo_event["type"], EVENT_TYPES["personal"])
+        
+        # Format date for display
+        from datetime import datetime
+        date_obj = datetime.fromisoformat(date_str)
+        formatted_date = date_obj.strftime("%A, %B %d, %Y")
+        
+        event = {
+            "id": event_counter,
+            "title": demo_event["title"],
+            "date": date_str,
+            "formatted_date": formatted_date,
+            "type": demo_event["type"],
+            "icon": type_config["icon"],
+            "color": type_config["color"],
+            "name": type_config["name"],
+            "time": demo_event.get("time"),
+            "created_at": datetime.now().isoformat()
+        }
+        
+        if date_str not in user_events:
+            user_events[date_str] = []
+        user_events[date_str].append(event)
+        event_counter += 1
+
+# Initialize demo events on startup
+initialize_demo_events()
+
 
 @app.route("/")
 def index():
     """Home page showcasing various Ty components."""
-    return render_template("index.html", users=SAMPLE_USERS[:5], tasks=SAMPLE_TASKS[:2])
+    return render_template("index.html", users=SAMPLE_USERS[:5], tasks=SAMPLE_TASKS)
 
 
 @app.route("/forms")
@@ -174,12 +248,23 @@ def filter_tasks():
     """Filter tasks by status or priority."""
     status = request.args.get("status")
     priority = request.args.get("priority")
+    
+    # Debug logging
+    print(f"=== TASK FILTER DEBUG ===")
+    print(f"Status filter: '{status}'")
+    print(f"Priority filter: '{priority}'")
+    print(f"All request args: {dict(request.args)}")
 
     filtered_tasks = SAMPLE_TASKS
     if status:
         filtered_tasks = [t for t in filtered_tasks if t["status"] == status]
+        print(f"After status filter: {len(filtered_tasks)} tasks")
     if priority:
         filtered_tasks = [t for t in filtered_tasks if t["priority"] == priority]
+        print(f"After priority filter: {len(filtered_tasks)} tasks")
+    
+    print(f"Final filtered tasks: {[t['title'] for t in filtered_tasks]}")
+    print("========================")
 
     return render_template("partials/task_list.html", tasks=filtered_tasks)
 
@@ -353,12 +438,30 @@ def calendar_events():
 def select_date():
     """Handle date selection from calendar."""
     date_str = request.form.get("date")
+    
+    # Debug logging
+    print(f"=== CALENDAR DATE SELECT DEBUG ===")
+    print(f"Raw date received: '{date_str}'")
+    print(f"All form data: {dict(request.form)}")
+    print("================================")
+    
     if date_str:
-        selected_dates.append(
-            {"date": date_str, "timestamp": datetime.now().isoformat()}
-        )
-        return render_template("partials/selected_date.html", date=date_str)
-    return "Invalid date", 400
+        try:
+            # Parse and format the date nicely
+            from datetime import datetime
+            date_obj = datetime.fromisoformat(date_str)
+            formatted_date = date_obj.strftime("%A, %B %d, %Y")
+            
+            selected_dates.append(
+                {"date": date_str, "formatted": formatted_date, "timestamp": datetime.now().isoformat()}
+            )
+            return render_template("partials/selected_date.html", date=formatted_date)
+        except Exception as e:
+            print(f"Date parsing error: {e}")
+            return f"<p class='ty-text-danger'>Error processing date: {str(e)}</p>", 400
+    
+    print("No date received!")
+    return "<p class='ty-text-danger'>No date received</p>", 400
 
 
 @app.route("/test-icons")
@@ -522,6 +625,161 @@ def calendar_date_select():
 
     except Exception as e:
         return f"<p class='ty-text-danger'>❌ Error processing date: {str(e)}</p>"
+
+
+@app.route("/api/calendar/select-date", methods=["POST"])
+def calendar_select_date():
+    """Handle event calendar date selection - returns events for selected date."""
+    global event_counter
+    
+    # Debug logging
+    print("=== EVENT CALENDAR DATE SELECT ===")
+    print(f"Form data: {dict(request.form)}")
+    print("==================================")
+    
+    # Parse the date from ty-calendar change event
+    event_date = request.form.get("event_date")  # ISO date string from form
+    year = request.form.get("year")
+    month = request.form.get("month") 
+    day = request.form.get("day")
+    
+    # Construct date string
+    if year and month and day:
+        # Convert to integers for proper formatting
+        try:
+            year_int = int(year)
+            month_int = int(month)
+            day_int = int(day)
+            date_str = f"{year_int}-{month_int:02d}-{day_int:02d}"
+        except ValueError:
+            return render_template("partials/event_list.html", events=[], selected_date="Invalid date")
+    elif event_date:
+        date_str = event_date
+    else:
+        return render_template("partials/event_list.html", events=[], selected_date="Unknown")
+    
+    try:
+        # Get events for this date
+        events = user_events.get(date_str, [])
+        
+        # Format the date for display
+        date_obj = datetime.fromisoformat(date_str)
+        formatted_date = date_obj.strftime("%A, %B %d, %Y")
+        
+        print(f"📅 Date selected: {date_str} ({formatted_date})")
+        print(f"📋 Found {len(events)} events")
+        
+        return render_template("partials/event_list.html", 
+                             events=events, 
+                             selected_date=formatted_date)
+        
+    except Exception as e:
+        print(f"Error processing date selection: {e}")
+        return render_template("partials/event_list.html", events=[], selected_date="Error")
+
+
+@app.route("/api/calendar/create-event", methods=["POST"])
+def create_event():
+    """Create a new event for the selected date."""
+    global event_counter
+    
+    print("=== CREATE EVENT ===")
+    print(f"Form data: {dict(request.form)}")
+    print("===================")
+    
+    # Get form data
+    event_title = request.form.get("event_title", "").strip()
+    event_type = request.form.get("event_type", "personal")
+    event_date = request.form.get("event_date")  # From calendar
+    
+    # Validate input
+    if not event_title:
+        return "<p class='ty-text-danger'>❌ Event title is required</p>", 400
+        
+    if not event_date:
+        return "<p class='ty-text-danger'>❌ Please select a date first</p>", 400
+    
+    try:
+        # Get event type configuration
+        type_config = EVENT_TYPES.get(event_type, EVENT_TYPES["personal"])
+        
+        # Parse date for validation
+        date_obj = datetime.fromisoformat(event_date)
+        formatted_date = date_obj.strftime("%A, %B %d, %Y")
+        
+        # Create new event
+        new_event = {
+            "id": event_counter,
+            "title": event_title,
+            "date": event_date,
+            "formatted_date": formatted_date,
+            "type": event_type,
+            "icon": type_config["icon"],
+            "color": type_config["color"],
+            "name": type_config["name"],
+            "time": None,  # Could be extended to include time
+            "created_at": datetime.now().isoformat()
+        }
+        
+        # Add to storage
+        if event_date not in user_events:
+            user_events[event_date] = []
+        user_events[event_date].append(new_event)
+        
+        event_counter += 1
+        
+        print(f"✅ Created event: {event_title} on {formatted_date}")
+        print(f"📊 Total events for {event_date}: {len(user_events[event_date])}")
+        
+        # Return updated event list
+        return render_template("partials/event_list.html", 
+                             events=user_events[event_date], 
+                             selected_date=formatted_date)
+        
+    except Exception as e:
+        print(f"Error creating event: {e}")
+        return f"<p class='ty-text-danger'>❌ Error creating event: {str(e)}</p>", 500
+
+
+@app.route("/api/calendar/events/<int:event_id>", methods=["DELETE"])
+def delete_event(event_id):
+    """Delete an event by ID."""
+    
+    print(f"=== DELETE EVENT {event_id} ===")
+    
+    # Find and remove the event
+    event_found = False
+    target_date = None
+    
+    for date_str, events in user_events.items():
+        for i, event in enumerate(events):
+            if event["id"] == event_id:
+                removed_event = events.pop(i)
+                event_found = True
+                target_date = date_str
+                print(f"🗑️ Deleted event: {removed_event['title']} from {date_str}")
+                break
+        if event_found:
+            break
+    
+    if not event_found:
+        return "<p class='ty-text-danger'>❌ Event not found</p>", 404
+    
+    try:
+        # Return updated event list for the date
+        remaining_events = user_events.get(target_date, [])
+        date_obj = datetime.fromisoformat(target_date)
+        formatted_date = date_obj.strftime("%A, %B %d, %Y")
+        
+        print(f"📊 Remaining events for {target_date}: {len(remaining_events)}")
+        
+        return render_template("partials/event_list.html", 
+                             events=remaining_events, 
+                             selected_date=formatted_date)
+                             
+    except Exception as e:
+        print(f"Error after deleting event: {e}")
+        return f"<p class='ty-text-danger'>❌ Error: {str(e)}</p>", 500
 
 
 @app.route("/api/month-events/<int:year>/<int:month>")

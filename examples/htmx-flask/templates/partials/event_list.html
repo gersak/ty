@@ -1,24 +1,42 @@
-{% if initial_events %}
+{% if events %}
 <div class="animate-fade-in space-y-3">
-    {% for event in initial_events %}
-    <div class="flex items-center space-x-3 ty-color-{{ event.color }}-soft rounded-lg p-3 hover:shadow-sm transition-shadow">
+    {% for event in events %}
+    <div class="flex items-center space-x-3 ty-bg-{{ event.color }}-soft rounded-lg p-3 hover:shadow-sm transition-shadow group">
         <div class="flex-shrink-0">
             <ty-icon name="{{ event.icon }}" class="ty-text-{{ event.color }}-strong"></ty-icon>
         </div>
         <div class="flex-1 min-w-0">
             <p class="font-medium ty-text-{{ event.color }}-strong truncate">{{ event.title }}</p>
-            <p class="text-sm ty-text-neutral-mild">{{ month_names[current_month-1] }} {{ event.day }}, {{ current_year }} at {{ event.time }}</p>
+            <p class="text-sm ty-text-neutral-mild">
+                {{ event.formatted_date }}
+                {% if event.time %}<span class="ty-text-{{ event.color }}-mild font-medium"> • {{ event.time }}</span>{% endif %}
+            </p>
         </div>
-        <div class="flex-shrink-0">
-            <div class="w-3 h-3 rounded-full ty-color-{{ event.color }}"></div>
+        <div class="flex-shrink-0 flex items-center space-x-2">
+            <div class="w-3 h-3 rounded-full ty-bg-{{ event.color }}"></div>
+            <ty-button size="xs" flavor="danger" class="opacity-0 group-hover:opacity-100 transition-opacity"
+                       hx-delete="/api/calendar/events/{{ event.id }}"
+                       hx-target="#calendar-events"
+                       hx-confirm="Delete this event?">
+                <ty-icon name="x" class="w-3 h-3"></ty-icon>
+            </ty-button>
         </div>
     </div>
     {% endfor %}
 </div>
 {% else %}
-<div class="ty-color-neutral- rounded-lg p-6 text-center animate-fade-in">
-    <ty-icon name="calendar" class="w-12 h-12 mx-auto mb-3 ty-text-neutral-mild"></ty-icon>
-    <p class="font-medium ty-text-neutral-strong">No Events This Month</p>
-    <p class="text-sm ty-text-neutral-mild">{{ month_names[current_month-1] }} {{ current_year }} is currently clear</p>
+<div class="text-center py-8 animate-fade-in">
+    <ty-icon name="calendar-days" class="w-12 h-12 mx-auto mb-3 ty-text-neutral-soft"></ty-icon>
+    {% if selected_date %}
+    <p class="ty-text-neutral-mild mb-2">No events on {{ selected_date }}</p>
+    <p class="text-sm ty-text-neutral-faint">
+        Use the form above to add your first event
+    </p>
+    {% else %}
+    <p class="ty-text-neutral-mild mb-2">Select a date to view events</p>
+    <p class="text-sm ty-text-neutral-faint">
+        Click on any date in the calendar above
+    </p>
+    {% endif %}
 </div>
 {% endif %}

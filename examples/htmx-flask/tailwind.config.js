@@ -1,10 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./templates/**/*.html",
     "./templates/**/*.{html,jinja2}",
-    "./static/js/**/*.js",
-    "./src/**/*.{html,js}"
+    "./static/js/**/*.js"
   ],
   darkMode: 'class', // Matches Ty's dark theme implementation
   theme: {

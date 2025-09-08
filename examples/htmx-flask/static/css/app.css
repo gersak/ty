@@ -1711,6 +1711,8 @@ body {
 /* Navigation improvements */
 
 .nav-link {
+  display: flex;
+  align-items: center;
   border-radius: 0.375rem;
   padding-left: 1rem;
   padding-right: 1rem;
@@ -1733,6 +1735,58 @@ body {
 .nav-link.active {
   color: var(--ty-color-primary-strong);
   background-color: var(--ty-bg-primary-soft);
+}
+
+/* Theme toggle button specific styling */
+
+.theme-toggle {
+  border: 1px solid var(--ty-border-neutral) !important;
+  background-color: var(--ty-surface-elevated) !important;
+}
+
+.theme-toggle:hover {
+  background-color: var(--ty-bg-primary-soft) !important;
+  border-color: var(--ty-border-primary) !important;
+}
+
+.dark .theme-toggle {
+  border-color: var(--ty-border-neutral) !important;
+  background-color: var(--ty-surface-elevated) !important;
+}
+
+.dark .theme-toggle:hover {
+  background-color: var(--ty-bg-primary-soft) !important;
+  border-color: var(--ty-border-primary) !important;
+}
+
+/* Theme icon visibility - Light mode shows moon, Dark mode shows sun */
+
+.dark .theme-icon-sun {
+  display: block;
+}
+
+.dark .theme-icon-moon {
+  display: none;
+}
+
+/* Dropdown option text color fixes for dark mode */
+
+ty-option {
+  color: var(--ty-color-neutral-strong) !important;
+}
+
+.dark ty-option {
+  color: var(--ty-color-neutral-faint) !important;
+}
+
+/* Alternative selector if the above doesn't work */
+
+ty-dropdown ty-option {
+  color: var(--ty-color-neutral-strong) !important;
+}
+
+.dark ty-dropdown ty-option {
+  color: var(--ty-color-neutral-faint) !important;
 }
 
 .visible {
@@ -2057,6 +2111,10 @@ body {
   max-height: 10rem;
 }
 
+.max-h-48 {
+  max-height: 12rem;
+}
+
 .min-h-32 {
   min-height: 8rem;
 }
@@ -2135,6 +2193,10 @@ body {
 
 .w-full {
   width: 100%;
+}
+
+.w-32 {
+  width: 8rem;
 }
 
 .min-w-0 {
@@ -3385,12 +3447,6 @@ body {
   }
 }
 
-.hover\:scale-105:hover {
-  --tw-scale-x: 1.05;
-  --tw-scale-y: 1.05;
-  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
-}
-
 .hover\:scale-\[1\.02\]:hover {
   --tw-scale-x: 1.02;
   --tw-scale-y: 1.02;
@@ -3448,6 +3504,10 @@ body {
 
 .group:hover .group-hover\:opacity-100 {
   opacity: 1;
+}
+
+.dark\:inline-block:is(.dark *) {
+  display: inline-block;
 }
 
 .dark\:inline:is(.dark *) {
@@ -3668,10 +3728,6 @@ body {
 
   .lg\:grid-cols-6 {
     grid-template-columns: repeat(6, minmax(0, 1fr));
-  }
-
-  .lg\:flex-row {
-    flex-direction: row;
   }
 
   .lg\:gap-4 {

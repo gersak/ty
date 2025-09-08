@@ -119,27 +119,27 @@
                             <div class="ml-10 flex items-baseline space-x-1">
                                 <a href="{{ url_for('index') }}" 
                                    class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}">
-                                    <ty-icon name="home" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    <ty-icon name="home" class="w-3.5 h-3.5 mr-1"></ty-icon>
                                     Home
                                 </a>
                                 <a href="{{ url_for('forms') }}" 
                                    class="nav-link {{ 'active' if request.endpoint == 'forms' else '' }}">
-                                    <ty-icon name="edit" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    <ty-icon name="edit" class="w-3.5 h-3.5 mr-1"></ty-icon>
                                     Forms
                                 </a>
                                 <a href="{{ url_for('calendar') }}" 
                                    class="nav-link {{ 'active' if request.endpoint == 'calendar' else '' }}">
-                                    <ty-icon name="calendar" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    <ty-icon name="calendar" class="w-3.5 h-3.5 mr-1"></ty-icon>
                                     Calendar
                                 </a>
                                 <a href="{{ url_for('modals') }}" 
                                    class="nav-link {{ 'active' if request.endpoint == 'modals' else '' }}">
-                                    <ty-icon name="window" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    <ty-icon name="window" class="w-3.5 h-3.5 mr-1"></ty-icon>
                                     Modals
                                 </a>
                                 <a href="{{ url_for('components') }}" 
                                    class="nav-link {{ 'active' if request.endpoint == 'components' else '' }}">
-                                    <ty-icon name="layers" class="w-3.5 h-3.5 mr-2"></ty-icon>
+                                    <ty-icon name="layers" class="w-3.5 h-3.5 mr-1"></ty-icon>
                                     Components
                                 </a>
                             </div>
@@ -159,7 +159,7 @@
                                    hx-target="#notification-area"
                                    hx-swap="innerHTML"
                                    class="hidden sm:inline-flex hover:scale-105 transition-transform duration-200">
-                            <ty-icon name="bell" class="mr-2"></ty-icon>
+                            <ty-icon name="bell" class="mr-1"></ty-icon>
                             Test Notification
                         </ty-button>
                     </div>

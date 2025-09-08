@@ -276,15 +276,14 @@ def validate_form():
     return render_template("partials/form_success.html", name=name)
 
 
-@app.route("/api/calendar/events")
-def calendar_events():
-    """Get calendar events for a specific month - returns HTML for HTMX."""
-    year = int(request.args.get("year", datetime.now().year))
-    month = int(request.args.get("month", datetime.now().month))
-
-    # Set random seed for consistent demo events based on year/month
-    random.seed(year * 100 + month)
-
+def generate_month_events_data(year, month):
+    """Shared function to generate consistent event data for a month."""
+    import calendar
+    import hashlib
+    
+    # Get number of days in the month
+    _, days_in_month = calendar.monthrange(year, month)
+    
     # Event types available
     event_types = [
         {"title": "Team Meeting", "icon": "users", "color": "primary", "time": "10:00 AM"},
@@ -294,41 +293,62 @@ def calendar_events():
         {"title": "Workshop", "icon": "book-open", "color": "warning", "time": "9:00 AM"},
         {"title": "Planning Session", "icon": "target", "color": "secondary", "time": "1:00 PM"},
     ]
-
-    # Generate events with enhanced data for display
-    initial_events = []
     
-    # Ensure we have at least 3 events
-    guaranteed_days = [5, 12, 20]  # Days that will always have events
-    for day in guaranteed_days:
-        event_data = random.choice(event_types)
-        initial_events.append({
-            "day": day,
-            "date": f"{year}-{month:02d}-{day:02d}",
-            **event_data
-        })
+    events_by_day = {}
     
-    # Add some random events
-    for day in range(1, 29):
-        if day not in guaranteed_days and random.random() < 0.25:  # 25% chance for other days
+    # Generate consistent event data for each day in the month
+    for day in range(1, days_in_month + 1):
+        date_str = f"{year}-{month:02d}-{day:02d}"
+        
+        # Use date as seed for consistent results
+        seed = int(hashlib.md5(date_str.encode()).hexdigest()[:8], 16)
+        random.seed(seed)
+        
+        event_count = random.randint(0, 3)
+        
+        # Generate detailed events for this day
+        day_events = []
+        for i in range(event_count):
             event_data = random.choice(event_types)
-            initial_events.append({
+            day_events.append({
                 "day": day,
-                "date": f"{year}-{month:02d}-{day:02d}",
+                "date": date_str,
                 **event_data
             })
+        
+        if day_events:
+            events_by_day[date_str] = day_events
+    
+    return events_by_day
 
+
+@app.route("/api/calendar/events")
+def calendar_events():
+    """Get calendar events for a specific month - returns JSON for component-native rendering."""
+    year = int(request.args.get("year", datetime.now().year))
+    month = int(request.args.get("month", datetime.now().month))
+
+    # Use shared event generation function
+    events_by_day = generate_month_events_data(year, month)
+    
+    # Flatten to a simple list with proper structure for client-side rendering
+    events_list = []
+    for date_str, day_events in events_by_day.items():
+        events_list.extend(day_events)
+    
     # Sort events by day
-    initial_events.sort(key=lambda x: x["day"])
+    events_list.sort(key=lambda x: x["day"])
 
     # Debug: Print events count for API call
-    print(f"🌐 API call: Generated {len(initial_events)} events for {month}/{year}")
+    print(f"🌐 API call: Generated {len(events_list)} events for {month}/{year}")
 
-    # Return HTML template for HTMX
-    return render_template("partials/event_list.html", 
-                         initial_events=initial_events,
-                         current_month=month,
-                         current_year=year)
+    # Return JSON data for client-side rendering
+    return {
+        "events": events_list,
+        "month": month,
+        "year": year,
+        "total_count": len(events_list)
+    }
 @app.route("/api/date/select", methods=["POST"])
 def select_date():
     """Handle date selection from calendar."""
@@ -372,11 +392,11 @@ def test_icons():
             
             <div class="space-y-4">
                 <ty-button flavor="primary" onclick="testAllIcons()">
-                    <ty-icon name="search" class="mr-2"></ty-icon>
+                    <ty-icon name="search" class="mr-1"></ty-icon>
                     Test All Icons
                 </ty-button>
                 <ty-button flavor="secondary" onclick="window.location.href='/'">
-                    <ty-icon name="home" class="mr-2"></ty-icon>
+                    <ty-icon name="home" class="mr-1"></ty-icon>
                     Back to Demo
                 </ty-button>
             </div>
@@ -508,27 +528,13 @@ def calendar_date_select():
 def month_events(year, month):
     """Get all events for a specific month - returns JSON with event counts per day."""
     try:
-        import calendar
-        import hashlib
+        # Use shared event generation function
+        events_by_day = generate_month_events_data(year, month)
         
-        # Get number of days in the month
-        _, days_in_month = calendar.monthrange(year, month)
-        
+        # Convert to count format for calendar badges
         events_data = {}
-        
-        # Generate consistent event data for each day in the month
-        for day in range(1, days_in_month + 1):
-            date_str = f"{year}-{month:02d}-{day:02d}"
-            
-            # Use date as seed for consistent results
-            seed = int(hashlib.md5(date_str.encode()).hexdigest()[:8], 16)
-            random.seed(seed)
-            
-            event_count = random.randint(0, 3)
-            
-            # Only include days that have events
-            if event_count > 0:
-                events_data[date_str] = event_count
+        for date_str, day_events in events_by_day.items():
+            events_data[date_str] = len(day_events)
         
         return events_data
         
@@ -623,7 +629,7 @@ def modal_content(content_type):
             
             <div class="flex justify-end">
                 <ty-button flavor="info" onclick="document.getElementById('dynamic-modal').removeAttribute('open')">
-                    <ty-icon name="check" class="mr-2"></ty-icon>
+                    <ty-icon name="check" class="mr-1"></ty-icon>
                     Close
                 </ty-button>
             </div>
@@ -682,7 +688,7 @@ def modal_content(content_type):
             
             <div class="flex justify-end">
                 <ty-button flavor="warning" onclick="document.getElementById('dynamic-modal').removeAttribute('open')">
-                    <ty-icon name="x" class="mr-2"></ty-icon>
+                    <ty-icon name="x" class="mr-1"></ty-icon>
                     Close
                 </ty-button>
             </div>
@@ -714,11 +720,11 @@ def modal_content(content_type):
                            hx-get="/api/modal/content/random-quote"
                            hx-target="#dynamic-modal-content"
                            hx-swap="innerHTML">
-                    <ty-icon name="refresh-cw" class="mr-2"></ty-icon>
+                    <ty-icon name="refresh-cw" class="mr-1"></ty-icon>
                     Another Quote
                 </ty-button>
                 <ty-button flavor="primary" onclick="document.getElementById('dynamic-modal').removeAttribute('open')">
-                    <ty-icon name="heart" class="mr-2"></ty-icon>
+                    <ty-icon name="heart" class="mr-1"></ty-icon>
                     Love It!
                 </ty-button>
             </div>
@@ -742,7 +748,7 @@ def modal_content(content_type):
                 </p>
             </div>
             <ty-button flavor="success" onclick="document.getElementById('loading-modal').removeAttribute('open')">
-                <ty-icon name="thumbs-up" class="mr-2"></ty-icon>
+                <ty-icon name="thumbs-up" class="mr-1"></ty-icon>
                 Got it!
             </ty-button>
         </div>
@@ -769,7 +775,7 @@ def modal_content(content_type):
                         Cancel
                     </ty-button>
                     <ty-button flavor="danger">
-                        <ty-icon name="refresh-cw" class="mr-2"></ty-icon>
+                        <ty-icon name="refresh-cw" class="mr-1"></ty-icon>
                         Retry
                     </ty-button>
                 </div>
@@ -788,7 +794,7 @@ def modal_content(content_type):
                 <div class="text-xs ty-text-neutral-mild mt-1">Internal server error - please try again later</div>
             </div>
             <ty-button flavor="danger" onclick="document.getElementById('error-modal').removeAttribute('open')">
-                <ty-icon name="x" class="mr-2"></ty-icon>
+                <ty-icon name="x" class="mr-1"></ty-icon>
                 Close
             </ty-button>
         </div>
@@ -891,7 +897,7 @@ def start_wizard():
                        hx-post="/api/modal/wizard/step2"
                        hx-target="#wizard-modal-content"
                        hx-include="[name^='wizard_']">
-                <ty-icon name="arrow-right" class="mr-2"></ty-icon>
+                <ty-icon name="arrow-right" class="mr-1"></ty-icon>
                 Next Step
             </ty-button>
         </div>

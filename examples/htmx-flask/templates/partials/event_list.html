@@ -1,7 +1,7 @@
 {% if initial_events %}
 <div class="animate-fade-in space-y-3">
     {% for event in initial_events %}
-    <div class="flex items-center space-x-3 ty-bg-{{ event.color }}-soft rounded-lg p-3 hover:shadow-sm transition-shadow">
+    <div class="flex items-center space-x-3 ty-color-{{ event.color }}-soft rounded-lg p-3 hover:shadow-sm transition-shadow">
         <div class="flex-shrink-0">
             <ty-icon name="{{ event.icon }}" class="ty-text-{{ event.color }}-strong"></ty-icon>
         </div>
@@ -10,13 +10,13 @@
             <p class="text-sm ty-text-neutral-mild">{{ month_names[current_month-1] }} {{ event.day }}, {{ current_year }} at {{ event.time }}</p>
         </div>
         <div class="flex-shrink-0">
-            <div class="w-3 h-3 rounded-full ty-bg-{{ event.color }}"></div>
+            <div class="w-3 h-3 rounded-full ty-color-{{ event.color }}"></div>
         </div>
     </div>
     {% endfor %}
 </div>
 {% else %}
-<div class="ty-bg-neutral-soft rounded-lg p-6 text-center animate-fade-in">
+<div class="ty-color-neutral- rounded-lg p-6 text-center animate-fade-in">
     <ty-icon name="calendar" class="w-12 h-12 mx-auto mb-3 ty-text-neutral-mild"></ty-icon>
     <p class="font-medium ty-text-neutral-strong">No Events This Month</p>
     <p class="text-sm ty-text-neutral-mild">{{ month_names[current_month-1] }} {{ current_year }} is currently clear</p>

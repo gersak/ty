@@ -25,13 +25,13 @@
                 <ty-button flavor="primary" size="lg" 
                            class="transform hover:scale-105 transition-transform duration-200 shadow-lg"
                            onclick="window.location.href='{{ url_for('forms') }}'">
-                    <ty-icon name="zap" class="mr-2"></ty-icon>
+                    <ty-icon name="zap" class="mr-1"></ty-icon>
                     Explore Interactive Forms
                 </ty-button>
                 <ty-button flavor="secondary" size="lg"
                            class="transform hover:scale-105 transition-transform duration-200"
                            onclick="window.location.href='{{ url_for('components') }}'">
-                    <ty-icon name="layers" class="mr-2"></ty-icon>
+                    <ty-icon name="layers" class="mr-1"></ty-icon>
                     View Components
                 </ty-button>
             </div>
@@ -227,7 +227,7 @@
                                hx-get="/api/modal/content/user-profile?user_id=1"
                                hx-target="#modal-content"
                                onclick="document.getElementById('demo-modal').show()">
-                        <ty-icon name="user" class="mr-2"></ty-icon>
+                        <ty-icon name="user" class="mr-1"></ty-icon>
                         User Profile
                     </ty-button>
                     
@@ -236,7 +236,7 @@
                                hx-get="/api/modal/content/task-details?task_id=1"
                                hx-target="#modal-content"
                                onclick="document.getElementById('demo-modal').show()">
-                        <ty-icon name="clipboard" class="mr-2"></ty-icon>
+                        <ty-icon name="clipboard" class="mr-1"></ty-icon>
                         Task Details
                     </ty-button>
                 </div>
@@ -316,12 +316,12 @@
             <div class="flex flex-col sm:flex-row gap-4 justify-center">
                 <ty-button flavor="primary" size="lg"
                            onclick="window.location.href='{{ url_for('forms') }}'">
-                    <ty-icon name="play" class="mr-2"></ty-icon>
+                    <ty-icon name="play" class="mr-1"></ty-icon>
                     Try Interactive Forms
                 </ty-button>
                 <ty-button flavor="outline" size="lg"
                            onclick="window.open('https://github.com/yourusername/ty', '_blank')">
-                    <ty-icon name="github" class="mr-2"></ty-icon>
+                    <ty-icon name="github" class="mr-1"></ty-icon>
                     View Source Code
                 </ty-button>
             </div>

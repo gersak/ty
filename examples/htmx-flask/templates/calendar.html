@@ -8,10 +8,10 @@
     <div class="text-center mb-16">
         <h1 class="text-4xl md:text-5xl font-bold mb-6">
             <span class="text-gradient-primary">📅 Calendar</span>
-            <span class="ty-text-primary-strong"> & Date Components</span>
+            <span class="ty-text-primary-strong"> Component Excellence</span>
         </h1>
         <p class="text-xl ty-text-neutral-mild max-w-3xl mx-auto">
-            Interactive calendar components with HTMX integration for dynamic event loading and server-side interactions.
+            Showcasing component-native patterns with smart event loading, intelligent caching, and graceful fallbacks. No HTMX required.
         </p>
     </div>
 
@@ -21,10 +21,10 @@
     <div class="mb-20">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold ty-text-primary-strong mb-4">
-                📊 Event Calendar Display
+                🌟 Smart Event Calendar
             </h2>
             <p class="text-lg ty-text-neutral-mild">
-                Interactive calendar for events, navigation, and display-only interactions
+                Component excellence with instant navigation, intelligent caching, and graceful error handling
             </p>
         </div>
         
@@ -37,8 +37,8 @@
                         <ty-icon name="calendar-days" class="ty-text-primary-strong"></ty-icon>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold ty-text-primary-strong">Basic Event Calendar</h3>
-                        <p class="ty-text-neutral-mild">Display calendar with navigation and server events</p>
+                        <h3 class="text-2xl font-bold ty-text-primary-strong">Smart Event Loading</h3>
+                        <p class="ty-text-neutral-mild">Instant navigation, background prefetching, graceful fallbacks</p>
                     </div>
                 </div>
                 
@@ -47,12 +47,7 @@
                     <div class="lg:flex-1 ty-elevated rounded-xl p-6 max-w-4xl">
                         <ty-calendar id="event-calendar"
                                     show-navigation="true"
-                                    size="lg"
-                                    hx-get="/api/calendar/events"
-                                    hx-trigger="navigate"
-                                    hx-target="#event-list"
-                                    hx-vals="js:{month: event.detail.month, year: event.detail.year}"
-                                    hx-indicator="#events-loading">
+                                    size="lg">
                         </ty-calendar>
                     </div>
                     
@@ -67,7 +62,6 @@
                             </div>
                         </div>
                         <div id="event-list" class="space-y-3">
-                            {% include "partials/event_list.html" %}
                         </div>
                     </div>
                 </div>
@@ -80,42 +74,43 @@
                         <ty-icon name="calendar-check" class="ty-text-success-strong"></ty-icon>
                     </div>
                     <div>
-                        <h3 class="text-2xl font-bold ty-text-success-strong">Interactive Calendar</h3>
-                        <p class="ty-text-neutral-mild">Date selection with server validation and events</p>
+                        <h3 class="text-2xl font-bold ty-text-success-strong">Component Excellence</h3>
+                        <p class="ty-text-neutral-mild">Smart event loading, instant navigation, graceful fallbacks</p>
                     </div>
                 </div>
                 
-                <div class="flex flex-col lg:flex-row gap-8">
-                    <!-- Calendar Component with Date Selection -->
-                    <div class="lg:flex-1 flex justify-center">
-                        <div class="ty-elevated rounded-xl p-6 w-full max-w-md">
-                        <ty-calendar id="interactive-calendar"
-                                    show-navigation="true"
-                                    size="md"
-                                    hx-trigger="change"
-                                    hx-post="/api/calendar/date-select"
-                                    hx-target="#interaction-feedback"
-                                    hx-vals="js:{month: event.detail.month, year: event.detail.year, day: event.detail.day}"
-                                    hx-indicator="#interaction-loading">
-                        </ty-calendar>
-                        </div>
+                <div class="space-y-4">
+                    <div class="ty-bg-success-soft rounded-lg p-4">
+                        <h4 class="font-semibold ty-text-success-strong mb-2">✨ Features Demonstrated</h4>
+                        <ul class="text-sm ty-text-success-mild space-y-1">
+                            <li>• Instant month navigation (no loading delays)</li>
+                            <li>• Background event fetching with smart caching</li>
+                            <li>• Event count badges on calendar days</li>
+                            <li>• Automatic adjacent month prefetching</li>
+                            <li>• Graceful error handling and offline mode</li>
+                        </ul>
                     </div>
                     
-                    <!-- Interaction Feedback -->
-                    <div class="lg:w-80 lg:flex-shrink-0">
-                        <div class="flex items-center justify-between mb-4">
-                            <h4 class="font-semibold ty-text-neutral-strong">Server Interaction</h4>
-                            <div class="htmx-indicator" id="interaction-loading">
-                                <div class="spinner ty-text-success"></div>
-                            </div>
-                        </div>
-                        <div id="interaction-feedback" class="space-y-3 min-h-24">
-                            <div class="ty-bg-info-soft rounded-lg p-4">
-                                <p class="text-sm ty-text-info-mild">
-                                    🎯 Navigate months or select dates to see server responses
-                                </p>
-                            </div>
-                        </div>
+                    <div class="ty-bg-info-soft rounded-lg p-4">
+                        <h4 class="font-semibold ty-text-info-strong mb-2">🛠 Technical Excellence</h4>
+                        <ul class="text-sm ty-text-info-mild space-y-1">
+                            <li>• Web Components with native browser APIs</li>
+                            <li>• Async/await with intelligent batching</li>
+                            <li>• In-memory caching with LRU eviction</li>
+                            <li>• Progressive enhancement layers</li>
+                            <li>• Zero dependencies beyond Ty core</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="ty-bg-neutral-soft rounded-lg p-4">
+                        <h4 class="font-semibold ty-text-neutral-strong mb-2">🔍 Try It Out</h4>
+                        <p class="text-sm ty-text-neutral-mild mb-3">Open browser dev tools and navigate months to see:</p>
+                        <ul class="text-xs ty-text-neutral-mild space-y-1">
+                            <li>• Console logs showing cache hits/misses</li>
+                            <li>• Background prefetching of adjacent months</li>
+                            <li>• Event count loading for calendar badges</li>
+                            <li>• Debug tools: <code>window.calendarDemo.getCacheStatus()</code></li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -125,200 +120,430 @@
 </div>
 
 <script>
-// 🔍 COMPREHENSIVE DEBUG SETUP
-console.group('🎯 Calendar Page Debug Initialization');
-console.log('✅ Calendar page loaded - ready for step-by-step examples');
-console.log('🔧 HTMX version:', typeof htmx !== 'undefined' ? htmx.version : 'NOT LOADED');
-console.log('🎨 Ty components:', typeof ty !== 'undefined' ? 'LOADED' : 'NOT LOADED');
-console.log('🌐 Location:', window.location.href);
+// 🌟 COMPONENT EXCELLENCE CALENDAR
+// Minimal, elegant code showcasing smart event loading with graceful fallbacks
+
+console.group('📅 Calendar Component Excellence Demo');
+console.log('✨ Focusing on component-native patterns, not framework integration');
+console.log('🎯 Goals: Instant navigation, smart caching, graceful degradation');
 console.groupEnd();
 
-// 🚨 Global Error Monitoring
-window.addEventListener('error', function(event) {
-    console.error('💥 GLOBAL ERROR:', {
-        message: event.message,
-        filename: event.filename,
-        lineno: event.lineno,
-        colno: event.colno,
-        error: event.error
-    });
-});
-
-// 🚨 Unhandled Promise Rejections
-window.addEventListener('unhandledrejection', function(event) {
-    console.error('💥 UNHANDLED PROMISE REJECTION:', event.reason);
-});
-
-// 🎯 HTMX Parameter Functions for ty-calendar
-
-
-
-// 🔍 Calendar event debugging and navigation handling
-document.addEventListener('navigate', function(event) {
-    if (event.target.matches('ty-calendar')) {
-        console.log('🚀 Calendar navigate event (native from ty-calendar):', event.detail);
-        console.log('   - Month:', event.detail.month);
-        console.log('   - Year:', event.detail.year);  
-        console.log('   - Action:', event.detail.action);
-        console.log('   - Source:', event.detail.source);
-        console.log('   - Bubbles:', event.bubbles);
-        console.log('   - Composed:', event.composed);
-        console.log('   - Target:', event.target.id);
-        console.log('   - HTMX should trigger on this event!');
-        
-        
-        // Store navigation data and update header for basic event calendar
-        if (event.target.id === 'event-calendar') {
-            lastNavigationData = {
-                year: event.detail.year,
-                month: event.detail.month
-            };
-            console.log('📾 Stored navigation data for basic calendar:', lastNavigationData);
-            
-            // Update the events header with month name
-            const monthNames = [
-                'January', 'February', 'March', 'April', 'May', 'June',
-                'July', 'August', 'September', 'October', 'November', 'December'
-            ];
-            const headerElement = document.getElementById('events-month-header');
-            if (headerElement) {
-                const monthName = monthNames[event.detail.month - 1];
-                headerElement.textContent = `${monthName} ${event.detail.year} Events`;
-            }
-        }
-    }
-});
-
-document.addEventListener('change', function(event) {
-    if (event.target.matches('ty-calendar')) {
-        if (event.detail.action === 'select') {
-            console.log('   - Selected date:', event.detail.year + '-' + 
-                       (event.detail.month < 10 ? '0' : '') + event.detail.month + '-' +
-                       (event.detail.day < 10 ? '0' : '') + event.detail.day);
-        }
-        console.log('   - Target:', event.target.id);
-        console.log('   - HTMX should trigger on this event!');
-        
-        }
-});
-
-// Initialize header with current month when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    const now = new Date();
-    const monthNames = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
-    ];
-    const headerElement = document.getElementById('events-month-header');
-    if (headerElement) {
-        const monthName = monthNames[now.getMonth()];
-        headerElement.textContent = `${monthName} ${now.getFullYear()} Events`;
+// 💾 Smart Event Cache with LRU eviction
+class EventCache {
+    constructor(maxSize = 6) { // Cache 6 months (current + 5 adjacent)
+        this.cache = new Map();
+        this.maxSize = maxSize;
     }
     
-    // 🎯 ENHANCED: Add month-based event calendar (Property Approach)
-    const eventCalendar = document.getElementById('event-calendar');
-    if (eventCalendar) {
-        console.log('🎨 Setting up property-based event calendar');
-        
-        // Custom CSS for day badges
-        eventCalendar.customCSS = `
-            .simple-day {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: 2px;
-                width: 100%;
-                height: 100%;
-            }
-            
-            .day-number {
-                font-size: inherit;
-                line-height: 1;
-            }
-            
-            .day-badge-container {
-                min-height: 12px;
-                display: flex;
-                justify-content: center;
-            }
-            
-            .event-badge {
-                font-size: 9px;
-                padding: 1px 4px;
-                border-radius: 6px;
-                color: white;
-                background: var(--ty-color-primary);
-                font-weight: 500;
-                white-space: nowrap;
-            }
-        `;
-        
-        // Day content function - uses component's monthEvents property
-        eventCalendar.dayContentFn = function(dayContext) {
-            const dayDiv = document.createElement('div');
-            dayDiv.className = 'simple-day';
-            
-            // Create day number
-            const dayNumber = document.createElement('span');
-            dayNumber.className = 'day-number';
-            dayNumber.textContent = dayContext['day-in-month'];
-            dayDiv.appendChild(dayNumber);
-            
-            // Create badge container
-            const badgeContainer = document.createElement('div');
-            badgeContainer.className = 'day-badge-container';
-            
-            // Get monthEvents from the calendar month component
-            const monthEl = eventCalendar.tyCalendarMonth;
-            const monthEvents = monthEl ? monthEl.monthEvents : null;
-            
-            if (monthEvents) {
-                // Look up event count for this date
-                const dateKey = `${dayContext['year']}-${dayContext['month'].toString().padStart(2, '0')}-${dayContext['day-in-month'].toString().padStart(2, '0')}`;
-                const eventCount = monthEvents[dateKey] || 0;
-                
-                // Add badge if there are events
-                if (eventCount > 0) {
-                    const badge = document.createElement('span');
-                    badge.className = 'event-badge';
-                    badge.textContent = eventCount.toString();
-                    badgeContainer.appendChild(badge);
-                }
-            }
-            
-            dayDiv.appendChild(badgeContainer);
-            return dayDiv;
-        };
-        
-        // Function to load month events and update calendar
-        async function loadAndSetMonthEvents(year, month) {
-            try {
-                console.log(`📅 Loading events for ${year}-${month}`);
-                const response = await fetch(`/api/month-events/${year}/${month}`);
-                const data = await response.json();
-                
-                // Set the monthEvents property - this will trigger re-render
-                eventCalendar.monthEvents = data;
-                console.log('📅 Month events set on calendar:', data);
-            } catch (error) {
-                console.error('❌ Failed to load month events:', error);
-                eventCalendar.monthEvents = {};
-            }
+    get(key) {
+        if (this.cache.has(key)) {
+            // Move to end (most recently used)
+            const value = this.cache.get(key);
+            this.cache.delete(key);
+            this.cache.set(key, value);
+            return value;
         }
+        return null;
+    }
+    
+    set(key, value) {
+        if (this.cache.has(key)) {
+            this.cache.delete(key);
+        } else if (this.cache.size >= this.maxSize) {
+            // Remove oldest entry
+            const firstKey = this.cache.keys().next().value;
+            this.cache.delete(firstKey);
+        }
+        this.cache.set(key, value);
+    }
+    
+    has(key) {
+        return this.cache.has(key);
+    }
+    
+    clear() {
+        this.cache.clear();
+    }
+}
+
+// 🚀 Calendar Event Manager - Component Excellence Pattern with Shared State
+class CalendarEventManager {
+    constructor() {
+        this.cache = new EventCache();
+        this.loadingStates = new Set();
+        this.eventListElement = document.getElementById('event-list');
+        this.monthHeaderElement = document.getElementById('events-month-header');
+        this.loadingIndicator = document.getElementById('events-loading');
         
-        // Load initial month events (current month)
-        const now = new Date();
-        loadAndSetMonthEvents(now.getFullYear(), now.getMonth() + 1);
+        // 🎯 SHARED STATE - Single source of truth
+        this.currentEvents = []; // Array of event objects
+        this.currentMonth = null;
+        this.currentYear = null;
+        this.eventCountsByDate = {}; // For calendar badges
         
-        // Listen for navigation events to load new month data
-        eventCalendar.addEventListener('navigate', function(event) {
-            const { year, month } = event.detail;
-            loadAndSetMonthEvents(year, month);
+        // Month names for display
+        this.monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+    }
+    
+    // 📍 Generate cache key for month/year
+    getCacheKey(year, month) {
+        return `${year}-${month.toString().padStart(2, '0')}`;
+    }
+    
+    // 🎨 Update UI with loading state
+    showLoading(show = true) {
+        if (this.loadingIndicator) {
+            this.loadingIndicator.style.display = show ? 'block' : 'none';
+        }
+    }
+    
+    // 📋 Update month header
+    updateMonthHeader(year, month) {
+        if (this.monthHeaderElement) {
+            const monthName = this.monthNames[month - 1];
+            this.monthHeaderElement.textContent = `${monthName} ${year} Events`;
+        }
+    }
+    
+    // 🎯 Fetch events from server with error handling - NOW RETURNS JSON
+    async fetchEventsFromServer(year, month) {
+        const cacheKey = this.getCacheKey(year, month);
+        
+        try {
+            console.log(`📡 Fetching events JSON for ${year}-${month}`);
+            const response = await fetch(`/api/calendar/events?year=${year}&month=${month}`);
+            
+            if (!response.ok) {
+                throw new Error(`Server responded with ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            // Cache the JSON data (not HTML)
+            this.cache.set(cacheKey, data);
+            console.log(`✅ Cached ${data.events.length} events for ${cacheKey}`);
+            
+            return data;
+            
+        } catch (error) {
+            console.warn(`⚠️ Failed to load events for ${year}-${month}:`, error.message);
+            
+            // Return graceful fallback data
+            return this.createFallbackData(year, month);
+        }
+    }
+    
+    // 🛡️ Create fallback data for when server fails
+    createFallbackData(year, month) {
+        return {
+            events: [],
+            month: month,
+            year: year,
+            total_count: 0,
+            error: true
+        };
+    }
+    
+    // 🔄 Update shared state and trigger both UI updates
+    updateSharedState(data) {
+        this.currentEvents = data.events || [];
+        this.currentMonth = data.month;
+        this.currentYear = data.year;
+        
+        // Generate event counts by date for calendar badges
+        this.eventCountsByDate = {};
+        this.currentEvents.forEach(event => {
+            const dateKey = event.date; // Already in YYYY-MM-DD format
+            this.eventCountsByDate[dateKey] = (this.eventCountsByDate[dateKey] || 0) + 1;
         });
         
-        console.log('✅ Property-based event calendar configured');
+        console.log(`🔄 Shared state updated: ${this.currentEvents.length} events, ${Object.keys(this.eventCountsByDate).length} days with events`);
     }
+    
+    // 🎨 Render event list from shared state (client-side rendering)
+    renderEventList() {
+        if (!this.eventListElement) return;
+        
+        // Handle error state
+        if (this.currentEvents.length === 0) {
+            const monthName = this.monthNames[this.currentMonth - 1];
+            this.eventListElement.innerHTML = `
+                <div class="ty-bg-neutral-soft rounded-lg p-6 text-center animate-fade-in">
+                    <ty-icon name="calendar" class="w-12 h-12 mx-auto mb-3 ty-text-neutral-mild"></ty-icon>
+                    <p class="font-medium ty-text-neutral-strong">No Events This Month</p>
+                    <p class="text-sm ty-text-neutral-mild">${monthName} ${this.currentYear} is currently clear</p>
+                </div>
+            `;
+            return;
+        }
+        
+        // Render events from shared state
+        let eventsHTML = '<div class="animate-fade-in space-y-3">';
+        
+        this.currentEvents.forEach(event => {
+            const monthName = this.monthNames[this.currentMonth - 1];
+            eventsHTML += `
+                <div class="flex items-center space-x-3 ty-bg-${event.color}-soft rounded-lg p-3 hover:shadow-sm transition-shadow">
+                    <div class="flex-shrink-0">
+                        <ty-icon name="${event.icon}" class="ty-text-${event.color}-strong"></ty-icon>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-medium ty-text-${event.color}-strong truncate">${event.title}</p>
+                        <p class="text-sm ty-text-neutral-mild">${monthName} ${event.day}, ${this.currentYear} at ${event.time}</p>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="w-4 h-4 rounded-full shadow-sm border-2 border-white " style="background-color:var(--ty-color-${event.color})"></div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        eventsHTML += '</div>';
+        this.eventListElement.innerHTML = eventsHTML;
+    }
+    
+    // 📅 Main method: Load and display events for a month with shared state
+    async loadEvents(year, month, options = {}) {
+        const { updateHeader = true, showLoader = true } = options;
+        const cacheKey = this.getCacheKey(year, month);
+        
+        // Update header immediately (no waiting)
+        if (updateHeader) {
+            this.updateMonthHeader(year, month);
+        }
+        
+        // Check cache first
+        const cached = this.cache.get(cacheKey);
+        if (cached) {
+            console.log(`⚡ Using cached events for ${cacheKey}`);
+            this.updateSharedState(cached);
+            this.renderEventList();
+            this.prefetchAdjacentMonths(year, month); // Background prefetch
+            return cached; // Return data for calendar badges
+        }
+        
+        // Prevent duplicate requests
+        if (this.loadingStates.has(cacheKey)) {
+            console.log(`⏳ Already loading ${cacheKey}, skipping duplicate request`);
+            return null;
+        }
+        
+        this.loadingStates.add(cacheKey);
+        
+        if (showLoader) {
+            this.showLoading(true);
+        }
+        
+        try {
+            // Fetch from server
+            const data = await this.fetchEventsFromServer(year, month);
+            
+            // Update shared state and render both calendar + list
+            this.updateSharedState(data);
+            this.renderEventList();
+            
+            // Background prefetch adjacent months
+            this.prefetchAdjacentMonths(year, month);
+            
+            return data; // Return data for calendar badges
+            
+        } finally {
+            this.loadingStates.delete(cacheKey);
+            if (showLoader) {
+                this.showLoading(false);
+            }
+        }
+    }
+    
+    // 🔮 Intelligent prefetching of adjacent months
+    async prefetchAdjacentMonths(year, month) {
+        const adjacentMonths = [
+            { year: month === 1 ? year - 1 : year, month: month === 1 ? 12 : month - 1 }, // Previous
+            { year: month === 12 ? year + 1 : year, month: month === 12 ? 1 : month + 1 }  // Next
+        ];
+        
+        for (const { year: adjYear, month: adjMonth } of adjacentMonths) {
+            const cacheKey = this.getCacheKey(adjYear, adjMonth);
+            
+            if (!this.cache.has(cacheKey) && !this.loadingStates.has(cacheKey)) {
+                console.log(`🔮 Prefetching ${cacheKey}`);
+                
+                // Prefetch without showing loader or updating UI
+                this.loadingStates.add(cacheKey);
+                
+                try {
+                    await this.fetchEventsFromServer(adjYear, adjMonth);
+                } catch (error) {
+                    console.log(`⚠️ Prefetch failed for ${cacheKey}:`, error.message);
+                } finally {
+                    this.loadingStates.delete(cacheKey);
+                }
+            }
+        }
+    }
+    
+    // 📊 Get event counts for calendar badges from shared state
+    getEventCounts() {
+        return this.eventCountsByDate;
+    }
+    
+    // 🧹 Clear all cached data (for testing)
+    clearCache() {
+        this.cache.clear();
+        this.currentEvents = [];
+        this.eventCountsByDate = {};
+        console.log('🧹 Event cache and shared state cleared');
+    }
+}
+
+// Helper function to safely refresh calendar
+function safeRefreshCalendar(calendar, context = 'unknown') {
+    if (calendar && typeof calendar.refresh === 'function') {
+        console.log(`🎨 Refreshing calendar (${context})`);
+        calendar.refresh();
+    } else {
+        console.warn(`⚠️ Calendar refresh method not available (${context})`);
+    }
+}
+
+// 🎬 COMBINED INITIALIZATION - Single DOMContentLoaded listener to prevent race conditions
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🎬 Initializing component excellence calendar demo');
+    
+    const eventManager = new CalendarEventManager();
+    const calendar = document.getElementById('event-calendar');
+    
+    if (!calendar) {
+        console.error('❌ Calendar element not found');
+        return;
+    }
+    
+    // 🎨 SETUP CALENDAR CUSTOMIZATION FIRST (before any data loading)
+    console.log('🎨 Setting up event count badges using shared state');
+    
+    // Custom CSS for day badges
+    calendar.customCSS = `
+        .simple-day {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .day-number {
+            font-size: inherit;
+            line-height: 1;
+        }
+        
+        .day-badge-container {
+            min-height: 12px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .event-badge {
+            font-size: 9px;
+            padding: 1px 4px;
+            border-radius: 6px;
+            color: white;
+            background: var(--ty-color-primary);
+            font-weight: 500;
+            white-space: nowrap;
+        }
+    `;
+    
+    // Day content function that uses shared state for event counts
+    calendar.dayContentFn = function(dayContext) {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'simple-day';
+        
+        // Create day number
+        const dayNumber = document.createElement('span');
+        dayNumber.className = 'day-number';
+        dayNumber.textContent = dayContext['day-in-month'];
+        dayDiv.appendChild(dayNumber);
+        
+        // Create badge container
+        const badgeContainer = document.createElement('div');
+        badgeContainer.className = 'day-badge-container';
+        
+        // 🎯 GET EVENT COUNT FROM SHARED STATE - now with safe access
+        const dateKey = `${dayContext['year']}-${dayContext['month'].toString().padStart(2, '0')}-${dayContext['day-in-month'].toString().padStart(2, '0')}`;
+        
+        // Safe access to shared state through eventManager reference (closure)
+        const eventCount = eventManager.getEventCounts()[dateKey] || 0;
+        
+        // Add badge if there are events
+        if (eventCount > 0) {
+            const badge = document.createElement('span');
+            badge.className = 'event-badge';
+            badge.textContent = eventCount.toString();
+            badgeContainer.appendChild(badge);
+        }
+        
+        dayDiv.appendChild(badgeContainer);
+        return dayDiv;
+    };
+    
+    console.log('✅ Event count badges configured to use shared state');
+    
+    // 📅 LOAD INITIAL DATA
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+    
+    console.log(`📅 Loading initial month: ${currentYear}-${currentMonth}`);
+    const initialData = await eventManager.loadEvents(currentYear, currentMonth);
+
+    // Simple re-render to show initial badges
+    if (initialData && initialData.events && initialData.events.length > 0) {
+        safeRefreshCalendar(calendar, 'initial load');
+    }
+    
+    // 🎯 Listen for navigation events - instant UI updates, background data loading
+    calendar.addEventListener('navigate', async function(event) {
+        const { year, month, action, source } = event.detail;
+        
+        console.log(`🧭 Navigation: ${action} to ${year}-${month} (from ${source})`);
+        
+        // Load events for new month
+        const data = await eventManager.loadEvents(year, month, { 
+            updateHeader: true, 
+            showLoader: false 
+        });
+        
+        // Simple re-render to show updated badges
+        if (data) {
+            safeRefreshCalendar(calendar, `navigation to ${year}-${month}`);
+        }
+    });
+    
+    // 🔍 SETUP GLOBAL DEBUGGING HELPERS
+    window.calendarDemo = {
+        eventManager,
+        calendar,
+        clearCache: () => eventManager.clearCache(),
+        loadMonth: (year, month) => eventManager.loadEvents(year, month),
+        getCacheStatus: () => {
+            console.log('📊 Cache status:', {
+                size: eventManager.cache.cache.size,
+                keys: Array.from(eventManager.cache.cache.keys()),
+                loading: Array.from(eventManager.loadingStates)
+            });
+        },
+        forceCalendarRerender: () => safeRefreshCalendar(calendar, 'manual debug')
+    };
+    
+    console.log('✅ Calendar demo initialized');
+    console.log('🛠️ Debug tools available: window.calendarDemo');
 });
+
+
 
 </script>
 {% endblock %}

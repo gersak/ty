@@ -215,10 +215,10 @@ document.addEventListener('DOMContentLoaded', function() {
         headerElement.textContent = `${monthName} ${now.getFullYear()} Events`;
     }
     
-    // 🎯 ENHANCED: Add day content function to event calendar
+    // 🎯 ENHANCED: Add month-based event calendar (Property Approach)
     const eventCalendar = document.getElementById('event-calendar');
     if (eventCalendar) {
-        console.log('🎨 Setting up day content function for event calendar');
+        console.log('🎨 Setting up property-based event calendar');
         
         // Custom CSS for day badges
         eventCalendar.customCSS = `
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         `;
         
-        // Day content function with HTMX loading
+        // Day content function - uses component's monthEvents property
         eventCalendar.dayContentFn = function(dayContext) {
             const dayDiv = document.createElement('div');
             dayDiv.className = 'simple-day';
@@ -262,22 +262,61 @@ document.addEventListener('DOMContentLoaded', function() {
             const dayNumber = document.createElement('span');
             dayNumber.className = 'day-number';
             dayNumber.textContent = dayContext['day-in-month'];
+            dayDiv.appendChild(dayNumber);
             
-            // Create badge container with HTMX
+            // Create badge container
             const badgeContainer = document.createElement('div');
             badgeContainer.className = 'day-badge-container';
-            badgeContainer.setAttribute('hx-get', `/api/day-events/${dayContext['year']}-${dayContext['month']}-${dayContext['day-in-month']})`);
-            badgeContainer.setAttribute('hx-trigger', 'load');
-            badgeContainer.setAttribute('hx-swap', 'innerHTML');
             
-            // Append elements
-            dayDiv.appendChild(dayNumber);
+            // Get monthEvents from the calendar month component
+            const monthEl = eventCalendar.tyCalendarMonth;
+            const monthEvents = monthEl ? monthEl.monthEvents : null;
+            
+            if (monthEvents) {
+                // Look up event count for this date
+                const dateKey = `${dayContext['year']}-${dayContext['month'].toString().padStart(2, '0')}-${dayContext['day-in-month'].toString().padStart(2, '0')}`;
+                const eventCount = monthEvents[dateKey] || 0;
+                
+                // Add badge if there are events
+                if (eventCount > 0) {
+                    const badge = document.createElement('span');
+                    badge.className = 'event-badge';
+                    badge.textContent = eventCount.toString();
+                    badgeContainer.appendChild(badge);
+                }
+            }
+            
             dayDiv.appendChild(badgeContainer);
-            
             return dayDiv;
         };
         
-        console.log('✅ Day content function configured with HTMX badges');
+        // Function to load month events and update calendar
+        async function loadAndSetMonthEvents(year, month) {
+            try {
+                console.log(`📅 Loading events for ${year}-${month}`);
+                const response = await fetch(`/api/month-events/${year}/${month}`);
+                const data = await response.json();
+                
+                // Set the monthEvents property - this will trigger re-render
+                eventCalendar.monthEvents = data;
+                console.log('📅 Month events set on calendar:', data);
+            } catch (error) {
+                console.error('❌ Failed to load month events:', error);
+                eventCalendar.monthEvents = {};
+            }
+        }
+        
+        // Load initial month events (current month)
+        const now = new Date();
+        loadAndSetMonthEvents(now.getFullYear(), now.getMonth() + 1);
+        
+        // Listen for navigation events to load new month data
+        eventCalendar.addEventListener('navigate', function(event) {
+            const { year, month } = event.detail;
+            loadAndSetMonthEvents(year, month);
+        });
+        
+        console.log('✅ Property-based event calendar configured');
     }
 });
 

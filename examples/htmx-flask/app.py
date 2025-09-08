@@ -504,14 +504,50 @@ def calendar_date_select():
         return f"<p class='ty-text-danger'>❌ Error processing date: {str(e)}</p>"
 
 
-@app.route("/api/day-events/<date>")
-def day_events(date):
+@app.route("/api/month-events/<int:year>/<int:month>")
+def month_events(year, month):
+    """Get all events for a specific month - returns JSON with event counts per day."""
+    try:
+        import calendar
+        import hashlib
+        
+        # Get number of days in the month
+        _, days_in_month = calendar.monthrange(year, month)
+        
+        events_data = {}
+        
+        # Generate consistent event data for each day in the month
+        for day in range(1, days_in_month + 1):
+            date_str = f"{year}-{month:02d}-{day:02d}"
+            
+            # Use date as seed for consistent results
+            seed = int(hashlib.md5(date_str.encode()).hexdigest()[:8], 16)
+            random.seed(seed)
+            
+            event_count = random.randint(0, 3)
+            
+            # Only include days that have events
+            if event_count > 0:
+                events_data[date_str] = event_count
+        
+        return events_data
+        
+    except Exception as e:
+        print(f"Error generating month events for {year}-{month}: {e}")
+        return {}
+
+
+@app.route("/api/day-events/<int:year>-<int:month>-<int:day>")
+def day_events(year, month, day):
     """Get events for a specific day - returns HTML badge for calendar day content."""
     try:
+        # Create date string for consistent seeding
+        date_str = f"{year}-{month:02d}-{day:02d}"
+        
         # Simple mock data based on date for consistent results
         import hashlib
         # Use date as seed for consistent results across reloads
-        seed = int(hashlib.md5(date.encode()).hexdigest()[:8], 16)
+        seed = int(hashlib.md5(date_str.encode()).hexdigest()[:8], 16)
         random.seed(seed)
         
         event_count = random.randint(0, 3)
@@ -522,7 +558,7 @@ def day_events(date):
             return f'<span class="event-badge">{event_count}</span>'
             
     except Exception as e:
-        print(f"Error generating day events for {date}: {e}")
+        print(f"Error generating day events for {year}-{month}-{day}: {e}")
         return ""
 
 

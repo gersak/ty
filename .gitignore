@@ -6,5 +6,6 @@ dev/js/cljs-runtime/
 node_modules/
 
 
+examples/htmx-flask/
 .venv/
 __pycache__/

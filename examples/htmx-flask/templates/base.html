@@ -57,30 +57,6 @@
     
     <!-- HTMX Debug Configuration -->
     <script>
-        // Enable comprehensive HTMX debugging
-        htmx.logger = function(elt, event, data) { if (console) console.log("🔧 HTMX 2.x Debug:", event, elt, data); };
-        
-        // Add detailed event logging
-        document.addEventListener('htmx:load', function(event) {
-            console.log('🔧 HTMX Load:', event.detail);
-        });
-        
-        document.addEventListener('htmx:configRequest', function(event) {
-            console.log('⚙️ HTMX Config Request:', event.detail);
-        });
-        
-        document.addEventListener('htmx:beforeRequest', function(event) {
-            console.log('📤 HTMX Before Request:', event.detail);
-            console.log('   - Parameters:', event.detail.requestConfig?.parameters);
-            console.log('   - URL:', event.detail.requestConfig?.path);
-        });
-        
-        document.addEventListener('htmx:afterRequest', function(event) {
-            console.log('📥 HTMX After Request:', event.detail);
-            if (event.detail.xhr?.status >= 400) {
-                console.error('❌ HTTP Error:', event.detail.xhr?.status, event.detail.xhr?.statusText);
-            }
-        });
         
         document.addEventListener('htmx:responseError', function(event) {
             console.error('💥 HTMX Response Error:', event.detail);
@@ -90,13 +66,6 @@
             console.error('📡 HTMX Send Error:', event.detail);
         });
         
-        document.addEventListener('htmx:beforeSwap', function(event) {
-            console.log('🔄 HTMX Before Swap:', event.detail);
-        });
-        
-        document.addEventListener('htmx:afterSwap', function(event) {
-            console.log('✅ HTMX After Swap:', event.detail);
-        });
     </script>
     
     {% block extra_head %}{% endblock %}
@@ -191,7 +160,7 @@
     </div>
 
     <!-- Ty Components JavaScript -->
-    <script src="{{ url_for('static', filename='./js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='./js/ty.js') }}"></script>
     
     <!-- Ty Icons Registration -->
     <script src="{{ url_for('static', filename='js/icons.js') }}"></script>

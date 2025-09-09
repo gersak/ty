@@ -19,54 +19,57 @@
     <!-- Mobile-specific CSS fixes -->
     <style>
         /* Prevent horizontal scroll on mobile */
-        html, body {
+        html,
+        body {
             overflow-x: hidden;
             width: 100%;
             max-width: 100vw;
         }
-        
+
         /* Ensure all containers respect viewport width */
         * {
             max-width: 100%;
             box-sizing: border-box;
         }
-        
+
         /* Fix for code blocks that might overflow */
-        pre, code {
+        pre,
+        code {
             overflow-x: auto;
             word-break: break-word;
             white-space: pre-wrap;
         }
-        
+
         /* Mobile typography adjustments */
         @media (max-width: 768px) {
+
             /* Smaller base font size on mobile */
             html {
                 font-size: 14px;
             }
-            
+
             /* Adjust demo styles for mobile */
             .demo-title {
                 font-size: 1.5rem !important;
                 margin-bottom: 1rem !important;
             }
-            
+
             .demo-subtitle {
                 font-size: 1.25rem !important;
                 margin-bottom: 0.75rem !important;
             }
-            
+
             /* Smaller padding for mobile */
             .demo-section {
                 margin-bottom: 2rem !important;
             }
         }
-        
+
         /* Ensure grid layouts don't overflow */
         .grid {
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         }
-        
+
         @media (max-width: 640px) {
             .grid {
                 grid-template-columns: 1fr;
@@ -75,7 +78,7 @@
     </style>
 
     <!-- Load Web Components BEFORE DOM parsing -->
-    <script src="js/main.js"></script>
+    <script src="js/ty.js"></script>
 
     <!-- Prevent FOUC -->
     <script>

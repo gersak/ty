@@ -44,7 +44,6 @@
   "Handle calendar changes (both navigation and selection)"
   [^js event]
   (let [detail (.-detail event)]
-    (js/console.log "Calendar changed:" detail)
     (swap! state/state assoc :calendar-change
            {:year (.-year detail)
             :month (.-month detail)

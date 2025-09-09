@@ -2,48 +2,26 @@
 
  :nrepl {:port 7888}
  :dependencies [[no.cjohansen/replicant "2025.06.21"]
-                [dev.gersak/timing "0.7.0"]
+                [dev.gersak/timing.core "0.6.4"]
                 [cljs-bean "1.9.0"]]
 
  :builds {:app {:target :browser
-                :output-dir "dev/js"
-                ; :output-dir "examples/htmx-flask/static/js"
-                :asset-path "/js"
-                :module-loader true ; Enable dynamic module loading
-                :modules {:main {:init-fn ty.core/init}
-                          ;; FINAL PRODUCTS - Heavy/complex components (lazy loaded)
-
-                          ;; Calendar system (visual calendar grid)
-                          :calendar-month {:entries [ty.components.calendar-month]
-                                           :depends-on #{:main}}
-
-                          ;; Complete calendar interface  
-                          :calendar {:entries [ty.components.calendar
-                                               ty.components.calendar-navigation]
-                                     :depends-on #{:main}}
-
-                          ;; Complete date picker interface
-                          :date-picker {:entries [ty.components.date-picker]
-                                        :depends-on #{:main}}
-
-                          ;; Complete dropdown selection interface
-                          :dropdown {:entries [ty.components.dropdown
-                                               ty.components.dropdown.common
-                                               ty.components.dropdown.desktop
-                                               ty.components.dropdown.mobile
-                                               ty.components.dropdown.global]
-                                     :depends-on #{:main}}
-
-                          ;; Complete multi-selection interface
-                          :multiselect {:entries [ty.components.multiselect]
-                                        :depends-on #{:main :dropdown}}
-
-                          ;; Demo module
+                ; :output-dir "dist/"
+                :output-dir "examples/htmx-flask/static/js"
+                :compiler-options {:optimizations :advanced
+                                   :language-in :ecmascript-2017
+                                   :language-out :ecmascript-2017
+                                   :use-types-for-optimization true}
+                :modules {:ty {:entries [ty.components]}
                           :demo {:init-fn ty.demo.core/init
-                                 :depends-on #{:main}}}
-                :devtools {:http-root "dev"
-                           :http-port 8000
-                           :watch-dirs ["src"]}}
+                                 :depends-on #{:ty}}}}
+          :bundle {:target :browser
+                   :output-dir "dist/"
+                   :compiler-options {:optimizations :advanced
+                                      :language-in :ecmascript-2017
+                                      :language-out :ecmascript-2017
+                                      :use-types-for-optimization true}
+                   :modules {:ty {:entries [ty.components]}}}
           :lib {:target :browser
                 :output-dir "dist/"
                 :compiler-options {:optimizations :advanced
@@ -51,4 +29,30 @@
                                    :language-out :ecmascript-2017
                                    :externs ["externs.js"]
                                    :use-types-for-optimization true}
-                :modules {:main {:init-fn ty.core/init}}}}}
+                :modules {:ty {:entries [ty.core]}
+                          :ty-calendar-month {:entries [ty.components.calendar-month]
+                                              :depends-on #{:ty}}
+
+                          :ty-calendar {:entries [ty.components.calendar
+                                                  ty.components.calendar-navigation]
+                                        :depends-on #{:ty-calendar-month}}
+
+                          ;; Complete date picker interface
+                          :ty-date-picker {:entries [ty.components.date-picker]
+                                           :depends-on #{:ty-calendar}}
+
+                          ;; Complete dropdown selection interface
+                          :ty-dropdown {:entries [ty.components.dropdown
+                                                  ty.components.dropdown.common
+                                                  ty.components.dropdown.desktop
+                                                  ty.components.dropdown.mobile
+                                                  ty.components.dropdown.global]
+                                        :depends-on #{:ty}}
+
+                          ;; Complete multi-selection interface
+                          :ty-multiselect {:entries [ty.components.multiselect]
+                                           :depends-on #{:ty :ty-dropdown}}
+
+                          ;; Demo module
+                          :demo {:init-fn ty.demo.core/init
+                                 :depends-on #{:ty}}}}}}

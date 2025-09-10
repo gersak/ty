@@ -18,18 +18,22 @@
           :bundle {:target :browser
                    :output-dir "dist/"
                    :compiler-options {:optimizations :advanced
+                                      :externs ["externs.js"]
                                       :language-in :ecmascript-2017
                                       :language-out :ecmascript-2017
                                       :use-types-for-optimization true}
-                   :modules {:ty {:entries [ty.components]}}}
+                   :modules {:ty.all {:entries [ty.components]}}}
           :lib {:target :browser
                 :output-dir "dist/"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.1"
+                :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017
                                    :language-out :ecmascript-2017
                                    :externs ["externs.js"]
                                    :use-types-for-optimization true}
-                :modules {:ty {:entries [ty.core]}
+                :modules {:ty {:entries [ty.core]
+                               :init-fn ty.core/init}
                           :ty-calendar-month {:entries [ty.components.calendar-month]
                                               :depends-on #{:ty}}
 
@@ -51,8 +55,4 @@
 
                           ;; Complete multi-selection interface
                           :ty-multiselect {:entries [ty.components.multiselect]
-                                           :depends-on #{:ty :ty-dropdown}}
-
-                          ;; Demo module
-                          :demo {:init-fn ty.demo.core/init
-                                 :depends-on #{:ty}}}}}}
+                                           :depends-on #{:ty :ty-dropdown}}}}}}

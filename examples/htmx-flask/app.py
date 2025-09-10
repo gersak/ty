@@ -7,12 +7,27 @@ with HTMX for dynamic, server-rendered interactions.
 """
 
 from flask import Flask, render_template, request, jsonify, redirect, url_for
+from flask_compress import Compress
 from datetime import datetime, timedelta
 import json
 import random
 
 app = Flask(__name__)
 app.secret_key = "demo-key-change-in-production"
+
+# Configure gzip compression
+compress = Compress()
+compress.init_app(app)
+
+# Compression configuration
+app.config['COMPRESS_MIMETYPES'] = [
+    'text/html', 'text/css', 'text/xml',
+    'application/json', 'application/javascript',
+    'application/xml+rss', 'application/atom+xml',
+    'text/javascript', 'image/svg+xml'
+]
+app.config['COMPRESS_LEVEL'] = 6
+app.config['COMPRESS_MIN_SIZE'] = 500
 
 # Month names for calendar functionality - FIXES month_names UndefinedError
 MONTH_NAMES = [
@@ -1406,9 +1421,26 @@ def datetime_format(value, format_str="%B %d, %Y at %I:%M %p"):
     return value
 
 
+@app.route("/api/compression-status")
+def compression_status():
+    """Debug endpoint to check if compression is working."""
+    status_info = {
+        "compression_enabled": compress is not None,
+        "compress_mimetypes": app.config.get('COMPRESS_MIMETYPES', []),
+        "compress_level": app.config.get('COMPRESS_LEVEL', 'default'),
+        "compress_min_size": app.config.get('COMPRESS_MIN_SIZE', 'default'),
+        "test_content": "This is a test response that should be compressed if gzip is working properly. " * 20
+    }
+    
+    # Return a large JSON response to trigger compression
+    return jsonify(status_info)
+
+
 if __name__ == "__main__":
     print("🚀 Starting HTMX + Ty Components Demo")
     print("📝 Visit http://localhost:9000 to see the examples")
     print("🎨 Make sure Ty components are built and accessible")
+    print("🗜️  Gzip compression enabled - responses will be compressed")
+    print("🔍 Check compression status at: http://localhost:9000/api/compression-status")
 
     app.run(debug=True, host="0.0.0.0", port=9000)

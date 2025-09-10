@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}HTMX + Ty Components Demo{% endblock %}</title>
     
-    <!-- Ty Component CSS System -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='./css/ty.css') }}">
+    <!-- Ty Component CSS System from jsDelivr CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.0/css/ty.css">
     
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
@@ -159,8 +159,30 @@
         </footer>
     </div>
 
-    <!-- Ty Components JavaScript -->
-    <script src="{{ url_for('static', filename='./js/ty.js') }}"></script>
+    <!-- Ty Components JavaScript from jsDelivr CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.1/ty.js"></script>
+    
+    <!-- CDN Loading Verification -->
+    <script>
+        // Verify Ty components loaded from CDN
+        window.addEventListener('load', function() {
+            if (typeof ty !== 'undefined' && ty.core) {
+                console.log('✅ Ty components loaded from jsDelivr CDN successfully!');
+                console.log('📦 Package: @gersak/ty@0.1.0');
+                
+                // Initialize ty components
+                ty.core.init();
+                
+                // Check if calendar modules are loaded
+                const calendarElements = document.querySelectorAll('ty-calendar, ty-calendar-month');
+                if (calendarElements.length > 0) {
+                    console.log('📅 Calendar components detected and modules loaded from CDN');
+                }
+            } else {
+                console.error('❌ Ty components failed to load from CDN');
+            }
+        });
+    </script>
     
     <!-- Ty Icons Registration -->
     <script src="{{ url_for('static', filename='js/icons.js') }}"></script>

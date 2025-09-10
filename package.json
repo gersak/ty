@@ -1,8 +1,57 @@
 {
-  "name": "ty-components",
-  "version": "1.0.0",
-  "description": "Modern Web Components Library built with ClojureScript",
-  "private": true,
+  "name": "@gersak/ty",
+  "version": "0.1.0",
+  "description": "Modern Web Components Library built with ClojureScript - Zero dependency, modular web components",
+  "main": "dist/ty.js",
+  "module": "dist/ty.js",
+  "types": "dist/ty.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/ty.js",
+      "require": "./dist/ty.js"
+    },
+    "./calendar": {
+      "import": "./dist/ty-calendar.js"
+    },
+    "./calendar-month": {
+      "import": "./dist/ty-calendar-month.js"
+    },
+    "./date-picker": {
+      "import": "./dist/ty-date-picker.js"
+    },
+    "./dropdown": {
+      "import": "./dist/ty-dropdown.js"
+    },
+    "./multiselect": {
+      "import": "./dist/ty-multiselect.js"
+    },
+    "./css/core": {
+      "import": "./dist/css/ty.css"
+    },
+    "./css/*": {
+      "import": "./dist/css/*.css"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "web-components",
+    "clojurescript", 
+    "ui-components",
+    "modular",
+    "zero-dependency",
+    "custom-elements",
+    "shadow-dom"
+  ],
+  "homepage": "https://github.com/your-username/ty-components",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/your-username/ty-components.git"
+  },
+  "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
@@ -13,7 +62,10 @@
     "dev": "shadow-cljs watch app",
     "build": "shadow-cljs release app",
     "release": "shadow-cljs release lib",
+    "build:cdn": "npm run release && npm run build:css:dist",
+    "build:css:dist": "mkdir -p dist/css && cp dev/css/ty.css dist/css/ && find lib -name '*.css' -exec cp {} dist/css/ \\;",
     "css:watch": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
-    "css:build": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --minify"
+    "css:build": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --minify",
+    "prepublishOnly": "npm run build:cdn"
   }
 }

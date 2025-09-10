@@ -1,31 +1,29 @@
 {:source-paths ["lib" "gen" "demo"]
-
+ :dev-http {8000 "dev"}
  :nrepl {:port 7888}
  :dependencies [[no.cjohansen/replicant "2025.06.21"]
                 [dev.gersak/timing.core "0.6.4"]
                 [cljs-bean "1.9.0"]]
 
- :builds {:app {:target :browser
-                ; :output-dir "dist/"
-                :output-dir "examples/htmx-flask/static/js"
-                :compiler-options {:optimizations :advanced
-                                   :language-in :ecmascript-2017
-                                   :language-out :ecmascript-2017
-                                   :use-types-for-optimization true}
-                :modules {:ty {:entries [ty.components]}
-                          :demo {:init-fn ty.demo.core/init
-                                 :depends-on #{:ty}}}}
+ :builds {:dev {:target :browser
+                :output-dir "dev/js"
+                :modules {:demo {:init-fn ty.demo.core/init}}}
+          :react {:target :browser
+                  :output-dir "react/resources"
+                  :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.2"
                    :compiler-options {:optimizations :advanced
                                       :externs ["externs.js"]
                                       :language-in :ecmascript-2017
                                       :language-out :ecmascript-2017
                                       :use-types-for-optimization true}
-                   :modules {:ty.all {:entries [ty.components]}}}
+                   :modules {:ty.bundle {:entries [ty.components]
+                                         :init-fn ty.core/init}}}
           :lib {:target :browser
                 :output-dir "dist/"
-                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.1"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.2"
                 :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017

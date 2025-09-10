@@ -59,8 +59,8 @@
     "tailwindcss": "^3.4.17"
   },
   "scripts": {
-    "dev": "shadow-cljs watch app",
-    "build": "shadow-cljs release app",
+    "dev": "shadow-cljs watch dev",
+    "build": "shadow-cljs release dev",
     "release": "shadow-cljs release lib",
     "build:cdn": "npm run release && npm run build:css:dist",
     "build:css:dist": "mkdir -p dist/css && cp dev/css/ty.css dist/css/ && find lib -name '*.css' -exec cp {} dist/css/ \\;",

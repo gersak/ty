@@ -29,8 +29,11 @@ echo "📁 Preparing distribution directory..."
 rm -rf dist-cdn
 mkdir -p dist-cdn/css
 
-echo "🔨 Building ClojureScript modules..."
+echo "🔨 Building ClojureScript modules (modular)..."
 npx shadow-cljs release lib
+
+echo "📦 Building ClojureScript bundle (all-in-one)..."
+npx shadow-cljs release bundle
 
 # Copy files to package structure
 echo "📋 Copying files..."
@@ -66,16 +69,52 @@ SOFTWARE.
 EOF
 
 # Validate
-if [ ! -f "dist-cdn/ty.js" ] || [ ! -f "dist-cdn/package.json" ]; then
+if [ ! -f "dist-cdn/ty.js" ] || [ ! -f "dist-cdn/ty.bundle.js" ] || [ ! -f "dist-cdn/package.json" ]; then
     echo "❌ Build validation failed!"
+    echo "Missing files:"
+    [ ! -f "dist-cdn/ty.js" ] && echo "  - ty.js (modular entry point)"
+    [ ! -f "dist-cdn/ty.bundle.js" ] && echo "  - ty.bundle.js (all-in-one bundle)"
+    [ ! -f "dist-cdn/package.json" ] && echo "  - package.json"
     exit 1
 fi
 
 echo ""
+# Generate bundle size report
+echo "📏 Generating bundle size report..."
+cat > dist-cdn/BUNDLE_SIZES.md << 'BUNDLE_EOF'
+# Bundle Sizes
+
+## Modular Build (Load components individually)
+- Core: ty.js
+- Calendar Month: ty-calendar-month.js  
+- Full Calendar: ty-calendar.js
+- Date Picker: ty-date-picker.js
+- Dropdown: ty-dropdown.js
+- Multiselect: ty-multiselect.js
+
+## Bundle Build (All components in one file)
+- All-in-One: ty.bundle.js
+
+## File Sizes
+BUNDLE_EOF
+
+# Add actual file sizes
+if command -v du >/dev/null 2>&1; then
+    echo "" >> dist-cdn/BUNDLE_SIZES.md
+    echo "### Actual Sizes" >> dist-cdn/BUNDLE_SIZES.md
+    echo "\`\`\`" >> dist-cdn/BUNDLE_SIZES.md
+    du -h dist-cdn/*.js | sed 's/dist-cdn\///' >> dist-cdn/BUNDLE_SIZES.md
+    echo "\`\`\`" >> dist-cdn/BUNDLE_SIZES.md
+fi
+
 echo "✨ Build completed successfully!"
 echo "📦 Package: ${PACKAGE_NAME}@${VERSION}"
-echo "🎯 JS modules: $(ls dist-cdn/*.js 2>/dev/null | wc -l)"
+echo "🎯 JS files: $(ls dist-cdn/*.js 2>/dev/null | wc -l)"
+echo "    🔗 Modular: ty.js + $(ls dist-cdn/ty-*.js 2>/dev/null | wc -l) components"
+echo "    📦 Bundle: ty.bundle.js (all-in-one)"
 echo "🎨 CSS files: $(ls dist-cdn/css/*.css 2>/dev/null | wc -l || echo 0)"
 echo ""
 echo "🚀 To publish: cd dist-cdn && npm publish"
-echo "🌐 Will be available at: ${ASSET_PATH}ty.js"
+echo "🌐 CDN URLs:"
+echo "    🔗 Modular: ${ASSET_PATH}/ty.js"
+echo "    📦 Bundle: ${ASSET_PATH}/ty.bundle.js"

@@ -30,8 +30,9 @@
 }
 
 .option-content[highlighted] {
-  background: var(--ty-bg-primary-mild);
+  background: var(--ty-bg-primary-soft);
   color: var(--ty-text-strong);
+  font-weight: var(--ty-font-semibold);
 }
 
 .option-content[selected] {

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ty React Wrapper Demo</title>
+
+  <!-- Load Ty Components CSS from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.2/css/ty.css">
+
+  <!-- Load Ty Components JS from CDN -->
+  <!-- <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.2/ty.bundle.js"></script> -->
+</head>
+
+<body>
+  <div id="root"></div>
+  
+  <!-- Load Ty components bundle first -->
+  <script src="resources/ty.js"></script>
+  
+  <!-- Initialize icons -->
+  <script src="/src/init-icons.js"></script>
+  
+  <!-- Load React app -->
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

@@ -13,7 +13,7 @@ export interface TyDropdownEventDetail {
 }
 
 // Type definitions for Ty Dropdown component
-export interface TyDropdownProps extends React.HTMLAttributes<HTMLElement> {
+export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   value?: string;

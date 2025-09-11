@@ -18,27 +18,27 @@
                   :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"
-                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.2"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.6"
                    :compiler-options {:optimizations :advanced
                                       :externs ["externs.js"]
                                       :language-in :ecmascript-2017
                                       :language-out :ecmascript-2017
                                       :use-types-for-optimization true}
-                   :modules {:ty.bundle {:entries [ty.components]
-                                         :init-fn ty.core/init}}}
+                   :modules {:ty {:entries [ty.components]
+                                  :init-fn ty.core/init}}}
           :lib {:target :browser
                 :output-dir "dist/"
-                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.2"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.6"
                 :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017
                                    :language-out :ecmascript-2017
                                    :externs ["externs.js"]
                                    :use-types-for-optimization true}
-                :modules {:ty {:entries [ty.core]
-                               :init-fn ty.core/init}
+                :modules {:ty-lazy {:entries [ty.core]
+                                    :init-fn ty.core/init}
                           :ty-calendar-month {:entries [ty.components.calendar-month]
-                                              :depends-on #{:ty}}
+                                              :depends-on #{:ty-lazy}}
 
                           :ty-calendar {:entries [ty.components.calendar
                                                   ty.components.calendar-navigation]
@@ -54,8 +54,8 @@
                                                   ty.components.dropdown.desktop
                                                   ty.components.dropdown.mobile
                                                   ty.components.dropdown.global]
-                                        :depends-on #{:ty}}
+                                        :depends-on #{:ty-lazy}}
 
                           ;; Complete multi-selection interface
                           :ty-multiselect {:entries [ty.components.multiselect]
-                                           :depends-on #{:ty :ty-dropdown}}}}}}
+                                           :depends-on #{:ty-lazy :ty-dropdown}}}}}}

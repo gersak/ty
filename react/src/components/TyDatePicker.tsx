@@ -12,7 +12,7 @@ export interface TyDatePickerEventDetail {
   formatted: string | null;
 }
 
-export interface TyDatePickerProps extends React.HTMLAttributes<HTMLElement> {
+export interface TyDatePickerProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
   /** The selected date value (ISO string or formatted string) */
   value?: string;
   

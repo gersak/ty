@@ -47,7 +47,7 @@ cp README-CDN.md dist-cdn/README.md
 cat > dist-cdn/LICENSE << 'EOF'
 MIT License
 
-Copyright (c) 2024 Ty Components
+Copyright (c) 2024 Gersak
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -69,11 +69,11 @@ SOFTWARE.
 EOF
 
 # Validate
-if [ ! -f "dist-cdn/ty.js" ] || [ ! -f "dist-cdn/ty.bundle.js" ] || [ ! -f "dist-cdn/package.json" ]; then
+if [ ! -f "dist-cdn/ty.js" ] || [ ! -f "dist-cdn/ty-lazy.js" ] || [ ! -f "dist-cdn/package.json" ]; then
     echo "❌ Build validation failed!"
     echo "Missing files:"
-    [ ! -f "dist-cdn/ty.js" ] && echo "  - ty.js (modular entry point)"
-    [ ! -f "dist-cdn/ty.bundle.js" ] && echo "  - ty.bundle.js (all-in-one bundle)"
+    [ ! -f "dist-cdn/ty.js" ] && echo "  - ty.js"
+    [ ! -f "dist-cdn/ty-lazy.js" ] && echo "  - ty-lazy.js"
     [ ! -f "dist-cdn/package.json" ] && echo "  - package.json"
     exit 1
 fi

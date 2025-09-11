@@ -27,7 +27,7 @@ export interface TyCalendarNavigateEventDetail {
   source: 'navigation';
 }
 
-export interface TyCalendarProps extends React.HTMLAttributes<HTMLElement> {
+export interface TyCalendarProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
   /** Selected year (4-digit) */
   year?: number | string;
   
@@ -59,7 +59,7 @@ export interface TyCalendarProps extends React.HTMLAttributes<HTMLElement> {
   value?: string;
   
   /** Function to render custom day content */
-  dayContentFn?: (dayContext: any) => React.ReactNode | string;
+  dayContentFn?: (dayContext: any) => HTMLElement | string;
   
   /** Function to determine day CSS classes */
   dayClassesFn?: (dayContext: any) => string[];

@@ -9,7 +9,7 @@ export interface TyInputEventDetail {
 }
 
 // Type definitions for Ty Input component
-export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput'> {
+export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput' | 'onFocus' | 'onBlur'> {
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -25,7 +25,7 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
   locale?: string;
   precision?: string | number;
   
-  // React event handlers
+  // React event handlers - override with our custom types
   onInput?: (event: CustomEvent<TyInputEventDetail>) => void;
   onChange?: (event: CustomEvent<TyInputEventDetail>) => void;
   onFocus?: (event: FocusEvent) => void;

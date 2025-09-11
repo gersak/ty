@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react';
 export interface TyButtonProps extends React.HTMLAttributes<HTMLElement> {
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   children?: React.ReactNode;
 }

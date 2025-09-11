@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // Check if ty.icons is available (from ty.js bundle)
   if (window.ty && window.ty.icons) {
     console.log('Initializing Ty icons...');
-    
+
     // Add basic icons for demo purposes
     // Note: In a real app, you'd import specific icon sets as needed
     window.ty.icons.add({
@@ -64,7 +64,7 @@ window.addEventListener('DOMContentLoaded', () => {
       'list': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>',
       'database': '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
     });
-    
+
     console.log('Ty icons initialized successfully!');
   } else {
     console.warn('Ty icons system not found. Make sure ty.js is loaded first.');

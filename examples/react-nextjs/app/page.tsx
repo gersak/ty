@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
+import { AppLayout } from '../lib/app-layout'
 
 // Import Ty React components
 import {
@@ -12,6 +13,7 @@ import {
   TyOption,
   type TyModalRef
 } from '@gersak/ty-react'
+import { useRef } from 'react'
 
 export default function Home() {
   const [mounted, setMounted] = useState(false)
@@ -21,7 +23,6 @@ export default function Home() {
 
   useEffect(() => {
     setMounted(true)
-    // Icons are automatically initialized by TyLoader
   }, [])
 
   const handleInputChange = (event: any) => {
@@ -36,10 +37,6 @@ export default function Home() {
 
   const handleButtonClick = () => {
     console.log('Button clicked!')
-    alert('Ty Button works!')
-  }
-
-  const openModal = () => {
     modalRef.current?.show()
   }
 
@@ -48,121 +45,371 @@ export default function Home() {
   }
 
   if (!mounted) {
-    return <div>Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen surface-elevated">
+        <div className="text-center">
+          <div className="inline-block w-8 h-8 border-4 border-current border-t-transparent rounded-full animate-spin ty-text-primary mb-4"></div>
+          <p className="text-neutral-ty-base">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <main className="container">
-      <h1>Ty Components + React + Next.js Example</h1>
+    <AppLayout>
+      {/* Page Header - Using Tailwind + Ty */}
+      <div className="mb-8 pb-4 border-b ty-border+">
+        <h1 className="text-3xl font-bold mb-2 ty-text++">
+          Getting Started with Ty + Tailwind Components
+        </h1>
+        <p className="text-base leading-relaxed ty-text-">
+          Welcome to the comprehensive showcase of Ty Components integrated with Tailwind CSS.
+          This example demonstrates theme toggling, responsive layout, semantic design system,
+          and seamless component integration using modern utility-first styling.
+        </p>
+      </div>
 
-      <div className="section">
-        <h2>Package Status</h2>
-
-        <div className="component-test">
-          <h3>✅ @gersak/ty Package - Loaded</h3>
-          <p>Core web components library is available</p>
+      {/* Integration Status Section */}
+      <div className="surface-content rounded-xl p-6 mb-6 border ty-border ty-shadow-sm">
+        <div className="mb-5">
+          <h2 className="text-xl font-semibold mb-1 ty-text++">
+            🎉 Integration Status
+          </h2>
+          <p className="text-sm text-neutral-ty-base">
+            Verify that all packages and systems are working correctly with Tailwind CSS
+          </p>
         </div>
 
-        <div className="component-test">
-          <h3>✅ @gersak/ty-react Package - Loaded</h3>
-          <p>React wrapper components are available</p>
+        <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+            <div className="space-y-2">
+              <h3 className="flex items-center text-success-ty-strong font-medium">
+                <TyIcon name="check-circle" size="20" className="mr-2" />
+                @gersak/ty Package
+              </h3>
+              <p className="text-sm text-neutral-ty-base">
+                Core web components library loaded from CDN
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="flex items-center text-success-ty-strong font-medium">
+                <TyIcon name="check-circle" size="20" className="mr-2" />
+                @gersak/ty-react Package
+              </h3>
+              <p className="text-sm text-neutral-ty-base">
+                React wrapper components with TypeScript support
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="flex items-center text-success-ty-strong font-medium">
+                <TyIcon name="check-circle" size="20" className="mr-2" />
+                Tailwind CSS Integration
+              </h3>
+              <p className="text-sm text-neutral-ty-base">
+                Utility-first styling with Ty semantic variables
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <h3 className="flex items-center text-success-ty-strong font-medium">
+                <TyIcon name="check-circle" size="20" className="mr-2" />
+                Theme System
+              </h3>
+              <p className="text-sm text-neutral-ty-base">
+                Dark/light mode with CSS variables + Tailwind
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="section">
-        <h2>Component Tests</h2>
-
-        <div className="component-test">
-          <h3>TyButton Test</h3>
-          <p>Testing button component with click handler</p>
-          <TyButton onClick={handleButtonClick} flavor="primary">
-            Click Me!
-          </TyButton>
-          <br /><br />
-          <TyButton onClick={handleButtonClick} flavor="secondary" size="sm">
-            Small Secondary
-          </TyButton>
+      {/* Quick Component Tests Section */}
+      <div className="surface-content rounded-xl p-6 mb-6 border ty-border shadow-ty-sm">
+        <div className="mb-5">
+          <h2 className="text-xl font-semibold mb-1 text-neutral-ty-strong">
+            🧪 Quick Component Tests
+          </h2>
+          <p className="text-sm text-neutral-ty-base">
+            Interactive examples to verify core functionality with Tailwind styling
+          </p>
         </div>
 
-        <div className="component-test">
-          <h3>TyInput Test</h3>
-          <p>Testing input component with value binding</p>
-          <TyInput
-            placeholder="Type something..."
-            value={inputValue}
-            onChange={handleInputChange}
-          />
-          <p>Current value: <strong>{inputValue}</strong></p>
-        </div>
-
-        <div className="component-test">
-          <h3>TyIcon Test</h3>
-          <p>Testing icon component (requires icon registry)</p>
-          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-            <TyIcon name="home" size="24" />
-            <TyIcon name="star" size="32" />
-            <TyIcon name="user" size="20" />
-          </div>
-          <p><small>Note: Icons require icon registry initialization</small></p>
-        </div>
-
-        <div className="component-test">
-          <h3>TyDropdown Test</h3>
-          <p>Testing dropdown component with options</p>
-          <TyDropdown onChange={handleDropdownChange} placeholder="Select an option...">
-            <TyOption value="option1">Option 1</TyOption>
-            <TyOption value="option2">Option 2</TyOption>
-            <TyOption value="option3">Option 3</TyOption>
-          </TyDropdown>
-          <p>Selected: <strong>{dropdownValue}</strong></p>
-        </div>
-
-        <div className="component-test">
-          <h3>TyModal Test</h3>
-          <p>Testing modal component with imperative API</p>
-          <TyButton onClick={openModal} flavor="primary">
-            Open Modal
-          </TyButton>
-
-          <TyModal ref={modalRef}>
-            <div style={{ padding: '20px' }}>
-              <h2>Test Modal</h2>
-              <p>This is a test modal using Ty components in React!</p>
-              <br />
-              <TyButton onClick={closeModal} flavor="secondary">
-                Close Modal
+        <div className="space-y-6">
+          {/* Button Test */}
+          <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+            <h3 className="mb-3 text-neutral-ty-strong font-medium">
+              TyButton - Interactive Actions
+            </h3>
+            <div className="flex flex-wrap items-center gap-3">
+              <TyButton onClick={handleButtonClick} flavor="primary" className="flex items-center gap-2">
+                <TyIcon name="square" size="16" />
+                Open Modal
+              </TyButton>
+              <TyButton onClick={() => alert('Secondary action!')} flavor="secondary" size="sm">
+                Secondary
+              </TyButton>
+              <TyButton onClick={() => alert('Success action!')} flavor="success" size="sm" className="flex items-center gap-1.5">
+                <TyIcon name="check" size="16" />
+                Success
+              </TyButton>
+              <TyButton onClick={() => alert('Danger action!')} flavor="danger" size="sm" className="flex items-center gap-1.5">
+                <TyIcon name="x" size="16" />
+                Danger
               </TyButton>
             </div>
-          </TyModal>
+          </div>
+
+          {/* Input Test */}
+          <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+            <h3 className="mb-3 text-neutral-ty-strong font-medium">
+              TyInput - Value Binding & Events
+            </h3>
+            <div className="max-w-md">
+              <TyInput
+                placeholder="Type something to test..."
+                value={inputValue}
+                onChange={handleInputChange}
+                className="w-full"
+              />
+              <p className="mt-2 text-sm text-neutral-ty-base">
+                Current value: <span className="font-medium text-primary-ty-base">{inputValue || '(empty)'}</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Dropdown Test */}
+          <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+            <h3 className="mb-3 text-neutral-ty-strong font-medium">
+              TyDropdown - Selection Events
+            </h3>
+            <div className="max-w-xs">
+              <TyDropdown onChange={handleDropdownChange} placeholder="Choose an option...">
+                <TyOption value="react">React Integration</TyOption>
+                <TyOption value="nextjs">Next.js Compatibility</TyOption>
+                <TyOption value="typescript">TypeScript Support</TyOption>
+                <TyOption value="tailwind">Tailwind CSS Integration</TyOption>
+                <TyOption value="theming">Theme System</TyOption>
+              </TyDropdown>
+              <p className="mt-2 text-sm text-neutral-ty-base">
+                Selected: <span className="font-medium text-primary-ty-base">{dropdownValue || '(none)'}</span>
+              </p>
+            </div>
+          </div>
+
+          {/* Icons Test */}
+          <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+            <h3 className="mb-3 text-neutral-ty-strong font-medium">
+              TyIcon - Size Variants & Colors
+            </h3>
+            <div className="flex flex-wrap items-center gap-6">
+              <div className="flex items-center gap-2">
+                <TyIcon name="home" size="16" />
+                <TyIcon name="home" size="20" />
+                <TyIcon name="home" size="24" />
+                <TyIcon name="home" size="32" />
+                <span className="text-xs text-neutral-ty-soft ml-2">Sizes</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <TyIcon name="star" size="24" className="text-primary-ty-base" />
+                <TyIcon name="heart" size="24" className="text-danger-ty-base" />
+                <TyIcon name="check-circle" size="24" className="text-success-ty-base" />
+                <TyIcon name="info" size="24" className="text-info-ty-base" />
+                <span className="text-xs text-neutral-ty-soft ml-2">Colors</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="section">
-        <h2>Integration Status</h2>
-        <div className="component-test">
-          <h3>✅ Web Components Registration</h3>
-          <p>Custom elements should be registered in the browser</p>
+      {/* Theme System Demonstration */}
+      <div className="surface-content rounded-xl p-6 mb-6 border ty-border shadow-ty-sm">
+        <div className="mb-5">
+          <h2 className="text-xl font-semibold mb-1 text-neutral-ty-strong">
+            🎨 Theme System + Tailwind Demonstration
+          </h2>
+          <p className="text-sm text-neutral-ty-base">
+            The theme toggle in the header demonstrates Ty's semantic CSS variable system working seamlessly with Tailwind utilities
+          </p>
         </div>
 
-        <div className="component-test">
-          <h3>✅ React Wrapper Integration</h3>
-          <p>TypeScript interfaces and event handling working</p>
-        </div>
+        <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 rounded-lg surface-content border ty-border">
+              <h4 className="ty-text++ mb-2 font-medium">Primary Strong</h4>
+              <p className="text-primary-ty-base text-sm mb-1">Primary Base</p>
+              <p className="ty-text- text-xs">Primary Soft</p>
+            </div>
 
-        <div className="component-test">
-          <h3>✅ Next.js Compatibility</h3>
-          <p>Server-side rendering and client hydration working</p>
+            <div className="p-4 rounded-lg bg-semantic-success border border-success-ty-base">
+              <h4 className="text-success-ty-strong mb-2 font-medium">Success State</h4>
+              <p className="text-success-ty-base text-sm">Success message content</p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-semantic-warning border border-warning-ty-base">
+              <h4 className="text-warning-ty-strong mb-2 font-medium">Warning State</h4>
+              <p className="text-warning-ty-base text-sm">Warning message content</p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-semantic-danger border border-danger-ty-base">
+              <h4 className="text-danger-ty-strong mb-2 font-medium">Danger State</h4>
+              <p className="text-danger-ty-base text-sm">Error message content</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="section">
-        <h2>Debug Information</h2>
-        <div className="component-test">
-          <p><strong>Environment:</strong> {typeof window !== 'undefined' ? 'Client' : 'Server'}</p>
-          <p><strong>Custom Elements Support:</strong> {typeof window !== 'undefined' && window.customElements ? '✅ Available' : '❌ Not Available'}</p>
-          <p><strong>Mounted:</strong> {mounted ? '✅ Yes' : '❌ No'}</p>
+      {/* Tailwind + Ty Integration Showcase */}
+      <div className="surface-content rounded-xl p-6 mb-6 border ty-border shadow-ty-sm">
+        <div className="mb-5">
+          <h2 className="text-xl font-semibold mb-1 text-neutral-ty-strong">
+            ⚡ Tailwind + Ty Integration Showcase
+          </h2>
+          <p className="text-sm text-neutral-ty-base">
+            Examples showing the power of combining Tailwind's utility classes with Ty's semantic design system
+          </p>
+        </div>
+
+        <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+            {/* Responsive Card Example */}
+            <div className="ty-bg-primary+ p-6 rounded-xl border ty-border-primary transform hover:scale-105 transition-transform duration-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 ty-bg-primary rounded-lg flex items-center justify-center mr-4">
+                  <TyIcon name="layers" size="24" className="ty-warning+" />
+                </div>
+                <div>
+                  <h3 className="font-semibold ty-text-primary">Responsive Design</h3>
+                  <p className="text-xs ty-text-primary+">Grid + Flexbox</p>
+                </div>
+              </div>
+              <p className="text-sm ty-text leading-relaxed">
+                Tailwind's responsive utilities combined with Ty's semantic colors create beautiful, adaptive interfaces.
+              </p>
+            </div>
+
+            {/* Animation Example */}
+            <div className="bg-gradient-to-br p-6 rounded-xl border ty-border+ group hover:shadow-lg transition-all duration-300">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 ty-bg-success rounded-lg flex items-center justify-center mr-4 group-hover:rotate-12 transition-transform duration-300">
+                  <TyIcon name="zap" size="24" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-success-ty-strong">Smooth Animations</h3>
+                  <p className="text-xs text-success-ty-base">CSS Transitions</p>
+                </div>
+              </div>
+              <p className="text-sm ty-text-success+ leading-relaxed">
+                Tailwind's animation utilities work seamlessly with Ty components for smooth interactions.
+              </p>
+            </div>
+
+            {/* Utility Classes Example */}
+            <div className="bg-gradient-to-br p-6 rounded-xl border ty-border+ relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-20 h-20 ty-bg-neutral- rounded-full -translate-y-10 translate-x-10 opacity-50"></div>
+              <div className="flex items-center mb-4 relative z-10">
+                <div className="w-12 h-12 ty-bg-neutral rounded-lg flex items-center justify-center mr-4">
+                  <TyIcon name="code" size="24" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-info-ty-strong">Utility First</h3>
+                  <p className="text-xs text-info-ty-base">Fast Development</p>
+                </div>
+              </div>
+              <p className="text-sm ty-text+ leading-relaxed relative z-10">
+                Build complex layouts quickly using Tailwind utilities while maintaining semantic meaning through Ty.
+              </p>
+            </div>
+
+          </div>
         </div>
       </div>
-    </main>
+
+      {/* What's Next Section */}
+      <div className="surface-content rounded-xl p-6 mb-6 border ty-border shadow-ty-sm">
+        <div className="mb-5">
+          <h2 className="text-xl font-semibold mb-1 text-neutral-ty-strong">
+            🚀 What's Next?
+          </h2>
+          <p className="text-sm text-neutral-ty-base">
+            Explore the full range of Ty components with Tailwind integration
+          </p>
+        </div>
+
+        <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
+              <TyIcon name="edit" size="32" className="text-primary-ty-base mb-3 mx-auto" />
+              <h3 className="mb-2 text-neutral-ty-strong font-medium">Form Components</h3>
+              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
+                Inputs, dropdowns, calendars, and validation with Tailwind styling
+              </p>
+              <TyButton flavor="neutral" size="sm" className="text-xs">
+                View Examples →
+              </TyButton>
+            </div>
+
+            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
+              <TyIcon name="layout" size="32" className="mb-3 mx-auto" />
+              <h3 className="mb-2 text-neutral-ty-strong font-medium">Navigation</h3>
+              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
+                Menus, breadcrumbs, and navigation patterns with responsive design
+              </p>
+              <TyButton flavor="neutral" size="sm" className="text-xs">
+                View Examples →
+              </TyButton>
+            </div>
+
+            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
+              <TyIcon name="square" size="32" className="mb-3 mx-auto" />
+              <h3 className="mb-2 text-neutral-ty-strong font-medium">Modals & Dialogs</h3>
+              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
+                Overlays, confirmations, and complex dialogs with backdrop effects
+              </p>
+              <TyButton flavor="neutral" size="sm" className="text-xs">
+                View Examples →
+              </TyButton>
+            </div>
+
+            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
+              <TyIcon name="monitor" size="32" className="mb-3 mx-auto" />
+              <h3 className="mb-2 text-neutral-ty-strong font-medium">Real Examples</h3>
+              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
+                Complete forms, dashboards, and user interfaces built with both
+              </p>
+              <TyButton flavor="neutral" size="sm" className="text-xs">
+                View Examples →
+              </TyButton>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal Component */}
+      <TyModal ref={modalRef}>
+        <div className="p-6 text-center">
+          <TyIcon name="check-circle" size="48" className="ty-success mb-4 mx-auto" />
+          <h2 className="mb-3 text-neutral-ty-strong text-xl font-semibold">
+            🎉 Modal Test Successful!
+          </h2>
+          <p className="mb-5 text-neutral-ty-base leading-relaxed max-w-md mx-auto">
+            This modal demonstrates React ref integration with Ty components, enhanced with
+            Tailwind utility classes for responsive and beautiful styling. The modal component
+            exposes imperative methods for programmatic control.
+          </p>
+          <div className="flex gap-3 justify-center">
+            <TyButton onClick={closeModal} flavor="primary" className="flex items-center gap-2">
+              <TyIcon name="check" size="16" />
+              Got it!
+            </TyButton>
+            <TyButton onClick={closeModal} flavor="neutral">
+              Close
+            </TyButton>
+          </div>
+        </div>
+      </TyModal>
+    </AppLayout>
   )
 }

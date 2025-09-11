@@ -2,13 +2,16 @@
   "name": "ty-react-nextjs-example",
   "version": "0.1.0",
   "private": true,
-  "description": "Simple Next.js example testing @gersak/ty and @gersak/ty-react packages",
+  "description": "Simple Next.js example testing @gersak/ty and @gersak/ty-react packages with Tailwind CSS integration",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build:css": "tailwindcss -i ./app/tailwind-input.css -o ./app/globals.css",
+    "build:css:watch": "tailwindcss -i ./app/tailwind-input.css -o ./app/globals.css --watch",
+    "dev:full": "concurrently \"npm run build:css:watch\" \"npm run dev\""
   },
   "dependencies": {
     "@gersak/ty-react": "^0.0.2",
@@ -20,8 +23,12 @@
     "@types/node": "^20.0.0",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.0.0",
+    "postcss": "^8.4.31",
+    "tailwindcss": "^3.3.6",
     "typescript": "^5.0.0"
   }
 }

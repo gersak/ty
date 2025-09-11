@@ -625,147 +625,127 @@
        "new Date(selectedDate);                      // Parse easily"]]]]])
 
 (defn view []
-  [:div.p-6
-   [:div.mb-8
-    [:h1.text-3xl.font-bold.ty-text "Modern Calendar System"]
-    [:p.text-lg.ty-text-.mt-2
-     "Year/Month/Day architecture with property-based composition for optimal performance and intuitive API."]]
+  [:div.demo-container
+   [:div.demo-header
+    [:h1.demo-title "📅 Calendar Components"]
+    [:p.demo-description "Modern calendar components with year/month/day attribute API and advanced styling."]]
 
-   ;; Main demos
+   ;; Clear Test Demo - NEW!
+   [:div.demo-section
+    [:h2.demo-title "🧪 Clear State Test"]
+    [:p.text-sm.ty-text-.mb-6 "Testing external attribute clearing - this should demonstrate the bug we're fixing."]
+
+    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8.mb-8
+     ;; Calendar with clear button
+     [:div.space-y-4
+      [:div
+       [:h3.demo-subtitle.mb-2 "Calendar with External Clear"]
+       [:p.text-sm.ty-text-.mb-4 "Calendar starts with selected date, external button should clear selection."]
+       [:div.space-y-4
+        [:div.flex.justify-center
+         [:ty-calendar {:id "clear-test-calendar"
+                        :width "350px"
+                        :year "2024"
+                        :month "12"
+                        :day "25"
+                        :on {:change handle-change}}]]
+
+        ;; Control buttons
+        [:div.flex.flex-wrap.gap-2.justify-center
+         [:ty-button {:class "ty-button-secondary-soft"
+                      :onclick "
+                        const cal = document.getElementById('clear-test-calendar');
+                        cal.removeAttribute('year');
+                        cal.removeAttribute('month'); 
+                        cal.removeAttribute('day');
+                        console.log('Cleared attributes, calendar should show no selection');
+                      "}
+          "Clear Attributes"]
+
+         [:ty-button {:class "ty-button-primary-soft"
+                      :onclick "
+                        const cal = document.getElementById('clear-test-calendar');
+                        cal.setAttribute('year', '2024');
+                        cal.setAttribute('month', '6');
+                        cal.setAttribute('day', '15');
+                        console.log('Set to June 15, 2024');
+                      "}
+          "Set June 15, 2024"]
+
+         [:ty-button {:class "ty-button-neutral-soft"
+                      :onclick "
+                        const cal = document.getElementById('clear-test-calendar');
+                        console.log('Current attributes:', {
+                          year: cal.getAttribute('year'),
+                          month: cal.getAttribute('month'),
+                          day: cal.getAttribute('day')
+                        });
+                      "}
+          "Check Attributes"]]]]
+
+      [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
+       [:code
+        "<!-- Test clearing attributes -->\n"
+        "const cal = document.getElementById('calendar');\n\n"
+        "// This should clear the selection but might not work\n"
+        "cal.removeAttribute('year');\n"
+        "cal.removeAttribute('month');\n"
+        "cal.removeAttribute('day');\n\n"
+        "// Calendar should show no selection"]]]
+
+     ;; JavaScript property test
+     [:div.space-y-4
+      [:div
+       [:h3.demo-subtitle.mb-2 "Property vs Attribute Test"]
+       [:p.text-sm.ty-text-.mb-4 "Testing both property and attribute approaches to clearing."]
+       [:div.space-y-4
+        [:div.flex.justify-center
+         [:ty-calendar {:id "property-test-calendar"
+                        :width "350px"
+                        :year "2024"
+                        :month "12"
+                        :day "25"
+                        :on {:change handle-change}}]]
+
+        [:div.flex.flex-wrap.gap-2.justify-center
+         [:ty-button {:class "ty-button-warning-soft"
+                      :onclick "
+                        const cal = document.getElementById('property-test-calendar');
+                        cal.year = null;
+                        cal.month = null; 
+                        cal.day = null;
+                        console.log('Set properties to null');
+                      "}
+          "Clear Properties"]
+
+         [:ty-button {:class "ty-button-info-soft"
+                      :onclick "
+                        const cal = document.getElementById('property-test-calendar');
+                        console.log('Current properties:', {
+                          year: cal.year,
+                          month: cal.month,
+                          day: cal.day
+                        });
+                        console.log('Current attributes:', {
+                          year: cal.getAttribute('year'),
+                          month: cal.getAttribute('month'),
+                          day: cal.getAttribute('day')
+                        });
+                      "}
+          "Inspect State"]]]]
+
+      [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
+       [:code
+        "// Property approach\n"
+        "cal.year = null;\n"
+        "cal.month = null;\n"
+        "cal.day = null;\n\n"
+        "// Check both approaches\n"
+        "console.log(cal.year, cal.getAttribute('year'));"]]]]]
+
    (orchestrated-calendar-demo)
    (localized-calendar-demo)
-
-   ;; NEW: Year/Month/Day API benefits section  
-   [:div.p-4.ty-bg-primary-.rounded-lg.mb-6
-    [:h4.font-semibold.mb-3 "✨ NEW: Year/Month/Day Attribute API"]
-    [:div.text-sm.space-y-3
-     [:div
-      [:strong "Intuitive Interface:"] " Work directly with familiar year/month/day concepts instead of timestamps."]
-     [:div
-      [:strong "No Date Parsing:"] " All values are simple numbers - no more Date object complexity!"]
-     [:div.space-y-2
-      [:strong "Usage:"]
-      [:pre.text-xs.ty-elevated.p-3.rounded.mt-2
-       [:code
-        "<!-- OLD: Timestamp/ISO string approach -->\n"
-        "<ty-calendar value=\"2024-12-25T00:00:00Z\"></ty-calendar>\n"
-        "<ty-calendar value=\"1735084800000\"></ty-calendar>\n\n"
-        "<!-- NEW: Clean year/month/day approach -->\n"
-        "<ty-calendar year=\"2024\" month=\"12\" day=\"25\"></ty-calendar>\n\n"
-        "// JavaScript - Simple number attributes\n"
-        "cal.setAttribute('year', '2024');\n"
-        "cal.setAttribute('month', '12');\n"
-        "cal.setAttribute('day', '25');\n\n"
-        ";; ClojureScript - Direct attributes\n"
-        "[:ty-calendar {:year \"2024\" :month \"12\" :day \"25\"}]"]]]
-     [:div.text-xs.space-y-2
-      [:div "✅ No timestamp conversion needed"]
-      [:div "✅ Intuitive year/month/day semantics"]
-      [:div "✅ Automatic validation (1-12 months, correct day ranges)"]
-      [:div "✅ Defaults to current month when no attributes provided"]
-      [:div "✅ Single 'change' event with complete day context"]
-      [:div "✅ Clear separation between display and selection state"]]]]
-
-   ;; Live event monitoring
-   [:div.space-y-4.mb-8
-    [:h3.demo-subtitle.mb-2 "🎯 Live Event Monitoring"]
-    [:p.text-sm.ty-text-.mb-4 "See the unified change event in action."]
-
-    [:div.grid.grid-cols-1.gap-4
-     ;; Single change event
-     [:div.p-3.ty-bg-positive.rounded.text-xs
-      [:div.font-semibold.mb-2.ty-text-positive "Single Change Event (Unified)"]
-      (if-let [change (:calendar-change @state/state)]
-        [:div.space-y-1
-         [:div "📅 Date: " (:year change) "/" (:month change) "/" (:day change)]
-         [:div "🔗 Source: " (:source change)]
-         [:div "🌅 Weekend: " (if (:is-weekend change) "Yes" "No")]
-         [:div "✨ Today: " (if (:is-today change) "Yes" "No")]
-         [:div "⏰ Time: " (.toLocaleTimeString (js/Date. (:timestamp change)))]]
-        [:div.text-gray-500 "Select a date or navigate to see events..."])]]]
-
    (property-based-components-demo)
    (width-and-styling-demo)
    (integration-patterns-demo)
-   (form-integration-demo)
-
-   ;; Architecture summary
-   [:div.demo-section
-    [:h2.demo-title "🏗️ Architecture Summary"]
-    [:div.grid.grid-cols-1.lg:grid-cols-3.gap-6
-
-     [:div.p-4.ty-bg-primary-.rounded-lg
-      [:h3.font-semibold.mb-3.ty-text-primary "ty-calendar"]
-      [:div.text-sm.space-y-2
-       [:div "📝 Year/Month/Day attribute API"]
-       [:div "🎯 Internal state management"]
-       [:div "🔄 Auto property distribution"]
-       [:div "📊 Event coordination"]
-       [:div "✅ User-friendly"]]
-      [:pre.text-xs.ty-elevated.p-2.rounded.mt-3
-       [:code "<ty-calendar year=\"2024\" month=\"12\" day=\"25\">"]]]
-
-     [:div.p-4.ty-bg-secondary-.rounded-lg
-      [:h3.font-semibold.mb-3.ty-text-secondary "ty-calendar-navigation"]
-      [:div.text-sm.space-y-2
-       [:div "⚡ Property-based API"]
-       [:div "🚀 High performance"]
-       [:div "🎯 Direct control"]
-       [:div "🔄 Auto re-rendering"]
-       [:div "🧩 Composable"]]
-      [:pre.text-xs.ty-elevated.p-2.rounded.mt-3
-       [:code "nav.displayMonth = 12;"]]]
-
-     [:div.p-4.ty-bg-success-.rounded-lg
-      [:h3.font-semibold.mb-3.ty-text-success "ty-calendar-month"]
-      [:div.text-sm.space-y-2
-       [:div "⚡ Property-based API"]
-       [:div "🎨 Custom render functions"]
-       [:div "📊 Rich event system"]
-       [:div "🔄 Stateless rendering"]
-       [:div "🏗️ Maximum flexibility"]]
-      [:pre.text-xs.ty-elevated.p-2.rounded.mt-3
-       [:code "cal.dayContentFn = fn;"]]]]]
-
-   ;; Quick start guide
-   [:div.demo-section
-    [:h2.demo-title "🚀 Quick Start Guide"]
-    [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
-
-     [:div.space-y-4
-      [:h3.demo-subtitle "For Most Use Cases: ty-calendar"]
-      [:div.text-sm.space-y-3
-       [:div "✅ Complete solution with navigation"]
-       [:div "✅ Internal selection state management"]
-       [:div "✅ Works great out of the box"]
-       [:div "✅ Perfect for forms, date pickers, simple UIs"]]
-      [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
-       [:code
-        "<!-- HTML -->\n"
-        "<ty-calendar year=\"2024\" month=\"12\" day=\"25\" width=\"350px\"></ty-calendar>\n\n"
-        ";; ClojureScript\n"
-        "[:ty-calendar {:year \"2024\" :month \"12\" :day \"25\" :width \"350px\"}]\n\n"
-        "// React JSX\n"
-        "<ty-calendar year=\"2024\" month=\"12\" day=\"25\" width=\"350px\" />"]]]
-
-     [:div.space-y-4
-      [:h3.demo-subtitle "For Advanced Use Cases: Property-Based Functions (NEW!)"]
-      [:div.text-sm.space-y-3
-       [:div "⚡ Direct function property assignment"]
-       [:div "🔒 No global namespace pollution"]
-       [:div "🧪 Easy testing and mocking"]
-       [:div "🔧 Perfect for modern frameworks"]]
-      [:pre.text-xs.ty-content.p-3.rounded.overflow-x-auto
-       [:code
-        "// JavaScript - Direct property assignment (RECOMMENDED)\n"
-        "const cal = document.querySelector('ty-calendar');\n"
-        "cal.dayContentFn = function(context) {\n"
-        "  return createCustomDay(context.dayInMonth);\n"
-        "};\n\n"
-        ";; ClojureScript - Property-based approach\n"
-        "[:ty-calendar\n"
-        " {:replicant/on-mount\n"
-        "  (fn [{^js el :replicant/node}]\n"
-        "    (set! (.-dayContentFn el) my-render-fn))}]\n\n"
-        "// React - Direct property integration\n"
-        "<ty-calendar ref={el => el && (el.dayContentFn = myFn)} />"]]]]]])
+   (form-integration-demo)])

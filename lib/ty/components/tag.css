@@ -6,6 +6,11 @@
   vertical-align: top;
 }
 
+/* Hidden attribute support */
+:host([hidden]) {
+  display: none !important;
+}
+
 /* Main container */
 .tag-container {
   display: inline-flex;

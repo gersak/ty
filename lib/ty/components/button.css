@@ -87,10 +87,12 @@ button.action.xs ::slotted(ty-icon) {
 
 /* Base interaction states */
 button:hover:not(:disabled) {
-  box-shadow: var(--ty-shadow-sm);
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15), 0 1px 6px rgba(0, 0, 0, 0.1);
 }
 
-button:active:not(:disabled) {}
+button:active:not(:disabled) {
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
 
 button:focus-visible {
   outline: none;
@@ -238,9 +240,13 @@ button.plain {
   border: none;
 }
 
-/* Plain specific hover - remove transform */
+/* Plain specific hover - remove shadow */
 button.plain:hover:not(:disabled) {
-  transform: none;
+  box-shadow: none;
+}
+
+/* Plain specific active - remove shadow */
+button.plain:active:not(:disabled) {
   box-shadow: none;
 }
 

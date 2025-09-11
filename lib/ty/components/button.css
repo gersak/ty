@@ -87,13 +87,10 @@ button.action.xs ::slotted(ty-icon) {
 
 /* Base interaction states */
 button:hover:not(:disabled) {
-  transform: translateY(-1px);
   box-shadow: var(--ty-shadow-sm);
 }
 
-button:active:not(:disabled) {
-  transform: translateY(0);
-}
+button:active:not(:disabled) {}
 
 button:focus-visible {
   outline: none;

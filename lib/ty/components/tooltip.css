@@ -30,8 +30,8 @@
 /* Default tooltip content styles */
 #tooltip-container {
   /* Base styles */
-  background: var(--ty-bg-neutral-mild);
-  color: var(--ty-color-neutral-strong);
+  background: var(--ty-bg-faint);
+  color: var(--ty-text-strong);
   padding: var(--ty-tooltip-padding, 6px 10px);
   border-radius: var(--ty-tooltip-radius, 4px);
   border: 1px solid var(--ty-border-strong);

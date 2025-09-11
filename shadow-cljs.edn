@@ -10,6 +10,11 @@
                 :modules {:demo {:init-fn ty.demo.core/init}}}
           :react {:target :browser
                   :output-dir "react/resources"
+                  :compiler-options {:optimizations :advanced
+                                     :externs ["externs.js"]
+                                     :language-in :ecmascript-2017
+                                     :language-out :ecmascript-2017
+                                     :use-types-for-optimization true}
                   :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"

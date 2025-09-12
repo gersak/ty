@@ -1,6 +1,6 @@
 {
   "name": "@gersak/ty-react",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React wrappers for Ty Web Components - TypeScript-friendly React integration",
   "main": "dist/index.js",
   "module": "dist/index.js",
@@ -52,7 +52,7 @@
     "prepublishOnly": "npm run clean && npm run type-check && npm run build"
   },
   "peerDependencies": {
-    "@gersak/ty": "^0.1.5",
+    "@gersak/ty": "^0.1.9",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },

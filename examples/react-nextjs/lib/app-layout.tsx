@@ -34,7 +34,6 @@ const navigation: NavigationSection[] = [
     items: [
       { name: 'Contact Form', href: '/examples/contact-form', icon: 'mail' },
       { name: 'Data Dashboard', href: '/examples/dashboard', icon: 'monitor' },
-      { name: 'User Profile', href: '/examples/profile', icon: 'user' },
       { name: 'Settings Panel', href: '/examples/settings', icon: 'settings' },
     ]
   }
@@ -85,47 +84,47 @@ export function AppLayout({ children }: AppLayoutProps) {
       grid-rows-[var(--app-header-height)_1fr]
       ${sidebarOpen ? 'sidebar-open' : ''}
     `}
-    style={{
-      gridTemplateAreas: sidebarOpen 
-        ? '"sidebar header" "sidebar main"' 
-        : '"sidebar header" "sidebar main"'
-    }}>
-      
+      style={{
+        gridTemplateAreas: sidebarOpen
+          ? '"sidebar header" "sidebar main"'
+          : '"sidebar header" "sidebar main"'
+      }}>
+
       {/* Mobile overlay */}
-      <div 
+      <div
         className={`
           md:hidden fixed inset-0 bg-black z-[15] transition-opacity duration-300
           ${sidebarOpen ? 'bg-opacity-50 opacity-100 pointer-events-auto' : 'bg-opacity-0 opacity-0 pointer-events-none'}
         `}
-        onClick={closeMobileSidebar} 
+        onClick={closeMobileSidebar}
       />
 
       {/* Header */}
-      <header 
+      <header
         className="flex items-center justify-between px-6 z-10 surface-elevated border-b border-ty-base"
         style={{ gridArea: 'header', minHeight: 'var(--app-header-height)' }}
       >
         <div className="flex items-center gap-4">
-          <TyButton 
-            flavor="ghost" 
-            size="sm" 
+          <TyButton
+            flavor="ghost"
+            size="sm"
             onClick={toggleMobileSidebar}
             className="md:hidden"
           >
             <TyIcon name="menu" size="20" />
           </TyButton>
 
-          <TyButton 
-            flavor="ghost" 
-            size="sm" 
+          <TyButton
+            flavor="ghost"
+            size="sm"
             onClick={toggleSidebar}
             className="hidden md:flex"
           >
             <TyIcon name={sidebarCollapsed ? 'chevron-right' : 'chevron-left'} size="20" />
           </TyButton>
 
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="text-2xl font-semibold no-underline transition-colors duration-150 text-primary-ty-base hover:text-primary-ty-mild"
           >
             Ty + Tailwind Showcase
@@ -133,19 +132,18 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         <div className="flex items-center gap-3">
-          <TyButton 
-            flavor="ghost" 
-            size="sm" 
+          <TyButton
+            flavor="ghost"
+            size="sm"
             onClick={toggleTheme}
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
             className="relative flex items-center gap-2"
           >
-            <TyIcon 
-              name={theme === 'light' ? 'sun' : 'moon'} 
-              size="20" 
-              className={`transition-transform duration-150 ${
-                theme === 'light' ? 'text-warning-ty-base' : 'text-info-ty-base'
-              }`}
+            <TyIcon
+              name={theme === 'light' ? 'sun' : 'moon'}
+              size="20"
+              className={`transition-transform duration-150 ${theme === 'light' ? 'text-warning-ty-base' : 'text-info-ty-base'
+                }`}
             />
           </TyButton>
 
@@ -157,58 +155,54 @@ export function AppLayout({ children }: AppLayoutProps) {
       </header>
 
       {/* Sidebar */}
-      <aside 
+      <aside
         className={`
-          overflow-y-auto transition-all duration-300 relative surface-content border-r border-ty-base
-          md:translate-x-0
+          overflow-y-auto transition-all duration-300 surface-content border-r border-ty-base
+          md:relative md:translate-x-0 md:z-auto md:!top-0
           ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-          md:relative md:z-auto
-          fixed z-20 top-[var(--app-header-height)] bottom-0 left-0
+          fixed z-20 bottom-0 left-0
         `}
-        style={{ 
+        style={{
           gridArea: 'sidebar',
-          width: 'var(--app-sidebar-width)'
+          width: sidebarCollapsed ? 'var(--app-sidebar-collapsed-width)' : 'var(--app-sidebar-width)',
+          top: 'var(--app-header-height)'
         }}
       >
-        <div className="p-4 flex items-center justify-between border-b border-ty-soft" 
-             style={{ minHeight: 'var(--app-header-height)' }}>
-          <div className={`
-            text-lg font-semibold text-neutral-ty-strong transition-opacity duration-150
-            ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}
-          `}>
-            Navigation
-          </div>
-        </div>
-
         <nav className="py-4">
           {navigation.map((section) => (
-            <div key={section.title} className="mb-6">
+            <div key={section.title} className={`${sidebarCollapsed ? 'mb-2' : 'mb-6'}`}>
               <div className={`
                 px-4 py-2 text-xs font-semibold uppercase tracking-wider mb-2 text-neutral-ty-soft transition-opacity duration-150
-                ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                ${sidebarCollapsed ? 'hidden' : 'opacity-100'}
               `}>
                 {section.title}
               </div>
               {section.items.map((item) => {
                 const isActive = pathname === item.href
                 return (
-                  <Link 
+                  <Link
                     key={item.href}
-                    href={item.href} 
+                    href={item.href}
                     className={`
-                      flex items-center gap-3 py-3 no-underline transition-all duration-150 border-l-3
-                      ${sidebarCollapsed ? 'justify-center px-3' : 'px-4'}
-                      ${isActive 
-                        ? 'bg-primary-100 border-l-primary-500 text-primary-ty-strong' 
-                        : 'border-l-transparent text-neutral-ty-base hover:bg-neutral-50 hover:text-neutral-ty-strong'
+                      flex items-center py-3 no-underline transition-all duration-150
+                      ${sidebarCollapsed
+                        ? 'justify-center w-full rounded-md mx-1 py-4'
+                        : 'gap-3 px-4 border-l-4'}
+                      ${isActive
+                        ? sidebarCollapsed
+                          ? 'bg-primary-100 text-primary-ty-strong'
+                          : 'bg-primary-100 border-l-primary-500 text-primary-ty-strong'
+                        : sidebarCollapsed
+                          ? 'text-neutral-ty-base hover:bg-neutral-50 hover:text-neutral-ty-strong'
+                          : 'border-l-transparent text-neutral-ty-base hover:bg-neutral-50 hover:text-neutral-ty-strong'
                       }
                     `}
                     onClick={closeMobileSidebar}
                   >
-                    <TyIcon name={item.icon} className="flex-shrink-0 w-5 h-5" />
+                    <TyIcon name={item.icon} className={`flex-shrink-0 ${sidebarCollapsed ? 'w-6 h-6' : 'w-5 h-5'}`} />
                     <span className={`
                       transition-opacity duration-150
-                      ${sidebarCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}
+                      ${sidebarCollapsed ? 'hidden' : 'opacity-100'}
                     `}>
                       {item.name}
                     </span>
@@ -221,7 +215,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       </aside>
 
       {/* Main Content */}
-      <main 
+      <main
         className="overflow-auto surface-canvas p-6"
         style={{ gridArea: 'main' }}
       >

@@ -377,27 +377,29 @@ export default function Home() {
                 <TyIcon name="monitor" size="24" className="ty-text-info mr-3" />
                 <div>
                   <h3 className="font-semibold ty-text-info++">Data Dashboard</h3>
-                  <span className="text-xs ty-bg-warning ty-text-warning+ px-2 py-1 rounded">Coming Soon</span>
+                  <span className="text-xs ty-bg-success ty-text-success+ px-2 py-1 rounded">Available</span>
                 </div>
               </div>
               <p className="text-sm ty-text-info mb-4 leading-relaxed">
-                Interactive dashboard with data visualization, filtering controls, 
-                responsive tables, and real-time updates using modern layout patterns.
+                Interactive dashboard with TyCalendar custom day content rendering, data visualization, 
+                filtering controls, and responsive analytics with real-time updates.
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyCalendar</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyDropdown</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyMultiselect</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyButton</span>
-                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyCalendar</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTag</span>
               </div>
               <TyButton 
-                disabled
-                flavor="neutral" 
+                onClick={() => window.location.href = '/examples/dashboard'} 
+                flavor="info" 
                 size="sm"
                 className="flex items-center gap-2"
               >
-                <TyIcon name="clock" size="14" />
-                In Development
+                <TyIcon name="arrow-right" size="14" />
+                View Example
               </TyButton>
             </div>
 

@@ -2,6 +2,13 @@
 dist/
 *.tsbuildinfo
 
+# Root-level build artifacts (should be in dist/ but sometimes appear at root)
+index.js
+index.cjs
+index.d.ts
+*.js.map
+*.cjs.map
+
 # Dependencies
 node_modules/
 

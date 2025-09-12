@@ -9,7 +9,7 @@
                 :output-dir "dev/js"
                 :modules {:demo {:init-fn ty.demo.core/init}}}
           :react {:target :browser
-                  :output-dir "react/resources"
+                  :output-dir "examples/react-nextjs/public/"
                   :compiler-options {:optimizations :advanced
                                      :externs ["externs.js"]
                                      :language-in :ecmascript-2017
@@ -18,7 +18,7 @@
                   :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"
-                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.7"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8"
                    :compiler-options {:optimizations :advanced
                                       :externs ["externs.js"]
                                       :language-in :ecmascript-2017
@@ -28,7 +28,7 @@
                                   :init-fn ty.core/init}}}
           :lib {:target :browser
                 :output-dir "dist/"
-                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.7"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8"
                 :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017

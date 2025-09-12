@@ -57,7 +57,7 @@
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
-    "@gersak/ty": "^0.1.5",
+    "@gersak/ty": "^0.1.",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react": "^4.2.1",

@@ -1,6 +1,6 @@
 {
   "name": "@gersak/ty",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Modern Web Components Library built with ClojureScript - Zero Dependencies, Semantic Design System, Advanced Modular Architecture. Available as modular components or all-in-one bundle.",
   "main": "ty.js",
   "module": "ty.js",

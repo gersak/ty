@@ -63,7 +63,24 @@
 }
 
 /* Fixed pixel sizes */
+:host(.icon-12) {
+  width: 16px;
+  height: 16px;
+}
+
+
+:host(.icon-14) {
+  width: 16px;
+  height: 16px;
+}
+
+
 :host(.icon-16) {
+  width: 16px;
+  height: 16px;
+}
+
+:host(.icon-18) {
   width: 16px;
   height: 16px;
 }

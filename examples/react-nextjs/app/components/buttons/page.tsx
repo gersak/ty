@@ -270,7 +270,7 @@ export default function ButtonsPage() {
                 </TyButton>
 
                 <TyButton
-                  flavor="netural"
+                  flavor="neutral"
                   onClick={() => handleClick('icon-only')}
                   title="Settings"
                   className="w-full p-3 hover:ty-bg-primary- transition-colors duration-200"

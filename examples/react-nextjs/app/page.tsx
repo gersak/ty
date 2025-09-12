@@ -60,12 +60,12 @@ export default function Home() {
       {/* Page Header - Using Tailwind + Ty */}
       <div className="mb-8 pb-4 border-b ty-border+">
         <h1 className="text-3xl font-bold mb-2 ty-text++">
-          Getting Started with Ty + Tailwind Components
+          Ty Components + React + Next.js Examples
         </h1>
         <p className="text-base leading-relaxed ty-text-">
-          Welcome to the comprehensive showcase of Ty Components integrated with Tailwind CSS.
-          This example demonstrates theme toggling, responsive layout, semantic design system,
-          and seamless component integration using modern utility-first styling.
+          Explore comprehensive examples demonstrating Ty Components working seamlessly with React, 
+          Next.js, and Tailwind CSS. Each example showcases real-world patterns, proper integration 
+          techniques, and the power of modern web component architecture.
         </p>
       </div>
 
@@ -327,62 +327,142 @@ export default function Home() {
         </div>
       </div>
 
-      {/* What's Next Section */}
+      {/* Example Previews Section */}
       <div className="surface-content rounded-xl p-6 mb-6 border ty-border shadow-ty-sm">
         <div className="mb-5">
           <h2 className="text-xl font-semibold mb-1 text-neutral-ty-strong">
-            🚀 What's Next?
+            🎯 Interactive Examples
           </h2>
           <p className="text-sm text-neutral-ty-base">
-            Explore the full range of Ty components with Tailwind integration
+            Complete, real-world examples demonstrating Ty Components in production-ready applications
           </p>
         </div>
 
         <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
-              <TyIcon name="edit" size="32" className="text-primary-ty-base mb-3 mx-auto" />
-              <h3 className="mb-2 text-neutral-ty-strong font-medium">Form Components</h3>
-              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
-                Inputs, dropdowns, calendars, and validation with Tailwind styling
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Contact Form Example */}
+            <div className="p-6 rounded-lg ty-bg-primary- border ty-border-primary hover:shadow-lg transition-all duration-200">
+              <div className="flex items-center mb-4">
+                <TyIcon name="mail" size="24" className="ty-text-primary mr-3" />
+                <div>
+                  <h3 className="font-semibold ty-text-primary++">Contact Form</h3>
+                  <span className="text-xs ty-bg-success ty-text-success+ px-2 py-1 rounded">Available</span>
+                </div>
+              </div>
+              <p className="text-sm ty-text-primary mb-4 leading-relaxed">
+                Complete contact form with real-time validation, multiple input types, 
+                dropdown selections, form state management, and success/error handling.
               </p>
-              <TyButton flavor="neutral" size="sm" className="text-xs">
-                View Examples →
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyInput</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyDropdown</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyButton</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
+              </div>
+              <TyButton 
+                onClick={() => window.location.href = '/examples/contact-form'} 
+                flavor="primary" 
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <TyIcon name="arrow-right" size="14" />
+                View Example
               </TyButton>
             </div>
 
-            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
-              <TyIcon name="layout" size="32" className="mb-3 mx-auto" />
-              <h3 className="mb-2 text-neutral-ty-strong font-medium">Navigation</h3>
-              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
-                Menus, breadcrumbs, and navigation patterns with responsive design
+            {/* Data Dashboard Example */}
+            <div className="p-6 rounded-lg ty-bg-info- border ty-border-info hover:shadow-lg transition-all duration-200">
+              <div className="flex items-center mb-4">
+                <TyIcon name="monitor" size="24" className="ty-text-info mr-3" />
+                <div>
+                  <h3 className="font-semibold ty-text-info++">Data Dashboard</h3>
+                  <span className="text-xs ty-bg-warning ty-text-warning+ px-2 py-1 rounded">Coming Soon</span>
+                </div>
+              </div>
+              <p className="text-sm ty-text-info mb-4 leading-relaxed">
+                Interactive dashboard with data visualization, filtering controls, 
+                responsive tables, and real-time updates using modern layout patterns.
               </p>
-              <TyButton flavor="neutral" size="sm" className="text-xs">
-                View Examples →
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyDropdown</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyMultiselect</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyButton</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyCalendar</span>
+              </div>
+              <TyButton 
+                disabled
+                flavor="neutral" 
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <TyIcon name="clock" size="14" />
+                In Development
               </TyButton>
             </div>
 
-            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
-              <TyIcon name="square" size="32" className="mb-3 mx-auto" />
-              <h3 className="mb-2 text-neutral-ty-strong font-medium">Modals & Dialogs</h3>
-              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
-                Overlays, confirmations, and complex dialogs with backdrop effects
+            {/* User Profile Example */}
+            <div className="p-6 rounded-lg ty-bg-success- border ty-border-success hover:shadow-lg transition-all duration-200">
+              <div className="flex items-center mb-4">
+                <TyIcon name="user" size="24" className="ty-text-success mr-3" />
+                <div>
+                  <h3 className="font-semibold ty-text-success++">User Profile</h3>
+                  <span className="text-xs ty-bg-warning ty-text-warning+ px-2 py-1 rounded">Coming Soon</span>
+                </div>
+              </div>
+              <p className="text-sm ty-text-success mb-4 leading-relaxed">
+                Complete user profile interface with avatar upload, form tabs, 
+                settings management, and account preferences with live preview.
               </p>
-              <TyButton flavor="neutral" size="sm" className="text-xs">
-                View Examples →
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyInput</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTag</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTooltip</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
+              </div>
+              <TyButton 
+                disabled
+                flavor="neutral" 
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <TyIcon name="clock" size="14" />
+                In Development
               </TyButton>
             </div>
 
-            <div className="text-center p-5 rounded-lg hover:ty-bg-primary transition-colors duration-200">
-              <TyIcon name="monitor" size="32" className="mb-3 mx-auto" />
-              <h3 className="mb-2 text-neutral-ty-strong font-medium">Real Examples</h3>
-              <p className="text-sm text-neutral-ty-base mb-3 leading-relaxed">
-                Complete forms, dashboards, and user interfaces built with both
+            {/* Settings Panel Example */}
+            <div className="p-6 rounded-lg ty-bg-secondary- border ty-border-secondary hover:shadow-lg transition-all duration-200">
+              <div className="flex items-center mb-4">
+                <TyIcon name="settings" size="24" className="ty-text-secondary mr-3" />
+                <div>
+                  <h3 className="font-semibold ty-text-secondary++">Settings Panel</h3>
+                  <span className="text-xs ty-bg-success ty-text-success+ px-2 py-1 rounded">Available</span>
+                </div>
+              </div>
+              <p className="text-sm ty-text-secondary mb-4 leading-relaxed">
+                Comprehensive settings interface with theme controls, notifications,
+                privacy options, and advanced configuration with instant feedback.
               </p>
-              <TyButton flavor="neutral" size="sm" className="text-xs">
-                View Examples →
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyDropdown</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyInput</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTooltip</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyPopup</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
+                <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTag</span>
+              </div>
+              <TyButton 
+                onClick={() => window.location.href = '/examples/settings'} 
+                flavor="secondary" 
+                size="sm"
+                className="flex items-center gap-2"
+              >
+                <TyIcon name="arrow-right" size="14" />
+                View Example
               </TyButton>
             </div>
+
           </div>
         </div>
       </div>

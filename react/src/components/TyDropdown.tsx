@@ -38,7 +38,7 @@ export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>,
 
 // React wrapper for ty-dropdown web component
 export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
-  ({ options, children, onChange, onSearch, ...props }, ref) => {
+  ({ options, children, onChange, onSearch, disabled, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleChange = useCallback((event: CustomEvent<TyDropdownEventDetail>) => {
@@ -97,7 +97,7 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
             {
               key: option.value || index,
               value: option.value,
-              disabled: option.disabled || undefined,
+              ...(option.disabled && { disabled: "" }),
             },
             option.text
           )
@@ -112,6 +112,7 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
       'ty-dropdown',
       {
         ...props,
+        ...(disabled && { disabled: "" }),
         ref: elementRef,
       },
       renderContent()

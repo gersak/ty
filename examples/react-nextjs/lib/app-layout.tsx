@@ -30,38 +30,12 @@ const navigation: NavigationSection[] = [
     ]
   },
   {
-    title: 'Core Components',
-    items: [
-      { name: 'Buttons', href: '/components/buttons', icon: 'click' },
-      { name: 'Inputs & Forms', href: '/components/inputs', icon: 'edit' },
-      { name: 'Dropdowns', href: '/components/dropdowns', icon: 'chevron-down' },
-      { name: 'Modals', href: '/components/modals', icon: 'square' },
-    ]
-  },
-  {
-    title: 'Advanced Components',
-    items: [
-      { name: 'Calendar', href: '/components/calendar', icon: 'calendar' },
-      { name: 'Icons', href: '/components/icons', icon: 'star' },
-      { name: 'Navigation', href: '/components/navigation', icon: 'menu' },
-      { name: 'Tooltips', href: '/components/tooltips', icon: 'info' },
-    ]
-  },
-  {
     title: 'Examples',
     items: [
       { name: 'Contact Form', href: '/examples/contact-form', icon: 'mail' },
       { name: 'Data Dashboard', href: '/examples/dashboard', icon: 'monitor' },
       { name: 'User Profile', href: '/examples/profile', icon: 'user' },
       { name: 'Settings Panel', href: '/examples/settings', icon: 'settings' },
-    ]
-  },
-  {
-    title: 'Resources',
-    items: [
-      { name: 'Component API', href: '/api', icon: 'file' },
-      { name: 'Design System', href: '/design-system', icon: 'palette' },
-      { name: 'Best Practices', href: '/best-practices', icon: 'check-circle' },
     ]
   }
 ]

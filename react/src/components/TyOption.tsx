@@ -11,7 +11,7 @@ export interface TyOptionProps extends React.HTMLAttributes<HTMLElement> {
 
 // React wrapper for ty-option web component
 export const TyOption = React.forwardRef<HTMLElement, TyOptionProps>(
-  ({ children, ...props }, ref) => {
+  ({ children, disabled, selected, hidden, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     // Handle ref forwarding
@@ -29,6 +29,9 @@ export const TyOption = React.forwardRef<HTMLElement, TyOptionProps>(
       'ty-option',
       {
         ...props,
+        ...(disabled && { disabled: "" }),
+        ...(selected && { selected: "" }),
+        ...(hidden && { hidden: "" }),
         ref: elementRef,
       },
       children

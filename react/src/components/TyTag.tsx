@@ -16,7 +16,7 @@ export interface TyTagProps extends React.HTMLAttributes<HTMLElement> {
 
 // React wrapper for ty-tag web component
 export const TyTag = React.forwardRef<HTMLElement, TyTagProps>(
-  ({ children, onTagClick, onTagDismiss, ...props }, ref) => {
+  ({ children, onTagClick, onTagDismiss, pill, clickable, dismissible, disabled, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleTagClick = useCallback((event: CustomEvent) => {
@@ -69,6 +69,10 @@ export const TyTag = React.forwardRef<HTMLElement, TyTagProps>(
       'ty-tag',
       {
         ...props,
+        ...(pill && { pill: "" }),
+        ...(clickable && { clickable: "" }),
+        ...(dismissible && { dismissible: "" }),
+        ...(disabled && { disabled: "" }),
         ref: elementRef,
       },
       children

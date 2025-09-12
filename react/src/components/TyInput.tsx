@@ -34,7 +34,7 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
 
 // React wrapper for ty-input web component
 export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
-  ({ onInput, onChange, onFocus, onBlur, ...props }, ref) => {
+  ({ onInput, onChange, onFocus, onBlur, disabled, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleInput = useCallback((event: CustomEvent<TyInputEventDetail>) => {
@@ -114,6 +114,7 @@ export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
       'ty-input',
       {
         ...props,
+        ...(disabled && { disabled: "" }),
         ref: elementRef,
       }
     );

@@ -313,20 +313,20 @@
                (render-app!)))
 
   ;; Re-render when router changes
-  (add-watch router/*router* ::render
+  (add-watch router/*router* ::router
              (fn [_ _ _ _]
                (render-app!)))
 
   ;; Re-render when user changes
-  (add-watch context/*user* ::render
+  (add-watch context/*user* ::user
              (fn [_ _ _ _]
                (render-app!)))
 
-  (add-watch layout/window-size ::render
+  (add-watch layout/window-size ::window-resize
              (fn [_ _ _ _]
                (render-app!)))
 
-  (add-watch context/*element-sizes* ::render
+  (add-watch context/*element-sizes* ::resizing
              (fn [_ _ _ _]
                (render-app!)))
 

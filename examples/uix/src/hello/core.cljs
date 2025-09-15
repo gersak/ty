@@ -2,15 +2,16 @@
   (:require
    ;; Clean React wrappers
     ["@gersak/ty-react" :as ty]
-   ;; Form view
+   ;; Views
     [hello.views.forms :as forms]
-
+    [hello.views.layout :as layout-views]
     [ty.components.button :as button]
-    [ty.components.calendar :as calendar]
 
+    [ty.components.calendar :as calendar]
     [ty.components.calendar-month :as calendar-month]
+
     [ty.components.calendar-navigation :as calendar-navigation]
-   ;; All component configurations
+    ;; All component configurations
     [ty.components.core]
     [ty.components.date-picker :as date-picker]
     [ty.components.dropdown :as dropdown]
@@ -20,9 +21,11 @@
     [ty.components.multiselect :as multiselect]
     [ty.components.option :as option]
     [ty.components.popup :as popup]
+    [ty.components.resize-observer :as resize-observer]
     [ty.components.tag :as tag]
     [ty.components.tooltip :as tooltip]
-   ;; ClojureScript ty utilities
+    ty.context
+    ;; ClojureScript ty utilities
     [ty.icons :as icons]
     [ty.lucide :as lucide]
    ;; TY Router
@@ -66,6 +69,7 @@
 (wcs/define! "ty-date-picker" date-picker/configuration)
 (wcs/define! "ty-dropdown" dropdown/configuration)
 (wcs/define! "ty-multiselect" multiselect/configuration)
+(wcs/define! "ty-resize-observer" resize-observer/configuration)
 
 (defn register-icons! []
   "Register icons used in the application"
@@ -198,26 +202,8 @@
                 ($ :span.text-xs.ty-text- icon)))))))
 
 (defui layout-view []
-  ($ :div.space-y-8
-     ($ :div
-        ($ :h1.ty-text++.text-3xl.font-bold.mb-2
-           "Layout & Containers")
-        ($ :p.ty-text-.max-w-2xl.mb-8
-           "Responsive layout patterns using TY surface classes and Tailwind utilities."))
-
-     ;; Surface examples
-     ($ :div.space-y-6
-        ($ :h2.ty-text++.text-xl.font-semibold.mb-4
-           "Surface Classes")
-
-        ($ :div.ty-canvas.p-4.rounded-lg.border
-           ($ :p.ty-text+.mb-2 "ty-canvas - App background")
-           ($ :div.ty-content.p-4.rounded-lg.border
-              ($ :p.ty-text+.mb-2 "ty-content - Main content area")
-              ($ :div.ty-elevated.p-4.rounded-lg
-                 ($ :p.ty-text+.mb-2 "ty-elevated - Cards and panels")
-                 ($ :div.ty-floating.p-4.rounded-lg
-                    ($ :p.ty-text+ "ty-floating - Modals and dropdowns"))))))))
+  ;; Use the comprehensive layout demo from layout-views
+  ($ layout-views/view))
 
 (defui modals-view []
   ($ :div.space-y-8
@@ -385,6 +371,13 @@
   ;; Watch for router changes to trigger re-renders  
   ;; This ensures the app re-renders when the route changes via browser back/forward
   (add-watch router/*router* ::uix-render
+             (fn [_ _ _ _]
+               (uix.dom/render ($ app) (.getElementById js/document "app"))))
+
+  (add-watch ty.context/*element-sizes* ::uix-render
+             (fn [_ _ _ _]
+               (uix.dom/render ($ app) (.getElementById js/document "app"))))
+  (add-watch ty.layout/window-size ::window-resize
              (fn [_ _ _ _]
                (uix.dom/render ($ app) (.getElementById js/document "app"))))
 

@@ -104,6 +104,10 @@ button:disabled {
   opacity: 0.6;
 }
 
+.wide {
+  flex-grow: 1;
+}
+
 /* ===== SIZE MODIFIERS ===== */
 
 /* Extra Small */

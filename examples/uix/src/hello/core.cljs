@@ -109,27 +109,27 @@
        ($ :span label))))
 
 (defui feature-card [{:keys [icon title description]}]
-  ($ :div {:class "ty-elevated rounded-lg p-6 hover:shadow-lg transition-shadow"}
-     ($ :div {:class "ty-bg-primary- rounded-lg p-3 w-12 h-12 flex items-center justify-center mb-4"}
+  ($ :div.ty-elevated.rounded-lg.p-6.hover:shadow-lg.transition-shadow
+     ($ :div.ty-bg-primary-.rounded-lg.p-3.w-12.h-12.flex.items-center.justify-center.mb-4
         ($ ty/Icon {:name icon
                     :class "w-6 h-6 ty-text-primary++"}))
-     ($ :h3 {:class "ty-text++ font-semibold mb-2"} title)
-     ($ :p {:class "ty-text- text-sm"} description)))
+     ($ :h3.ty-text++.font-semibold.mb-2 title)
+     ($ :p.ty-text-.text-sm description)))
 
 (defui stat-item [{:keys [label value]}]
-  ($ :div {:class "text-center"}
-     ($ :div {:class "ty-text++ text-2xl font-bold"} value)
-     ($ :div {:class "ty-text- text-sm"} label)))
+  ($ :div.text-center
+     ($ :div.ty-text++.text-2xl.font-bold value)
+     ($ :div.ty-text-.text-sm label)))
 
 (defui home-view []
-  ($ :div {:class "space-y-8"}
+  ($ :div.space-y-8
      ;; Hero section
-     ($ :div {:class "text-center"}
-        ($ :h1 {:class "ty-text++ text-4xl font-bold mb-4"}
+     ($ :div.text-center
+        ($ :h1.ty-text++.text-4xl.font-bold.mb-4
            "UIx + ty-react Hybrid")
-        ($ :p {:class "ty-text text-lg max-w-2xl mx-auto mb-8"}
+        ($ :p.ty-text.text-lg.max-w-2xl.mx-auto.mb-8
            "A modern ClojureScript application showcasing the perfect integration of UIx hooks, ty-react components, and Tailwind CSS following the TY design system.")
-        ($ :div {:class "flex flex-wrap justify-center gap-4"}
+        ($ :div.flex.flex-wrap.justify-center.gap-4
            ($ ty/Button {:variant "primary"
                          :class "flex items-center gap-2"}
               ($ ty/Icon {:name "play"})
@@ -140,7 +140,7 @@
               "View Source")))
 
      ;; Feature grid
-     ($ :div {:class "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"}
+     ($ :div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-3.gap-6
         ($ feature-card {:icon "zap"
                          :title "UIx Hooks"
                          :description "Modern React-like development with use-state, use-effect, and functional components."})
@@ -152,10 +152,10 @@
                          :description "TY color system with automatic dark/light theme support and semantic classes."}))
 
      ;; Quick stats
-     ($ :div {:class "ty-elevated rounded-lg p-6"}
-        ($ :h2 {:class "ty-text++ text-xl font-bold mb-4"}
+     ($ :div.ty-elevated.rounded-lg.p-6
+        ($ :h2.ty-text++.text-xl.font-bold.mb-4
            "Project Stats")
-        ($ :div {:class "grid grid-cols-2 md:grid-cols-4 gap-4"}
+        ($ :div.grid.grid-cols-2.md:grid-cols-4.gap-4
            ($ stat-item {:label "Components"
                          :value "12+"})
            ($ stat-item {:label "Icons"
@@ -166,18 +166,18 @@
                          :value "2"})))))
 
 (defui buttons-view []
-  ($ :div {:class "space-y-8"}
+  ($ :div.space-y-8
      ($ :div
-        ($ :h1 {:class "ty-text++ text-3xl font-bold mb-2"}
+        ($ :h1.ty-text++.text-3xl.font-bold.mb-2
            "Buttons & Icons")
-        ($ :p {:class "ty-text- max-w-2xl mb-8"}
+        ($ :p.ty-text-.max-w-2xl.mb-8
            "Interactive examples of button variants, sizes, and icon integration patterns."))
 
      ;; Button variants
-     ($ :div {:class "ty-elevated rounded-lg p-6 mb-8"}
-        ($ :h2 {:class "ty-text++ text-xl font-semibold mb-4"}
+     ($ :div.ty-elevated.rounded-lg.p-6.mb-8
+        ($ :h2.ty-text++.text-xl.font-semibold.mb-4
            "Button Variants")
-        ($ :div {:class "flex flex-wrap gap-4"}
+        ($ :div.flex.flex-wrap.gap-4
            ($ ty/Button {:flavor "primary"} "Primary")
            ($ ty/Button {:flavor "secondary"} "Secondary")
            ($ ty/Button {:flavor "success"
@@ -185,52 +185,52 @@
            ($ ty/Button {:flavor "ghost"} "Ghost")))
 
      ;; Icon gallery
-     ($ :div {:class "ty-elevated rounded-lg p-6"}
-        ($ :h2 {:class "ty-text++ text-xl font-semibold mb-4"}
+     ($ :div.ty-elevated.rounded-lg.p-6
+        ($ :h2.ty-text++.text-xl.font-semibold.mb-4
            "Available Icons")
-        ($ :div {:class "grid grid-cols-4 md:grid-cols-8 gap-4"}
+        ($ :div.grid.grid-cols-4.md:grid-cols-8.gap-4
            (for [icon ["home" "user" "mail" "phone" "message-circle" "send" "check" "x"
                        "alert-circle" "forms" "settings" "edit" "play" "code" "zap" "layers"]]
-             ($ :div {:key icon
-                      :class "flex flex-col items-center gap-2 p-3 rounded-lg hover:ty-bg-neutral- transition-colors"}
+             ($ :div.flex.flex-col.items-center.gap-2.p-3.rounded-lg.hover:ty-bg-neutral-.transition-colors
+                {:key icon}
                 ($ ty/Icon {:name icon
                             :class "w-6 h-6"})
-                ($ :span {:class "text-xs ty-text-"} icon)))))))
+                ($ :span.text-xs.ty-text- icon)))))))
 
 (defui layout-view []
-  ($ :div {:class "space-y-8"}
+  ($ :div.space-y-8
      ($ :div
-        ($ :h1 {:class "ty-text++ text-3xl font-bold mb-2"}
+        ($ :h1.ty-text++.text-3xl.font-bold.mb-2
            "Layout & Containers")
-        ($ :p {:class "ty-text- max-w-2xl mb-8"}
+        ($ :p.ty-text-.max-w-2xl.mb-8
            "Responsive layout patterns using TY surface classes and Tailwind utilities."))
 
      ;; Surface examples
-     ($ :div {:class "space-y-6"}
-        ($ :h2 {:class "ty-text++ text-xl font-semibold mb-4"}
+     ($ :div.space-y-6
+        ($ :h2.ty-text++.text-xl.font-semibold.mb-4
            "Surface Classes")
 
-        ($ :div {:class "ty-canvas p-4 rounded-lg border"}
-           ($ :p {:class "ty-text+ mb-2"} "ty-canvas - App background")
-           ($ :div {:class "ty-content p-4 rounded-lg border"}
-              ($ :p {:class "ty-text+ mb-2"} "ty-content - Main content area")
-              ($ :div {:class "ty-elevated p-4 rounded-lg"}
-                 ($ :p {:class "ty-text+ mb-2"} "ty-elevated - Cards and panels")
-                 ($ :div {:class "ty-floating p-4 rounded-lg"}
-                    ($ :p {:class "ty-text+"} "ty-floating - Modals and dropdowns"))))))))
+        ($ :div.ty-canvas.p-4.rounded-lg.border
+           ($ :p.ty-text+.mb-2 "ty-canvas - App background")
+           ($ :div.ty-content.p-4.rounded-lg.border
+              ($ :p.ty-text+.mb-2 "ty-content - Main content area")
+              ($ :div.ty-elevated.p-4.rounded-lg
+                 ($ :p.ty-text+.mb-2 "ty-elevated - Cards and panels")
+                 ($ :div.ty-floating.p-4.rounded-lg
+                    ($ :p.ty-text+ "ty-floating - Modals and dropdowns"))))))))
 
 (defui modals-view []
-  ($ :div {:class "space-y-8"}
+  ($ :div.space-y-8
      ($ :div
-        ($ :h1 {:class "ty-text++ text-3xl font-bold mb-2"}
+        ($ :h1.ty-text++.text-3xl.font-bold.mb-2
            "Modals & Overlays")
-        ($ :p {:class "ty-text- max-w-2xl mb-8"}
+        ($ :p.ty-text-.max-w-2xl.mb-8
            "Modal dialogs, tooltips, and overlay components."))
 
-     ($ :div {:class "ty-elevated rounded-lg p-6"}
-        ($ :h2 {:class "ty-text++ text-xl font-semibold mb-4"}
+     ($ :div.ty-elevated.rounded-lg.p-6
+        ($ :h2.ty-text++.text-xl.font-semibold.mb-4
            "Coming Soon")
-        ($ :p {:class "ty-text"}
+        ($ :p.ty-text
            "Modal and overlay examples will be added in the next phase."))))
 
 ;; Router integration hook
@@ -272,11 +272,11 @@
       [theme])
 
     ;; Fixed layout structure - using flexbox instead of CSS Grid
-    ($ :div {:class "min-h-screen flex flex-col ty-canvas"}
+    ($ :div.min-h-screen.flex.flex-col.ty-canvas
 
        ;; Header - fixed at top
-       ($ :header {:class "flex items-center justify-between px-6 h-16 ty-elevated border-b ty-border z-50 flex-shrink-0"}
-          ($ :div {:class "flex items-center gap-4"}
+       ($ :header.flex.items-center.justify-between.px-6.h-16.ty-elevated.border-b.ty-border.z-50.flex-shrink-0
+          ($ :div.flex.items-center.gap-4
              ;; Mobile menu button
              ($ ty/Button
                 {:variant "ghost"
@@ -286,7 +286,7 @@
                 ($ ty/Icon {:name "menu"}))
 
              ;; Logo/Title with router-based header
-             ($ :h1 {:class "ty-text++ text-xl font-bold"}
+             ($ :h1.ty-text++.text-xl.font-bold
                 (cond
                   (router/rendered? ::home true) "Getting Started"
                   (router/rendered? ::buttons true) "Buttons & Icons"
@@ -296,7 +296,7 @@
                   :else "UIx + ty-react")))
 
           ;; Header actions
-          ($ :div {:class "flex items-center gap-3"}
+          ($ :div.flex.items-center.gap-3
              ;; Theme toggle
              ($ ty/Button
                 {:variant "ghost"
@@ -308,28 +308,26 @@
                   (if (= theme "light") "Light" "Dark")))
 
              ;; Status indicator
-             ($ :div {:class "ty-bg-success- ty-text-success++ px-2 py-1 rounded text-xs font-medium flex items-center gap-1"}
+             ($ :div.ty-bg-success-.ty-text-success++.px-2.py-1.rounded.text-xs.font-medium.flex.items-center.gap-1
                 ($ ty/Icon {:name "check"
                             :class "w-3 h-3"})
                 "Ready")))
 
        ;; Content area with sidebar and main
-       ($ :div {:class "flex flex-1 min-h-0"}
+       ($ :div.flex.flex-1.min-h-0
           ;; Mobile overlay
           (when sidebar-open
-            ($ :div {:class "lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-                     :on-click #(set-sidebar-open false)}))
+            ($ :div.lg:hidden.fixed.inset-0.bg-black.bg-opacity-50.z-40
+               {:on-click #(set-sidebar-open false)}))
 
           ;; Sidebar
-          ($ :aside {:class (str "w-80 lg:w-64 ty-content border-r ty-border z-30 flex-shrink-0 "
-                                 "lg:relative lg:translate-x-0 "
-                                 "fixed bottom-0 left-0 "
-                                 "transition-transform duration-300 overflow-y-auto "
-                                 (if sidebar-open "translate-x-0" "-translate-x-full lg:translate-x-0"))}
-             ($ :nav {:class "py-6"}
+          ($ :aside.ty-content.border-r.ty-border.z-30.flex-shrink-0.lg:relative.lg:translate-x-0.fixed.bottom-0.left-0.transition-transform.duration-300.overflow-y-auto
+             {:class (str "w-80 lg:w-64 "
+                          (if sidebar-open "translate-x-0" "-translate-x-full lg:translate-x-0"))}
+             ($ :nav.py-6
                 ;; Navigation sections
-                ($ :div {:class "mb-6"}
-                   ($ :div {:class "px-4 py-2 text-xs font-semibold uppercase tracking-wider ty-text- mb-3"}
+                ($ :div.mb-6
+                   ($ :div.px-4.py-2.text-xs.font-semibold.uppercase.tracking-wider.ty-text-.mb-3
                       "Overview")
                    ($ :div.space-y-1.flex.flex-col
                       ($ nav-link {:route-id ::home
@@ -342,10 +340,10 @@
                                    :icon "edit"
                                    :label "Forms & Inputs"})))
 
-                ($ :div {:class "mb-6"}
-                   ($ :div {:class "px-4 py-2 text-xs font-semibold uppercase tracking-wider ty-text- mb-3"}
+                ($ :div.mb-6
+                   ($ :div.px-4.py-2.text-xs.font-semibold.uppercase.tracking-wider.ty-text-.mb-3
                       "Components")
-                   ($ :div {:class "space-y-1"}
+                   ($ :div.space-y-1
                       ($ nav-link {:route-id ::layout
                                    :icon "grid"
                                    :label "Layout & Containers"})
@@ -354,18 +352,18 @@
                                    :label "Modals & Overlays"})))))
 
           ;; Main content area
-          ($ :main {:class "flex-1 overflow-auto p-6 min-w-0"}
-             ($ :div {:class "max-w-4xl mx-auto"}
+          ($ :main.flex-1.overflow-auto.p-6.min-w-0
+             ($ :div.max-w-4xl.mx-auto
                 (cond
                   (router/rendered? ::home true) ($ home-view)
                   (router/rendered? ::buttons true) ($ buttons-view)
                   (router/rendered? ::forms true) ($ forms/view)
                   (router/rendered? ::layout true) ($ layout-view)
                   (router/rendered? ::modals true) ($ modals-view)
-                  :else ($ :div {:class "text-center py-12"}
-                           ($ :h1 {:class "ty-text++ text-2xl font-bold mb-2"}
+                  :else ($ :div.text-center.py-12
+                           ($ :h1.ty-text++.text-2xl.font-bold.mb-2
                               "404 - Page Not Found")
-                           ($ :p {:class "ty-text- mb-4"}
+                           ($ :p.ty-text-.mb-4
                               "The page you're looking for doesn't exist.")
                            ($ ty/Button {:on-click #(router/navigate! ::home)}
                               "Go Home"))))))

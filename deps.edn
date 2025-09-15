@@ -1,0 +1,35 @@
+{:paths ["lib"]
+
+ :deps {org.clojure/clojure {:mvn/version "1.11.1"}
+        org.clojure/clojurescript {:mvn/version "1.11.121"}
+        no.cjohansen/replicant {:mvn/version "2025.06.21"}
+        dev.gersak/timing.core {:mvn/version "0.6.4"}
+        cljs-bean/cljs-bean {:mvn/version "1.9.0"}}
+
+ :aliases
+ {;; Development and demo
+  :dev {:extra-paths ["demo" "gen"]
+        :extra-deps {thheller/shadow-cljs {:mvn/version "2.28.19"}}}
+
+  ;; Publishing aliases
+  :ty-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                          org.clojure/clojurescript {:mvn/version "1.11.121"}
+                          no.cjohansen/replicant {:mvn/version "2025.06.21"}
+                          dev.gersak/timing.core {:mvn/version "0.6.4"}
+                          cljs-bean/cljs-bean {:mvn/version "1.9.0"}}
+           :replace-paths ["lib" "resources/ty"]
+           :exec-fn clojure.tools.build.api/create-basis}
+
+  :ty-icons-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
+                                org.clojure/clojurescript {:mvn/version "1.11.121"}}
+                 :replace-paths ["gen" "resources/ty-icons"]
+                 :exec-fn clojure.tools.build.api/create-basis}
+
+  ;; Build tooling
+  :build {:deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
+                 slipset/deps-deploy {:mvn/version "0.2.2"}}
+          :ns-default build}
+
+  ;; REPL
+  :repl {:extra-deps {nrepl/nrepl {:mvn/version "1.0.0"}
+                      cider/cider-nrepl {:mvn/version "0.49.0"}}}}}

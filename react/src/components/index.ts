@@ -1,3 +1,16 @@
+// ===================================================================
+// TY REACT WRAPPER EXPORTS
+// ===================================================================
+// This file provides two export styles for maximum developer flexibility:
+// 1. Ty-prefixed exports (TyButton, TyInput) - explicit and backward compatible
+// 2. Short name exports (Button, Input) - clean and familiar to React developers
+//
+// Choose the style that fits your team's preferences!
+
+// ===================================================================
+// TY-PREFIXED EXPORTS (Explicit Style - Backward Compatible)
+// ===================================================================
+
 export { TyButton } from './TyButton';
 export type { TyButtonProps } from './TyButton';
 
@@ -8,7 +21,7 @@ export { TyInput } from './TyInput';
 export type { TyInputProps, TyInputEventDetail } from './TyInput';
 
 export { TyDropdown } from './TyDropdown';
-export type { TyDropdownProps, TyDropdownEventDetail, OptionData } from './TyDropdown';
+export type { TyDropdownProps, TyDropdownEventDetail } from './TyDropdown';
 
 export { TyOption } from './TyOption';
 export type { TyOptionProps } from './TyOption';
@@ -33,3 +46,107 @@ export type { TyDatePickerProps, TyDatePickerEventDetail } from './TyDatePicker'
 
 export { TyPopup } from './TyPopup';
 export type { TyPopupProps } from './TyPopup';
+
+// ===================================================================
+// SHORT NAME EXPORTS (Clean Style - Developer Choice)
+// ===================================================================
+
+export { TyButton as Button } from './TyButton';
+export { TyTag as Tag } from './TyTag';
+export { TyInput as Input } from './TyInput';
+export { TyDropdown as Dropdown } from './TyDropdown';
+export { TyOption as Option } from './TyOption';
+export { TyIcon as Icon } from './TyIcon';
+export { TyModal as Modal } from './TyModal';
+export { TyTooltip as Tooltip } from './TyTooltip';
+export { TyMultiselect as Multiselect } from './TyMultiselect';
+export { TyCalendar as Calendar } from './TyCalendar';
+export { TyDatePicker as DatePicker } from './TyDatePicker';
+export { TyPopup as Popup } from './TyPopup';
+
+// ===================================================================
+// TYPE ALIASES (Both Styles Supported)
+// ===================================================================
+
+// Button types
+export type { TyButtonProps as ButtonProps } from './TyButton';
+
+// Tag types
+export type { TyTagProps as TagProps } from './TyTag';
+
+// Input types
+export type { TyInputProps as InputProps, TyInputEventDetail as InputEventDetail } from './TyInput';
+
+// Dropdown types
+export type { TyDropdownProps as DropdownProps, TyDropdownEventDetail as DropdownEventDetail, OptionData } from './TyDropdown';
+
+// Option types
+export type { TyOptionProps as OptionProps } from './TyOption';
+
+// Icon types
+export type { TyIconProps as IconProps } from './TyIcon';
+
+// Modal types
+export type { TyModalProps as ModalProps, TyModalEventDetail as ModalEventDetail, TyModalRef as ModalRef } from './TyModal';
+
+// Tooltip types
+export type { TyTooltipProps as TooltipProps } from './TyTooltip';
+
+// Multiselect types
+export type { TyMultiselectProps as MultiselectProps, TyMultiselectEventDetail as MultiselectEventDetail } from './TyMultiselect';
+
+// Calendar types
+export type { TyCalendarProps as CalendarProps, TyCalendarChangeEventDetail as CalendarChangeEventDetail, TyCalendarNavigateEventDetail as CalendarNavigateEventDetail } from './TyCalendar';
+
+// DatePicker types
+export type { TyDatePickerProps as DatePickerProps, TyDatePickerEventDetail as DatePickerEventDetail } from './TyDatePicker';
+
+// Popup types
+export type { TyPopupProps as PopupProps } from './TyPopup';
+
+// ===================================================================
+// USAGE EXAMPLES
+// ===================================================================
+
+/*
+
+// STYLE 1: Ty-prefixed (Explicit and backward compatible)
+import { TyButton, TyInput, TyModal } from 'ty-react';
+import type { TyButtonProps, TyInputProps } from 'ty-react';
+
+function MyComponent() {
+  return (
+    <TyModal>
+      <TyInput placeholder="Enter text..." />
+      <TyButton>Submit</TyButton>
+    </TyModal>
+  );
+}
+
+// STYLE 2: Short names (Clean and familiar)
+import { Button, Input, Modal } from 'ty-react';
+import type { ButtonProps, InputProps } from 'ty-react';
+
+function MyComponent() {
+  return (
+    <Modal>
+      <Input placeholder="Enter text..." />
+      <Button>Submit</Button>
+    </Modal>
+  );
+}
+
+// STYLE 3: Mixed (Team preferences)
+import { TyModal, Input, Button } from 'ty-react';
+import type { TyModalProps, InputProps } from 'ty-react';
+
+function MyComponent() {
+  return (
+    <TyModal>
+      <Input placeholder="Enter text..." />
+      <Button>Submit</Button>
+    </TyModal>
+  );
+}
+
+*/

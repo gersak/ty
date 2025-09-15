@@ -8,6 +8,7 @@
             [ty.demo.views.calendar :as calendar]
             [ty.demo.views.color-combinations :as color-combinations]
             [ty.demo.views.dropdowns :as dropdowns]
+            [ty.demo.views.dropdown-value-test :as dropdown-value-test]
             [ty.demo.views.formatting :as formatting]
             [ty.demo.views.home :as home]
             [ty.demo.views.i18n :as i18n-views]
@@ -36,6 +37,9 @@
               {:id ::dropdowns
                :segment "dropdowns"
                :name "Dropdowns"}
+              {:id ::dropdown-value-test
+               :segment "dropdown-value-test"
+               :name "Dropdown Value Test"}
               {:id ::multiselect
                :segment "multiselect"
                :name "Multiselect"}
@@ -118,6 +122,9 @@
    (nav-item {:route-id ::dropdowns
               :label "Dropdowns"
               :icon "chevron-down"})
+   (nav-item {:route-id ::dropdown-value-test
+              :label "Value Test"
+              :icon "test-tube"})
    (nav-item {:route-id ::multiselect
               :label "Multiselect"
               :icon "check-circle"})
@@ -204,6 +211,7 @@
         (router/rendered? ::buttons true) "Button Components"
         (router/rendered? ::inputs true) "Input Components"
         (router/rendered? ::dropdowns true) "Dropdown Components"
+        (router/rendered? ::dropdown-value-test true) "Dropdown Value Clearing Test"
         (router/rendered? ::multiselect true) "Multiselect Components"
 
         (router/rendered? ::calendar true) "Calendar Components"
@@ -254,6 +262,7 @@
              (router/rendered? ::buttons true) (buttons/view)
              (router/rendered? ::inputs true) (inputs/view)
              (router/rendered? ::dropdowns true) (dropdowns/view)
+             (router/rendered? ::dropdown-value-test true) (dropdown-value-test/view)
              (router/rendered? ::multiselect true) (multiselect/view)
 
              (router/rendered? ::calendar true) (calendar/view)
@@ -288,7 +297,7 @@
 
 (defn ^:dev/after-load init []
   ;; Register demo icons
-  (demo-icons/register-demo-icons!)
+  ; (demo-icons/register-demo-icons!)
 
   ;; Setup routes if not already done
   ; (when (empty? (:children (:tree @router/*router*)))

@@ -1,0 +1,138 @@
+/* =================================================================
+   Ty Icons Library - Icon Component CSS
+   
+   Minimal CSS required for Ty icon components to work properly.
+   This includes the base icon styling and animations.
+   ================================================================= */
+
+/* Icon component styles */
+ty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  /* Default size - 1em to inherit from parent font-size */
+  width: 1em;
+  height: 1em;
+  /* Ensure minimum size when in slots */
+  min-width: 1em;
+  min-height: 1em;
+  /* Ensure the icon inherits text color */
+  color: inherit;
+  /* Smooth transitions for color changes */
+  transition: color 150ms ease;
+  /* Ensure proper sizing in flex contexts */
+  flex-shrink: 0;
+}
+
+/* The SVG element inside shadow DOM */
+ty-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+/* Size variants via CSS classes */
+ty-icon.icon-xs {
+  width: 0.75em;
+  height: 0.75em;
+}
+
+ty-icon.icon-sm {
+  width: 0.875em;
+  height: 0.875em;
+}
+
+ty-icon.icon-md {
+  width: 1em;
+  height: 1em;
+}
+
+ty-icon.icon-lg {
+  width: 1.25em;
+  height: 1.25em;
+}
+
+ty-icon.icon-xl {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+ty-icon.icon-2xl {
+  width: 2em;
+  height: 2em;
+}
+
+/* Fixed pixel sizes */
+ty-icon.icon-12 { width: 12px; height: 12px; }
+ty-icon.icon-14 { width: 14px; height: 14px; }
+ty-icon.icon-16 { width: 16px; height: 16px; }
+ty-icon.icon-18 { width: 18px; height: 18px; }
+ty-icon.icon-20 { width: 20px; height: 20px; }
+ty-icon.icon-24 { width: 24px; height: 24px; }
+ty-icon.icon-32 { width: 32px; height: 32px; }
+ty-icon.icon-48 { width: 48px; height: 48px; }
+
+/* Spinning animation */
+ty-icon.icon-spin {
+  animation: icon-spin 1s linear infinite;
+}
+
+ty-icon.icon-spin.icon-tempo-slow {
+  animation: icon-spin 2s linear infinite;
+}
+
+ty-icon.icon-spin.icon-tempo-fast {
+  animation: icon-spin 0.5s linear infinite;
+}
+
+@keyframes icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Pulse animation */
+ty-icon.icon-pulse {
+  animation: icon-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+ty-icon.icon-pulse.icon-tempo-slow {
+  animation: icon-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+ty-icon.icon-pulse.icon-tempo-fast {
+  animation: icon-pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes icon-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Accessibility and interaction */
+ty-icon {
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+ty-icon.icon-clickable {
+  cursor: pointer;
+  pointer-events: auto;
+  transition: color 150ms ease, transform 150ms ease;
+}
+
+ty-icon.icon-clickable:hover {
+  transform: scale(1.1);
+}
+
+ty-icon.icon-clickable:active {
+  transform: scale(0.95);
+}
+
+ty-icon.icon-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

@@ -1,40 +1,41 @@
 (ns hello.core
   (:require
    ;; Clean React wrappers
-    ["@gersak/ty-react" :as ty]
+   ["@gersak/ty-react" :as ty]
    ;; Views
-    [hello.views.forms :as forms]
-    [hello.views.layout :as layout-views]
-    [ty.components.button :as button]
+   [hello.views.forms :as forms]
+   [hello.views.layout :as layout-views]
+   [hello.views.modals :as modals-views]
+   [ty.components.button :as button]
 
-    [ty.components.calendar :as calendar]
-    [ty.components.calendar-month :as calendar-month]
+   [ty.components.calendar :as calendar]
+   [ty.components.calendar-month :as calendar-month]
 
-    [ty.components.calendar-navigation :as calendar-navigation]
+   [ty.components.calendar-navigation :as calendar-navigation]
     ;; All component configurations
-    [ty.components.core]
-    [ty.components.date-picker :as date-picker]
-    [ty.components.dropdown :as dropdown]
-    [ty.components.icon :as icon]
-    [ty.components.input :as input]
-    [ty.components.modal :as modal]
-    [ty.components.multiselect :as multiselect]
-    [ty.components.option :as option]
-    [ty.components.popup :as popup]
-    [ty.components.resize-observer :as resize-observer]
-    [ty.components.tag :as tag]
-    [ty.components.tooltip :as tooltip]
-    ty.context
+   [ty.components.core]
+   [ty.components.date-picker :as date-picker]
+   [ty.components.dropdown :as dropdown]
+   [ty.components.icon :as icon]
+   [ty.components.input :as input]
+   [ty.components.modal :as modal]
+   [ty.components.multiselect :as multiselect]
+   [ty.components.option :as option]
+   [ty.components.popup :as popup]
+   [ty.components.resize-observer :as resize-observer]
+   [ty.components.tag :as tag]
+   [ty.components.tooltip :as tooltip]
+   ty.context
     ;; ClojureScript ty utilities
-    [ty.icons :as icons]
-    [ty.lucide :as lucide]
+   [ty.icons :as icons]
+   [ty.lucide :as lucide]
    ;; TY Router
-    [ty.router :as router]
-    [ty.shim :as wcs]
+   [ty.router :as router]
+   [ty.shim :as wcs]
    ;; UIx for React-like development
-    [uix.core :as uix :refer [defui $]]
+   [uix.core :as uix :refer [defui $]]
 
-    [uix.dom]))
+   [uix.dom]))
 
 ;; Define routes
 (router/link ::router/root
@@ -99,7 +100,29 @@
                "play" lucide/play
                "code" lucide/code-2
                "zap" lucide/zap
-               "palette" lucide/palette}))
+               "palette" lucide/palette
+
+               ;; Modal and popup icons
+               "modal" lucide/square
+               "popup" lucide/layers
+               "eye" lucide/eye
+               "eye-off" lucide/eye-off
+               "save" lucide/save
+               "download" lucide/download
+               "upload" lucide/upload
+               "trash-2" lucide/trash-2
+               "info" lucide/info
+               "info-circle" lucide/info
+               "warning" lucide/alert-triangle
+               "shield" lucide/shield
+               "bell" lucide/bell
+               "star" lucide/star
+               "heart" lucide/heart
+               "bookmark" lucide/bookmark
+               "plus" lucide/plus
+               "minus" lucide/minus
+               "more-horizontal" lucide/more-horizontal
+               "external-link" lucide/external-link}))
 
 (defui nav-link [{:keys [route-id icon label]}]
   (let [is-active (router/rendered? route-id true)]
@@ -206,18 +229,8 @@
   ($ layout-views/view))
 
 (defui modals-view []
-  ($ :div.space-y-8
-     ($ :div
-        ($ :h1.ty-text++.text-3xl.font-bold.mb-2
-           "Modals & Overlays")
-        ($ :p.ty-text-.max-w-2xl.mb-8
-           "Modal dialogs, tooltips, and overlay components."))
-
-     ($ :div.ty-elevated.rounded-lg.p-6
-        ($ :h2.ty-text++.text-xl.font-semibold.mb-4
-           "Coming Soon")
-        ($ :p.ty-text
-           "Modal and overlay examples will be added in the next phase."))))
+  ;; Use the comprehensive modals demo from modals-views
+  ($ modals-views/view))
 
 ;; Router integration hook
 (defn use-router []
@@ -226,17 +239,17 @@
 
     ;; Subscribe to router changes
     (uix/use-effect
-      (fn []
-        (let [watch-key (gensym "uix-router-watch")]
+     (fn []
+       (let [watch-key (gensym "uix-router-watch")]
          ;; Add watch to router atom
-          (add-watch router/*router* watch-key
-                     (fn [_key _ref _old-state new-state]
-                       (set-router-state new-state)))
+         (add-watch router/*router* watch-key
+                    (fn [_key _ref _old-state new-state]
+                      (set-router-state new-state)))
 
          ;; Cleanup function
-          (fn []
-            (remove-watch router/*router* watch-key))))
-      []) ; Empty dependency array - only run once
+         (fn []
+           (remove-watch router/*router* watch-key))))
+     []) ; Empty dependency array - only run once
 
     router-state))
 
@@ -250,12 +263,12 @@
 
     ;; Apply theme to html element
     (uix/use-effect
-      (fn []
-        (let [html-el (.-documentElement js/document)]
-          (if (= theme "dark")
-            (.add (.-classList html-el) "dark")
-            (.remove (.-classList html-el) "dark"))))
-      [theme])
+     (fn []
+       (let [html-el (.-documentElement js/document)]
+         (if (= theme "dark")
+           (.add (.-classList html-el) "dark")
+           (.remove (.-classList html-el) "dark"))))
+     [theme])
 
     ;; Fixed layout structure - using flexbox instead of CSS Grid
     ($ :div.min-h-screen.flex.flex-col.ty-canvas
@@ -356,10 +369,10 @@
 
        ;; Close sidebar on navigation (mobile)
        (uix/use-effect
-         (fn []
-           (when sidebar-open
-             (set-sidebar-open false)))
-         [sidebar-open (:current router-state)]))))
+        (fn []
+          (when sidebar-open
+            (set-sidebar-open false)))
+        [sidebar-open (:current router-state)]))))
 
 (defn ^:after-load init []
   "Initialize the application"

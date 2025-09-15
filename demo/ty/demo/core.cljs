@@ -8,7 +8,6 @@
             [ty.demo.views.calendar :as calendar]
             [ty.demo.views.color-combinations :as color-combinations]
             [ty.demo.views.dropdowns :as dropdowns]
-            [ty.demo.views.dropdown-value-test :as dropdown-value-test]
             [ty.demo.views.formatting :as formatting]
             [ty.demo.views.home :as home]
             [ty.demo.views.i18n :as i18n-views]
@@ -37,9 +36,6 @@
               {:id ::dropdowns
                :segment "dropdowns"
                :name "Dropdowns"}
-              {:id ::dropdown-value-test
-               :segment "dropdown-value-test"
-               :name "Dropdown Value Test"}
               {:id ::multiselect
                :segment "multiselect"
                :name "Multiselect"}
@@ -122,13 +118,9 @@
    (nav-item {:route-id ::dropdowns
               :label "Dropdowns"
               :icon "chevron-down"})
-   (nav-item {:route-id ::dropdown-value-test
-              :label "Value Test"
-              :icon "test-tube"})
    (nav-item {:route-id ::multiselect
               :label "Multiselect"
               :icon "check-circle"})
-
    (nav-item {:route-id ::calendar
               :label "Calendar"
               :icon "lucide-calendar"})
@@ -262,7 +254,6 @@
              (router/rendered? ::buttons true) (buttons/view)
              (router/rendered? ::inputs true) (inputs/view)
              (router/rendered? ::dropdowns true) (dropdowns/view)
-             (router/rendered? ::dropdown-value-test true) (dropdown-value-test/view)
              (router/rendered? ::multiselect true) (multiselect/view)
 
              (router/rendered? ::calendar true) (calendar/view)

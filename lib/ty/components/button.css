@@ -3,6 +3,11 @@
   font-family: var(--ty-font-sans);
 }
 
+:host([wide=true]) {
+  display:flex;
+  flex-grow: 1;
+}
+
 button {
   display: flex;
   align-items: center;
@@ -104,7 +109,8 @@ button:disabled {
   opacity: 0.6;
 }
 
-.wide {
+
+:host([wide=true]) button {
   flex-grow: 1;
 }
 

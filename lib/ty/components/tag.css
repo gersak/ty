@@ -1,10 +1,6 @@
 /* Tag Component Styles using centralized ty.variables.css */
 
 /* Host element */
-:host {
-  display: inline-block;
-  vertical-align: top;
-}
 
 /* Hidden attribute support */
 :host([hidden]) {
@@ -13,8 +9,10 @@
 
 /* Main container */
 .tag-container {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
+  gap: var(--ty-spacing-2);
   /* Default pill shape - can be overridden */
   border-radius: var(--ty-radius-full);
   font-family: var(--ty-font-sans);
@@ -26,7 +24,7 @@
   box-sizing: border-box;
 
   /* Default MD size - no need for [size="md"] */
-  padding: var(--ty-spacing-2) var(--ty-spacing-4);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
   /* 8px 16px */
   font-size: var(--ty-font-sm);
   /* 14px */
@@ -94,18 +92,6 @@
 .tag-content {
   flex: 1;
   min-width: 0;
-  /* Allow text truncation */
-}
-
-/* Default MD spacing for slots */
-.tag-start:not(:empty) {
-  margin-right: var(--ty-spacing-3);
-  /* 12px */
-}
-
-.tag-end:not(:empty) {
-  margin-left: var(--ty-spacing-3);
-  /* 12px */
 }
 
 /* Dismiss button */
@@ -113,7 +99,6 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-left: var(--ty-spacing-3);
   padding: 0;
   background: none;
   border: none;
@@ -139,22 +124,16 @@
   height: 100%;
 }
 
+
+
+
+
 /* Size variants - override defaults */
 :host([size="xs"]) .tag-container {
   padding: var(--ty-spacing-mini) var(--ty-spacing-2);
-  /* 2px 8px */
   font-size: var(--ty-font-xs);
-  /* 12px */
   line-height: var(--ty-line-height-tight);
   min-width: var(--ty-spacing-10);
-  /* 40px */
-}
-
-:host([size="xs"]) .tag-start:not(:empty),
-:host([size="xs"]) .tag-end:not(:empty) {
-  margin-left: var(--ty-spacing-2);
-  /* 8px */
-  margin-right: var(--ty-spacing-2);
 }
 
 :host([size="xs"]) .tag-dismiss {
@@ -174,16 +153,9 @@
   /* 48px */
 }
 
-:host([size="sm"]) .tag-start:not(:empty),
-:host([size="sm"]) .tag-end:not(:empty) {
-  margin-left: var(--ty-spacing-2);
-  /* 8px */
-  margin-right: var(--ty-spacing-2);
-}
 
 :host([size="sm"]) .tag-dismiss {
   width: var(--ty-spacing-3);
-  /* 12px */
   height: var(--ty-spacing-3);
   margin-left: var(--ty-spacing-2);
 }
@@ -192,44 +164,24 @@
 /* All default styles above apply to MD size */
 
 :host([size="lg"]) .tag-container {
-  padding: var(--ty-spacing-3) var(--ty-spacing-5);
-  /* 12px 20px */
-  font-size: var(--ty-font-sm);
-  /* 14px */
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  font-size: var(--ty-font-lg);
   line-height: var(--ty-line-height-tight);
   min-width: var(--ty-spacing-20);
-  /* 80px */
 }
 
-:host([size="lg"]) .tag-start:not(:empty),
-:host([size="lg"]) .tag-end:not(:empty) {
-  margin-left: var(--ty-spacing-4);
-  /* 16px */
-  margin-right: var(--ty-spacing-4);
-}
 
 :host([size="lg"]) .tag-dismiss {
   width: var(--ty-spacing-5);
-  /* 20px */
   height: var(--ty-spacing-5);
   margin-left: var(--ty-spacing-4);
 }
 
 :host([size="xl"]) .tag-container {
-  padding: var(--ty-spacing-4) var(--ty-spacing-6);
-  /* 16px 24px */
-  font-size: var(--ty-font-base);
-  /* 16px */
+  padding: var(--ty-spacing-2) var(--ty-spacing-2);
+  font-size: var(--ty-font-2xl);
   line-height: var(--ty-line-height-tight);
   min-width: var(--ty-spacing-24);
-  /* 96px */
-}
-
-:host([size="xl"]) .tag-start:not(:empty),
-:host([size="xl"]) .tag-end:not(:empty) {
-  margin-left: var(--ty-spacing-4);
-  /* 16px */
-  margin-right: var(--ty-spacing-4);
 }
 
 :host([size="xl"]) .tag-dismiss {

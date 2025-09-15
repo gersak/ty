@@ -5,5 +5,5 @@ module.exports = {
       // Let TY handle colors, Tailwind handles everything else
     }
   },
-  plugins: [require('@tailwindcss/forms')]
+  plugins: [] // Removed @tailwindcss/forms plugin to avoid conflicts with ty components
 }

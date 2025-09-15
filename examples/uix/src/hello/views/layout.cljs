@@ -246,7 +246,6 @@
 
 (defui flexbox-dual-observer-demo []
   "Flexbox layout with two resize observers"
-  (println "RENDEINGNGNNG!")
   ($ :div.space-y-4
      ($ :h3.ty-text++.text-lg.font-semibold
         "Flexbox Layout with Resize Observers")

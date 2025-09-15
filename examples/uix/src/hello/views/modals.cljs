@@ -257,7 +257,7 @@
           "Open Registration Form")
 
        ;; Popup
-       ($ ty/Popup {:open (if show-popup "" nil)
+       ($ ty/Popup {:open (if show-popup "true" nil)
                     :placement "bottom"
                     :on-close #(set-show-popup false)}
           ;; Popup content with proper styling
@@ -362,7 +362,6 @@
           {:on-click #(set-show-modal true)}
           "Open Basic Modal")
 
-       (println "SHOING? " show-modal)
        ($ ty/Modal
           {:open (if show-modal "true" nil)
            :on-close #(set-show-modal false)}

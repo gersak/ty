@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./dev/**/*.html",
     "./demo/**/*.{cljs,cljc,clj}",
+    "./site/**/*.{cljs,cljc,clj}",
   ],
   theme: {
     extend: {

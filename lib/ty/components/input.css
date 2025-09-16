@@ -85,7 +85,8 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
+  -moz-appearance: textfield;
+  /* Firefox */
 }
 
 /* Focus state - elegant blue glow like toddler */
@@ -96,7 +97,7 @@ input:focus {
 }
 
 /* Hover state - subtle feedback */
-input:hover:not(:disabled):not(:focus) {
+input:hover:not(:disabled) {
   border-color: var(--ty-input-border-hover);
 }
 
@@ -159,6 +160,11 @@ input.primary {
   border-color: var(--ty-input-primary-border, var(--ty-color-primary));
 }
 
+
+input.primary:hover {
+  border-color: var(--ty-color-primary-mild);
+}
+
 input.primary:focus {
   border-color: var(--ty-color-primary-mild);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -179,6 +185,10 @@ input.success {
   border-color: var(--ty-input-success-border);
 }
 
+input.success:hover {
+  border-color: var(--ty-color-success-mild);
+}
+
 input.success:focus {
   border-color: var(--ty-color-success-mild);
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
@@ -189,6 +199,11 @@ input.danger {
   border-color: var(--ty-input-danger-border);
 }
 
+
+input.danger:hover {
+  border-color: var(--ty-color-danger-mild);
+}
+
 input.danger:focus {
   border-color: var(--ty-color-danger-mild);
   box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
@@ -197,6 +212,10 @@ input.danger:focus {
 /* Warning - Caution/attention needed input state */
 input.warning {
   border-color: var(--ty-input-warning-border);
+}
+
+input.warning:hover {
+  border-color: var(--ty-color-warning-mild);
 }
 
 input.warning:focus {
@@ -226,43 +245,43 @@ input.info:focus {
 /* ===== SEMANTIC FLAVOR MODIFIERS ===== */
 
 /* Important - Blue theme */
-  border-color: #3b82f6;
+border-color: #3b82f6;
 }
 
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+border-color: #2563eb;
+box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 /* Positive - Green theme for success */
-  border-color: #10b981;
+border-color: #10b981;
 }
 
-  border-color: #059669;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+border-color: #059669;
+box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
 }
 
 /* Negative - Red theme for errors */
-  border-color: #ef4444;
+border-color: #ef4444;
 }
 
-  border-color: #dc2626;
-  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+border-color: #dc2626;
+box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
 }
 
 /* Exception - Yellow theme for warnings */
-  border-color: #f59e0b;
+border-color: #f59e0b;
 }
 
-  border-color: #d97706;
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+border-color: #d97706;
+box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
 }
 
 /* Unique - Purple theme */
-  border-color: #8b5cf6;
+border-color: #8b5cf6;
 }
 
-  border-color: #7c3aed;
-  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+border-color: #7c3aed;
+box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
 }
 
 /* ===== ACCESSIBILITY ENHANCEMENTS ===== */

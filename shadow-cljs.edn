@@ -1,13 +1,13 @@
-{:source-paths ["lib" "gen" "demo"]
- :dev-http {8000 "dev"}
+{:dev-http {8000 "dev"
+            8001 "site/public"}
  :nrepl {:port 7888}
- :dependencies [[no.cjohansen/replicant "2025.06.21"]
-                [dev.gersak/timing.core "0.6.4"]
-                [cljs-bean "1.9.0"]]
-
+ :deps true
  :builds {:dev {:target :browser
                 :output-dir "dev/js"
                 :modules {:demo {:init-fn ty.demo.core/init}}}
+          :site {:target :browser
+                 :output-dir "site/public/js"
+                 :modules {:site {:init-fn ty.site.core/init}}}
           :react {:target :browser
                   :output-dir "examples/react-nextjs/public/"
                   :compiler-options {:optimizations :advanced

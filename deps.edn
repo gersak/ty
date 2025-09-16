@@ -2,14 +2,14 @@
 
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/clojurescript {:mvn/version "1.11.121"}
-        no.cjohansen/replicant {:mvn/version "2025.06.21"}
         dev.gersak/timing.core {:mvn/version "0.6.4"}
         cljs-bean/cljs-bean {:mvn/version "1.9.0"}}
 
  :aliases
  {;; Development and demo
-  :dev {:extra-paths ["demo" "gen"]
-        :extra-deps {thheller/shadow-cljs {:mvn/version "2.28.19"}}}
+  :dev {:extra-paths ["demo" "gen" "site"]
+        :extra-deps {thheller/shadow-cljs {:mvn/version "2.28.19"}
+                     no.cjohansen/replicant {:mvn/version "2025.06.21"}}}
 
   ;; Publishing aliases
   :ty-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}

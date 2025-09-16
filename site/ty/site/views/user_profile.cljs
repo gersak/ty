@@ -102,7 +102,7 @@
                     :placeholder "Tell us about your professional background..."
                     :rows "4"}]]
 
-;; Skills - Multiselect with rich tags
+       ;; Skills - Multiselect with rich tags
        [:div
         [:label.block.text-sm.font-medium.ty-text.mb-2 "Skills & Technologies"]
         [:ty-multiselect {:placeholder "Select your skills and technologies..."}
@@ -534,7 +534,7 @@
      [:h3.text-xl.font-semibold.ty-text.mb-6 "Upload Profile Photo"]
      [:p.ty-text-.text-sm.mb-6 "Choose a new profile photo. For best results, upload an image that's at least 400x400 pixels."]
 
-;; Upload Area
+     ;; Upload Area
      [:div.border-2.border-dashed.ty-border.rounded-lg.p-8.text-center.hover:ty-border-primary.transition-colors.cursor-pointer.mb-6
       [:ty-icon {:name "upload"
                  :size "3xl"

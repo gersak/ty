@@ -17,4 +17,16 @@
                                     :country "us"
                                     :timezone "pst"
                                     :language "en"
-                                    :theme-preference "auto"}}}))
+                                    :theme-preference "auto"}}
+
+         ;; Event booking state
+         :event-booking {:confirmation-modal-open false
+                         :selected-date nil
+                         :selected-time nil
+                         :selected-services #{}
+                         :attendee-count 1
+                         :booking-data {:event-type "meeting"
+                                        :duration "60"
+                                        :contact-name ""
+                                        :contact-email ""
+                                        :special-requests ""}}}))

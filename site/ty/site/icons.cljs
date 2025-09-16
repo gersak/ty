@@ -32,7 +32,8 @@
              "info" lucide/info
              "star" lucide/star
 
-               ;; Additional utility icons
+;; Additional utility icons
              "search" lucide/search
              "settings" lucide/settings
-             "globe" lucide/globe})
+             "globe" lucide/globe
+             "clock" lucide/clock})

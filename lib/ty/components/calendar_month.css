@@ -83,7 +83,7 @@
 }
 
 
-/* Today dot indicator - very subtle */
+/* Today dot indicator - very subtle
 .calendar-day-cell.today::after {
   content: '';
   position: absolute;
@@ -93,6 +93,7 @@
   background-color: var(--ty-color-secondary);
   border-radius: 50%;
 }
+*/
 
 /* SELECTED STYLING - clean selection */
 .calendar-day-cell.selected {

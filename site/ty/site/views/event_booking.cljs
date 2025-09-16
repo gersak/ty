@@ -1,411 +1,615 @@
 (ns ty.site.views.event-booking
-  (:require [ty.site.state :as state]))
+  (:require
+    [cljs-bean.core :refer [->clj]]
+    [clojure.set :as set]
+    [timing.core :as timing]
+    [ty.i18n :as i18n]
+    [ty.i18n.time]
+    [ty.site.state :refer [state]])
+  (:require-macros [ty.css :refer [defstyles]]))
+
+;; Load custom CSS styles for calendar
+(defstyles event-booking-styles "ty/site/views/event_booking.css")
 
 (defn view []
-  [:div.max-w-6xl.mx-auto.space-y-8
-   ;; Hero Section
-   [:div.text-center.mb-12
-    [:h1.text-4xl.font-bold.ty-text.mb-4 "Event Booking Scenario"]
-    [:p.text-lg.ty-text-.max-w-4xl.mx-auto.leading-relaxed
-     "Discover how calendar components orchestrate with complex forms to create seamless booking experiences. This scenario showcases date selection, time slot management, service customization, and confirmation workflows in a professional event booking interface."]
+  (let [{:keys [selected-services booking-data]
+         {:keys [year month day]} :selected-date
+         :as booking-state} (get @state :event-booking)]
+    [:div.max-w-6xl.mx-auto.space-y-8
+     ;; Hero Section
+     [:div.text-center.mb-12
+      [:h1.text-4xl.font-bold.ty-text.mb-4 "Event Booking Scenario"]
+      [:p.text-lg.ty-text-.max-w-4xl.mx-auto.leading-relaxed
+       "Discover how calendar components orchestrate with complex forms to create seamless booking experiences. This scenario showcases date selection, time slot management, service customization, and confirmation workflows in a professional event booking interface."]
 
-    [:div.flex.flex-wrap.gap-3.justify-center.mt-6
-     [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Calendar Integration"]
-     [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Time Slot Selection"]
-     [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Service Options"]
-     [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Confirmation Flow"]]]
+      [:div.flex.flex-wrap.gap-3.justify-center.mt-6
+       [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Calendar Integration"]
+       [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Time Slot Selection"]
+       [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Service Options"]
+       [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Confirmation Flow"]]]
 
-   ;; Main Booking Interface
-   [:div.grid.grid-cols-1.lg:grid-cols-3.gap-8
-    ;; Left Column - Calendar and Date Selection
-    [:div.lg:col-span-2.space-y-6
-     [:div.ty-elevated.p-6.rounded-xl
-      [:h2.text-xl.font-semibold.ty-text.mb-4 "📅 Select Your Date"]
-      [:p.ty-text-.text-sm.mb-6 "Choose from available dates. Dates in green have full availability, yellow have limited slots, and unavailable dates are disabled."]
+     ;; Main Booking Interface
+     [:div.grid.grid-cols-1.lg:grid-cols-3.gap-8
+      ;; Left Column - Calendar and Date Selection
+      [:div.lg:col-span-2.space-y-6
+       [:div.ty-elevated.p-6.rounded-xl
+        [:h2.text-xl.font-semibold.ty-text.mb-4 "📅 Select Your Date"]
+        [:p.ty-text-.text-sm.mb-6 "Choose from available dates. Dates in green have full availability, yellow have limited slots, and unavailable dates are disabled."]
+        ;; Calendar Component
+        [:div.border.ty-border.rounded-lg.p-4
+         [:ty-calendar.w-full
+          {:on {:change #(let [date-context (.. ^js % -detail)]
+                           (swap! state assoc-in [:event-booking :selected-date] (->clj date-context)))}
+           :month month
+           :year year
+           :day day
+           :replicant/on-mount (fn [{^js el :replicant/node}]
+                                 ;; Set up dayContentFn with proper CSS classes
+                                 (set! (.-dayContentFn el)
+                                       (fn [day-context]
 
-      ;; Calendar Component
-      [:div.border.ty-border.rounded-lg.p-4
-       [:ty-calendar-month {:class "w-full"}]]
+                                         (let [{:keys [other-month today? day-in-month]} (->clj day-context)
+                                               availability (cond
+                                                              (< day-in-month 5) "booked" ; First few days booked
+                                                              (< day-in-month 15) "available" ; Middle days available
+                                                              (< day-in-month 25) "limited" ; Later days limited
+                                                              :else "available") ; Rest available
 
-      ;; Quick date buttons
-      [:div.flex.flex-wrap.gap-2.mt-4
-       [:button.px-3.py-2.ty-bg-primary-.ty-text-primary.rounded-md.text-sm.font-medium.hover:ty-bg-primary.hover:text-white.transition-colors
-        "Today"]
-       [:button.px-3.py-2.ty-bg-success-.ty-text-success.rounded-md.text-sm.font-medium.hover:ty-bg-success.hover:text-white.transition-colors
-        "Tomorrow"]
-       [:button.px-3.py-2.ty-bg-info-.ty-text-info.rounded-md.text-sm.font-medium.hover:ty-bg-info.hover:text-white.transition-colors
-        "Next Week"]]]
+                                               ;; Create main day container
+                                               container (.createElement js/document "div")
 
-     ;; Time Slot Selection
-     [:div.ty-elevated.p-6.rounded-xl
-      [:h2.text-xl.font-semibold.ty-text.mb-4 "⏰ Available Time Slots"]
-      [:p.ty-text-.text-sm.mb-6 "Select your preferred time slot. All times are shown in Pacific Time (PST)."]
+                                               ;; Create day number element
+                                               day-number (.createElement js/document "div")
 
-      [:div.grid.grid-cols-2.md:grid-cols-4.gap-3
-       ;; Morning slots
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary
-        [:div.text-sm.font-medium.ty-text "9:00 AM"]
-        [:div.text-xs.ty-text-success "Available"]]
+                                               ;; Create availability indicator (only for current month)
+                                               indicator (when-not other-month (.createElement js/document "div"))]
 
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary
-        [:div.text-sm.font-medium.ty-text "10:00 AM"]
-        [:div.text-xs.ty-text-success "Available"]]
+                                           ;; Set container class based on state
+                                           (set! (.-className container)
+                                                 (str "availability-day"
+                                                      (when other-month " other-month")
+                                                      (when today? " today")))
 
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary
-        [:div.text-sm.font-medium.ty-text "11:00 AM"]
-        [:div.text-xs.ty-text-warning "2 spots left"]]
+                                           ;; Set day number
+                                           (set! (.-className day-number) "day-num")
+                                           (set! (.-textContent day-number) (str day-in-month))
+                                           (.appendChild container day-number)
 
-       [:div.ty--content.p-3.rounded-lg.text-center.opacity-50.cursor-not-allowed
-        [:div.text-sm.font-medium.ty-text- "12:00 PM"]
-        [:div.text-xs.ty-text-danger "Booked"]]
+                                           ;; Add availability indicator for current month only
+                                           (when-not other-month
+                                             (set! (.-className indicator) (str "availability-indicator " availability))
+                                             (.appendChild container indicator))
 
-       ;; Afternoon slots
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary
-        [:div.text-sm.font-medium.ty-text "1:00 PM"]
-        [:div.text-xs.ty-text-success "Available"]]
+                                           container)))
 
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary.ty-bg-primary-.ty-border-primary
-        [:div.text-sm.font-medium.ty-text-primary "2:00 PM"]
-        [:div.text-xs.ty-text-primary "✓ Selected"]]
+                                 ;; Inject custom CSS styles
+                                 (set! (.-customCSS el) event-booking-styles))}]]
 
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary
-        [:div.text-sm.font-medium.ty-text "3:00 PM"]
-        [:div.text-xs.ty-text-warning "1 spot left"]]
+        ;; Quick date buttons
+        [:div.flex.flex-wrap.gap-2.mt-4
+         [:ty-button
+          {:flavor "primary"
+           :outlined true
+           :filled true
+           :on {:click #(let [today (timing.core/date)
+                              value (-> today timing/date->value timing/day-context
+                                        (select-keys [:year :month :day-in-month])
+                                        (set/rename-keys {:day-in-month :day}))]
+                          (swap! state assoc-in [:event-booking :selected-date] value))}}
+          "Today"]
+         [:ty-button
+          {:flavor "success"
+           :outlined true
+           :filled true
+           :on {:click #(let [today (timing.core/date)
+                              tomorrow (timing/after today timing/day)
+                              value (-> tomorrow timing/date->value timing/day-context
+                                        (select-keys [:year :month :day-in-month])
+                                        (set/rename-keys {:day-in-month :day}))]
+                          (swap! state assoc-in [:event-booking :selected-date] value))}}
+          "Tomorrow"]
+         [:ty-button
+          {:on {:click #(let [today (timing.core/date)
+                              tomorrow (timing/after today timing/week)
+                              value (-> tomorrow timing/date->value timing/day-context
+                                        (select-keys [:year :month :day-in-month])
+                                        (set/rename-keys {:day-in-month :day}))]
+                          (swap! state assoc-in [:event-booking :selected-date] value))}}
+          "Next Week"]]
 
-       [:div.ty--content.p-3.rounded-lg.text-center.cursor-pointer.hover:ty--elevated.transition-colors.border.ty-border.hover:ty-border-primary
-        [:div.text-sm.font-medium.ty-text "4:00 PM"]
-        [:div.text-xs.ty-text-success "Available"]]]]
+        ;; Selected date display
+        (when-let [{:keys [year month day]} (:selected-date booking-state)]
+          (let [js-date (timing/date year month day)]
+            [:div.mt-4.p-3.ty-bg-primary-.rounded-lg
+             [:div.flex.items-center.gap-2
+              [:ty-icon.ty-text-primary
+               {:name "calendar"
+                :size "sm"}]
+              [:div.text-sm.ty-text-primary
+               [:span.font-medium "Selected Date: "]
+               [:span (i18n/translate js-date "full")]]]]))]
 
-     ;; Service Selection
-     [:div.ty-elevated.p-6.rounded-xl
-      [:h2.text-xl.font-semibold.ty-text.mb-4 "🎯 Services & Add-ons"]
-      [:p.ty-text-.text-sm.mb-6 "Customize your booking with additional services and amenities."]
+       ;; Time Slot Selection
+       [:div.ty-elevated.p-6.rounded-xl
+        [:h2.text-xl.font-semibold.ty-text.mb-4 "⏰ Available Time Slots"]
+        [:p.ty-text-.text-sm.mb-6 "Select your preferred time slot. All times are shown in Pacific Time (PST)."]
 
-      [:div.space-y-4
-       ;; Base service selection
-       [:div
-        [:label.block.text-sm.font-medium.ty-text.mb-2 "Event Type"]
-        [:ty-dropdown {:value "meeting"
-                       :placeholder "Select event type"}
-         [:ty-option {:value "meeting"}
-          [:div.flex.items-center.gap-3
-           [:div.w-8.h-8.ty-bg-primary.rounded-full.flex.items-center.justify-center
-            [:ty-icon {:name "user"
-                       :size "sm"
-                       :class "text-white"}]]
-           [:div.flex-1
-            [:div.font-medium "Business Meeting"]
-            [:div.text-xs.ty-text- "Professional meeting space • $50/hour"]]]]
+        (let [selected-time (:selected-time booking-state)
+              time-slots [{:time "9:00 AM"
+                           :status "available"}
+                          {:time "10:00 AM"
+                           :status "available"}
+                          {:time "11:00 AM"
+                           :status "limited"
+                           :note "2 spots left"}
+                          {:time "12:00 PM"
+                           :status "booked"}
+                          {:time "1:00 PM"
+                           :status "available"}
+                          {:time "2:00 PM"
+                           :status "available"}
+                          {:time "3:00 PM"
+                           :status "limited"
+                           :note "1 spot left"}
+                          {:time "4:00 PM"
+                           :status "available"}]]
+          [:div.grid.grid-cols-2.md:grid-cols-4.gap-3
+           (for [{:keys [time status note]} time-slots]
+             ^{:key time}
+             (if (= status "booked")
+               ;; Disabled slot
+               [:div.ty-content.p-3.rounded-lg.text-center.opacity-50.cursor-not-allowed
+                [:div.text-sm.font-medium.ty-text- time]
+                [:div.text-xs.ty-text-danger "Booked"]]
 
-         [:ty-option {:value "workshop"}
-          [:div.flex.items-center.gap-3
-           [:div.w-8.h-8.ty-bg-success.rounded-full.flex.items-center.justify-center
-            [:ty-icon {:name "star"
-                       :size "sm"
-                       :class "text-white"}]]
-           [:div.flex-1
-            [:div.font-medium "Workshop/Training"]
-            [:div.text-xs.ty-text- "Large space with presentation setup • $75/hour"]]]]
+               ;; Selectable slot
+               [:div.ty-content.p3.rounded-lg.text-center.cursor-pointer.transition-colors.border.ty-border.hover:ty-elevated.hover:ty-border-primary
+                {:class (when (= selected-time time) " ty-bg-primary- ty-border-primary")
+                 :on {:click #(swap! state assoc-in [:event-booking :selected-time] time)}}
+                [:div.text-sm.font-medium
+                 {:class (if (= selected-time time) "ty-text-primary" "ty-text")}
+                 time]
+                [:div.text-xs
+                 {:class (cond
+                           (= selected-time time) "ty-text-primary"
+                           (= status "available") "ty-text-success"
+                           (= status "limited") "ty-text-warning")}
+                 (cond
+                   (= selected-time time) "✓ Selected"
+                   (= status "available") "Available"
+                   (= status "limited") note)]]))])]
 
-         [:ty-option {:value "conference"}
-          [:div.flex.items-center.gap-3
-           [:div.w-8.h-8.ty-bg-warning.rounded-full.flex.items-center.justify-center
-            [:ty-icon {:name "globe"
-                       :size "sm"
-                       :class "text-white"}]]
-           [:div.flex-1
-            [:div.font-medium "Conference Room"]
-            [:div.text-xs.ty-text- "Executive boardroom • $100/hour"]]]]
+       ;; Service Selection
+       [:div.ty-elevated.p-6.rounded-xl
+        [:h2.text-xl.font-semibold.ty-text.mb-4 "🎯 Services & Add-ons"]
+        [:p.ty-text-.text-sm.mb-6 "Customize your booking with additional services and amenities."]
 
-         [:ty-option {:value "event"}
-          [:div.flex.items-center.gap-3
-           [:div.w-8.h-8.ty-bg-secondary.rounded-full.flex.items-center.justify-center
-            [:ty-icon {:name "star"
-                       :size "sm"
-                       :class "text-white"}]]
-           [:div.flex-1
-            [:div.font-medium "Special Event"]
-            [:div.text-xs.ty-text- "Full event space with catering • $200/hour"]]]]]]
+        [:div.space-y-4
+         ;; Base service selection
+         [:div
+          [:label.block.text-sm.font-medium.ty-text.mb-2 "Event Type"]
+          [:ty-dropdown {:value (:event-type booking-data)
+                         :placeholder "Select event type"
+                         :on {:change #(swap! state assoc-in [:event-booking :booking-data :event-type]
+                                              (.. ^js % -detail -option -value))}}
+           [:ty-option {:value "meeting"}
+            [:div.flex.items-center.gap-3
+             [:div.w-8.h-8.ty-bg-primary.rounded-full.flex.items-center.justify-center
+              [:ty-icon {:name "user"
+                         :size "sm"}]]
+             [:div.flex-1
+              [:div.font-medium "Business Meeting"]
+              [:div.text-xs.ty-text- "Professional meeting space • $50/hour"]]]]
 
-       ;; Add-on services multiselect
-       [:div
-        [:label.block.text-sm.font-medium.ty-text.mb-2 "Additional Services"]
-        [:ty-multiselect {:placeholder "Select additional services and amenities..."}
-         ;; Pre-selected services
-         [:ty-tag {:value "av-equipment"
-                   :flavor "primary"}
-          [:div.flex.items-center.gap-2
-           [:div
-            [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "🎥"]]
-           [:span "A/V Equipment"]
-           [:span.text-xs.ty-text- "+$25"]]]
+           [:ty-option {:value "workshop"}
+            [:div.flex.items-center.gap-3
+             [:div.w-8.h-8.ty-bg-success.rounded-full.flex.items-center.justify-center
+              [:ty-icon {:name "star"
+                         :size "sm"}]]
+             [:div.flex-1
+              [:div.font-medium "Workshop/Training"]
+              [:div.text-xs.ty-text- "Large space with presentation setup • $75/hour"]]]]
 
-         [:ty-tag {:value "catering"
-                   :flavor "success"}
-          [:div.flex.items-center.gap-2
-           [:div
-            [:span.text-xs.w-6.h-6.ty-bg-success+.rounded.flex.items-center.justify-center "🍽️"]]
-           [:span "Light Catering"]
-           [:span.text-xs.ty-text- "+$15/person"]]]
+           [:ty-option {:value "conference"}
+            [:div.flex.items-center.gap-3
+             [:div.w-8.h-8.ty-bg-warning.rounded-full.flex.items-center.justify-center
+              [:ty-icon {:name "globe"
+                         :size "sm"}]]
+             [:div.flex-1
+              [:div.font-medium "Conference Room"]
+              [:div.text-xs.ty-text- "Executive boardroom • $100/hour"]]]]
 
-         ;; Available options
-         [:ty-tag {:value "wifi-upgrade"}
-          [:div.flex.items-center.gap-3
-           [:div
-            [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "📡"]]
-           [:div.flex-1
-            [:div.font-medium "Premium Wi-Fi"]
-            [:div.text-xs.ty-text- "High-speed dedicated connection • +$10"]]]]
+           [:ty-option {:value "event"}
+            [:div.flex.items-center.gap-3
+             [:div.w-8.h-8.ty-bg-secondary.rounded-full.flex.items-center.justify-center
+              [:ty-icon {:name "star"
+                         :size "sm"}]]
+             [:div.flex-1
+              [:div.font-medium "Special Event"]
+              [:div.text-xs.ty-text- "Full event space with catering • $200/hour"]]]]]]
 
-         [:ty-tag {:value "parking"}
-          [:div.flex.items-center.gap-3
-           [:div
-            [:span.ty-elevated.w-6.h-6.text-xs.flex.items-center.justify-center.rounded "🚗"]]
-           [:div.flex-1
-            [:div.font-medium "Reserved Parking"]
-            [:div.text-xs.ty-text- "Guaranteed parking spots • +$5/spot"]]]]
+         ;; Add-on services multiselect
+         [:div
+          [:label.block.text-sm.font-medium.ty-text.mb-2 "Additional Services"]
+          [:ty-multiselect {:placeholder "Select additional services and amenities..."
+                            :on {:change #(let [values (set (array-seq (.. % -detail -values)))]
+                                            (swap! state assoc-in [:event-booking :selected-services] values))}}
+           ;; Pre-selected services (only show if selected)
+           (when (contains? selected-services "av-equipment")
+             [:ty-tag {:value "av-equipment"
+                       :flavor "primary"}
+              [:div.flex.items-center.gap-2
+               [:div
+                [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "🎥"]]
+               [:span "A/V Equipment"]
+               [:span.text-xs.ty-text- "+$25"]]])
 
-         [:ty-tag {:value "security"}
-          [:div.flex.items-center.gap-3
-           [:div
-            [:span.ty-floating.text-xs.w-6.h-6.ty-bg-danger+.rounded.flex.items-center.justify-center "🛡️"]]
-           [:div.flex-1
-            [:div.font-medium "Security Service"]
-            [:div.text-xs.ty-text- "Professional security staff • +$50/hour"]]]]
+           (when (contains? selected-services "catering")
+             [:ty-tag {:value "catering"
+                       :flavor "success"}
+              [:div.flex.items-center.gap-2
+               [:div
+                [:span.text-xs.w-6.h-6.ty-bg-success+.rounded.flex.items-center.justify-center "🍽️"]]
+               [:span "Light Catering"]
+               [:span.text-xs.ty-text- "+$15/person"]]])
 
-         [:ty-tag {:value "recording"}
-          [:div.flex.items-center.gap-3
-           [:div
-            [:span.text-xs.w-6.h-6.ty-bg-secondary+.rounded.flex.items-center.justify-center "📹"]]
-           [:div.flex-1
-            [:div.font-medium "Video Recording"]
-            [:div.text-xs.ty-text- "Professional recording setup • +$75"]]]]
+           ;; Available options
+           [:ty-tag {:value "wifi-upgrade"}
+            [:div.flex.items-center.gap-3
+             [:div
+              [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "📡"]]
+             [:div.flex-1
+              [:div.font-medium "Premium Wi-Fi"]
+              [:div.text-xs.ty-text- "High-speed dedicated connection • +$10"]]]]
 
-         [:ty-tag {:value "translation"}
-          [:div.flex.items-center.gap-3
-           [:div
-            [:span.text-xs.w-6.h-6.ty-bg-secondary-.rounded.flex.items-center.justify-center "🌐"]]
-           [:div.flex-1
-            [:div.font-medium "Live Translation"]
-            [:div.text-xs.ty-text- "Multi-language interpretation • +$100/language"]]]]]]]]]
+           [:ty-tag {:value "parking"}
+            [:div.flex.items-center.gap-3
+             [:div
+              [:span.ty-elevated.w-6.h-6.text-xs.flex.items-center.justify-center.rounded "🚗"]]
+             [:div.flex-1
+              [:div.font-medium "Reserved Parking"]
+              [:div.text-xs.ty-text- "Guaranteed parking spots • +$5/spot"]]]]
 
-    ;; Right Column - Booking Details & Summary
-    [:div.space-y-6
-     ;; Booking Details Form
-     [:div.ty-elevated.p-6.rounded-xl
-      [:h2.text-xl.font-semibold.ty-text.mb-4 "📝 Booking Details"]
+           [:ty-tag {:value "security"}
+            [:div.flex.items-center.gap-3
+             [:div
+              [:span.ty-floating.text-xs.w-6.h-6.ty-bg-danger+.rounded.flex.items-center.justify-center "🛡️"]]
+             [:div.flex-1
+              [:div.font-medium "Security Service"]
+              [:div.text-xs.ty-text- "Professional security staff • +$50/hour"]]]]
 
-      [:div.space-y-4
-       ;; Duration
-       [:div
-        [:label.block.text-sm.font-medium.ty-text.mb-2 "Duration"]
-        [:ty-dropdown {:value "60"
-                       :placeholder "Select duration"}
-         [:ty-option {:value "30"}
-          [:div.flex.items-center.justify-between.w-full
-           [:span "30 minutes"]
-           [:span.text-xs.ty-text- "Quick meeting"]]]
-         [:ty-option {:value "60"}
-          [:div.flex.items-center.justify-between.w-full
-           [:span "1 hour"]
-           [:span.text-xs.ty-text- "Standard"]]]
-         [:ty-option {:value "120"}
-          [:div.flex.items-center.justify-between.w-full
-           [:span "2 hours"]
-           [:span.text-xs.ty-text- "Extended session"]]]
-         [:ty-option {:value "240"}
-          [:div.flex.items-center.justify-between.w-full
-           [:span "4 hours"]
-           [:span.text-xs.ty-text- "Half day"]]]
-         [:ty-option {:value "480"}
-          [:div.flex.items-center.justify-between.w-full
-           [:span "8 hours"]
-           [:span.text-xs.ty-text- "Full day"]]]]]
+           [:ty-tag {:value "recording"}
+            [:div.flex.items-center.gap-3
+             [:div
+              [:span.text-xs.w-6.h-6.ty-bg-secondary+.rounded.flex.items-center.justify-center "📹"]]
+             [:div.flex-1
+              [:div.font-medium "Video Recording"]
+              [:div.text-xs.ty-text- "Professional recording setup • +$75"]]]]
 
-       ;; Attendee count
-       [:div
-        [:ty-input {:type "number"
-                    :label "Number of Attendees"
-                    :value "8"
-                    :min "1"
-                    :max "50"
-                    :placeholder "Enter attendee count"}]]
+           [:ty-tag {:value "translation"}
+            [:div.flex.items-center.gap-3
+             [:div
+              [:span.text-xs.w-6.h-6.ty-bg-secondary-.rounded.flex.items-center.justify-center "🌐"]]
+             [:div.flex-1
+              [:div.font-medium "Live Translation"]
+              [:div.text-xs.ty-text- "Multi-language interpretation • +$100/language"]]]]]]]]]
 
-       ;; Contact details
-       [:div
-        [:ty-input {:type "text"
-                    :label "Contact Name"
-                    :value "Sarah Wilson"
-                    :placeholder "Primary contact name"
-                    :required true}]]
+      ;; Right Column - Booking Details & Summary
+      [:div.space-y-6
+       ;; Booking Details Form
+       [:div.ty-elevated.p-6.rounded-xl
+        [:h2.text-xl.font-semibold.ty-text.mb-4 "📝 Booking Details"]
 
-       [:div
-        [:ty-input {:type "email"
-                    :label "Contact Email"
-                    :value "sarah.wilson@company.com"
-                    :placeholder "your@email.com"
-                    :required true}]]
+        [:div.space-y-4
+         ;; Duration
+         [:div
+          [:label.block.text-sm.font-medium.ty-text.mb-2 "Duration"]
+          [:ty-dropdown {:value (:duration booking-data)
+                         :placeholder "Select duration"
+                         :on {:change #(swap! state assoc-in [:event-booking :booking-data :duration]
+                                              (.. ^js % -detail -option -value))}}
+           [:ty-option {:value "30"}
+            [:div.flex.items-center.justify-between.w-full
+             [:span "30 minutes"]
+             [:span.text-xs.ty-text- "Quick meeting"]]]
+           [:ty-option {:value "60"}
+            [:div.flex.items-center.justify-between.w-full
+             [:span "1 hour"]
+             [:span.text-xs.ty-text- "Standard"]]]
+           [:ty-option {:value "120"}
+            [:div.flex.items-center.justify-between.w-full
+             [:span "2 hours"]
+             [:span.text-xs.ty-text- "Extended session"]]]
+           [:ty-option {:value "240"}
+            [:div.flex.items-center.justify-between.w-full
+             [:span "4 hours"]
+             [:span.text-xs.ty-text- "Half day"]]]
+           [:ty-option {:value "480"}
+            [:div.flex.items-center.justify-between.w-full
+             [:span "8 hours"]
+             [:span.text-xs.ty-text- "Full day"]]]]]
 
-       ;; Special requests
-       [:div
-        [:ty-input {:type "textarea"
-                    :label "Special Requests"
-                    :placeholder "Any special requirements or requests for your booking..."
-                    :rows "3"}]]]]
+         ;; Attendee count
+         [:div
+          [:ty-input {:type "number"
+                      :label "Number of Attendees"
+                      :value (:attendee-count booking-state)
+                      :min "1"
+                      :max "50"
+                      :placeholder "Enter attendee count"
+                      :on {:change #(swap! state assoc-in [:event-booking :attendee-count]
+                                           (js/parseInt (.. ^js % -detail -value)))}}]]
 
-     ;; Booking Summary
-     [:div.ty-elevated.p-6.rounded-xl
-      [:h2.text-xl.font-semibold.ty-text.mb-4 "💰 Booking Summary"]
+         ;; Contact details
+         [:div
+          [:ty-input {:type "text"
+                      :label "Contact Name"
+                      :value (:contact-name booking-data)
+                      :placeholder "Primary contact name"
+                      :required true
+                      :on {:change #(swap! state assoc-in [:event-booking :booking-data :contact-name]
+                                           (.. ^js % -detail -value))}}]]
 
-      [:div.space-y-3
-       ;; Selected items
-       [:div.flex.justify-between.items-center
-        [:span.text-sm.ty-text "Business Meeting (2:00 PM - 3:00 PM)"]
-        [:span.text-sm.font-medium.ty-text "$50.00"]]
+         [:div
+          [:ty-input {:type "email"
+                      :label "Contact Email"
+                      :value (:contact-email booking-data)
+                      :placeholder "your@email.com"
+                      :required true
+                      :on {:change #(swap! state assoc-in [:event-booking :booking-data :contact-email]
+                                           (.. ^js % -detail -value))}}]]
 
-       [:div.flex.justify-between.items-center
-        [:span.text-sm.ty-text "A/V Equipment"]
-        [:span.text-sm.font-medium.ty-text "$25.00"]]
+         ;; Special requests
+         [:div
+          [:ty-input {:type "textarea"
+                      :label "Special Requests"
+                      :value (:special-requests booking-data)
+                      :placeholder "Any special requirements or requests for your booking..."
+                      :rows "3"
+                      :on {:change #(swap! state assoc-in [:event-booking :booking-data :special-requests]
+                                           (.. ^js % -detail -value))}}]]]]
 
-       [:div.flex.justify-between.items-center
-        [:span.text-sm.ty-text "Light Catering (8 people)"]
-        [:span.text-sm.font-medium.ty-text "$120.00"]]
+       ;; Booking Summary
+       [:div.ty-elevated.p-6.rounded-xl
+        [:h2.text-xl.font-semibold.ty-text.mb-4 "💰 Booking Summary"]
 
-       ;; Divider
-       [:div.border-t.ty-border.my-3]
+        (let [event-type (:event-type booking-data)
+              duration-minutes (js/parseInt (:duration booking-data "60"))
+              duration-hours (/ duration-minutes 60)
+              attendee-count (:attendee-count booking-state)
 
-       ;; Totals
-       [:div.flex.justify-between.items-center
-        [:span.text-sm.ty-text- "Subtotal"]
-        [:span.text-sm.ty-text- "$195.00"]]
+              ;; Base pricing
+              base-rates {"meeting" 50
+                          "workshop" 75
+                          "conference" 100
+                          "event" 200}
+              base-rate (get base-rates event-type 50)
+              base-cost (* base-rate duration-hours)
 
-       [:div.flex.justify-between.items-center
-        [:span.text-sm.ty-text- "Tax (8.75%)"]
-        [:span.text-sm.ty-text- "$17.06"]]
+              ;; Service pricing
+              service-prices {"av-equipment" 25
+                              "catering" (* 15 attendee-count)
+                              "wifi-upgrade" 10
+                              "parking" (* 5 attendee-count)
+                              "security" (* 50 duration-hours)
+                              "recording" 75
+                              "translation" 100}
 
-       [:div.flex.justify-between.items-center.pt-2.border-t.ty-border
-        [:span.font-semibold.ty-text "Total"]
-        [:span.font-semibold.text-lg.ty-text-primary "$212.06"]]]
+              selected-service-costs (for [service selected-services]
+                                       [service (get service-prices service 0)])
 
-      ;; Booking button
-      [:ty-button {:flavor "primary"
-                   :class "w-full mt-6"
-                   :on {:click #(swap! state/state assoc-in [:event-booking :confirmation-modal-open] true)}}
-       [:ty-icon {:name "check"
-                  :class "mr-2"}]
-       "Confirm Booking"]
+              subtotal (+ base-cost (reduce + (map second selected-service-costs)))
+              tax (* subtotal 0.0875)
+              total (+ subtotal tax)]
 
-      ;; Additional info
-      [:div.mt-4.p-3.ty-bg-info-.rounded-lg
-       [:div.flex.items-start.gap-2
-        [:ty-icon {:name "info"
-                   :size "sm"
-                   :class "ty-text-info mt-0.5"}]
-        [:div.text-xs.ty-text-info
-         [:p.font-medium.mb-1 "Booking Policy"]
-         [:p "Free cancellation up to 24 hours before your event. Full refund available for cancellations made 48 hours in advance."]]]]]]]
+          [:div.space-y-3
+           ;; Selected items
+           [:div.flex.justify-between.items-center
+            [:span.text-sm.ty-text
+             (str (case event-type
+                    "meeting" "Business Meeting"
+                    "workshop" "Workshop/Training"
+                    "conference" "Conference Room"
+                    "event" "Special Event"
+                    "Business Meeting")
+                  " ("
+                  (if (< duration-minutes 60)
+                    (str duration-minutes " min")
+                    (str (int duration-hours) " hour" (when (> duration-hours 1) "s")))
+                  ")")]
+            [:span.text-sm.font-medium.ty-text (str "$" (.toFixed base-cost 2))]]
 
-   ;; Feature Showcase
-   [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-4.gap-6.mt-12
-    ;; Calendar Integration
-    [:div.ty-elevated.p-6.rounded-lg
-     [:div.w-12.h-12.ty-bg-success.rounded-lg.flex.items-center.justify-center.mb-4
-      [:ty-icon {:name "calendar"
-                 :size "lg"
-                 :class "text-white"}]]
-     [:h3.font-semibold.ty-text.mb-2 "Calendar-Driven Interface"]
-     [:p.text-sm.ty-text- "Interactive calendar component with availability indicators and date restrictions for seamless selection."]]
+           ;; Selected services
+           (for [[service cost] selected-service-costs]
+             ^{:key service}
+             [:div.flex.justify-between.items-center
+              [:span.text-sm.ty-text
+               (case service
+                 "av-equipment" "A/V Equipment"
+                 "catering" (str "Light Catering (" attendee-count " people)")
+                 "wifi-upgrade" "Premium Wi-Fi"
+                 "parking" (str "Reserved Parking (" attendee-count " spots)")
+                 "security" (str "Security Service (" (int duration-hours) " hour" (when (> duration-hours 1) "s") ")")
+                 "recording" "Video Recording"
+                 "translation" "Live Translation"
+                 service)]
+              [:span.text-sm.font-medium.ty-text (str "$" (.toFixed cost 2))]])
 
-    ;; Time Slot Management
-    [:div.ty-elevated.p-6.rounded-lg
-     [:div.w-12.h-12.ty-bg-primary.rounded-lg.flex.items-center.justify-center.mb-4
-      [:ty-icon {:name "clock"
-                 :size "lg"
-                 :class "text-white"}]]
-     [:h3.font-semibold.ty-text.mb-2 "Smart Time Slots"]
-     [:p.text-sm.ty-text- "Visual time slot selection with real-time availability and clear status indicators for optimal UX."]]
+           ;; Divider
+           [:div.border-t.ty-border.my-3]
 
-    ;; Service Customization
-    [:div.ty-elevated.p-6.rounded-lg
-     [:div.w-12.h-12.ty-bg-warning.rounded-lg.flex.items-center.justify-center.mb-4
-      [:ty-icon {:name "settings"
-                 :size "lg"
-                 :class "text-white"}]]
-     [:h3.font-semibold.ty-text.mb-2 "Service Configuration"]
-     [:p.text-sm.ty-text- "Rich dropdown and multiselect components for customizing services with pricing and visual indicators."]]
+           ;; Totals
+           [:div.flex.justify-between.items-center
+            [:span.text-sm.ty-text- "Subtotal"]
+            [:span.text-sm.ty-text- (str "$" (.toFixed subtotal 2))]]
 
-    ;; Booking Flow
-    [:div.ty-elevated.p-6.rounded-lg
-     [:div.w-12.h-12.ty-bg-info.rounded-lg.flex.items-center.justify-center.mb-4
-      [:ty-icon {:name "check-circle"
-                 :size "lg"
-                 :class "text-white"}]]
-     [:h3.font-semibold.ty-text.mb-2 "Confirmation Flow"]
-     [:p.text-sm.ty-text- "Professional booking summary with dynamic pricing and modal confirmation for completed transactions."]]]
+           [:div.flex.justify-between.items-center
+            [:span.text-sm.ty-text- "Tax (8.75%)"]
+            [:span.text-sm.ty-text- (str "$" (.toFixed tax 2))]]
 
-   ;; Booking Confirmation Modal
-   [:ty-modal {:open (get-in @state/state [:event-booking :confirmation-modal-open] false)
-               :on {:ty-modal-close #(swap! state/state assoc-in [:event-booking :confirmation-modal-open] false)}}
-    [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
-     ;; Success header
-     [:div.text-center.mb-8
-      [:div.w-16.h-16.ty-bg-success.rounded-full.flex.items-center.justify-center.mx-auto.mb-4
-       [:ty-icon {:name "check"
-                  :size "xl"
-                  :class "text-white"}]]
-      [:h3.text-2xl.font-bold.ty-text.mb-2 "Booking Confirmed!"]
-      [:p.ty-text- "Your event has been successfully scheduled. Confirmation details have been sent to your email."]]
+           [:div.flex.justify-between.items-center.pt-2.border-t.ty-border
+            [:span.font-semibold.ty-text "Total"]
+            [:span.font-semibold.text-lg.ty-text-primary (str "$" (.toFixed total 2))]]])
 
-     ;; Booking details
-     [:div.ty-content.p-6.rounded-lg.mb-6
-      [:h4.font-semibold.ty-text.mb-4 "Booking Details"]
+        ;; Booking button
+        [:ty-button.w-full.mt-6
+         {:flavor "primary"
+          :wide true
+          :on {:click #(swap! state assoc-in [:event-booking :confirmation-modal-open] true)}}
+         [:ty-icon.mr-2
+          {:name "check"}]
+         "Confirm Booking"]
 
-      [:div.grid.grid-cols-1.md:grid-cols-2.gap-4.text-sm
-       [:div
-        [:div.ty-text-.mb-1 "Event Type"]
-        [:div.font-medium.ty-text "Business Meeting"]]
-       [:div
-        [:div.ty-text-.mb-1 "Date & Time"]
-        [:div.font-medium.ty-text "Today, 2:00 PM - 3:00 PM"]]
-       [:div
-        [:div.ty-text-.mb-1 "Duration"]
-        [:div.font-medium.ty-text "1 hour"]]
-       [:div
-        [:div.ty-text-.mb-1 "Attendees"]
-        [:div.font-medium.ty-text "8 people"]]
-       [:div
-        [:div.ty-text-.mb-1 "Contact"]
-        [:div.font-medium.ty-text "Sarah Wilson"]]
-       [:div
-        [:div.ty-text-.mb-1 "Total Cost"]
-        [:div.font-medium.ty-text-primary.text-lg "$212.06"]]]
+        ;; Additional info
+        [:div.mt-4.p-3.ty-bg-info-.rounded-lg
+         [:div.flex.items-start.gap-2
+          [:ty-icon.ty-text-neutral.mt-0.5
+           {:name "info"
+            :size "sm"}]
+          [:div.text-xs.ty-text-info
+           [:p.font-medium.mb-1 "Booking Policy"]
+           [:p "Free cancellation up to 24 hours before your event. Full refund available for cancellations made 48 hours in advance."]]]]]]]
 
-      ;; Services
-      [:div.mt-4
-       [:div.ty-text-.mb-2 "Selected Services"]
-       [:div.flex.flex-wrap.gap-2
-        [:span.px-2.py-1.ty-bg-primary-.ty-text-primary.rounded.text-xs.font-medium "A/V Equipment"]
-        [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "Light Catering"]]]]
+     ;; Feature Showcase
+     [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-4.gap-6.mt-12
+      ;; Calendar Integration
+      [:div.ty-elevated.p-6.rounded-lg
+       [:div.w-12.h-12.ty-bg-success.rounded-lg.flex.items-center.justify-center.mb-4
+        [:ty-icon {:name "calendar"
+                   :size "lg"}]]
+       [:h3.font-semibold.ty-text.mb-2 "Calendar-Driven Interface"]
+       [:p.text-sm.ty-text- "Interactive calendar component with availability indicators and date restrictions for seamless selection."]]
 
-     ;; Booking reference
-     [:div.p-4.ty-bg-info-.border.ty-border-info.rounded-lg.mb-6
-      [:div.flex.items-center.gap-3
-       [:ty-icon {:name "info"
-                  :class "ty-text-info"}]
-       [:div.flex-1
-        [:div.font-medium.ty-text-info "Booking Reference"]
-        [:div.text-sm.ty-text-info.font-mono "BK-2024-001234"]]]]
+      ;; Time Slot Management
+      [:div.ty-elevated.p-6.rounded-lg
+       [:div.w-12.h-12.ty-bg-primary.rounded-lg.flex.items-center.justify-center.mb-4
+        [:ty-icon {:name "clock"
+                   :size "lg"}]]
+       [:h3.font-semibold.ty-text.mb-2 "Smart Time Slots"]
+       [:p.text-sm.ty-text- "Visual time slot selection with real-time availability and clear status indicators for optimal UX."]]
 
-     ;; Action buttons
-     [:div.flex.gap-3.justify-end
-      [:ty-button {:flavor "neutral"
-                   :on {:click #(swap! state/state assoc-in [:event-booking :confirmation-modal-open] false)}}
-       "Close"]
-      [:ty-button {:flavor "secondary"}
-       [:ty-icon {:name "download"
-                  :class "mr-2"}]
-       "Download Receipt"]
-      [:ty-button {:flavor "primary"}
-       [:ty-icon {:name "calendar"
-                  :class "mr-2"}]
-       "Add to Calendar"]]]]])
+      ;; Service Customization
+      [:div.ty-elevated.p-6.rounded-lg
+       [:div.w-12.h-12.ty-bg-warning.rounded-lg.flex.items-center.justify-center.mb-4
+        [:ty-icon {:name "settings"
+                   :size "lg"}]]
+       [:h3.font-semibold.ty-text.mb-2 "Service Configuration"]
+       [:p.text-sm.ty-text- "Rich dropdown and multiselect components for customizing services with pricing and visual indicators."]]
+
+      ;; Booking Flow
+      [:div.ty-elevated.p-6.rounded-lg
+       [:div.w-12.h-12.ty-bg-info.rounded-lg.flex.items-center.justify-center.mb-4
+        [:ty-icon {:name "check-circle"
+                   :size "lg"}]]
+       [:h3.font-semibold.ty-text.mb-2 "Confirmation Flow"]
+       [:p.text-sm.ty-text- "Professional booking summary with dynamic pricing and modal confirmation for completed transactions."]]]
+
+     ;; Booking Confirmation Modal
+     [:ty-modal {:open (get-in @state [:event-booking :confirmation-modal-open] false)
+                 :on {:ty-modal-close #(swap! state assoc-in [:event-booking :confirmation-modal-open] false)}}
+      [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
+       ;; Success header
+       [:div.text-center.mb-8
+        [:div.w-16.h-16.ty-bg-success.rounded-full.flex.items-center.justify-center.mx-auto.mb-4
+         [:ty-icon {:name "check"
+                    :size "xl"}]]
+        [:h3.text-2xl.font-bold.ty-text.mb-2 "Booking Confirmed!"]
+        [:p.ty-text- "Your event has been successfully scheduled. Confirmation details have been sent to your email."]]
+
+       ;; Booking details
+       [:div.ty-content.p-6.rounded-lg.mb-6
+        [:h4.font-semibold.ty-text.mb-4 "Booking Details"]
+
+        [:div.grid.grid-cols-1.md:grid-cols-2.gap-4.text-sm
+         [:div
+          [:div.ty-text-.mb-1 "Event Type"]
+          [:div.font-medium.ty-text
+           (case (:event-type booking-data)
+             "meeting" "Business Meeting"
+             "workshop" "Workshop/Training"
+             "conference" "Conference Room"
+             "event" "Special Event"
+             "Business Meeting")]]
+         [:div
+          [:div.ty-text-.mb-1 "Date & Time"]
+          [:div.font-medium.ty-text
+           (str (or (:selected-date booking-state) "Today")
+                (when-let [time (:selected-time booking-state)]
+                  (str ", " time)))]]
+         [:div
+          [:div.ty-text-.mb-1 "Duration"]
+          [:div.font-medium.ty-text
+           (let [duration-minutes (js/parseInt (:duration booking-data "60"))]
+             (if (< duration-minutes 60)
+               (str duration-minutes " minutes")
+               (str (int (/ duration-minutes 60)) " hour" (when (> duration-minutes 60) "s"))))]]
+         [:div
+          [:div.ty-text-.mb-1 "Attendees"]
+          [:div.font-medium.ty-text (str (:attendee-count booking-state) " people")]]
+         [:div
+          [:div.ty-text-.mb-1 "Contact"]
+          [:div.font-medium.ty-text (or (:contact-name booking-data) "N/A")]]
+         [:div
+          [:div.ty-text-.mb-1 "Total Cost"]
+          [:div.font-medium.ty-text-primary.text-lg
+           (let [event-type (:event-type booking-data)
+                 duration-minutes (js/parseInt (:duration booking-data "60"))
+                 duration-hours (/ duration-minutes 60)
+                 attendee-count (:attendee-count booking-state)
+                 base-rates {"meeting" 50
+                             "workshop" 75
+                             "conference" 100
+                             "event" 200}
+                 base-rate (get base-rates event-type 50)
+                 base-cost (* base-rate duration-hours)
+                 service-prices {"av-equipment" 25
+                                 "catering" (* 15 attendee-count)
+                                 "wifi-upgrade" 10
+                                 "parking" (* 5 attendee-count)
+                                 "security" (* 50 duration-hours)
+                                 "recording" 75
+                                 "translation" 100}
+                 service-total (reduce + (for [service selected-services]
+                                           (get service-prices service 0)))
+                 subtotal (+ base-cost service-total)
+                 tax (* subtotal 0.0875)
+                 total (+ subtotal tax)]
+             (str "$" (.toFixed total 2)))]]]
+
+        ;; Services
+        (when (seq selected-services)
+          [:div.mt-4
+           [:div.ty-text-.mb-2 "Selected Services"]
+           [:div.flex.flex-wrap.gap-2
+            (for [service selected-services]
+              ^{:key service}
+              [:span.px-2.py-1.ty-bg-primary-.ty-text-primary.rounded.text-xs.font-medium
+               (case service
+                 "av-equipment" "A/V Equipment"
+                 "catering" "Light Catering"
+                 "wifi-upgrade" "Premium Wi-Fi"
+                 "parking" "Reserved Parking"
+                 "security" "Security Service"
+                 "recording" "Video Recording"
+                 "translation" "Live Translation"
+                 service)])]])]
+
+       ;; Booking reference
+       [:div.p-4.ty-bg-info-.border.ty-border-info.rounded-lg.mb-6
+        [:div.flex.items-center.gap-3.ty-text-neutral
+         [:ty-icon {:name "info"}]
+         [:div.flex-1
+          [:div.font-medium.ty-text-info "Booking Reference"]
+          [:div.text-sm.ty-text-info.font-mono "BK-2024-001234"]]]]
+
+       ;; Action buttons
+       [:div.flex.gap-3.justify-end
+        [:ty-button {:flavor "neutral"
+                     :on {:click #(swap! state assoc-in [:event-booking :confirmation-modal-open] false)}}
+         "Close"]
+        [:ty-button {:flavor "secondary"}
+         [:ty-icon.mr-2 {:name "download"}]
+         "Download Receipt"]
+        [:ty-button {:flavor "primary"}
+         [:ty-icon.mr-2 {:name "calendar"}]
+         "Add to Calendar"]]]]]))

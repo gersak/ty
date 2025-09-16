@@ -39,7 +39,7 @@
   ],
   "keywords": [
     "web-components",
-    "clojurescript", 
+    "clojurescript",
     "ui-components",
     "modular",
     "zero-dependency",
@@ -54,16 +54,17 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@tailwindcss/cli": "^4.1.0",
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "shadow-cljs": "^2.28.0",
-    "tailwindcss": "^3.4.17"
+    "tailwindcss": "4.1"
   },
   "scripts": {
     "dev": "shadow-cljs -A:dev watch dev",
-    "dev:css:watch": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
+    "dev:css:watch": "npx @tailwindcss/cli -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
     "site": "shadow-cljs -A:dev watch site",
-    "site:css:watch": "npx tailwindcss -i ./site/ty/site/tailwind.css -o ./site/public/css/site.css --watch",
+    "site:css:watch": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./site/public/css/site.css --watch",
     "build": "shadow-cljs release dev",
     "release": "shadow-cljs release lib",
     "build:cdn": "npm run release && npm run build:css:dist && npm run sync:cdn",
@@ -71,7 +72,7 @@
     "sync:cdn": "npm run sync:cdn:files && npm run sync:cdn:package",
     "sync:cdn:files": "cp dist/*.js dist-cdn/ && cp dist/*.d.ts dist-cdn/ 2>/dev/null || true && cp -r dist/css dist-cdn/ 2>/dev/null || true",
     "sync:cdn:package": "cp package-cdn.json dist-cdn/package.json && cp README.md dist-cdn/ && cp LICENSE dist-cdn/",
-    "dev:css:build": "npx tailwindcss -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --minify",
+    "dev:css:build": "npx @tailwindcss/cli -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --minify",
     "prepublishOnly": "npm run build:cdn"
   }
 }

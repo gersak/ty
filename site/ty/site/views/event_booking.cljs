@@ -9,6 +9,19 @@
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Load custom CSS styles for calendar
+(def ^:private service-config
+  {:stripe {:public-key (or (get js/window "STRIPE_PUBLIC_KEY")
+                            (get (.-dataset (.-documentElement js/document)) "stripePublicKey")
+                            "pk_test_51234567890abcdef")}
+   :api {:booking-endpoint "/api/bookings/create"
+         :timeout 30000}})
+
+(defn get-stripe-key []
+  (get-in service-config [:stripe :public-key]))
+
+(defn get-api-config []
+  (get service-config :api))
+
 (defstyles event-booking-styles "ty/site/views/event_booking.css")
 
 (defn view []
@@ -36,8 +49,8 @@
         [:h2.text-xl.font-semibold.ty-text.mb-4 "📅 Select Your Date"]
         [:p.ty-text-.text-sm.mb-6 "Choose from available dates. Dates in green have full availability, yellow have limited slots, and unavailable dates are disabled."]
         ;; Calendar Component
-        [:div.border.ty-border.rounded-lg.p-4
-         [:ty-calendar.w-full
+        [:div.border.ty-border.rounded-lg.p-4.w-xl
+         [:ty-calendar
           {:on {:change #(let [date-context (.. ^js % -detail)]
                            (swap! state assoc-in [:event-booking :selected-date] (->clj date-context)))}
            :month month
@@ -231,9 +244,10 @@
          ;; Add-on services multiselect
          [:div
           [:label.block.text-sm.font-medium.ty-text.mb-2 "Additional Services"]
-          [:ty-multiselect {:placeholder "Select additional services and amenities..."
-                            :on {:change #(let [values (set (array-seq (.. % -detail -values)))]
-                                            (swap! state assoc-in [:event-booking :selected-services] values))}}
+          [:ty-multiselect
+           {:placeholder "Select additional services and amenities..."
+            :on {:change #(let [values (set (array-seq (.. % -detail -values)))]
+                            (swap! state assoc-in [:event-booking :selected-services] values))}}
            ;; Pre-selected services (only show if selected)
            (when (contains? selected-services "av-equipment")
              [:ty-tag {:value "av-equipment"
@@ -562,6 +576,8 @@
                              "event" 200}
                  base-rate (get base-rates event-type 50)
                  base-cost (* base-rate duration-hours)
+
+                 ;; Service pricing
                  service-prices {"av-equipment" 25
                                  "catering" (* 15 attendee-count)
                                  "wifi-upgrade" 10

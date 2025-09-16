@@ -12,21 +12,11 @@
   max-width: 50px;
   max-height: 50px;
   box-sizing: border-box;
-  border: 2px solid transparent;
-}
-
-.calendar-day-cell:hover {
-  background: transparent;
 }
 
 .calendar-day-cell:hover .availability-day .day-num,
 .calendar-day-cell.selected .availability-day .day-num {
   color: var(--ty-text-strong);
-}
-
-.calendar-day-cell.selected {
-  background: transparent !important;
-  border: 1px solid transparent !important;
 }
 
 .selected .availability-day {

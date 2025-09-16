@@ -1,6 +1,24 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "../src/**/*.cljs";
+@source "../public/**/*.html";
+
+/* v4 Theme configuration - Integrating Ty semantic colors */
+@theme {
+  --color-primary-50: rgb(var(--ty-color-primary-faint) / <alpha-value>);
+  --color-primary-100: rgb(var(--ty-color-primary-soft) / <alpha-value>);
+  --color-primary-500: rgb(var(--ty-color-primary) / <alpha-value>);
+  --color-primary-700: rgb(var(--ty-color-primary-mild) / <alpha-value>);
+  --color-primary-900: rgb(var(--ty-color-primary-strong) / <alpha-value>);
+  
+  --color-success-50: rgb(var(--ty-color-success-faint) / <alpha-value>);
+  --color-success-500: rgb(var(--ty-color-success) / <alpha-value>);
+  --color-success-900: rgb(var(--ty-color-success-strong) / <alpha-value>);
+  
+  --color-danger-50: rgb(var(--ty-color-danger-faint) / <alpha-value>);
+  --color-danger-500: rgb(var(--ty-color-danger) / <alpha-value>);
+  --color-danger-900: rgb(var(--ty-color-danger-strong) / <alpha-value>);
+}
 
 /* Ty CSS Variables */
 :root {

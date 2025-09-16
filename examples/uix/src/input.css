@@ -1,6 +1,7 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "../src/**/*.cljs";
+@source "../public/index.html";
 
 /* Custom utilities combining ty + tailwind patterns */
 @layer utilities {

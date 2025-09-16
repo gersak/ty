@@ -24,6 +24,7 @@
                          :selected-date nil
                          :selected-time nil
                          :selected-services #{}
+                         :service-quantities {} ; Map of service-id -> quantity
                          :attendee-count 1
                          :booking-data {:event-type "meeting"
                                         :duration "60"

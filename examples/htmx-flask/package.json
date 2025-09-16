@@ -4,8 +4,8 @@
   "description": "Beautiful Flask + HTMX + Ty Components example with Tailwind CSS (Using Ty Components from jsDelivr CDN @gersak/ty@0.1.0)",
   "private": true,
   "scripts": {
-    "build:css": "tailwindcss -i ./src/input.css -o ./static/css/app.css --watch",
-    "build:css:prod": "tailwindcss -i ./src/input.css -o ./static/css/app.css --minify",
+    "build:css": "@tailwindcss/cli -i ./src/input.css -o ./static/css/app.css --watch",
+    "build:css:prod": "@tailwindcss/cli -i ./src/input.css -o ./static/css/app.css --minify",
     "dev": "concurrently \"npm run build:css\" \"python app.py\"",
     "setup": "npm run build:css:prod",
     "start": "python app.py",
@@ -13,7 +13,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "tailwindcss": "^3.4.0",
+    "@tailwindcss/cli": "^4.1.0",
+    "tailwindcss": "4.1",
     "autoprefixer": "^10.4.16",
     "concurrently": "^8.2.2",
     "chokidar-cli": "^3.0.0"

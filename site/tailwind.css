@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "../**/*.{cljs,cljc,clj}";
 
 @layer base {
 
@@ -49,26 +49,24 @@
 
   /* Menu Item Component */
   .menu-item {
-    @apply flex items-center gap-2 lg:gap-3 w-full px-3 lg:px-4 py-2 text-left rounded-md transition-colors text-sm lg:text-base text-neutral-700 dark:text-neutral-300;
+    @apply cursor-pointer flex items-center gap-2 lg:gap-3 w-full px-3 lg:px-4 py-2 text-left rounded-md transition-colors text-sm lg:text-base;
+    color: var(--ty-text-soft);
   }
 
   .menu-item:hover {
-    @apply bg-neutral-100 dark:bg-neutral-700/50 text-neutral-900 dark:text-neutral-100;
+    background-color: var(--ty-surface-elevated);
+    color: var(--ty-text-strong);
   }
 
   .menu-item:focus {
-    @apply outline-none ring-2 ring-blue-500/20 bg-neutral-100 dark:bg-neutral-700/50;
+    @apply outline-none;
   }
 
   .menu-item.active {
-    @apply bg-blue-600 dark:bg-blue-500 text-white;
+    @apply outline-none ring-2;
+    color: var(--ty-text-strong);
+    background-color: var(--ty-bg-primary-mild);
+    --tw-ring-color: var(--ty-color-primary-faint);
   }
 
-  .menu-item.active:hover {
-    @apply bg-blue-700 dark:bg-blue-600;
-  }
-
-  .menu-item.active:focus {
-    @apply ring-blue-300 dark:ring-blue-400;
-  }
 }

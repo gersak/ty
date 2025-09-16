@@ -1,9 +1,10 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@source "../../../demo/**/*.{cljs,cljc,clj}";
+@source "../../../site/**/*.{cljs,cljc,clj}";
+@source "../../../dev/**/*.html";
 
 @layer base {
-
   *,
   ::before,
   ::after {

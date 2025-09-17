@@ -1,8 +1,8 @@
 (ns ty.demo.views.inputs
   "Demonstrates input components with enhanced numeric formatting"
   (:require
-    [ty.i18n :as i18n]
-    [ty.layout :as layout]))
+   [ty.i18n :as i18n]
+   [ty.layout :as layout]))
 
 (defn basic-input-demos []
   [:div.space-y-6
@@ -798,6 +798,344 @@
        [:div "• Reset works even outside form context"]
        [:div "• Check console for reset lifecycle logs"]]]]]])
 
+(defn form-reset-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "🔄 Form Reset & Lifecycle"]
+   [:p.text-sm.ty-text- "Test form reset behavior with various ty-components. Watch browser console for lifecycle logs."]
+
+   [:div.space-y-6
+    ;; Reset test form
+    [:div.space-y-4
+     [:h4.font-medium "Form Reset Test"]
+     [:p.text-xs.ty-text-- "Fill out the form, then test reset behavior. Components should return to initial values."]
+
+     [:form#reset-test-form.space-y-4.p-6.border-2.ty-border-primary.rounded-lg
+      {:class [:ty-bg-primary-]}
+
+      ;; Basic inputs with different initial values
+      [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+       [:ty-input {:name "name"
+                   :type "text"
+                   :label "Name"
+                   :value "John Doe" ; Initial value
+                   :placeholder "Enter your name"}]
+       [:ty-input {:name "email"
+                   :type "email"
+                   :label "Email"
+                   ; No initial value - should reset to empty
+                   :placeholder "your@email.com"}]]
+
+      ;; Numeric inputs with initial values
+      [:div.grid.grid-cols-1.md:grid-cols-3.gap-4
+       [:ty-input {:name "price"
+                   :type "currency"
+                   :currency "USD"
+                   :label "Price"
+                   :value "100.00" ; Should reset to this
+                   :placeholder "Enter price"}]
+       [:ty-input {:name "discount"
+                   :type "percent"
+                   :label "Discount"
+                   :value "0.10" ; Should reset to 10%
+                   :precision "2"
+                   :placeholder "Enter discount"}]
+       [:ty-input {:name "quantity"
+                   :type "number"
+                   :label "Quantity"
+                   :value "5" ; Should reset to 5
+                   :placeholder "Enter quantity"}]]
+
+      ;; Dropdown and multiselect (if available in current form)
+      [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+       [:ty-input {:name "phone"
+                   :type "text"
+                   :label "Phone"
+                   :placeholder "+1 (555) 123-4567"}]
+       [:ty-input {:name "website"
+                   :type "text"
+                   :label "Website"
+                   :value "https://example.com" ; Should reset to this
+                   :placeholder "https://yoursite.com"}]]
+
+      ;; Disabled input (should respect initial disabled state)
+      [:ty-input {:name "readonly-field"
+                  :type "text"
+                  :label "Read-only Field"
+                  :value "Cannot be changed"
+                  :disabled true}]
+
+      ;; Form controls
+      [:div.flex.gap-3.pt-4.border-t.ty-border
+       [:ty-button {:type "reset"
+                    :flavor "warning"
+                    :on {:click #(let [form (.getElementById js/document "reset-test-form")]
+                                   ;; Browser's native form reset
+                                   (.log js/console "🔄 Triggering form.reset()")
+                                   (.reset form))}}
+        "🔄 Reset Form (Native)"]
+
+       [:ty-button {:flavor "info"
+                    :type "button"
+                    :on {:click #(let [form (.getElementById js/document "reset-test-form")
+                                       inputs (.querySelectorAll form "ty-input[name]")]
+                                   (.log js/console "📋 Current form values:")
+                                   (.forEach inputs
+                                             (fn [input]
+                                               (.log js/console
+                                                     (str "  " (.getAttribute input "name") " = " (.-value input))))))}}
+        "📋 Log Current Values"]
+
+       [:ty-button {:flavor "success"
+                    :type "button"
+                    :on {:click #(let [form (.getElementById js/document "reset-test-form")
+                                       inputs (.querySelectorAll form "ty-input[name]")]
+                                   ;; Fill form with test data
+                                   (.log js/console "📝 Filling form with test data...")
+                                   (.forEach inputs
+                                             (fn [input]
+                                               (let [name (.getAttribute input "name")]
+                                                 (case name
+                                                   "name" (set! (.-value input) "Jane Smith")
+                                                   "email" (set! (.-value input) "jane@example.com")
+                                                   "price" (set! (.-value input) "250.99")
+                                                   "discount" (set! (.-value input) "0.25")
+                                                   "quantity" (set! (.-value input) "10")
+                                                   "phone" (set! (.-value input) "+1 (555) 999-8888")
+                                                   "website" (set! (.-value input) "https://newsite.com")
+                                                   nil)))))}}
+        "📝 Fill Test Data"]]]]
+
+    ;; Reset status display
+    [:div.space-y-4
+     [:h4.font-medium "Reset Status Monitor"]
+     [:p.text-xs.ty-text-- "Shows form reset events and component states in real-time."]
+
+     [:div#reset-status.p-4.rounded.font-mono.text-xs.space-y-1
+      {:class [:ty-bg-neutral- :ty-text-]}
+      [:div "🎯 Reset Status Monitor"]
+      [:div "• Fill the form above with some data"]
+      [:div "• Click 'Reset Form' to test reset behavior"]
+      [:div "• Check browser console for detailed logs"]
+      [:div "• Watch components return to initial values"]]
+
+     ;; Live form data display
+     [:div.space-y-2
+      [:h5.font-medium.text-sm "Live Form Values:"]
+      [:div#live-form-data.p-3.rounded.font-mono.text-xs.max-h-40.overflow-y-auto
+       {:class [:ty-bg-success- :ty-text-]}
+       "Click 'Log Current Values' to see live form data..."]]]
+
+    ;; Reset behavior explanation
+    [:div.p-4.rounded-lg
+     {:class [:ty-bg-info-]}
+     [:h4.font-medium.ty-text-info-strong "🔍 How Form Reset Works"]
+     [:div.text-sm.ty-text-info.space-y-2.mt-2
+      [:p "1. Browser calls " [:code.ty-bg-info.px-1.rounded "formResetCallback()"] " on each form-associated element"]
+      [:p "2. Shim restores components to their initial attribute values"]
+      [:p "3. ElementInternals form values are updated"]
+      [:p "4. Components re-render with initial state"]
+      [:p "5. Change events are dispatched with " [:code.ty-bg-info.px-1.rounded "reason: 'form-reset'"]]]]
+
+    ;; Individual component reset test
+    [:div.space-y-4
+     [:h4.font-medium "Individual Component Reset"]
+     [:p.text-xs.ty-text-- "Test reset behavior on individual components outside of form context."]
+
+     [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+      [:div.p-4.border.ty-border.rounded
+       [:ty-input {:id "individual-reset-test"
+                   :name "test-input"
+                   :type "currency"
+                   :currency "USD"
+                   :label "Test Input"
+                   :value "42.50" ; Initial value
+                   :placeholder "Enter amount"}]
+
+       [:div.flex.gap-2.mt-3
+        [:ty-button {:size "sm"
+                     :flavor "warning"
+                     :on {:click #(let [input (.getElementById js/document "individual-reset-test")]
+                                    ;; Manually trigger reset (no form context)
+                                    (.log js/console "🔄 Manual component reset")
+                                    (when (.-formResetCallback input)
+                                      (.call (.-formResetCallback input) input)))}}
+         "Reset Component"]
+        [:ty-button {:size "sm"
+                     :flavor "primary"
+                     :on {:click #(set! (.-value (.getElementById js/document "individual-reset-test")) "999.99")}}
+         "Change to $999.99"]]]
+
+      [:div.p-3.rounded.text-xs
+       {:class [:ty-bg-neutral- :ty-text-]}
+       [:div "💡 Individual Reset Notes:"]
+       [:div "• Components store initial state on creation"]
+       [:div "• formResetCallback() can be called manually"]
+       [:div "• Reset works even outside form context"]
+       [:div "• Check console for reset lifecycle logs"]]]]]])
+
+(defn checkbox-demo []
+  [:div.space-y-6
+   [:h3.text-lg.font-semibold "☑️ Checkbox Inputs"]
+   [:p.text-sm.ty-text- "Checkboxes using Lucide icons with semantic flavors and full accessibility support."]
+
+   [:div.grid.grid-cols-1.lg:grid-cols-2.gap-6
+    ;; Basic checkbox examples
+    [:div.space-y-4
+     [:h4.font-medium "Basic Checkboxes"]
+     [:div.space-y-3
+      [:ty-input {:type "checkbox"
+                  :label "I agree to the terms"
+                  :name "terms"}]
+      [:ty-input {:type "checkbox"
+                  :label "Send me newsletters"
+                  :name "newsletter"
+                  :checked true}]
+      [:ty-input {:type "checkbox"
+                  :label "Required checkbox"
+                  :name "required-check"
+                  :required true}]
+      [:ty-input {:type "checkbox"
+                  :label "Disabled checkbox"
+                  :name "disabled-check"
+                  :disabled true
+                  :checked true}]]]
+
+    ;; Semantic flavors
+    [:div.space-y-4
+     [:h4.font-medium "Semantic Flavors"]
+     [:div.space-y-3
+      [:ty-input {:type "checkbox"
+                  :label "Success checkbox"
+                  :flavor "success"
+                  :name "success-check"
+                  :checked true}]
+      [:ty-input {:type "checkbox"
+                  :label "Danger checkbox"
+                  :flavor "danger"
+                  :name "danger-check"}]
+      [:ty-input {:type "checkbox"
+                  :label "Warning checkbox"
+                  :flavor "warning"
+                  :name "warning-check"
+                  :checked true}]
+      [:ty-input {:type "checkbox"
+                  :label "Primary checkbox"
+                  :flavor "primary"
+                  :name "primary-check"}]]]]
+
+   ;; Size variants
+   [:div.space-y-4
+    [:h4.font-medium "Size Variants"]
+    [:div.flex.flex-wrap.gap-6.items-center
+     [:ty-input {:type "checkbox"
+                 :label "XS"
+                 :size "xs"
+                 :name "xs-check"
+                 :checked true}]
+     [:ty-input {:type "checkbox"
+                 :label "Small"
+                 :size "sm"
+                 :name "sm-check"
+                 :checked true}]
+     [:ty-input {:type "checkbox"
+                 :label "Medium (default)"
+                 :size "md"
+                 :name "md-check"
+                 :checked true}]
+     [:ty-input {:type "checkbox"
+                 :label "Large"
+                 :size "lg"
+                 :name "lg-check"
+                 :checked true}]
+     [:ty-input {:type "checkbox"
+                 :label "XL"
+                 :size "xl"
+                 :name "xl-check"
+                 :checked true}]]]
+
+   ;; Event handling demo
+   [:div.space-y-4
+    [:h4.font-medium "Event Handling"]
+    [:p.text-xs.ty-text-- "Check the browser console to see checkbox events."]
+    [:div.space-y-3
+     [:ty-input {:id "event-checkbox"
+                 :type "checkbox"
+                 :label "Click me and check console"
+                 :name "event-test"
+                 :on {:input #(js/console.log "Checkbox input event:" (.-detail %))
+                      :change #(js/console.log "Checkbox change event:" (.-detail %))}}]
+     [:div.flex.gap-2
+      [:ty-button {:size "sm"
+                   :flavor "primary"
+                   :on {:click #(let [checkbox (.getElementById js/document "event-checkbox")]
+                                  (set! (.-checked checkbox) true))}}
+       "Check via Property"]
+      [:ty-button {:size "sm"
+                   :flavor "secondary"
+                   :on {:click #(let [checkbox (.getElementById js/document "event-checkbox")]
+                                  (.setAttribute checkbox "checked" ""))}}
+       "Check via Attribute"]
+      [:ty-button {:size "sm"
+                   :flavor "neutral"
+                   :on {:click #(let [checkbox (.getElementById js/document "event-checkbox")]
+                                  (set! (.-checked checkbox) false)
+                                  (.removeAttribute checkbox "checked"))}}
+       "Uncheck"]]]]
+
+   ;; Form integration
+   [:div.space-y-4
+    [:h4.font-medium "Form Integration"]
+    [:p.text-xs.ty-text-- "Checkboxes work with forms and emit proper form data."]
+    [:form#checkbox-form.space-y-3.p-4.border.ty-border.rounded
+     [:ty-input {:type "checkbox"
+                 :label "Subscribe to updates"
+                 :name "subscribe"
+                 :value "yes"
+                 :checked true}]
+     [:ty-input {:type "checkbox"
+                 :label "Accept privacy policy"
+                 :name "privacy"
+                 :value "accepted"
+                 :required true}]
+     [:ty-input {:type "checkbox"
+                 :label "Marketing emails"
+                 :name "marketing"
+                 :value "opt-in"}]
+
+     [:ty-button {:flavor "primary"
+                  :on {:click #(let [form (.getElementById js/document "checkbox-form")
+                                     form-data (js/FormData. form)
+                                     entries (js/Array.from (.entries form-data))
+                                     results (.getElementById js/document "checkbox-results")]
+                                 (set! (.-innerHTML results)
+                                       (str "<strong>Form Data:</strong><br>"
+                                            (if (> (.-length entries) 0)
+                                              (.join (.map entries
+                                                           (fn [[name value]]
+                                                             (str "• " name " = " value)))
+                                                     "<br>")
+                                              "No checked boxes"))))}}
+      "Extract Form Data"]
+
+     [:div#checkbox-results.mt-4.p-3.rounded.font-mono.text-xs
+      {:class [:ty-bg-neutral- :ty-text-]}
+      "Click 'Extract Form Data' to see checkbox values..."]]]
+
+   ;; Error handling
+   [:div.space-y-4
+    [:h4.font-medium "Error States"]
+    [:div.space-y-3
+     [:ty-input {:type "checkbox"
+                 :label "Checkbox with error"
+                 :name "error-check"
+                 :error "You must check this box"
+                 :flavor "danger"}]
+     [:ty-input {:type "checkbox"
+                 :label "Required checkbox"
+                 :name "required-error-check"
+                 :required true
+                 :error "This field is required"}]]]])
+
 (defn view []
   (layout/with-window
     [:div.p-8.max-w-6xl.mx-auto.space-y-8.ty-text-
@@ -806,7 +1144,11 @@
       [:p
        "Form inputs with sophisticated numeric formatting, shadow values, and layout integration."]
       [:p.text-sm.ty-text--.mt-2
-       "✨ NEW: Auto-formatting on blur, currency support, locale-aware formatting, and error handling!"]]
+       "✨ NEW: Auto-formatting on blur, currency support, locale-aware formatting, and checkbox support!"]]
+
+     ;; NEW: Checkbox Demo - put it early to showcase the new feature
+     [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
+      (checkbox-demo)]
 
      ;; Highlight the new numeric formatting capabilities first
      [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
@@ -850,4 +1192,5 @@
      ;; 🔄 NEW: Form Reset & Lifecycle Demo
      [:div.ty-surface-elevated.ty-elevated.rounded-lg.p-6
       (form-reset-demo)]]))
+
 

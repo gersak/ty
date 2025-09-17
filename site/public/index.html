@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Ty Components - Professional Web Components Showcase</title>
-    <meta name="description" content="Explore professional, framework-agnostic web components through real-world scenarios. Ty Components provides a semantic design system with comprehensive theming and accessibility.">
+    <meta name="description"
+        content="Explore professional, framework-agnostic web components through real-world scenarios. Ty Components provides a semantic design system with comprehensive theming and accessibility.">
 
     <!-- Ty Complete CSS System (Variables + Utilities) -->
     <link rel="stylesheet" href="css/ty.css">
@@ -23,12 +24,6 @@
             max-width: 100vw;
         }
 
-        /* Ensure all containers respect viewport width */
-        * {
-            max-width: 100%;
-            box-sizing: border-box;
-        }
-
         /* Fix for code blocks that might overflow */
         pre,
         code {
@@ -39,6 +34,7 @@
 
         /* Mobile typography adjustments */
         @media (max-width: 768px) {
+
             /* Smaller base font size on mobile */
             html {
                 font-size: 14px;
@@ -101,7 +97,7 @@
         const storedTheme = localStorage.getItem('theme');
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         const theme = storedTheme || systemTheme || 'light';
-        
+
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
         }

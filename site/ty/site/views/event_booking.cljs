@@ -32,7 +32,7 @@
      ;; Hero Section
      [:div.text-center.mb-12
       [:h1.text-4xl.font-bold.ty-text.mb-4 "Event Booking Scenario"]
-      [:p.text-lg.ty-text-.max-w-4xl.mx-auto.leading-relaxed
+      [:p.text-lg.ty-text-.max-w-3xl.mx-auto.leading-relaxed
        "Discover how calendar components orchestrate with complex forms to create seamless booking experiences. This scenario showcases date selection, time slot management, service customization, and confirmation workflows in a professional event booking interface."]
 
       [:div.flex.flex-wrap.gap-3.justify-center.mt-6

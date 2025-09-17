@@ -233,56 +233,6 @@ input.info:focus {
   box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
 }
 
-/* ===== LEGACY SEMANTIC FLAVOR MODIFIERS (Backward Compatibility) ===== */
-/* 
-   These legacy flavor classes continue to work exactly as before
-   because they reference the new semantic tokens via CSS variable mapping:
-   
-   
-   The mapping is handled in ty.variables.css, so no changes needed here.
-*/
-
-/* ===== SEMANTIC FLAVOR MODIFIERS ===== */
-
-/* Important - Blue theme */
-border-color: #3b82f6;
-}
-
-border-color: #2563eb;
-box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-/* Positive - Green theme for success */
-border-color: #10b981;
-}
-
-border-color: #059669;
-box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-}
-
-/* Negative - Red theme for errors */
-border-color: #ef4444;
-}
-
-border-color: #dc2626;
-box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
-}
-
-/* Exception - Yellow theme for warnings */
-border-color: #f59e0b;
-}
-
-border-color: #d97706;
-box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
-}
-
-/* Unique - Purple theme */
-border-color: #8b5cf6;
-}
-
-border-color: #7c3aed;
-box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
-}
 
 /* ===== ACCESSIBILITY ENHANCEMENTS ===== */
 
@@ -350,5 +300,255 @@ input:focus-visible {
     font-size: 14px;
     padding: 8px 12px;
     min-height: 40px;
+  }
+}
+
+/* ===== CHECKBOX STYLING ===== */
+
+.checkbox-container {
+  display: inline-flex;
+  align-items: center;
+  outline: none;
+  transition: all 0.15s ease-in-out;
+  user-select: none;
+  cursor: pointer;
+
+  /* Default size (md) - matching input sizes */
+  border-radius: 6px;
+  gap: var(--ty-spacing-2);
+  color: var(--ty-text-faint);
+}
+
+.checkbox-container[aria-checked="true"] {
+  color: var(--ty-text-mild);
+}
+
+.checkbox-container label {
+  cursor: pointer;
+}
+
+/* Checkbox input container - different layout for checkboxes */
+.input-container.checkbox-layout {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: auto;
+  /* Don't force full width for checkboxes */
+}
+
+.input-container.checkbox-layout .input-label {
+  margin-bottom: 0;
+  padding-left: 0;
+  order: 2;
+  cursor: pointer;
+  flex: 1;
+}
+
+.input-container.checkbox-layout .checkbox-container {
+  order: 1;
+  flex-shrink: 0;
+}
+
+/* Error message positioning for checkboxes */
+.input-container.checkbox-layout .error-message {
+  padding-left: 0;
+  margin-left: 52px;
+  /* Align with label text */
+}
+
+.checkbox-container:hover:not(.disabled) {
+  background: var(--ty-bg-neutral-soft);
+}
+
+.checkbox-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease-in-out;
+  pointer-events: none;
+  /* Let the container handle the click */
+}
+
+.checkbox-container svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ===== CHECKBOX SIZE MODIFIERS ===== */
+
+.checkbox-container.xs svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Adjust error message margin for XS */
+.input-container.checkbox-layout .checkbox-container.xs~.error-message {
+  margin-left: 44px;
+}
+
+
+.checkbox-container.sm svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Adjust error message margin for SM */
+.input-container.checkbox-layout .checkbox-container.sm~.error-message {
+  margin-left: 48px;
+}
+
+
+.checkbox-container.md svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+.checkbox-container.lg svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Adjust error message margin for LG */
+.input-container.checkbox-layout .checkbox-container.lg~.error-message {
+  margin-left: 56px;
+}
+
+
+.checkbox-container.xl svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Adjust error message margin for XL */
+.input-container.checkbox-layout .checkbox-container.xl~.error-message {
+  margin-left: 60px;
+  /* 48px + 12px gap */
+}
+
+/* ===== CHECKBOX SEMANTIC FLAVORS ===== */
+
+.checkbox-container.primary {
+  color: var(--ty-color-primary);
+}
+
+.checkbox-container.secondary {
+  color: var(--ty-color-secondary);
+}
+
+.checkbox-container.success {
+  color: var(--ty-color-success);
+}
+
+/* Danger */
+.checkbox-container.danger {
+  color: var(--ty-color-danger);
+}
+
+
+/* Warning */
+.checkbox-container.warning {
+  color: var(--ty-color-warning);
+}
+
+
+/* Neutral */
+.checkbox-container.neutral {
+  color: var(--ty-color-neutral);
+}
+
+/* Disabled state */
+.checkbox-container.disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.checkbox-container.disabled .checkbox-icon {
+  color: var(--ty-color-neutral-faint);
+}
+
+/* Error state */
+.checkbox-container.error .checkbox-icon {
+  color: var(--ty-color-danger);
+}
+
+.checkbox-container.error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Required state */
+.checkbox-container.required .checkbox-icon {
+  /* Could add specific styling for required checkboxes */
+}
+
+/* ===== RESPONSIVE CHECKBOX BEHAVIOR ===== */
+
+@container (max-width: 480px) {
+  .checkbox-container.lg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .checkbox-container.lg svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .checkbox-container.xl {
+    width: 44px;
+    height: 44px;
+  }
+
+  .checkbox-container.xl svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@container (max-width: 320px) {
+  .checkbox-container.xl {
+    width: 40px;
+    height: 40px;
+  }
+
+  .checkbox-container.xl svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Fallback for browsers without container query support */
+@media (max-width: 640px) {
+  .checkbox-container.lg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .checkbox-container.lg svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .checkbox-container.xl {
+    width: 44px;
+    height: 44px;
+  }
+
+  .checkbox-container.xl svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkbox-container.xl {
+    width: 40px;
+    height: 40px;
+  }
+
+  .checkbox-container.xl svg {
+    width: 20px;
+    height: 20px;
   }
 }

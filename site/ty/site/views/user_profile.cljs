@@ -383,22 +383,78 @@
                      :placeholder "Enter new password"
                      :autocomplete "new-password"}]]]
 
-       ;; Email Notifications
+;; Email Notifications - Using ty-input checkboxes
        [:div
-        [:label.block.text-sm.font-medium.ty-text.mb-3 "Email Notifications"]
-        [:div.space-y-3
-         [:label.flex.items-center.gap-3
-          [:input.rounded.ty-border.w-4.h-4 {:type "checkbox"
-                                             :checked true}]
-          [:span.text-sm.ty-text "Product updates and announcements"]]
-         [:label.flex.items-center.gap-3
-          [:input.rounded.ty-border.w-4.h-4 {:type "checkbox"
-                                             :checked true}]
-          [:span.text-sm.ty-text "Weekly newsletter"]]
-         [:label.flex.items-center.gap-3
-          [:input.rounded.ty-border.w-4.h-4 {:type "checkbox"
-                                             :checked false}]
-          [:span.text-sm.ty-text "Marketing promotions"]]]]]]
+        [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
+        [:div.space-y-4
+         [:ty-input {:type "checkbox"
+                     :label "Product updates and announcements"
+                     :name "notifications-updates"
+                     :checked true
+                     :flavor "primary"}]
+         [:ty-input {:type "checkbox"
+                     :label "Weekly newsletter"
+                     :name "notifications-newsletter"
+                     :checked true
+                     :flavor "success"}]
+         [:ty-input {:type "checkbox"
+                     :label "Marketing promotions"
+                     :name "notifications-marketing"
+                     :checked false
+                     :flavor "warning"}]]]
+
+       ;; Privacy & Security Preferences
+       [:div
+        [:h4.text-sm.font-medium.ty-text.mb-4 "Privacy & Security"]
+        [:div.space-y-4
+         [:ty-input {:type "checkbox"
+                     :label "Enable two-factor authentication"
+                     :name "privacy-2fa"
+                     :checked false
+                     :required true
+                     :flavor "danger"
+                     :size "md"}]
+         [:ty-input {:type "checkbox"
+                     :label "Share profile with other users"
+                     :name "privacy-profile-sharing"
+                     :checked true
+                     :flavor "neutral"
+                     :size "sm"}]
+         [:ty-input {:type "checkbox"
+                     :label "Allow search engines to index profile"
+                     :name "privacy-search-indexing"
+                     :checked false
+                     :disabled true
+                     :flavor "secondary"
+                     :size "lg"}]]]
+
+       ;; Account Preferences
+       [:div
+        [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
+        [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+         [:ty-input {:type "checkbox"
+                     :label "Auto-save drafts"
+                     :name "account-autosave"
+                     :checked true
+                     :flavor "primary"
+                     :size "xs"}]
+         [:ty-input {:type "checkbox"
+                     :label "Show online status"
+                     :name "account-online-status"
+                     :checked false
+                     :flavor "success"
+                     :size "xl"}]
+         [:ty-input {:type "checkbox"
+                     :label "Send mobile push notifications"
+                     :name "account-push-notifications"
+                     :checked true
+                     :error "Feature currently unavailable"
+                     :flavor "danger"}]
+         [:ty-input {:type "checkbox"
+                     :label "Beta features access"
+                     :name "account-beta-features"
+                     :checked false
+                     :flavor "warning"}]]]]]
 
      ;; Form Actions
      [:div.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center.pt-8.border-t.ty-border

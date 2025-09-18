@@ -30,4 +30,19 @@
                                         :duration "60"
                                         :contact-name ""
                                         :contact-email ""
-                                        :special-requests ""}}}))
+                                        :special-requests ""}}
+
+         ;; Contact form state
+         :contact-form {:form-data {:full-name ""
+                                    :email ""
+                                    :company ""
+                                    :subject ""
+                                    :message ""
+                                    :priority "medium"
+                                    :department #{}
+                                    :newsletter-consent false}
+                        :validation-errors {}
+                        :touched-fields #{}
+                        :is-submitting false
+                        :submission-status nil ; :success, :error, or nil
+                        :submission-message ""}}))

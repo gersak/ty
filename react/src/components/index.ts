@@ -20,6 +20,9 @@ export type { TyTagProps } from './TyTag';
 export { TyInput } from './TyInput';
 export type { TyInputProps, TyInputEventDetail } from './TyInput';
 
+export { TyTextarea } from './TyTextarea';
+export type { TyTextareaProps, TyTextareaEventDetail } from './TyTextarea';
+
 export { TyDropdown } from './TyDropdown';
 export type { TyDropdownProps, TyDropdownEventDetail } from './TyDropdown';
 
@@ -54,6 +57,7 @@ export type { TyPopupProps } from './TyPopup';
 export { TyButton as Button } from './TyButton';
 export { TyTag as Tag } from './TyTag';
 export { TyInput as Input } from './TyInput';
+export { TyTextarea as Textarea } from './TyTextarea';
 export { TyDropdown as Dropdown } from './TyDropdown';
 export { TyOption as Option } from './TyOption';
 export { TyIcon as Icon } from './TyIcon';
@@ -76,6 +80,9 @@ export type { TyTagProps as TagProps } from './TyTag';
 
 // Input types
 export type { TyInputProps as InputProps, TyInputEventDetail as InputEventDetail } from './TyInput';
+
+// Textarea types
+export type { TyTextareaProps as TextareaProps, TyTextareaEventDetail as TextareaEventDetail } from './TyTextarea';
 
 // Dropdown types
 export type { TyDropdownProps as DropdownProps, TyDropdownEventDetail as DropdownEventDetail, OptionData } from './TyDropdown';

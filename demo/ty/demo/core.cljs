@@ -18,6 +18,7 @@
             [ty.demo.views.multiselect :as multiselect]
             [ty.demo.views.popups :as popups]
             [ty.demo.views.tags :as tags]
+            [ty.demo.views.textarea :as textarea]
             [ty.demo.views.theme-utilities :as theme-utilities]
             [ty.layout :as layout]
             [ty.router :as router]))
@@ -33,6 +34,9 @@
               {:id ::inputs
                :segment "inputs"
                :name "Inputs"}
+              {:id ::textarea
+               :segment "textarea"
+               :name "Textarea"}
               {:id ::dropdowns
                :segment "dropdowns"
                :name "Dropdowns"}
@@ -115,6 +119,9 @@
    (nav-item {:route-id ::inputs
               :label "Inputs"
               :icon "type"})
+   (nav-item {:route-id ::textarea
+              :label "Textarea"
+              :icon "file-text"})
    (nav-item {:route-id ::dropdowns
               :label "Dropdowns"
               :icon "chevron-down"})
@@ -253,6 +260,7 @@
              (router/rendered? ::home true) (home/view)
              (router/rendered? ::buttons true) (buttons/view)
              (router/rendered? ::inputs true) (inputs/view)
+             (router/rendered? ::textarea true) (textarea/view)
              (router/rendered? ::dropdowns true) (dropdowns/view)
              (router/rendered? ::multiselect true) (multiselect/view)
 

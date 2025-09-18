@@ -383,25 +383,25 @@
                      :placeholder "Enter new password"
                      :autocomplete "new-password"}]]]
 
-;; Email Notifications - Using ty-input checkboxes
+       ;; Email Notifications - Using ty-input checkboxes
        [:div
         [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
         [:div.space-y-4
          [:ty-input {:type "checkbox"
                      :label "Product updates and announcements"
                      :name "notifications-updates"
-                     :checked true
-                     :flavor "primary"}]
+                     :value "enabled"
+                     :checked true}]
          [:ty-input {:type "checkbox"
                      :label "Weekly newsletter"
                      :name "notifications-newsletter"
-                     :checked true
-                     :flavor "success"}]
+                     :value "enabled"
+                     :checked true}]
          [:ty-input {:type "checkbox"
-                     :label "Marketing promotions"
+                     :label "Marketing promotions and offers"
                      :name "notifications-marketing"
-                     :checked false
-                     :flavor "warning"}]]]
+                     :value "enabled"
+                     :checked false}]]]
 
        ;; Privacy & Security Preferences
        [:div
@@ -410,51 +410,38 @@
          [:ty-input {:type "checkbox"
                      :label "Enable two-factor authentication"
                      :name "privacy-2fa"
-                     :checked false
-                     :required true
-                     :flavor "danger"
-                     :size "md"}]
+                     :value "enabled"
+                     :checked false}]
          [:ty-input {:type "checkbox"
-                     :label "Share profile with other users"
-                     :name "privacy-profile-sharing"
-                     :checked true
-                     :flavor "neutral"
-                     :size "sm"}]
+                     :label "Make profile public"
+                     :name "privacy-profile-public"
+                     :value "enabled"
+                     :checked true}]
          [:ty-input {:type "checkbox"
-                     :label "Allow search engines to index profile"
-                     :name "privacy-search-indexing"
-                     :checked false
-                     :disabled true
-                     :flavor "secondary"
-                     :size "lg"}]]]
+                     :label "Allow contact from other users"
+                     :name "privacy-allow-contact"
+                     :value "enabled"
+                     :checked true}]]]
 
        ;; Account Preferences
        [:div
         [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
-        [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+        [:div.space-y-3
          [:ty-input {:type "checkbox"
                      :label "Auto-save drafts"
                      :name "account-autosave"
-                     :checked true
-                     :flavor "primary"
-                     :size "xs"}]
+                     :value "enabled"
+                     :checked true}]
          [:ty-input {:type "checkbox"
                      :label "Show online status"
                      :name "account-online-status"
-                     :checked false
-                     :flavor "success"
-                     :size "xl"}]
+                     :value "enabled"
+                     :checked true}]
          [:ty-input {:type "checkbox"
-                     :label "Send mobile push notifications"
-                     :name "account-push-notifications"
-                     :checked true
-                     :error "Feature currently unavailable"
-                     :flavor "danger"}]
-         [:ty-input {:type "checkbox"
-                     :label "Beta features access"
-                     :name "account-beta-features"
-                     :checked false
-                     :flavor "warning"}]]]]]
+                     :label "Remember login for 30 days"
+                     :name "account-remember-login"
+                     :value "enabled"
+                     :checked false}]]]]]
 
      ;; Form Actions
      [:div.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center.pt-8.border-t.ty-border
@@ -480,7 +467,7 @@
                    :class "mr-2"}]
         "Save Profile"]]]]]
 
-;; Feature Showcase
+   ;; Feature Showcase
    [:div.grid.grid-cols-1.lg:grid-cols-3.gap-8.mt-12
     ;; Validation States Showcase
     [:div.ty-elevated.p-6.rounded-lg

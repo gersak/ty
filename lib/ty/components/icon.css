@@ -104,6 +104,21 @@
   height: 48px;
 }
 
+:host(.icon-64) {
+  width: 64px;
+  height: 64px;
+}
+
+:host(.icon-80) {
+  width: 80px;
+  height: 80px;
+}
+
+:host(.icon-96) {
+  width: 96px;
+  height: 96px;
+}
+
 /* Spinning animation - default tempo */
 :host(.icon-spin) {
   animation: icon-spin 1s linear infinite;

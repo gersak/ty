@@ -79,6 +79,10 @@
              "shield" lucide/shield
              "key" lucide/key
 
-             ;; Copy functionality
+;; Copy functionality
              "copy" lucide/copy ; Copy to clipboard icon
+             "arrow-right" lucide/arrow-right ; Navigation arrows used in landing page
              "lambda" lucide/square-function})
+
+
+(println "ARROW RIGHT: " lucide/arrow-right)

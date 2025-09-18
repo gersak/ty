@@ -19,18 +19,23 @@
                                     :language "en"
                                     :theme-preference "auto"}}
 
-         ;; Event booking state
+         ;; Event booking state with comprehensive demo data
          :event-booking {:confirmation-modal-open false
-                         :selected-date nil
-                         :selected-time nil
-                         :selected-services #{}
+                         ;; Pre-select a date 5 days from now to show calendar highlighting
+                         :selected-date {:year 2024 :month 12 :day 28}
+                         ;; Pre-select a popular time slot
+                         :selected-time "10:00 AM"
+                         ;; Pre-select some popular services to showcase multiselect
+                         :selected-services #{"av-equipment" "catering"}
                          :service-quantities {} ; Map of service-id -> quantity
-                         :attendee-count 1
-                         :booking-data {:event-type "meeting"
-                                        :duration "60"
-                                        :contact-name ""
-                                        :contact-email ""
-                                        :special-requests ""}}
+                         ;; Set a realistic attendee count
+                         :attendee-count 15
+                         ;; Comprehensive booking form data
+                         :booking-data {:event-type "workshop"
+                                        :duration "240" ; 4 hours for a workshop
+                                        :contact-name "Alex Martinez"
+                                        :contact-email "alex.martinez@techconference.org"
+                                        :special-requests "We'll need extra power outlets for laptops and a presentation setup with dual screens. Please ensure the room has good natural lighting for our video recording. Also, we'd appreciate having a coffee station set up for the afternoon break.\n\nThis is a technical workshop on modern web development, so reliable high-speed internet is crucial. If possible, we'd like the room arranged in a U-shape to facilitate group discussions and hands-on exercises."}}
 
          ;; Contact form state
          :contact-form {:form-data {:full-name "Sarah Chen"

@@ -1,5 +1,6 @@
 (ns ty.site.views.event-booking
   (:require
+    [clojure.string :as str]
     [cljs-bean.core :refer [->clj]]
     [clojure.set :as set]
     [timing.core :as timing]
@@ -246,6 +247,7 @@
           [:label.block.text-sm.font-medium.ty-text.mb-2 "Additional Services"]
           [:ty-multiselect
            {:placeholder "Select additional services and amenities..."
+            :value (str/join "," selected-services)
             :on {:change #(let [values (set (array-seq (.. % -detail -values)))]
                             (swap! state assoc-in [:event-booking :selected-services] values))}}
            ;; Pre-selected services (only show if selected)

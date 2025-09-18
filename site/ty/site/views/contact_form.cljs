@@ -95,6 +95,9 @@
                      (swap! state/state assoc-in [:contact-form :is-submitting] false)
                      (swap! state/state assoc-in [:contact-form :submission-status] :success)
                      (swap! state/state assoc-in [:contact-form :submission-message] (:message result))
+                     ;; Store submitted data and show modal
+                     (swap! state/state assoc-in [:contact-form :submitted-data] form-data)
+                     (swap! state/state assoc-in [:contact-form :success-modal-open] true)
                      ;; Clear form on success
                      (swap! state/state assoc-in [:contact-form :form-data]
                             {:full-name ""
@@ -102,7 +105,7 @@
                              :company ""
                              :subject ""
                              :message ""
-                             :priority "medium"
+                             :priority ""
                              :department #{}
                              :newsletter-consent false})
                      (swap! state/state assoc-in [:contact-form :touched-fields] #{})
@@ -113,6 +116,11 @@
                       (swap! state/state assoc-in [:contact-form :submission-message] (:message error))))))
       ;; Set validation errors
       (swap! state/state assoc-in [:contact-form :validation-errors] errors))))
+
+(defn close-success-modal []
+  (swap! state/state assoc-in [:contact-form :success-modal-open] false)
+  (swap! state/state assoc-in [:contact-form :submitted-data] nil)
+  (swap! state/state assoc-in [:contact-form :submission-status] nil))
 
 (defn reset-form []
   (swap! state/state assoc :contact-form
@@ -128,263 +136,336 @@
           :touched-fields #{}
           :is-submitting false
           :submission-status nil
-          :submission-message ""}))
+          :submission-message ""
+          :success-modal-open false
+          :submitted-data nil}))
+
+(defn success-modal-content [submitted-data close-success-modal reset-form]
+  [:ty-modal {:open true
+              :on {:ty-modal-close close-success-modal}}
+   [:div.p-6.ty-content.rounded-lg
+    [:div.flex.items-center.gap-4.mb-6
+     [:ty-icon {:name "check-circle"
+                :size "xl"}]
+     [:div
+      [:h2.text-2xl.font-semibold.ty-text "Message Sent Successfully!"]
+      [:p.ty-text- "Your message has been delivered and we'll respond within 24 hours."]]]
+
+    [:div.ty-bg-neutral-.p-6.rounded-lg.mb-6.ty-elevated
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Submission Report"]
+
+     (when submitted-data
+       [:div.space-y-4
+        [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+         [:div
+          [:label.text-sm.font-medium.ty-text- "Contact Information"]
+          [:div.mt-1.space-y-2
+           [:p.text-sm [:span.font-medium "Name: "] (:full-name submitted-data)]
+           [:p.text-sm [:span.font-medium "Email: "] (:email submitted-data)]
+           [:p.text-sm [:span.font-medium "Company: "] (:company submitted-data)]]]
+         [:div
+          [:label.text-sm.font-medium.ty-text- "Request Details"]
+          [:div.mt-1.space-y-2
+           [:p.text-sm [:span.font-medium "Priority: "]
+            [:span.capitalize.px-2.py-1.rounded.text-xs
+             {:class (case (:priority submitted-data)
+                       "low" "ty-bg-neutral- ty-text-neutral"
+                       "medium" "ty-bg-info- ty-text-info"
+                       "high" "ty-bg-warning- ty-text-warning"
+                       "critical" "ty-bg-danger- ty-text-danger"
+                       "ty-bg-neutral- ty-text-neutral")}
+             (:priority submitted-data)]]
+           [:p.text-sm [:span.font-medium "Departments: "]
+            (if (empty? (:department submitted-data))
+              "None selected"
+              (str/join ", " (map str/capitalize (:department submitted-data))))]
+           [:p.text-sm [:span.font-medium "Newsletter: "]
+            (if (:newsletter-consent submitted-data) "Yes" "No")]]]]
+
+        [:div
+         [:label.text-sm.font-medium.ty-text- "Subject"]
+         [:p.text-sm.ty-text.mt-1 (:subject submitted-data)]]
+
+        [:div
+         [:label.text-sm.font-medium.ty-text- "Message"]
+         [:div.mt-1.max-h-32.overflow-y-auto.p-3.ty-bg-neutral-.ty-border.border.rounded-md.text-xs
+          [:pre.whitespace-pre-wrap.font-mono (:message submitted-data)]]]
+
+        [:div.flex.justify-between.text-xs.ty-text-
+         [:span "Submitted: " (js/Date.)]
+         [:span "Message length: " (count (:message submitted-data)) " characters"]]])]
+
+    [:div.flex.gap-3.justify-end
+     [:ty-button
+      {:type "button"
+       :flavor "secondary"
+       :on {:click close-success-modal}}
+      "Close"]
+     [:ty-button
+      {:type "button"
+       :flavor "primary"
+       :on {:click (fn [] (close-success-modal) (reset-form))}}
+      [:ty-icon {:name "plus"
+                 :size "sm"}]
+      "Send Another Message"]]]])
 
 (defn view []
-  (let [{:keys [form-data validation-errors touched-fields is-submitting submission-status submission-message]}
+  (let [{:keys [form-data validation-errors touched-fields is-submitting submission-status submission-message
+                success-modal-open submitted-data]}
         (:contact-form @state/state)]
-    [:div.max-w-4xl.mx-auto.space-y-8
-     ;; Header
-     [:div.text-center.mb-12
-      [:h1.text-4xl.font-bold.ty-text.mb-4 "Contact Form Scenario"]
-      [:p.text-lg.ty-text-.max-w-3xl.mx-auto.leading-relaxed
-       "Experience professional form validation with real-time feedback, elegant error states, and comprehensive user experience patterns. This contact form demonstrates advanced form handling with loading states, success feedback, and graceful error recovery."]
+    [:div
+     [:div.max-w-4xl.mx-auto.space-y-8
+      ;; Header
+      [:div.text-center.mb-12
+       [:h1.text-4xl.font-bold.ty-text.mb-4 "Contact Form Scenario"]
+       [:p.text-lg.ty-text-.max-w-3xl.mx-auto.leading-relaxed
+        "Experience professional form validation with real-time feedback, elegant error states, and comprehensive user experience patterns. This contact form demonstrates advanced form handling with loading states, success feedback, and graceful error recovery."]
 
-      [:div.flex.flex-wrap.gap-3.justify-center.mt-6
-       [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Real-time Validation"]
-       [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Professional Styling"]
-       [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Loading States"]
-       [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Success Feedback"]]]
+       [:div.flex.flex-wrap.gap-3.justify-center.mt-6
+        [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Real-time Validation"]
+        [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Professional Styling"]
+        [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Loading States"]
+        [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Success Feedback"]]]
 
-     ;; Submission Status Messages
-     (when submission-status
-       [:div.ty-elevated.p-6.rounded-lg
-        (if (= submission-status :success)
-          [:div.flex.items-center.gap-4.ty-bg-success-.p-4.rounded-lg
-           [:ty-icon {:name "check-circle"
-                      :size "lg"}]
+      ;; Submission Status Messages
+      (when submission-status
+        [:div.ty-elevated.p-6.rounded-lg
+         (if (= submission-status :success)
+           [:div.flex.items-center.gap-4.ty-bg-success-.p-4.rounded-lg
+            [:ty-icon {:name "check-circle"
+                       :size "lg"}]
+            [:div
+             [:h3.font-semibold.ty-text-success "Message Sent Successfully!"]
+             [:p.text-sm.ty-text-success submission-message]]]
+           [:div.flex.items-center.gap-4.ty-bg-danger-.p-4.rounded-lg
+            [:ty-icon {:name "alert-circle"
+                       :size "lg"}]
+            [:div
+             [:h3.font-semibold.ty-text-danger "Submission Failed"]
+             [:p.text-sm.ty-text-danger submission-message]
+             [:button.mt-2.text-sm.underline.ty-text-danger.hover:no-underline
+              {:on {:click (fn [] (swap! state/state assoc-in [:contact-form :submission-status] nil))}}
+              "Try Again"]]])])
+
+      ;; Main Form
+      [:div.ty-elevated.p-8.rounded-xl
+       [:div.flex.items-center.justify-between.mb-8
+        [:div.flex.items-center.gap-4
+         [:ty-icon {:name "mail"
+                    :size "xl"}]
+         [:div
+          [:h2.text-2xl.font-semibold.ty-text "Get in Touch"]
+          [:p.ty-text- "We'd love to hear from you. Send us a message and we'll respond as soon as possible."]]]]
+
+       [:form.space-y-6
+        {:on {:submit handle-form-submit}}
+
+        ;; Two-column layout: Form fields on left, Message on right
+        [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
+         ;; Left Column - Form Fields
+         [:div.space-y-6
+          ;; Name and Email Row
+          [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+           ;; Full Name
            [:div
-            [:h3.font-semibold.ty-text-success "Message Sent Successfully!"]
-            [:p.text-sm.ty-text-success submission-message]]]
-          [:div.flex.items-center.gap-4.ty-bg-danger-.p-4.rounded-lg
-           [:ty-icon {:name "alert-circle"
-                      :size "lg"}]
+            [:ty-input {:type "text"
+                        :label "Full Name"
+                        :value (:full-name form-data)
+                        :placeholder "Enter your full name"
+                        :required true
+                        :icon "user"
+                        :on {:input (handle-field-change :full-name)}}]
+            (when (and (contains? touched-fields :full-name)
+                       (contains? validation-errors :full-name))
+              [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
+               [:ty-icon {:name "alert-circle"
+                          :size "xs"}]
+               (get validation-errors :full-name)])]
+
+           ;; Email
            [:div
-            [:h3.font-semibold.ty-text-danger "Submission Failed"]
-            [:p.text-sm.ty-text-danger submission-message]
-            [:button.mt-2.text-sm.underline.ty-text-danger.hover:no-underline
-             {:on {:click (fn [] (swap! state/state assoc-in [:contact-form :submission-status] nil))}}
-             "Try Again"]]])])
+            [:ty-input {:type "email"
+                        :label "Email Address"
+                        :value (:email form-data)
+                        :placeholder "your@email.com"
+                        :required true
+                        :icon "mail"
+                        :on {:input (handle-field-change :email)}}]
+            (when (and (contains? touched-fields :email)
+                       (contains? validation-errors :email))
+              [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
+               [:ty-icon {:name "alert-circle"
+                          :size "xs"}]
+               (get validation-errors :email)])]]
 
-     ;; Main Form
-     [:div.ty-elevated.p-8.rounded-xl
-      [:div.flex.items-center.justify-between.mb-8
-       [:div.flex.items-center.gap-4
-        [:ty-icon {:name "mail"
-                   :size "xl"}]
-        [:div
-         [:h2.text-2xl.font-semibold.ty-text "Get in Touch"]
-         [:p.ty-text- "We'd love to hear from you. Send us a message and we'll respond as soon as possible."]]]]
-
-      [:form.space-y-6
-       {:on {:submit handle-form-submit}}
-
-       ;; Two-column layout: Form fields on left, Message on right
-       [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
-        ;; Left Column - Form Fields
-        [:div.space-y-6
-         ;; Name and Email Row
-         [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-          ;; Full Name
+          ;; Company
           [:div
            [:ty-input {:type "text"
-                       :label "Full Name"
-                       :value (:full-name form-data)
-                       :placeholder "Enter your full name"
+                       :label "Company"
+                       :value (:company form-data)
+                       :placeholder "Your company name"
                        :required true
-                       :icon "user"
-                       :on {:input (handle-field-change :full-name)}}]
-           (when (and (contains? touched-fields :full-name)
-                      (contains? validation-errors :full-name))
+                       :icon "building"
+                       :on {:input (handle-field-change :company)}}]
+           (when (and (contains? touched-fields :company)
+                      (contains? validation-errors :company))
              [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
               [:ty-icon {:name "alert-circle"
                          :size "xs"}]
-              (get validation-errors :full-name)])]
+              (get validation-errors :company)])]
 
-          ;; Email
+          ;; Subject
           [:div
-           [:ty-input {:type "email"
-                       :label "Email Address"
-                       :value (:email form-data)
-                       :placeholder "your@email.com"
+           [:ty-input {:type "text"
+                       :label "Subject"
+                       :value (:subject form-data)
+                       :placeholder "Brief description of your inquiry"
                        :required true
-                       :icon "mail"
-                       :on {:input (handle-field-change :email)}}]
-           (when (and (contains? touched-fields :email)
-                      (contains? validation-errors :email))
+                       :icon "file-text"
+                       :on {:input (handle-field-change :subject)}}]
+           (when (and (contains? touched-fields :subject)
+                      (contains? validation-errors :subject))
              [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
               [:ty-icon {:name "alert-circle"
                          :size "xs"}]
-              (get validation-errors :email)])]]
+              (get validation-errors :subject)])]
 
-         ;; Company
+          ;; Priority and Department Row
+          [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+           ;; Priority Selection
+           [:div
+            [:ty-dropdown
+             {:label "Priority Level"
+              :value (:priority form-data)
+              :on {:change handle-priority-change}}
+             [:ty-option {:value "low"}
+              [:div.flex.gap-2.items-center
+               [:ty-icon {:name "circle"
+                          :size "xs"
+                          :slot "start"}]
+               "Low - General inquiry"]]
+             [:ty-option {:value "medium"}
+              [:div.flex.gap-2.items-center
+               [:ty-icon {:name "minus-circle"
+                          :size "xs"
+                          :slot "start"}]
+               "Medium - Standard request"]]
+             [:ty-option {:value "high"}
+              [:div.flex.gap-2.items-center
+               [:ty-icon {:name "alert-triangle"
+                          :size "xs"
+                          :slot "start"}]
+               "High - Urgent issue"]]
+             [:ty-option {:value "critical"}
+              [:div.flex.gap-2.items-center
+               [:ty-icon {:name "alert-circle"
+                          :size "xs"
+                          :slot "start"}]
+               "Critical - Immediate attention needed"]]]]
+
+           ;; Department Routing (using multiselect)
+           [:div
+            [:label.block.text-sm.font-medium.ty-text.mb-2 "Department(s)"]
+            [:ty-multiselect
+             {:placeholder "Select relevant departments..."
+              :value (str/join "," (:department form-data))
+              :on {:change (fn [event]
+                             (let [values (-> event .-detail .-values)]
+                               (handle-department-change (set values))))}}
+             [:ty-tag {:value "sales"
+                       :flavor "primary"}
+              [:ty-icon {:name "briefcase"
+                         :size "xs"
+                         :slot "start"}]
+              "Sales"]
+             [:ty-tag {:value "support"
+                       :flavor "success"}
+              [:ty-icon {:name "life-buoy"
+                         :size "xs"
+                         :slot "start"}]
+              "Support"]
+             [:ty-tag {:value "technical"
+                       :flavor "secondary"}
+              [:ty-icon {:name "settings"
+                         :size "xs"
+                         :slot "start"}]
+              "Technical"]
+             [:ty-tag {:value "billing"
+                       :flavor "warning"}
+              [:ty-icon {:name "credit-card"
+                         :size "xs"
+                         :slot "start"}]
+              "Billing"]
+             [:ty-tag {:value "partnership"
+                       :flavor "danger"}
+              [:ty-icon {:name "handshake"
+                         :size "xs"
+                         :slot "start"}]
+              "Partnership"]]]]]
+
+         ;; Right Column - Message
          [:div
-          [:ty-input {:type "text"
-                      :label "Company"
-                      :value (:company form-data)
-                      :placeholder "Your company name"
-                      :required true
-                      :icon "building"
-                      :on {:input (handle-field-change :company)}}]
-          (when (and (contains? touched-fields :company)
-                     (contains? validation-errors :company))
-            [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
-             [:ty-icon {:name "alert-circle"
-                        :size "xs"}]
-             (get validation-errors :company)])]
-
-         ;; Subject
-         [:div
-          [:ty-input {:type "text"
-                      :label "Subject"
-                      :value (:subject form-data)
-                      :placeholder "Brief description of your inquiry"
-                      :required true
-                      :icon "file-text"
-                      :on {:input (handle-field-change :subject)}}]
-          (when (and (contains? touched-fields :subject)
-                     (contains? validation-errors :subject))
-            [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
-             [:ty-icon {:name "alert-circle"
-                        :size "xs"}]
-             (get validation-errors :subject)])]
-
-         ;; Priority and Department Row
-         [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-          ;; Priority Selection
-          [:div
-           [:ty-dropdown
-            {:label "Priority Level"
-             :value (:priority form-data)
-             :on {:change handle-priority-change}}
-            [:ty-option {:value "low"}
-             [:div.flex.gap-2.items-center
-              [:ty-icon {:name "circle"
-                         :size "xs"
-                         :slot "start"}]
-              "Low - General inquiry"]]
-            [:ty-option {:value "medium"}
-             [:div.flex.gap-2.items-center
-              [:ty-icon {:name "minus-circle"
-                         :size "xs"
-                         :slot "start"}]
-              "Medium - Standard request"]]
-            [:ty-option {:value "high"}
-             [:div.flex.gap-2.items-center
-              [:ty-icon {:name "alert-triangle"
-                         :size "xs"
-                         :slot "start"}]
-              "High - Urgent issue"]]
-            [:ty-option {:value "critical"}
-             [:div.flex.gap-2.items-center
+          [:ty-textarea {:label "Message"
+                         :value (:message form-data)
+                         :placeholder "Please describe your inquiry in detail..."
+                         :min-height "200px"
+                         :max-height "400px"
+                         :required true
+                         :on {:change (handle-field-change :message)}}]
+          [:div.flex.justify-between.items-center.mt-1
+           (when (and (contains? touched-fields :message)
+                      (contains? validation-errors :message))
+             [:p.text-sm.ty-text-danger.flex.items-center.gap-2
               [:ty-icon {:name "alert-circle"
-                         :size "xs"
-                         :slot "start"}]
-              "Critical - Immediate attention needed"]]]]
+                         :size "xs"}]
+              (get validation-errors :message)])
+           [:span.text-xs.ty-text-
+            {:class (when (> (count (:message form-data)) 1800) "ty-text-warning")}
+            (str (count (:message form-data)) "/2000 characters")]]]]
 
-          ;; Department Routing (using multiselect)
-          [:div
-           [:label.block.text-sm.font-medium.ty-text.mb-2 "Department(s)"]
-           [:ty-multiselect
-            {:placeholder "Select relevant departments..."
-             :value (str/join "," (:department form-data))
-             :on {:change (fn [event]
-                            (let [values (-> event .-detail .-values)]
-                              (handle-department-change (set values))))}}
-            [:ty-tag {:value "sales"
-                      :flavor "primary"}
-             [:ty-icon {:name "briefcase"
-                        :size "xs"
-                        :slot "start"}]
-             "Sales"]
-            [:ty-tag {:value "support"
-                      :flavor "success"}
-             [:ty-icon {:name "life-buoy"
-                        :size "xs"
-                        :slot "start"}]
-             "Support"]
-            [:ty-tag {:value "technical"
-                      :flavor "secondary"}
-             [:ty-icon {:name "settings"
-                        :size "xs"
-                        :slot "start"}]
-             "Technical"]
-            [:ty-tag {:value "billing"
-                      :flavor "warning"}
-             [:ty-icon {:name "credit-card"
-                        :size "xs"
-                        :slot "start"}]
-             "Billing"]
-            [:ty-tag {:value "partnership"
-                      :flavor "danger"}
-             [:ty-icon {:name "handshake"
-                        :size "xs"
-                        :slot "start"}]
-             "Partnership"]]]]]
+        ;; Newsletter consent
+        [:div.p-4.ty-bg-neutral-.rounded-lg
+         [:ty-input {:type "checkbox"
+                     :label "I would like to receive updates and marketing communications about your products and services."
+                     :checked (:newsletter-consent form-data)
+                     :on {:change (handle-checkbox-change :newsletter-consent)}}]]
 
-        ;; Right Column - Message
-        [:div
-         [:ty-textarea {:label "Message"
-                        :value (:message form-data)
-                        :placeholder "Please describe your inquiry in detail..."
-                        :min-height "200px"
-                        :max-height "400px"
-                        :required true
-                        :on {:change (handle-field-change :message)}}]
-         [:div.flex.justify-between.items-center.mt-1
-          (when (and (contains? touched-fields :message)
-                     (contains? validation-errors :message))
-            [:p.text-sm.ty-text-danger.flex.items-center.gap-2
-             [:ty-icon {:name "alert-circle"
-                        :size "xs"}]
-             (get validation-errors :message)])
-          [:span.text-xs.ty-text-
-           {:class (when (> (count (:message form-data)) 1800) "ty-text-warning")}
-           (str (count (:message form-data)) "/2000 characters")]]]]
+        ;; Submit Section
+        [:div.border-t.ty-border.pt-6.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center
+         [:div.text-sm.ty-text-.text-center.sm:text-left
+          [:p "By submitting this form, you agree to our"]
+          [:a.ty-text-primary.underline.hover:no-underline.ml-1
+           {:href "#"
+            :on {:click (fn [e] (.preventDefault e))}} "Terms of Service"]
+          [:span " and "]
+          [:a.ty-text-primary.underline.hover:no-underline
+           {:href "#"
+            :on {:click (fn [e] (.preventDefault e))}} "Privacy Policy"]]
 
-;; Newsletter consent
-       [:div.p-4.ty-bg-neutral-.rounded-lg
-        [:ty-input {:type "checkbox"
-                    :label "I would like to receive updates and marketing communications about your products and services."
-                    :checked (:newsletter-consent form-data)
-                    :on {:change (handle-checkbox-change :newsletter-consent)}}]]
+         [:div.flex.gap-3
+          [:ty-button
+           {:type "button"
+            :flavor "secondary"
+            :on {:click reset-form}}
+           [:ty-icon {:name "refresh-ccw"
+                      :size "sm"}]
+           "Reset"]
+          [:ty-button
+           {:type "submit"
+            :flavor "primary"
+            :disabled is-submitting
+            :class (when is-submitting "opacity-75 cursor-not-allowed")}
+           (if is-submitting
+             [:div.flex.items-center.gap-2
+              [:ty-icon {:name "loader-2"
+                         :size "sm"}]
+              "Sending..."]
+             [:div.flex.items-center.gap-2
+              [:ty-icon {:name "send"
+                         :size "sm"}]
+              "Send Message"])]]]]]
 
-       ;; Submit Section
-       [:div.border-t.ty-border.pt-6.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center
-        [:div.text-sm.ty-text-.text-center.sm:text-left
-         [:p "By submitting this form, you agree to our"]
-         [:a.ty-text-primary.underline.hover:no-underline.ml-1
-          {:href "#"
-           :on {:click (fn [e] (.preventDefault e))}} "Terms of Service"]
-         [:span " and "]
-         [:a.ty-text-primary.underline.hover:no-underline
-          {:href "#"
-           :on {:click (fn [e] (.preventDefault e))}} "Privacy Policy"]]
-
-        [:div.flex.gap-3
-         [:ty-button
-          {:type "button"
-           :flavor "secondary"
-           :on {:click reset-form}}
-          [:ty-icon {:name "refresh-ccw"
-                     :size "sm"}]
-          "Reset"]
-         [:ty-button
-          {:type "submit"
-           :flavor "primary"
-           :disabled is-submitting
-           :class (when is-submitting "opacity-75 cursor-not-allowed")}
-          (if is-submitting
-            [:div.flex.items-center.gap-2
-             [:ty-icon {:name "loader-2"
-                        :size "sm"}]
-             "Sending..."]
-            [:div.flex.items-center.gap-2
-             [:ty-icon {:name "send"
-                        :size "sm"}]
-             "Send Message"])]]]]
-
-     ;; Additional Information
+      ;; Additional Information
       [:div.ty-bg-neutral-.p-6.rounded-lg
        [:h3.text-lg.font-semibold.ty-text.mb-4 "Other Ways to Reach Us"]
        [:div.grid.grid-cols-1.md:grid-cols-3.gap-6
@@ -413,5 +494,10 @@
                     :size "sm"}]
          [:div.text-sm
           [:p.ty-text-info.font-medium "Response Time"]
-          [:p.ty-text-info "We typically respond to all inquiries within 24 hours during business days. For urgent technical issues, please call us directly."]]]]]]]))
+          [:p.ty-text-info "We typically respond to all inquiries within 24 hours during business days. For urgent technical issues, please call us directly."]]]]]]
+
+     ;; Success Modal  
+     (when success-modal-open
+       (success-modal-content submitted-data close-success-modal reset-form))]))
+;; Success Modal Helper Functions
 

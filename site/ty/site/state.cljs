@@ -45,4 +45,6 @@
                         :touched-fields #{}
                         :is-submitting false
                         :submission-status nil ; :success, :error, or nil
-                        :submission-message ""}}))
+                        :submission-message ""
+                        :success-modal-open false
+                        :submitted-data nil}}))

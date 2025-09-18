@@ -9,6 +9,7 @@
              "user" lucide/user
              "calendar" lucide/calendar
              "mail" lucide/mail
+             "palette" lucide/palette
              "rocket" lucide/rocket
 
                ;; UI controls

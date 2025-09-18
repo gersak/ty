@@ -10,6 +10,7 @@
             [ty.site.views.event-booking :as event-booking]
             [ty.site.views.getting-started :as getting-started]
             [ty.site.views.landing :as landing]
+            [ty.site.views.ty-styles :as ty-styles]
             [ty.site.views.user-profile :as user-profile]))
 
 ;; Define site routes
@@ -26,6 +27,9 @@
               {:id ::contact-form
                :segment "contact-form"
                :name "Contact Form"}
+              {:id ::ty-styles
+               :segment "ty-styles"
+               :name "Ty Styles"}
               {:id ::getting-started
                :segment "getting-started"
                :name "Getting Started"}])
@@ -70,6 +74,9 @@
    (nav-item {:route-id ::contact-form
               :label "Contact Form"
               :icon "mail"})
+   (nav-item {:route-id ::ty-styles
+              :label "Ty Styles"
+              :icon "palette"})
    (nav-item {:route-id ::getting-started
               :label "Getting Started"
               :icon "rocket"})])
@@ -117,11 +124,12 @@
         (router/rendered? ::user-profile true) "User Profile Scenario"
         (router/rendered? ::event-booking true) "Event Booking Scenario"
         (router/rendered? ::contact-form true) "Contact Form Scenario"
+        (router/rendered? ::ty-styles true) "Ty Design System"
         (router/rendered? ::getting-started true) "Getting Started Guide"
         :else "Ty Components")]]
     [:div.flex.items-center.gap-2.lg:gap-4.flex-shrink-0
      ;; Theme toggle button
-     [:button.flex.items-center.justify-center.w-7.h-7.lg:w-8.lg:h-8.rounded-md.ty-content.hover:ty-content+.transition-colors.ty-text
+     [:button.flex.items-center.justify-center.w-7.h-7.lg:w-8.lg:h-8.rounded-md.ty-content.hover:ty-content+.transition-colors.ty-text.cursor-pointer
       {:on {:click toggle-theme!}}
       [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
                  :size "sm"}]]]]])
@@ -147,6 +155,7 @@
              (router/rendered? ::user-profile true) (user-profile/view)
              (router/rendered? ::event-booking true) (event-booking/view)
              (router/rendered? ::contact-form true) (contact-form/view)
+             (router/rendered? ::ty-styles true) (ty-styles/view)
              (router/rendered? ::getting-started true) (getting-started/view)
              :else [:div.ty-elevated.p-8.rounded-lg.text-center
                     [:h1.text-2xl.font-bold.ty-text.mb-4 "Page Not Found"]

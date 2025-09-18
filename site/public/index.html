@@ -14,6 +14,12 @@
     <!-- Site-specific Tailwind CSS -->
     <link rel="stylesheet" href="css/site.css">
 
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark" disabled>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/clojure.min.js"></script>
+
     <!-- Mobile-specific CSS fixes -->
     <style>
         /* Prevent horizontal scroll on mobile */
@@ -30,6 +36,72 @@
             overflow-x: auto;
             word-break: break-word;
             white-space: pre-wrap;
+        }
+
+        /* Custom Highlight.js integration with Ty theme system */
+        .hljs {
+            background: var(--ty-surface-elevated) !important;
+            color: var(--ty-text) !important;
+            border: 1px solid var(--ty-border);
+            border-radius: 8px;
+            padding: 1rem !important;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        /* Override specific highlight.js token colors to use ty semantic colors */
+        .hljs-keyword,
+        .hljs-selector-tag,
+        .hljs-built_in,
+        .hljs-name {
+            color: var(--ty-color-primary) !important;
+        }
+
+        .hljs-string,
+        .hljs-attr {
+            color: var(--ty-color-success) !important;
+        }
+
+        .hljs-number,
+        .hljs-literal {
+            color: var(--ty-color-info) !important;
+        }
+
+        .hljs-comment {
+            color: var(--ty-text--) !important;
+            font-style: italic;
+        }
+
+        .hljs-function,
+        .hljs-title {
+            color: var(--ty-color-secondary) !important;
+        }
+
+        .hljs-variable,
+        .hljs-template-variable {
+            color: var(--ty-color-warning) !important;
+        }
+
+        .hljs-type,
+        .hljs-class {
+            color: var(--ty-color-info) !important;
+        }
+
+        /* Inline code styling */
+        code:not(.hljs) {
+            background: var(--ty-surface-content);
+            color: var(--ty-text+);
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            font-size: 0.875em;
+            border: 1px solid var(--ty-border-);
+        }
+
+        /* Pre blocks containing highlighted code */
+        pre.hljs {
+            white-space: pre;
+            word-break: normal;
         }
 
         /* Mobile typography adjustments */
@@ -101,6 +173,71 @@
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
         }
+
+        // Initialize Highlight.js when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize highlight.js
+            hljs.highlightAll();
+            
+            // Set initial highlight.js theme
+            updateHighlightTheme(theme);
+            
+            // Add language labels to code blocks
+            document.querySelectorAll('pre code.hljs').forEach(block => {
+                const language = Array.from(block.classList)
+                    .find(cls => cls.startsWith('language-') || cls.startsWith('hljs-'))
+                    ?.replace(/^(language-|hljs-)/, '') || 'code';
+                
+                if (language && language !== 'hljs' && language !== 'code') {
+                    const label = document.createElement('div');
+                    label.textContent = language;
+                    label.style.cssText = `
+                        position: absolute;
+                        top: 0.5rem;
+                        right: 0.5rem;
+                        font-size: 0.75rem;
+                        color: var(--ty-text--);
+                        background: var(--ty-surface-content);
+                        padding: 0.25rem 0.5rem;
+                        border-radius: 4px;
+                        border: 1px solid var(--ty-border-);
+                    `;
+                    
+                    const container = block.parentElement;
+                    container.style.position = 'relative';
+                    container.appendChild(label);
+                }
+            });
+        });
+
+        // Function to update highlight.js theme
+        function updateHighlightTheme(theme) {
+            const lightTheme = document.getElementById('hljs-light');
+            const darkTheme = document.getElementById('hljs-dark');
+            
+            if (theme === 'dark') {
+                lightTheme.disabled = true;
+                darkTheme.disabled = false;
+            } else {
+                lightTheme.disabled = false;
+                darkTheme.disabled = true;
+            }
+        }
+
+        // Listen for theme changes and update highlight.js accordingly
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.attributeName === 'class') {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    updateHighlightTheme(isDark ? 'dark' : 'light');
+                }
+            });
+        });
+        
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
     </script>
 </head>
 

@@ -96,11 +96,12 @@
 
        ;; Bio - Textarea
        [:div
-        [:ty-input {:type "textarea"
-                    :label "Professional Bio"
-                    :value "Passionate software developer with 8+ years of experience building web applications. Specializes in ClojureScript, React, and modern web technologies."
-                    :placeholder "Tell us about your professional background..."
-                    :rows "4"}]]
+        [:ty-textarea {:type "textarea"
+                       :label "Professional Bio"
+                       :max-height "200px"
+                       :value "Passionate software developer with 8+ years of experience building web applications. Specializes in ClojureScript, React, and modern web technologies."
+                       :placeholder "Tell us about your professional background..."
+                       :rows "4"}]]
 
        ;; Skills - Multiselect with rich tags
        [:div

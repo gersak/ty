@@ -1,8 +1,8 @@
 (ns ty.site.views.event-booking
   (:require
-    [clojure.string :as str]
     [cljs-bean.core :refer [->clj]]
     [clojure.set :as set]
+    [clojure.string :as str]
     [timing.core :as timing]
     [ty.i18n :as i18n]
     [ty.i18n.time]

@@ -315,7 +315,7 @@ input:focus-visible {
 
   /* Default size (md) - matching input sizes */
   border-radius: 6px;
-  gap: var(--ty-spacing-2);
+  gap: var(--ty-spacing-1);
   color: var(--ty-text-faint);
 }
 
@@ -386,8 +386,8 @@ input:focus-visible {
 }
 
 .checkbox-container svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 /* ===== CHECKBOX SIZE MODIFIERS ===== */
@@ -404,8 +404,8 @@ input:focus-visible {
 
 
 .checkbox-container.sm svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 /* Adjust error message margin for SM */
@@ -415,14 +415,14 @@ input:focus-visible {
 
 
 .checkbox-container.md svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 
 .checkbox-container.lg svg {
-  width: 22px;
-  height: 22px;
+  width: 26px;
+  height: 26px;
 }
 
 /* Adjust error message margin for LG */

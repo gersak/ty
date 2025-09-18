@@ -33,14 +33,14 @@
                                         :special-requests ""}}
 
          ;; Contact form state
-         :contact-form {:form-data {:full-name ""
-                                    :email ""
-                                    :company ""
-                                    :subject ""
-                                    :message ""
-                                    :priority "medium"
-                                    :department #{}
-                                    :newsletter-consent false}
+         :contact-form {:form-data {:full-name "Sarah Chen"
+                                    :email "sarah.chen@designstudio.com"
+                                    :company "Creative Design Studio"
+                                    :subject "Partnership Inquiry for Web Component Library"
+                                    :message "Hi there! I'm reaching out on behalf of Creative Design Studio. We've been exploring modern web component libraries for our upcoming client projects, and Ty Components caught our attention with its elegant design system and ClojureScript foundation.\n\nWe're particularly interested in:\n• The semantic color system and automatic dark/light theme support\n• Professional form components with real-time validation\n• Integration possibilities with our existing React projects\n\nWould you be open to discussing a potential partnership? We work with several Fortune 500 companies who might benefit from Ty's component library. We'd love to schedule a call to explore collaboration opportunities.\n\nLooking forward to hearing from you!\n\nBest regards,\nSarah"
+                                    :priority "high"
+                                    :department #{"partnership" "sales"}
+                                    :newsletter-consent true}
                         :validation-errors {}
                         :touched-fields #{}
                         :is-submitting false

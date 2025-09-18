@@ -26,9 +26,16 @@
              "upload" lucide/upload
              "download" lucide/download
 
+             ;; Form field icons
+             "building" lucide/building
+             "file-text" lucide/file-text
+
                ;; Status and feedback icons
              "check-circle" lucide/check-circle
              "alert-triangle" lucide/alert-triangle
+             "alert-circle" lucide/alert-circle
+             "circle" lucide/circle
+             "minus-circle" lucide/minus-circle
              "info" lucide/info
              "star" lucide/star
 
@@ -36,4 +43,15 @@
              "search" lucide/search
              "settings" lucide/settings
              "globe" lucide/globe
-             "clock" lucide/clock})
+             "clock" lucide/clock
+
+             ;; Contact form icons
+             "refresh-ccw" lucide/refresh-ccw
+             "loader-2" lucide/loader-2
+             "send" lucide/send
+             "phone" lucide/phone
+             "map-pin" lucide/map-pin
+             "briefcase" lucide/briefcase
+             "life-buoy" lucide/life-buoy
+             "credit-card" lucide/credit-card
+             "handshake" lucide/handshake})

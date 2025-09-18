@@ -1,10 +1,10 @@
 (ns ty.site.views.landing
   (:require
-    [ty.router :as router]))
+   [ty.router :as router]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto
-;; ⚡ HERO - Clean & Professional
+   ;; ⚡ HERO - Clean & Professional
    [:div.text-center.mb-16.py-16
     [:h1.text-4xl.lg:text-6xl.font-bold.ty-text.mb-4.leading-tight
      "Beautiful Web Components That Actually Work"]
@@ -13,18 +13,22 @@
      "Experience three stunning scenarios that showcase semantic design, automatic theming, and professional UX patterns working in harmony."]
 
     [:div.flex.flex-wrap.gap-3.justify-center
-     [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Semantic Design"]
-     [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Calendar Workflows"]
-     [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Form Validation"]
-     [:span.px-3.py-1.ty-bg-neutral-.ty-text-neutral.rounded-full.text-sm.font-medium "Zero Dependencies"]]]
+     [:ty-tag {:flavor "primary"
+               :size "md"} "Semantic Design"]
+     [:ty-tag {:flavor "success"
+               :size "md"} "Calendar Workflows"]
+     [:ty-tag {:flavor "warning"
+               :size "md"} "Form Validation"]
+     [:ty-tag {:flavor "neutral"
+               :size "md"} "Zero Dependencies"]]]
 
    ;; 🎯 MAIN SHOWCASE - Three Stunning Scenarios
    [:div.mb-20
-    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4 "Three Stunning Scenarios"]
+    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4 "Four Stunning Scenarios"]
     [:p.text-lg.ty-text-.text-center.mb-12.max-w-3xl.mx-auto
      "Each scenario demonstrates how Ty components orchestrate to create seamless, professional user experiences."]
 
-    [:div.grid.gap-8.lg:grid-cols-3
+    [:div.grid.gap-6.md:grid-cols-2.lg:grid-cols-4
      ;; User Profile Scenario
      [:div.ty-elevated.overflow-hidden.rounded-xl.hover:shadow-xl.transition-all.duration-300.cursor-pointer.group
       {:on {:click #(router/navigate! :ty.site.core/user-profile)}}
@@ -33,17 +37,22 @@
                   :size "96"
                   :class "ty-text-primary group-hover:scale-110 transition-transform duration-300"}]
        [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
-       #_[:div.absolute.top-4.right-4.bg-white.bg-opacity-20.backdrop-blur-sm.rounded-full.p-2
-          [:ty-icon
-           {:name "arrow-right"
-            :class "text-white group-hover:translate-x-1 transition-transform"}]]]
+       [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-20.backdrop-blur-sm.rounded-full.p-2
+        [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
+         {:name "arrow-right"}]]]
       [:div.p-6
        [:h3.text-xl.font-bold.ty-text.mb-3 "Rich User Profile Forms"]
        [:p.ty-text-.mb-4.leading-relaxed "Witness dropdowns filled with beautiful HTML content - country flags, role badges, and contextual information. See multiselect components showcase colorful skill tags with semantic meanings. Experience modal integration and professional form validation patterns."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:span.px-2.py-1.ty-bg-primary-.ty-text-primary.rounded.text-xs.font-medium "Rich Dropdowns"]
-        [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "Visual Multiselects"]
-        [:span.px-2.py-1.ty-bg-warning-.ty-text-warning.rounded.text-xs.font-medium "Modal Integration"]]
+        [:ty-tag {:flavor "primary"
+                  :size "sm"
+                  :pill "false"} "Rich Dropdowns"]
+        [:ty-tag {:flavor "success"
+                  :size "sm"
+                  :pill "false"} "Visual Multiselects"]
+        [:ty-tag {:flavor "warning"
+                  :size "sm"
+                  :pill "false"} "Modal Integration"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
         [:span.text-sm.ty-text-primary.font-medium "Explore Profile Demo →"]]]]
 
@@ -55,17 +64,23 @@
                   :size "96"
                   :class "ty-text-success group-hover:scale-110 transition-transform duration-300"}]
        [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
-       [:div.absolute.top-4.right-4.bg-white.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
-        [:ty-icon {:name "external-link"
-                   :size "sm"
-                   :class "text-white"}]]]
+       [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
+        [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
+         {:name "external-link"
+          :size "sm"}]]]
       [:div.p-6
        [:h3.text-xl.font-bold.ty-text.mb-3 "Event Booking Experience"]
        [:p.ty-text-.mb-4.leading-relaxed "Interactive calendar orchestration with date selection, time slot management, and service customization. See how components work together to create seamless booking workflows."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "Calendar Integration"]
-        [:span.px-2.py-1.ty-bg-neutral-.ty-text-neutral.rounded.text-xs.font-medium "Service Selection"]
-        [:span.px-2.py-1.ty-bg-warning-.ty-text-warning.rounded.text-xs.font-medium "Booking Workflows"]]
+        [:ty-tag {:flavor "success"
+                  :size "sm"
+                  :pill "false"} "Calendar Integration"]
+        [:ty-tag {:flavor "neutral"
+                  :size "sm"
+                  :pill "false"} "Service Selection"]
+        [:ty-tag {:flavor "warning"
+                  :size "sm"
+                  :pill "false"} "Booking Workflows"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
         [:span.text-sm.ty-text-success.font-medium "Launch Experience →"]]]]
 
@@ -77,19 +92,53 @@
                   :size "96"
                   :class "ty-text-warning group-hover:scale-110 transition-transform duration-300"}]
        [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
-       [:div.absolute.top-4.right-4.bg-white.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
-        [:ty-icon {:name "zap"
-                   :size "sm"
-                   :class "text-white"}]]]
+       [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
+        [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
+         {:name "zap"
+          :size "sm"}]]]
       [:div.p-6
        [:h3.text-xl.font-bold.ty-text.mb-3 "Professional Contact Forms"]
        [:p.ty-text-.mb-4.leading-relaxed "Real-time validation with elegant error states and instant visual feedback. Watch semantic colors guide users through form completion with professional UX patterns."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:span.px-2.py-1.ty-bg-warning-.ty-text-warning.rounded.text-xs.font-medium "Live Validation"]
-        [:span.px-2.py-1.ty-bg-danger-.ty-text-danger.rounded.text-xs.font-medium "Error States"]
-        [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "Success Flow"]]
+        [:ty-tag {:flavor "warning"
+                  :size "sm"
+                  :pill "false"} "Live Validation"]
+        [:ty-tag {:flavor "danger"
+                  :size "sm"
+                  :pill "false"} "Error States"]
+        [:ty-tag {:flavor "success"
+                  :size "sm"
+                  :pill "false"} "Success Flow"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
-        [:span.text-sm.ty-text-warning.font-medium "Try Validation →"]]]]]]
+        [:span.text-sm.ty-text-warning.font-medium "Try Validation →"]]]]
+
+     ;; Ty Styles Scenario
+     [:div.ty-elevated.overflow-hidden.rounded-xl.hover:shadow-xl.transition-all.duration-300.cursor-pointer.group
+      {:on {:click #(router/navigate! :ty.site.core/getting-started)}}
+      [:div.h-48.ty-bg-secondary-.flex.items-center.justify-center.relative.overflow-hidden
+       [:ty-icon.ty-text-secondary.group-hover:scale-110.transition-transform.duration-300
+        {:name "palette"
+         :size "96"}]
+       [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
+       [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
+        [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
+         {:name "brush"
+          :size "sm"}]]]
+      [:div.p-6
+       [:h3.text-xl.font-bold.ty-text.mb-3 "Semantic Design System"]
+       [:p.ty-text-.mb-4.leading-relaxed "Explore the complete ty design system with 5-variant color hierarchies, semantic tokens, and automatic dark/light theme adaptation. See how consistent typography, spacing, and surfaces create cohesive user experiences."]
+       [:div.flex.flex-wrap.gap-2.mb-4
+        [:ty-tag {:flavor "secondary"
+                  :size "sm"
+                  :pill "false"} "Color Variants"]
+        [:ty-tag {:flavor "neutral"
+                  :size "sm"
+                  :pill "false"} "Typography Scale"]
+        [:ty-tag {:flavor "primary"
+                  :size "sm"
+                  :pill "false"} "Theme Switching"]]
+       [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
+        [:span.text-sm.ty-text-secondary.font-medium "Explore Design System →"]]]]]]
 
    ;; 💎 WHAT MAKES TY SPECIAL - For Credibility
    [:div.ty-bg-neutral-.rounded-3xl.p-10.lg:p-16.text-center

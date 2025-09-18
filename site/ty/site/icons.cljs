@@ -12,13 +12,13 @@
              "palette" lucide/palette
              "rocket" lucide/rocket
 
-               ;; UI controls
+             ;; UI controls
              "menu" lucide/menu
              "x" lucide/x
              "moon" lucide/moon
              "sun" lucide/sun
 
-               ;; Form and interaction icons
+             ;; Form and interaction icons
              "check" lucide/check
              "plus" lucide/plus
              "minus" lucide/minus
@@ -31,7 +31,7 @@
              "building" lucide/building
              "file-text" lucide/file-text
 
-               ;; Status and feedback icons
+             ;; Status and feedback icons
              "check-circle" lucide/check-circle
              "alert-triangle" lucide/alert-triangle
              "alert-circle" lucide/alert-circle
@@ -40,7 +40,7 @@
              "info" lucide/info
              "star" lucide/star
 
-;; Additional utility icons
+             ;; Additional utility icons
              "search" lucide/search
              "settings" lucide/settings
              "globe" lucide/globe
@@ -78,8 +78,9 @@
              "unlock" lucide/unlock
              "shield" lucide/shield
              "key" lucide/key
+             "brush" lucide/brush
 
-;; Copy functionality
+             ;; Copy functionality
              "copy" lucide/copy ; Copy to clipboard icon
              "arrow-right" lucide/arrow-right ; Navigation arrows used in landing page
              "lambda" lucide/square-function})

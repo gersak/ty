@@ -182,31 +182,97 @@
             // Set initial highlight.js theme
             updateHighlightTheme(theme);
             
-            // Add language labels to code blocks
+            // Add language labels and copy buttons to code blocks
             document.querySelectorAll('pre code.hljs').forEach(block => {
                 const language = Array.from(block.classList)
                     .find(cls => cls.startsWith('language-') || cls.startsWith('hljs-'))
                     ?.replace(/^(language-|hljs-)/, '') || 'code';
                 
+                const container = block.parentElement;
+                container.style.position = 'relative';
+                
+                // Add language label
                 if (language && language !== 'hljs' && language !== 'code') {
                     const label = document.createElement('div');
                     label.textContent = language;
                     label.style.cssText = `
                         position: absolute;
                         top: 0.5rem;
-                        right: 0.5rem;
+                        right: 4rem;
                         font-size: 0.75rem;
                         color: var(--ty-text--);
                         background: var(--ty-surface-content);
                         padding: 0.25rem 0.5rem;
                         border-radius: 4px;
                         border: 1px solid var(--ty-border-);
+                        pointer-events: none;
                     `;
-                    
-                    const container = block.parentElement;
-                    container.style.position = 'relative';
                     container.appendChild(label);
                 }
+                
+                // Add copy button
+                const copyButton = document.createElement('button');
+                copyButton.innerHTML = '<ty-icon name="copy" size="sm"></ty-icon>';
+                copyButton.title = 'Copy to clipboard';
+                copyButton.style.cssText = `
+                    position: absolute;
+                    top: 0.5rem;
+                    right: 0.5rem;
+                    width: 2rem;
+                    height: 2rem;
+                    background: var(--ty-surface-elevated);
+                    border: 1px solid var(--ty-border);
+                    border-radius: 4px;
+                    cursor: pointer;
+                    opacity: 0.7;
+                    transition: opacity 0.2s, background-color 0.2s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0;
+                `;
+                
+                // Copy button hover effects
+                copyButton.addEventListener('mouseenter', () => {
+                    copyButton.style.opacity = '1';
+                    copyButton.style.backgroundColor = 'var(--ty-surface-floating)';
+                });
+                
+                copyButton.addEventListener('mouseleave', () => {
+                    copyButton.style.opacity = '0.7';
+                    copyButton.style.backgroundColor = 'var(--ty-surface-elevated)';
+                });
+                
+                // Copy functionality
+                copyButton.addEventListener('click', async () => {
+                    const code = block.textContent;
+                    try {
+                        await navigator.clipboard.writeText(code);
+                        
+                        // Visual feedback with success icon
+                        copyButton.innerHTML = '<ty-icon name="check" size="sm" class="ty-text-success"></ty-icon>';
+                        copyButton.style.backgroundColor = 'var(--ty-bg-success-)';
+                        
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<ty-icon name="copy" size="sm"></ty-icon>';
+                            copyButton.style.backgroundColor = 'var(--ty-surface-elevated)';
+                        }, 2000);
+                        
+                    } catch (err) {
+                        console.error('Failed to copy code:', err);
+                        
+                        // Fallback feedback with error icon
+                        copyButton.innerHTML = '<ty-icon name="x" size="sm" class="ty-text-danger"></ty-icon>';
+                        copyButton.style.backgroundColor = 'var(--ty-bg-danger-)';
+                        
+                        setTimeout(() => {
+                            copyButton.innerHTML = '<ty-icon name="copy" size="sm"></ty-icon>';
+                            copyButton.style.backgroundColor = 'var(--ty-surface-elevated)';
+                        }, 2000);
+                    }
+                });
+                
+                container.appendChild(copyButton);
             });
         });
 

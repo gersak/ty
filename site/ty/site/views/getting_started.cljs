@@ -20,14 +20,62 @@
      [:div
       [:h4.font-medium.ty-text.mb-2 "1. Add to your <head> section:"]
       [:pre.rounded-lg.overflow-x-auto
-       [:code.language-html
-        "&lt;!-- Ty Components CSS --&gt;\n&lt;link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/css/ty.css\"&gt;\n\n&lt;!-- Ty Components JS --&gt;\n&lt;script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js\"&gt;&lt;/script&gt;"]]]
+       [:code.language-html.hljs
+        "<!-- Ty Components CSS -->\n<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/css/ty.css\">\n\n<!-- Ty Components JS -->\n<script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js\"></script>"]]]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Use components anywhere in your HTML:"]
       [:pre.rounded-lg.overflow-x-auto
-       [:code.language-html
-        "&lt;ty-button variant=\"primary\"&gt;Click me&lt;/ty-button&gt;\n&lt;ty-input label=\"Email\" type=\"email\"&gt;&lt;/ty-input&gt;\n&lt;ty-dropdown label=\"Choose option\"&gt;\n  &lt;ty-option value=\"1\"&gt;Option 1&lt;/ty-option&gt;\n  &lt;ty-option value=\"2\"&gt;Option 2&lt;/ty-option&gt;\n&lt;/ty-dropdown&gt;"]]]]]
+       [:code.language-html.hljs
+        "<ty-button variant=\"primary\">Click me</ty-button>\n<ty-input label=\"Email\" type=\"email\"></ty-input>\n<ty-dropdown label=\"Choose option\">\n  <ty-option value=\"1\">Option 1</ty-option>\n  <ty-option value=\"2\">Option 2</ty-option>\n</ty-dropdown>"]]]]]
+
+   ;; ClojureScript Vanilla (Replicant, etc.)
+   [:div.ty-elevated.p-6.rounded-xl
+    [:div.flex.items-center.gap-3.mb-6
+     [:ty-icon {:name "lambda"
+                :size "lg"
+                :class "ty-text-warning"}]
+     [:h2.text-xl.font-semibold.ty-text "ClojureScript (Vanilla / Replicant)"]]
+
+    [:p.ty-text-.mb-4 "For vanilla ClojureScript, Replicant, or non-React libraries - use native web components."]
+
+    [:div.space-y-4
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "1. Add to deps.edn:"]
+      [:pre.rounded-lg.overflow-x-auto
+       [:code.language-clojure.hljs
+        "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}}}"]]]
+
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "2. Require and use web components:"]
+      [:pre.rounded-lg.overflow-x-auto
+       [:code.language-clojure.hljs
+        "(ns my-app.core\n  (:require [ty.components]))  ; Auto-registers all web components\n\n(defn app []\n  [:div\n    [:ty-button {:variant \"primary\"} \"Click me\"]\n    [:ty-input {:label \"Email\" :type \"email\"}]])"]]]]]
+
+   ;; ClojureScript + React (Reagent, UIx, etc.)
+   [:div.ty-elevated.p-6.rounded-xl
+    [:div.flex.items-center.gap-3.mb-6
+     [:ty-icon {:name "lambda"
+                :size "lg"
+                :class "ty-text-info"}]
+     [:h2.text-xl.font-semibold.ty-text "ClojureScript + React (Reagent / UIx)"]]
+
+    [:p.ty-text-.mb-4 "For Reagent, UIx, and other React-based ClojureScript libraries - use the React wrappers."]
+
+    [:div.space-y-4
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "1. Add dependencies:"]
+      [:pre.rounded-lg.overflow-x-auto
+       [:code.language-clojure.hljs
+        ";; deps.edn - Add React-based ClojureScript lib\n{:deps {com.pitch/uix.core {:mvn/version \"1.0.1\"}\n        thheller/shadow-cljs {:mvn/version \"2.28.10\"}}}\n\n;; package.json - Add Ty React wrappers\n\"@gersak/ty-react\": \"latest\""]]]
+
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "2. Import and use React wrappers:"]
+      [:pre.rounded-lg.overflow-x-auto
+       [:code.language-clojure.hljs
+        "(ns my-app.core\n  (:require [uix.core :as uix :refer [$ defui]]\n            [\"@gersak/ty-react\" :refer [Button Input Dropdown]]))\n\n(defui app []\n  ($ :div\n    ($ Button {:variant \"primary\"} \"Click me\")\n    ($ Input {:label \"Email\" :type \"email\"}))"]]]]]
+
+
 
    ;; React Setup
    [:div.ty-elevated.p-6.rounded-xl
@@ -43,58 +91,14 @@
      [:div
       [:h4.font-medium.ty-text.mb-2 "1. Install packages:"]
       [:pre.rounded-lg.overflow-x-auto
-       [:code.language-bash
+       [:code.language-bash.hljs
         "npm install @gersak/ty @gersak/ty-react"]]]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Import and use components:"]
       [:pre.rounded-lg.overflow-x-auto
-       [:code.language-javascript
-        "import { TyButton, TyInput, TyDropdown } from '@gersak/ty-react'\nimport '@gersak/ty/dist/css/ty.css'\n\nfunction App() {\n  return (\n    <div>\n      <TyButton variant=\"primary\">Click me</TyButton>\n      <TyInput label=\"Email\" type=\"email\" />\n    </div>\n  )\n}"]]]]]
-
-   ;; ClojureScript Setup  
-   [:div.ty-elevated.p-6.rounded-xl
-    [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon {:name "lambda"
-                :size "lg"
-                :class "ty-text-warning"}]
-     [:h2.text-xl.font-semibold.ty-text "ClojureScript / Reagent / UIx"]]
-
-    [:p.ty-text-.mb-4 "Native ClojureScript components with semantic design system."]
-
-    [:div.space-y-4
-     [:div
-      [:h4.font-medium.ty-text.mb-2 "1. Add to deps.edn:"]
-      [:pre.rounded-lg.overflow-x-auto
-       [:code.language-clojure
-        "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}}}"]]]
-
-     [:div
-      [:h4.font-medium.ty-text.mb-2 "2. Require and use components:"]
-      [:pre.rounded-lg.overflow-x-auto
-       [:code.language-clojure
-        "(ns my-app.core\n  (:require [ty.components]))  ; Auto-registers all components\n\n(defn app []\n  [:div\n    [:ty-button {:variant \"primary\"} \"Click me\"]\n    [:ty-input {:label \"Email\" :type \"email\"}]])"]]]]]
-
-   ;; Build Tools & Advanced
-   [:div.ty-elevated.p-6.rounded-xl
-    [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon {:name "settings"
-                :size "lg"
-                :class "ty-text-info"}]
-     [:h2.text-xl.font-semibold.ty-text "Build Tools & Advanced"]]
-
-    [:div.grid.gap-6.md:grid-cols-2
-     [:div
-      [:h4.font-medium.ty-text.mb-3 "Webpack / Vite / Rollup"]
-      [:pre.rounded-lg.overflow-x-auto
-       [:code.language-javascript
-        "// Import specific modules\nimport '@gersak/ty/calendar'\nimport '@gersak/ty/dropdown'\n\n// Or full bundle\nimport '@gersak/ty/bundle'"]]]
-
-     [:div
-      [:h4.font-medium.ty-text.mb-3 "Icons (Optional)"]
-      [:pre.rounded-lg.overflow-x-auto
-       [:code.language-clojure
-        "// ClojureScript\ndev.gersak/ty-icons\n{:mvn/version \"0.1.0\"}\n\n// Register icons\n(:require [ty.icons.lucide])"]]]]]
+       [:code.language-javascript.hljs
+        "import { Button, Input, Dropdown } from '@gersak/ty-react'\nimport '@gersak/ty/dist/css/ty.css'\n\nfunction App() {\n  return (\n    <div>\n      <Button variant=\"primary\">Click me</Button>\n      <Input label=\"Email\" type=\"email\" />\n    </div>\n  )\n}"]]]]]
 
    ;; Next Steps
    [:div.ty-bg-primary-.border.border-ty-border-primary.p-6.rounded-xl

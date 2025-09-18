@@ -55,4 +55,30 @@
              "briefcase" lucide/briefcase
              "life-buoy" lucide/life-buoy
              "credit-card" lucide/credit-card
-             "handshake" lucide/handshake})
+             "handshake" lucide/handshake
+
+             ;; MISSING ICONS - Adding from usage analysis
+             ;; Programming/Tech icons
+             "code" lucide/code ; Code snippets, HTML/Backend section
+             "atom" lucide/atom ; React/JS section (may need to use zap or activity if atom doesn't exist)
+
+             ;; Development workflow icons  
+             "zap" lucide/zap ; Alternative for atom if needed
+             "activity" lucide/activity ; Alternative for technical sections
+             "function" lucide/square-function ; Alternative for lambda if needed
+             "brackets" lucide/brackets ; Code-related alternative
+             "terminal" lucide/terminal ; Terminal/command line
+             "box" lucide/box ; Package management
+
+             ;; Missing utility icons from user profile
+             "external-link" lucide/external-link
+             "eye" lucide/eye
+             "eye-off" lucide/eye-off
+             "lock" lucide/lock
+             "unlock" lucide/unlock
+             "shield" lucide/shield
+             "key" lucide/key
+
+             ;; Copy functionality
+             "copy" lucide/copy ; Copy to clipboard icon
+             "lambda" lucide/square-function})

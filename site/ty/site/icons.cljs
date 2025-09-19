@@ -49,6 +49,7 @@
              ;; Contact form icons
              "refresh-ccw" lucide/refresh-ccw
              "loader-2" lucide/loader-2
+             "refresh" lucide/refresh-cw
              "send" lucide/send
              "phone" lucide/phone
              "map-pin" lucide/map-pin
@@ -72,6 +73,9 @@
              "box" lucide/box
              "package" lucide/package
              "sparkles" lucide/sparkles
+             "layers" lucide/layers
+             "book-open" lucide/book-open
+             "trash" lucide/trash
 
              ;; Missing utility icons from user profile
              "external-link" lucide/external-link

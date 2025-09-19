@@ -9,14 +9,16 @@
         content="Explore professional, framework-agnostic web components through real-world scenarios. Ty Components provides a semantic design system with comprehensive theming and accessibility.">
 
     <!-- Ty Complete CSS System (Variables + Utilities) -->
-    <link rel="stylesheet" href="css/ty.css">
+    <link rel="stylesheet" href="/css/ty.css">
 
     <!-- Site-specific Tailwind CSS -->
-    <link rel="stylesheet" href="css/site.css">
+    <link rel="stylesheet" href="/css/site.css">
 
     <!-- Highlight.js for code syntax highlighting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" id="hljs-light">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" id="hljs-dark" disabled>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+        id="hljs-light">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
+        id="hljs-dark" disabled>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/clojure.min.js"></script>
 
@@ -175,22 +177,22 @@
         }
 
         // Initialize Highlight.js when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Initialize highlight.js
             hljs.highlightAll();
-            
+
             // Set initial highlight.js theme
             updateHighlightTheme(theme);
-            
+
             // Add language labels and copy buttons to code blocks
             document.querySelectorAll('pre code.hljs').forEach(block => {
                 const language = Array.from(block.classList)
                     .find(cls => cls.startsWith('language-') || cls.startsWith('hljs-'))
                     ?.replace(/^(language-|hljs-)/, '') || 'code';
-                
+
                 const container = block.parentElement;
                 container.style.position = 'relative';
-                
+
                 // Add language label
                 if (language && language !== 'hljs' && language !== 'code') {
                     const label = document.createElement('div');
@@ -209,7 +211,7 @@
                     `;
                     container.appendChild(label);
                 }
-                
+
                 // Add copy button
                 const copyButton = document.createElement('button');
                 copyButton.innerHTML = '<ty-icon name="copy" size="sm"></ty-icon>';
@@ -231,47 +233,47 @@
                     justify-content: center;
                     padding: 0;
                 `;
-                
+
                 // Copy button hover effects
                 copyButton.addEventListener('mouseenter', () => {
                     copyButton.style.opacity = '1';
                     copyButton.style.backgroundColor = 'var(--ty-surface-floating)';
                 });
-                
+
                 copyButton.addEventListener('mouseleave', () => {
                     copyButton.style.opacity = '0.7';
                     copyButton.style.backgroundColor = 'var(--ty-surface-elevated)';
                 });
-                
+
                 // Copy functionality
                 copyButton.addEventListener('click', async () => {
                     const code = block.textContent;
                     try {
                         await navigator.clipboard.writeText(code);
-                        
+
                         // Visual feedback with success icon
                         copyButton.innerHTML = '<ty-icon name="check" size="sm" class="ty-text-success"></ty-icon>';
                         copyButton.style.backgroundColor = 'var(--ty-bg-success-)';
-                        
+
                         setTimeout(() => {
                             copyButton.innerHTML = '<ty-icon name="copy" size="sm"></ty-icon>';
                             copyButton.style.backgroundColor = 'var(--ty-surface-elevated)';
                         }, 2000);
-                        
+
                     } catch (err) {
                         console.error('Failed to copy code:', err);
-                        
+
                         // Fallback feedback with error icon
                         copyButton.innerHTML = '<ty-icon name="x" size="sm" class="ty-text-danger"></ty-icon>';
                         copyButton.style.backgroundColor = 'var(--ty-bg-danger-)';
-                        
+
                         setTimeout(() => {
                             copyButton.innerHTML = '<ty-icon name="copy" size="sm"></ty-icon>';
                             copyButton.style.backgroundColor = 'var(--ty-surface-elevated)';
                         }, 2000);
                     }
                 });
-                
+
                 container.appendChild(copyButton);
             });
         });
@@ -280,7 +282,7 @@
         function updateHighlightTheme(theme) {
             const lightTheme = document.getElementById('hljs-light');
             const darkTheme = document.getElementById('hljs-dark');
-            
+
             if (theme === 'dark') {
                 lightTheme.disabled = true;
                 darkTheme.disabled = false;
@@ -291,15 +293,15 @@
         }
 
         // Listen for theme changes and update highlight.js accordingly
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
                 if (mutation.attributeName === 'class') {
                     const isDark = document.documentElement.classList.contains('dark');
                     updateHighlightTheme(isDark ? 'dark' : 'light');
                 }
             });
         });
-        
+
         observer.observe(document.documentElement, {
             attributes: true,
             attributeFilter: ['class']
@@ -312,7 +314,7 @@
     <div id="app"></div>
 
     <!-- Load site app after DOM is ready -->
-    <script src="js/site.js"></script>
+    <script src="/js/site.js"></script>
 </body>
 
 </html>

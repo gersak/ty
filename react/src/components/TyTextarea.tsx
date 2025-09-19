@@ -21,6 +21,8 @@ export interface TyTextareaProps extends Omit<React.HTMLAttributes<HTMLElement>,
   rows?: string | number;
   cols?: string | number;
   resize?: 'none' | 'both' | 'horizontal' | 'vertical';
+  'min-height'?: string; // e.g., '100px'
+  'max-height'?: string; // e.g., '500px'
   
   // React event handlers - override with our custom types
   onInput?: (event: CustomEvent<TyTextareaEventDetail>) => void;

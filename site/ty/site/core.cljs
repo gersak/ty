@@ -1,9 +1,12 @@
 (ns ty.site.core
-  (:require [replicant.dom :as rdom]
+  (:require [clojure.string :as str]
+            [replicant.dom :as rdom]
             [ty.components]
             [ty.context :as context]
             [ty.layout :as layout]
             [ty.router :as router]
+            [ty.site.docs :as docs]
+            [ty.site.docs.index :as docs.index]
             [ty.site.icons :as site-icons]
             [ty.site.state :refer [state]]
             [ty.site.views.contact-form :as contact-form]
@@ -15,24 +18,29 @@
 
 ;; Define site routes
 (router/link ::router/root
-             [{:id ::landing
-               :segment ""
-               :name "Welcome"}
-              {:id ::user-profile
-               :segment "user-profile"
-               :name "User Profile"}
-              {:id ::event-booking
-               :segment "event-booking"
-               :name "Event Booking"}
-              {:id ::contact-form
-               :segment "contact-form"
-               :name "Contact Form"}
-              {:id ::ty-styles
-               :segment "ty-styles"
-               :name "Ty Styles"}
-              {:id ::getting-started
-               :segment "getting-started"
-               :name "Getting Started"}])
+             (concat
+              [{:id ::landing
+                :segment ""
+                :name "Welcome"}
+               {:id ::user-profile
+                :segment "user-profile"
+                :name "User Profile"}
+               {:id ::event-booking
+                :segment "event-booking"
+                :name "Event Booking"}
+               {:id ::contact-form
+                :segment "contact-form"
+                :name "Contact Form"}
+               {:id ::ty-styles
+                :segment "ty-styles"
+                :name "Ty Styles"}
+               {:id ::getting-started
+                :segment "getting-started"
+                :name "Getting Started"}
+               {:id :ty.site/docs
+                :segment "docs"
+                :view docs.index/view
+                :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -82,13 +90,21 @@
               :icon "rocket"})])
 
 (defn sidebar []
-  [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
-   [:div.p-4.lg:p-6
-    [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"]
-    [:p.text-xs.lg:text-sm.ty-text- "Professional Web Components"]]
-
-   [:nav.px-2.lg:px-4.pb-4.lg:pb-6
-    (nav-items)]])
+  (if (docs/in-docs?)
+    ;; Docs mode sidebar
+    [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
+     [:div.p-4.lg:p-6
+      [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Documentation"]
+      [:p.text-xs.lg:text-sm.ty-text- "Component Reference"]]
+     [:nav.px-2.lg:px-4.pb-4.lg:pb-6
+      (docs/docs-sidebar)]]
+    ;; Regular sidebar
+    [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
+     [:div.p-4.lg:p-6
+      [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"]
+      [:p.text-xs.lg:text-sm.ty-text- "Professional Web Components"]]
+     [:nav.px-2.lg:px-4.pb-4.lg:pb-6
+      (nav-items)]]))
 
 (defn mobile-menu []
   (when (:mobile-menu-open @state)
@@ -100,14 +116,18 @@
      [:div.fixed.inset-y-0.left-0.w-72.max-w-xs.ty-elevated.shadow-xl.overflow-y-auto
       [:div.p-4
        [:div.flex.items-center.justify-between.mb-4
-        [:h1.text-lg.font-bold.ty-text "Ty Components"]
+        [:h1.text-lg.font-bold.ty-text
+         (if (docs/in-docs?) "Documentation" "Ty Components")]
         [:button.p-2.rounded-md.hover:ty-content
          {:on {:click toggle-mobile-menu!}}
          [:ty-icon {:name "x"
                     :size "sm"}]]]
-       [:p.text-sm.ty-text-.mb-6 "Professional Web Components"]]
+       [:p.text-sm.ty-text-.mb-6
+        (if (docs/in-docs?) "Component Reference" "Professional Web Components")]]
       [:nav.px-4.pb-6
-       (nav-items)]]]))
+       (if (docs/in-docs?)
+         (docs/docs-sidebar)
+         (nav-items))]]]))
 
 (defn header []
   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4
@@ -120,6 +140,7 @@
                  :size "sm"}]]
      [:h2.text-base.lg:text-xl.font-semibold.ty-text.truncate
       (cond
+        (docs/in-docs?) "Ty Documentation"
         (router/rendered? ::landing true) "Welcome to Ty Components"
         (router/rendered? ::user-profile true) "User Profile Scenario"
         (router/rendered? ::event-booking true) "Event Booking Scenario"
@@ -127,7 +148,31 @@
         (router/rendered? ::ty-styles true) "Ty Design System"
         (router/rendered? ::getting-started true) "Getting Started Guide"
         :else "Ty Components")]]
-    [:div.flex.items-center.gap-2.lg:gap-4.flex-shrink-0
+
+    ;; Actions section with Docs/Examples toggle and Theme toggle
+    [:div.flex.items-center.gap-2.lg:gap-3.flex-shrink-0
+     ;; Docs/Examples toggle button with icon in start slot
+     (if (docs/in-docs?)
+       ;; When in docs, show "Examples" button to go back
+       [:div.w-30
+        [:ty-button {:flavor "neutral"
+                     :size "md"
+                     :wide true
+                     :on {:click #(router/navigate! ::landing)}}
+         [:ty-icon {:slot "start"
+                    :name "layers"
+                    :size "sm"}]
+         "Examples"]]
+       ;; When not in docs, show "Docs" button
+       [:div.w-30
+        [:ty-button {:flavor "neutral"
+                     :wide true
+                     :on {:click #(router/navigate! :ty.site/docs)}}
+         [:ty-icon {:slot "start"
+                    :name "book-open"
+                    :size "sm"}]
+         "Docs"]])
+
      ;; Theme toggle button
      [:button.flex.items-center.justify-center.w-7.h-7.lg:w-8.lg:h-8.rounded-md.ty-content.hover:ty-content+.transition-colors.ty-text.cursor-pointer
       {:on {:click toggle-theme!}}
@@ -151,12 +196,17 @@
            {:width (- (layout/container-width) sidebar-width content-padding)
             :height (- (layout/container-height) header-height content-padding)}
            (cond
+             ;; Regular views
              (router/rendered? ::landing true) (landing/view)
              (router/rendered? ::user-profile true) (user-profile/view)
              (router/rendered? ::event-booking true) (event-booking/view)
              (router/rendered? ::contact-form true) (contact-form/view)
              (router/rendered? ::ty-styles true) (ty-styles/view)
              (router/rendered? ::getting-started true) (getting-started/view)
+
+             (docs/in-docs?) (docs/render)
+
+             ;; Check for other component docs
              :else [:div.ty-elevated.p-8.rounded-lg.text-center
                     [:h1.text-2xl.font-bold.ty-text.mb-4 "Page Not Found"]
                     [:p.ty-text- "The requested page could not be found."]]))]]])))
@@ -182,7 +232,14 @@
 
   ;; Watch router changes and re-render
   (add-watch router/*router* ::render
-             (fn [_ _ _ _] (render-app!)))
+             (fn [_ _ _ _]
+               (render-app!)
+               ;; Highlight code blocks after navigation in docs
+               (when (docs/in-docs?)
+                 (js/setTimeout
+                  #(when (and js/window.hljs (.-highlightAll js/window.hljs))
+                     (js/window.hljs.highlightAll))
+                  100))))
 
   ;; Watch state changes and re-render
   (add-watch state ::render

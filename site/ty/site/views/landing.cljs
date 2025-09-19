@@ -1,120 +1,133 @@
 (ns ty.site.views.landing
   (:require
-   [ty.router :as router]))
+    [ty.router :as router]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto
-   ;; ⚡ HERO - Clean & Professional
+   ;; ⚡ HERO - Problem-First, Solution-Focused
    [:div.text-center.mb-16.py-16
     [:h1.text-4xl.lg:text-6xl.font-bold.ty-text.mb-4.leading-tight
-     "Beautiful Web Components That Actually Work"]
+     "Stop Rewriting Your UI Every 2 Years"]
 
     [:p.text-lg.lg:text-xl.ty-text-.max-w-3xl.mx-auto.leading-relaxed.mb-8
-     "Experience three stunning scenarios that showcase semantic design, automatic theming, and professional UX patterns working in harmony."]
+     "Ty components work in React today, Vue tomorrow, and whatever comes next. "
+     "Built on web standards, not framework opinions. One component system for all your projects."]
+
+    ;; Pain points → Solution
+    [:div.grid.md:grid-cols-3.gap-4.max-w-4xl.mx-auto.mb-8
+     [:div.text-left.p-4
+      [:div.ty-text-danger.font-semibold.mb-2 "❌ The Problem"]
+      [:ul.text-sm.ty-text-.space-y-1
+       [:li "• React 16→17→18 migrations"]
+       [:li "• Maintaining 3 component libraries"]
+       [:li "• Vue 2 components dead in Vue 3"]
+       [:li "• Next breaking change anxiety"]]]
+     [:div.text-left.p-4
+      [:div.ty-text-warning.font-semibold.mb-2 "🤔 The Usual \"Solution\""]
+      [:ul.text-sm.ty-text-.space-y-1
+       [:li "• Wrapper components everywhere"]
+       [:li "• Abstract everything (poorly)"]
+       [:li "• \"Just use our CSS framework\""]
+       [:li "• Hope this time is different"]]]
+     [:div.text-left.p-4
+      [:div.ty-text-success.font-semibold.mb-2 "✓ The Actual Solution"]
+      [:ul.text-sm.ty-text-.space-y-1
+       [:li "• Web Components (native browser)"]
+       [:li "• Zero framework dependencies"]
+       [:li "• Same API in every project"]
+       [:li "• Will work in 2030+"]]]]
 
     [:div.flex.flex-wrap.gap-3.justify-center
      [:ty-tag {:flavor "primary"
-               :size "md"} "Semantic Design"]
+               :size "md"} "Web Standards"]
      [:ty-tag {:flavor "success"
-               :size "md"} "Calendar Workflows"]
+               :size "md"} "Production Ready"]
      [:ty-tag {:flavor "warning"
-               :size "md"} "Form Validation"]
+               :size "md"} "80KB gzipped"]
      [:ty-tag {:flavor "neutral"
-               :size "md"} "Zero Dependencies"]]]
+               :size "md"} "TypeScript Support"]]]
 
-   ;; 🎯 MAIN SHOWCASE - Three Stunning Scenarios
    [:div.mb-20
-    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4 "Four Stunning Scenarios"]
+    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4
+     "Components That Handle Real Complexity"]
     [:p.text-lg.ty-text-.text-center.mb-12.max-w-3xl.mx-auto
-     "Each scenario demonstrates how Ty components orchestrate to create seamless, professional user experiences."]
+     "Not just another button library. These are production components that handle the messy reality of web apps."]
 
-    [:div.grid.gap-6.md:grid-cols-2.lg:grid-cols-4
-     ;; User Profile Scenario
+    [:div.grid.gap-6.md:grid-cols-2.max-w-3xl.mx-auto
+     ;; User Profile - Complex Forms
      [:div.ty-elevated.overflow-hidden.rounded-xl.hover:shadow-xl.transition-all.duration-300.cursor-pointer.group
       {:on {:click #(router/navigate! :ty.site.core/user-profile)}}
       [:div.h-48.ty-bg-primary-.flex.items-center.justify-center.relative.overflow-hidden
-       [:ty-icon {:name "user"
-                  :size "96"
-                  :class "ty-text-primary group-hover:scale-110 transition-transform duration-300"}]
+       [:ty-icon.ty-text-primary.group-hover:scale-110.transition-transform.duration-300
+        {:name "user"
+         :size "96"}]
        [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
        [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-20.backdrop-blur-sm.rounded-full.p-2
         [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
          {:name "arrow-right"}]]]
       [:div.p-6
-       [:h3.text-xl.font-bold.ty-text.mb-3 "Rich User Profile Forms"]
-       [:p.ty-text-.mb-4.leading-relaxed "Witness dropdowns filled with beautiful HTML content - country flags, role badges, and contextual information. See multiselect components showcase colorful skill tags with semantic meanings. Experience modal integration and professional form validation patterns."]
+       [:h3.text-xl.font-bold.ty-text.mb-3 "Forms That Actually Work"]
+       [:p.ty-text-.mb-4.leading-relaxed
+        "Dropdowns with HTML content (flags, avatars). Multiselect with rich tags. "
+        "Native form submission. Validation that makes sense. Try breaking it."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:ty-tag {:flavor "primary"
-                  :size "sm"
-                  :pill "false"} "Rich Dropdowns"]
-        [:ty-tag {:flavor "success"
-                  :size "sm"
-                  :pill "false"} "Visual Multiselects"]
-        [:ty-tag {:flavor "warning"
-                  :size "sm"
-                  :pill "false"} "Modal Integration"]]
+        [:ty-tag {:flavor "success"} "form-associated"]
+        [:ty-tag {:flavor "neutral"} "native validation"]
+        [:ty-tag {:flavor "warning"} "a11y compliant"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
-        [:span.text-sm.ty-text-primary.font-medium "Explore Profile Demo →"]]]]
+        [:span.text-sm.ty-text-primary.font-medium "See Real Form →"]]]]
 
-     ;; Event Booking Scenario
+     ;; Calendar That Works
      [:div.ty-elevated.overflow-hidden.rounded-xl.hover:shadow-xl.transition-all.duration-300.cursor-pointer.group
       {:on {:click #(router/navigate! :ty.site.core/event-booking)}}
       [:div.h-48.ty-bg-success-.flex.items-center.justify-center.relative.overflow-hidden
-       [:ty-icon {:name "calendar"
-                  :size "96"
-                  :class "ty-text-success group-hover:scale-110 transition-transform duration-300"}]
+       [:ty-icon.ty-text-success.group-hover:scale-110.transition-transform.duration-300
+        {:name "calendar"
+         :size "96"}]
        [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
        [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
         [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
          {:name "external-link"
           :size "sm"}]]]
       [:div.p-6
-       [:h3.text-xl.font-bold.ty-text.mb-3 "Event Booking Experience"]
-       [:p.ty-text-.mb-4.leading-relaxed "Interactive calendar orchestration with date selection, time slot management, and service customization. See how components work together to create seamless booking workflows."]
+       [:h3.text-xl.font-bold.ty-text.mb-3 "Calendar That Handles Edge Cases"]
+       [:p.ty-text-.mb-4.leading-relaxed
+        "Leap years, timezones, locale formats, keyboard navigation. "
+        "Custom day rendering. Booking workflows. It all just works."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:ty-tag {:flavor "success"
-                  :size "sm"
-                  :pill "false"} "Calendar Integration"]
-        [:ty-tag {:flavor "neutral"
-                  :size "sm"
-                  :pill "false"} "Service Selection"]
-        [:ty-tag {:flavor "warning"
-                  :size "sm"
-                  :pill "false"} "Booking Workflows"]]
+        [:ty-tag {:flavor "primary"} "130+ locales"]
+        [:ty-tag {:flavor "neutral"} "keyboard nav"]
+        [:ty-tag {:flavor "success"} "custom rendering"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
-        [:span.text-sm.ty-text-success.font-medium "Launch Experience →"]]]]
+        [:span.text-sm.ty-text-success.font-medium "Try Calendar →"]]]]
 
-     ;; Contact Form Scenario
+     ;; Validation That Makes Sense
      [:div.ty-elevated.overflow-hidden.rounded-xl.hover:shadow-xl.transition-all.duration-300.cursor-pointer.group
       {:on {:click #(router/navigate! :ty.site.core/contact-form)}}
       [:div.h-48.ty-bg-warning-.flex.items-center.justify-center.relative.overflow-hidden
-       [:ty-icon {:name "mail"
-                  :size "96"
-                  :class "ty-text-warning group-hover:scale-110 transition-transform duration-300"}]
+       [:ty-icon.ty-text-warning.group-hover:scale-110.transition-transform.duration-300
+        {:name "mail"
+         :size "96"}]
        [:div.absolute.inset-0.bg-gradient-to-br.from-transparent.to-black.opacity-10]
        [:div.absolute.top-4.right-4.ty-surface-floating.bg-opacity-30.backdrop-blur-sm.rounded-full.p-2
         [:ty-icon.ty-text++.group-hover:translate-x-1.transition-transform
          {:name "zap"
           :size "sm"}]]]
       [:div.p-6
-       [:h3.text-xl.font-bold.ty-text.mb-3 "Professional Contact Forms"]
-       [:p.ty-text-.mb-4.leading-relaxed "Real-time validation with elegant error states and instant visual feedback. Watch semantic colors guide users through form completion with professional UX patterns."]
+       [:h3.text-xl.font-bold.ty-text.mb-3 "Validation Without the Pain"]
+       [:p.ty-text-.mb-4.leading-relaxed
+        "Real-time feedback that doesn't annoy. Semantic error states. "
+        "Works with native HTML validation or your custom logic."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:ty-tag {:flavor "warning"
-                  :size "sm"
-                  :pill "false"} "Live Validation"]
-        [:ty-tag {:flavor "danger"
-                  :size "sm"
-                  :pill "false"} "Error States"]
-        [:ty-tag {:flavor "success"
-                  :size "sm"
-                  :pill "false"} "Success Flow"]]
+        [:ty-tag {:flavor "primary"} "instant feedback"]
+        [:ty-tag {:flavor "secondary"} "semantic colors"]
+        [:ty-tag {:flavor "success"} "custom + native"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
-        [:span.text-sm.ty-text-warning.font-medium "Try Validation →"]]]]
+        [:span.text-sm.ty-text-warning.font-medium "Test Validation →"]]]]
 
-     ;; Ty Styles Scenario
+     ;; Design System
      [:div.ty-elevated.overflow-hidden.rounded-xl.hover:shadow-xl.transition-all.duration-300.cursor-pointer.group
-      {:on {:click #(router/navigate! :ty.site.core/getting-started)}}
+      {:on {:click #(router/navigate! :ty.site.core/ty-styles)}}
       [:div.h-48.ty-bg-secondary-.flex.items-center.justify-center.relative.overflow-hidden
        [:ty-icon.ty-text-secondary.group-hover:scale-110.transition-transform.duration-300
         {:name "palette"
@@ -125,52 +138,279 @@
          {:name "brush"
           :size "sm"}]]]
       [:div.p-6
-       [:h3.text-xl.font-bold.ty-text.mb-3 "Semantic Design System"]
-       [:p.ty-text-.mb-4.leading-relaxed "Explore the complete ty design system with 5-variant color hierarchies, semantic tokens, and automatic dark/light theme adaptation. See how consistent typography, spacing, and surfaces create cohesive user experiences."]
+       [:h3.text-xl.font-bold.ty-text.mb-3 "Design System That Scales"]
+       [:p.ty-text-.mb-4.leading-relaxed
+        "Semantic colors that mean something. 5 emphasis levels. "
+        "Dark mode that actually works. One CSS file, infinite customization."]
        [:div.flex.flex-wrap.gap-2.mb-4
-        [:ty-tag {:flavor "secondary"
-                  :size "sm"
-                  :pill "false"} "Color Variants"]
-        [:ty-tag {:flavor "neutral"
-                  :size "sm"
-                  :pill "false"} "Typography Scale"]
-        [:ty-tag {:flavor "primary"
-                  :size "sm"
-                  :pill "false"} "Theme Switching"]]
+        [:ty-tag {:flavor "neutral"} "CSS variables"]
+        [:ty-tag {:flavor "neutral"} "auto dark mode"]
+        [:ty-tag {:flavor "neutral"} "semantic tokens"]]
        [:div.flex.justify-between.items-center.group-hover:translate-x-1.transition-transform
-        [:span.text-sm.ty-text-secondary.font-medium "Explore Design System →"]]]]]]
+        [:span.text-sm.ty-text-secondary.font-medium "Explore System →"]]]]]]
+   [:div.mb-20
+    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4
+     "Components That Handle Real Complexity"]
+    [:p.text-lg.ty-text-.text-center.mb-12.max-w-3xl.mx-auto
+     "Not just another button library. These are production components that handle the messy reality of web apps."]
 
-   ;; 💎 WHAT MAKES TY SPECIAL - For Credibility
-   [:div.ty-bg-neutral-.rounded-3xl.p-10.lg:p-16.text-center
-    [:h2.text-4xl.font-bold.ty-text.mb-6 "What Makes Ty Different?"]
-    [:p.text-lg.ty-text-.mb-12.max-w-3xl.mx-auto.leading-relaxed
-     "Built from the ground up with semantic design principles, automatic theming, and production-grade UX patterns that just work."]
-    [:div.grid.gap-8.md:grid-cols-2.lg:grid-cols-4.max-w-6xl.mx-auto
-     [:div.space-y-4
-      [:div.w-16.h-16.ty-bg-primary-.rounded-2xl.flex.items-center.justify-center.mx-auto
-       [:ty-icon {:name "palette"
-                  :size "xl"
-                  :class "ty-text-primary"}]]
-      [:h4.text-lg.font-bold.ty-text "Semantic Colors"]
-      [:p.ty-text-.text-sm.leading-relaxed "5-variant system that adapts automatically to light and dark themes. No more color guessing."]]
-     [:div.space-y-4
-      [:div.w-16.h-16.ty-bg-success-.rounded-2xl.flex.items-center.justify-center.mx-auto
-       [:ty-icon {:name "zap"
-                  :size "xl"
-                  :class "ty-text-success"}]]
-      [:h4.text-lg.font-bold.ty-text "Zero Dependencies"]
-      [:p.ty-text-.text-sm.leading-relaxed "Pure web standards that work with React, Vue, vanilla JS, or any framework. Performance built-in."]]
-     [:div.space-y-4
-      [:div.w-16.h-16.ty-bg-warning-.rounded-2xl.flex.items-center.justify-center.mx-auto
-       [:ty-icon {:name "calendar"
-                  :size "xl"
-                  :class "ty-text-warning"}]]
-      [:h4.text-lg.font-bold.ty-text "Advanced Components"]
-      [:p.ty-text-.text-sm.leading-relaxed "Calendar orchestration, form validation, and modal management that handles edge cases professionally."]]
-     [:div.space-y-4
-      [:div.w-16.h-16.ty-bg-neutral-.rounded-2xl.flex.items-center.justify-center.mx-auto
-       [:ty-icon {:name "moon"
-                  :size "xl"
-                  :class "ty-text-neutral"}]]
-      [:h4.text-lg.font-bold.ty-text "Auto Theming"]
-      [:p.ty-text-.text-sm.leading-relaxed "Dark and light modes that adapt seamlessly without configuration. Your users will thank you."]]]]])
+    [:div.grid.gap-6.md:grid-cols-2.max-w-3xl.mx-auto
+     ;; Flask + HTMX Example
+     [:div.ty-elevated.p-6.rounded-xl.hover:shadow-lg.transition-all.duration-300.cursor-pointer.group
+      {:on {:click #(.open js/window "https://github.com/gersak/ty/tree/main/examples/htmx-flask" "_blank")}}
+      [:div.flex.items-center.justify-center.mb-4
+       [:div.w-12.h-12.ty-bg-danger-.rounded-xl.flex.items-center.justify-center.mr-3
+        [:ty-icon.ty-text-danger {:name "python"
+                                  :size "lg"}]]
+       [:div.w-12.h-12.ty-bg-info-.rounded-xl.flex.items-center.justify-center
+        [:ty-icon.ty-text-info {:name "zap"
+                                :size "lg"}]]]
+      [:h4.font-bold.ty-text.text-center.mb-2 "Server-Side Python"]
+      [:p.text-sm.ty-text-.text-center.mb-4.leading-relaxed
+       "Native HTML. Zero JavaScript build. Web Components work directly with HTMX."]
+      [:div.flex.justify-center.gap-2
+       [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded
+        "<ty-calendar name=\"date\">"]]]
+
+     ;; React + Next.js Example  
+     [:div.ty-elevated.p-6.rounded-xl.hover:shadow-lg.transition-all.duration-300.cursor-pointer.group
+      {:on {:click #(.open js/window "https://github.com/gersak/ty/tree/main/examples/react-nextjs" "_blank")}}
+      [:div.flex.items-center.justify-center.mb-4
+       [:div.w-12.h-12.ty-bg-primary-.rounded-xl.flex.items-center.justify-center.mr-3
+        [:ty-icon.ty-text-primary {:name "react"
+                                   :size "lg"}]]
+       [:div.w-12.h-12.ty-bg-neutral-.rounded-xl.flex.items-center.justify-center
+        [:ty-icon.ty-text-neutral {:name "node-js"
+                                   :size "lg"}]]]
+      [:h4.font-bold.ty-text.text-center.mb-2 "React + TypeScript"]
+      [:p.text-sm.ty-text-.text-center.mb-4.leading-relaxed
+       "TypeScript wrappers handle events. Works in React 16-19. Same underlying components."]
+      [:div.flex.justify-center.gap-2
+       [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded
+        "<TyCalendar onChange={handleDate} />"]]]
+
+     ;; ClojureScript Reagent Example
+     [:div.ty-elevated.p-6.rounded-xl.hover:shadow-lg.transition-all.duration-300.cursor-pointer.group
+      {:on {:click #(.open js/window "https://github.com/gersak/ty/tree/main/examples/reagent" "_blank")}}
+      [:div.flex.items-center.justify-center.mb-4
+       [:div.w-12.h-12.ty-bg-success-.rounded-xl.flex.items-center.justify-center.mr-3
+        [:ty-icon.ty-text-success {:name "code"
+                                   :size "lg"}]]
+       [:div.w-12.h-12.ty-bg-success-.rounded-xl.flex.items-center.justify-center
+        [:ty-icon.ty-text-success {:name "atom"
+                                   :size "lg"}]]]
+      [:h4.font-bold.ty-text.text-center.mb-2 "ClojureScript"]
+      [:p.text-sm.ty-text-.text-center.mb-4.leading-relaxed
+       "Direct HTML elements. Native custom events. Plus routing and i18n if you want."]
+      [:div.flex.justify-center.gap-2
+       [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded
+        "[:ty-calendar {:on-change handler}]"]]]
+
+     ;; Vanilla JS
+     [:div.ty-elevated.p-6.rounded-xl.hover:shadow-lg.transition-all.duration-300.cursor-pointer.group
+      {:on {:click #(.open js/window "https://github.com/gersak/ty/tree/main/examples/vanilla" "_blank")}}
+      [:div.flex.items-center.justify-center.mb-4
+       [:div.w-12.h-12.ty-bg-warning-.rounded-xl.flex.items-center.justify-center.mr-3
+        [:ty-icon.ty-text-warning {:name "file-code"
+                                   :size "lg"}]]
+       [:div.w-12.h-12.ty-bg-warning-.rounded-xl.flex.items-center.justify-center
+        [:ty-icon.ty-text-warning {:name "globe"
+                                   :size "lg"}]]]
+      [:h4.font-bold.ty-text.text-center.mb-2 "Vanilla JavaScript"]
+      [:p.text-sm.ty-text-.text-center.mb-4.leading-relaxed
+       "Pure Web Components. Native DOM events. No framework, no wrappers, just standards."]
+      [:div.flex.justify-center.gap-2
+       [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded
+        "el.addEventListener('date-select', ...)"]]]]
+
+    ;; Why React needs wrappers
+    [:div.text-center.mt-8
+     [:details.inline-block.text-left
+      [:summary.cursor-pointer.ty-text-primary.text-sm.hover:underline
+       "Why does React need wrappers?"]
+      [:div.ty-bg-neutral-.p-4.rounded-lg.mt-2.max-w-2xl.text-sm.ty-text-
+       [:p.mb-2
+        "React doesn't handle Web Component custom events natively (onChange vs addEventListener). "
+        "Thin TypeScript wrappers (@gersak/ty-react) handle:"]
+       [:ul.list-disc.list-inside.space-y-1.ml-2
+        [:li "Custom event binding (onChange → addEventListener)"]
+        [:li "Property vs attribute mapping"]
+        [:li "TypeScript definitions"]
+        [:li "Imperative methods (ref.current.show())"]
+        [:li "React 16-19 compatibility"]]
+       [:p.mt-2.text-xs
+        "These wrappers are provided - no need to write them. The Web Components remain unchanged."]]]]]
+
+   ;; 🧩 FOR CLOJURESCRIPT DEVELOPERS - First-class, not an afterthought
+   [:div.mb-20
+    [:h2.text-3xl.font-bold.ty-text.text-center.mb-4
+     "First-Class ClojureScript Support"]
+    [:p.text-lg.ty-text-.text-center.mb-12.max-w-3xl.mx-auto
+     "If you're using ClojureScript, you get even more. Not required, but nice to have."]
+
+    [:div.grid.gap-8.md:grid-cols-2.lg:grid-cols-3.max-w-5xl.mx-auto
+     ;; Built-in Router
+     [:div.ty-elevated.p-8.rounded-xl
+      [:div.flex.items-start.gap-4
+       [:div.w-12.h-12.ty-bg-primary-.rounded-xl.flex.items-center.justify-center.flex-shrink-0
+        [:ty-icon.ty-text-primary {:name "map-pin"
+                                   :size "lg"}]]
+       [:div.flex-1
+        [:h4.text-lg.font-bold.ty-text.mb-2 "Tree-Based Router"]
+        [:p.ty-text-.text-sm.mb-3.leading-relaxed
+         "Authorization, query params, landing pages. One less npm package."]
+        [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded.block.mb-1
+         "(router/navigate! ::profile {:tab :settings})"]
+        [:p.text-xs.ty-text-.mt-2
+         "Zero dependencies. 4KB gzipped."]]]]
+
+     ;; Native i18n
+     [:div.ty-elevated.p-8.rounded-xl
+      [:div.flex.items-start.gap-4
+       [:div.w-12.h-12.ty-bg-success-.rounded-xl.flex.items-center.justify-center.flex-shrink-0
+        [:ty-icon.ty-text-success {:name "globe"
+                                   :size "lg"}]]
+       [:div.flex-1
+        [:h4.text-lg.font-bold.ty-text.mb-2 "Protocol-Based i18n"]
+        [:p.ty-text-.text-sm.mb-3.leading-relaxed
+         "Extend any type. 130+ locales. Browser Intl API."]
+        [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded.block.mb-1
+         "(t 1234.56 :currency \"EUR\") ; → \"€1,234.56\""]
+        [:p.text-xs.ty-text-.mt-2
+         "No JSON files. Just protocols."]]]]
+
+     ;; Lazy Loading
+     [:div.ty-elevated.p-8.rounded-xl
+      [:div.flex.items-start.gap-4
+       [:div.w-12.h-12.ty-bg-warning-.rounded-xl.flex.items-center.justify-center.flex-shrink-0
+        [:ty-icon.ty-text-warning {:name "zap"
+                                   :size "lg"}]]
+       [:div.flex-1
+        [:h4.text-lg.font-bold.ty-text.mb-2 "Shadow-cljs Optimized"]
+        [:p.ty-text-.text-sm.mb-3.leading-relaxed
+         "Code splitting, lazy loading, dead code elimination."]
+        [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded.block.mb-1
+         "(lazy/loadable ty.components.calendar)"]
+        [:p.text-xs.ty-text-.mt-2
+         "Only load what you use."]]]]
+
+     ;; Google Closure
+     [:div.ty-elevated.p-8.rounded-xl
+      [:div.flex.items-start.gap-4
+       [:div.w-12.h-12.ty-bg-danger-.rounded-xl.flex.items-center.justify-center.flex-shrink-0
+        [:ty-icon.ty-text-danger {:name "package"
+                                  :size "lg"}]]
+       [:div.flex-1
+        [:h4.text-lg.font-bold.ty-text.mb-2 "Closure Compiled"]
+        [:p.ty-text-.text-sm.mb-3.leading-relaxed
+         "Advanced optimizations. Smallest possible bundles."]
+        [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded.block.mb-1
+         ";; Button only: 12KB total"]
+        [:p.text-xs.ty-text-.mt-2
+         "Tree shaking that actually works."]]]]
+
+     ;; AI-Ready Components
+     [:div.ty-elevated.p-8.rounded-xl
+      [:div.flex.items-start.gap-4
+       [:div.w-12.h-12.ty-bg-info-.rounded-xl.flex.items-center.justify-center.flex-shrink-0
+        [:ty-icon.ty-text-info {:name "sparkles"
+                                :size "lg"}]]
+       [:div.flex-1
+        [:h4.text-lg.font-bold.ty-text.mb-2 "AI-Friendly Design"]
+        [:p.ty-text-.text-sm.mb-3.leading-relaxed
+         "Simple HTML elements. Standard events. No magic. "
+         "AI assistants understand ty components correctly."]
+        [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded.block.mb-1
+         "<ty-button>Click me</ty-button>"]
+        [:p.text-xs.ty-text-.mt-2
+         "Web standards are universal. Even for AI."]]]]
+
+     ;; 2000+ Icons Built-in
+     [:div.ty-elevated.p-8.rounded-xl
+      [:div.flex.items-start.gap-4
+       [:div.w-12.h-12.ty-bg-secondary-.rounded-xl.flex.items-center.justify-center.flex-shrink-0
+        [:ty-icon.ty-text-secondary {:name "package"
+                                     :size "lg"}]]
+       [:div.flex-1
+        [:h4.text-lg.font-bold.ty-text.mb-2 "2000+ Icons Built-in"]
+        [:p.ty-text-.text-sm.mb-3.leading-relaxed
+         "No npm installs. No file downloads. Icons ported to ClojureScript, Closure compiler optimized."]
+        [:div.text-xs.ty-text-.space-y-1.mb-2
+         [:div "• 1850+ Lucide icons"]
+         [:div "• Font Awesome 6 (Solid, Regular, Brands)"]
+         [:div "• Material Icons (Filled, Outlined)"]
+         [:div "• Heroicons"]
+         [:div "• Custom UI icons"]]
+        [:code.text-xs.ty-bg-neutral-.px-2.py-1.rounded.block
+         "[:ty-icon {:name \"lucide-rocket\"}]"]
+        [:p.text-xs.ty-text-.mt-2
+         "Tree-shaken. Only bundle what you use."]]]]]]
+
+   ;; 💎 THE BOTTOM LINE
+   [:div.ty-bg-neutral-.rounded-3xl.p-10.lg:p-16
+    [:h2.text-4xl.font-bold.ty-text.text-center.mb-6
+     "Why This Exists"]
+    [:p.text-lg.ty-text-.mb-8.max-w-3xl.mx-auto.leading-relaxed.text-center
+     "Born from the frustration of rewriting the same components for every new framework version. "
+     "Of maintaining multiple component libraries. "
+     "Of hearing \"next year it will stabilize\" promises."]
+
+    [:p.text-lg.ty-text.mb-8.max-w-3xl.mx-auto.leading-relaxed.text-center
+     "But more importantly, built with hope. "
+     "Hope that components can be stable for years, not months. Useful across any framework. "
+     "Simple enough that both humans and AI can work with them effortlessly."]
+
+    [:div.text-center.mb-12
+     [:p.text-xl.ty-text.font-semibold.mb-2
+      "Built on the only thing that's guaranteed:"]
+     [:p.text-2xl.ty-text++.font-bold
+      "Web Standards."]]
+
+    [:div.grid.gap-6.md:grid-cols-3.max-w-4xl.mx-auto
+     ;; What You Get
+     [:div.ty-floating.p-6.rounded-xl.text-center
+      [:h3.text-lg.font-bold.ty-text.mb-3 "What You Get"]
+      [:ul.text-sm.ty-text-.text-left.space-y-2
+       [:li "✓ Components that work everywhere"]
+       [:li "✓ No framework migrations"]
+       [:li "✓ TypeScript definitions"]
+       [:li "✓ Semantic design system"]
+       [:li "✓ Dark mode built-in"]
+       [:li "✓ 80KB gzipped"]
+       [:li "✓ AI-friendly simplicity"]]]
+
+     ;; What You Don't Get
+     [:div.ty-floating.p-6.rounded-xl.text-center
+      [:h3.text-lg.font-bold.ty-text.mb-3 "What You Don't Get"]
+      [:ul.text-sm.ty-text-.text-left.space-y-2
+       [:li "✗ React 19 breaking changes"]
+       [:li "✗ Vue 2→3 rewrites"]
+       [:li "✗ Angular version hell"]
+       [:li "✗ Next.js 15 surprises"]
+       [:li "✗ Vendor lock-in"]
+       [:li "✗ Migration anxiety"]]]
+
+     ;; Who It's For
+     [:div.ty-floating.p-6.rounded-xl.text-center
+      [:h3.text-lg.font-bold.ty-text.mb-3 "Who It's For"]
+      [:ul.text-sm.ty-text-.text-left.space-y-2
+       [:li "• Teams with multiple projects"]
+       [:li "• Developers tired of churn"]
+       [:li "• Companies wanting stability"]
+       [:li "• Anyone building for the long term"]
+       [:li "• You, if you're still reading"]
+       [:li "• (Seriously, try it)"]]]]
+
+    [:div.text-center.mt-12
+     [:a.inline-block.ty-bg-primary.ty-text++.px-8.py-4.rounded-lg.text-lg.font-semibold.hover:shadow-lg.transition-all
+      {:href "https://github.com/gersak/ty"}
+      "Get Started in 2 Minutes →"]
+     [:p.text-sm.ty-text-.mt-4
+      "npm install @gersak/ty  |  CDN ready  |  MIT licensed"]]]
+
+   ;; Final proof
+   [:div.text-center.py-12
+    [:p.text-sm.ty-text-
+     "Built for teams who are tired of the framework carousel."]
+    [:p.text-xs.ty-text-.mt-2
+     "Born from frustration, built with hope, maintained with care."]]])

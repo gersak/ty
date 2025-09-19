@@ -40,11 +40,11 @@
                                                 :placeholder "Select a color..."
                                                 :style {:min-width "200px"}
                                                 :on {:change dropdown-event-handler}}
-                           [:option {:value "red"} "Red"]
-                           [:option {:value "blue"} "Blue"]
-                           [:option {:value "green"} "Green"]
-                           [:option {:value "yellow"} "Yellow"]
-                           [:option {:value "purple"} "Purple"]]]]})
+                           [:ty-option {:value "red"} "Red"]
+                           [:ty-option {:value "blue"} "Blue"]
+                           [:ty-option {:value "green"} "Green"]
+                           [:ty-option {:value "yellow"} "Yellow"]
+                           [:ty-option {:value "purple"} "Purple"]]]]})
    (code-snippet "<ty-dropdown value=\"red\" placeholder=\"Select a color...\" style=\"min-width: 200px;\">
   <option value=\"red\">Red</option>
   <option value=\"blue\">Blue</option>
@@ -59,10 +59,10 @@
                                          :placeholder "Select size..."
                                          :style {:min-width "180px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "small"} "Small"]
-                           [:option {:value "medium"} "Medium"]
-                           [:option {:value "large"} "Large"]
-                           [:option {:value "xl"} "Extra Large"]]]]})
+                           [:ty-option {:value "small"} "Small"]
+                           [:ty-option {:value "medium"} "Medium"]
+                           [:ty-option {:value "large"} "Large"]
+                           [:ty-option {:value "xl"} "Extra Large"]]]]})
    (code-snippet "<ty-dropdown label=\"Size\" placeholder=\"Select size...\" style=\"min-width: 180px;\">
   <option value=\"small\">Small</option>
   <option value=\"medium\">Medium</option>
@@ -76,11 +76,11 @@
                                          :placeholder "Select your country"
                                          :style {:min-width "200px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "us"} "United States"]
-                           [:option {:value "ca"} "Canada"]
-                           [:option {:value "uk"} "United Kingdom"]
-                           [:option {:value "de"} "Germany"]
-                           [:option {:value "fr"} "France"]]]]})
+                           [:ty-option {:value "us"} "United States"]
+                           [:ty-option {:value "ca"} "Canada"]
+                           [:ty-option {:value "uk"} "United Kingdom"]
+                           [:ty-option {:value "de"} "Germany"]
+                           [:ty-option {:value "fr"} "France"]]]]})
    (code-snippet "<ty-dropdown label=\"Country\" required placeholder=\"Select your country\">
   <option value=\"us\">United States</option>
   <option value=\"ca\">Canada</option>
@@ -94,10 +94,10 @@
                                          :placeholder "Select size..."
                                          :style {:min-width "180px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "small"} "Small"]
-                           [:option {:value "medium"} "Medium"]
-                           [:option {:value "large"} "Large"]
-                           [:option {:value "xl"} "Extra Large"]]]]})
+                           [:ty-option {:value "small"} "Small"]
+                           [:ty-option {:value "medium"} "Medium"]
+                           [:ty-option {:value "large"} "Large"]
+                           [:ty-option {:value "xl"} "Extra Large"]]]]})
    (code-snippet "<ty-dropdown searchable=\"false\" placeholder=\"Select size...\" style=\"min-width: 180px;\">
   <option value=\"small\">Small</option>
   <option value=\"medium\">Medium</option>
@@ -110,9 +110,9 @@
                                          :disabled true
                                          :placeholder "Disabled dropdown"
                                          :style {:min-width "200px"}}
-                           [:option {:value "option1"} "Option 1"]
-                           [:option {:value "option2"} "Option 2"]
-                           [:option {:value "option3"} "Option 3"]]]]})
+                           [:ty-option {:value "option1"} "Option 1"]
+                           [:ty-option {:value "option2"} "Option 2"]
+                           [:ty-option {:value "option3"} "Option 3"]]]]})
 
    (demo-row {:title "Read-only State"
               :description "Read-only dropdown shows value but prevents interaction (note: no chevron)"
@@ -121,8 +121,8 @@
                                          :label "Read-only Field"
                                          :readonly true
                                          :style {:min-width "200px"}}
-                           [:option {:value "readonly-value"} "Read-only Value"]
-                           [:option {:value "other"} "Other Option"]]]]})])
+                           [:ty-option {:value "readonly-value"} "Read-only Value"]
+                           [:ty-option {:value "other"} "Other Option"]]]]})])
 
 (defn date-picker-examples []
   [:div.demo-section
@@ -137,12 +137,12 @@
                                          :placeholder "Select country..."
                                          :style {:min-width "200px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "us"} "🇺🇸 United States"]
-                           [:option {:value "ja"} "🇯🇵 Japan"]
-                           [:option {:value "de"} "🇩🇪 Germany"]
-                           [:option {:value "au"} "🇦🇺 Australia"]
-                           [:option {:value "pt_BR"} "🇧🇷 Brazil"]
-                           [:option {:value "en_ZA"} "🇿🇦 South Africa"]]]
+                           [:ty-option {:value "us"} "🇺🇸 United States"]
+                           [:ty-option {:value "ja"} "🇯🇵 Japan"]
+                           [:ty-option {:value "de"} "🇩🇪 Germany"]
+                           [:ty-option {:value "au"} "🇦🇺 Australia"]
+                           [:ty-option {:value "pt_BR"} "🇧🇷 Brazil"]
+                           [:ty-option {:value "en_ZA"} "🇿🇦 South Africa"]]]
                          [:div.mt-2.text-sm.ty-text-
                           "Selected: "
                           [:code.ty-content.px-2.py-1.rounded.text-xs
@@ -157,9 +157,9 @@
                            [:code.ty-content.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                               (js/Date. date-val)
-                               (::dropdown-value @state/state "en")
-                               {:dateStyle "full"})
+                                (js/Date. date-val)
+                                (::dropdown-value @state/state "en")
+                                {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -202,9 +202,9 @@
                                          :placeholder "Select priority..."
                                          :style {:min-width "180px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "low"} "Low"]
-                           [:option {:value "medium"} "Medium"]
-                           [:option {:value "high"} "High"]]]
+                           [:ty-option {:value "low"} "Low"]
+                           [:ty-option {:value "medium"} "Medium"]
+                           [:ty-option {:value "high"} "High"]]]
                          [:div.max-w-xs
                           [:ty-date-picker {:label "Due Date"
                                             :required true
@@ -582,10 +582,10 @@
                     :placeholder "Select option A..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
-      [:option {:value "a1"} "Option A1"]
-      [:option {:value "a2"} "Option A2"]
-      [:option {:value "a3"} "Option A3"]
-      [:option {:value "a4"} "Option A4"]]]
+      [:ty-option {:value "a1"} "Option A1"]
+      [:ty-option {:value "a2"} "Option A2"]
+      [:ty-option {:value "a3"} "Option A3"]
+      [:ty-option {:value "a4"} "Option A4"]]]
 
     [:div
      [:ty-dropdown {:value "b1"
@@ -593,10 +593,10 @@
                     :placeholder "Select option B..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
-      [:option {:value "b1"} "Option B1"]
-      [:option {:value "b2"} "Option B2"]
-      [:option {:value "b3"} "Option B3"]
-      [:option {:value "b4"} "Option B4"]]]
+      [:ty-option {:value "b1"} "Option B1"]
+      [:ty-option {:value "b2"} "Option B2"]
+      [:ty-option {:value "b3"} "Option B3"]
+      [:ty-option {:value "b4"} "Option B4"]]]
 
     [:div
      [:ty-dropdown {:value "c1"
@@ -604,10 +604,10 @@
                     :placeholder "Select option C..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
-      [:option {:value "c1"} "Option C1"]
-      [:option {:value "c2"} "Option C2"]
-      [:option {:value "c3"} "Option C3"]
-      [:option {:value "c4"} "Option C4"]]]
+      [:ty-option {:value "c1"} "Option C1"]
+      [:ty-option {:value "c2"} "Option C2"]
+      [:ty-option {:value "c3"} "Option C3"]
+      [:ty-option {:value "c4"} "Option C4"]]]
 
     ;; Second row
     [:div
@@ -617,9 +617,9 @@
                     :placeholder "Positive dropdown..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
-      [:option {:value "d1"} "Positive D1"]
-      [:option {:value "d2"} "Positive D2"]
-      [:option {:value "d3"} "Positive D3"]]]
+      [:ty-option {:value "d1"} "Positive D1"]
+      [:ty-option {:value "d2"} "Positive D2"]
+      [:ty-option {:value "d3"} "Positive D3"]]]
 
     [:div
      [:ty-dropdown {:value "e1"
@@ -628,9 +628,9 @@
                     :placeholder "Negative dropdown..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
-      [:option {:value "e1"} "Negative E1"]
-      [:option {:value "e2"} "Negative E2"]
-      [:option {:value "e3"} "Negative E3"]]]
+      [:ty-option {:value "e1"} "Negative E1"]
+      [:ty-option {:value "e2"} "Negative E2"]
+      [:ty-option {:value "e3"} "Negative E3"]]]
 
     [:div
      [:ty-dropdown {:value "f1"
@@ -639,9 +639,9 @@
                     :placeholder "Important dropdown..."
                     :style {:min-width "180px"}
                     :on {:change dropdown-event-handler}}
-      [:option {:value "f1"} "Important F1"]
-      [:option {:value "f2"} "Important F2"]
-      [:option {:value "f3"} "Important F3"]]]]
+      [:ty-option {:value "f1"} "Important F1"]
+      [:ty-option {:value "f2"} "Important F2"]
+      [:ty-option {:value "f3"} "Important F3"]]]]
 
    [:div.mt-6.p-4.bg-blue-50.dark:bg-blue-900.border.border-blue-200.dark:border-blue-700.rounded
     [:h4.text-sm.font-medium.text-blue-800.dark:text-blue-200.mb-2 "Expected Behavior:"]
@@ -676,8 +676,8 @@
                     :label "Neutral (default)"
                     :placeholder "Neutral flavor"
                     :style {:min-width "180px"}}
-      [:option {:value "neutral1"} "Neutral Option 1"]
-      [:option {:value "neutral2"} "Neutral Option 2"]]]
+      [:ty-option {:value "neutral1"} "Neutral Option 1"]
+      [:ty-option {:value "neutral2"} "Neutral Option 2"]]]
 
     [:div
      [:ty-dropdown {:flavor "success"
@@ -685,8 +685,8 @@
                     :value "pos1"
                     :placeholder "Positive flavor"
                     :style {:min-width "180px"}}
-      [:option {:value "pos1"} "Positive Option 1"]
-      [:option {:value "pos2"} "Positive Option 2"]]]
+      [:ty-option {:value "pos1"} "Positive Option 1"]
+      [:ty-option {:value "pos2"} "Positive Option 2"]]]
 
     [:div
      [:ty-dropdown {:flavor "danger"
@@ -694,8 +694,8 @@
                     :value "neg1"
                     :placeholder "Negative flavor"
                     :style {:min-width "180px"}}
-      [:option {:value "neg1"} "Negative Option 1"]
-      [:option {:value "neg2"} "Negative Option 2"]]]
+      [:ty-option {:value "neg1"} "Negative Option 1"]
+      [:ty-option {:value "neg2"} "Negative Option 2"]]]
 
     [:div
      [:ty-dropdown {:flavor "primary"
@@ -703,8 +703,8 @@
                     :value "imp1"
                     :placeholder "Important flavor"
                     :style {:min-width "180px"}}
-      [:option {:value "imp1"} "Important Option 1"]
-      [:option {:value "imp2"} "Important Option 2"]]]
+      [:ty-option {:value "imp1"} "Important Option 1"]
+      [:ty-option {:value "imp2"} "Important Option 2"]]]
 
     [:div
      [:ty-dropdown {:flavor "warning"
@@ -712,8 +712,8 @@
                     :value "exc1"
                     :placeholder "Exception flavor"
                     :style {:min-width "180px"}}
-      [:option {:value "exc1"} "Exception Option 1"]
-      [:option {:value "exc2"} "Exception Option 2"]]]
+      [:ty-option {:value "exc1"} "Exception Option 1"]
+      [:ty-option {:value "exc2"} "Exception Option 2"]]]
 
     [:div
      [:ty-dropdown {:flavor "secondary"
@@ -721,8 +721,8 @@
                     :value "unq1"
                     :placeholder "Unique flavor"
                     :style {:min-width "180px"}}
-      [:option {:value "unq1"} "Unique Option 1"]
-      [:option {:value "unq2"} "Unique Option 2"]]]]
+      [:ty-option {:value "unq1"} "Unique Option 1"]
+      [:ty-option {:value "unq2"} "Unique Option 2"]]]]
 
    (code-snippet "<ty-dropdown flavor=\"success\" placeholder=\"Positive flavor\">
   <option value=\"pos1\">Positive Option 1</option>
@@ -746,26 +746,26 @@
                                          :placeholder "Search languages..."
                                          :style {:min-width "220px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "javascript"} "JavaScript"]
-                           [:option {:value "typescript"} "TypeScript"]
-                           [:option {:value "python"} "Python"]
-                           [:option {:value "java"} "Java"]
-                           [:option {:value "clojure"} "Clojure"]
-                           [:option {:value "clojurescript"} "ClojureScript"]
-                           [:option {:value "rust"} "Rust"]
-                           [:option {:value "go"} "Go"]
-                           [:option {:value "kotlin"} "Kotlin"]
-                           [:option {:value "swift"} "Swift"]
-                           [:option {:value "csharp"} "C#"]
-                           [:option {:value "cpp"} "C++"]
-                           [:option {:value "c"} "C"]
-                           [:option {:value "ruby"} "Ruby"]
-                           [:option {:value "php"} "PHP"]
-                           [:option {:value "scala"} "Scala"]
-                           [:option {:value "haskell"} "Haskell"]
-                           [:option {:value "elixir"} "Elixir"]
-                           [:option {:value "erlang"} "Erlang"]
-                           [:option {:value "dart"} "Dart"]]]]})
+                           [:ty-option {:value "javascript"} "JavaScript"]
+                           [:ty-option {:value "typescript"} "TypeScript"]
+                           [:ty-option {:value "python"} "Python"]
+                           [:ty-option {:value "java"} "Java"]
+                           [:ty-option {:value "clojure"} "Clojure"]
+                           [:ty-option {:value "clojurescript"} "ClojureScript"]
+                           [:ty-option {:value "rust"} "Rust"]
+                           [:ty-option {:value "go"} "Go"]
+                           [:ty-option {:value "kotlin"} "Kotlin"]
+                           [:ty-option {:value "swift"} "Swift"]
+                           [:ty-option {:value "csharp"} "C#"]
+                           [:ty-option {:value "cpp"} "C++"]
+                           [:ty-option {:value "c"} "C"]
+                           [:ty-option {:value "ruby"} "Ruby"]
+                           [:ty-option {:value "php"} "PHP"]
+                           [:ty-option {:value "scala"} "Scala"]
+                           [:ty-option {:value "haskell"} "Haskell"]
+                           [:ty-option {:value "elixir"} "Elixir"]
+                           [:ty-option {:value "erlang"} "Erlang"]
+                           [:ty-option {:value "dart"} "Dart"]]]]})
 
    (demo-row {:title "Web Frameworks"
               :description "Type to filter frameworks"
@@ -774,16 +774,16 @@
                                          :placeholder "Search frameworks..."
                                          :style {:min-width "200px"}
                                          :on {:change dropdown-event-handler}}
-                           [:option {:value "react"} "React"]
-                           [:option {:value "vue"} "Vue.js"]
-                           [:option {:value "angular"} "Angular"]
-                           [:option {:value "svelte"} "Svelte"]
-                           [:option {:value "solid"} "SolidJS"]
-                           [:option {:value "lit"} "Lit"]
-                           [:option {:value "stencil"} "Stencil"]
-                           [:option {:value "alpine"} "Alpine.js"]
-                           [:option {:value "htmx"} "HTMX"]
-                           [:option {:value "stimulus"} "Stimulus"]]]]})
+                           [:ty-option {:value "react"} "React"]
+                           [:ty-option {:value "vue"} "Vue.js"]
+                           [:ty-option {:value "angular"} "Angular"]
+                           [:ty-option {:value "svelte"} "Svelte"]
+                           [:ty-option {:value "solid"} "SolidJS"]
+                           [:ty-option {:value "lit"} "Lit"]
+                           [:ty-option {:value "stencil"} "Stencil"]
+                           [:ty-option {:value "alpine"} "Alpine.js"]
+                           [:ty-option {:value "htmx"} "HTMX"]
+                           [:ty-option {:value "stimulus"} "Stimulus"]]]]})
 
    (code-snippet "<ty-dropdown placeholder=\"Search languages...\" style=\"min-width: 220px;\">
   <option value=\"javascript\">JavaScript</option>
@@ -810,23 +810,23 @@
       [:ty-dropdown {:value "clojure"
                      :placeholder "Search to test blur clear..."
                      :on {:change dropdown-event-handler}}
-       [:option {:value "javascript"} "JavaScript"]
-       [:option {:value "typescript"} "TypeScript"]
-       [:option {:value "python"} "Python"]
-       [:option {:value "java"} "Java"]
-       [:option {:value "clojure"} "Clojure"]
-       [:option {:value "clojurescript"} "ClojureScript"]
-       [:option {:value "rust"} "Rust"]
-       [:option {:value "go"} "Go"]
-       [:option {:value "kotlin"} "Kotlin"]
-       [:option {:value "swift"} "Swift"]
-       [:option {:value "csharp"} "C#"]
-       [:option {:value "cpp"} "C++"]
-       [:option {:value "ruby"} "Ruby"]
-       [:option {:value "php"} "PHP"]
-       [:option {:value "scala"} "Scala"]
-       [:option {:value "haskell"} "Haskell"]
-       [:option {:value "elixir"} "Elixir"]]]]
+       [:ty-option {:value "javascript"} "JavaScript"]
+       [:ty-option {:value "typescript"} "TypeScript"]
+       [:ty-option {:value "python"} "Python"]
+       [:ty-option {:value "java"} "Java"]
+       [:ty-option {:value "clojure"} "Clojure"]
+       [:ty-option {:value "clojurescript"} "ClojureScript"]
+       [:ty-option {:value "rust"} "Rust"]
+       [:ty-option {:value "go"} "Go"]
+       [:ty-option {:value "kotlin"} "Kotlin"]
+       [:ty-option {:value "swift"} "Swift"]
+       [:ty-option {:value "csharp"} "C#"]
+       [:ty-option {:value "cpp"} "C++"]
+       [:ty-option {:value "ruby"} "Ruby"]
+       [:ty-option {:value "php"} "PHP"]
+       [:ty-option {:value "scala"} "Scala"]
+       [:ty-option {:value "haskell"} "Haskell"]
+       [:ty-option {:value "elixir"} "Elixir"]]]]
 
     [:div {:class "bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4"}
      [:h4.text-sm.font-medium.text-blue-900.dark:text-blue-100.mb-2 "Platform Behavior"]
@@ -1148,20 +1148,20 @@
                                            :required true
                                            :style {:min-width "180px"}
                                            :on {:change dropdown-event-handler}}
-                             [:option {:value "tech"} "Technology"]
-                             [:option {:value "design"} "Design"]
-                             [:option {:value "business"} "Business"]
-                             [:option {:value "marketing"} "Marketing"]]
+                             [:ty-option {:value "tech"} "Technology"]
+                             [:ty-option {:value "design"} "Design"]
+                             [:ty-option {:value "business"} "Business"]
+                             [:ty-option {:value "marketing"} "Marketing"]]
 
                             [:ty-dropdown {:name "priority"
                                            :label "Priority"
                                            :value "high"
                                            :style {:min-width "150px"}
                                            :on {:change dropdown-event-handler}}
-                             [:option {:value "low"} "Low"]
-                             [:option {:value "medium"} "Medium"]
-                             [:option {:value "high"} "High"]
-                             [:option {:value "critical"} "Critical"]]]
+                             [:ty-option {:value "low"} "Low"]
+                             [:ty-option {:value "medium"} "Medium"]
+                             [:ty-option {:value "high"} "High"]
+                             [:ty-option {:value "critical"} "Critical"]]]
 
                            [:button.ty-button.ty-button-primary {:type "button"
                                                                  :on {:click #(let [form (.-target %)
@@ -1207,11 +1207,11 @@
                                            :value "option1"
                                            :style {:min-width "220px"}
                                            :on {:change dropdown-event-handler}}
-                             [:option {:value "option1"} "Option 1"]
-                             [:option {:value "option2"} "Option 2"]
-                             [:option {:value "option3"} "Option 3"]
-                             [:option {:value "option4"} "Option 4"]
-                             [:option {:value "option5"} "Option 5"]]
+                             [:ty-option {:value "option1"} "Option 1"]
+                             [:ty-option {:value "option2"} "Option 2"]
+                             [:ty-option {:value "option3"} "Option 3"]
+                             [:ty-option {:value "option4"} "Option 4"]
+                             [:ty-option {:value "option5"} "Option 5"]]
 
                             [:div.mt-4.text-sm.ty-text-
                              "Current value: "
@@ -1267,61 +1267,61 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
 
    ;; HTMX Integration Demo
    (demo-row
-    {:title "HTMX Integration Simulation"
-     :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
-     :children [[:div.max-w-2xl.w-full
-                 [:div.space-y-4
-                  [:form.p-6.ty-elevated.rounded-lg
-                   {:on {:submit #(do
-                                    (.preventDefault %)
-                                    (let [form (.-target %)
-                                          form-data (js/FormData. form)
-                                          data (js/Object.fromEntries form-data)
-                                          result-div (js/document.getElementById "htmx-result")]
-                                      (set! (.-innerHTML result-div)
-                                            (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
-                                                 "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
-                                                 "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
-                                                 (js/JSON.stringify data nil 2)
-                                                 "</pre>"
-                                                 "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
-                                                 "</div>"))
-                                      (js/console.log "HTMX simulation - would POST to server:" data)))}}
-                   [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-                    [:ty-dropdown {:name "department"
-                                   :label "Department"
-                                   :value "engineering"
-                                   :required true
-                                   :flavor "primary"
-                                   :style {:min-width "180px"}}
-                     [:option {:value "engineering"} "🔧 Engineering"]
-                     [:option {:value "design"} "🎨 Design"]
-                     [:option {:value "marketing"} "📢 Marketing"]
-                     [:option {:value "sales"} "💼 Sales"]
-                     [:option {:value "hr"} "👥 Human Resources"]]
+     {:title "HTMX Integration Simulation"
+      :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
+      :children [[:div.max-w-2xl.w-full
+                  [:div.space-y-4
+                   [:form.p-6.ty-elevated.rounded-lg
+                    {:on {:submit #(do
+                                     (.preventDefault %)
+                                     (let [form (.-target %)
+                                           form-data (js/FormData. form)
+                                           data (js/Object.fromEntries form-data)
+                                           result-div (js/document.getElementById "htmx-result")]
+                                       (set! (.-innerHTML result-div)
+                                             (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
+                                                  "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
+                                                  "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
+                                                  (js/JSON.stringify data nil 2)
+                                                  "</pre>"
+                                                  "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
+                                                  "</div>"))
+                                       (js/console.log "HTMX simulation - would POST to server:" data)))}}
+                    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+                     [:ty-dropdown {:name "department"
+                                    :label "Department"
+                                    :value "engineering"
+                                    :required true
+                                    :flavor "primary"
+                                    :style {:min-width "180px"}}
+                      [:ty-option {:value "engineering"} "🔧 Engineering"]
+                      [:ty-option {:value "design"} "🎨 Design"]
+                      [:ty-option {:value "marketing"} "📢 Marketing"]
+                      [:ty-option {:value "sales"} "💼 Sales"]
+                      [:ty-option {:value "hr"} "👥 Human Resources"]]
 
-                    [:ty-dropdown {:name "role"
-                                   :label "Role"
-                                   :value "developer"
-                                   :required true
-                                   :flavor "secondary"
-                                   :style {:min-width "180px"}}
-                     [:option {:value "intern"} "👨‍💻 Intern"]
-                     [:option {:value "developer"} "⚡ Developer"]
-                     [:option {:value "senior"} "🚀 Senior Developer"]
-                     [:option {:value "lead"} "👑 Team Lead"]
-                     [:option {:value "manager"} "📊 Manager"]]]
+                     [:ty-dropdown {:name "role"
+                                    :label "Role"
+                                    :value "developer"
+                                    :required true
+                                    :flavor "secondary"
+                                    :style {:min-width "180px"}}
+                      [:ty-option {:value "intern"} "👨‍💻 Intern"]
+                      [:ty-option {:value "developer"} "⚡ Developer"]
+                      [:ty-option {:value "senior"} "🚀 Senior Developer"]
+                      [:ty-option {:value "lead"} "👑 Team Lead"]
+                      [:ty-option {:value "manager"} "📊 Manager"]]]
 
-                   [:div.mt-6.flex.justify-center.grow
-                    [:ty-button {:type "submit"}
-                     "Submit Form (HTMX Simulation)"]]]
+                    [:div.mt-6.flex.justify-center.grow
+                     [:ty-button {:type "submit"}
+                      "Submit Form (HTMX Simulation)"]]]
 
-                  [:div#htmx-result.mt-4]
+                   [:div#htmx-result.mt-4]
 
-                  [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
-                   [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
-                   [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
-                    "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
+                   [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
+                    [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
+                    [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
+                     "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
 
    (code-snippet "<!-- HTMX form integration -->
 <form hx-post=\"/api/form/submit\" hx-target=\"#result\">
@@ -1403,10 +1403,10 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
     [:ty-dropdown {:value (::dropdown-value @state/state "")
                    :placeholder "Select to see events..."
                    :on {:change dropdown-event-handler}}
-     [:option {:value "event1"} "Event Test 1"]
-     [:option {:value "event2"} "Event Test 2"]
-     [:option {:value "event3"} "Event Test 3"]
-     [:option {:value "event4"} "Event Test 4"]]]
+     [:ty-option {:value "event1"} "Event Test 1"]
+     [:ty-option {:value "event2"} "Event Test 2"]
+     [:ty-option {:value "event3"} "Event Test 3"]
+     [:ty-option {:value "event4"} "Event Test 4"]]]
 
    (code-snippet "const handleChange = (event) => {
   const { value, text } = event.detail;
@@ -1437,10 +1437,10 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      [:ty-dropdown
       {:placeholder "Select inside transform context"
        :style {:width "250px"}}
-      [:option {:value "transform-1"} "Transform Test Option 1"]
-      [:option {:value "transform-2"} "Transform Test Option 2"]
-      [:option {:value "transform-3"} "Transform Test Option 3"]
-      [:option {:value "transform-4"} "Should appear above everything ✨"]]]]
+      [:ty-option {:value "transform-1"} "Transform Test Option 1"]
+      [:ty-option {:value "transform-2"} "Transform Test Option 2"]
+      [:ty-option {:value "transform-3"} "Transform Test Option 3"]
+      [:ty-option {:value "transform-4"} "Should appear above everything ✨"]]]]
 
    ;; Overflow hidden test
    [:div.test-scenario.mb-8
@@ -1455,9 +1455,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      [:ty-dropdown
       {:placeholder "Select in overflow:hidden"
        :style {:width "220px"}}
-      [:option {:value "overflow-1"} "Overflow Test 1"]
-      [:option {:value "overflow-2"} "Overflow Test 2"]
-      [:option {:value "overflow-3"} "Should not be clipped! 🎯"]]]]
+      [:ty-option {:value "overflow-1"} "Overflow Test 1"]
+      [:ty-option {:value "overflow-2"} "Overflow Test 2"]
+      [:ty-option {:value "overflow-3"} "Should not be clipped! 🎯"]]]]
 
    ;; High z-index competition
    [:div.test-scenario.mb-8.relative
@@ -1481,9 +1481,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      [:ty-dropdown
       {:placeholder "Dropdown vs z-index 9999"
        :style {:width "200px"}}
-      [:option {:value "zindex-1"} "Z-Index Test 1"]
-      [:option {:value "zindex-2"} "Z-Index Test 2"]
-      [:option {:value "zindex-3"} "Top layer wins! 🏆"]]]]
+      [:ty-option {:value "zindex-1"} "Z-Index Test 1"]
+      [:ty-option {:value "zindex-2"} "Z-Index Test 2"]
+      [:ty-option {:value "zindex-3"} "Top layer wins! 🏆"]]]]
 
    ;; Multiple stacking contexts
    [:div.test-scenario.mb-8
@@ -1499,9 +1499,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
       [:ty-dropdown
        {:placeholder "Complex context dropdown"
         :style {:width "240px"}}
-       [:option {:value "complex-1"} "Complex Context 1"]
-       [:option {:value "complex-2"} "Complex Context 2"]
-       [:option {:value "complex-3"} "Pierces all contexts! ⚡"]]]]]])
+       [:ty-option {:value "complex-1"} "Complex Context 1"]
+       [:ty-option {:value "complex-2"} "Complex Context 2"]
+       [:ty-option {:value "complex-3"} "Pierces all contexts! ⚡"]]]]]])
 
 (defn scroll-to-close-tests
   "Test the scroll-to-close functionality"
@@ -1518,9 +1518,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
     [:ty-dropdown
      {:placeholder "Open me, then scroll page"
       :style {:width "250px"}}
-     [:option {:value "scroll-1"} "Page Scroll Test 1"]
-     [:option {:value "scroll-2"} "Page Scroll Test 2"]
-     [:option {:value "scroll-3"} "Closes on scroll 🔄"]]]
+     [:ty-option {:value "scroll-1"} "Page Scroll Test 1"]
+     [:ty-option {:value "scroll-2"} "Page Scroll Test 2"]
+     [:ty-option {:value "scroll-3"} "Closes on scroll 🔄"]]]
 
    ;; Container scroll test
    [:div.test-scenario.mb-8
@@ -1536,9 +1536,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
       [:ty-dropdown
        {:placeholder "Scroll container to test"
         :style {:width "220px"}}
-       [:option {:value "container-1"} "Container Scroll 1"]
-       [:option {:value "container-2"} "Container Scroll 2"]
-       [:option {:value "container-3"} "Detects container scroll 📦"]]
+       [:ty-option {:value "container-1"} "Container Scroll 1"]
+       [:ty-option {:value "container-2"} "Container Scroll 2"]
+       [:ty-option {:value "container-3"} "Detects container scroll 📦"]]
       [:div.mt-8.p-4.bg-blue-50.rounded
        "Scroll this container after opening the dropdown above"]
       [:div.mt-4.p-4.bg-green-50.rounded
@@ -1559,9 +1559,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      [:ty-dropdown
       {:placeholder "Click outside to close"
        :style {:width "200px"}}
-      [:option {:value "backdrop-1"} "Backdrop Test 1"]
-      [:option {:value "backdrop-2"} "Backdrop Test 2"]
-      [:option {:value "backdrop-3"} "Click anywhere! 👆"]]
+      [:ty-option {:value "backdrop-1"} "Backdrop Test 1"]
+      [:ty-option {:value "backdrop-2"} "Backdrop Test 2"]
+      [:ty-option {:value "backdrop-3"} "Click anywhere! 👆"]]
      [:div.p-4.bg-yellow-50.rounded.border-2.border-dashed.border-yellow-300
       "Click this area"]]]
 
@@ -1571,9 +1571,9 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
     [:ty-dropdown
      {:placeholder "Press ESC to close"
       :style {:width "200px"}}
-     [:option {:value "esc-1"} "ESC Test 1"]
-     [:option {:value "esc-2"} "ESC Test 2"]
-     [:option {:value "esc-3"} "Press ESC! ⌨️"]]]])
+     [:ty-option {:value "esc-1"} "ESC Test 1"]
+     [:ty-option {:value "esc-2"} "ESC Test 2"]
+     [:ty-option {:value "esc-3"} "Press ESC! ⌨️"]]]])
 
 (defn positioning-accuracy-tests
   "Test that dropdowns appear over the stub with exact positioning"
@@ -1591,15 +1591,15 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      [:ty-dropdown
       {:placeholder "Narrow dropdown"
        :style {:width "150px"}}
-      [:option {:value "narrow-1"} "Fits exactly"]]
+      [:ty-option {:value "narrow-1"} "Fits exactly"]]
      [:ty-dropdown
       {:placeholder "Medium width dropdown"
        :style {:width "250px"}}
-      [:option {:value "medium-1"} "Should align perfectly"]]
+      [:ty-option {:value "medium-1"} "Should align perfectly"]]
      [:ty-dropdown
       {:placeholder "Wide dropdown for testing alignment precision"
        :style {:width "400px"}}
-      [:option {:value "wide-1"} "Perfect width matching"]]]]
+      [:ty-option {:value "wide-1"} "Perfect width matching"]]]]
 
    ;; Edge positioning test
    [:div.test-scenario.mb-8
@@ -1609,11 +1609,11 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
      [:ty-dropdown
       {:placeholder "Left edge"
        :style {:width "180px"}}
-      [:option {:value "left-1"} "Left edge test"]]
+      [:ty-option {:value "left-1"} "Left edge test"]]
      [:ty-dropdown
       {:placeholder "Right edge"
        :style {:width "180px"}}
-      [:option {:value "right-1"} "Right edge test"]]]]])
+      [:ty-option {:value "right-1"} "Right edge test"]]]]])
 
 (defn showmodal-comprehensive-tests
   "All showModal() implementation tests in one section"

@@ -92,7 +92,7 @@
       [:h4.font-medium.ty-text.mb-2 "1. Install packages:"]
       [:pre.rounded-lg.overflow-x-auto
        [:code.language-bash.hljs
-        "npm install @gersak/ty @gersak/ty-react"]]]
+        "npm install @gersak/ty-react"]]]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Import and use components:"]

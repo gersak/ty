@@ -1,8 +1,8 @@
 (ns ty.site.icons
   "Icon registration for the site application"
-  (:require [ty.icons :as icons]
-            [ty.lucide :as lucide]
-            [ty.material.filled :as mat-filled]))
+  (:require [ty.fav6.brands :as fav6-brands]
+            [ty.icons :as icons]
+            [ty.lucide :as lucide]))
 
 (icons/add! {;; Core navigation icons
              "home" lucide/home
@@ -56,6 +56,7 @@
              "life-buoy" lucide/life-buoy
              "credit-card" lucide/credit-card
              "handshake" lucide/handshake
+             "file-code" lucide/file-code
 
              ;; MISSING ICONS - Adding from usage analysis
              ;; Programming/Tech icons
@@ -68,7 +69,9 @@
              "function" lucide/square-function ; Alternative for lambda if needed
              "brackets" lucide/brackets ; Code-related alternative
              "terminal" lucide/terminal ; Terminal/command line
-             "box" lucide/box ; Package management
+             "box" lucide/box
+             "package" lucide/package
+             "sparkles" lucide/sparkles
 
              ;; Missing utility icons from user profile
              "external-link" lucide/external-link
@@ -79,11 +82,14 @@
              "shield" lucide/shield
              "key" lucide/key
              "brush" lucide/brush
+             "map" lucide/map-pin
 
              ;; Copy functionality
              "copy" lucide/copy ; Copy to clipboard icon
              "arrow-right" lucide/arrow-right ; Navigation arrows used in landing page
-             "lambda" lucide/square-function})
+             "lambda" lucide/square-function
 
-
-(println "ARROW RIGHT: " lucide/arrow-right)
+             ;; Framework icons from FontAwesome
+             "react" fav6-brands/react ; React brand icon
+             "python" fav6-brands/python ; Python brand icon
+             "node-js" fav6-brands/node-js}) ; Node.js brand icon

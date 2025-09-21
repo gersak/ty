@@ -364,10 +364,10 @@ html[data-theme="dark"] {
 
   /* Neutral */
   --ty-color-neutral-strong: #f3f4f6;
-  --ty-color-neutral-mild: #d1d5db;
-  --ty-color-neutral: #9ca3af;
-  --ty-color-neutral-soft: #6b7280;
-  --ty-color-neutral-faint: #4b5563;
+  --ty-color-neutral-mild: #d6d6d6;
+  --ty-color-neutral: #b3b3b3;
+  --ty-color-neutral-soft: #777777;
+  --ty-color-neutral-faint: #5b5b5b;
 
   /* Backgrounds for dark mode */
   --ty-bg-faint: #0f1419;
@@ -457,6 +457,131 @@ html[data-theme="dark"] {
   --ty-modal-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.4),
     0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* =================================================================
+   TEXT SELECTION STYLING
+   Global and semantic text selection colors
+   ================================================================= */
+
+/* Global text selection - uses primary colors by default */
+::selection {
+  background-color: var(--ty-selection-bg, var(--ty-bg-primary-mild));
+  color: var(--ty-selection-color, var(--ty-text-strong));
+}
+
+::-moz-selection {
+  background-color: var(--ty-selection-bg, var(--ty-color-primary));
+  color: var(--ty-selection-color, var(--ty-text-strong));
+}
+
+
+/* Code block selection - special handling for better readability */
+pre ::selection,
+code ::selection,
+pre::-moz-selection,
+code::-moz-selection {
+  background-color: var(--ty-color-warning-soft);
+  color: var(--ty-color-neutral-strong);
+}
+
+html.dark pre ::selection,
+html.dark code ::selection,
+html.dark pre::-moz-selection,
+html.dark code::-moz-selection {
+  background-color: var(--ty-color-warning);
+  color: var(--ty-bg-strong);
+}
+
+/* Input and textarea selection - higher contrast */
+input::selection,
+textarea::selection,
+input::-moz-selection,
+textarea::-moz-selection {
+  background-color: var(--ty-color-primary);
+  color: white;
+}
+
+html.dark input::selection,
+html.dark textarea::selection,
+html.dark input::-moz-selection,
+html.dark textarea::-moz-selection {
+  background-color: var(--ty-color-primary-soft);
+  color: var(--ty-color-primary-strong);
+}
+
+/* Semantic selection utility classes */
+.ty-selection-primary ::selection,
+.ty-selection-primary::-moz-selection {
+  background-color: var(--ty-color-primary-soft);
+  color: var(--ty-color-primary-strong);
+}
+
+.ty-selection-secondary ::selection,
+.ty-selection-secondary::-moz-selection {
+  background-color: var(--ty-color-secondary-soft);
+  color: var(--ty-color-secondary-strong);
+}
+
+.ty-selection-success ::selection,
+.ty-selection-success::-moz-selection {
+  background-color: var(--ty-color-success-soft);
+  color: var(--ty-color-success-strong);
+}
+
+.ty-selection-warning ::selection,
+.ty-selection-warning::-moz-selection {
+  background-color: var(--ty-color-warning-soft);
+  color: var(--ty-color-warning-strong);
+}
+
+.ty-selection-danger ::selection,
+.ty-selection-danger::-moz-selection {
+  background-color: var(--ty-color-danger-soft);
+  color: var(--ty-color-danger-strong);
+}
+
+.ty-selection-neutral ::selection,
+.ty-selection-neutral::-moz-selection {
+  background-color: var(--ty-color-neutral-soft);
+  color: var(--ty-color-neutral-strong);
+}
+
+/* Dark mode semantic selections */
+html.dark .ty-selection-primary ::selection,
+html.dark .ty-selection-primary::-moz-selection {
+  background-color: var(--ty-color-primary);
+  color: white;
+}
+
+html.dark .ty-selection-secondary ::selection,
+html.dark .ty-selection-secondary::-moz-selection {
+  background-color: var(--ty-color-secondary);
+  color: white;
+}
+
+html.dark .ty-selection-success ::selection,
+html.dark .ty-selection-success::-moz-selection {
+  background-color: var(--ty-color-success);
+  color: white;
+}
+
+html.dark .ty-selection-warning ::selection,
+html.dark .ty-selection-warning::-moz-selection {
+  background-color: var(--ty-color-warning);
+  color: var(--ty-bg-strong);
+}
+
+html.dark .ty-selection-danger ::selection,
+html.dark .ty-selection-danger::-moz-selection {
+  background-color: var(--ty-color-danger);
+  color: white;
+}
+
+html.dark .ty-selection-neutral ::selection,
+html.dark .ty-selection-neutral::-moz-selection {
+  background-color: var(--ty-color-neutral);
+  color: white;
 }
 
 /* =================================================================

@@ -47,6 +47,7 @@
 
              ;; Status and feedback icons
              "check-circle" lucide/check-circle
+             "x-circle" lucide/x-circle
              "alert-triangle" lucide/alert-triangle
              "alert-circle" lucide/alert-circle
              "circle" lucide/circle

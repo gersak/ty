@@ -8,8 +8,9 @@
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text++.mb-2 "ty-input"]
     [:p.text-lg.ty-text-
-     "A powerful, form-associated input component with built-in validation, formatting, "
-     "and semantic styling. Supports text, numeric, currency, checkbox, and password types."]]
+     "A powerful, form-associated input component with automatic formatting "
+     "and semantic styling. Supports text, numeric, currency, checkbox, and password types. "
+     "Validation is controlled by the user through the error attribute."]]
 
    ;; API Reference Card
    [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -17,82 +18,82 @@
 
     ;; Attributes Table
     (attribute-table
-      [{:name "type"
-        :type "string"
-        :default "'text'"
-        :description "Input type: text, number, currency, percent, compact, checkbox, password, date"}
-       {:name "value"
-        :type "string | number | boolean"
-        :default "null"
-        :description "Initial value of the input"}
-       {:name "placeholder"
-        :type "string"
-        :default "null"
-        :description "Placeholder text for the input"}
-       {:name "label"
-        :type "string"
-        :default "null"
-        :description "Label displayed above the input"}
-       {:name "name"
-        :type "string"
-        :default "null"
-        :description "Name for form submission"}
-       {:name "disabled"
-        :type "boolean"
-        :default "false"
-        :description "Whether the input is disabled"}
-       {:name "required"
-        :type "boolean"
-        :default "false"
-        :description "Whether the input is required (shows asterisk)"}
-       {:name "error"
-        :type "string"
-        :default "null"
-        :description "Error message to display (sets danger flavor)"}
-       {:name "size"
-        :type "string"
-        :default "'md'"
-        :description "Size variant: xs, sm, md, lg, xl"}
-       {:name "flavor"
-        :type "string"
-        :default "'neutral'"
-        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-       {:name "currency"
-        :type "string"
-        :default "'USD'"
-        :description "Currency code for type='currency' (e.g., USD, EUR, GBP)"}
-       {:name "locale"
-        :type "string"
-        :default "browser locale"
-        :description "Locale for number formatting (e.g., en-US, de-DE)"}
-       {:name "precision"
-        :type "number"
-        :default "null"
-        :description "Number of decimal places for numeric types"}
-       {:name "checked"
-        :type "boolean"
-        :default "false"
-        :description "Initial checked state for checkboxes"}
-       {:name "class"
-        :type "string"
-        :default "null"
-        :description "Additional CSS classes"}])
+     [{:name "type"
+       :type "string"
+       :default "'text'"
+       :description "Input type: text, number, currency, percent, compact, checkbox, password, date"}
+      {:name "value"
+       :type "string | number | boolean"
+       :default "null"
+       :description "Initial value of the input"}
+      {:name "placeholder"
+       :type "string"
+       :default "null"
+       :description "Placeholder text for the input"}
+      {:name "label"
+       :type "string"
+       :default "null"
+       :description "Label displayed above the input"}
+      {:name "name"
+       :type "string"
+       :default "null"
+       :description "Name for form submission"}
+      {:name "disabled"
+       :type "boolean"
+       :default "false"
+       :description "Whether the input is disabled"}
+      {:name "required"
+       :type "boolean"
+       :default "false"
+       :description "Whether the input is required (shows asterisk)"}
+      {:name "error"
+       :type "string"
+       :default "null"
+       :description "Error message to display (sets danger flavor)"}
+      {:name "size"
+       :type "string"
+       :default "'md'"
+       :description "Size variant: xs, sm, md, lg, xl"}
+      {:name "flavor"
+       :type "string"
+       :default "'neutral'"
+       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+      {:name "currency"
+       :type "string"
+       :default "'USD'"
+       :description "Currency code for type='currency' (e.g., USD, EUR, GBP)"}
+      {:name "locale"
+       :type "string"
+       :default "browser locale"
+       :description "Locale for number formatting (e.g., en-US, de-DE)"}
+      {:name "precision"
+       :type "number"
+       :default "null"
+       :description "Number of decimal places for numeric types"}
+      {:name "checked"
+       :type "boolean"
+       :default "false"
+       :description "Initial checked state for checkboxes"}
+      {:name "class"
+       :type "string"
+       :default "null"
+       :description "Additional CSS classes"}])
 
     [:div.mt-6
      [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
      (event-table
-       [{:name "input"
-         :when-fired "Fired on each input change"
-         :payload "{value, formattedValue?, rawValue, originalEvent}"}
-        {:name "change"
-         :when-fired "Fired when input loses focus after change"
-         :payload "{value, formattedValue?, rawValue, originalEvent}"}
-        {:name "focus"
-         :when-fired "Fired when input gains focus"
-         :payload "Standard FocusEvent"}
-        {:name "blur"
-         :when-fired "Fired when input loses focus"
-         :payload "Standard FocusEvent"}])
+      [{:name "input"
+        :when-fired "Fired on each input change"
+        :payload "{value, formattedValue?, rawValue, originalEvent}"}
+       {:name "change"
+        :when-fired "Fired when input loses focus after change"
+        :payload "{value, formattedValue?, rawValue, originalEvent}"}
+       {:name "focus"
+        :when-fired "Fired when input gains focus"
+        :payload "Standard FocusEvent"}
+       {:name "blur"
+        :when-fired "Fired when input loses focus"
+        :payload "Standard FocusEvent"}])
      [:p.text-sm.ty-text-.mt-2
       "Note: For checkboxes, events include " [:code.ty-bg-neutral-.px-1.rounded "checked"]
       " and " [:code.ty-bg-neutral-.px-1.rounded "formValue"] " in the detail."]]]
@@ -348,7 +349,7 @@
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Form Integration"]
    [:div.ty-content.rounded-lg.p-6
     [:h3.text-xl.font-semibold.ty-text++.mb-4 "Native Form Support"]
-    [:p.ty-text-.mb-4 "ty-input is a form-associated custom element that works seamlessly with native HTML forms."]
+    [:p.ty-text-.mb-4 "ty-input is a form-associated custom element that works seamlessly with native HTML forms. The error attribute is for display only - implement your own validation logic."]
 
     [:form.space-y-4 {:onsubmit "event.preventDefault(); console.log('Form submitted'); return false;"}
      [:ty-input {:name "fullname"
@@ -403,8 +404,8 @@ document.querySelector('form').addEventListener('submit', (e) => {
 
    ;; Live Validation Example
    [:div.ty-content.rounded-lg.p-6.mb-8
-    [:h3.text-xl.font-semibold.ty-text++.mb-4 "Live Validation"]
-    [:p.ty-text-.mb-4 "Use the input event to perform real-time validation."]
+    [:h3.text-xl.font-semibold.ty-text++.mb-4 "User-Controlled Validation"]
+    [:p.ty-text-.mb-4 "ty-input displays error messages via the error attribute. You control validation logic and state."]
 
     [:div.space-y-4
      [:ty-input {:id "username-input"
@@ -508,11 +509,12 @@ usdInput.addEventListener('input', (e) => {
        "Do's"]
       [:ul.space-y-2.ty-text-
        [:li "• Always provide labels for accessibility"]
-       [:li "• Use semantic input types (email, tel, date)"]
-       [:li "• Leverage native validation attributes (required, min, max)"]
-       [:li "• Use appropriate flavors for visual feedback"]
+       [:li "• Use semantic input types (text, email, password, date, etc.)"]
+       [:li "• Implement validation in your application"]
+       [:li "• Use the error attribute to display validation feedback"]
+       [:li "• Access numeric shadow values from event.detail.value"]
        [:li "• Set proper currency and locale for international apps"]
-       [:li "• Use the shadow value from events for calculations"]]]
+       [:li "• Use name attribute for form submission"]]]
 
      ;; Don'ts
      [:div
@@ -521,12 +523,12 @@ usdInput.addEventListener('input', (e) => {
                   :size "20"}]
        "Don'ts"]
       [:ul.space-y-2.ty-text-
-       [:li "• Don't rely on formatted values for calculations"]
-       [:li "• Don't mix error attribute with success/warning flavors"]
+       [:li "• Don't use formatted display values for calculations"]
+       [:li "• Don't expect ty-input to validate data for you"]
        [:li "• Don't use placeholder as a label replacement"]
-       [:li "• Don't disable without clear reasoning"]
-       [:li "• Don't ignore the numeric shadow values"]
-       [:li "• Don't forget to handle both input and change events"]]]]]
+       [:li "• Don't mix error attribute with non-danger flavors"]
+       [:li "• Don't ignore event.detail.value for numeric types"]
+       [:li "• Don't forget validation is your responsibility - ty-input only displays errors"]]]]]
 
    ;; Tips Section
    [:div.ty-content.rounded-lg.p-6.mt-8
@@ -534,26 +536,30 @@ usdInput.addEventListener('input', (e) => {
 
     [:div.space-y-4
      [:div
-      [:h3.font-semibold.ty-text+ "Shadow Values"]
-      [:p.ty-text- "Numeric inputs maintain a 'shadow value' - the actual numeric value used for calculations. Access it via "
-       [:code.ty-bg-neutral-.px-1.rounded "event.detail.value"] " in event handlers."]]
+      [:h3.font-semibold.ty-text+ "State Management"]
+      [:p.ty-text- "ty-input manages its own value state internally. When users type, the component updates its internal state and emits events. The error attribute is stateless - just displays what you provide."]]
+
+     [:div
+      [:h3.font-semibold.ty-text+ "Shadow Values for Numbers"]
+      [:p.ty-text- "Numeric inputs maintain a 'shadow value' - the actual numeric value. Access it via "
+       [:code.ty-bg-neutral-.px-1.rounded "event.detail.value"] " for calculations, not the formatted display value."]]
 
      [:div
       [:h3.font-semibold.ty-text+ "Formatting Behavior"]
-      [:p.ty-text- "Numeric inputs show formatted values when blurred and raw values when focused. This provides a better UX for data entry."]]
+      [:p.ty-text- "Numeric inputs show formatted values when blurred (e.g., $1,234.56) and raw values when focused (1234.56) for easier data entry."]]
 
      [:div
       [:h3.font-semibold.ty-text+ "Form Association"]
-      [:p.ty-text- "ty-input is fully form-associated. It works with FormData, form validation, and form reset just like native inputs."]]
+      [:p.ty-text- "ty-input is fully form-associated. It works with FormData, form submission, and form reset just like native inputs."]]
 
      [:div
-      [:h3.font-semibold.ty-text+ "Checkbox Values"]
-      [:p.ty-text- "Checkboxes submit their 'value' attribute when checked (default: 'on'), and nothing when unchecked. Use the "
-       [:code.ty-bg-neutral-.px-1.rounded "checked"] " property or attribute to set initial state."]]
+      [:h3.font-semibold.ty-text+ "Error Display"]
+      [:p.ty-text- "The error attribute displays a message and applies danger styling. When error is set, the flavor automatically becomes 'danger'."]]
 
      [:div
-      [:h3.font-semibold.ty-text+ "Internationalization"]
-      [:p.ty-text- "Currency and number formatting automatically respects the locale attribute. If not specified, it uses the browser's locale."]]]]
+      [:h3.font-semibold.ty-text+ "Checkbox Behavior"]
+      [:p.ty-text- "Checkboxes submit their 'value' attribute when checked (default: 'on'), and nothing when unchecked. Control state with the "
+       [:code.ty-bg-neutral-.px-1.rounded "checked"] " attribute."]]]]
 
    ;; Related Components
    [:div.mt-8.p-4.ty-border.border.rounded-lg

@@ -17,7 +17,7 @@
    [:h3.text-lg.font-semibold.ty-text.mb-4 "5-Variant Text System"]
    [:p.ty-text-.mb-6 "Each semantic color provides 5 levels of emphasis for precise text hierarchy."]
 
-   [:div.grid.gap-6.md:grid-cols-2
+   [:div.grid.gap-6.md:grid-cols-2.lg:grid-cols-3
     ;; Primary text variants
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Primary Text Variants"]
@@ -27,6 +27,16 @@
       [:div.ty-text-primary "ty-text-primary - Base emphasis"]
       [:div.ty-text-primary- "ty-text-primary- - Reduced emphasis"]
       [:div.ty-text-primary-- "ty-text-primary-- - Minimal emphasis"]]]
+
+    ;; Secondary text variants
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Secondary Text Variants"]
+     [:div.ty-bg-secondary-.p-4.rounded-lg.space-y-2
+      [:div.ty-text-secondary++ "ty-text-secondary++ - Maximum emphasis"]
+      [:div.ty-text-secondary+ "ty-text-secondary+ - High emphasis"]
+      [:div.ty-text-secondary "ty-text-secondary - Base emphasis"]
+      [:div.ty-text-secondary- "ty-text-secondary- - Reduced emphasis"]
+      [:div.ty-text-secondary-- "ty-text-secondary-- - Minimal emphasis"]]]
 
     ;; Success text variants
     [:div.space-y-3
@@ -56,7 +66,17 @@
       [:div.ty-text-warning+ "ty-text-warning+ - High emphasis"]
       [:div.ty-text-warning "ty-text-warning - Base emphasis"]
       [:div.ty-text-warning- "ty-text-warning- - Reduced emphasis"]
-      [:div.ty-text-warning-- "ty-text-warning-- - Minimal emphasis"]]]]])
+      [:div.ty-text-warning-- "ty-text-warning-- - Minimal emphasis"]]]
+
+    ;; Neutral text variants
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Neutral Text Variants"]
+     [:div.ty-bg-neutral-.p-4.rounded-lg.space-y-2
+      [:div.ty-text-neutral++ "ty-text-neutral++ - Maximum emphasis"]
+      [:div.ty-text-neutral+ "ty-text-neutral+ - High emphasis"]
+      [:div.ty-text-neutral "ty-text-neutral - Base emphasis"]
+      [:div.ty-text-neutral- "ty-text-neutral- - Reduced emphasis"]
+      [:div.ty-text-neutral-- "ty-text-neutral-- - Minimal emphasis"]]]]])
 
 (defn background-variants-demo []
   "Shows the 3-variant background system"
@@ -77,6 +97,19 @@
      [:div.ty-bg-primary-.p-4.rounded-lg.text-center
       [:div.ty-text-primary++.font-medium "ty-bg-primary-"]
       [:div.ty-text-primary.text-sm "Softer background"]]]
+
+    ;; Secondary backgrounds
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Secondary Backgrounds"]
+     [:div.ty-bg-secondary+.p-4.rounded-lg.text-center
+      [:div.ty-text-secondary++.font-medium "ty-bg-secondary+"]
+      [:div.ty-text-secondary.text-sm "Stronger background"]]
+     [:div.ty-bg-secondary.p-4.rounded-lg.text-center
+      [:div.ty-text-secondary++.font-medium "ty-bg-secondary"]
+      [:div.ty-text-secondary.text-sm "Base background"]]
+     [:div.ty-bg-secondary-.p-4.rounded-lg.text-center
+      [:div.ty-text-secondary++.font-medium "ty-bg-secondary-"]
+      [:div.ty-text-secondary.text-sm "Softer background"]]]
 
     ;; Success backgrounds
     [:div.space-y-3
@@ -102,7 +135,33 @@
       [:div.ty-text-danger.text-sm "Base background"]]
      [:div.ty-bg-danger-.p-4.rounded-lg.text-center
       [:div.ty-text-danger++.font-medium "ty-bg-danger-"]
-      [:div.ty-text-danger.text-sm "Softer background"]]]]])
+      [:div.ty-text-danger.text-sm "Softer background"]]]
+
+    ;; Warning backgrounds
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Warning Backgrounds"]
+     [:div.ty-bg-warning+.p-4.rounded-lg.text-center
+      [:div.ty-text-warning++.font-medium "ty-bg-warning+"]
+      [:div.ty-text-warning.text-sm "Stronger background"]]
+     [:div.ty-bg-warning.p-4.rounded-lg.text-center
+      [:div.ty-text-warning++.font-medium "ty-bg-warning"]
+      [:div.ty-text-warning.text-sm "Base background"]]
+     [:div.ty-bg-warning-.p-4.rounded-lg.text-center
+      [:div.ty-text-warning++.font-medium "ty-bg-warning-"]
+      [:div.ty-text-warning.text-sm "Softer background"]]]
+
+    ;; Neutral backgrounds
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Neutral Backgrounds"]
+     [:div.ty-bg-neutral+.p-4.rounded-lg.text-center
+      [:div.ty-text-neutral++.font-medium "ty-bg-neutral+"]
+      [:div.ty-text-neutral.text-sm "Stronger background"]]
+     [:div.ty-bg-neutral.p-4.rounded-lg.text-center
+      [:div.ty-text-neutral++.font-medium "ty-bg-neutral"]
+      [:div.ty-text-neutral.text-sm "Base background"]]
+     [:div.ty-bg-neutral-.p-4.rounded-lg.text-center
+      [:div.ty-text-neutral++.font-medium "ty-bg-neutral-"]
+      [:div.ty-text-neutral.text-sm "Softer background"]]]]])
 
 (defn surface-classes-demo []
   "Shows surface classes nested like babushkas to demonstrate layering hierarchy"
@@ -165,7 +224,7 @@
     ;; Alert examples
     [:div
      [:h4.text-sm.font-medium.ty-text.mb-3 "Alert Components"]
-     [:div.grid.gap-4.md:grid-cols-2
+     [:div.grid.gap-4.md:grid-cols-2.lg:grid-cols-3
       [:div.ty-bg-success-.ty-border-success.border.rounded-lg.p-4
        [:div.flex.items-center.gap-3
         [:ty-icon {:name "check-circle"
@@ -180,7 +239,23 @@
                    :size "sm"}]
         [:div
          [:div.ty-text-danger++.font-medium "Error"]
-         [:div.ty-text-danger.text-sm "Something went wrong, please try again"]]]]]]
+         [:div.ty-text-danger.text-sm "Something went wrong, please try again"]]]]
+
+      [:div.ty-bg-warning-.ty-border-warning.border.rounded-lg.p-4
+       [:div.flex.items-center.gap-3
+        [:ty-icon {:name "alert-triangle"
+                   :size "sm"}]
+        [:div
+         [:div.ty-text-warning++.font-medium "Warning"]
+         [:div.ty-text-warning.text-sm "Please review before proceeding"]]]]
+
+      [:div.ty-bg-neutral-.ty-border-neutral.border.rounded-lg.p-4
+       [:div.flex.items-center.gap-3
+        [:ty-icon {:name "info"
+                   :size "sm"}]
+        [:div
+         [:div.ty-text-neutral++.font-medium "Information"]
+         [:div.ty-text-neutral.text-sm "This is a helpful informational note"]]]]]]
 
     ;; Card example
     [:div
@@ -199,7 +274,9 @@
       [:span.px-3.py-1.ty-bg-success.ty-text-success++.rounded-full.text-sm.font-medium "Active"]
       [:span.px-3.py-1.ty-bg-warning.ty-text-warning++.rounded-full.text-sm.font-medium "Pending"]
       [:span.px-3.py-1.ty-bg-danger.ty-text-danger++.rounded-full.text-sm.font-medium "Failed"]
-      [:span.px-3.py-1.ty-bg-neutral.ty-text-neutral++.rounded-full.text-sm.font-medium "Draft"]]]]])
+      [:span.px-3.py-1.ty-bg-neutral.ty-text-neutral++.rounded-full.text-sm.font-medium "Draft"]
+      [:span.px-3.py-1.ty-bg-secondary.ty-text-secondary++.rounded-full.text-sm.font-medium "Archived"]
+      [:span.px-3.py-1.ty-bg-primary.ty-text-primary++.rounded-full.text-sm.font-medium "Featured"]]]]])
 
 (defn code-examples []
   "Shows code patterns for using Ty classes"

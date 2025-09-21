@@ -372,10 +372,6 @@ input:focus-visible {
   /* Align with label text */
 }
 
-.checkbox-container:hover:not(.disabled) {
-  background: var(--ty-bg-neutral-soft);
-}
-
 .checkbox-icon {
   display: flex;
   align-items: center;

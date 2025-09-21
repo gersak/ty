@@ -5,6 +5,7 @@
             [ty.site.docs.button :as button-docs]
             [ty.site.docs.common :as common]
             [ty.site.docs.css-system :as css-system]
+            [ty.site.docs.input :as input-docs]
             ;; Import component doc namespaces
             [ty.site.docs.index :as index]))
 
@@ -20,17 +21,21 @@
                        :segment component
                        :view #(common/placeholder-view component)
                        :name (str/capitalize component)}))
-              ;; Start with explicitly defined component docs
+;; Start with explicitly defined component docs
               [{:id :ty.site.docs/button
                 :segment "button"
                 :view button-docs/view
                 :name "Button"}
+               {:id :ty.site.docs/input
+                :segment "input"
+                :view input-docs/view
+                :name "Input"}
                {:id :ty.site.docs/css-system
                 :segment "css-system"
                 :view css-system/view
                 :name "CSS System"}]
-              ;; Add placeholders for remaining components (excluding button)
-              (remove #(= % "button") component-list)))
+;; Add placeholders for remaining components (excluding documented ones)
+              (remove #(contains? #{"button" "input"} %) component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []

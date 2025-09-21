@@ -364,10 +364,10 @@ html[data-theme="dark"] {
 
   /* Neutral */
   --ty-color-neutral-strong: #f3f4f6;
-  --ty-color-neutral-mild: #d1d5db;
-  --ty-color-neutral: #9ca3af;
-  --ty-color-neutral-soft: #6b7280;
-  --ty-color-neutral-faint: #4b5563;
+  --ty-color-neutral-mild: #d6d6d6;
+  --ty-color-neutral: #b3b3b3;
+  --ty-color-neutral-soft: #777777;
+  --ty-color-neutral-faint: #5b5b5b;
 
   /* Backgrounds for dark mode */
   --ty-bg-faint: #0f1419;

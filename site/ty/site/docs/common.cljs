@@ -57,11 +57,12 @@
 
 (defn example-section
   "Create an example section with live demo and code"
-  [title demo code]
-  [:div
-   [:h3.text-lg.font-medium.ty-text.mb-2 title]
-   [:div.mb-4 demo]
-   (code-block code)])
+  ([title demo code] (example-section title demo code "html"))
+  ([title demo code language]
+   [:div
+    [:h3.text-lg.font-medium.ty-text.mb-2 title]
+    [:div.mb-4 demo]
+    (code-block code :lang language)]))
 
 (defn doc-section
   "Create a documentation section with title and content"

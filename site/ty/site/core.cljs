@@ -174,8 +174,9 @@
          "Docs"]])
 
      ;; Theme toggle button
-     [:button.flex.items-center.justify-center.w-7.h-7.lg:w-8.lg:h-8.rounded-md.ty-content.hover:ty-content+.transition-colors.ty-text.cursor-pointer
-      {:on {:click toggle-theme!}}
+     [:ty-button
+      {:on {:click toggle-theme!}
+       :action true}
       [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
                  :size "sm"}]]]]])
 

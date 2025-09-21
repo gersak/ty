@@ -11,6 +11,7 @@
             [ty.site.docs.modal :as modal-docs]
             [ty.site.docs.popup :as popup-docs]
             [ty.site.docs.tag :as tag-docs]
+            [ty.site.docs.textarea :as textarea-docs]
             [ty.site.docs.tooltip :as tooltip-docs]))
 
 ;; Re-export component list from index
@@ -46,6 +47,10 @@
                 :segment "tag"
                 :view tag-docs/view
                 :name "Tag"}
+               {:id :ty.site.docs/textarea
+                :segment "textarea"
+                :view textarea-docs/view
+                :name "Textarea"}
                {:id :ty.site.docs/tooltip
                 :segment "tooltip"
                 :view tooltip-docs/view
@@ -55,7 +60,7 @@
                 :view css-system/view
                 :name "CSS System"}]
                ;; Add placeholders for remaining components (excluding documented ones)
-              (remove #(contains? #{"button" "input" "modal" "popup" "tag" "tooltip"} %) component-list)))
+              (remove #(contains? #{"button" "input" "modal" "popup" "tag" "textarea" "tooltip"} %) component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []

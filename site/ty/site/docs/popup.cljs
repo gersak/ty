@@ -56,7 +56,7 @@
      [:ty-popup {:id "basic-example"
                  :open false}
       [:ty-button {:slot "anchor"
-                   :onclick "document.getElementById('basic-example').toggleAttribute('open')"}
+                   :on {:click (fn [] (.toggleAttribute (.getElementById js/document "basic-example") "open"))}}
        "Click to toggle popup"]
       [:div.p-4.ty-elevated.rounded-lg.shadow-lg
        [:h4.font-bold.mb-2 "Popup Content"]
@@ -95,28 +95,28 @@
        [:ty-popup {:id "popup-top"
                    :placement "top"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('popup-top').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-top") "open"))}}
          "Top Popup"]
         [:div.p-3.ty-bg-primary-.rounded "Positioned above"]]
 
        [:ty-popup {:id "popup-bottom"
                    :placement "bottom"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('popup-bottom').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-bottom") "open"))}}
          "Bottom Popup"]
         [:div.p-3.ty-bg-success-.rounded "Positioned below"]]
 
        [:ty-popup {:id "popup-left"
                    :placement "left"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('popup-left').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-left") "open"))}}
          "Left Popup"]
         [:div.p-3.ty-bg-warning-.rounded "Positioned to the left"]]
 
        [:ty-popup {:id "popup-right"
                    :placement "right"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('popup-right').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-right") "open"))}}
          "Right Popup"]
         [:div.p-3.ty-bg-danger-.rounded "Positioned to the right"]]]
       "<!-- Different placement options -->
@@ -137,21 +137,21 @@
        [:ty-popup {:id "offset-0"
                    :offset "0"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('offset-0').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-0") "open"))}}
          "No offset"]
         [:div.p-3.ty-elevated.rounded.shadow-md "Touching the button"]]
 
        [:ty-popup {:id "offset-16"
                    :offset "16"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('offset-16').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-16") "open"))}}
          "16px offset"]
         [:div.p-3.ty-elevated.rounded.shadow-md "16px gap"]]
 
        [:ty-popup {:id "offset-32"
                    :offset "32"}
         [:ty-button {:slot "anchor"
-                     :onclick "document.getElementById('offset-32').toggleAttribute('open')"}
+                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-32") "open"))}}
          "32px offset"]
         [:div.p-3.ty-elevated.rounded.shadow-md "32px gap"]]]
       "<!-- Custom offset distances -->
@@ -173,7 +173,7 @@
                   :offset "16"}
        [:ty-button {:slot "anchor"
                     :flavor "primary"
-                    :onclick "document.getElementById('interactive-popup').toggleAttribute('open')"}
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "interactive-popup") "open"))}}
         "Open Settings"]
        [:div.p-4.ty-elevated.rounded-lg.shadow-lg.w-64
         [:h4.font-bold.mb-3 "Quick Settings"]
@@ -191,10 +191,10 @@
          [:div.flex.gap-2.mt-4
           [:ty-button {:size "sm"
                        :flavor "success"
-                       :onclick "document.getElementById('interactive-popup').removeAttribute('open')"}
+                       :on {:click (fn [] (.removeAttribute (.getElementById js/document "interactive-popup") "open"))}}
            "Apply"]
           [:ty-button {:size "sm"
-                       :onclick "document.getElementById('interactive-popup').removeAttribute('open')"}
+                       :on {:click (fn [] (.removeAttribute (.getElementById js/document "interactive-popup") "open"))}}
            "Cancel"]]]]]
       "<!-- Interactive popup with form -->
 <ty-popup id=\"settings-popup\" placement=\"right\" offset=\"16\">
@@ -227,14 +227,15 @@
       [:ty-popup {:id "profile-popup"
                   :placement "bottom"
                   :offset "8"}
-       [:button {:slot "anchor"
-                 :class "flex items-center gap-2 py-1.5 px-3 rounded-lg hover:ty-bg-neutral- transition"
-                 :onclick "document.getElementById('profile-popup').toggleAttribute('open')"}
-        [:div {:class "w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"}]
+       [:button.flex.items-center.gap-2.py-1.5.px-3.rounded-lg.hover:ty-bg-neutral-.transition
+        {:slot "anchor"
+         :on {:click (fn [] (.toggleAttribute (.getElementById js/document "profile-popup") "open"))}}
+        [:div.w-8.h-8.rounded-full.bg-gradient-to-br.from-blue-500.to-purple-500]
         [:span.ty-text "John Doe"]
         [:ty-icon {:name "chevron-down"
                    :size "sm"}]]
-       [:div {:class "ty-elevated rounded-lg shadow-lg py-2 min-w-[200px]"}
+       [:div.ty-elevated.rounded-lg.shadow-lg.py-2
+        {:class "min-w-[200px]"}
         [:div.px-4.py-2.border-b.ty-border
          [:div.ty-text+.font-medium "John Doe"]
          [:div.ty-text--.text-xs "john@example.com"]]
@@ -259,9 +260,9 @@
       [:ty-popup {:id "notif-popup"
                   :placement "bottom"
                   :offset "12"}
-       [:button {:slot "anchor"
-                 :class "relative p-2 rounded-lg hover:ty-bg-neutral- transition"
-                 :onclick "document.getElementById('notif-popup').toggleAttribute('open')"}
+       [:button.relative.p-2.rounded-lg.hover:ty-bg-neutral-.transition
+        {:slot "anchor"
+         :on {:click (fn [] (.toggleAttribute (.getElementById js/document "notif-popup") "open"))}}
         [:ty-icon {:name "bell"}]
         [:span.absolute.top-1.right-1.w-2.h-2.bg-red-500.rounded-full]]
        [:div.ty-elevated.rounded-lg.shadow-lg.p-4.w-80

@@ -7,7 +7,8 @@
             [ty.site.docs.css-system :as css-system]
             ;; Import component doc namespaces
             [ty.site.docs.index :as index]
-            [ty.site.docs.input :as input-docs]))
+            [ty.site.docs.input :as input-docs]
+            [ty.site.docs.modal :as modal-docs]))
 
 ;; Re-export component list from index
 (def component-list index/component-list)
@@ -15,27 +16,31 @@
 ;; Define routes with views from separate namespaces
 (router/link :ty.site/docs
              (reduce
-               (fn [routes component]
-                 (conj routes
-                       {:id (keyword "ty.site.docs" component)
-                        :segment component
-                        :view #(common/placeholder-view component)
-                        :name (str/capitalize component)}))
+              (fn [routes component]
+                (conj routes
+                      {:id (keyword "ty.site.docs" component)
+                       :segment component
+                       :view #(common/placeholder-view component)
+                       :name (str/capitalize component)}))
                ;; Start with explicitly defined component docs
-               [{:id :ty.site.docs/button
-                 :segment "button"
-                 :view button-docs/view
-                 :name "Button"}
-                {:id :ty.site.docs/input
-                 :segment "input"
-                 :view input-docs/view
-                 :name "Input"}
-                {:id :ty.site.docs/css-system
-                 :segment "css-system"
-                 :view css-system/view
-                 :name "CSS System"}]
+              [{:id :ty.site.docs/button
+                :segment "button"
+                :view button-docs/view
+                :name "Button"}
+               {:id :ty.site.docs/input
+                :segment "input"
+                :view input-docs/view
+                :name "Input"}
+               {:id :ty.site.docs/modal
+                :segment "modal"
+                :view modal-docs/view
+                :name "Modal"}
+               {:id :ty.site.docs/css-system
+                :segment "css-system"
+                :view css-system/view
+                :name "CSS System"}]
                ;; Add placeholders for remaining components (excluding documented ones)
-               (remove #(contains? #{"button" "input"} %) component-list)))
+              (remove #(contains? #{"button" "input" "modal"} %) component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
@@ -60,12 +65,12 @@
    (for [component component-list]
      [:div {:key component}
       (docs-sidebar-item
-        {:component component
-         :active? (router/rendered? (keyword "ty.site.docs" component) true)})])
+       {:component component
+        :active? (router/rendered? (keyword "ty.site.docs" component) true)})])
    [:div.mt-4.pt-4.border-t.ty-border
     (docs-sidebar-item
-      {:component "css-system"
-       :active? (router/rendered? :ty.site.docs/css-system true)})]])
+     {:component "css-system"
+      :active? (router/rendered? :ty.site.docs/css-system true)})]])
 
 (defn highlight-all-code-blocks!
   "Highlight all code blocks on the page"
@@ -73,8 +78,8 @@
   (when (and js/window.hljs (.-highlightAll js/window.hljs))
     ;; Small delay to ensure DOM is updated
     (js/setTimeout
-      #(js/window.hljs.highlightAll)
-      50)))
+     #(js/window.hljs.highlightAll)
+     50)))
 
 (defn render
   "Render the appropriate docs view based on current route"

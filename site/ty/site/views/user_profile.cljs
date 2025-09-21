@@ -385,64 +385,65 @@
                      :autocomplete "new-password"}]]]
 
        ;; Email Notifications - Using ty-input checkboxes
-       [:div
-        [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
-        [:div.space-y-4
-         [:ty-input {:type "checkbox"
-                     :label "Product updates and announcements"
-                     :name "notifications-updates"
-                     :value "enabled"
-                     :checked true}]
-         [:ty-input {:type "checkbox"
-                     :label "Weekly newsletter"
-                     :name "notifications-newsletter"
-                     :value "enabled"
-                     :checked true}]
-         [:ty-input {:type "checkbox"
-                     :label "Marketing promotions and offers"
-                     :name "notifications-marketing"
-                     :value "enabled"
-                     :checked false}]]]
+       [:div.flex.wrap.gap-4
+        [:div
+         [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
+         [:div.space-y-4
+          [:ty-input {:type "checkbox"
+                      :label "Product updates and announcements"
+                      :name "notifications-updates"
+                      :value "enabled"
+                      :checked true}]
+          [:ty-input {:type "checkbox"
+                      :label "Weekly newsletter"
+                      :name "notifications-newsletter"
+                      :value "enabled"
+                      :checked true}]
+          [:ty-input {:type "checkbox"
+                      :label "Marketing promotions and offers"
+                      :name "notifications-marketing"
+                      :value "enabled"
+                      :checked false}]]]
 
        ;; Privacy & Security Preferences
-       [:div
-        [:h4.text-sm.font-medium.ty-text.mb-4 "Privacy & Security"]
-        [:div.space-y-4
-         [:ty-input {:type "checkbox"
-                     :label "Enable two-factor authentication"
-                     :name "privacy-2fa"
-                     :value "enabled"
-                     :checked false}]
-         [:ty-input {:type "checkbox"
-                     :label "Make profile public"
-                     :name "privacy-profile-public"
-                     :value "enabled"
-                     :checked true}]
-         [:ty-input {:type "checkbox"
-                     :label "Allow contact from other users"
-                     :name "privacy-allow-contact"
-                     :value "enabled"
-                     :checked true}]]]
+        [:div
+         [:h4.text-sm.font-medium.ty-text.mb-4 "Privacy & Security"]
+         [:div.space-y-4
+          [:ty-input {:type "checkbox"
+                      :label "Enable two-factor authentication"
+                      :name "privacy-2fa"
+                      :value "enabled"
+                      :checked false}]
+          [:ty-input {:type "checkbox"
+                      :label "Make profile public"
+                      :name "privacy-profile-public"
+                      :value "enabled"
+                      :checked true}]
+          [:ty-input {:type "checkbox"
+                      :label "Allow contact from other users"
+                      :name "privacy-allow-contact"
+                      :value "enabled"
+                      :checked true}]]]
 
        ;; Account Preferences
-       [:div
-        [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
-        [:div.space-y-3
-         [:ty-input {:type "checkbox"
-                     :label "Auto-save drafts"
-                     :name "account-autosave"
-                     :value "enabled"
-                     :checked true}]
-         [:ty-input {:type "checkbox"
-                     :label "Show online status"
-                     :name "account-online-status"
-                     :value "enabled"
-                     :checked true}]
-         [:ty-input {:type "checkbox"
-                     :label "Remember login for 30 days"
-                     :name "account-remember-login"
-                     :value "enabled"
-                     :checked false}]]]]]
+        [:div
+         [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
+         [:div.space-y-3
+          [:ty-input {:type "checkbox"
+                      :label "Auto-save drafts"
+                      :name "account-autosave"
+                      :value "enabled"
+                      :checked true}]
+          [:ty-input {:type "checkbox"
+                      :label "Show online status"
+                      :name "account-online-status"
+                      :value "enabled"
+                      :checked true}]
+          [:ty-input {:type "checkbox"
+                      :label "Remember login for 30 days"
+                      :name "account-remember-login"
+                      :value "enabled"
+                      :checked false}]]]]]]
 
      ;; Form Actions
      [:div.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center.pt-8.border-t.ty-border

@@ -19,28 +19,28 @@
 ;; Define site routes
 (router/link ::router/root
              (concat
-              [{:id ::landing
-                :segment ""
-                :name "Welcome"}
-               {:id ::user-profile
-                :segment "user-profile"
-                :name "User Profile"}
-               {:id ::event-booking
-                :segment "event-booking"
-                :name "Event Booking"}
-               {:id ::contact-form
-                :segment "contact-form"
-                :name "Contact Form"}
-               {:id ::ty-styles
-                :segment "ty-styles"
-                :name "Ty Styles"}
-               {:id ::getting-started
-                :segment "getting-started"
-                :name "Getting Started"}
-               {:id :ty.site/docs
-                :segment "docs"
-                :view docs.index/view
-                :name "Documentation"}]))
+               [{:id ::landing
+                 :segment ""
+                 :name "Welcome"}
+                {:id ::user-profile
+                 :segment "user-profile"
+                 :name "User Profile"}
+                {:id ::event-booking
+                 :segment "event-booking"
+                 :name "Event Booking"}
+                {:id ::contact-form
+                 :segment "contact-form"
+                 :name "Contact Form"}
+                {:id ::ty-styles
+                 :segment "ty-styles"
+                 :name "Ty Styles"}
+                {:id ::getting-started
+                 :segment "getting-started"
+                 :name "Getting Started"}
+                {:id :ty.site/docs
+                 :segment "docs"
+                 :view docs.index/view
+                 :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -190,7 +190,7 @@
        (when show-sidebar? (sidebar))
        [:div.flex-1.flex.flex-col.min-w-0
         (header)
-        [:main.flex-1.overflow-auto.p-3.lg:p-6.ty-content
+        [:main.flex-1.overflow-auto.p-3.lg:p-6.ty-canvas
          ;; Provide accurate container dimensions for the main content area
          (layout/with-container
            {:width (- (layout/container-width) sidebar-width content-padding)
@@ -237,9 +237,9 @@
                ;; Highlight code blocks after navigation in docs
                (when (docs/in-docs?)
                  (js/setTimeout
-                  #(when (and js/window.hljs (.-highlightAll js/window.hljs))
-                     (js/window.hljs.highlightAll))
-                  100))))
+                   #(when (and js/window.hljs (.-highlightAll js/window.hljs))
+                      (js/window.hljs.highlightAll))
+                   100))))
 
   ;; Watch state changes and re-render
   (add-watch state ::render

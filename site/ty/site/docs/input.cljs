@@ -18,82 +18,82 @@
 
     ;; Attributes Table
     (attribute-table
-     [{:name "type"
-       :type "string"
-       :default "'text'"
-       :description "Input type: text, number, currency, percent, compact, checkbox, password, date"}
-      {:name "value"
-       :type "string | number | boolean"
-       :default "null"
-       :description "Initial value of the input"}
-      {:name "placeholder"
-       :type "string"
-       :default "null"
-       :description "Placeholder text for the input"}
-      {:name "label"
-       :type "string"
-       :default "null"
-       :description "Label displayed above the input"}
-      {:name "name"
-       :type "string"
-       :default "null"
-       :description "Name for form submission"}
-      {:name "disabled"
-       :type "boolean"
-       :default "false"
-       :description "Whether the input is disabled"}
-      {:name "required"
-       :type "boolean"
-       :default "false"
-       :description "Whether the input is required (shows asterisk)"}
-      {:name "error"
-       :type "string"
-       :default "null"
-       :description "Error message to display (sets danger flavor)"}
-      {:name "size"
-       :type "string"
-       :default "'md'"
-       :description "Size variant: xs, sm, md, lg, xl"}
-      {:name "flavor"
-       :type "string"
-       :default "'neutral'"
-       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-      {:name "currency"
-       :type "string"
-       :default "'USD'"
-       :description "Currency code for type='currency' (e.g., USD, EUR, GBP)"}
-      {:name "locale"
-       :type "string"
-       :default "browser locale"
-       :description "Locale for number formatting (e.g., en-US, de-DE)"}
-      {:name "precision"
-       :type "number"
-       :default "null"
-       :description "Number of decimal places for numeric types"}
-      {:name "checked"
-       :type "boolean"
-       :default "false"
-       :description "Initial checked state for checkboxes"}
-      {:name "class"
-       :type "string"
-       :default "null"
-       :description "Additional CSS classes"}])
+      [{:name "type"
+        :type "string"
+        :default "'text'"
+        :description "Input type: text, number, currency, percent, compact, checkbox, password, date"}
+       {:name "value"
+        :type "string | number | boolean"
+        :default "null"
+        :description "Initial value of the input"}
+       {:name "placeholder"
+        :type "string"
+        :default "null"
+        :description "Placeholder text for the input"}
+       {:name "label"
+        :type "string"
+        :default "null"
+        :description "Label displayed above the input"}
+       {:name "name"
+        :type "string"
+        :default "null"
+        :description "Name for form submission"}
+       {:name "disabled"
+        :type "boolean"
+        :default "false"
+        :description "Whether the input is disabled"}
+       {:name "required"
+        :type "boolean"
+        :default "false"
+        :description "Whether the input is required (shows asterisk)"}
+       {:name "error"
+        :type "string"
+        :default "null"
+        :description "Error message to display (sets danger flavor)"}
+       {:name "size"
+        :type "string"
+        :default "'md'"
+        :description "Size variant: xs, sm, md, lg, xl"}
+       {:name "flavor"
+        :type "string"
+        :default "'neutral'"
+        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+       {:name "currency"
+        :type "string"
+        :default "'USD'"
+        :description "Currency code for type='currency' (e.g., USD, EUR, GBP)"}
+       {:name "locale"
+        :type "string"
+        :default "browser locale"
+        :description "Locale for number formatting (e.g., en-US, de-DE)"}
+       {:name "precision"
+        :type "number"
+        :default "null"
+        :description "Number of decimal places for numeric types"}
+       {:name "checked"
+        :type "boolean"
+        :default "false"
+        :description "Initial checked state for checkboxes"}
+       {:name "class"
+        :type "string"
+        :default "null"
+        :description "Additional CSS classes"}])
 
     [:div.mt-6
      [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
      (event-table
-      [{:name "input"
-        :when-fired "Fired on each input change"
-        :payload "{value, formattedValue?, rawValue, originalEvent}"}
-       {:name "change"
-        :when-fired "Fired when input loses focus after change"
-        :payload "{value, formattedValue?, rawValue, originalEvent}"}
-       {:name "focus"
-        :when-fired "Fired when input gains focus"
-        :payload "Standard FocusEvent"}
-       {:name "blur"
-        :when-fired "Fired when input loses focus"
-        :payload "Standard FocusEvent"}])
+       [{:name "input"
+         :when-fired "Fired on each input change"
+         :payload "{value, formattedValue?, rawValue, originalEvent}"}
+        {:name "change"
+         :when-fired "Fired when input loses focus after change"
+         :payload "{value, formattedValue?, rawValue, originalEvent}"}
+        {:name "focus"
+         :when-fired "Fired when input gains focus"
+         :payload "Standard FocusEvent"}
+        {:name "blur"
+         :when-fired "Fired when input loses focus"
+         :payload "Standard FocusEvent"}])
      [:p.text-sm.ty-text-.mt-2
       "Note: For checkboxes, events include " [:code.ty-bg-neutral-.px-1.rounded "checked"]
       " and " [:code.ty-bg-neutral-.px-1.rounded "formValue"] " in the detail."]]]

@@ -36,10 +36,10 @@
   transition: var(--ty-transition-all);
 
   /* Default styling using semantic variables */
-  background: var(--ty-bg-neutral);
+  background: var(--ty-bg-neutral-mild);
   color: var(--ty-color-neutral-strong);
   border: 1px solid;
-  border-color: var(--ty-color-neutral);
+  border-color: var(--ty-color-neutral-mild);
 }
 
 /* Non-pill variant - rectangular with rounded corners */
@@ -296,7 +296,7 @@
 
 /* Neutral (default) */
 :host([flavor="neutral"]) .tag-container {
-  background: var(--ty-bg-neutral);
+  background: var(--ty-bg-neutral-mild);
   color: var(--ty-color-neutral-strong);
   border-color: var(--ty-border-neutral);
 }

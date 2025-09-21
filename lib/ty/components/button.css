@@ -4,7 +4,7 @@
 }
 
 :host([wide=true]) {
-  display:flex;
+  display: flex;
   flex-grow: 1;
 }
 
@@ -67,9 +67,11 @@ button.action.xl ::slotted(ty-icon) {
 
 button.action {
   align-items: center;
+  justify-content: center;
+  gap: 0px !important;
   height: 2rem;
   width: 2rem;
-  padding: 0px;
+  padding: 0px !important;
 }
 
 button.action ::slotted(ty-icon) {

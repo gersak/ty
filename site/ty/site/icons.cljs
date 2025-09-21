@@ -38,12 +38,14 @@
              "upload" lucide/upload
              "download" lucide/download
              "trash" lucide/trash
+             "trash-2" lucide/trash-2 ; Delete icon variant
              "filter" lucide/filter ; Toolbar example
              "more-vertical" lucide/more-vertical ; Toolbar example
 
              ;; Form field icons
              "building" lucide/building
              "file-text" lucide/file-text
+             "help-circle" lucide/help-circle ; Help icon for form fields
 
              ;; Status and feedback icons
              "check-circle" lucide/check-circle
@@ -53,6 +55,7 @@
              "circle" lucide/circle
              "minus-circle" lucide/minus-circle
              "info" lucide/info
+             "info-circle" lucide/circle-alert ; Info circle alias
              "star" lucide/star
 
              ;; Additional utility icons
@@ -61,6 +64,7 @@
              "globe" lucide/globe
              "clock" lucide/clock
              "arrow-right" lucide/arrow-right ; Navigation arrows
+             "bell" lucide/bell ; Notifications
 
              ;; Loading and refresh icons
              "refresh-ccw" lucide/refresh-ccw
@@ -101,6 +105,9 @@
              ;; Miscellaneous
              "brush" lucide/brush
              "copy" lucide/copy
+             "clipboard" lucide/clipboard ; Clipboard icon
+             "rotate-ccw" lucide/rotate-ccw ; Undo icon
+             "share-2" lucide/share-2 ; Share icon
              "box" lucide/box
 
              ;; Framework icons from FontAwesome

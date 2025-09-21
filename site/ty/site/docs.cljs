@@ -8,7 +8,9 @@
             ;; Import component doc namespaces
             [ty.site.docs.index :as index]
             [ty.site.docs.input :as input-docs]
-            [ty.site.docs.modal :as modal-docs]))
+            [ty.site.docs.modal :as modal-docs]
+            [ty.site.docs.tag :as tag-docs]
+            [ty.site.docs.tooltip :as tooltip-docs]))
 
 ;; Re-export component list from index
 (def component-list index/component-list)
@@ -35,12 +37,20 @@
                 :segment "modal"
                 :view modal-docs/view
                 :name "Modal"}
+               {:id :ty.site.docs/tag
+                :segment "tag"
+                :view tag-docs/view
+                :name "Tag"}
+               {:id :ty.site.docs/tooltip
+                :segment "tooltip"
+                :view tooltip-docs/view
+                :name "Tooltip"}
                {:id :ty.site.docs/css-system
                 :segment "css-system"
                 :view css-system/view
                 :name "CSS System"}]
                ;; Add placeholders for remaining components (excluding documented ones)
-              (remove #(contains? #{"button" "input" "modal"} %) component-list)))
+              (remove #(contains? #{"button" "input" "modal" "tag" "tooltip"} %) component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []

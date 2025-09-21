@@ -198,9 +198,8 @@
       [:div.p-6.max-w-md.ty-elevated.rounded-lg
        [:h3.text-lg.font-semibold.mb-4 "Unsaved Changes"]
        [:form
-        [:ty-input {:type "text"
-                    :placeholder "Make some changes..."
-                    :class "w-full"}]
+        [:ty-input.w-full {:type "text"
+                           :placeholder "Make some changes..."}]
         [:p.ty-text-.mt-3.text-sm
          "Try closing this modal - you'll be asked to confirm."]]]]]]
 
@@ -289,21 +288,18 @@
         [:div.space-y-4
          [:div
           [:label.block.text-sm.font-medium.mb-1 "Name"]
-          [:ty-input {:type "text"
-                      :required true
-                      :class "w-full"}]]
+          [:ty-input.w-full {:type "text"
+                             :required true}]]
 
          [:div
           [:label.block.text-sm.font-medium.mb-1 "Category"]
-          [:ty-dropdown {:placeholder "Choose category..."
-                         :class "w-full"}
+          [:ty-dropdown.w-full {:placeholder "Choose category..."}
            [:ty-option {:value "work"} "Work"]
            [:ty-option {:value "personal"} "Personal"]]]
 
          [:div
           [:label.block.text-sm.font-medium.mb-1 "Description"]
-          [:ty-textarea {:rows "3"
-                         :class "w-full"}]]]
+          [:ty-textarea.w-full {:rows "3"}]]]
 
         [:div.flex.justify-end.gap-2.mt-6
          [:ty-button {:type "button"

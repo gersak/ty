@@ -17,6 +17,17 @@
              "x" lucide/x
              "moon" lucide/moon
              "sun" lucide/sun
+             "chevron-down" lucide/chevron-down ; For dropdown docs
+
+             ;; Component/UI icons (for docs)
+             "square" lucide/square ; Button icon
+             "square-stack" lucide/square-stack ; Modal icon
+             "list" lucide/list ; Multiselect icon
+             "message-square" lucide/message-square ; Popup icon
+             "tag" lucide/tag ; Tag component icon
+             "align-left" lucide/align-left ; Textarea icon
+             "type" lucide/type ; Input icon
+             "image" lucide/image ; Icon component icon
 
              ;; Form and interaction icons
              "check" lucide/check
@@ -26,6 +37,9 @@
              "save" lucide/save
              "upload" lucide/upload
              "download" lucide/download
+             "trash" lucide/trash
+             "filter" lucide/filter ; Toolbar example
+             "more-vertical" lucide/more-vertical ; Toolbar example
 
              ;; Form field icons
              "building" lucide/building
@@ -45,39 +59,36 @@
              "settings" lucide/settings
              "globe" lucide/globe
              "clock" lucide/clock
+             "arrow-right" lucide/arrow-right ; Navigation arrows
 
-             ;; Contact form icons
+             ;; Loading and refresh icons
              "refresh-ccw" lucide/refresh-ccw
+             "refresh-cw" lucide/refresh-cw
              "loader-2" lucide/loader-2
-             "refresh" lucide/refresh-cw
+             "loader" lucide/loader
              "send" lucide/send
+
+             ;; Contact and business icons
              "phone" lucide/phone
              "map-pin" lucide/map-pin
              "briefcase" lucide/briefcase
              "life-buoy" lucide/life-buoy
              "credit-card" lucide/credit-card
              "handshake" lucide/handshake
+
+             ;; Development/Tech icons
              "file-code" lucide/file-code
-
-             ;; MISSING ICONS - Adding from usage analysis
-             ;; Programming/Tech icons
-             "code" lucide/code ; Code snippets, HTML/Backend section
-             "atom" lucide/atom ; React/JS section (may need to use zap or activity if atom doesn't exist)
-
-             ;; Development workflow icons  
-             "zap" lucide/zap ; Alternative for atom if needed
-             "activity" lucide/activity ; Alternative for technical sections
-             "function" lucide/square-function ; Alternative for lambda if needed
-             "brackets" lucide/brackets ; Code-related alternative
-             "terminal" lucide/terminal ; Terminal/command line
-             "box" lucide/box
+             "code" lucide/code
+             "terminal" lucide/terminal
              "package" lucide/package
              "sparkles" lucide/sparkles
              "layers" lucide/layers
              "book-open" lucide/book-open
-             "trash" lucide/trash
+             "zap" lucide/zap
+             "lambda" lucide/square-function ; Using square-function as lambda
+             "atom" lucide/atom
 
-             ;; Missing utility icons from user profile
+             ;; Security and visibility icons
              "external-link" lucide/external-link
              "eye" lucide/eye
              "eye-off" lucide/eye-off
@@ -85,15 +96,13 @@
              "unlock" lucide/unlock
              "shield" lucide/shield
              "key" lucide/key
-             "brush" lucide/brush
-             "map" lucide/map-pin
 
-             ;; Copy functionality
-             "copy" lucide/copy ; Copy to clipboard icon
-             "arrow-right" lucide/arrow-right ; Navigation arrows used in landing page
-             "lambda" lucide/square-function
+             ;; Miscellaneous
+             "brush" lucide/brush
+             "copy" lucide/copy
+             "box" lucide/box
 
              ;; Framework icons from FontAwesome
-             "react" fav6-brands/react ; React brand icon
-             "python" fav6-brands/python ; Python brand icon
-             "node-js" fav6-brands/node-js}) ; Node.js brand icon
+             "react" fav6-brands/react
+             "python" fav6-brands/python
+             "node-js" fav6-brands/node-js})

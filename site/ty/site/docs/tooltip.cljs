@@ -17,26 +17,26 @@
 
     ;; Attributes
     (attribute-table
-     [{:name "placement"
-       :type "string"
-       :default "\"top\""
-       :description "Preferred placement position: \"top\", \"bottom\", \"left\", \"right\""}
-      {:name "flavor"
-       :type "string"
-       :default "\"dark\""
-       :description "Visual style: \"dark\", \"light\", \"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\", \"neutral\""}
-      {:name "delay"
-       :type "number"
-       :default "600"
-       :description "Delay in milliseconds before showing tooltip on hover"}
-      {:name "offset"
-       :type "number"
-       :default "8"
-       :description "Distance in pixels between tooltip and anchor element"}
-      {:name "disabled"
-       :type "boolean"
-       :default "false"
-       :description "Disables tooltip from showing"}])
+      [{:name "placement"
+        :type "string"
+        :default "\"top\""
+        :description "Preferred placement position: \"top\", \"bottom\", \"left\", \"right\""}
+       {:name "flavor"
+        :type "string"
+        :default "\"dark\""
+        :description "Visual style: \"dark\", \"light\", \"primary\", \"secondary\", \"success\", \"danger\", \"warning\", \"info\", \"neutral\""}
+       {:name "delay"
+        :type "number"
+        :default "600"
+        :description "Delay in milliseconds before showing tooltip on hover"}
+       {:name "offset"
+        :type "number"
+        :default "8"
+        :description "Distance in pixels between tooltip and anchor element"}
+       {:name "disabled"
+        :type "boolean"
+        :default "false"
+        :description "Disables tooltip from showing"}])
 
     ;; Content Note
     [:div.ty-bg-info-.ty-border-info.border.rounded-lg.p-4.mt-4
@@ -66,7 +66,7 @@
       [:ty-tooltip "Opens documentation in new tab"]]]
 
     (code-block
-     "<!-- Simple tooltip -->
+      "<!-- Simple tooltip -->
 <ty-button>
   Hover me
   <ty-tooltip>This is a helpful tooltip</ty-tooltip>
@@ -102,7 +102,7 @@
        [:ty-tooltip {:placement "right"} "Tooltip on right"]]]
 
      (code-block
-      "<ty-button>
+       "<ty-button>
   Top
   <ty-tooltip placement=\"top\">Tooltip on top</ty-tooltip>
 </ty-button>
@@ -138,7 +138,7 @@
        [:ty-tooltip {:flavor "warning"} "Proceed with caution"]]]
 
      (code-block
-      "<!-- Default dark -->
+       "<!-- Default dark -->
 <ty-button>
   Dark
   <ty-tooltip>Default dark tooltip</ty-tooltip>
@@ -178,15 +178,17 @@
          [:div.text-xs.opacity-75 "Line 3: Additional note"]]]]
 
       [:ty-button
-       [:ty-icon {:name "info" :slot "start"}]
+       [:ty-icon {:name "info"
+                  :slot "start"}]
        "With Icon"
        [:ty-tooltip
         [:div.flex.items-center.gap-2
-         [:ty-icon {:name "alert-circle" :size "sm"}]
+         [:ty-icon {:name "alert-circle"
+                    :size "sm"}]
          [:span "Important information"]]]]]
 
      (code-block
-      "<!-- Rich formatting -->
+       "<!-- Rich formatting -->
 <ty-button>
   Text Formatting
   <ty-tooltip>
@@ -239,7 +241,7 @@
        [:ty-tooltip {:delay "1000"} "Shows after 1 second"]]]
 
      (code-block
-      "<!-- Instant tooltip -->
+       "<!-- Instant tooltip -->
 <ty-button>
   Instant
   <ty-tooltip delay=\"0\">Shows immediately</ty-tooltip>
@@ -261,20 +263,23 @@
        [:ty-icon {:name "edit"}]
        [:ty-tooltip "Edit document"]]
 
-      [:ty-button {:action "true" :flavor "success"}
+      [:ty-button {:action "true"
+                   :flavor "success"}
        [:ty-icon {:name "save"}]
        [:ty-tooltip {:flavor "success"} "Save changes"]]
 
-      [:ty-button {:action "true" :flavor "danger"}
+      [:ty-button {:action "true"
+                   :flavor "danger"}
        [:ty-icon {:name "trash-2"}]
        [:ty-tooltip {:flavor "danger"} "Delete item"]]
 
-      [:ty-button {:action "true" :flavor "primary"}
+      [:ty-button {:action "true"
+                   :flavor "primary"}
        [:ty-icon {:name "share-2"}]
        [:ty-tooltip {:flavor "primary"} "Share document"]]]
 
      (code-block
-      "<!-- Icon-only action buttons -->
+       "<!-- Icon-only action buttons -->
 <ty-button action=\"true\">
   <ty-icon name=\"edit\"></ty-icon>
   <ty-tooltip>Edit document</ty-tooltip>
@@ -302,42 +307,57 @@
        [:label.ty-text+.block.text-sm.font-medium.mb-1
         "Email Address"
         [:span.inline-block.ml-1.ty-text-.cursor-help
-         [:ty-icon {:name "help-circle" :size "xs"}]
+         [:ty-icon {:name "help-circle"
+                    :size "xs"}]
          [:ty-tooltip "Must be a valid email format"]]]
-       [:ty-input {:type "email" :placeholder "user@example.com"}]]
+       [:ty-input {:type "email"
+                   :placeholder "user@example.com"}]]
 
       [:div
        [:label.ty-text+.block.text-sm.font-medium.mb-1
         "API Key"
         [:span.inline-block.ml-1.ty-text-.cursor-help
-         [:ty-icon {:name "info" :size "xs"}]
+         [:ty-icon {:name "info"
+                    :size "xs"}]
          [:ty-tooltip
           [:div
            [:div.font-semibold "Where to find your API key:"]
            [:div.text-xs "Settings → API → Generate Key"]]]]]
-       [:ty-input {:type "password" :placeholder "sk_live_..."}]]]]
+       [:ty-input {:type "password"
+                   :placeholder "sk_live_..."}]]]]
 
     ;; Navigation Icons
     [:div
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "Navigation & Toolbars"]
      [:div.ty-elevated.rounded-lg.p-3.flex.items-center.justify-between
       [:div.flex.gap-2
-       [:ty-button {:action "true" :size "sm"}
-        [:ty-icon {:name "home" :size "sm"}]
+       [:ty-button {:action "true"
+                    :size "sm"}
+        [:ty-icon {:name "home"
+                   :size "sm"}]
         [:ty-tooltip "Go to dashboard"]]
-       [:ty-button {:action "true" :size "sm"}
-        [:ty-icon {:name "settings" :size "sm"}]
+       [:ty-button {:action "true"
+                    :size "sm"}
+        [:ty-icon {:name "settings"
+                   :size "sm"}]
         [:ty-tooltip "Settings"]]
-       [:ty-button {:action "true" :size "sm"}
-        [:ty-icon {:name "bell" :size "sm"}]
+       [:ty-button {:action "true"
+                    :size "sm"}
+        [:ty-icon {:name "bell"
+                   :size "sm"}]
         [:ty-tooltip "Notifications"]]]
 
       [:div.flex.gap-2
-       [:ty-button {:action "true" :size "sm" :flavor "primary"}
-        [:ty-icon {:name "plus" :size "sm"}]
+       [:ty-button {:action "true"
+                    :size "sm"
+                    :flavor "primary"}
+        [:ty-icon {:name "plus"
+                   :size "sm"}]
         [:ty-tooltip "Create new"]]
-       [:ty-button {:action "true" :size "sm"}
-        [:ty-icon {:name "search" :size "sm"}]
+       [:ty-button {:action "true"
+                    :size "sm"}
+        [:ty-icon {:name "search"
+                   :size "sm"}]
         [:ty-tooltip "Search"]]]]]
 
     ;; Keyboard Shortcuts
@@ -345,28 +365,31 @@
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "Keyboard Shortcuts"]
      [:div.flex.gap-3
       [:ty-button
-       [:ty-icon {:name "save" :slot "start"}]
+       [:ty-icon {:name "save"
+                  :slot "start"}]
        "Save"
        [:ty-tooltip
         [:div.text-center
          [:div "Save Document"]
-         [:kbd.text-xs.px-1.py-0.5.bg-black.bg-opacity-20.rounded "⌘+S"]]]]
+         [:kbd.text-xs.px-1.py-0.5.bg-black.bg-opacity-20.rounded.text-white "⌘+S"]]]]
 
       [:ty-button
-       [:ty-icon {:name "copy" :slot "start"}]
+       [:ty-icon {:name "copy"
+                  :slot "start"}]
        "Copy"
        [:ty-tooltip
         [:div.text-center
          [:div "Copy to Clipboard"]
-         [:kbd.text-xs.px-1.py-0.5.bg-black.bg-opacity-20.rounded "⌘+C"]]]]
+         [:kbd.text-xs.px-1.py-0.5.bg-black.bg-opacity-20.rounded.text-white "⌘+C"]]]]
 
       [:ty-button
-       [:ty-icon {:name "rotate-ccw" :slot "start"}]
+       [:ty-icon {:name "rotate-ccw"
+                  :slot "start"}]
        "Undo"
        [:ty-tooltip
         [:div.text-center
          [:div "Undo Last Action"]
-         [:kbd.text-xs.px-1.py-0.5.bg-black.bg-opacity-20.rounded "⌘+Z"]]]]]]]
+         [:kbd.text-xs.px-1.py-0.5.bg-black.bg-opacity-20.rounded.text-white "⌘+Z"]]]]]]]
 
    ;; Styling Section
    [:h2.text-xl.font-semibold.ty-text++.mb-4.mt-8 "Styling Tooltips"]
@@ -388,12 +411,13 @@
       [:ty-tooltip {:flavor "danger"}
        [:div
         [:div.flex.items-center.gap-2.mb-1
-         [:ty-icon {:name "alert-triangle" :size "sm"}]
+         [:ty-icon {:name "alert-triangle"
+                    :size "sm"}]
          [:span.font-bold.text-sm "Destructive Action"]]
         [:div.text-xs.opacity-90 "This will permanently delete your data"]]]]]
 
     (code-block
-     "<!-- Style tooltip content with regular CSS classes -->
+      "<!-- Style tooltip content with regular CSS classes -->
 <ty-button>
   Custom Styled
   <ty-tooltip>

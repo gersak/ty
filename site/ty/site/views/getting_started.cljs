@@ -9,9 +9,8 @@
    ;; HTML/Backend Setup
    [:div.ty-elevated.p-6.rounded-xl
     [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon {:name "code"
-                :size "lg"
-                :class "ty-text-primary"}]
+     [:ty-icon.ty-text-primary {:name "code"
+                                :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "HTML / Backend"]]
 
     [:p.ty-text-.mb-4 "For vanilla HTML, PHP, Python/Flask, Ruby/Rails, Java/Spring, etc."]
@@ -32,9 +31,8 @@
    ;; ClojureScript Vanilla (Replicant, etc.)
    [:div.ty-elevated.p-6.rounded-xl
     [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon {:name "lambda"
-                :size "lg"
-                :class "ty-text-warning"}]
+     [:ty-icon.ty-text-warning {:name "lambda"
+                                :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "ClojureScript (Vanilla / Replicant)"]]
 
     [:p.ty-text-.mb-4 "For vanilla ClojureScript, Replicant, or non-React libraries - use native web components."]
@@ -55,9 +53,8 @@
    ;; ClojureScript + React (Reagent, UIx, etc.)
    [:div.ty-elevated.p-6.rounded-xl
     [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon {:name "lambda"
-                :size "lg"
-                :class "ty-text-info"}]
+     [:ty-icon.ty-text-info {:name "lambda"
+                             :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "ClojureScript + React (Reagent / UIx)"]]
 
     [:p.ty-text-.mb-4 "For Reagent, UIx, and other React-based ClojureScript libraries - use the React wrappers."]
@@ -75,14 +72,11 @@
        [:code.language-clojure.hljs
         "(ns my-app.core\n  (:require [uix.core :as uix :refer [$ defui]]\n            [\"@gersak/ty-react\" :refer [Button Input Dropdown]]))\n\n(defui app []\n  ($ :div\n    ($ Button {:variant \"primary\"} \"Click me\")\n    ($ Input {:label \"Email\" :type \"email\"}))"]]]]]
 
-
-
-   ;; React Setup
+;; React Setup
    [:div.ty-elevated.p-6.rounded-xl
     [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon {:name "atom"
-                :size "lg"
-                :class "ty-text-success"}]
+     [:ty-icon.ty-text-success {:name "atom"
+                                :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "React / Next.js / Remix"]]
 
     [:p.ty-text-.mb-4 "TypeScript-friendly React wrappers with full type support."]
@@ -103,9 +97,8 @@
    ;; Next Steps
    [:div.ty-bg-primary-.border.border-ty-border-primary.p-6.rounded-xl
     [:div.flex.items-start.gap-4
-     [:ty-icon {:name "rocket"
-                :size "lg"
-                :class "ty-text-primary flex-shrink-0 mt-1"}]
+     [:ty-icon.ty-text-primary.flex-shrink-0.mt-1 {:name "rocket"
+                                                   :size "lg"}]
      [:div
       [:h3.text-lg.font-semibold.ty-text-primary.mb-2 "Next Steps"]
       [:div.space-y-2.text-sm.ty-text-primary

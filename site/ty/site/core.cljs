@@ -19,28 +19,28 @@
 ;; Define site routes
 (router/link ::router/root
              (concat
-               [{:id ::landing
-                 :segment ""
-                 :name "Welcome"}
-                {:id ::user-profile
-                 :segment "user-profile"
-                 :name "User Profile"}
-                {:id ::event-booking
-                 :segment "event-booking"
-                 :name "Event Booking"}
-                {:id ::contact-form
-                 :segment "contact-form"
-                 :name "Contact Form"}
-                {:id ::ty-styles
-                 :segment "ty-styles"
-                 :name "Ty Styles"}
-                {:id ::getting-started
-                 :segment "getting-started"
-                 :name "Getting Started"}
-                {:id :ty.site/docs
-                 :segment "docs"
-                 :view docs.index/view
-                 :name "Documentation"}]))
+              [{:id ::landing
+                :segment ""
+                :name "Welcome"}
+               {:id ::user-profile
+                :segment "user-profile"
+                :name "User Profile"}
+               {:id ::event-booking
+                :segment "event-booking"
+                :name "Event Booking"}
+               {:id ::contact-form
+                :segment "contact-form"
+                :name "Contact Form"}
+               {:id ::ty-styles
+                :segment "ty-styles"
+                :name "Ty Styles"}
+               {:id ::getting-started
+                :segment "getting-started"
+                :name "Getting Started"}
+               {:id :ty.site/docs
+                :segment "docs"
+                :view docs.index/view
+                :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -231,16 +231,12 @@
   ;; Initialize router
   (router/init!)
 
-  ;; Watch router changes and re-render
+;; Watch router changes and re-render
   (add-watch router/*router* ::render
              (fn [_ _ _ _]
                (render-app!)
-               ;; Highlight code blocks after navigation in docs
-               (when (docs/in-docs?)
-                 (js/setTimeout
-                   #(when (and js/window.hljs (.-highlightAll js/window.hljs))
-                      (js/window.hljs.highlightAll))
-                   100))))
+               ;; No global highlighting needed - individual code blocks handle it via :replicant/on-mount
+               ))
 
   ;; Watch state changes and re-render
   (add-watch state ::render

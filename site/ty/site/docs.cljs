@@ -73,8 +73,8 @@
 (defn docs-sidebar-item [{:keys [component active?]}]
   [:button.w-full.text-left.px-4.py-2.rounded.transition-colors
    {:class (if active?
-             "ty-bg-primary- ty-text-primary++"
-             "hover:ty-content ty-text")
+             ["ty-bg-primary-" "ty-text-primary++"]
+             ["hover:ty-content" "ty-text"])
     :on {:click #(router/navigate! (keyword "ty.site.docs" component))}}
    [:div.flex.items-center.gap-2
     [:span.text-sm (str "ty-" component)]]])
@@ -92,21 +92,12 @@
      {:component "css-system"
       :active? (router/rendered? :ty.site.docs/css-system true)})]])
 
-(defn highlight-all-code-blocks!
-  "Highlight all code blocks on the page"
-  []
-  (when (and js/window.hljs (.-highlightAll js/window.hljs))
-    ;; Small delay to ensure DOM is updated
-    (js/setTimeout
-     #(js/window.hljs.highlightAll)
-     50)))
+;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block
 
 (defn render
   "Render the appropriate docs view based on current route"
   []
-  ;; Trigger highlighting after render
-  (js/setTimeout highlight-all-code-blocks! 100)
-
+  ;; No global highlighting needed - individual code blocks handle it via :replicant/on-mount
   (let [rendered (router/url->components)
         {view :view} (last rendered)]
     (if view (view) (index/view))))

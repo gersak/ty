@@ -1,5 +1,7 @@
 (ns ty.site.docs.common
-  "Common utilities for component documentation")
+  "Common utilities for component documentation"
+  (:require
+    [goog.object]))
 
 (defn code-block
   "Display a code block with syntax highlighting"
@@ -9,11 +11,19 @@
    [:pre
     [:code.text-sm
      {:class (str "language-" lang)
-      :ref (fn [el]
-             (when el
-               ;; Highlight the code block when element is mounted
-               (when (and js/window.hljs (.-highlightElement js/window.hljs))
-                 (js/window.hljs.highlightElement el))))}
+      :replicant/on-mount (fn [{^js el :replicant/node}]
+                            (js/setTimeout
+                              (fn []
+                                (when (and el
+                                           js/window.hljs
+                                           (.-highlightElement js/window.hljs)
+                                           ;; Safety check: only highlight if not already highlighted
+                                           (not (.. el -dataset -highlighted)))
+                                  (try
+                                    (js/window.hljs.highlightElement el)
+                                    (catch js/Error e
+                                      (js/console.warn "Failed to highlight code block:" e)))))
+                              100))}
      code]]])
 
 (defn attribute-table

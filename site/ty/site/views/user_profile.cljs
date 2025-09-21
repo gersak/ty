@@ -22,9 +22,8 @@
       ;; Profile Avatar - Click to change
       [:div.w-20.h-20.ty-surface-content.rounded-full.flex.items-center.justify-center.cursor-pointer.hover:ty-surface-elevated.transition-colors.border-2.border-dashed.ty-border.hover:ty-border-primary
        {:on {:click #(swap! state/state assoc-in [:user-profile :avatar-modal-open] true)}}
-       [:ty-icon {:name "user"
-                  :size "2xl"
-                  :class "ty-text-"}]]
+       [:ty-icon.ty-text- {:name "user"
+                           :size "2xl"}]]
 
       ;; Upload badge
       [:div.absolute.-bottom-1.-right-1.w-8.h-8.ty-bg-primary.rounded-full.flex.items-center.justify-center.cursor-pointer.hover:opacity-80.transition-opacity.shadow-lg
@@ -259,41 +258,36 @@
          [:ty-option {:value "pst"}
           [:div.flex.items-center.justify-between
            [:div.flex.items-center.gap-2
-            [:ty-icon {:name "sun"
-                       :size "sm"
-                       :class "ty-text-warning"}]
+            [:ty-icon.ty-text-warning {:name "sun"
+                                       :size "sm"}]
             [:span.font-medium "Pacific Standard"]]
            [:span.text-xs.ty-text-.font-mono "UTC-8"]]]
          [:ty-option {:value "mst"}
           [:div.flex.items-center.justify-between
            [:div.flex.items-center.gap-2
-            [:ty-icon {:name "sun"
-                       :size "sm"
-                       :class "ty-text-warning"}]
+            [:ty-icon.ty-text-warning {:name "sun"
+                                       :size "sm"}]
             [:span.font-medium "Mountain Standard"]]
            [:span.text-xs.ty-text-.font-mono "UTC-7"]]]
          [:ty-option {:value "cst"}
           [:div.flex.items-center.justify-between
            [:div.flex.items-center.gap-2
-            [:ty-icon {:name "sun"
-                       :size "sm"
-                       :class "ty-text-warning"}]
+            [:ty-icon.ty-text-warning {:name "sun"
+                                       :size "sm"}]
             [:span.font-medium "Central Standard"]]
            [:span.text-xs.ty-text-.font-mono "UTC-6"]]]
          [:ty-option {:value "est"}
           [:div.flex.items-center.justify-between
            [:div.flex.items-center.gap-2
-            [:ty-icon {:name "sun"
-                       :size "sm"
-                       :class "ty-text-warning"}]
+            [:ty-icon.ty-text-warning {:name "sun"
+                                       :size "sm"}]
             [:span.font-medium "Eastern Standard"]]
            [:span.text-xs.ty-text-.font-mono "UTC-5"]]]
          [:ty-option {:value "utc"}
           [:div.flex.items-center.justify-between
            [:div.flex.items-center.gap-2
-            [:ty-icon {:name "globe"
-                       :size "sm"
-                       :class "ty-text-info"}]
+            [:ty-icon.ty-text-info {:name "globe"
+                                    :size "sm"}]
             [:span.font-medium "Coordinated Universal"]]
            [:span.text-xs.ty-text-.font-mono "UTC+0"]]]]]
 
@@ -341,27 +335,24 @@
          [:ty-option {:value "light"}
           [:div.flex.items-center.gap-3
            [:div.w-8.h-8.bg-white.border.ty-border.rounded-full.flex.items-center.justify-center.shadow-sm
-            [:ty-icon {:name "sun"
-                       :size "sm"
-                       :class "text-yellow-500"}]]
+            [:ty-icon.text-yellow-500 {:name "sun"
+                                       :size "sm"}]]
            [:div.flex-1
             [:div.font-medium "Light Mode"]
             [:div.text-xs.ty-text- "Bright and clean"]]]]
          [:ty-option {:value "dark"}
           [:div.flex.items-center.gap-3
            [:div.w-8.h-8.bg-gray-900.border.border-gray-700.rounded-full.flex.items-center.justify-center.shadow-sm
-            [:ty-icon {:name "moon"
-                       :size "sm"
-                       :class "text-blue-400"}]]
+            [:ty-icon.text-blue-400 {:name "moon"
+                                     :size "sm"}]]
            [:div.flex-1
             [:div.font-medium "Dark Mode"]
             [:div.text-xs.ty-text- "Easy on the eyes"]]]]
          [:ty-option {:value "auto"}
           [:div.flex.items-center.gap-3
            [:div.w-8.h-8.ty-surface-elevated.border.ty-border.rounded-full.flex.items-center.justify-center.shadow-sm
-            [:ty-icon {:name "settings"
-                       :size "sm"
-                       :class "ty-text-"}]]
+            [:ty-icon.ty-text- {:name "settings"
+                                :size "sm"}]]
            [:div.flex-1
             [:div.font-medium "Auto (System)"]
             [:div.text-xs.ty-text- "Follow device setting"]]]]]]]]
@@ -449,8 +440,7 @@
      [:div.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center.pt-8.border-t.ty-border
       ;; Status indicator (would be dynamic in real app)
       [:div.flex.items-center.gap-2
-       [:ty-icon {:name "check-circle"
-                  :class "ty-text-success"}]
+       [:ty-icon.ty-text-success {:name "check-circle"}]
        [:span.text-sm.ty-text-success "All changes saved automatically"]]
 
       ;; Action buttons
@@ -460,13 +450,11 @@
         "Cancel Changes"]
        [:ty-button {:type "button"
                     :flavor "secondary"}
-        [:ty-icon {:name "download"
-                   :class "mr-2"}]
+        [:ty-icon.mr-2 {:name "download"}]
         "Export Profile"]
        [:ty-button {:type "submit"
                     :flavor "primary"}
-        [:ty-icon {:name "save"
-                   :class "mr-2"}]
+        [:ty-icon.mr-2 {:name "save"}]
         "Save Profile"]]]]]
 
    ;; Feature Showcase
@@ -505,33 +493,29 @@
      [:h3.text-lg.font-semibold.ty-text.mb-4 "✨ Rich Content Features"]
      [:div.space-y-4.text-sm
       [:div.flex.items-start.gap-3
-       [:ty-icon {:name "check-circle"
-                  :class "ty-text-success mt-0.5"
-                  :size "sm"}]
+       [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                         :size "sm"}]
        [:div
         [:strong.ty-text "Rich Dropdown Options"]
         [:p.ty-text-- "Add icons, flags, currency symbols, and detailed descriptions to dropdown options using any HTML content."]]]
 
       [:div.flex.items-start.gap-3
-       [:ty-icon {:name "check-circle"
-                  :class "ty-text-success mt-0.5"
-                  :size "sm"}]
+       [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                         :size "sm"}]
        [:div
         [:strong.ty-text "Visual Multiselect Tags"]
         [:p.ty-text-- "Create beautiful skill tags with icons, colors, and semantic flavors for intuitive categorization."]]]
 
       [:div.flex.items-start.gap-3
-       [:ty-icon {:name "check-circle"
-                  :class "ty-text-success mt-0.5"
-                  :size "sm"}]
+       [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                         :size "sm"}]
        [:div
         [:strong.ty-text "Contextual Information"]
         [:p.ty-text-- "Show additional context like UTC offsets, currency codes, or language names without cluttering the interface."]]]
 
       [:div.flex.items-start.gap-3
-       [:ty-icon {:name "check-circle"
-                  :class "ty-text-success mt-0.5"
-                  :size "sm"}]
+       [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                         :size "sm"}]
        [:div
         [:strong.ty-text "Professional Polish"]
         [:p.ty-text-- "Every interaction feels premium with consistent spacing, hover states, and visual feedback throughout."]]]]
@@ -541,33 +525,29 @@
       [:h3.text-lg.font-semibold.ty-text.mb-4 "⚡ Technical Benefits"]
       [:div.space-y-4.text-sm
        [:div.flex.items-start.gap-3
-        [:ty-icon {:name "check-circle"
-                   :class "ty-text-success mt-0.5"
-                   :size "sm"}]
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                          :size "sm"}]
         [:div
          [:strong.ty-text "Framework Agnostic"]
          [:p.ty-text-- "Pure web components work with any frontend framework or vanilla JavaScript."]]]
 
        [:div.flex.items-start.gap-3
-        [:ty-icon {:name "check-circle"
-                   :class "ty-text-success mt-0.5"
-                   :size "sm"}]
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                          :size "sm"}]
         [:div
          [:strong.ty-text "Semantic Design System"]
          [:p.ty-text-- "Colors convey meaning - success, danger, warning states are consistent across all components."]]]
 
        [:div.flex.items-start.gap-3
-        [:ty-icon {:name "check-circle"
-                   :class "ty-text-success mt-0.5"
-                   :size "sm"}]
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                          :size "sm"}]
         [:div
          [:strong.ty-text "Flexible Content Model"]
          [:p.ty-text-- "HTML content inside ty-option and ty-tag elements enables unlimited customization possibilities."]]]
 
        [:div.flex.items-start.gap-3
-        [:ty-icon {:name "check-circle"
-                   :class "ty-text-success mt-0.5"
-                   :size "sm"}]
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check-circle"
+                                          :size "sm"}]
         [:div
          [:strong.ty-text "Responsive & Accessible"]
          [:p.ty-text-- "Mobile-optimized layouts with proper keyboard navigation and screen reader support."]]]]]]]
@@ -581,9 +561,8 @@
 
      ;; Upload Area
      [:div.border-2.border-dashed.ty-border.rounded-lg.p-8.text-center.hover:ty-border-primary.transition-colors.cursor-pointer.mb-6
-      [:ty-icon {:name "upload"
-                 :size "3xl"
-                 :class "ty-text- mb-4"}]
+      [:ty-icon.ty-text-.mb-4 {:name "upload"
+                               :size "3xl"}]
       [:p.ty-text.font-medium.mb-2 "Drag and drop your photo here"]
       [:p.ty-text-.text-sm.mb-4 "or click to browse files"]
 
@@ -601,9 +580,8 @@
      ;; Current Avatar Preview
      [:div.flex.items-center.gap-4.mb-6
       [:div.w-16.h-16.ty-surface-content.rounded-full.flex.items-center.justify-center
-       [:ty-icon {:name "user"
-                  :size "xl"
-                  :class "ty-text-"}]]
+       [:ty-icon.ty-text- {:name "user"
+                           :size "xl"}]]
       [:div.flex-1
        [:p.text-sm.font-medium.ty-text "Current Photo"]
        [:p.text-xs.ty-text- "No photo uploaded"]]]
@@ -614,6 +592,5 @@
                    :on {:click #(swap! state/state assoc-in [:user-profile :avatar-modal-open] false)}}
        "Cancel"]
       [:ty-button {:flavor "primary"}
-       [:ty-icon {:name "save"
-                  :class "mr-2"}]
+       [:ty-icon.mr-2 {:name "save"}]
        "Save Photo"]]]]])

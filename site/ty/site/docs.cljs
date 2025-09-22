@@ -5,6 +5,7 @@
             [ty.site.docs.button :as button-docs]
             [ty.site.docs.common :as common]
             [ty.site.docs.css-system :as css-system]
+            [ty.site.docs.dropdown :as dropdown-docs]
             ;; Import component doc namespaces
             [ty.site.docs.index :as index]
             [ty.site.docs.input :as input-docs]
@@ -31,6 +32,10 @@
                 :segment "button"
                 :view button-docs/view
                 :name "Button"}
+               {:id :ty.site.docs/dropdown
+                :segment "dropdown"
+                :view dropdown-docs/view
+                :name "Dropdown"}
                {:id :ty.site.docs/input
                 :segment "input"
                 :view input-docs/view
@@ -60,7 +65,7 @@
                 :view css-system/view
                 :name "CSS System"}]
                ;; Add placeholders for remaining components (excluding documented ones)
-              (remove #(contains? #{"button" "input" "modal" "popup" "tag" "textarea" "tooltip"} %) component-list)))
+              (remove #(contains? #{"button" "dropdown" "input" "modal" "popup" "tag" "textarea" "tooltip"} %) component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []

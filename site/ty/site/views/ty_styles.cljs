@@ -180,7 +180,7 @@
        [:div.ty-floating.p-6.rounded-lg.relative.mt-6.text-center
         [:div.absolute.top-2.left-3.text-xs.ty-text-.font-mono.opacity-75 "ty-floating"]
         [:div.mt-4
-         [:h4.ty-text++.font-medium.mb-2 "🪆 Surface Babushkas"]
+         [:h4.ty-text++.font-medium.mb-2 "🪆 Surface Layers"]
          [:p.ty-text-.text-sm "Each surface sits inside the previous one, creating depth and visual hierarchy like Russian nesting dolls."]]]]]]
 
     ;; Individual surface descriptions

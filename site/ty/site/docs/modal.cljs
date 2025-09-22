@@ -80,11 +80,11 @@
      [:h3.text-lg.font-medium.ty-text.mb-3 "Events"]
      (event-table
        [{:name "ty-modal-open"
-         :detail "{}"
-         :description "Fired when the modal opens"}
+         :payload "{}"
+         :when-fired "Fired when the modal opens"}
         {:name "ty-modal-close"
-         :detail "{reason: 'programmatic'|'native', returnValue?: string}"
-         :description "Fired when the modal closes, includes reason and optional return value"}])]
+         :payload "{reason: 'programmatic'|'native', returnValue?: string}"
+         :when-fired "Fired when the modal closes, includes reason and optional return value"}])]
 
     ;; Slots
     [:div

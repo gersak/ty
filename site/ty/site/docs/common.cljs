@@ -62,8 +62,8 @@
      (for [{:keys [name payload when-fired]} events]
        [:tr.border-b.ty-border-
         [:td.px-4.py-2.ty-text.font-mono.text-sm name]
-        [:td.px-4.py-2.ty-text-.text-sm.font-mono payload]
-        [:td.px-4.py-2.ty-text-.text-sm when-fired]])]]])
+        [:td.px-4.py-2.ty-text-.text-xs.font-mono payload]
+        [:td.px-4.py-2.ty-text-.text-xs when-fired]])]]])
 
 (defn example-section
   "Create an example section with live demo and code"

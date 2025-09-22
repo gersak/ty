@@ -61,7 +61,7 @@
     "tailwindcss": "4.1"
   },
   "scripts": {
-    "dev": "shadow-cljs -A:dev watch dev",
+    "dev": "shadow-cljs -A:dev watch dev site",
     "dev:css:watch": "npx @tailwindcss/cli -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
     "site": "shadow-cljs -A:dev watch site",
     "site:css:watch": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./site/public/css/site.css --watch",

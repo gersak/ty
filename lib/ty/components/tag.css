@@ -24,7 +24,7 @@
   box-sizing: border-box;
 
   /* Default MD size - no need for [size="md"] */
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding: var(--ty-spacing-mini) var(--ty-spacing-1);
   /* 8px 16px */
   font-size: var(--ty-font-sm);
   /* 14px */
@@ -86,6 +86,7 @@
 .tag-end {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
@@ -130,7 +131,7 @@
 
 /* Size variants - override defaults */
 :host([size="xs"]) .tag-container {
-  padding: var(--ty-spacing-mini) var(--ty-spacing-2);
+  padding: var(--ty-spacing-px) var(--ty-spacing-mini);
   font-size: var(--ty-font-xs);
   line-height: var(--ty-line-height-tight);
   min-width: var(--ty-spacing-10);
@@ -144,7 +145,7 @@
 }
 
 :host([size="sm"]) .tag-container {
-  padding: var(--ty-spacing-1) var(--ty-spacing-3);
+  padding: var(--ty-spacing-mini) var(--ty-spacing-1);
   /* 4px 12px */
   font-size: var(--ty-font-xs);
   /* 12px */

@@ -57,6 +57,7 @@
              "info" lucide/info
              "info-circle" lucide/circle-alert ; Info circle alias
              "star" lucide/star
+             "lightbulb" lucide/lightbulb
 
              ;; Additional utility icons
              "search" lucide/search
@@ -65,6 +66,9 @@
              "clock" lucide/clock
              "arrow-right" lucide/arrow-right ; Navigation arrows
              "bell" lucide/bell ; Notifications
+             "wifi-off" lucide/wifi-off ; Connection lost
+             "database" lucide/database ; Data icons
+             "server" lucide/server ; Server icons
 
              ;; Loading and refresh icons
              "refresh-ccw" lucide/refresh-ccw

@@ -10,6 +10,7 @@
             [ty.site.docs.index :as index]
             [ty.site.docs.input :as input-docs]
             [ty.site.docs.modal :as modal-docs]
+            [ty.site.docs.multiselect :as multiselect-docs]
             [ty.site.docs.popup :as popup-docs]
             [ty.site.docs.tag :as tag-docs]
             [ty.site.docs.textarea :as textarea-docs]
@@ -44,6 +45,10 @@
                 :segment "modal"
                 :view modal-docs/view
                 :name "Modal"}
+               {:id :ty.site.docs/multiselect
+                :segment "multiselect"
+                :view multiselect-docs/view
+                :name "Multiselect"}
                {:id :ty.site.docs/popup
                 :segment "popup"
                 :view popup-docs/view
@@ -65,7 +70,7 @@
                 :view css-system/view
                 :name "CSS System"}]
                ;; Add placeholders for remaining components (excluding documented ones)
-              (remove #(contains? #{"button" "dropdown" "input" "modal" "popup" "tag" "textarea" "tooltip"} %) component-list)))
+              (remove #(contains? #{"button" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []

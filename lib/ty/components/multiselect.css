@@ -278,3 +278,7 @@
   flex-direction: column;
   gap: 0.25rem;
 }
+
+:host([disabled]) .multiselect-container {
+  pointer-events: none;
+}

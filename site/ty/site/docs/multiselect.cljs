@@ -84,11 +84,11 @@
       [:div.ty-bg-neutral-.rounded.p-4
        [:p.text-sm.ty-text- "Content slot accepts " [:code.ty-bg-neutral.px-1.rounded "ty-tag"] " elements:"]
        [:pre.text-xs.ty-text-.mt-2
-        [:code "<!-- Use ty-tag elements as options -->\n<ty-tag value=\"red\" pill size=\"sm\">Red</ty-tag>\n<ty-tag value=\"blue\" pill size=\"sm\">Blue</ty-tag>"]]]
+        [:code.hljs.language-html "<!-- Use ty-tag elements as options -->\n<ty-tag value=\"red\" pill size=\"sm\">Red</ty-tag>\n<ty-tag value=\"blue\" pill size=\"sm\">Blue</ty-tag>"]]]
       [:div.ty-bg-neutral-.rounded.p-4.mt-2
        [:p.text-sm.ty-text- "Selected slot (automatic): Selected tags are moved here with dismiss functionality:"]
        [:pre.text-xs.ty-text-.mt-2
-        [:code "<!-- Tags automatically get these attributes when selected -->\n<ty-tag slot=\"selected\" selected dismissible>Selected Tag</ty-tag>"]]]]]]
+        [:code.hljs.language-html "<!-- Tags automatically get these attributes when selected -->\n<ty-tag slot=\"selected\" selected dismissible>Selected Tag</ty-tag>"]]]]]]
 
    ;; Basic Usage
    [:div.ty-content.rounded-lg.p-6.mb-8
@@ -127,20 +127,56 @@
       [:ty-multiselect {:value "javascript,python"
                         :label "Programming Languages"
                         :placeholder "Select languages..."
-                        :style {:min-width "300px"}
+                        :style {:min-width "320px"}
                         :on {:change multiselect-event-handler}}
        [:ty-tag {:value "javascript"
-                 :size "sm"} "JavaScript"]
+                 :pill true
+                 :size "sm"
+                 :flavor "warning"}
+        [:div.flex.items-center.gap-1.5
+         [:div.w-5.h-5.rounded.bg-yellow-400.flex.items-center.justify-center.rounded-full
+          [:span.text-xs.font-bold.text-black "JS"]]
+         "JavaScript"]]
        [:ty-tag {:value "python"
-                 :size "sm"} "Python"]
+                 :pill true
+                 :size "sm"
+                 :flavor "primary"}
+        [:div.flex.items-center.gap-1.5
+         [:div.w-5.h-5.rounded.bg-blue-500.flex.items-center.justify-center.rounded-full
+          [:span.text-xs.font-bold.text-white "🐍"]]
+         "Python"]]
        [:ty-tag {:value "java"
-                 :size "sm"} "Java"]
+                 :pill true
+                 :size "sm"
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:div.w-5.h-5.rounded.bg-red-600.flex.items-center.justify-center.rounded-full
+          [:span.text-xs.font-bold.text-white "☕"]]
+         "Java"]]
        [:ty-tag {:value "clojure"
-                 :size "sm"} "Clojure"]
+                 :pill true
+                 :size "sm"
+                 :flavor "success"}
+        [:div.flex.items-center.gap-1.5
+         [:div.w-5.h-5.rounded.bg-green-600.flex.items-center.justify-center.rounded-full
+          [:span.text-xs.font-bold.text-white "λ"]]
+         "Clojure"]]
        [:ty-tag {:value "rust"
-                 :size "sm"} "Rust"]
+                 :pill true
+                 :size "sm"
+                 :flavor "warning"}
+        [:div.flex.items-center.gap-1.5
+         [:div.w-5.h-5.rounded.bg-orange-500.flex.items-center.justify-center.rounded-full
+          [:span.text-xs.font-bold.text-white "🦀"]]
+         "Rust"]]
        [:ty-tag {:value "go"
-                 :size "sm"} "Go"]]]
+                 :pill true
+                 :size "sm"
+                 :flavor "info"}
+        [:div.flex.items-center.gap-1.5
+         [:div.w-5.h-5.rounded.bg-cyan-500.flex.items-center.justify-center.rounded-full
+          [:span.text-xs.font-bold.text-white "Go"]]
+         "Go"]]]]
      (code-block "<ty-multiselect value=\"javascript,python\" label=\"Programming Languages\" placeholder=\"Select languages...\">
   <ty-tag value=\"javascript\" pill size=\"sm\">JavaScript</ty-tag>
   <ty-tag value=\"python\" pill size=\"sm\">Python</ty-tag>
@@ -197,17 +233,41 @@
                         :style {:min-width "280px"}
                         :on {:change multiselect-event-handler}}
        [:ty-tag {:value "approved"
+                 :pill true
                  :size "sm"
-                 :flavor "success"} "✓ Approved"]
+                 :flavor "success"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "check-circle"
+                    :size "12"
+                    :class "ty-text-success++"}]
+         "Approved"]]
        [:ty-tag {:value "verified"
+                 :pill true
                  :size "sm"
-                 :flavor "success"} "✓ Verified"]
+                 :flavor "success"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "shield"
+                    :size "12"
+                    :class "ty-text-success++"}]
+         "Verified"]]
        [:ty-tag {:value "confirmed"
+                 :pill true
                  :size "sm"
-                 :flavor "success"} "✓ Confirmed"]
+                 :flavor "success"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "check"
+                    :size "12"
+                    :class "ty-text-success++"}]
+         "Confirmed"]]
        [:ty-tag {:value "validated"
+                 :pill true
                  :size "sm"
-                 :flavor "success"} "✓ Validated"]]]
+                 :flavor "success"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "star"
+                    :size "12"
+                    :class "ty-text-success++"}]
+         "Validated"]]]]
      (code-block "<ty-multiselect flavor=\"success\" value=\"approved,verified\" placeholder=\"Select approved items...\">
   <ty-tag value=\"approved\" pill size=\"sm\" flavor=\"success\">✓ Approved</ty-tag>
   <ty-tag value=\"verified\" pill size=\"sm\" flavor=\"success\">✓ Verified</ty-tag>
@@ -219,56 +279,70 @@
      [:h3.text-xl.font-semibold.ty-text++.mb-4 "Danger (Error States)"]
      [:div.mb-4
       [:ty-multiselect {:flavor "danger"
-                        :value "error,failed"
-                        :label "Issues"
-                        :placeholder "Select problem areas..."
-                        :style {:min-width "280px"}
+                        :value "error,timeout"
+                        :label "System Issues"
+                        :placeholder "Select error types..."
+                        :style {:min-width "320px"}
                         :on {:change multiselect-event-handler}}
        [:ty-tag {:value "error"
+                 :pill true
                  :size "sm"
-                 :flavor "danger"} "✗ Error"]
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "x-circle"
+                    :size "12"
+                    :class "ty-text-danger++"}]
+         "Critical Error"]]
        [:ty-tag {:value "failed"
+                 :pill true
                  :size "sm"
-                 :flavor "danger"} "✗ Failed"]
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "alert-triangle"
+                    :size "12"
+                    :class "ty-text-danger++"}]
+         "Process Failed"]]
        [:ty-tag {:value "rejected"
+                 :pill true
                  :size "sm"
-                 :flavor "danger"} "✗ Rejected"]
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "shield"
+                    :size "12"
+                    :class "ty-text-danger++"}]
+         "Access Rejected"]]
        [:ty-tag {:value "invalid"
+                 :pill true
                  :size "sm"
-                 :flavor "danger"} "✗ Invalid"]]]
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "alert-circle"
+                    :size "12"
+                    :class "ty-text-danger++"}]
+         "Invalid Data"]]
+       [:ty-tag {:value "timeout"
+                 :pill true
+                 :size "sm"
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "clock"
+                    :size "12"
+                    :class "ty-text-danger++"}]
+         "Timeout"]]
+       [:ty-tag {:value "offline"
+                 :pill true
+                 :size "sm"
+                 :flavor "danger"}
+        [:div.flex.items-center.gap-1.5
+         [:ty-icon {:name "wifi-off"
+                    :size "12"
+                    :class "ty-text-danger++"}]
+         "Connection Lost"]]]]
      (code-block "<ty-multiselect flavor=\"danger\" value=\"error,failed\" placeholder=\"Select problem areas...\">
   <ty-tag value=\"error\" pill size=\"sm\" flavor=\"danger\">✗ Error</ty-tag>
   <ty-tag value=\"failed\" pill size=\"sm\" flavor=\"danger\">✗ Failed</ty-tag>
   <ty-tag value=\"rejected\" pill size=\"sm\" flavor=\"danger\">✗ Rejected</ty-tag>
   <ty-tag value=\"invalid\" pill size=\"sm\" flavor=\"danger\">✗ Invalid</ty-tag>
-</ty-multiselect>")]
-
-    [:div.ty-content.rounded-lg.p-6
-     [:h3.text-xl.font-semibold.ty-text++.mb-4 "Primary (Important Selections)"]
-     [:div.mb-4
-      [:ty-multiselect {:flavor "primary"
-                        :value "urgent,priority"
-                        :label "Priority Level"
-                        :placeholder "Select priority items..."
-                        :style {:min-width "280px"}
-                        :on {:change multiselect-event-handler}}
-       [:ty-tag {:value "urgent"
-                 :size "sm"
-                 :flavor "primary"} "🔥 Urgent"]
-       [:ty-tag {:value "priority"
-                 :size "sm"
-                 :flavor "primary"} "⭐ Priority"]
-       [:ty-tag {:value "critical"
-                 :size "sm"
-                 :flavor "primary"} "⚠️ Critical"]
-       [:ty-tag {:value "essential"
-                 :size "sm"
-                 :flavor "primary"} "🎯 Essential"]]]
-     (code-block "<ty-multiselect flavor=\"primary\" value=\"urgent,priority\" placeholder=\"Select priority items...\">
-  <ty-tag value=\"urgent\" pill size=\"sm\" flavor=\"primary\">🔥 Urgent</ty-tag>
-  <ty-tag value=\"priority\" pill size=\"sm\" flavor=\"primary\">⭐ Priority</ty-tag>
-  <ty-tag value=\"critical\" pill size=\"sm\" flavor=\"primary\">⚠️ Critical</ty-tag>
-  <ty-tag value=\"essential\" pill size=\"sm\" flavor=\"primary\">🎯 Essential</ty-tag>
 </ty-multiselect>")]]
 
    ;; Component States

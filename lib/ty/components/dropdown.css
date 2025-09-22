@@ -103,6 +103,48 @@
   pointer-events: none;
 }
 
+/* ===== SIZE VARIANTS ===== */
+
+/* Extra Small */
+.dropdown-stub.xs {
+  min-height: var(--ty-size-xs);
+  font-size: var(--ty-font-xs);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding-right: calc(var(--ty-spacing-2) + 1rem + var(--ty-spacing-1));
+}
+
+/* Small */
+.dropdown-stub.sm {
+  min-height: var(--ty-size-sm);
+  font-size: var(--ty-font-sm);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding-right: calc(var(--ty-spacing-2) + 1rem + var(--ty-spacing-1));
+}
+
+/* Medium (default - already defined above, but explicit for clarity) */
+.dropdown-stub.md {
+  min-height: var(--ty-size-md);
+  font-size: var(--ty-font-sm);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+}
+
+/* Large */
+.dropdown-stub.lg {
+  min-height: var(--ty-size-lg);
+  font-size: var(--ty-font-base);
+  padding: var(--ty-spacing-3) var(--ty-spacing-4);
+  padding-right: calc(var(--ty-spacing-4) + 1rem + var(--ty-spacing-3));
+}
+
+/* Extra Large */
+.dropdown-stub.xl {
+  min-height: var(--ty-size-xl);
+  font-size: var(--ty-font-lg);
+  padding: var(--ty-spacing-4) var(--ty-spacing-5);
+  padding-right: calc(var(--ty-spacing-5) + 1rem + var(--ty-spacing-4));
+}
+
 /* Placeholder styling */
 .dropdown-placeholder {
   color: var(--ty-input-placeholder);
@@ -172,9 +214,10 @@
   padding-right: var(--ty-spacing-3);
 }
 
-/* Read-only dropdowns should not be clickable */
-:host([readonly]) .dropdown-stub {
-  cursor: default;
+/* Read-only dropdowns should use initial cursor */
+:host([readonly]) .dropdown-stub,
+:host([readonly]) .dropdown-stub slot[name="selected"] {
+  cursor: initial;
 }
 
 /* ===== DIALOG STRUCTURE ===== */
@@ -286,6 +329,42 @@
 
 .dropdown-search-input::placeholder {
   color: var(--ty-input-placeholder);
+}
+
+/* Search input size variants */
+.dropdown-search-input.xs {
+  min-height: var(--ty-size-xs);
+  font-size: var(--ty-font-xs);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding-right: calc(var(--ty-spacing-2) + 1rem + var(--ty-spacing-1));
+}
+
+.dropdown-search-input.sm {
+  min-height: var(--ty-size-sm);
+  font-size: var(--ty-font-sm);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding-right: calc(var(--ty-spacing-2) + 1rem + var(--ty-spacing-1));
+}
+
+.dropdown-search-input.md {
+  min-height: var(--ty-size-md);
+  font-size: var(--ty-font-sm);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
+}
+
+.dropdown-search-input.lg {
+  min-height: var(--ty-size-lg);
+  font-size: var(--ty-font-base);
+  padding: var(--ty-spacing-3) var(--ty-spacing-4);
+  padding-right: calc(var(--ty-spacing-4) + 1rem + var(--ty-spacing-3));
+}
+
+.dropdown-search-input.xl {
+  min-height: var(--ty-size-xl);
+  font-size: var(--ty-font-lg);
+  padding: var(--ty-spacing-4) var(--ty-spacing-5);
+  padding-right: calc(var(--ty-spacing-5) + 1rem + var(--ty-spacing-4));
 }
 
 .dropdown-search-chevron {
@@ -443,6 +522,37 @@
 
 .mobile-search-input::placeholder {
   color: var(--ty-input-placeholder);
+}
+
+/* Mobile search input size variants */
+.mobile-search-input.xs {
+  min-height: var(--ty-size-xs);
+  font-size: var(--ty-font-xs);
+  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+}
+
+.mobile-search-input.sm {
+  min-height: var(--ty-size-sm);
+  font-size: var(--ty-font-sm);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+}
+
+.mobile-search-input.md {
+  min-height: var(--ty-size-md);
+  font-size: var(--ty-font-base);
+  padding: var(--ty-spacing-3) var(--ty-spacing-4);
+}
+
+.mobile-search-input.lg {
+  min-height: var(--ty-size-lg);
+  font-size: var(--ty-font-lg);
+  padding: var(--ty-spacing-4) var(--ty-spacing-5);
+}
+
+.mobile-search-input.xl {
+  min-height: var(--ty-size-xl);
+  font-size: var(--ty-font-xl);
+  padding: var(--ty-spacing-5) var(--ty-spacing-6);
 }
 
 .mobile-options-list {

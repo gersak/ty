@@ -1,6 +1,7 @@
 (ns ty.site.docs.dropdown
   "Documentation for ty-dropdown component"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]
+            [ty.site.state :as state]))
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -18,66 +19,66 @@
 
     ;; Attributes Table
     (attribute-table
-     [{:name "value"
-       :type "string"
-       :default "null"
-       :description "Selected option value"}
-      {:name "placeholder"
-       :type "string"
-       :default "null"
-       :description "Placeholder text when no option is selected"}
-      {:name "label"
-       :type "string"
-       :default "null"
-       :description "Label displayed above the dropdown"}
-      {:name "name"
-       :type "string"
-       :default "null"
-       :description "Name for form submission"}
-      {:name "searchable"
-       :type "boolean"
-       :default "true"
-       :description "Enable/disable search functionality"}
-      {:name "disabled"
-       :type "boolean"
-       :default "false"
-       :description "Whether the dropdown is disabled"}
-      {:name "readonly"
-       :type "boolean"
-       :default "false"
-       :description "Read-only mode (shows value, prevents interaction)"}
-      {:name "required"
-       :type "boolean"
-       :default "false"
-       :description "Whether the dropdown is required (shows asterisk)"}
-      {:name "size"
-       :type "string"
-       :default "'md'"
-       :description "Size variant: xs, sm, md, lg, xl"}
-      {:name "flavor"
-       :type "string"
-       :default "'neutral'"
-       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-      {:name "class"
-       :type "string"
-       :default "null"
-       :description "Additional CSS classes"}])
+      [{:name "value"
+        :type "string"
+        :default "null"
+        :description "Selected option value"}
+       {:name "placeholder"
+        :type "string"
+        :default "null"
+        :description "Placeholder text when no option is selected"}
+       {:name "label"
+        :type "string"
+        :default "null"
+        :description "Label displayed above the dropdown"}
+       {:name "name"
+        :type "string"
+        :default "null"
+        :description "Name for form submission"}
+       {:name "searchable"
+        :type "boolean"
+        :default "true"
+        :description "Enable/disable search functionality"}
+       {:name "disabled"
+        :type "boolean"
+        :default "false"
+        :description "Whether the dropdown is disabled"}
+       {:name "readonly"
+        :type "boolean"
+        :default "false"
+        :description "Read-only mode (hides chevron, uses initial cursor, allows selection)"}
+       {:name "required"
+        :type "boolean"
+        :default "false"
+        :description "Whether the dropdown is required (shows asterisk)"}
+       {:name "size"
+        :type "string"
+        :default "'md'"
+        :description "Size variant: xs, sm, md, lg, xl"}
+       {:name "flavor"
+        :type "string"
+        :default "'neutral'"
+        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+       {:name "class"
+        :type "string"
+        :default "null"
+        :description "Additional CSS classes"}])
 
     [:div.mt-6
      [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
      (event-table
-      [{:name "change"
-        :when-fired "Fired when selection changes"
-        :payload "{option: selectedOption, value, text, originalEvent}"}
-       {:name "search"
-        :when-fired "Fired when user types in search field"
-        :payload "{query: searchString, originalEvent}"}
-       {:name "focus"
-        :when-fired "Fired when dropdown gains focus"
-        :payload "Standard FocusEvent"}
-       {:name "blur"
-        :when-fired "Fired when dropdown loses focus"
-        :payload "Standard FocusEvent"}])
+       [{:name "change"
+         :when-fired "Fired when selection changes"
+         :payload "{option: selectedOption, value, text, originalEvent}"}
+        {:name "search"
+         :when-fired "Fired when user types in search field"
+         :payload "{query: searchString, originalEvent}"}
+        {:name "focus"
+         :when-fired "Fired when dropdown gains focus"
+         :payload "Standard FocusEvent"}
+        {:name "blur"
+         :when-fired "Fired when dropdown loses focus"
+         :payload "Standard FocusEvent"}])
 
      [:div.mt-4
       [:h3.text-lg.font-semibold.ty-text++.mb-2 "Slots"]
@@ -122,24 +123,121 @@
   <ty-option value=\"medium\">Medium</ty-option>
   <ty-option value=\"large\">Large</ty-option>
   <ty-option value=\"xl\">Extra Large</ty-option>
-</ty-dropdown>")]
-
-    [:div
-     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Non-searchable"]
-     [:div.mb-4
-      [:ty-dropdown {:searchable "false"
-                     :placeholder "Select priority..."
-                     :style {:min-width "160px"}}
-       [:ty-option {:value "low"} "Low"]
-       [:ty-option {:value "medium"} "Medium"]
-       [:ty-option {:value "high"} "High"]
-       [:ty-option {:value "urgent"} "Urgent"]]]
-     (code-block "<ty-dropdown searchable=\"false\" placeholder=\"Select priority...\">
-  <ty-option value=\"low\">Low</ty-option>
-  <ty-option value=\"medium\">Medium</ty-option>
-  <ty-option value=\"high\">High</ty-option>
-  <ty-option value=\"urgent\">Urgent</ty-option>
 </ty-dropdown>")]]
+
+;; External Search Control
+   [:div.ty-content.rounded-lg.p-6.mb-8
+    [:h2.text-2xl.font-bold.ty-text++.mb-4 "External Search Control"]
+    [:p.ty-text-.mb-4
+     "When " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "searchable=\"false\""]
+     " the dropdown sends " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "ty-search"]
+     " events instead of filtering internally. You control which options are visible."]
+
+    [:div.mb-6
+     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Simple External Search"]
+     [:div.mb-4
+      [:ty-dropdown {:id "external-search-dropdown"
+                     :searchable false
+                     :placeholder "Search programming languages..."
+                     :style {:min-width "280px"}}
+       (let [all-languages ["JavaScript" "TypeScript" "Python" "Java" "Clojure" "Rust" "Go"]
+             current-query (get @state/state :docs-dropdown-search-query "")
+             filtered-langs (if (empty? current-query)
+                              all-languages
+                              (filter #(re-find (re-pattern (str "(?i)" current-query)) %) all-languages))]
+         (for [lang filtered-langs]
+           [:ty-option {:key lang
+                        :value lang} lang]))]
+
+      [:script {:dangerously-set-inner-HTML
+                {:__html "
+                  // Wait for DOM to be ready
+                  setTimeout(() => {
+                    const dropdown = document.getElementById('external-search-dropdown');
+                    if (dropdown) {
+                      dropdown.addEventListener('ty-search', function(event) {
+                        const query = event.detail.search;
+                        console.log('External search query:', query);
+                        
+                        // Trigger state update for the demo
+                        window.dispatchEvent(new CustomEvent('docs-dropdown-search', {
+                          detail: { query: query }
+                        }));
+                      });
+                    }
+                  }, 100);
+                "}}]]
+
+     [:div.mb-4.p-3.ty-bg-neutral-.rounded.text-sm
+      [:div "Search query: " [:code.ty-bg-neutral.px-1.rounded
+                              (let [query (get @state/state :docs-dropdown-search-query "")]
+                                (if (empty? query) "(empty)" query))]]
+      [:div "Languages filtered externally based on search input"]]
+
+     (code-block "<!-- External search mode -->
+<ty-dropdown id=\"lang-dropdown\" searchable=\"false\" placeholder=\"Search languages...\">
+  <!-- Options updated dynamically by your code -->
+  <ty-option value=\"javascript\">JavaScript</ty-option>
+  <ty-option value=\"python\">Python</ty-option>
+  <!-- ... filtered results ... -->
+</ty-dropdown>
+
+<!-- Vanilla JavaScript -->
+<script>
+document.getElementById('lang-dropdown').addEventListener('ty-search', function(event) {
+  const query = event.detail.search;
+  // Filter your data and update DOM
+  updateDropdownOptions(query);
+});
+</script>
+
+<!-- React -->
+<TyDropdown 
+  searchable={false}
+  onSearch={(e) => {
+    const query = e.detail.search;
+    setFilteredOptions(filterData(query));
+  }}>
+  {filteredOptions.map(option => 
+    <ty-option key={option.value} value={option.value}>
+      {option.label}
+    </ty-option>
+  )}
+</TyDropdown>
+
+<!-- HTMX -->
+<ty-dropdown searchable=\"false\" 
+             hx-on:ty-search=\"htmx.ajax('GET', '/search?q=' + event.detail.search, '#results')\">
+  <div id=\"results\">
+    <!-- Server renders filtered options -->
+  </div>
+</ty-dropdown>")]]
+
+;; IMPORTANT: Option Clearing Notice
+   [:div.ty-bg-warning-.border.border-amber-300.rounded-lg.p-4.mb-8
+    [:h3.font-bold.ty-text-warning++.mb-3.flex.items-center.gap-2
+     [:ty-icon {:name "alert-triangle"
+                :size "20"}]
+     "Important: Option Clearing"]
+    [:div.ty-text-warning.space-y-2
+     [:p [:strong "ty-dropdown does NOT provide built-in option clearing."]
+      " If you need users to clear their selection, you must provide a clear option manually."]
+     [:div.mt-3
+      [:p.font-medium "Example with clear option:"]
+      [:div.mt-2
+       [:ty-dropdown {:placeholder "Choose a priority (with clear option)..."
+                      :style {:min-width "250px"}}
+        [:ty-option {:value ""} "🗑️ Clear Selection"]
+        [:ty-option {:value "low"} "Low Priority"]
+        [:ty-option {:value "medium"} "Medium Priority"]
+        [:ty-option {:value "high"} "High Priority"]]]
+      [:div.mt-2
+       (code-block "<ty-dropdown placeholder=\"Choose priority...\">
+  <ty-option value=\"\">🗑️ Clear Selection</ty-option>
+  <ty-option value=\"low\">Low Priority</ty-option>
+  <ty-option value=\"medium\">Medium Priority</ty-option>
+  <ty-option value=\"high\">High Priority</ty-option>
+</ty-dropdown>")]]]]
 
    ;; Rich Content Examples
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Rich Content Examples"]
@@ -432,14 +530,16 @@
 
     [:div.mt-6.p-4.ty-bg-primary-.rounded
      [:h3.font-semibold.ty-text-primary++.mb-2.flex.items-center.gap-2
-      [:ty-icon {:name "lightbulb" :size "18"}]
+      [:ty-icon {:name "lightbulb"
+                 :size "18"}]
       "Key Tips"]
      [:ul.space-y-1.text-sm.ty-text-primary
       [:li "• Search is enabled by default - users can type to filter options"]
       [:li "• Use two-line layouts (title + description) for rich information"]
       [:li "• The dropdown automatically handles keyboard navigation"]
       [:li "• Set explicit min-width styles to prevent layout shifts"]
-      [:li "• Rich content works great for teams, files, languages, and complex data"]]]]
+      [:li "• Rich content works great for teams, files, languages, and complex data"]
+      [:li "• Read-only dropdowns hide the chevron but still allow selection"]]]]
 
    ;; Related Components
    [:div.mt-8.p-4.ty-border.border.rounded-lg

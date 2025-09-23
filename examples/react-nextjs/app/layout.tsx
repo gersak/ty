@@ -11,6 +11,9 @@ export const metadata: Metadata = {
 
 // <script src="/ty.js"></script>
 // <script src="/ty.css"></script>
+//
+// <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/ty-lazy.js"></script>
+// <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/css/ty.css" />
 
 
 export default function RootLayout({
@@ -21,9 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Load icons after Ty components are available */}
-        <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/ty-lazy.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/css/ty.css" />
+        {/* Load Ty components and CSS - use local version for consistency */}
+        <link rel="stylesheet" href="/ty.css" />
+        <script src="/ty.js"></script>
         <script src="/icons.js"></script>
       </head>
       <body>

@@ -190,11 +190,11 @@ export function AppLayout({ children }: AppLayoutProps) {
                         : 'gap-3 px-4 border-l-4'}
                       ${isActive
                         ? sidebarCollapsed
-                          ? 'bg-primary-100 text-primary-ty-strong'
-                          : 'bg-primary-100 border-l-primary-500 text-primary-ty-strong'
+                          ? 'ty-bg-primary text-primary++'
+                          : 'ty-bg-primary border-l-primary-500 text-primary++'
                         : sidebarCollapsed
-                          ? 'text-neutral-ty-base hover:bg-neutral-50 hover:text-neutral-ty-strong'
-                          : 'border-l-transparent text-neutral-ty-base hover:bg-neutral-50 hover:text-neutral-ty-strong'
+                          ? 'ty-text-neutral hover:ty-bg-neutral hover:ty-text++'
+                          : 'border-l-transparent ty-text-neutral hover:ty-bg-neutral hover:ty-text++'
                       }
                     `}
                     onClick={closeMobileSidebar}

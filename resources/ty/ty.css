@@ -1037,7 +1037,15 @@ html.dark .ty-sunken {
    INTERACTIVE STATES
    ================================================================= */
 
-/* Hover states for backgrounds */
+.hover\:ty-bg-neutral:hover {
+  background-color: var(--ty-bg-neutral);
+}
+
+.hover\:ty-bg-neutral\+:hover {
+  background-color: var(--ty-bg-neutral-mild);
+}
+
+
 .hover\:ty-bg-primary:hover {
   background-color: var(--ty-bg-primary);
 }
@@ -1050,12 +1058,45 @@ html.dark .ty-sunken {
   background-color: var(--ty-bg-secondary);
 }
 
+.hover\:ty-bg-secondary+:hover {
+  background-color: var(--ty-bg-secondary-mild);
+}
+
 .hover\:ty-bg-success:hover {
   background-color: var(--ty-bg-success);
 }
 
+.hover\:ty-bg-success+:hover {
+  background-color: var(--ty-bg-success-mild);
+}
+
 .hover\:ty-bg-danger:hover {
   background-color: var(--ty-bg-danger);
+}
+
+.hover\:ty-bg-danger+:hover {
+  background-color: var(--ty-bg-danger-mild);
+}
+
+/* Hover states for text colors */
+.hover\:ty-text:hover {
+  color: var(--ty-text);
+}
+
+.hover\:ty-text\+:hover {
+  color: var(--ty-text-mild);
+}
+
+.hover\:ty-text\+\+:hover {
+  color: var(--ty-text-strong);
+}
+
+.hover\:ty-text-:hover {
+  color: var(--ty-text-soft);
+}
+
+.hover\:ty-text--:hover {
+  color: var(--ty-text-faint);
 }
 
 /* Focus states for borders */

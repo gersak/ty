@@ -19,36 +19,8 @@
    ;; Title and Description
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-calendar-month"]
-    [:p.text-lg.ty-text- "A stateless calendar month renderer for building custom calendar interfaces with full control over day rendering and behavior."]]
-
-   ;; Key Features Highlight
-   [:div.ty-content.rounded-lg.p-6.mb-8
-    [:h2.text-xl.font-semibold.ty-text.mb-4 "✨ Key Features"]
-    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-     [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-primary.mt-0.5 {:name "settings"
-                                        :size "sm"}]
-      [:div
-       [:p.font-medium.ty-text "Property-Controlled"]
-       [:p.text-sm.ty-text- "Direct property access with automatic re-rendering"]]]
-     [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-primary.mt-0.5 {:name "layers"
-                                        :size "sm"}]
-      [:div
-       [:p.font-medium.ty-text "Stateless Design"]
-       [:p.text-sm.ty-text- "No internal state, purely controlled by parent"]]]
-     [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-primary.mt-0.5 {:name "globe"
-                                        :size "sm"}]
-      [:div
-       [:p.font-medium.ty-text "Framework Agnostic"]
-       [:p.text-sm.ty-text- "Works with React, Vue, HTMX, vanilla JS"]]]
-     [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-primary.mt-0.5 {:name "palette"
-                                        :size "sm"}]
-      [:div
-       [:p.font-medium.ty-text "Fully Customizable"]
-       [:p.text-sm.ty-text- "Custom day content and CSS classes"]]]]]
+    [:p.text-lg.ty-text- "The foundation component for calendar interfaces. Renders a single month with complete customization control."]
+    [:p.text-sm.ty-text-.mt-2 "Powers ty-calendar and ty-datepicker components."]]
 
    ;; API Reference Card
    [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -133,7 +105,7 @@
          [:td.px-4.py-2.ty-text-.text-sm "number"]
          [:td.px-4.py-2.ty-text-.text-sm "Month 1-12"]]
         [:tr.border-b.ty-border-
-         [:td.px-4.py-2.ty-text.font-mono.text-sm "dayInMonth"]
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "day"]
          [:td.px-4.py-2.ty-text-.text-sm "number"]
          [:td.px-4.py-2.ty-text-.text-sm "Day of month 1-31"]]
         [:tr.border-b.ty-border-
@@ -153,16 +125,6 @@
          [:td.px-4.py-2.ty-text-.text-sm "boolean"]
          [:td.px-4.py-2.ty-text-.text-sm "Is this from adjacent month?"]]]]]]]
 
-   ;; Basic Usage
-   [:div.ty-content.rounded-lg.p-6.mb-8
-    [:h2.text-2xl.font-semibold.ty-text.mb-4 "Basic Usage"]
-    (code-block "<ty-calendar-month></ty-calendar-month>")
-    [:div.mt-4
-     [:ty-calendar-month]]]
-
-   ;; Examples Section
-   [:h2.text-2xl.font-semibold.ty-text.mb-6 "Examples"]
-
    [:div.space-y-8
     ;; Basic Month Display
     [:div.ty-content.rounded-lg.p-6
@@ -181,10 +143,10 @@
         [:li "• Adjacent month days shown muted"]]]]
      (code-block "<ty-calendar-month></ty-calendar-month>")]
 
-    ;; Property Control
+    ;; Different Months
     [:div.ty-content.rounded-lg.p-6
-     [:h3.text-lg.font-medium.ty-text.mb-4 "Property Control"]
-     [:p.text-sm.ty-text-.mb-4 "Direct property access for specific month/year display and date selection."]
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Different Months"]
+     [:p.text-sm.ty-text-.mb-4 "Display any month and year with simple property settings."]
      [:div.flex.flex-col.lg:flex-row.gap-6.mb-4
       [:div.flex-1
        [:ty-calendar-month {:id "controlled-calendar"
@@ -194,6 +156,7 @@
                                                   (set! (.-value el) (.getTime (js/Date. 2024 11 25))))}]]
       [:div.lg:w-80
        [:h4.font-medium.ty-text.mb-2 "JavaScript Control"]
+
        [:pre.text-xs.ty-elevated.p-3.rounded.overflow-x-auto
         [:code
          "const calendar = document.getElementById('calendar');\n"
@@ -251,12 +214,17 @@
        [:h4.text-sm.font-medium.ty-text.mb-2 "Spanish (es-ES)"]
        [:ty-calendar-month {:id "spanish-calendar"
                             :locale "es-ES"}]]]
-     (code-block "<!-- HTML -->
-<ty-calendar-month id=\"french-calendar\" locale=\"fr-FR\"></ty-calendar-month>
-<ty-calendar-month id=\"german-calendar\" locale=\"de-DE\"></ty-calendar-month>
-<ty-calendar-month id=\"japanese-calendar\" locale=\"ja-JP\"></ty-calendar-month>
-<ty-calendar-month id=\"spanish-calendar\" locale=\"es-ES\"></ty-calendar-month>
-")]
+     (code-block "<!-- Simple attribute approach -->
+<ty-calendar-month locale=\"fr-FR\"></ty-calendar-month>
+<ty-calendar-month locale=\"de-DE\"></ty-calendar-month>
+<ty-calendar-month locale=\"ja-JP\"></ty-calendar-month>
+<ty-calendar-month locale=\"es-ES\"></ty-calendar-month>")]
+
+    ;; Advanced Customization Section Break
+    [:div.border-t.ty-border.pt-8.mt-12.mb-8
+     [:h2.text-2xl.font-semibold.ty-text.mb-4 "Advanced Customization"]
+     [:p.text-sm.ty-text-.mb-6
+      "For complex use cases requiring custom day content, styling, or business logic."]]
 
     ;; Custom Day Content
     [:div.ty-content.rounded-lg.p-6

@@ -8,6 +8,7 @@
              "home" lucide/home
              "user" lucide/user
              "calendar" lucide/calendar
+             "calendar-check" lucide/calendar-check
              "mail" lucide/mail
              "palette" lucide/palette
              "rocket" lucide/rocket
@@ -92,6 +93,8 @@
              "package" lucide/package
              "sparkles" lucide/sparkles
              "layers" lucide/layers
+             "navigation" lucide/navigation
+             "form-input" lucide/form-input
              "book-open" lucide/book-open
              "zap" lucide/zap
              "lambda" lucide/square-function ; Using square-function as lambda

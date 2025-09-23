@@ -3,6 +3,7 @@
   (:require [clojure.string :as str]
             [ty.router :as router]
             [ty.site.docs.button :as button-docs]
+            [ty.site.docs.calendar :as calendar-docs]
             [ty.site.docs.calendar-month :as calendar-month-docs]
             [ty.site.docs.common :as common]
             [ty.site.docs.css-system :as css-system]
@@ -23,6 +24,10 @@
     :segment "button"
     :view button-docs/view
     :name "Button"}
+   {:id :ty.site.docs/calendar
+    :segment "calendar"
+    :view calendar-docs/view
+    :name "Calendar"}
    {:id :ty.site.docs/calendar-month
     :segment "calendar-month"
     :view calendar-month-docs/view
@@ -76,7 +81,7 @@
                ;; Start with explicitly defined component docs
                docs-components
                ;; Add placeholders for remaining components (excluding documented ones)
-               (remove #(contains? #{"button" "calendar-month" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
+               (remove #(contains? #{"button" "calendar" "calendar-month" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
@@ -108,7 +113,8 @@
          :active? (router/rendered? id true)})])
    [:div.mt-4.pt-4.border-t.ty-border
     (docs-sidebar-item
-      {:component "css-system"
+      {:component "CSS System"
+       :on {:click #(router/navigate! :ty.site.docs/css-system)}
        :active? (router/rendered? :ty.site.docs/css-system true)})]])
 
 ;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block

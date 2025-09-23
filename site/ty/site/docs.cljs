@@ -7,6 +7,7 @@
             [ty.site.docs.calendar-month :as calendar-month-docs]
             [ty.site.docs.common :as common]
             [ty.site.docs.css-system :as css-system]
+            [ty.site.docs.date-picker :as date-picker-docs]
             [ty.site.docs.dropdown :as dropdown-docs]
             ;; Import component doc namespaces
             [ty.site.docs.index :as index]
@@ -17,7 +18,6 @@
             [ty.site.docs.tag :as tag-docs]
             [ty.site.docs.textarea :as textarea-docs]
             [ty.site.docs.tooltip :as tooltip-docs]))
-
 
 (def docs-components
   [{:id :ty.site.docs/button
@@ -32,6 +32,10 @@
     :segment "calendar-month"
     :view calendar-month-docs/view
     :name "Calendar Month"}
+   {:id :ty.site.docs/date-picker
+    :segment "date-picker"
+    :view date-picker-docs/view
+    :name "Date Picker"}
    {:id :ty.site.docs/dropdown
     :segment "dropdown"
     :view dropdown-docs/view
@@ -72,16 +76,16 @@
 ;; Define routes with views from separate namespaces
 (router/link :ty.site/docs
              (reduce
-               (fn [routes component]
-                 (conj routes
-                       {:id (keyword "ty.site.docs" component)
-                        :segment component
-                        :view #(common/placeholder-view component)
-                        :name (str/capitalize component)}))
+              (fn [routes component]
+                (conj routes
+                      {:id (keyword "ty.site.docs" component)
+                       :segment component
+                       :view #(common/placeholder-view component)
+                       :name (str/capitalize component)}))
                ;; Start with explicitly defined component docs
-               docs-components
+              docs-components
                ;; Add placeholders for remaining components (excluding documented ones)
-               (remove #(contains? #{"button" "calendar" "calendar-month" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
+              (remove #(contains? #{"button" "calendar" "calendar-month" "date-picker" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
@@ -108,14 +112,14 @@
           id :id} docs-components]
      [:div {:key component}
       (docs-sidebar-item
-        {:component component
-         :on {:click #(router/navigate! id)}
-         :active? (router/rendered? id true)})])
+       {:component component
+        :on {:click #(router/navigate! id)}
+        :active? (router/rendered? id true)})])
    [:div.mt-4.pt-4.border-t.ty-border
     (docs-sidebar-item
-      {:component "CSS System"
-       :on {:click #(router/navigate! :ty.site.docs/css-system)}
-       :active? (router/rendered? :ty.site.docs/css-system true)})]])
+     {:component "CSS System"
+      :on {:click #(router/navigate! :ty.site.docs/css-system)}
+      :active? (router/rendered? :ty.site.docs/css-system true)})]])
 
 ;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block
 

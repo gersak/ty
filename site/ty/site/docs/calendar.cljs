@@ -5,7 +5,11 @@
     [ty.site.docs.common
      :refer [code-block
              attribute-table
-             event-table]]))
+             event-table]])
+  (:require-macros [ty.css :refer [defstyles]]))
+
+;; Custom styles for hotel pricing example
+(defstyles hotel-pricing-styles "ty/site/docs/calendar-hotel-pricing.css")
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -338,6 +342,190 @@
        [:h4.font-medium.ty-text.mb-2 "Pass-through Behavior"]
        [:p.text-sm.ty-text- "Your dayContentFn is applied to the month display while navigation remains standard."]]]
      (code-block "const calendar = document.getElementById('calendar');\n\n// This function is passed through to ty-calendar-month\ncalendar.dayContentFn = function(dayContext) {\n  const container = document.createElement('div');\n  const dayNum = document.createElement('span');\n  \n  dayNum.textContent = dayContext.dayInMonth;\n  if (dayContext.weekend) {\n    dayNum.style.color = 'var(--ty-color-primary)';\n    dayNum.style.fontWeight = 'bold';\n  }\n  \n  container.appendChild(dayNum);\n  return container;\n};")]
+
+    ;; Localization
+    [:div.ty-content.rounded-lg.p-6
+     [:h3.text-lg.font-medium.ty-text.mb-2.flex.items-center.gap-2
+      [:ty-icon.ty-text-warning {:name "zap"
+                                 :size "sm"}]
+      "⚡ Property-Based Hotel Pricing Calendar"]
+     [:p.text-sm.ty-text-.mb-4
+      "Complete example showing hotel room pricing with weekend rates and dynamic pricing - demonstrates the power of customCSS with dayContentFn."]
+
+     [:div.mb-4
+      [:p.text-xs.ty-text-.italic.mb-2 "CSS injected via customCSS property - loaded with defstyles!"]
+      [:div.ty-elevated.rounded.p-4 {:style {:width "100%"
+                                             :max-width "600px"}}
+       [:ty-calendar {:id "hotel-pricing-calendar"
+                      :month "12"
+                      :year "2024"
+                      :replicant/on-mount
+                      (fn [{^js el :replicant/node}]
+                       ;; Apply custom CSS for hotel pricing styling
+                        (set! (.-customCSS el) hotel-pricing-styles)
+
+                       ;; Hotel pricing data (in real app, this would come from API)
+                        (let [pricing-data {1 210
+                                            2 150
+                                            3 150
+                                            4 150
+                                            5 150
+                                            6 150
+                                            7 210
+                                            8 210
+                                            9 150
+                                            10 150
+                                            11 150
+                                            12 150
+                                            13 150
+                                            14 210
+                                            15 210
+                                            16 150
+                                            17 150
+                                            18 150
+                                            19 150
+                                            20 150
+                                            21 210
+                                            22 210
+                                            23 150
+                                            24 150
+                                            25 150
+                                            26 150
+                                            27 150
+                                            28 210
+                                            29 210
+                                            30 150
+                                            31 150}]
+
+                         ;; Custom day content function for hotel pricing
+                          (set! (.-dayContentFn el)
+                                (fn [^js context]
+                                  (let [{:keys [day-in-month weekend other-month]} (->clj context)
+                                        container (.createElement js/document "div")
+                                        day-span (.createElement js/document "span")
+                                        price-span (.createElement js/document "span")
+                                        price (get pricing-data day-in-month 150)]
+
+                                    (set! (.-className container) (if other-month
+                                                                    "hotel-calendar-day other-month"
+                                                                    "hotel-calendar-day"))
+                                    (set! (.-className day-span) "day-number")
+                                    (set! (.-textContent day-span) (str day-in-month))
+
+                                    (when-not other-month
+                                      (set! (.-className price-span)
+                                            (cond
+                                              (> price 200) "price-tag high-demand"
+                                              weekend "price-tag weekend-price"
+                                              :else "price-tag"))
+                                      (set! (.-textContent price-span) (str "€" price)))
+
+                                    (.appendChild container day-span)
+                                    (when-not other-month
+                                      (.appendChild container price-span))
+                                    container)))))}]]]
+
+     [:div.mt-4
+      [:h4.font-medium.ty-text.mb-2 "Key Implementation Points:"]
+      [:ul.space-y-2.text-sm.ty-text-
+       [:li.flex.items-start.gap-2
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+                                          :size "xs"}]
+        [:span [:strong "Container Width:"] " Calendar fills the container (max-width: 600px)"]]
+       [:li.flex.items-start.gap-2
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+                                          :size "xs"}]
+        [:span [:strong "Custom CSS:"] " Injected via customCSS property using defstyles macro"]]
+       [:li.flex.items-start.gap-2
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+                                          :size "xs"}]
+        [:span [:strong "Dynamic Pricing:"] " Weekend rates (€210) vs. weekday rates (€150)"]]
+       [:li.flex.items-start.gap-2
+        [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+                                          :size "xs"}]
+        [:span [:strong "Visual Hierarchy:"] " Clear day numbers with prominent price tags"]]]]
+
+     (code-block "// 1. Create custom styles for Shadow DOM
+const hotelPricingStyles = new CSSStyleSheet();
+hotelPricingStyles.replaceSync(`
+  .hotel-calendar-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+  }
+  
+  .hotel-calendar-day .day-number {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  
+  .hotel-calendar-day .price-tag {
+    background: #10b981;
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 3.5rem;
+    text-align: center;
+  }
+  
+  .hotel-calendar-day .price-tag.high-demand {
+    background: #f59e0b;
+  }
+  
+  .hotel-calendar-day.other-month {
+    opacity: 0.3;
+  }
+`);
+
+// 2. Configure the calendar
+const calendar = document.getElementById('hotel-calendar');
+
+// Apply custom styles
+calendar.customCSS = hotelPricingStyles;
+
+// Hotel pricing data (from your API/database)
+const pricingData = {
+  1: 210, 2: 150, 3: 150, 4: 150, 5: 150, 6: 150, 7: 210, 8: 210,
+  9: 150, 10: 150, 11: 150, 12: 150, 13: 150, 14: 210, 15: 210,
+  // ... more pricing data
+};
+
+// Custom day content function
+calendar.dayContentFn = function(dayContext) {
+  const container = document.createElement('div');
+  const dayNum = document.createElement('span');
+  const priceTag = document.createElement('span');
+  
+  container.className = dayContext.otherMonth ? 
+    'hotel-calendar-day other-month' : 'hotel-calendar-day';
+  
+  dayNum.className = 'day-number';
+  dayNum.textContent = dayContext.dayInMonth;
+  
+  if (!dayContext.otherMonth) {
+    const price = pricingData[dayContext.dayInMonth] || 150;
+    priceTag.className = price > 200 ? 'price-tag high-demand' : 
+                         dayContext.weekend ? 'price-tag weekend-price' : 
+                         'price-tag';
+    priceTag.textContent = `€${price}`;
+  }
+  
+  container.appendChild(dayNum);
+  if (!dayContext.otherMonth) {
+    container.appendChild(priceTag);
+  }
+  
+  return container;
+};
+
+// 3. Wrap in container for width control
+<div style=\"max-width: 600px\">
+  <ty-calendar id=\"hotel-calendar\" month=\"12\" year=\"2024\"></ty-calendar>
+</div>")]
 
     ;; Localization
     [:div.ty-content.rounded-lg.p-6

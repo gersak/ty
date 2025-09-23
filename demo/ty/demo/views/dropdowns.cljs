@@ -157,9 +157,9 @@
                            [:code.ty-content.px-2.py-1.rounded.text-xs
                             (if-let [date-val (:date-picker-value @state/state)]
                               (i18n/translate
-                               (js/Date. date-val)
-                               (::dropdown-value @state/state "en")
-                               {:dateStyle "full"})
+                                (js/Date. date-val)
+                                (::dropdown-value @state/state "en")
+                                {:dateStyle "full"})
                               "none")]]]]})
 
    (code-snippet "<!-- Regular dropdown -->
@@ -791,62 +791,6 @@
   <option value=\"clojure\">Clojure</option>
 </ty-dropdown>")])
 
-(defn external-search-example []
-  (let [all-countries ["United States" "Canada" "Mexico" "United Kingdom" "Germany" "France" "Italy" "Spain" "Japan" "China" "India" "Australia" "Brazil" "Argentina" "South Africa" "Egypt" "Nigeria" "Kenya" "Russia" "Ukraine" "Poland" "Sweden" "Norway" "Denmark" "Finland" "Netherlands" "Belgium" "Switzerland" "Austria" "Czech Republic" "Hungary" "Greece" "Turkey" "Israel" "Saudi Arabia" "UAE" "South Korea" "Thailand" "Vietnam" "Philippines" "Indonesia" "Malaysia" "Singapore" "New Zealand"]
-        [search-query set-search-query!] (state/state "")
-        [filtered-options set-filtered-options!] (state/state all-countries)]
-
-    (fn []
-      [:div.demo-section
-       [:h2.demo-title "External Search Control"]
-       [:p.ty-text-.mb-6
-        "When " [:code.ty-bg-neutral.ty-text.px-1.rounded "searchable=\"false\""] ", the dropdown sends search events upstream for external filtering. The developer controls which options are visible."]
-
-       (demo-row {:title "Country Search (External)"
-                  :description "Search is handled externally - try typing to see filtered results"
-                  :children [[:div.max-w-sm
-                              [:ty-dropdown {:searchable false ;; This triggers external search mode
-                                             :placeholder "Search countries..."
-                                             :style {:min-width "250px"}
-                                             :on {:change dropdown-event-handler
-                                                  :ty-search (fn [^js event]
-                                                               (let [query (.-detail.search event)]
-                                                                 (set-search-query! query)
-                                                                ;; Filter options externally
-                                                                 (let [filtered (if (empty? query)
-                                                                                  all-countries
-                                                                                  (filter #(re-find (re-pattern (str "(?i)" query)) %) all-countries))]
-                                                                   (set-filtered-options! filtered))))}}
-                               ;; Dynamically render options based on external filtering
-                               (for [country filtered-options]
-                                 [:ty-option {:key country :value country} country])]]]})
-
-       [:div.mb-4
-        [:p.ty-text-.text-sm.mb-2 "Current search query: " [:code.ty-bg-neutral.ty-text.px-1.rounded (if (empty? search-query) "(empty)" search-query)]]
-        [:p.ty-text-.text-sm "Showing " [:strong (count filtered-options)] " of " [:strong (count all-countries)] " countries"]]
-
-       (code-snippet "<!-- External search: searchable=\"false\" triggers ty-search events -->
-<ty-dropdown searchable=\"false\" 
-             placeholder=\"Search countries...\"
-             on-ty-search=\"handleExternalSearch(event)\">
-  <!-- Options rendered dynamically based on external filtering -->
-  <ty-option value=\"usa\">United States</ty-option>
-  <ty-option value=\"canada\">Canada</ty-option>
-  <!-- ... filtered options ... -->
-</ty-dropdown>
-
-<script>
-function handleExternalSearch(event) {
-  const query = event.detail.search;
-  // Filter your data externally
-  const filtered = myData.filter(item => 
-    item.name.toLowerCase().includes(query.toLowerCase())
-  );
-  // Update DOM with filtered options
-  updateDropdownOptions(filtered);
-}
-</script>")])))
-
 (defn blur-clear-demo []
   [:div.demo-section
    [:h2.demo-title "Blur Clear Search (Desktop Only)"]
@@ -1323,61 +1267,61 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
 
    ;; HTMX Integration Demo
    (demo-row
-    {:title "HTMX Integration Simulation"
-     :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
-     :children [[:div.max-w-2xl.w-full
-                 [:div.space-y-4
-                  [:form.p-6.ty-elevated.rounded-lg
-                   {:on {:submit #(do
-                                    (.preventDefault %)
-                                    (let [form (.-target %)
-                                          form-data (js/FormData. form)
-                                          data (js/Object.fromEntries form-data)
-                                          result-div (js/document.getElementById "htmx-result")]
-                                      (set! (.-innerHTML result-div)
-                                            (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
-                                                 "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
-                                                 "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
-                                                 (js/JSON.stringify data nil 2)
-                                                 "</pre>"
-                                                 "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
-                                                 "</div>"))
-                                      (js/console.log "HTMX simulation - would POST to server:" data)))}}
-                   [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-                    [:ty-dropdown {:name "department"
-                                   :label "Department"
-                                   :value "engineering"
-                                   :required true
-                                   :flavor "primary"
-                                   :style {:min-width "180px"}}
-                     [:ty-option {:value "engineering"} "🔧 Engineering"]
-                     [:ty-option {:value "design"} "🎨 Design"]
-                     [:ty-option {:value "marketing"} "📢 Marketing"]
-                     [:ty-option {:value "sales"} "💼 Sales"]
-                     [:ty-option {:value "hr"} "👥 Human Resources"]]
+     {:title "HTMX Integration Simulation"
+      :description "Simulates HTMX form submission patterns (would work with real HTMX server)"
+      :children [[:div.max-w-2xl.w-full
+                  [:div.space-y-4
+                   [:form.p-6.ty-elevated.rounded-lg
+                    {:on {:submit #(do
+                                     (.preventDefault %)
+                                     (let [form (.-target %)
+                                           form-data (js/FormData. form)
+                                           data (js/Object.fromEntries form-data)
+                                           result-div (js/document.getElementById "htmx-result")]
+                                       (set! (.-innerHTML result-div)
+                                             (str "<div class=\"p-4 ty-bg-success- rounded border-l-4 border-green-500\">"
+                                                  "<h4 class=\"font-semibold ty-text-success mb-2\">✅ Form Submitted Successfully</h4>"
+                                                  "<pre class=\"text-sm ty-text-success overflow-x-auto\">"
+                                                  (js/JSON.stringify data nil 2)
+                                                  "</pre>"
+                                                  "<p class=\"text-xs ty-text-success mt-2\">In real HTMX: hx-post=\"/api/endpoint\" hx-target=\"#result\"</p>"
+                                                  "</div>"))
+                                       (js/console.log "HTMX simulation - would POST to server:" data)))}}
+                    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+                     [:ty-dropdown {:name "department"
+                                    :label "Department"
+                                    :value "engineering"
+                                    :required true
+                                    :flavor "primary"
+                                    :style {:min-width "180px"}}
+                      [:ty-option {:value "engineering"} "🔧 Engineering"]
+                      [:ty-option {:value "design"} "🎨 Design"]
+                      [:ty-option {:value "marketing"} "📢 Marketing"]
+                      [:ty-option {:value "sales"} "💼 Sales"]
+                      [:ty-option {:value "hr"} "👥 Human Resources"]]
 
-                    [:ty-dropdown {:name "role"
-                                   :label "Role"
-                                   :value "developer"
-                                   :required true
-                                   :flavor "secondary"
-                                   :style {:min-width "180px"}}
-                     [:ty-option {:value "intern"} "👨‍💻 Intern"]
-                     [:ty-option {:value "developer"} "⚡ Developer"]
-                     [:ty-option {:value "senior"} "🚀 Senior Developer"]
-                     [:ty-option {:value "lead"} "👑 Team Lead"]
-                     [:ty-option {:value "manager"} "📊 Manager"]]]
+                     [:ty-dropdown {:name "role"
+                                    :label "Role"
+                                    :value "developer"
+                                    :required true
+                                    :flavor "secondary"
+                                    :style {:min-width "180px"}}
+                      [:ty-option {:value "intern"} "👨‍💻 Intern"]
+                      [:ty-option {:value "developer"} "⚡ Developer"]
+                      [:ty-option {:value "senior"} "🚀 Senior Developer"]
+                      [:ty-option {:value "lead"} "👑 Team Lead"]
+                      [:ty-option {:value "manager"} "📊 Manager"]]]
 
-                   [:div.mt-6.flex.justify-center.grow
-                    [:ty-button {:type "submit"}
-                     "Submit Form (HTMX Simulation)"]]]
+                    [:div.mt-6.flex.justify-center.grow
+                     [:ty-button {:type "submit"}
+                      "Submit Form (HTMX Simulation)"]]]
 
-                  [:div#htmx-result.mt-4]
+                   [:div#htmx-result.mt-4]
 
-                  [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
-                   [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
-                   [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
-                    "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
+                   [:div.mt-4.p-4.bg-amber-50.dark:bg-amber-900.border.border-amber-200.dark:border-amber-700.rounded-lg
+                    [:h4.font-semibold.text-amber-800.dark:text-amber-200.mb-2 "🔗 Real HTMX Usage"]
+                    [:pre.text-xs.text-amber-700.dark:text-amber-300.overflow-x-auto
+                     "<!-- Real HTMX attributes -->\n<form hx-post=\"/api/form/submit\" \n      hx-target=\"#result\" \n      hx-indicator=\"#loading\">\n  \n  <ty-dropdown name=\"department\" required>\n    <option value=\"engineering\">Engineering</option>\n  </ty-dropdown>\n  \n  <button type=\"submit\">Submit</button>\n</form>\n\n<!-- Server receives: { department: 'engineering', role: 'developer' } -->"]]]]]})
 
    (code-snippet "<!-- HTMX form integration -->
 <form hx-post=\"/api/form/submit\" hx-target=\"#result\">
@@ -1725,7 +1669,6 @@ dropdown.setAttribute('value', 'anotherValue'); // ✅ Also works
     (multiple-dropdowns-test)
     (flavor-variants)
     (search-examples)
-    (external-search-example) ;; Add the new external search example here
     (blur-clear-demo)
     (rich-html-demo)
     (sizing-flavors-demo)

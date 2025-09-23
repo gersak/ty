@@ -124,7 +124,7 @@
     [:div.mb-6
      [:h3.text-lg.font-semibold.ty-text+.mb-2 "With Initial Values"]
      [:div.mb-4
-      [:ty-multiselect {:value "javascript,python"
+      [:ty-multiselect {:value ["javascript" "python"]
                         :label "Programming Languages"
                         :placeholder "Select languages..."
                         :style {:min-width "320px"}

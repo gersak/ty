@@ -270,7 +270,8 @@
                [:span.text-xs.ty-text- "+$15/person"]]])
 
            ;; Available options
-           [:ty-tag {:value "wifi-upgrade"}
+           [:ty-tag {:value "wifi-upgrade"
+                     :flavor "warning"}
             [:div.flex.items-center.gap-3
              [:div
               [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "📡"]]
@@ -278,7 +279,8 @@
               [:div.font-medium "Premium Wi-Fi"]
               [:div.text-xs.ty-text- "High-speed dedicated connection • +$10"]]]]
 
-           [:ty-tag {:value "parking"}
+           [:ty-tag {:value "parking"
+                     :flavor "warning"}
             [:div.flex.items-center.gap-3
              [:div
               [:span.ty-elevated.w-6.h-6.text-xs.flex.items-center.justify-center.rounded "🚗"]]
@@ -286,7 +288,8 @@
               [:div.font-medium "Reserved Parking"]
               [:div.text-xs.ty-text- "Guaranteed parking spots • +$5/spot"]]]]
 
-           [:ty-tag {:value "security"}
+           [:ty-tag {:value "security"
+                     :flavor "danger"}
             [:div.flex.items-center.gap-3
              [:div
               [:span.ty-floating.text-xs.w-6.h-6.ty-bg-danger+.rounded.flex.items-center.justify-center "🛡️"]]
@@ -294,7 +297,8 @@
               [:div.font-medium "Security Service"]
               [:div.text-xs.ty-text- "Professional security staff • +$50/hour"]]]]
 
-           [:ty-tag {:value "recording"}
+           [:ty-tag {:value "recording"
+                     :flavor "secondary"}
             [:div.flex.items-center.gap-3
              [:div
               [:span.text-xs.w-6.h-6.ty-bg-secondary+.rounded.flex.items-center.justify-center "📹"]]
@@ -302,7 +306,8 @@
               [:div.font-medium "Video Recording"]
               [:div.text-xs.ty-text- "Professional recording setup • +$75"]]]]
 
-           [:ty-tag {:value "translation"}
+           [:ty-tag {:value "translation"
+                     :flavor "danger"}
             [:div.flex.items-center.gap-3
              [:div
               [:span.text-xs.w-6.h-6.ty-bg-secondary-.rounded.flex.items-center.justify-center "🌐"]]

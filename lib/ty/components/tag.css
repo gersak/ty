@@ -349,12 +349,6 @@
 .tag-content {
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 12rem;
-}
-
-/* For user tags specifically */
-:host([data-type="user"]) .tag-content {
-  max-width: 16rem;
 }
 
 :host([data-type="user"]) .tag-container {

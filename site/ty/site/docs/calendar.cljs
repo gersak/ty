@@ -318,31 +318,6 @@
      [:p.text-sm.ty-text-.mb-6
       "Pass custom rendering functions through to the month display. These work exactly like ty-calendar-month customization."]]
 
-    ;; Custom Day Content (Pass-through)
-    [:div.ty-content.rounded-lg.p-6
-     [:h3.text-lg.font-medium.ty-text.mb-4 "Custom Day Content (Pass-through)"]
-     [:p.text-sm.ty-text-.mb-4 "The dayContentFn is forwarded to the internal ty-calendar-month component."]
-     [:div.flex.flex-col.lg:flex-row.gap-6.mb-4
-      [:div.flex-1
-       [:ty-calendar {:id "custom-content-passthrough"
-                      :replicant/on-mount (fn [{^js el :replicant/node}]
-                                            (set! (.-dayContentFn el)
-                                                  (fn [^js context]
-                                                    (let [{:keys [day-in-month weekend]} (->clj context)
-                                                          container (.createElement js/document "div")
-                                                          day-span (.createElement js/document "span")]
-                                                      (set! (.-style.textAlign container) "center")
-                                                      (set! (.-textContent day-span) (str day-in-month))
-                                                      (when weekend
-                                                        (set! (.-style.color day-span) "var(--ty-color-primary)")
-                                                        (set! (.-style.fontWeight day-span) "bold"))
-                                                      (.appendChild container day-span)
-                                                      container))))}]]
-      [:div.lg:w-80
-       [:h4.font-medium.ty-text.mb-2 "Pass-through Behavior"]
-       [:p.text-sm.ty-text- "Your dayContentFn is applied to the month display while navigation remains standard."]]]
-     (code-block "const calendar = document.getElementById('calendar');\n\n// This function is passed through to ty-calendar-month\ncalendar.dayContentFn = function(dayContext) {\n  const container = document.createElement('div');\n  const dayNum = document.createElement('span');\n  \n  dayNum.textContent = dayContext.dayInMonth;\n  if (dayContext.weekend) {\n    dayNum.style.color = 'var(--ty-color-primary)';\n    dayNum.style.fontWeight = 'bold';\n  }\n  \n  container.appendChild(dayNum);\n  return container;\n};")]
-
     ;; Localization
     [:div.ty-content.rounded-lg.p-6
      [:h3.text-lg.font-medium.ty-text.mb-2.flex.items-center.gap-2

@@ -107,6 +107,82 @@
   padding-right: calc(var(--ty-spacing-4) + 1.25rem + var(--ty-spacing-3));
 }
 
+/* Flavor variants */
+/* Primary - Main brand focus state */
+.date-picker-stub.primary {
+  border-color: var(--ty-input-primary-border, var(--ty-color-primary));
+}
+
+.date-picker-stub.primary:hover:not([disabled]) {
+  border-color: var(--ty-color-primary-mild);
+}
+
+.date-picker-stub.primary:focus,
+.date-picker-stub.primary.open {
+  border-color: var(--ty-color-primary-mild);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Secondary - Supporting action focus state */
+.date-picker-stub.secondary {
+  border-color: var(--ty-input-secondary-border, var(--ty-color-secondary));
+}
+
+.date-picker-stub.secondary:hover:not([disabled]) {
+  border-color: var(--ty-color-secondary-mild);
+}
+
+.date-picker-stub.secondary:focus,
+.date-picker-stub.secondary.open {
+  border-color: var(--ty-color-secondary-mild);
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Success - Valid/confirmed input state */
+.date-picker-stub.success {
+  border-color: var(--ty-input-success-border, var(--ty-color-success));
+}
+
+.date-picker-stub.success:hover:not([disabled]) {
+  border-color: var(--ty-color-success-mild);
+}
+
+.date-picker-stub.success:focus,
+.date-picker-stub.success.open {
+  border-color: var(--ty-color-success-mild);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+/* Danger - Error/invalid input state */
+.date-picker-stub.danger {
+  border-color: var(--ty-input-danger-border, var(--ty-color-danger));
+}
+
+.date-picker-stub.danger:hover:not([disabled]) {
+  border-color: var(--ty-color-danger-mild);
+}
+
+.date-picker-stub.danger:focus,
+.date-picker-stub.danger.open {
+  border-color: var(--ty-color-danger-mild);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Warning - Caution/attention needed input state */
+.date-picker-stub.warning {
+  border-color: var(--ty-input-warning-border, var(--ty-color-warning));
+}
+
+.date-picker-stub.warning:hover:not([disabled]) {
+  border-color: var(--ty-color-warning-mild);
+}
+
+.date-picker-stub.warning:focus,
+.date-picker-stub.warning.open {
+  border-color: var(--ty-color-warning-mild);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
 /* Text content */
 .stub-text {
   flex: 1;

@@ -9,6 +9,7 @@
             [ty.site.docs.css-system :as css-system]
             [ty.site.docs.date-picker :as date-picker-docs]
             [ty.site.docs.dropdown :as dropdown-docs]
+            [ty.site.docs.icon :as icon-docs]
             ;; Import component doc namespaces
             [ty.site.docs.index :as index]
             [ty.site.docs.input :as input-docs]
@@ -40,6 +41,10 @@
     :segment "dropdown"
     :view dropdown-docs/view
     :name "Dropdown"}
+   {:id :ty.site.docs/icon
+    :segment "icon"
+    :view icon-docs/view
+    :name "Icon"}
    {:id :ty.site.docs/input
     :segment "input"
     :view input-docs/view

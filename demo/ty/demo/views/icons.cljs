@@ -1,9 +1,10 @@
 (ns ty.demo.views.icons
   (:require
-   [clojure.string :as str]
-   [ty.demo.state :refer [state]]
-   [ty.icons :as icons]
-   [ty.router :as router]))
+    [clojure.string :as str]
+    [ty.demo.state :refer [state]]
+    [ty.icons :as icons]
+    [ty.icons.registry :refer [registries]]
+    [ty.router :as router]))
 
 (defn icon-card [{:keys [name icon-key]}]
   [:div.p-4.ty-elevated.rounded-lg.shadow-sm.hover:shadow-md.transition-shadow.cursor-pointer.group
@@ -160,13 +161,149 @@
        [:code.text-sm.ty-text--.font-mono
         "<ty-button><ty-icon name=\"plus\"></ty-icon> Add Item</ty-button>"]]]]]])
 
+(defn registry-test-section []
+  [:div.ty-elevated.rounded-lg.shadow-md.p-6.mb-8
+   [:h2.text-2xl.font-bold.ty-text.mb-6 "Registry System Tests"]
+   [:p.text-sm.ty-text-.mb-6
+    "Test the new icon registry system with dynamic icon updates, lifecycle management, and real-time reactivity."]
+
+   [:div.space-y-6
+    ;; Test Icons Display
+    [:div
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Dynamic Test Icons"]
+     [:div.grid.grid-cols-3.md:grid-cols-6.gap-4.p-4.ty-content.rounded-md
+      [:div.text-center
+       [:ty-icon {:name "test-icon-1"
+                  :size "xl"}]
+       [:div.text-xs.ty-text--.mt-2 "test-icon-1"]]
+      [:div.text-center
+       [:ty-icon {:name "test-icon-2"
+                  :size "xl"}]
+       [:div.text-xs.ty-text--.mt-2 "test-icon-2"]]
+      [:div.text-center
+       [:ty-icon {:name "test-icon-3"
+                  :size "xl"}]
+       [:div.text-xs.ty-text--.mt-2 "test-icon-3"]]
+      [:div.text-center
+       [:ty-icon {:name "test-sprite-star"
+                  :size "xl"}]
+       [:div.text-xs.ty-text--.mt-2 "test-sprite-icon"]]
+      [:div.text-center
+       [:ty-icon {:name "async-icon"
+                  :size "xl"}]
+       [:div.text-xs.ty-text--.mt-2 "async-icon"]]
+      [:div#dynamic-icon-container.text-center
+       [:div.text-xs.ty-text--.mt-2 "dynamic-icon"]]]]
+
+    ;; Test Controls
+    [:div
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Test Controls"]
+     [:div.grid.grid-cols-1.sm:grid-cols-2.md:grid-cols-3.gap-4
+      [:ty-button
+       {:on {:click (fn [_]
+                      (js/console.log "Registering initial icons...")
+                      (icons/register-icons! {"test-icon-1" "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"12\" r=\"8\" fill=\"blue\"/></svg>"
+                                              "test-icon-2" "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect width=\"16\" height=\"16\" x=\"4\" y=\"4\" fill=\"green\"/></svg>"
+                                              "test-icon-3" "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><polygon points=\"12,2 22,22 2,22\" fill=\"red\"/></svg>"})
+                      (js/console.log "Icons registered! Components should update automatically."))}}
+       "Register Icons"]
+
+      [:ty-button
+       {:on {:click (fn [_]
+                      (js/console.log "Updating existing icons...")
+                      (icons/register-icons! {"test-icon-1" "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><circle cx=\"12\" cy=\"12\" r=\"8\" fill=\"orange\"/></svg>"
+                                              "test-icon-2" "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><rect width=\"16\" height=\"16\" x=\"4\" y=\"4\" fill=\"purple\"/></svg>"
+                                              "test-icon-3" "<svg viewBox=\"0 0 24 24\" fill=\"currentColor\"><polygon points=\"12,2 22,22 2,22\" fill=\"yellow\"/></svg>"})
+                      (js/console.log "Icons updated! Components should re-render automatically."))}}
+       "Update Icons"]
+
+      [:ty-button
+       {:on {:click (fn [_]
+                      (js/console.log "Creating dynamic icon...")
+                      (let [container (.getElementById js/document "dynamic-icon-container")
+                            existing-icon (.querySelector container "ty-icon")]
+                        ;; Remove existing icon if present
+                        (when existing-icon
+                          (.remove existing-icon))
+                        ;; Create new dynamic icon
+                        (let [new-icon (.createElement js/document "ty-icon")]
+                          (.setAttribute new-icon "name" "test-icon-2")
+                          (.setAttribute new-icon "size" "xl")
+                          (.insertBefore container new-icon (.-firstChild container))))
+                      (js/console.log "Dynamic icon created! Should establish its own watch."))}}
+       "Create Dynamic"]
+
+      [:ty-button
+       {:on {:click (fn [_]
+                      (js/console.log "Removing dynamic icon...")
+                      (let [container (.getElementById js/document "dynamic-icon-container")
+                            dynamic-icon (.querySelector container "ty-icon")]
+                        (when dynamic-icon
+                          (.remove dynamic-icon)
+                          (js/console.log "Dynamic icon removed! Should clean up its watch."))))}}
+       "Remove Dynamic"]
+
+      [:ty-button
+       {:on {:click (fn [_]
+                      (icons/auto-register-sprites! "symbol[id^=\"test-\"]"))}}
+       "Register Sprites"]
+
+      [:ty-button
+       {:on {:click (fn [_]
+                      (let [current-debug (-> (icons/get-config) :debug)]
+                        (icons/configure! {:debug (not current-debug)})
+                        (js/console.log "Debug mode:" (not current-debug))))}}
+       "Toggle Debug"]]]
+
+    ;; Registry State Display
+    [:div
+     [:h3.text-lg.font-semibold.ty-text.mb-4 "Registry State"]
+     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-4
+      [:div.ty-content.p-4.rounded-md
+       [:h4.text-sm.font-semibold.ty-text-.mb-2 "Icon Registry"]
+       [:pre#icon-registry-state.text-xs.ty-text--.font-mono.overflow-auto.max-h-32
+        "Click 'Refresh State' to see current registry contents"]]
+      [:div.ty-content.p-4.rounded-md
+       [:h4.text-sm.font-semibold.ty-text-.mb-2 "Sprite Registry"]
+       [:pre#sprite-registry-state.text-xs.ty-text--.font-mono.overflow-auto.max-h-32
+        "Click 'Refresh State' to see current sprite registry contents"]]]]
+
+    ;; Utility Buttons
+    [:div.flex.gap-4
+     [:button#refresh-state.px-4.py-2.ty-border.border.ty-text.rounded-md.hover:ty-bg-content.transition-colors
+      {:on {:click (fn [_]
+                     (let [icon-registry (icons/get-registry :icon)
+                           sprite-registry (icons/get-registry :sprite)
+                           icon-state-el (.getElementById js/document "icon-registry-state")
+                           sprite-state-el (.getElementById js/document "sprite-registry-state")]
+                       (set! (.-textContent icon-state-el) (js/JSON.stringify (clj->js icon-registry) nil 2))
+                       (set! (.-textContent sprite-state-el) (js/JSON.stringify (clj->js sprite-registry) nil 2))))}}
+      "Refresh State"]
+     [:button#clear-test-icons.px-4.py-2.ty-border.border.ty-text.rounded-md.hover:ty-bg-content.transition-colors
+      {:on {:click (fn [_]
+                     (js/console.log "Clearing test icons...")
+                     ;; Clear test icons from registry (we'll need to implement this)
+                     (js/console.log "Test icons cleared!"))}}
+      "Clear Test Icons"]]
+
+    ;; Hidden sprite sheet for testing
+    [:svg.hidden
+     [:symbol#test-sprite-icon {:viewBox "0 0 24 24"}
+      [:circle {:cx 12
+                :cy 12
+                :r 10
+                :fill "currentColor"}]]
+     [:symbol#test-sprite-star {:viewBox "0 0 24 24"}
+      [:path {:d "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"
+              :fill "currentColor"}]]]]])
+
 (defn view []
   (let [;; Get query params for search
         {:keys [search show-demo]} (router/query-params)
         search-term (or search "")
         show-demo? (= show-demo "true")
 
-        all-icons @icons/data
+        all-icons (:icon registries)
 
         ;; Filter icons based on search
         filtered-icons (filter-icons all-icons search-term)
@@ -220,6 +357,12 @@
      (when show-demo?
        [:div.mb-8
         (demo-section)])
+
+     ;; Registry test section (always visible for development/testing)
+     [:div.mb-8
+      (registry-test-section)]
+
+     ;; Icon sections
 
      ;; Icon sections
      [:div

@@ -70,14 +70,4 @@ npm install @gersak/ty")])
                                               "tag" "Tag and chip display"
                                               "textarea" "Multi-line text input"
                                               "tooltip" "Hover tooltips"
-                                              "Component description")]]]])])
-
-   ;; CSS System link
-   (doc-section "Design System"
-                [:div.ty-elevated.rounded-lg.p-6
-                 [:h3.text-lg.font-medium.ty-text.mb-3 "CSS System"]
-                 [:p.ty-text-.mb-4
-                  "Learn about the ty semantic color system, surface levels, and styling approach."]
-                 [:ty-button {:flavor "primary"
-                              :on {:click #(router/navigate! :ty.site.docs/css-system)}}
-                  "View CSS Documentation"]])])
+                                              "Component description")]]]])])])

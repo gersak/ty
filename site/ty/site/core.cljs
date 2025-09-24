@@ -19,28 +19,28 @@
 ;; Define site routes
 (router/link ::router/root
              (concat
-              [{:id ::landing
-                :segment ""
-                :name "Welcome"}
-               {:id ::user-profile
-                :segment "user-profile"
-                :name "User Profile"}
-               {:id ::event-booking
-                :segment "event-booking"
-                :name "Event Booking"}
-               {:id ::contact-form
-                :segment "contact-form"
-                :name "Contact Form"}
-               {:id ::ty-styles
-                :segment "ty-styles"
-                :name "Ty Styles"}
-               {:id ::getting-started
-                :segment "getting-started"
-                :name "Getting Started"}
-               {:id :ty.site/docs
-                :segment "docs"
-                :view docs.index/view
-                :name "Documentation"}]))
+               [{:id ::landing
+                 :segment ""
+                 :name "Welcome"}
+                {:id ::user-profile
+                 :segment "user-profile"
+                 :name "User Profile"}
+                {:id ::event-booking
+                 :segment "event-booking"
+                 :name "Event Booking"}
+                {:id ::contact-form
+                 :segment "contact-form"
+                 :name "Contact Form"}
+                {:id ::ty-styles
+                 :segment "ty-styles"
+                 :name "Ty Styles"}
+                {:id ::getting-started
+                 :segment "getting-started"
+                 :name "Getting Started"}
+                {:id :ty.site/docs
+                 :segment "docs"
+                 :view getting-started/view
+                 :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -71,26 +71,45 @@
      [:div.flex.items-center.gap-2
       [:span.text-sm label]]]))
 
+(defn nav-section [{:keys [title items]}]
+  [:div.mb-4
+   (when title
+     [:div.px-4.py-2
+      [:h3.text-xs.font-medium.ty-text-.uppercase.tracking-wider.mb-2 title]])
+   [:div.space-y-0.5
+    (for [item items]
+      ^{:key (:label item)} (nav-item item))]])
+
 (defn nav-items []
-  [:div.space-y-0.5.lg:space-y-1
-   (nav-item {:route-id ::landing
-              :label "Welcome"
-              :icon "home"})
-   (nav-item {:route-id ::user-profile
-              :label "User Profile"
-              :icon "user"})
-   (nav-item {:route-id ::event-booking
-              :label "Event Booking"
-              :icon "calendar"})
-   (nav-item {:route-id ::contact-form
-              :label "Contact Form"
-              :icon "mail"})
-   (nav-item {:route-id ::ty-styles
-              :label "Ty Styles"
-              :icon "palette"})
-   (nav-item {:route-id ::getting-started
-              :label "Getting Started"
-              :icon "rocket"})])
+  [:div.space-y-6
+   ;; Main Navigation
+   (nav-section
+     {:items [{:route-id ::landing
+               :label "Welcome"
+               :icon "home"}]})
+
+   ;; Examples Section
+   (nav-section
+     {:title "Live Examples"
+      :items [{:route-id ::user-profile
+               :label "User Profile"
+               :icon "user"}
+              {:route-id ::event-booking
+               :label "Event Booking"
+               :icon "calendar"}
+              {:route-id ::contact-form
+               :label "Contact Form"
+               :icon "mail"}]})
+
+;; Getting Started Section
+   (nav-section
+     {:title "Getting Started"
+      :items [{:route-id ::getting-started
+               :label "Setup Guide"
+               :icon "rocket"}
+              {:route-id ::ty-styles
+               :label "Style System"
+               :icon "palette"}]})])
 
 (defn sidebar []
   (if (docs/in-docs?)

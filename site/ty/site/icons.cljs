@@ -70,6 +70,7 @@
              "wifi-off" lucide/wifi-off ; Connection lost
              "database" lucide/database ; Data icons
              "server" lucide/server ; Server icons
+             "layout" lucide/layout
 
              ;; Loading and refresh icons
              "refresh-ccw" lucide/refresh-ccw

@@ -23,74 +23,88 @@
 (def docs-components
   [{:id :ty.site.docs/button
     :segment "button"
+    :icon "square"
     :view button-docs/view
     :name "Button"}
    {:id :ty.site.docs/calendar
     :segment "calendar"
+    :icon "calendar"
     :view calendar-docs/view
     :name "Calendar"}
    {:id :ty.site.docs/calendar-month
     :segment "calendar-month"
+    :icon "calendar"
     :view calendar-month-docs/view
     :name "Calendar Month"}
    {:id :ty.site.docs/date-picker
     :segment "date-picker"
+    :icon "clock"
     :view date-picker-docs/view
     :name "Date Picker"}
    {:id :ty.site.docs/dropdown
     :segment "dropdown"
+    :icon "chevron-down"
     :view dropdown-docs/view
     :name "Dropdown"}
    {:id :ty.site.docs/icon
     :segment "icon"
+    :icon "star"
     :view icon-docs/view
     :name "Icon"}
    {:id :ty.site.docs/input
     :segment "input"
+    :icon "type"
     :view input-docs/view
     :name "Input"}
    {:id :ty.site.docs/modal
     :segment "modal"
+    :icon "layout"
     :view modal-docs/view
     :name "Modal"}
    {:id :ty.site.docs/multiselect
     :segment "multiselect"
+    :icon "filter"
     :view multiselect-docs/view
     :name "Multiselect"}
    {:id :ty.site.docs/popup
     :segment "popup"
+    :icon "message-square"
     :view popup-docs/view
     :name "Popup"}
    {:id :ty.site.docs/tag
     :segment "tag"
+    :icon "tag"
     :view tag-docs/view
     :name "Tag"}
    {:id :ty.site.docs/textarea
     :segment "textarea"
+    :icon "file-text"
     :view textarea-docs/view
     :name "Textarea"}
    {:id :ty.site.docs/tooltip
     :segment "tooltip"
+    :icon "message-square"
     :view tooltip-docs/view
     :name "Tooltip"}
    {:id :ty.site.docs/css-system
     :segment "css-system"
+    :icon "palette"
     :view css-system/view
     :name "CSS System"}])
 
 ;; Define routes with views from separate namespaces
 (router/link :ty.site/docs
              (reduce
-              (fn [routes component]
-                (conj routes
-                      {:id (keyword "ty.site.docs" component)
-                       :segment component
-                       :view #(common/placeholder-view component)
-                       :name (str/capitalize component)}))
+               (fn [routes component]
+                 (conj routes
+                       {:id (keyword "ty.site.docs" component)
+                        :segment component
+                        :view #(common/placeholder-view component)
+                        :name (str/capitalize component)}))
                ;; Start with explicitly defined component docs
-              docs-components
+               docs-components
                ;; Add placeholders for remaining components (excluding documented ones)
-              (remove #(contains? #{"button" "calendar" "calendar-month" "date-picker" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
+               (remove #(contains? #{"button" "calendar" "calendar-month" "date-picker" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
@@ -100,13 +114,15 @@
               (conj index/component-list "css-system")))))
 
 ;; Component sidebar for docs
-(defn docs-sidebar-item [{:keys [component active?]
-                          {on-click :click} :on}]
-  [:button.w-full.text-left.px-4.py-2.rounded.transition-colors
+(defn docs-sidebar-item
+  [{:keys [component icon active?]
+    {on-click :click} :on}]
+  [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
    {:class (if active?
              ["ty-bg-primary-" "ty-text-primary++"]
-             ["hover:ty-content" "ty-text"])
+             ["hover:ty-bg-neutral" "ty-text"])
     :on {:click on-click}}
+   (when icon [:ty-icon.mr-2 {:name icon}])
    [:div.flex.items-center.gap-2
     [:span.text-sm component]]])
 
@@ -114,17 +130,20 @@
   [:div.space-y-1
    [:div.px-4.py-2.ty-text+.text-sm.font-medium "Components"]
    (for [{component :name
+          icon :icon
           id :id} docs-components]
      [:div {:key component}
       (docs-sidebar-item
-       {:component component
-        :on {:click #(router/navigate! id)}
-        :active? (router/rendered? id true)})])
+        {:component component
+         :icon icon
+         :on {:click #(router/navigate! id)}
+         :active? (router/rendered? id true)})])
    [:div.mt-4.pt-4.border-t.ty-border
     (docs-sidebar-item
-     {:component "CSS System"
-      :on {:click #(router/navigate! :ty.site.docs/css-system)}
-      :active? (router/rendered? :ty.site.docs/css-system true)})]])
+      {:component "CSS System"
+       :icon "palette"
+       :on {:click #(router/navigate! :ty.site.docs/css-system)}
+       :active? (router/rendered? :ty.site.docs/css-system true)})]])
 
 ;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block
 

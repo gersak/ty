@@ -1,27 +1,27 @@
 (ns ty.site.docs
   "Documentation system for ty components - orchestrates all doc views"
   (:require
-    [clojure.string :as str]
-    [ty.router :as router]
-    [ty.site.docs.button :as button-docs]
-    [ty.site.docs.calendar :as calendar-docs]
-    [ty.site.docs.calendar-month :as calendar-month-docs]
-    [ty.site.docs.common :as common]
-    [ty.site.docs.date-picker :as date-picker-docs]
-    [ty.site.docs.dropdown :as dropdown-docs]
-    [ty.site.docs.icon :as icon-docs]
+   [clojure.string :as str]
+   [ty.router :as router]
+   [ty.site.docs.button :as button-docs]
+   [ty.site.docs.calendar :as calendar-docs]
+   [ty.site.docs.calendar-month :as calendar-month-docs]
+   [ty.site.docs.common :as common]
+   [ty.site.docs.date-picker :as date-picker-docs]
+   [ty.site.docs.dropdown :as dropdown-docs]
+   [ty.site.docs.icon :as icon-docs]
             ;; Import component doc namespaces
-    [ty.site.docs.index :as index]
-    [ty.site.docs.input :as input-docs]
-    [ty.site.docs.modal :as modal-docs]
-    [ty.site.docs.multiselect :as multiselect-docs]
-    [ty.site.docs.popup :as popup-docs]
-    [ty.site.docs.react :as react-docs]
-    [ty.site.docs.replicant :as replicant-docs]
-    [ty.site.docs.tag :as tag-docs]
-    [ty.site.docs.textarea :as textarea-docs]
-    [ty.site.docs.tooltip :as tooltip-docs]
-    [ty.site.views.ty-styles :as ty-styles]))
+   [ty.site.docs.index :as index]
+   [ty.site.docs.input :as input-docs]
+   [ty.site.docs.modal :as modal-docs]
+   [ty.site.docs.multiselect :as multiselect-docs]
+   [ty.site.docs.popup :as popup-docs]
+   [ty.site.docs.react :as react-docs]
+   [ty.site.docs.replicant :as replicant-docs]
+   [ty.site.docs.tag :as tag-docs]
+   [ty.site.docs.textarea :as textarea-docs]
+   [ty.site.docs.tooltip :as tooltip-docs]
+   [ty.site.views.ty-styles :as ty-styles]))
 
 (def docs-components
   [{:id :ty.site.docs/button
@@ -113,29 +113,35 @@
     :segment "react"
     :component "JS React"
     :icon "react"
+    :view #(common/guide-placeholder-view
+            "JavaScript React Integration"
+            "Learn how to integrate Ty web components with JavaScript React applications.")
     :on {:click #(router/navigate! :ty.site.docs/react)}}
    {:id :ty.site.docs/htmx
     :segment "htmx"
     :component "HTMX"
     :icon "server"
+    :view #(common/guide-placeholder-view
+            "HTMX Integration"
+            "Discover how to use Ty components with HTMX for dynamic server-side applications.")
     :on {:click #(router/navigate! :ty.site.docs/htmx)}}])
 
 ;; Define routes with views from separate namespaces
 (router/link :ty.site/docs
              (concat
                ;; Use the actual component definitions with their views
-               docs-components
-               guide-components
+              docs-components
+              guide-components
                ;; Add placeholders for remaining undocumented components
-               (reduce
-                 (fn [routes component]
-                   (conj routes
-                         {:id (keyword "ty.site.docs" component)
-                          :segment component
-                          :view #(common/placeholder-view component)
-                          :name (str/capitalize component)}))
-                 []
-                 (remove #(contains? #{"button" "calendar" "calendar-month" "date-picker" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip" "css" "replicant" "clojurescript" "reagent" "react" "htmx"} %) index/component-list))))
+              (reduce
+               (fn [routes component]
+                 (conj routes
+                       {:id (keyword "ty.site.docs" component)
+                        :segment component
+                        :view #(common/placeholder-view component)
+                        :name (str/capitalize component)}))
+               []
+               (remove #(contains? #{"button" "calendar" "calendar-month" "date-picker" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip" "css" "replicant" "clojurescript" "reagent" "react" "htmx"} %) index/component-list))))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
@@ -167,10 +173,10 @@
            id :id} docs-components]
       [:div {:key component}
        (docs-sidebar-item
-         {:component component
-          :icon icon
-          :on {:click #(router/navigate! id)}
-          :active? (router/rendered? id true)})])]
+        {:component component
+         :icon icon
+         :on {:click #(router/navigate! id)}
+         :active? (router/rendered? id true)})])]
 
    ;; Getting Started Section
    [:div.space-y-1
@@ -178,10 +184,10 @@
     (for [{:keys [component icon id]} guide-components]
       [:div {:key component}
        (docs-sidebar-item
-         {:component component
-          :icon icon
-          :on {:click #(router/navigate! id)}
-          :active? (router/rendered? id true)})])]])
+        {:component component
+         :icon icon
+         :on {:click #(router/navigate! id)}
+         :active? (router/rendered? id true)})])]])
 
 ;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block
 

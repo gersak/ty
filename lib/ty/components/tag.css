@@ -39,7 +39,7 @@
   background: var(--ty-bg-neutral-mild);
   color: var(--ty-color-neutral-strong);
   border: 1px solid;
-  border-color: var(--ty-color-neutral-mild);
+  border-color: var(--ty-color-neutral);
 }
 
 /* Non-pill variant - rectangular with rounded corners */

@@ -1,7 +1,7 @@
 (ns ty.site.docs.react
   "Documentation for using Ty with ClojureScript React libraries (UIx, Reagent, etc.)"
   (:require
-   [ty.site.docs.common :refer [code-block doc-section example-section]]))
+    [ty.site.docs.common :refer [code-block doc-section example-section]]))
 
 ;; =============================================================================
 ;; DEPENDENCIES & SETUP
@@ -12,56 +12,56 @@
   []
   (list
     ;; Dependencies
-   (doc-section "Dependencies"
-                [:div
-                 [:p.ty-text-.mb-4
-                  "Add the required dependencies to your " [:code.ty-bg-neutral-.px-2.py-1.rounded "deps.edn"] " file:"]
+    (doc-section "Dependencies"
+                 [:div
+                  [:p.ty-text-.mb-4
+                   "Add the required dependencies to your " [:code.ty-bg-neutral-.px-2.py-1.rounded "deps.edn"] " file:"]
 
-                 (code-block
-                  ";; deps.edn - ClojureScript dependencies
+                  (code-block
+                    ";; deps.edn - ClojureScript dependencies
 {:deps {dev.gersak/ty {:mvn/version \"LATEST\"}
         dev.gersak/ty-icons {:mvn/version \"LATEST\"}
         com.pitch/uix.core {:mvn/version \"1.1.0\"}
         com.pitch/uix.dom {:mvn/version \"1.1.0\"}}}"
-                  "clojure")
+                    "clojure")
 
-                 [:p.ty-text-.my-4
-                  "And add the React wrapper as an NPM dependency in your " [:code.ty-bg-neutral-.px-2.py-1.rounded "package.json"] " file:"]
+                  [:p.ty-text-.my-4
+                   "And add the React wrapper as an NPM dependency in your " [:code.ty-bg-neutral-.px-2.py-1.rounded "package.json"] " file:"]
 
-                 (code-block
-                  "{
+                  (code-block
+                    "{
   \"dependencies\": {
     \"@gersak/ty-react\": \"^0.0.5\",
     \"react\": \"^18.2.0\",
     \"react-dom\": \"^18.2.0\"
   }
 }"
-                  "json")
+                    "json")
 
-                 [:p.ty-text-.mt-4.text-sm
-                  "Replace " [:code.ty-bg-neutral-.px-1.rounded "\"LATEST\""]
-                  " with the current version numbers from Clojars."]])
+                  [:p.ty-text-.mt-4.text-sm
+                   "Replace " [:code.ty-bg-neutral-.px-1.rounded "\"LATEST\""]
+                   " with the current version numbers from Clojars."]])
 
     ;; Setup Options
-   (doc-section "Setup Options"
-                [:div
-                 [:p.ty-text-.mb-4 "There are two ways to use Ty components with React-based ClojureScript libraries:"]
+    (doc-section "Setup Options"
+                 [:div
+                  [:p.ty-text-.mb-4 "There are two ways to use Ty components with React-based ClojureScript libraries:"]
 
-                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mb-4
-                  [:h3.text-lg.font-semibold.ty-text-success.mb-2 "🎯 Recommended: @gersak/ty-react"]
-                  [:p.ty-text-success.text-sm
-                   "Use the React wrapper for the best developer experience with full TypeScript support, proper React integration, and optimized performance."]]
+                  [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mb-4
+                   [:h3.text-lg.font-semibold.ty-text-success.mb-2 "🎯 Recommended: @gersak/ty-react"]
+                   [:p.ty-text-success.text-sm
+                    "Use the React wrapper for the best developer experience with full TypeScript support, proper React integration, and optimized performance."]]
 
-                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-4
-                  [:h3.text-lg.font-semibold.ty-text.mb-2 "⚡ Alternative: Direct Web Components"]
-                  [:p.ty-text-.text-sm
-                   "Use web components directly if you prefer minimal dependencies or need custom integration patterns."]]
+                  [:div.ty-bg-neutral-.border.ty-border.rounded.p-4
+                   [:h3.text-lg.font-semibold.ty-text.mb-2 "⚡ Alternative: Direct Web Components"]
+                   [:p.ty-text-.text-sm
+                    "Use web components directly if you prefer minimal dependencies or need custom integration patterns."]]
 
-                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Option 1: React Wrapper Setup"]
-                 [:p.ty-text-.mb-4 "The " [:code.ty-bg-neutral-.px-1.rounded "@gersak/ty-react"] " package provides React components with proper TypeScript definitions and React-optimized behavior:"]
+                  [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Option 1: React Wrapper Setup"]
+                  [:p.ty-text-.mb-4 "The " [:code.ty-bg-neutral-.px-1.rounded "@gersak/ty-react"] " package provides React components with proper TypeScript definitions and React-optimized behavior:"]
 
-                 (code-block
-                  "(ns my-app.core
+                  (code-block
+                    "(ns my-app.core
   (:require [uix.core :as uix :refer [defui $]]
             [uix.dom]
             ;; Clean React wrappers
@@ -69,34 +69,34 @@
             ;; Still need ty components for web component registration  
             [ty.components.core]
             [ty.i18n :as i18n]))"
-                  "clojure")
+                    "clojure")
 
-                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Option 2: Direct Web Components"]
-                 [:p.ty-text-.mb-4 "Register web components and use them directly in your JSX/hiccup:"]
+                  [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Option 2: Direct Web Components"]
+                  [:p.ty-text-.mb-4 "Register web components and use them directly in your JSX/hiccup:"]
 
-                 (code-block
-                  "(ns my-app.core
+                  (code-block
+                    "(ns my-app.core
   (:require [uix.core :as uix :refer [defui]]
             [uix.dom]
             [ty.components]     ; <- Registers all web components
             [ty.i18n :as i18n]))
 
 ;; Web components are now available as :ty-button, :ty-input, etc."
-                  "clojure")
+                    "clojure")
 
-                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mt-4
-                  [:p.ty-text-info.text-sm.font-medium "💡 Why prefer @gersak/ty-react?"]
-                  [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-3.mt-3
-                   [:p.ty-text-warning.text-xs.font-medium.mb-2 "⚠️ Critical: React & CustomEvents"]
-                   [:p.ty-text-warning.text-xs
-                    "React cannot pick up CustomEvents from web components. The @gersak/ty-react wrapper listens for these CustomEvents and converts them to React SyntheticEvents, ensuring proper event handling and state updates."]]
-                  [:ul.ty-text-info.text-xs.mt-2.space-y-1
-                   [:li "• Converts web component CustomEvents to React SyntheticEvents"]
-                   [:li "• Better React integration (proper props, refs, events)"]
-                   [:li "• Full TypeScript support with autocomplete"]
-                   [:li "• Optimized for React's reconciliation"]
-                   [:li "• Better development experience"]
-                   [:li "• Still works with all Ty features (i18n, routing, etc.)"]]]])))
+                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mt-4
+                   [:p.ty-text-info.text-sm.font-medium "💡 Why prefer @gersak/ty-react?"]
+                   [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-3.mt-3
+                    [:p.ty-text-warning.text-xs.font-medium.mb-2 "⚠️ Critical: React & CustomEvents"]
+                    [:p.ty-text-warning.text-xs
+                     "React cannot pick up CustomEvents from web components. The @gersak/ty-react wrapper listens for these CustomEvents and converts them to React SyntheticEvents, ensuring proper event handling and state updates."]]
+                   [:ul.ty-text-info.text-xs.mt-2.space-y-1
+                    [:li "• Converts web component CustomEvents to React SyntheticEvents"]
+                    [:li "• Better React integration (proper props, refs, events)"]
+                    [:li "• Full TypeScript support with autocomplete"]
+                    [:li "• Optimized for React's reconciliation"]
+                    [:li "• Better development experience"]
+                    [:li "• Still works with all Ty features (i18n, routing, etc.)"]]]])))
 
 ;; =============================================================================
 ;; BASIC USAGE
@@ -112,7 +112,7 @@
                  "Here's a simple example using the recommended React wrapper approach:"]
 
                 (code-block
-                 "(ns my-app.core
+                  "(ns my-app.core
   (:require [uix.core :as uix :refer [defui $]]
             [uix.dom]
             [\"@gersak/ty-react\" :as ty]
@@ -128,26 +128,26 @@
 
 (defn mount! []
   (uix.dom/render ($ hello-view) (js/document.getElementById \"app\")))"
-                 "clojure")
+                  "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Using Direct Web Components"]
                 [:p.ty-text-.mb-4 "Alternative approach using web components directly:"]
 
                 (code-block
-                 "(defui hello-view-alt []
+                  "(defui hello-view-alt []
   (let [[message set-message!] (uix/use-state \"Hello from Ty!\")]
     ($ :div.ty-elevated.p-6.rounded-lg.max-w-md.mx-auto
        ($ :h2.ty-text++.text-xl.mb-4 message)
        ($ :ty-button {:variant \"primary\"
                       :onClick #(set-message! \"Button clicked!\")}
           \"Click me\"))))"
-                 "clojure")
+                  "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Working with State"]
                 [:p.ty-text-.mb-4 "Complex state management with multiple Ty components:"]
 
                 (code-block
-                 "(defui form-example []
+                  "(defui form-example []
   (let [[form-data set-form-data!] (uix/use-state {:name \"\" :email \"\" :locale :en})
         update-field! (fn [field value]
                         (set-form-data! #(assoc % field value)))]
@@ -175,7 +175,7 @@
                      :disabled (or (empty? (:name form-data))
                                    (empty? (:email form-data)))}
           \"Submit\"))))"
-                 "clojure")
+                  "clojure")
 
                 [:p.ty-text-.mt-4
                  "This creates a fully functional form with Ty's styling, validation states, and React-optimized updates."
@@ -218,10 +218,10 @@
                  "Here's how to set up routing with UIx components:"]
 
                 (example-section
-                 "Main App Component"
-                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                  [:p.ty-text-info.text-sm "Root component that handles routing and navigation"]]
-                 "(ns my-app.main
+                  "Main App Component"
+                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
+                   [:p.ty-text-info.text-sm "Root component that handles routing and navigation"]]
+                  "(ns my-app.main
   (:require [uix.core :as uix :refer [defui $]]
             [uix.dom]
             [ty.router :as router]
@@ -277,13 +277,13 @@
          (router/rendered? :app/dashboard) ($ dashboard/view)
          (router/rendered? :app/users) ($ users/view)
          :else ($ :div \"Not found\")))))"
-                 "clojure")
+                  "clojure")
 
                 (example-section
-                 "Dashboard Module"
-                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
-                  [:p.ty-text-success.text-sm "Separate module with its own sub-routes and components"]]
-                 "(ns my-app.dashboard
+                  "Dashboard Module"
+                  [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
+                   [:p.ty-text-success.text-sm "Separate module with its own sub-routes and components"]]
+                  "(ns my-app.dashboard
   (:require [uix.core :as uix :refer [defui $]]
             [ty.router :as router]
             [ty.react :refer [TyButton TyTag]]
@@ -353,7 +353,7 @@
              (when (router/rendered? id true)
                ($ view-fn)))
            routes)))"
-                 "clojure")]))
+                  "clojure")]))
 
 ;; =============================================================================
 ;; INTERNATIONALIZATION WITH REACT
@@ -372,10 +372,10 @@
                  "Translation setup is identical to other frameworks:"]
 
                 (example-section
-                 "Adding Translations"
-                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                  [:p.ty-text-info.text-sm "Set up translations using qualified keywords"]]
-                 "(ns my-app.core
+                  "Adding Translations"
+                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
+                   [:p.ty-text-info.text-sm "Set up translations using qualified keywords"]]
+                  "(ns my-app.core
   (:require [uix.core :as uix :refer [defui $]]
             [ty.react :refer [TyButton]]
             [ty.i18n :as i18n]
@@ -398,16 +398,16 @@
           :cancel/default \"Cancel\"
           :cancel/hr \"Odustani\"
           :cancel/de \"Abbrechen\"})"
-                 "clojure")
+                  "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Locale State Management"]
                 [:p.ty-text-.mb-4 "Manage current locale with React state:"]
 
                 (example-section
-                 "Locale Context Provider"
-                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
-                  [:p.ty-text-success.text-sm "Create a context provider for locale management"]]
-                 ";; Create locale context
+                  "Locale Context Provider"
+                  [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
+                   [:p.ty-text-success.text-sm "Create a context provider for locale management"]]
+                  ";; Create locale context
 (def locale-context (uix/create-context))
 
 (defui locale-provider [{:keys [children]}]
@@ -427,13 +427,13 @@
       ($ :div.ty-elevated.p-6.rounded-lg
          ($ :h1.ty-text++.text-2xl.mb-4 (i18n/t :app/title))
          ($ :p.ty-text (i18n/t :welcome/message))))))"
-                 "clojure")
+                  "clojure")
 
                 (example-section
-                 "Language Switcher Component"
-                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                  [:p.ty-text-warning.text-sm "Interactive language switcher using React state"]]
-                 "(defui language-switcher []
+                  "Language Switcher Component"
+                  [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
+                   [:p.ty-text-warning.text-sm "Interactive language switcher using React state"]]
+                  "(defui language-switcher []
   (let [{:keys [locale set-locale!]} (use-locale)
         languages [{:code :en :name \"English\"}
                    {:code :hr :name \"Hrvatski\"}
@@ -448,16 +448,16 @@
                          :size \"sm\"
                          :onClick #(set-locale! (:code lang))}
                (:name lang)))))))"
-                 "clojure")
+                  "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-8 "Complete App Example"]
                 [:p.ty-text-.mb-4 "Putting it all together in a real React app:"]
 
                 (example-section
-                 "Multi-language React App"
-                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-3.mb-4
-                  [:p.ty-text-.text-sm "Complete example with locale management and translated components"]]
-                 "(defui user-profile []
+                  "Multi-language React App"
+                  [:div.ty-bg-neutral-.border.ty-border.rounded.p-3.mb-4
+                   [:p.ty-text-.text-sm "Complete example with locale management and translated components"]]
+                  "(defui user-profile []
   (let [{:keys [locale]} (use-locale)
         [user-data set-user-data!] (uix/use-state {:name \"\" :email \"\" :bio \"\"})]
     
@@ -529,7 +529,7 @@
              :bio-placeholder/default \"Tell us about yourself\"
              :bio-placeholder/hr \"Recite nam nešto o sebi\"
              :bio-placeholder/de \"Erzählen Sie uns von sich\"})"
-                 "clojure")]))
+                  "clojure")]))
 
 ;; =============================================================================
 ;; FORMATTING WITH REACT
@@ -549,10 +549,10 @@
                 [:p.ty-text-.mb-4 "Combine formatting with React state for dynamic, locale-aware displays:"]
 
                 (example-section
-                 "Dynamic Price Display"
-                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                  [:p.ty-text-info.text-sm "Price component that updates with locale changes"]]
-                 "(defui price-display [{:keys [amount currency]}]
+                  "Dynamic Price Display"
+                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
+                   [:p.ty-text-info.text-sm "Price component that updates with locale changes"]]
+                  "(defui price-display [{:keys [amount currency]}]
   (let [{:keys [locale]} (use-locale)]
     (binding [i18n/*locale* locale]
       ($ :div.text-center
@@ -565,127 +565,14 @@
   ($ :div.ty-elevated.p-4.rounded-lg
      ($ :h3.ty-text+.font-medium.mb-2 (:name product))
      ($ price-display {:amount (:price product) :currency \"USD\"})))"
-                 "clojure")
+                  "clojure")
 
-                (example-section
-                 "Multi-Currency Dashboard"
-                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
-                  [:p.ty-text-success.text-sm "Complete dashboard with revenue metrics in multiple currencies"]]
-                 "(defui revenue-dashboard []
-  (let [{:keys [locale]} (use-locale)
-        [metrics set-metrics!] (uix/use-state {:revenue 1234567.89
-                                               :growth 0.123
-                                               :transactions 5847
-                                               :last-updated (js/Date.)})
-        [currency set-currency!] (uix/use-state \"USD\")
-        currencies [\"USD\" \"EUR\" \"HRK\" \"JPY\"]]
-    
-    (binding [i18n/*locale* locale]
-      ($ :div.ty-elevated.p-6.rounded-lg
-         ;; Header with currency selector
-         ($ :div.flex.justify-between.items-center.mb-6
-            ($ :h2.ty-text++.text-xl (i18n/t :dashboard/title))
-            ($ :div.flex.items-center.gap-2
-               ($ :span.ty-text.text-sm \"Currency:\")
-               (for [curr currencies]
-                 ($ TyButton {:key curr
-                              :variant (if (= currency curr) \"primary\" \"outline\")
-                              :size \"sm\"
-                              :onClick #(set-currency! curr)}
-                    curr))))
-         
-         ;; Metrics grid
-         ($ :div.grid.grid-cols-1.md:grid-cols-4.gap-4
-            ;; Total revenue
-            ($ :div.ty-content.p-4.rounded.text-center
-               ($ :div.ty-text-.text-sm.mb-1 (i18n/t :metrics/revenue))
-               ($ :div.ty-text++.text-2xl.font-bold 
-                  (i18n/t (:revenue metrics) currency)))
-            
-            ;; Growth percentage
-            ($ :div.ty-content.p-4.rounded.text-center
-               ($ :div.ty-text-.text-sm.mb-1 (i18n/t :metrics/growth))
-               ($ :div.ty-text++.text-2xl.font-bold 
-                  (i18n/t (:growth metrics) locale {:style \"percent\"})))
-            
-            ;; Transaction count
-            ($ :div.ty-content.p-4.rounded.text-center
-               ($ :div.ty-text-.text-sm.mb-1 (i18n/t :metrics/transactions))
-               ($ :div.ty-text++.text-2xl.font-bold 
-                  (i18n/t (:transactions metrics) locale {:notation \"compact\"})))
-            
-            ;; Last updated
-            ($ :div.ty-content.p-4.rounded.text-center
-               ($ :div.ty-text-.text-sm.mb-1 (i18n/t :metrics/updated))
-               ($ :div.ty-text+.text-sm
-                  (i18n/t (:last-updated metrics) \"datetime\"))))))))
-
-;; Add dashboard translations
-(i18n-kw/add-translations
-  #:dashboard {:title/default \"Revenue Dashboard\"
-               :title/hr \"Nadzorna Ploča Prihoda\"
-               :title/de \"Umsatz-Dashboard\"}
-  #:metrics {:revenue/default \"Total Revenue\"
-             :revenue/hr \"Ukupni Prihod\"
-             :growth/default \"Growth Rate\"
-             :growth/hr \"Stopa Rasta\"
-             :transactions/default \"Transactions\"
-             :transactions/hr \"Transakcije\"
-             :updated/default \"Last Updated\"
-             :updated/hr \"Zadnji Put Ažurirano\"})"
-                 "clojure")
-
-                [:h3.text-lg.font-semibold.ty-text.mb-3.mt-8 "Date Range Picker"]
-                [:p.ty-text-.mb-4 "Build locale-aware date components using Ty's date formatting:"]
-
-                (example-section
-                 "Locale-Aware Date Picker"
-                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                  [:p.ty-text-warning.text-sm "Date picker that displays in the user's locale"]]
-                 "(defui date-range-picker []
-  (let [{:keys [locale]} (use-locale)
-        [start-date set-start-date!] (uix/use-state (js/Date.))
-        [end-date set-end-date!] (uix/use-state (js/Date. (.setDate (js/Date.) (+ (.getDate (js/Date.)) 7))))
-        [show-calendar set-show-calendar!] (uix/use-state false)]
-    
-    (binding [i18n/*locale* locale]
-      ($ :div.space-y-4
-         ;; Date display
-         ($ :div.ty-elevated.p-4.rounded-lg
-            ($ :h3.ty-text+.font-medium.mb-2 (i18n/t :date/range-title))
-            ($ :div.flex.items-center.gap-2
-               ($ :span.ty-text (i18n/t start-date \"medium\"))
-               ($ :span.ty-text- \"to\")
-               ($ :span.ty-text (i18n/t end-date \"medium\"))))
-         
-         ;; Relative time display
-         ($ :div.ty-content.p-3.rounded
-            ($ :div.text-xs.ty-text-.space-y-1
-               ($ :div \"Start: \" (i18n/t start-date \"full\"))
-               ($ :div \"End: \" (i18n/t end-date \"full\"))
-               ($ :div \"Duration: \" (.ceil js/Math (/ (- (.getTime end-date) (.getTime start-date)) 
-                                                        (* 1000 60 60 24))) \" days\")))
-         
-         ;; Month names in current locale
-         ($ :div.ty-content.p-3.rounded
-            ($ :h4.ty-text+.text-sm.font-medium.mb-2 (i18n/t :date/months-title))
-            ($ :div.flex.flex-wrap.gap-1.text-xs
-               (for [month (i18n/locale locale :months/short)]
-                 ($ :span.px-2.py-1.ty-elevated.rounded {:key month} month))))))))
-
-;; Add date translations
-(i18n-kw/add-translations
-  #:date {:range-title/default \"Selected Date Range\"
-          :range-title/hr \"Odabrani Raspon Datuma\"
-          :months-title/default \"Months\"
-          :months-title/hr \"Mjeseci\"})"
-                 "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-8 "Real-time Formatting Updates"]
                 [:p.ty-text-.mb-4 "Watch formatting change in real-time as users switch locales:"]
 
                 (code-block
-                 "(defui formatting-showcase []
+                  "(defui formatting-showcase []
   (let [{:keys [locale]} (use-locale)
         sample-data {:number 1234567.89
                      :currency 99.99
@@ -715,7 +602,7 @@
 ($ :div
    ($ language-switcher)  ; Changes locale
    ($ formatting-showcase))  ; Automatically updates formatting"
-                 "clojure")]))
+                  "clojure")]))
 
 ;; =============================================================================
 ;; MAIN VIEW
@@ -734,19 +621,4 @@
    (basic-usage-section)
    (routing-section)
    (i18n-section)
-   (formatting-section)
-
-   ;; What's next
-   [:div.ty-elevated.rounded-lg.p-6.mt-12
-    [:h2.text-2xl.font-semibold.ty-text.mb-4 "What's Next?"]
-    [:p.ty-text-.mb-4 "This guide covers the essential patterns for using Ty with React-based ClojureScript libraries. Key takeaways:"]
-    [:ul.list-disc.list-inside.space-y-1.ty-text-.text-sm
-     [:li [:strong "@gersak/ty-react"] " - Preferred wrapper with full React integration and TypeScript support"]
-     [:li [:strong "Direct Web Components"] " - Alternative approach using web components directly in JSX"]
-     [:li [:strong "State Management"] " - Use React hooks for locale and routing state"]
-     [:li [:strong "Context Patterns"] " - Provide locale context for consistent i18n throughout the app"]
-     [:li [:strong "Formatting"] " - Same powerful i18n/t API works seamlessly with React state"]]
-    [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mt-4
-     [:p.ty-text-success.text-sm.font-medium "💡 Remember"]
-     [:p.ty-text-success.text-xs.mt-1
-      "The @gersak/ty-react wrapper provides the best developer experience with proper React integration, TypeScript support, and optimized performance. Use direct web components only when you need custom integration patterns."]]]])
+   (formatting-section)])

@@ -19,28 +19,28 @@
 ;; Define site routes
 (router/link ::router/root
              (concat
-               [{:id ::landing
-                 :segment ""
-                 :name "Welcome"}
-                {:id ::user-profile
-                 :segment "user-profile"
-                 :name "User Profile"}
-                {:id ::event-booking
-                 :segment "event-booking"
-                 :name "Event Booking"}
-                {:id ::contact-form
-                 :segment "contact-form"
-                 :name "Contact Form"}
-                {:id ::ty-styles
-                 :segment "ty-styles"
-                 :name "Ty Styles"}
-                {:id ::getting-started
-                 :segment "getting-started"
-                 :name "Getting Started"}
-                {:id :ty.site/docs
-                 :segment "docs"
-                 :view docs.index/view
-                 :name "Documentation"}]))
+              [{:id ::landing
+                :segment ""
+                :name "Welcome"}
+               {:id ::user-profile
+                :segment "user-profile"
+                :name "User Profile"}
+               {:id ::event-booking
+                :segment "event-booking"
+                :name "Event Booking"}
+               {:id ::contact-form
+                :segment "contact-form"
+                :name "Contact Form"}
+               {:id ::ty-styles
+                :segment "ty-styles"
+                :name "Ty Styles"}
+               {:id ::getting-started
+                :segment "getting-started"
+                :name "Getting Started"}
+               {:id :ty.site/docs
+                :segment "docs"
+                :view docs.index/view
+                :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -55,8 +55,10 @@
 
 (defn nav-item [{:keys [route-id label icon on-click]}]
   (let [active? (router/rendered? route-id true)]
-    [:button.menu-item
-     {:class (when active? "active")
+    [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
+     {:class (if active?
+               ["ty-bg-primary-" "ty-text-primary++"]
+               ["hover:ty-bg-neutral" "ty-text"])
       :on {:click (fn []
                     (when on-click (on-click))
                     (when (and (not on-click) route-id)
@@ -64,9 +66,10 @@
                       ;; Close mobile menu after navigation
                       (swap! state assoc :mobile-menu-open false)))}}
      (when icon
-       [:ty-icon {:name icon
-                  :size "sm"}])
-     [:span.truncate label]]))
+       [:ty-icon.mr-2 {:name icon
+                       :size "sm"}])
+     [:div.flex.items-center.gap-2
+      [:span.text-sm label]]]))
 
 (defn nav-items []
   [:div.space-y-0.5.lg:space-y-1

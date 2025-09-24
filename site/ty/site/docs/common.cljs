@@ -1,7 +1,7 @@
 (ns ty.site.docs.common
   "Common utilities for component documentation"
   (:require
-    [goog.object]))
+   [goog.object]))
 
 (defn code-block
   "Display a code block with syntax highlighting"
@@ -13,17 +13,17 @@
       {:class (str "language-" lang)
        :replicant/on-mount (fn [{^js el :replicant/node}]
                              (js/setTimeout
-                               (fn []
-                                 (when (and el
-                                            js/window.hljs
-                                            (.-highlightElement js/window.hljs)
+                              (fn []
+                                (when (and el
+                                           js/window.hljs
+                                           (.-highlightElement js/window.hljs)
                                            ;; Safety check: only highlight if not already highlighted
-                                            (not (.. el -dataset -highlighted)))
-                                   (try
-                                     (js/window.hljs.highlightElement el)
-                                     (catch js/Error e
-                                       (js/console.warn "Failed to highlight code block:" e)))))
-                               100))}
+                                           (not (.. el -dataset -highlighted)))
+                                  (try
+                                    (js/window.hljs.highlightElement el)
+                                    (catch js/Error e
+                                      (js/console.warn "Failed to highlight code block:" e)))))
+                              100))}
       code]]]))
 
 (defn attribute-table
@@ -98,3 +98,31 @@
      [:li.ty-text- "• Live examples"]
      [:li.ty-text- "• Best practices"]
      [:li.ty-text- "• Framework integration guides"]]]])
+
+(defn guide-placeholder-view
+  "Placeholder view for guide pages not yet documented"
+  [guide-name guide-description]
+  [:div.max-w-4xl.mx-auto.p-6
+   [:h1.text-3xl.font-bold.ty-text.mb-4 guide-name]
+   [:p.text-lg.ty-text-.mb-8 guide-description]
+   [:div.ty-elevated.rounded-lg.p-6.text-center
+    [:div.mb-6
+     [:ty-icon.mx-auto.mb-4 {:name "clock" :class "w-12 h-12 ty-text-"}]
+     [:h2.text-xl.font-semibold.ty-text.mb-2 "Coming Soon"]
+     [:p.ty-text-.mb-6 "This guide is currently under development. We're working hard to bring you comprehensive documentation for integrating Ty components with this technology."]]
+
+    [:div.ty-bg-neutral-.rounded-lg.p-4.mb-6
+     [:p.ty-text-.mb-4 "In the meantime, you can:"]
+     [:ul.text-left.space-y-2.ml-4
+      [:li.ty-text- "• Explore the component documentation to understand available features"]
+      [:li.ty-text- "• Check out the CSS System guide for styling best practices"]
+      [:li.ty-text- "• Review existing examples in the repository"]
+      [:li.ty-text- "• Join our community discussions for early access to guides"]]]
+
+    [:div.flex.gap-4.justify-center
+     [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded.hover:opacity-90
+      {:on {:click #(js/window.open "https://github.com/gersak/ty" "_blank")}}
+      "View Repository"]
+     [:button.ty-bg-secondary.ty-text++.px-4.py-2.rounded.hover:opacity-90
+      {:on {:click #(-> js/window .-location .-href (set! "/docs/css"))}}
+      "CSS System Guide"]]]])

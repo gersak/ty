@@ -37,164 +37,166 @@
       [:p.text-sm.ty-text-- "Click avatar to upload new photo"]]]
 
     [:form.space-y-8
-     ;; Personal Information Section
-     [:div
-      [:h3.text-xl.font-semibold.ty-text.mb-6.pb-2.border-b.ty-border "Personal Information"]
+     ;; Personal & Professional Information - Two Column Layout
+     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
+      ;; Left Column - Personal Information
+      [:div.ty-floating.p-6.rounded-lg
+       [:h3.text-xl.font-semibold.ty-text.mb-6.pb-2.border-b.ty-border "Personal Information"]
 
-      [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
-       ;; First Name - Basic input
-       [:div
-        [:ty-input {:type "text"
-                    :label "First Name"
-                    :value "John"
-                    :placeholder "Enter your first name"
-                    :required true}]]
+       [:div.space-y-6
+        ;; First Name - Basic input
+        [:div
+         [:ty-input {:type "text"
+                     :label "First Name"
+                     :value "John"
+                     :placeholder "Enter your first name"
+                     :required true}]]
 
-       ;; Last Name - Basic input
-       [:div
-        [:ty-input {:type "text"
-                    :label "Last Name"
-                    :value "Doe"
-                    :placeholder "Enter your last name"
-                    :required true}]]
+        ;; Last Name - Basic input
+        [:div
+         [:ty-input {:type "text"
+                     :label "Last Name"
+                     :value "Doe"
+                     :placeholder "Enter your last name"
+                     :required true}]]
 
-       ;; Email - Input with validation
-       [:div
-        [:ty-input {:type "email"
-                    :label "Email Address"
-                    :value "john.doe@example.com"
-                    :placeholder "your@email.com"
-                    :required true}]]
+        ;; Email - Input with validation
+        [:div
+         [:ty-input {:type "email"
+                     :label "Email Address"
+                     :value "john.doe@example.com"
+                     :placeholder "your@email.com"
+                     :required true}]]
 
-       ;; Phone - Formatted input
-       [:div
-        [:ty-input {:type "tel"
-                    :label "Phone Number"
-                    :value "+1 (555) 123-4567"
-                    :placeholder "+1 (555) 123-4567"
-                    :required true}]]]]
+        ;; Phone - Formatted input
+        [:div
+         [:ty-input {:type "tel"
+                     :label "Phone Number"
+                     :value "+1 (555) 123-4567"
+                     :placeholder "+1 (555) 123-4567"
+                     :required true}]]]]
 
-     ;; Professional Information Section
-     [:div
-      [:h3.text-xl.font-semibold.ty-text.mb-6.pb-2.border-b.ty-border "Professional Information"]
+      ;; Right Column - Professional Information
+      [:div.ty-floating.p-6.rounded-lg
+       [:h3.text-xl.font-semibold.ty-text.mb-6.pb-2.border-b.ty-border "Professional Information"]
 
-      [:div.space-y-6
-       ;; Job Title and Company Row
-       [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
+       [:div.space-y-6
+        ;; Job Title
         [:div
          [:ty-input {:type "text"
                      :label "Job Title"
                      :value "Senior Software Developer"
                      :placeholder "Your job title"}]]
 
+        ;; Company
         [:div
          [:ty-input {:type "text"
                      :label "Company"
                      :value "TechCorp Inc."
-                     :placeholder "Company name"}]]]
+                     :placeholder "Company name"}]]
 
-       ;; Bio - Textarea
-       [:div
-        [:ty-textarea {:type "textarea"
-                       :label "Professional Bio"
-                       :max-height "200px"
-                       :value "Passionate software developer with 8+ years of experience building web applications. Specializes in ClojureScript, React, and modern web technologies."
-                       :placeholder "Tell us about your professional background..."
-                       :rows "4"}]]
+        ;; Bio - Textarea
+        [:div
+         [:ty-textarea {:type "textarea"
+                        :label "Professional Bio"
+                        :max-height "200px"
+                        :value "Passionate software developer with 8+ years of experience building web applications. Specializes in ClojureScript, React, and modern web technologies."
+                        :placeholder "Tell us about your professional background..."
+                        :rows "4"}]]
 
-       ;; Skills - Multiselect with rich tags
-       [:div
-        [:label.block.text-sm.font-medium.ty-text.mb-2 "Skills & Technologies"]
-        [:ty-multiselect {:placeholder "Select your skills and technologies..."}
-         ;; Pre-selected skills
-         [:ty-tag {:value "clojurescript"
-                   :flavor "primary"}
-          [:div.flex.items-center.gap-2
-           [:div.w-4.h-4.ty-bg-primary.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "λ"]]
-           [:span "ClojureScript"]]]
-         [:ty-tag {:value "react"
-                   :flavor "neutral"}
-          [:div.flex.items-center.gap-2
-           [:div.w-4.h-4.bg-blue-500.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "⚛"]]
-           [:span "React"]]]
-         [:ty-tag {:value "typescript"
-                   :flavor "secondary"}
-          [:div.flex.items-center.gap-2
-           [:div.w-4.h-4.bg-blue-600.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "TS"]]
-           [:span "TypeScript"]]]
-         [:ty-tag {:value "nodejs"
-                   :flavor "success"}
-          [:div.flex.items-center.gap-2
-           [:div.w-4.h-4.bg-green-600.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "JS"]]
-           [:span "Node.js"]]]
-         [:ty-tag {:value "postgresql"
-                   :flavor "neutral"}
-          [:div.flex.items-center.gap-2
-           [:div.w-4.h-4.bg-blue-800.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "🐘"]]
-           [:span "PostgreSQL"]]]
+        ;; Skills - Multiselect with rich tags
+        [:div
+         [:label.block.text-sm.font-medium.ty-text.mb-2 "Skills & Technologies"]
+         [:ty-multiselect {:placeholder "Select your skills and technologies..."}
+          ;; Pre-selected skills
+          [:ty-tag {:value "clojurescript"
+                    :flavor "primary"}
+           [:div.flex.items-center.gap-2
+            [:div.w-4.h-4.ty-bg-primary.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "λ"]]
+            [:span "ClojureScript"]]]
+          [:ty-tag {:value "react"
+                    :flavor "neutral"}
+           [:div.flex.items-center.gap-2
+            [:div.w-4.h-4.bg-blue-500.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "⚛"]]
+            [:span "React"]]]
+          [:ty-tag {:value "typescript"
+                    :flavor "secondary"}
+           [:div.flex.items-center.gap-2
+            [:div.w-4.h-4.bg-blue-600.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "TS"]]
+            [:span "TypeScript"]]]
+          [:ty-tag {:value "nodejs"
+                    :flavor "success"}
+           [:div.flex.items-center.gap-2
+            [:div.w-4.h-4.bg-green-600.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "JS"]]
+            [:span "Node.js"]]]
+          [:ty-tag {:value "postgresql"
+                    :flavor "neutral"}
+           [:div.flex.items-center.gap-2
+            [:div.w-4.h-4.bg-blue-800.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "🐘"]]
+            [:span "PostgreSQL"]]]
 
-         ;; Available options to select
-         [:ty-tag {:value "python"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-yellow-500.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "🐍"]]
-           [:div.flex-1
-            [:div.font-medium "Python"]
-            [:div.text-xs.ty-text- "Programming language"]]]]
-         [:ty-tag {:value "rust"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-orange-600.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "🦀"]]
-           [:div.flex-1
-            [:div.font-medium "Rust"]
-            [:div.text-xs.ty-text- "Systems programming"]]]]
-         [:ty-tag {:value "go"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-cyan-500.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "Go"]]
-           [:div.flex-1
-            [:div.font-medium "Go"]
-            [:div.text-xs.ty-text- "Backend development"]]]]
-         [:ty-tag {:value "docker"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-blue-600.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "🐳"]]
-           [:div.flex-1
-            [:div.font-medium "Docker"]
-            [:div.text-xs.ty-text- "Containerization"]]]]
-         [:ty-tag {:value "kubernetes"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-blue-700.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "☸"]]
-           [:div.flex-1
-            [:div.font-medium "Kubernetes"]
-            [:div.text-xs.ty-text- "Container orchestration"]]]]
-         [:ty-tag {:value "aws"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-orange-500.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "☁"]]
-           [:div.flex-1
-            [:div.font-medium "AWS"]
-            [:div.text-xs.ty-text- "Cloud platform"]]]]
-         [:ty-tag {:value "graphql"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-pink-500.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "QL"]]
-           [:div.flex-1
-            [:div.font-medium "GraphQL"]
-            [:div.text-xs.ty-text- "API query language"]]]]
-         [:ty-tag {:value "mongodb"}
-          [:div.flex.items-center.gap-3
-           [:div.w-6.h-6.bg-green-500.rounded.flex.items-center.justify-center
-            [:span.ty-text++.text-xs.font-bold "🍃"]]
-           [:div.flex-1
-            [:div.font-medium "MongoDB"]
-            [:div.text-xs.ty-text- "NoSQL database"]]]]]]]]
+          ;; Available options to select
+          [:ty-tag {:value "python"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-yellow-500.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "🐍"]]
+            [:div.flex-1
+             [:div.font-medium "Python"]
+             [:div.text-xs.ty-text- "Programming language"]]]]
+          [:ty-tag {:value "rust"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-orange-600.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "🦀"]]
+            [:div.flex-1
+             [:div.font-medium "Rust"]
+             [:div.text-xs.ty-text- "Systems programming"]]]]
+          [:ty-tag {:value "go"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-cyan-500.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "Go"]]
+            [:div.flex-1
+             [:div.font-medium "Go"]
+             [:div.text-xs.ty-text- "Backend development"]]]]
+          [:ty-tag {:value "docker"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-blue-600.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "🐳"]]
+            [:div.flex-1
+             [:div.font-medium "Docker"]
+             [:div.text-xs.ty-text- "Containerization"]]]]
+          [:ty-tag {:value "kubernetes"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-blue-700.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "☸"]]
+            [:div.flex-1
+             [:div.font-medium "Kubernetes"]
+             [:div.text-xs.ty-text- "Container orchestration"]]]]
+          [:ty-tag {:value "aws"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-orange-500.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "☁"]]
+            [:div.flex-1
+             [:div.font-medium "AWS"]
+             [:div.text-xs.ty-text- "Cloud platform"]]]]
+          [:ty-tag {:value "graphql"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-pink-500.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "QL"]]
+            [:div.flex-1
+             [:div.font-medium "GraphQL"]
+             [:div.text-xs.ty-text- "API query language"]]]]
+          [:ty-tag {:value "mongodb"}
+           [:div.flex.items-center.gap-3
+            [:div.w-6.h-6.bg-green-500.rounded.flex.items-center.justify-center
+             [:span.ty-text++.text-xs.font-bold "🍃"]]
+            [:div.flex-1
+             [:div.font-medium "MongoDB"]
+             [:div.text-xs.ty-text- "NoSQL database"]]]]]]]]]
 
      ;; Location & Preferences Section  
      [:div

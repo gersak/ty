@@ -225,7 +225,7 @@
         [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Real-time Validation"]
         [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Professional Styling"]
         [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Loading States"]
-        [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Success Feedback"]]]
+        [:span.px-3.py-1.ty-bg-neutral-.ty-text-neutral.rounded-full.text-sm.font-medium "Success Feedback"]]]
 
       ;; Submission Status Messages
       (when submission-status
@@ -248,7 +248,7 @@
               "Try Again"]]])])
 
       ;; Main Form
-      [:div.ty-elevated.p-8.rounded-xl
+      [:div.p-8.rounded-xl
        [:div.flex.items-center.justify-between.mb-8
         [:div.flex.items-center.gap-4
          [:ty-icon {:name "mail"
@@ -260,12 +260,17 @@
        [:form.space-y-6
         {:on {:submit handle-form-submit}}
 
-        ;; Two-column layout: Form fields on left, Message on right
-        [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
-         ;; Left Column - Form Fields
-         [:div.space-y-6
-          ;; Name and Email Row
-          [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
+        ;; Enhanced Four-Column Layout: Contact Info | Request Details | Tips/Newsletter | Message
+        [:div.grid.grid-cols-1.lg:grid-cols-4.gap-8
+         ;; Left Column - Contact Information (1/4)
+         [:div.ty-elevated.p-6.rounded-lg.shadow-lg
+          [:div.flex.items-center.gap-3.mb-6
+           [:ty-icon {:name "user"
+                      :size "lg"
+                      :class "ty-text-primary"}]
+           [:h3.text-lg.font-semibold.ty-text "Contact Information"]]
+
+          [:div.space-y-4
            ;; Full Name
            [:div
             [:ty-input {:type "text"
@@ -296,74 +301,81 @@
               [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
                [:ty-icon {:name "alert-circle"
                           :size "xs"}]
-               (get validation-errors :email)])]]
+               (get validation-errors :email)])]
 
-          ;; Company
-          [:div
-           [:ty-input {:type "text"
-                       :label "Company"
-                       :value (:company form-data)
-                       :placeholder "Your company name"
-                       :required true
-                       :icon "building"
-                       :on {:input (handle-field-change :company)}}]
-           (when (and (contains? touched-fields :company)
-                      (contains? validation-errors :company))
-             [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
-              [:ty-icon {:name "alert-circle"
-                         :size "xs"}]
-              (get validation-errors :company)])]
+           ;; Company
+           [:div
+            [:ty-input {:type "text"
+                        :label "Company"
+                        :value (:company form-data)
+                        :placeholder "Your company name"
+                        :required true
+                        :icon "building"
+                        :on {:input (handle-field-change :company)}}]
+            (when (and (contains? touched-fields :company)
+                       (contains? validation-errors :company))
+              [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
+               [:ty-icon {:name "alert-circle"
+                          :size "xs"}]
+               (get validation-errors :company)])]]]
 
-          ;; Subject
-          [:div
-           [:ty-input {:type "text"
-                       :label "Subject"
-                       :value (:subject form-data)
-                       :placeholder "Brief description of your inquiry"
-                       :required true
-                       :icon "file-text"
-                       :on {:input (handle-field-change :subject)}}]
-           (when (and (contains? touched-fields :subject)
-                      (contains? validation-errors :subject))
-             [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
-              [:ty-icon {:name "alert-circle"
-                         :size "xs"}]
-              (get validation-errors :subject)])]
+         ;; Middle Column - Request Details (1/4)
+         [:div.ty-elevated.p-6.rounded-lg.shadow-lg
+          [:div.flex.items-center.gap-3.mb-6
+           [:ty-icon {:name "settings"
+                      :size "lg"
+                      :class "ty-text-secondary"}]
+           [:h3.text-lg.font-semibold.ty-text "Request Details"]]
 
-          ;; Priority and Department Row
-          [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-           ;; Priority Selection
+          [:div.space-y-4
+           ;; Subject
+           [:div
+            [:ty-input {:type "text"
+                        :label "Subject"
+                        :value (:subject form-data)
+                        :placeholder "Brief description of your inquiry"
+                        :required true
+                        :icon "file-text"
+                        :on {:input (handle-field-change :subject)}}]
+            (when (and (contains? touched-fields :subject)
+                       (contains? validation-errors :subject))
+              [:p.text-sm.ty-text-danger.mt-1.flex.items-center.gap-2
+               [:ty-icon {:name "alert-circle"
+                          :size "xs"}]
+               (get validation-errors :subject)])]
+
+           ;; Priority Selection with enhanced styling
            [:div
             [:ty-dropdown
              {:label "Priority Level"
               :value (:priority form-data)
               :on {:change handle-priority-change}}
              [:ty-option {:value "low"}
-              [:div.flex.gap-2.items-center
-               [:ty-icon {:name "circle"
-                          :size "xs"
-                          :slot "start"}]
-               "Low - General inquiry"]]
+              [:div.flex.items-center.gap-3.p-2
+               [:div.w-3.h-3.bg-green-500.rounded-full.shadow-sm]
+               [:div
+                [:div.font-medium.ty-text "Low Priority"]
+                [:div.text-xs.ty-text- "General inquiry, no rush"]]]]
              [:ty-option {:value "medium"}
-              [:div.flex.gap-2.items-center
-               [:ty-icon {:name "minus-circle"
-                          :size "xs"
-                          :slot "start"}]
-               "Medium - Standard request"]]
+              [:div.flex.items-center.gap-3.p-2
+               [:div.w-3.h-3.bg-blue-500.rounded-full.shadow-sm]
+               [:div
+                [:div.font-medium.ty-text "Medium Priority"]
+                [:div.text-xs.ty-text- "Standard business request"]]]]
              [:ty-option {:value "high"}
-              [:div.flex.gap-2.items-center
-               [:ty-icon {:name "alert-triangle"
-                          :size "xs"
-                          :slot "start"}]
-               "High - Urgent issue"]]
+              [:div.flex.items-center.gap-3.p-2
+               [:div.w-3.h-3.bg-yellow-500.rounded-full.shadow-sm]
+               [:div
+                [:div.font-medium.ty-text "High Priority"]
+                [:div.text-xs.ty-text- "Urgent issue, needs attention"]]]]
              [:ty-option {:value "critical"}
-              [:div.flex.gap-2.items-center
-               [:ty-icon {:name "alert-circle"
-                          :size "xs"
-                          :slot "start"}]
-               "Critical - Immediate attention needed"]]]]
+              [:div.flex.items-center.gap-3.p-2
+               [:div.w-3.h-3.bg-red-500.rounded-full.shadow-sm.animate-pulse]
+               [:div
+                [:div.font-medium.ty-text "Critical"]
+                [:div.text-xs.ty-text- "Immediate attention required"]]]]]]
 
-           ;; Department Routing (using multiselect)
+           ;; Department Routing with better tags
            [:div
             [:label.block.text-sm.font-medium.ty-text.mb-2 "Department(s)"]
             [:ty-multiselect
@@ -374,61 +386,117 @@
                                (handle-department-change (set values))))}}
              [:ty-tag {:value "sales"
                        :flavor "primary"}
-              [:ty-icon {:name "briefcase"
-                         :size "xs"
-                         :slot "start"}]
-              "Sales"]
+              [:div.flex.items-center.gap-2.p-1
+               [:ty-icon {:name "briefcase"
+                          :size "xs"}]
+               [:span "Sales & Business Development"]]]
              [:ty-tag {:value "support"
                        :flavor "success"}
-              [:ty-icon {:name "life-buoy"
-                         :size "xs"
-                         :slot "start"}]
-              "Support"]
+              [:div.flex.items-center.gap-2.p-1
+               [:ty-icon {:name "life-buoy"
+                          :size "xs"}]
+               [:span "Customer Support"]]]
              [:ty-tag {:value "technical"
                        :flavor "secondary"}
-              [:ty-icon {:name "settings"
-                         :size "xs"
-                         :slot "start"}]
-              "Technical"]
+              [:div.flex.items-center.gap-2.p-1
+               [:ty-icon {:name "settings"
+                          :size "xs"}]
+               [:span "Technical & Engineering"]]]
              [:ty-tag {:value "billing"
                        :flavor "warning"}
-              [:ty-icon {:name "credit-card"
-                         :size "xs"
-                         :slot "start"}]
-              "Billing"]
+              [:div.flex.items-center.gap-2.p-1
+               [:ty-icon {:name "credit-card"
+                          :size "xs"}]
+               [:span "Billing & Finance"]]]
              [:ty-tag {:value "partnership"
-                       :flavor "danger"}
-              [:ty-icon {:name "handshake"
-                         :size "xs"
-                         :slot "start"}]
-              "Partnership"]]]]]
+                       :flavor "neutral"}
+              [:div.flex.items-center.gap-2.p-1
+               [:ty-icon {:name "handshake"
+                          :size "xs"}]
+               [:span "Partnerships & Alliances"]]]]]]]
 
-         ;; Right Column - Message
-         [:div
-          [:ty-textarea {:label "Message"
-                         :value (:message form-data)
-                         :placeholder "Please describe your inquiry in detail..."
-                         :min-height "200px"
-                         :max-height "400px"
-                         :required true
-                         :on {:change (handle-field-change :message)}}]
-          [:div.flex.justify-between.items-center.mt-1
-           (when (and (contains? touched-fields :message)
-                      (contains? validation-errors :message))
-             [:p.text-sm.ty-text-danger.flex.items-center.gap-2
-              [:ty-icon {:name "alert-circle"
-                         :size "xs"}]
-              (get validation-errors :message)])
-           [:span.text-xs.ty-text-
-            {:class (when (> (count (:message form-data)) 1800) "ty-text-warning")}
-            (str (count (:message form-data)) "/2000 characters")]]]]
+         ;; Third Column - Tips & Newsletter (1/4)
+         [:div.space-y-6
+          ;; Message tips
+          [:div.ty-elevated.p-4.rounded-lg.shadow-lg
+           [:div.flex.items-start.gap-3
+            [:ty-icon {:name "lightbulb"
+                       :size "lg"
+                       :class "ty-text-warning"}]
+            [:div
+             [:h4.font-semibold.ty-text.mb-3 "Tips for a great message"]
+             [:div.text-sm.ty-text-.space-y-2
+              [:div.flex.items-start.gap-2
+               [:span.ty-text-success.font-bold "•"]
+               [:span "Be specific about your needs or issue"]]
+              [:div.flex.items-start.gap-2
+               [:span.ty-text-success.font-bold "•"]
+               [:span "Include relevant details like timeline or urgency"]]
+              [:div.flex.items-start.gap-2
+               [:span.ty-text-success.font-bold "•"]
+               [:span "Mention any previous communication or reference numbers"]]
+              [:div.flex.items-start.gap-2
+               [:span.ty-text-success.font-bold "•"]
+               [:span "Tell us your preferred response method"]]]]]]
 
-        ;; Newsletter consent
-        [:div.p-4.ty-bg-neutral-.rounded-lg
-         [:ty-input {:type "checkbox"
-                     :label "I would like to receive updates and marketing communications about your products and services."
-                     :checked (:newsletter-consent form-data)
-                     :on {:change (handle-checkbox-change :newsletter-consent)}}]]
+          ;; Newsletter consent
+          [:div.ty-elevated.p-4.rounded-lg.shadow-lg
+           [:div.flex.items-start.gap-3
+            [:ty-icon {:name "mail"
+                       :size "lg"
+                       :class "ty-text-info"}]
+            [:div.flex-1
+             [:ty-input {:type "checkbox"
+                         :label "I would like to receive updates and marketing communications about your products and services."
+                         :checked (:newsletter-consent form-data)
+                         :on {:change (handle-checkbox-change :newsletter-consent)}}]
+             [:p.text-xs.ty-text-.mt-2 "You can unsubscribe at any time. See our privacy policy for details."]]]]]
+
+         ;; Right Column - Message (1/4)
+         [:div.ty-elevated.p-6.rounded-lg.shadow-lg
+          [:div.flex.items-center.gap-3.mb-6
+           [:ty-icon {:name "message-square"
+                      :size "lg"
+                      :class "ty-text-success"}]
+           [:h3.text-lg.font-semibold.ty-text "Your Message"]]
+
+          [:div
+           [:ty-textarea {:label "Message"
+                          :value (:message form-data)
+                          :placeholder "Please provide detailed information about your inquiry. Include any relevant context that will help us assist you better..."
+                          :min-height "280px"
+                          :max-height "400px"
+                          :required true
+                          :on {:change (handle-field-change :message)}}]
+           [:div.flex.justify-between.items-center.mt-2
+            (when (and (contains? touched-fields :message)
+                       (contains? validation-errors :message))
+              [:p.text-sm.ty-text-danger.flex.items-center.gap-2
+               [:ty-icon {:name "alert-circle"
+                          :size "xs"}]
+               (get validation-errors :message)])
+            [:div.flex.items-center.gap-2
+             [:span.text-xs.ty-text-
+              {:class (cond
+                        (> (count (:message form-data)) 1800) "ty-text-warning"
+                        (> (count (:message form-data)) 1000) "ty-text-success"
+                        :else "ty-text-")}
+              (str (count (:message form-data)) "/2000")]
+             [:ty-icon {:name (cond
+                                (< (count (:message form-data)) 20) "alert-circle"
+                                (> (count (:message form-data)) 1800) "alert-triangle"
+                                :else "check-circle")
+                        :size "xs"
+                        :class (cond
+                                 (< (count (:message form-data)) 20) "ty-text-danger"
+                                 (> (count (:message form-data)) 1800) "ty-text-warning"
+                                 :else "ty-text-success")}]]]]]]
+        ;; Submit Section
+        [:div.grid.grid-cols-1.lg:grid-cols-3.gap-8.mt-8
+         ;; Empty left column for alignment
+         [:div]
+         ;; Empty right column for alignment
+         [:div]]
 
         ;; Submit Section
         [:div.border-t.ty-border.pt-6.flex.flex-col.sm:flex-row.gap-4.justify-between.items-center

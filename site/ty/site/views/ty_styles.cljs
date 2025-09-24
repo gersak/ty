@@ -1,5 +1,7 @@
 (ns ty.site.views.ty-styles
-  "Site view showcasing Ty CSS classes and design system")
+  "Site view showcasing Ty CSS classes and design system"
+  (:require
+   [ty.site.docs.common :as common]))
 
 (defn theme-toggle []
   "Simple theme toggle section"
@@ -184,7 +186,7 @@
          [:p.ty-text-.text-sm "Each surface sits inside the previous one, creating depth and visual hierarchy like Russian nesting dolls."]]]]]]
 
     ;; Individual surface descriptions
-    [:div.grid.gap-4.md:grid-cols-2.lg:grid-cols-4
+    [:div.grid.gap-4.md:grid-cols-2.lg:grid-cols-3
      [:div.ty-canvas.p-4.rounded-lg.border.ty-border.text-center
       [:div.ty-text++.font-medium.mb-2 "ty-canvas"]
       [:div.ty-text-.text-sm "App background"]
@@ -288,23 +290,31 @@
     ;; Alert pattern
     [:div
      [:h4.text-sm.font-medium.ty-text.mb-2 "Alert Component Pattern"]
-     [:pre.rounded-lg.overflow-x-auto
-      [:code.language-clojure
-       "[:div.ty-bg-success-.ty-border-success.border.rounded-lg.p-4\n  [:div.flex.items-center.gap-3\n    [:ty-icon {:name \"check-circle\" :size \"sm\"}]\n    [:div\n      [:div.ty-text-success++.font-medium \"Success\"]\n      [:div.ty-text-success.text-sm \"Message text\"]]]]"]]]
+     (common/code-block "[:div.ty-bg-success-.ty-border-success.border.rounded-lg.p-4
+  [:div.flex.items-center.gap-3
+    [:ty-icon {:name \"check-circle\" :size \"sm\"}]
+    [:div
+      [:div.ty-text-success++.font-medium \"Success\"]
+      [:div.ty-text-success.text-sm \"Message text\"]]]]"
+                        "clojure")]
 
     ;; Card pattern
     [:div
      [:h4.text-sm.font-medium.ty-text.mb-2 "Card Component Pattern"]
-     [:pre.rounded-lg.overflow-x-auto
-      [:code.language-clojure
-       "[:div.ty-elevated.p-6.rounded-lg\n  [:h3.ty-text-primary++.text-lg.font-semibold \"Title\"]\n  [:p.ty-text \"Body content with good contrast\"]\n  [:div.ty-text-neutral-.text-sm \"Helper text\"]]"]]]
+     (common/code-block "[:div.ty-elevated.p-6.rounded-lg
+  [:h3.ty-text-primary++.text-lg.font-semibold \"Title\"]
+  [:p.ty-text \"Body content with good contrast\"]
+  [:div.ty-text-neutral-.text-sm \"Helper text\"]]"
+                        "clojure")]
 
     ;; Form validation pattern
     [:div
      [:h4.text-sm.font-medium.ty-text.mb-2 "Form Validation Pattern"]
-     [:pre.rounded-lg.overflow-x-auto
-      [:code.language-clojure
-       "[:div.space-y-2\n  [:input.ty-input.border.ty-border-danger]\n  [:div.ty-text-danger.text-sm \"Error message\"]\n  [:div.ty-text-danger-.text-xs \"Validation hint\"]]"]]]]])
+     (common/code-block "[:div.space-y-2
+  [:input.ty-input.border.ty-border-danger]
+  [:div.ty-text-danger.text-sm \"Error message\"]
+  [:div.ty-text-danger-.text-xs \"Validation hint\"]]"
+                        "clojure")]]])
 
 (defn usage-guidelines []
   "Shows best practices for using Ty classes"
@@ -314,7 +324,11 @@
 
    [:div.grid.gap-6.md:grid-cols-2
     [:div
-     [:h4.text-sm.font-medium.ty-text-success.mb-3 "✅ Do"]
+     [:h4.text-sm.font-medium.ty-text-success.mb-3.flex.items-center.gap-2
+      [:ty-icon {:name "check"
+                 :size "sm"
+                 :class "ty-text-success"}]
+      "Do"]
      [:div.space-y-2.text-sm
       [:div.ty-text- "• Use semantic colors that match meaning (success/success)"]
       [:div.ty-text- "• Use strong text on soft backgrounds for good contrast"]
@@ -323,7 +337,11 @@
       [:div.ty-text- "• Follow text hierarchy (++ > + > base > - > --)"]]]
 
     [:div
-     [:h4.text-sm.font-medium.ty-text-danger.mb-3 "❌ Don't"]
+     [:h4.text-sm.font-medium.ty-text-danger.mb-3.flex.items-center.gap-2
+      [:ty-icon {:name "x"
+                 :size "sm"
+                 :class "ty-text-danger"}]
+      "Don't"]
      [:div.space-y-2.text-sm
       [:div.ty-text- "• Mix competing semantic colors"]
       [:div.ty-text- "• Use faint text on saturated backgrounds"]
@@ -332,7 +350,8 @@
       [:div.ty-text- "• Use too many emphasis levels in one component"]]]]])
 
 (defn view []
-  [:div.space-y-8
+  [:div.mx-auto.px-6.space-y-8
+   {:style {:max-width "1000px"}}
    ;; Header
    [:div.text-center.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-4 "Ty Design System"]
@@ -344,7 +363,7 @@
      [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "5-Variant System"]
      [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Semantic Colors"]
      [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Theme Adaptive"]
-     [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Accessible"]]]
+     [:span.px-3.py-1.ty-bg-neutral-.ty-text-neutral.rounded-full.text-sm.font-medium "Accessible"]]]
 
    ;; Theme toggle
    (theme-toggle)
@@ -364,3 +383,5 @@
      "The Ty design system provides a complete set of semantic CSS classes for building consistent, "
      "accessible, and beautiful user interfaces. All classes automatically adapt between light and dark themes "
      "while maintaining proper contrast ratios."]]])
+
+[:span.px-3.py-1.ty-bg-neutral-.ty-text-neutral.rounded-full.text-sm.font-medium "Accessible"]

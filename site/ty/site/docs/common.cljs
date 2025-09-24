@@ -5,26 +5,26 @@
 
 (defn code-block
   "Display a code block with syntax highlighting"
-  [code & {:keys [lang]
-           :or {lang "html"}}]
-  [:div.ty-bg-neutral-.rounded.p-4.overflow-x-auto
-   [:pre
-    [:code.text-sm
-     {:class (str "language-" lang)
-      :replicant/on-mount (fn [{^js el :replicant/node}]
-                            (js/setTimeout
-                              (fn []
-                                (when (and el
-                                           js/window.hljs
-                                           (.-highlightElement js/window.hljs)
+  ([code] (code-block code "html"))
+  ([code lang]
+   [:div.ty-bg-neutral-.rounded.p-4.overflow-x-auto
+    [:pre
+     [:code.text-xs
+      {:class (str "language-" lang)
+       :replicant/on-mount (fn [{^js el :replicant/node}]
+                             (js/setTimeout
+                               (fn []
+                                 (when (and el
+                                            js/window.hljs
+                                            (.-highlightElement js/window.hljs)
                                            ;; Safety check: only highlight if not already highlighted
-                                           (not (.. el -dataset -highlighted)))
-                                  (try
-                                    (js/window.hljs.highlightElement el)
-                                    (catch js/Error e
-                                      (js/console.warn "Failed to highlight code block:" e)))))
-                              100))}
-     code]]])
+                                            (not (.. el -dataset -highlighted)))
+                                   (try
+                                     (js/window.hljs.highlightElement el)
+                                     (catch js/Error e
+                                       (js/console.warn "Failed to highlight code block:" e)))))
+                               100))}
+      code]]]))
 
 (defn attribute-table
   "Display component attributes in a table format"
@@ -69,10 +69,10 @@
   "Create an example section with live demo and code"
   ([title demo code] (example-section title demo code "html"))
   ([title demo code language]
-   [:div
+   [:div.mt-4
     [:h3.text-lg.font-medium.ty-text.mb-2 title]
     [:div.mb-4 demo]
-    (code-block code :lang language)]))
+    (code-block code language)]))
 
 (defn doc-section
   "Create a documentation section with title and content"

@@ -29,55 +29,55 @@
 
     ;; Attributes Table
     (attribute-table
-      [{:name "value"
-        :type "string"
-        :default "null"
-        :description "Comma-separated selected values (e.g., \"red,blue,green\")"}
-       {:name "placeholder"
-        :type "string"
-        :default "null"
-        :description "Placeholder text when no options are selected"}
-       {:name "label"
-        :type "string"
-        :default "null"
-        :description "Label displayed above the multiselect"}
-       {:name "name"
-        :type "string"
-        :default "null"
-        :description "Name for form submission (creates multiple entries in FormData)"}
-       {:name "disabled"
-        :type "boolean"
-        :default "false"
-        :description "Whether the multiselect is disabled"}
-       {:name "required"
-        :type "boolean"
-        :default "false"
-        :description "Whether the multiselect is required (shows asterisk)"}
-       {:name "flavor"
-        :type "string"
-        :default "'neutral'"
-        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-       {:name "clearable"
-        :type "boolean"
-        :default "false"
-        :description "Show clear all button when items are selected"}
-       {:name "class"
-        :type "string"
-        :default "null"
-        :description "Additional CSS classes"}])
+     [{:name "value"
+       :type "string"
+       :default "null"
+       :description "Comma-separated selected values (e.g., \"red,blue,green\")"}
+      {:name "placeholder"
+       :type "string"
+       :default "null"
+       :description "Placeholder text when no options are selected"}
+      {:name "label"
+       :type "string"
+       :default "null"
+       :description "Label displayed above the multiselect"}
+      {:name "name"
+       :type "string"
+       :default "null"
+       :description "Name for form submission (creates multiple entries in FormData)"}
+      {:name "disabled"
+       :type "boolean"
+       :default "false"
+       :description "Whether the multiselect is disabled"}
+      {:name "required"
+       :type "boolean"
+       :default "false"
+       :description "Whether the multiselect is required (shows asterisk)"}
+      {:name "flavor"
+       :type "string"
+       :default "'neutral'"
+       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+      {:name "clearable"
+       :type "boolean"
+       :default "false"
+       :description "Show clear all button when items are selected"}
+      {:name "class"
+       :type "string"
+       :default "null"
+       :description "Additional CSS classes"}])
 
     [:div.mt-6
      [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
      (event-table
-       [{:name "change"
-         :when-fired "Fired when selections change"
-         :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
-        {:name "focus"
-         :when-fired "Fired when multiselect gains focus"
-         :payload "Standard FocusEvent"}
-        {:name "blur"
-         :when-fired "Fired when multiselect loses focus"
-         :payload "Standard FocusEvent"}])
+      [{:name "change"
+        :when-fired "Fired when selections change"
+        :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
+       {:name "focus"
+        :when-fired "Fired when multiselect gains focus"
+        :payload "Standard FocusEvent"}
+       {:name "blur"
+        :when-fired "Fired when multiselect loses focus"
+        :payload "Standard FocusEvent"}])
 
      [:div.mt-4
       [:h3.text-lg.font-semibold.ty-text++.mb-2 "Slots"]
@@ -501,7 +501,7 @@
 
 <!-- Resulting FormData (URL-encoded) -->
 <!-- categories=tech&categories=design&skills=javascript&skills=python -->"
-                 :lang "html")]
+                 "html")]
 
     [:div.text-xs.ty-text--
      [:strong "Expected server payload:"] [:br]
@@ -636,7 +636,7 @@ document.getElementById('my-multiselect')
   onChange={handleMultiselectChange}
   placeholder=\"Select options...\">
   <ty-tag value=\"option1\" pill size=\"sm\">Option 1</ty-tag>
-</TyMultiselect>" :lang "javascript")
+</TyMultiselect>" "javascript")
 
     [:div.mt-4.p-3.ty-bg-primary-.rounded.text-sm
      [:p.ty-text-primary++ [:strong "💡 Tip:"] " Open browser console to see detailed change events from the demo above."]]]

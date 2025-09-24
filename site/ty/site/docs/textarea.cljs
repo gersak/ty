@@ -1,12 +1,12 @@
 (ns ty.site.docs.textarea
   "Documentation for ty-textarea component - auto-resizing textarea with form integration"
   (:require
-    [ty.site.docs.common
-     :refer [code-block
-             attribute-table
-             event-table
-             doc-section
-             example-section]]))
+   [ty.site.docs.common
+    :refer [code-block
+            attribute-table
+            event-table
+            doc-section
+            example-section]]))
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -25,65 +25,65 @@
      [:div
       [:h3.text-lg.font-medium.ty-text+.mb-3 "Attributes"]
       (attribute-table
-        [{:name "name"
-          :type "string"
-          :default "-"
-          :description "Form field name for submission"}
-         {:name "value"
-          :type "string"
-          :default "\"\""
-          :description "Current textarea value"}
-         {:name "placeholder"
-          :type "string"
-          :default "-"
-          :description "Placeholder text when empty"}
-         {:name "label"
-          :type "string"
-          :default "-"
-          :description "Label displayed above textarea"}
-         {:name "disabled"
-          :type "boolean"
-          :default "false"
-          :description "Disables the textarea"}
-         {:name "required"
-          :type "boolean"
-          :default "false"
-          :description "Marks field as required (shows asterisk)"}
-         {:name "error"
-          :type "string"
-          :default "-"
-          :description "Error message displayed below textarea"}
-         {:name "size"
-          :type "string"
-          :default "\"md\""
-          :description "Size variant: xs, sm, md, lg, xl"}
-         {:name "rows"
-          :type "string"
-          :default "\"3\""
-          :description "Initial visible rows"}
-         {:name "min-height"
-          :type "string"
-          :default "-"
-          :description "Minimum height (e.g., \"100px\")"}
-         {:name "max-height"
-          :type "string"
-          :default "-"
-          :description "Maximum height before scrolling (e.g., \"300px\")"}
-         {:name "resize"
-          :type "string"
-          :default "\"none\""
-          :description "Manual resize: none, both, vertical, horizontal"}])]
+       [{:name "name"
+         :type "string"
+         :default "-"
+         :description "Form field name for submission"}
+        {:name "value"
+         :type "string"
+         :default "\"\""
+         :description "Current textarea value"}
+        {:name "placeholder"
+         :type "string"
+         :default "-"
+         :description "Placeholder text when empty"}
+        {:name "label"
+         :type "string"
+         :default "-"
+         :description "Label displayed above textarea"}
+        {:name "disabled"
+         :type "boolean"
+         :default "false"
+         :description "Disables the textarea"}
+        {:name "required"
+         :type "boolean"
+         :default "false"
+         :description "Marks field as required (shows asterisk)"}
+        {:name "error"
+         :type "string"
+         :default "-"
+         :description "Error message displayed below textarea"}
+        {:name "size"
+         :type "string"
+         :default "\"md\""
+         :description "Size variant: xs, sm, md, lg, xl"}
+        {:name "rows"
+         :type "string"
+         :default "\"3\""
+         :description "Initial visible rows"}
+        {:name "min-height"
+         :type "string"
+         :default "-"
+         :description "Minimum height (e.g., \"100px\")"}
+        {:name "max-height"
+         :type "string"
+         :default "-"
+         :description "Maximum height before scrolling (e.g., \"300px\")"}
+        {:name "resize"
+         :type "string"
+         :default "\"none\""
+         :description "Manual resize: none, both, vertical, horizontal"}])]
 
      ;; Events
      [:div
       [:h3.text-lg.font-medium.ty-text+.mb-3 "Events"]
       (event-table
-        [{:name "input"
-          :payload "{value: string, originalEvent: Event}"
-          :when-fired "Fired on every keystroke"}
-         {:name "change"
-          :payload "{value: string, originalEvent: Event}"
-          :when-fired "Fired when focus leaves after value changed"}])]
+       [{:name "input"
+         :payload "{value: string, originalEvent: Event}"
+         :when-fired "Fired on every keystroke"}
+        {:name "change"
+         :payload "{value: string, originalEvent: Event}"
+         :when-fired "Fired when focus leaves after value changed"}])]
 
      ;; Properties
      [:div
@@ -111,11 +111,11 @@
      "The textarea automatically adjusts its height as you type. No scrollbars, no manual resizing needed."]
 
     (example-section
-      "Try it yourself"
-      [:ty-textarea
-       {:placeholder "Start typing and watch me grow...\n\nAdd new lines...\n\nI'll expand automatically!"
-        :label "Auto-resizing textarea"}]
-      "<ty-textarea 
+     "Try it yourself"
+     [:ty-textarea
+      {:placeholder "Start typing and watch me grow...\n\nAdd new lines...\n\nI'll expand automatically!"
+       :label "Auto-resizing textarea"}]
+     "<ty-textarea 
   label=\"Auto-resizing textarea\"
   placeholder=\"Start typing and watch me grow...\">
 </ty-textarea>")
@@ -151,7 +151,7 @@
         :max-height "200px"}]]]
 
     (code-block
-      "<ty-textarea min-height=\"100px\"></ty-textarea>
+     "<ty-textarea min-height=\"100px\"></ty-textarea>
 <ty-textarea max-height=\"200px\"></ty-textarea>
 <ty-textarea min-height=\"100px\" max-height=\"200px\"></ty-textarea>")]
 
@@ -162,30 +162,30 @@
      "Works seamlessly with HTML forms and FormData API - no special handling required."]
 
     (example-section
-      "Form Example"
-      [:form.space-y-4
-       {:on {:submit (fn [e]
-                       (.preventDefault e)
-                       (let [form-data (js/FormData. (.-target e))
-                             data (js/Object.fromEntries form-data)]
-                         (js/alert (str "Form submitted:\n" (js/JSON.stringify data nil 2)))))}}
-       [:ty-textarea
-        {:label "Your Message"
-         :name "message"
-         :placeholder "Write your message..."
-         :required true}]
+     "Form Example"
+     [:form.space-y-4
+      {:on {:submit (fn [e]
+                      (.preventDefault e)
+                      (let [form-data (js/FormData. (.-target e))
+                            data (js/Object.fromEntries form-data)]
+                        (js/alert (str "Form submitted:\n" (js/JSON.stringify data nil 2)))))}}
+      [:ty-textarea
+       {:label "Your Message"
+        :name "message"
+        :placeholder "Write your message..."
+        :required true}]
 
-       [:ty-textarea
-        {:label "Additional Notes (Optional)"
-         :name "notes"
-         :placeholder "Any additional information..."
-         :rows "2"}]
+      [:ty-textarea
+       {:label "Additional Notes (Optional)"
+        :name "notes"
+        :placeholder "Any additional information..."
+        :rows "2"}]
 
-       [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded
-        {:type "submit"}
-        "Submit Form"]]
+      [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded
+       {:type "submit"}
+       "Submit Form"]]
 
-      "<form>
+     "<form>
   <ty-textarea
     label=\"Your Message\"
     name=\"message\"
@@ -262,14 +262,14 @@
                           (.removeAttribute textarea "error"))))}}]
 
      (code-block
-       "textarea.addEventListener('change', (e) => {
+      "textarea.addEventListener('change', (e) => {
   const length = e.detail.value.length;
   if (length < 10) {
     textarea.setAttribute('error', `${10 - length} more characters needed`);
   } else {
     textarea.removeAttribute('error');
   }
-});" :lang "javascript")]]
+});" "javascript")]]
 
    ;; Advanced Examples
    [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Advanced Examples"]
@@ -279,21 +279,21 @@
     [:h3.text-xl.font-semibold.ty-text+.mb-4 "Character Counter"]
 
     (example-section
-      "Twitter-style Character Limit"
-      [:div
-       [:ty-textarea
-        {:id "tweet-textarea"
-         :label "Compose Tweet"
-         :placeholder "What's happening?"
-         :max-height "150px"}]
-       [:div.flex.justify-between.items-center.mt-2
-        [:span.text-sm.ty-text-- {:id "tweet-count"} "0 / 280"]
-        [:button.ty-bg-primary.ty-text++.px-3.py-1.rounded.text-sm
-         {:id "tweet-btn"
-          :disabled true}
-         "Tweet"]]
-       [:script
-        "(function() {
+     "Twitter-style Character Limit"
+     [:div
+      [:ty-textarea
+       {:id "tweet-textarea"
+        :label "Compose Tweet"
+        :placeholder "What's happening?"
+        :max-height "150px"}]
+      [:div.flex.justify-between.items-center.mt-2
+       [:span.text-sm.ty-text-- {:id "tweet-count"} "0 / 280"]
+       [:button.ty-bg-primary.ty-text++.px-3.py-1.rounded.text-sm
+        {:id "tweet-btn"
+         :disabled true}
+        "Tweet"]]
+      [:script
+       "(function() {
   const textarea = document.getElementById('tweet-textarea');
   const counter = document.getElementById('tweet-count');
   const button = document.getElementById('tweet-btn');
@@ -308,7 +308,7 @@
   }
 })();"]]
 
-      "const textarea = document.querySelector('ty-textarea');
+     "const textarea = document.querySelector('ty-textarea');
 textarea.addEventListener('change', (e) => {
   const length = e.detail.value.length;
   updateCounter(length);
@@ -320,22 +320,22 @@ textarea.addEventListener('change', (e) => {
     [:h3.text-xl.font-semibold.ty-text+.mb-4 "Auto-save Draft"]
 
     (example-section
-      "Automatic Draft Saving"
-      [:div
-       [:ty-textarea
-        {:id "draft-textarea"
-         :label "Article Draft"
-         :placeholder "Start writing your article..."
-         :rows "5"
-         :min-height "120px"}]
-       [:div.flex.items-center.gap-2.mt-2
-        [:span.text-sm.ty-text-- {:id "save-status"} "Ready"]
-        [:ty-icon.ty-text-success
-         {:name "check"
-          :id "save-icon"
-          :style {:display "none"}}]]
-       [:script
-        "(function() {
+     "Automatic Draft Saving"
+     [:div
+      [:ty-textarea
+       {:id "draft-textarea"
+        :label "Article Draft"
+        :placeholder "Start writing your article..."
+        :rows "5"
+        :min-height "120px"}]
+      [:div.flex.items-center.gap-2.mt-2
+       [:span.text-sm.ty-text-- {:id "save-status"} "Ready"]
+       [:ty-icon.ty-text-success
+        {:name "check"
+         :id "save-icon"
+         :style {:display "none"}}]]
+      [:script
+       "(function() {
   const textarea = document.getElementById('draft-textarea');
   const status = document.getElementById('save-status');
   const icon = document.getElementById('save-icon');
@@ -363,7 +363,7 @@ textarea.addEventListener('change', (e) => {
   }
 })();"]]
 
-      "let saveTimeout;
+     "let saveTimeout;
 textarea.addEventListener('change', () => {
   clearTimeout(saveTimeout);
   showStatus('Typing...');
@@ -379,31 +379,31 @@ textarea.addEventListener('change', () => {
     [:h3.text-xl.font-semibold.ty-text+.mb-4 "Programmatic Control"]
 
     (example-section
-      "JavaScript API"
-      [:div.space-y-4
-       [:ty-textarea
-        {:id "prog-textarea"
-         :label "Controlled Textarea"
-         :placeholder "Control me with JavaScript..."}]
+     "JavaScript API"
+     [:div.space-y-4
+      [:ty-textarea
+       {:id "prog-textarea"
+        :label "Controlled Textarea"
+        :placeholder "Control me with JavaScript..."}]
 
-       [:div.flex.gap-2.flex-wrap
-        [:button.ty-bg-primary.ty-text++.px-3.py-1.rounded.text-sm
-         {:on {:click (fn [] (set! (.-value (.getElementById js/document "prog-textarea")) "Hello from JavaScript!"))}}
-         "Set Value"]
-        [:button.ty-bg-secondary.ty-text++.px-3.py-1.rounded.text-sm
-         {:on {:click (fn []
-                        (let [el (.getElementById js/document "prog-textarea")]
-                          (set! (.-value el) (str (.-value el) "\nAppended text"))))}}
-         "Append"]
-        [:button.ty-bg-danger.ty-text++.px-3.py-1.rounded.text-sm
-         {:on {:click (fn [] (set! (.-value (.getElementById js/document "prog-textarea")) ""))}}
-         "Clear"]
-        [:button.ty-bg-neutral.ty-text++.px-3.py-1.rounded.text-sm
-         {:on {:click (fn []
-                        (js/alert (str "Current: " (.-value (.getElementById js/document "prog-textarea")))))}}
-         "Get Value"]]]
+      [:div.flex.gap-2.flex-wrap
+       [:button.ty-bg-primary.ty-text++.px-3.py-1.rounded.text-sm
+        {:on {:click (fn [] (set! (.-value (.getElementById js/document "prog-textarea")) "Hello from JavaScript!"))}}
+        "Set Value"]
+       [:button.ty-bg-secondary.ty-text++.px-3.py-1.rounded.text-sm
+        {:on {:click (fn []
+                       (let [el (.getElementById js/document "prog-textarea")]
+                         (set! (.-value el) (str (.-value el) "\nAppended text"))))}}
+        "Append"]
+       [:button.ty-bg-danger.ty-text++.px-3.py-1.rounded.text-sm
+        {:on {:click (fn [] (set! (.-value (.getElementById js/document "prog-textarea")) ""))}}
+        "Clear"]
+       [:button.ty-bg-neutral.ty-text++.px-3.py-1.rounded.text-sm
+        {:on {:click (fn []
+                       (js/alert (str "Current: " (.-value (.getElementById js/document "prog-textarea")))))}}
+        "Get Value"]]]
 
-      "// Set value
+     "// Set value
 textarea.value = 'New content';
 
 // Get value

@@ -233,7 +233,7 @@
 ;; Usage in components
 [:ty-icon {:name \"home\"}]
 [:ty-icon {:name \"check\" :class \"ty-text-success\"}]"
-        :lang "clojure")]
+        "clojure")]
 
      ;; React/Next.js
      [:div
@@ -280,7 +280,7 @@
 // Usage in JSX
 <ty-icon name=\"home\"></ty-icon>
 <ty-icon name=\"user\" size=\"md\"></ty-icon>"
-        :lang "javascript")]
+        "javascript")]
 
      ;; HTMX/Flask/Django  
      [:div
@@ -336,8 +336,7 @@ ty.icons.register('*', async (name) => {
   if (response.ok) return response.text();
   return null;
 }, 'loader');
-</script>"
-        :lang "html")]
+</script>")]
 
      ;; Vanilla JavaScript
      [:div
@@ -389,10 +388,9 @@ document.body.innerHTML = `
   <ty-icon name=\"lucide-star\"></ty-icon>
   <ty-icon name=\"material-favorite\"></ty-icon>
 `;"
-        :lang "javascript")]]]
+        "javascript")]]]
 
-
-   ;; JavaScript API Reference
+;; JavaScript API Reference
    [:div.ty-elevated.rounded-lg.p-6.mb-8
     [:h2.text-2xl.font-semibold.ty-text++.mb-6 "JavaScript API"]
     [:div.space-y-4
@@ -415,7 +413,7 @@ ty.icons.registerLoaders({
 
 // Auto-register sprites from DOM
 ty.icons.autoRegisterSprites('symbol[id^=\"icon-\"]')"
-        :lang "javascript")]
+        "javascript")]
 
      [:div
       [:h3.text-lg.font-medium.ty-text+.mb-3 "Legacy Compatibility"]
@@ -423,7 +421,7 @@ ty.icons.autoRegisterSprites('symbol[id^=\"icon-\"]')"
         "// Legacy methods (still supported)
 ty.icons.add({name: 'svg-string', ...})  // Same as registerIcons
 ty.icons.set({name: 'svg-string', ...})  // Replace all icons"
-        :lang "javascript")]]]
+        "javascript")]]]
 
    ;; Best Practices
    [:div.ty-elevated.rounded-lg.p-6

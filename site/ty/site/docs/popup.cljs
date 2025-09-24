@@ -18,22 +18,22 @@
 
     ;; Attributes
     (attribute-table
-      [{:name "open"
-        :type "boolean"
-        :default "false"
-        :description "Controls the visibility of the popup"}
-       {:name "placement"
-        :type "string"
-        :default "\"bottom\""
-        :description "Preferred placement position: \"top\", \"bottom\", \"left\", \"right\""}
-       {:name "offset"
-        :type "number"
-        :default "8"
-        :description "Distance in pixels between the popup and anchor element"}
-       {:name "flip"
-        :type "boolean"
-        :default "true"
-        :description "Whether to flip to opposite side when there's not enough space"}])
+     [{:name "open"
+       :type "boolean"
+       :default "false"
+       :description "Controls the visibility of the popup"}
+      {:name "placement"
+       :type "string"
+       :default "\"bottom\""
+       :description "Preferred placement position: \"top\", \"bottom\", \"left\", \"right\""}
+      {:name "offset"
+       :type "number"
+       :default "8"
+       :description "Distance in pixels between the popup and anchor element"}
+      {:name "flip"
+       :type "boolean"
+       :default "true"
+       :description "Whether to flip to opposite side when there's not enough space"}])
 
     ;; Slots
     [:div.mt-6
@@ -63,7 +63,7 @@
        [:p.ty-text- "This is the popup content. Click the button again to close."]]]]
 
     (code-block
-      "<!-- Basic popup with manual toggle -->
+     "<!-- Basic popup with manual toggle -->
 <ty-popup id=\"my-popup\" open=\"false\">
   <!-- Anchor element goes in the anchor slot -->
   <ty-button slot=\"anchor\" onclick=\"togglePopup()\">
@@ -90,36 +90,36 @@
    [:div.space-y-8
     ;; Placement Example
     (example-section
-      "Placement Options"
-      [:div.grid.grid-cols-2.gap-4
-       [:ty-popup {:id "popup-top"
-                   :placement "top"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-top") "open"))}}
-         "Top Popup"]
-        [:div.p-3.ty-bg-primary-.rounded "Positioned above"]]
+     "Placement Options"
+     [:div.grid.grid-cols-2.gap-4
+      [:ty-popup {:id "popup-top"
+                  :placement "top"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-top") "open"))}}
+        "Top Popup"]
+       [:div.p-3.ty-bg-primary-.rounded "Positioned above"]]
 
-       [:ty-popup {:id "popup-bottom"
-                   :placement "bottom"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-bottom") "open"))}}
-         "Bottom Popup"]
-        [:div.p-3.ty-bg-success-.rounded "Positioned below"]]
+      [:ty-popup {:id "popup-bottom"
+                  :placement "bottom"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-bottom") "open"))}}
+        "Bottom Popup"]
+       [:div.p-3.ty-bg-success-.rounded "Positioned below"]]
 
-       [:ty-popup {:id "popup-left"
-                   :placement "left"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-left") "open"))}}
-         "Left Popup"]
-        [:div.p-3.ty-bg-warning-.rounded "Positioned to the left"]]
+      [:ty-popup {:id "popup-left"
+                  :placement "left"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-left") "open"))}}
+        "Left Popup"]
+       [:div.p-3.ty-bg-warning-.rounded "Positioned to the left"]]
 
-       [:ty-popup {:id "popup-right"
-                   :placement "right"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-right") "open"))}}
-         "Right Popup"]
-        [:div.p-3.ty-bg-danger-.rounded "Positioned to the right"]]]
-      "<!-- Different placement options -->
+      [:ty-popup {:id "popup-right"
+                  :placement "right"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "popup-right") "open"))}}
+        "Right Popup"]
+       [:div.p-3.ty-bg-danger-.rounded "Positioned to the right"]]]
+     "<!-- Different placement options -->
 <ty-popup placement=\"top\">
   <button slot=\"anchor\">Top</button>
   <div>Content appears above</div>
@@ -132,29 +132,29 @@
 
     ;; Offset Example
     (example-section
-      "Custom Offset"
-      [:div.flex.gap-4
-       [:ty-popup {:id "offset-0"
-                   :offset "0"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-0") "open"))}}
-         "No offset"]
-        [:div.p-3.ty-elevated.rounded.shadow-md "Touching the button"]]
+     "Custom Offset"
+     [:div.flex.gap-4
+      [:ty-popup {:id "offset-0"
+                  :offset "0"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-0") "open"))}}
+        "No offset"]
+       [:div.p-3.ty-elevated.rounded.shadow-md "Touching the button"]]
 
-       [:ty-popup {:id "offset-16"
-                   :offset "16"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-16") "open"))}}
-         "16px offset"]
-        [:div.p-3.ty-elevated.rounded.shadow-md "16px gap"]]
+      [:ty-popup {:id "offset-16"
+                  :offset "16"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-16") "open"))}}
+        "16px offset"]
+       [:div.p-3.ty-elevated.rounded.shadow-md "16px gap"]]
 
-       [:ty-popup {:id "offset-32"
-                   :offset "32"}
-        [:ty-button {:slot "anchor"
-                     :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-32") "open"))}}
-         "32px offset"]
-        [:div.p-3.ty-elevated.rounded.shadow-md "32px gap"]]]
-      "<!-- Custom offset distances -->
+      [:ty-popup {:id "offset-32"
+                  :offset "32"}
+       [:ty-button {:slot "anchor"
+                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "offset-32") "open"))}}
+        "32px offset"]
+       [:div.p-3.ty-elevated.rounded.shadow-md "32px gap"]]]
+     "<!-- Custom offset distances -->
 <ty-popup offset=\"0\">
   <button slot=\"anchor\">No Gap</button>
   <div>Popup touching anchor</div>
@@ -167,36 +167,36 @@
 
     ;; Interactive Content Example
     (example-section
-      "Interactive Content"
-      [:ty-popup {:id "interactive-popup"
-                  :placement "right"
-                  :offset "16"}
-       [:ty-button {:slot "anchor"
-                    :flavor "primary"
-                    :on {:click (fn [] (.toggleAttribute (.getElementById js/document "interactive-popup") "open"))}}
-        "Open Settings"]
-       [:div.p-4.ty-elevated.rounded-lg.shadow-lg.w-64
-        [:h4.font-bold.mb-3 "Quick Settings"]
-        [:div.space-y-3
-         [:label.flex.items-center.gap-2
-          [:input {:type "checkbox"}]
-          [:span.ty-text "Enable notifications"]]
-         [:label.flex.items-center.gap-2
-          [:input {:type "checkbox"
-                   :checked true}]
-          [:span.ty-text "Auto-save"]]
-         [:label.flex.items-center.gap-2
-          [:input {:type "checkbox"}]
-          [:span.ty-text "Dark mode"]]
-         [:div.flex.gap-2.mt-4
-          [:ty-button {:size "sm"
-                       :flavor "success"
-                       :on {:click (fn [] (.removeAttribute (.getElementById js/document "interactive-popup") "open"))}}
-           "Apply"]
-          [:ty-button {:size "sm"
-                       :on {:click (fn [] (.removeAttribute (.getElementById js/document "interactive-popup") "open"))}}
-           "Cancel"]]]]]
-      "<!-- Interactive popup with form -->
+     "Interactive Content"
+     [:ty-popup {:id "interactive-popup"
+                 :placement "right"
+                 :offset "16"}
+      [:ty-button {:slot "anchor"
+                   :flavor "primary"
+                   :on {:click (fn [] (.toggleAttribute (.getElementById js/document "interactive-popup") "open"))}}
+       "Open Settings"]
+      [:div.p-4.ty-elevated.rounded-lg.shadow-lg.w-64
+       [:h4.font-bold.mb-3 "Quick Settings"]
+       [:div.space-y-3
+        [:label.flex.items-center.gap-2
+         [:input {:type "checkbox"}]
+         [:span.ty-text "Enable notifications"]]
+        [:label.flex.items-center.gap-2
+         [:input {:type "checkbox"
+                  :checked true}]
+         [:span.ty-text "Auto-save"]]
+        [:label.flex.items-center.gap-2
+         [:input {:type "checkbox"}]
+         [:span.ty-text "Dark mode"]]
+        [:div.flex.gap-2.mt-4
+         [:ty-button {:size "sm"
+                      :flavor "success"
+                      :on {:click (fn [] (.removeAttribute (.getElementById js/document "interactive-popup") "open"))}}
+          "Apply"]
+         [:ty-button {:size "sm"
+                      :on {:click (fn [] (.removeAttribute (.getElementById js/document "interactive-popup") "open"))}}
+          "Cancel"]]]]]
+     "<!-- Interactive popup with form -->
 <ty-popup id=\"settings-popup\" placement=\"right\" offset=\"16\">
   <ty-button slot=\"anchor\" onclick=\"toggleSettings()\">
     Open Settings
@@ -292,7 +292,7 @@
     [:p.ty-text-.mb-4 "Control popups through JavaScript for complex interactions."]
 
     (code-block
-      "// Get popup element
+     "// Get popup element
 const popup = document.querySelector('ty-popup');
 
 // Open popup
@@ -332,7 +332,7 @@ function openExclusive(popupId) {
     }
   });
   document.getElementById(popupId).setAttribute('open', '');
-}" :lang "javascript")]
+}" "javascript")]
 
    ;; Best Practices Section
    [:div.ty-elevated.rounded-lg.p-6.mb-8

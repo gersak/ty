@@ -1,24 +1,25 @@
 (ns ty.site.docs
   "Documentation system for ty components - orchestrates all doc views"
-  (:require [clojure.string :as str]
-            [ty.router :as router]
-            [ty.site.docs.button :as button-docs]
-            [ty.site.docs.calendar :as calendar-docs]
-            [ty.site.docs.calendar-month :as calendar-month-docs]
-            [ty.site.docs.common :as common]
-            [ty.site.docs.css-system :as css-system]
-            [ty.site.docs.date-picker :as date-picker-docs]
-            [ty.site.docs.dropdown :as dropdown-docs]
-            [ty.site.docs.icon :as icon-docs]
+  (:require
+    [clojure.string :as str]
+    [ty.router :as router]
+    [ty.site.docs.button :as button-docs]
+    [ty.site.docs.calendar :as calendar-docs]
+    [ty.site.docs.calendar-month :as calendar-month-docs]
+    [ty.site.docs.common :as common]
+    [ty.site.docs.date-picker :as date-picker-docs]
+    [ty.site.docs.dropdown :as dropdown-docs]
+    [ty.site.docs.icon :as icon-docs]
             ;; Import component doc namespaces
-            [ty.site.docs.index :as index]
-            [ty.site.docs.input :as input-docs]
-            [ty.site.docs.modal :as modal-docs]
-            [ty.site.docs.multiselect :as multiselect-docs]
-            [ty.site.docs.popup :as popup-docs]
-            [ty.site.docs.tag :as tag-docs]
-            [ty.site.docs.textarea :as textarea-docs]
-            [ty.site.docs.tooltip :as tooltip-docs]))
+    [ty.site.docs.index :as index]
+    [ty.site.docs.input :as input-docs]
+    [ty.site.docs.modal :as modal-docs]
+    [ty.site.docs.multiselect :as multiselect-docs]
+    [ty.site.docs.popup :as popup-docs]
+    [ty.site.docs.tag :as tag-docs]
+    [ty.site.docs.textarea :as textarea-docs]
+    [ty.site.docs.tooltip :as tooltip-docs]
+    [ty.site.views.ty-styles :as ty-styles]))
 
 (def docs-components
   [{:id :ty.site.docs/button
@@ -85,12 +86,36 @@
     :segment "tooltip"
     :icon "message-square"
     :view tooltip-docs/view
-    :name "Tooltip"}
-   {:id :ty.site.docs/css-system
-    :segment "css-system"
+    :name "Tooltip"}])
+
+
+(def guide-components
+  [{:id :ty.site.docs/css
+    :segment "css"
+    :component "CSS System"
     :icon "palette"
-    :view css-system/view
-    :name "CSS System"}])
+    :view #(ty-styles/view)
+    :on {:click #(router/navigate! :ty.site.docs/css)}}
+   {:id :ty.site.docs/replicant
+    :segment "replicant"
+    :component "Replicant"
+    :icon "diamond"
+    :on {:click #(router/navigate! :ty.site.docs/replicant)}}
+   {:id :ty.site.docs/clojurescript
+    :segment "clojurescript"
+    :component "ClojureScript React"
+    :icon "zap"
+    :on {:click #(router/navigate! :ty.site.docs/clojurescript)}}
+   {:id :ty.site.docs/react
+    :segment "react"
+    :component "JS React"
+    :icon "react"
+    :on {:click #(router/navigate! :ty.site.docs/react)}}
+   {:id :ty.site.docs/htmx
+    :segment "htmx"
+    :component "HTMX"
+    :icon "server"
+    :on {:click #(router/navigate! :ty.site.docs/htmx)}}])
 
 ;; Define routes with views from separate namespaces
 (router/link :ty.site/docs
@@ -102,7 +127,9 @@
                         :view #(common/placeholder-view component)
                         :name (str/capitalize component)}))
                ;; Start with explicitly defined component docs
-               docs-components
+               (concat
+                 docs-components
+                 guide-components)
                ;; Add placeholders for remaining components (excluding documented ones)
                (remove #(contains? #{"button" "calendar" "calendar-month" "date-picker" "dropdown" "input" "modal" "multiselect" "popup" "tag" "textarea" "tooltip"} %) index/component-list)))
 
@@ -127,23 +154,28 @@
     [:span.text-sm component]]])
 
 (defn docs-sidebar []
-  [:div.space-y-1
-   [:div.px-4.py-2.ty-text+.text-sm.font-medium "Components"]
-   (for [{component :name
-          icon :icon
-          id :id} docs-components]
-     [:div {:key component}
-      (docs-sidebar-item
-        {:component component
-         :icon icon
-         :on {:click #(router/navigate! id)}
-         :active? (router/rendered? id true)})])
-   [:div.mt-4.pt-4.border-t.ty-border
-    (docs-sidebar-item
-      {:component "CSS System"
-       :icon "palette"
-       :on {:click #(router/navigate! :ty.site.docs/css-system)}
-       :active? (router/rendered? :ty.site.docs/css-system true)})]])
+  [:div.space-y-4.mt-8
+   ;; Components Section
+   [:div.space-y-1
+    [:div.px-4.py-2.ty-text+.text-sm.font-medium "Components"]
+    (for [{component :name
+           icon :icon
+           id :id} docs-components]
+      [:div {:key component}
+       (docs-sidebar-item
+         {:component component
+          :icon icon
+          :on {:click #(router/navigate! id)}
+          :active? (router/rendered? id true)})])]
+
+   ;; Getting Started Section
+   [:div.space-y-1
+    [:div.px-4.py-2.ty-text+.text-sm.font-medium "Getting Started"]
+    (map
+      (fn [{:keys [id]
+            :as component}]
+        (docs-sidebar-item (assoc component :active? (router/rendered? id true))))
+      guide-components)]])
 
 ;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block
 
@@ -151,5 +183,5 @@
   "Render the appropriate docs view based on current route"
   []
   ;; No global highlighting needed - individual code blocks handle it via :replicant/on-mount
-  (let [{view :view} (some #(when (router/rendered? (:id %) true) %) docs-components)]
+  (let [{view :view} (some #(when (router/rendered? (:id %) true) %) (concat docs-components guide-components))]
     (if view (view) (index/view))))

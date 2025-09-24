@@ -117,6 +117,7 @@
              "rotate-ccw" lucide/rotate-ccw ; Undo icon
              "share-2" lucide/share-2 ; Share icon
              "box" lucide/box
+             "diamond" lucide/diamond-plus
 
              ;; Framework icons from FontAwesome
              "react" fav6-brands/react

@@ -19,28 +19,28 @@
 ;; Define site routes
 (router/link ::router/root
              (concat
-              [{:id ::landing
-                :segment ""
-                :name "Welcome"}
-               {:id ::user-profile
-                :segment "user-profile"
-                :name "User Profile"}
-               {:id ::event-booking
-                :segment "event-booking"
-                :name "Event Booking"}
-               {:id ::contact-form
-                :segment "contact-form"
-                :name "Contact Form"}
-               {:id ::ty-styles
-                :segment "ty-styles"
-                :name "Ty Styles"}
-               {:id ::getting-started
-                :segment "getting-started"
-                :name "Getting Started"}
-               {:id :ty.site/docs
-                :segment "docs"
-                :view docs.index/view
-                :name "Documentation"}]))
+               [{:id ::landing
+                 :segment ""
+                 :name "Welcome"}
+                {:id ::user-profile
+                 :segment "user-profile"
+                 :name "User Profile"}
+                {:id ::event-booking
+                 :segment "event-booking"
+                 :name "Event Booking"}
+                {:id ::contact-form
+                 :segment "contact-form"
+                 :name "Contact Form"}
+                {:id ::ty-styles
+                 :segment "ty-styles"
+                 :name "Ty Styles"}
+                {:id ::getting-started
+                 :segment "getting-started"
+                 :name "Getting Started"}
+                {:id :ty.site/docs
+                 :segment "docs"
+                 :view docs.index/view
+                 :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -93,9 +93,6 @@
   (if (docs/in-docs?)
     ;; Docs mode sidebar
     [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
-     [:div.p-4.lg:p-6
-      [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Documentation"]
-      [:p.text-xs.lg:text-sm.ty-text- "Component Reference"]]
      [:nav.px-2.lg:px-4.pb-4.lg:pb-6
       (docs/docs-sidebar)]]
     ;; Regular sidebar

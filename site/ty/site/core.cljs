@@ -6,7 +6,6 @@
             [ty.layout :as layout]
             [ty.router :as router]
             [ty.site.docs :as docs]
-            [ty.site.docs.index :as docs.index]
             [ty.site.icons :as site-icons]
             [ty.site.state :refer [state]]
             [ty.site.views.contact-form :as contact-form]
@@ -53,6 +52,13 @@
 (defn toggle-mobile-menu! []
   (swap! state update :mobile-menu-open not))
 
+(defn scroll-main-to-top!
+  "Smoothly scrolls the main content area to the top"
+  []
+  (when-let [main-element (.querySelector js/document "main.overflow-auto")]
+    (.scrollTo main-element #js {:top 0
+                                 :behavior "smooth"})))
+
 (defn nav-item [{:keys [route-id label icon on-click]}]
   (let [active? (router/rendered? route-id true)]
     [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
@@ -63,6 +69,8 @@
                     (when on-click (on-click))
                     (when (and (not on-click) route-id)
                       (router/navigate! route-id)
+                      ;; Scroll to top after navigation
+                      (js/setTimeout scroll-main-to-top! 100)
                       ;; Close mobile menu after navigation
                       (swap! state assoc :mobile-menu-open false)))}}
      (when icon

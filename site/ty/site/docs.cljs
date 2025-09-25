@@ -95,36 +95,31 @@
     :segment "css"
     :component "CSS System"
     :icon "palette"
-    :view #(ty-styles/view)
-    :on {:click #(router/navigate! :ty.site.docs/css)}}
+    :view #(ty-styles/view)}
    {:id :ty.site.docs/replicant
     :segment "replicant"
     :component "Replicant"
     :icon "diamond"
-    :view replicant-docs/view
-    :on {:click #(router/navigate! :ty.site.docs/replicant)}}
+    :view replicant-docs/view}
    {:id :ty.site.docs/clojurescript
     :segment "clojurescript"
     :component "CLJS React"
     :icon "lambda"
-    :view react-docs/view
-    :on {:click #(router/navigate! :ty.site.docs/clojurescript)}}
+    :view react-docs/view}
    {:id :ty.site.docs/react
     :segment "react"
     :component "JS React"
     :icon "react"
     :view #(common/guide-placeholder-view
              "JavaScript React Integration"
-             "Learn how to integrate Ty web components with JavaScript React applications.")
-    :on {:click #(router/navigate! :ty.site.docs/react)}}
+             "Learn how to integrate Ty web components with JavaScript React applications.")}
    {:id :ty.site.docs/htmx
     :segment "htmx"
     :component "HTMX"
     :icon "server"
     :view #(common/guide-placeholder-view
              "HTMX Integration"
-             "Discover how to use Ty components with HTMX for dynamic server-side applications.")
-    :on {:click #(router/navigate! :ty.site.docs/htmx)}}])
+             "Discover how to use Ty components with HTMX for dynamic server-side applications.")}])
 
 ;; Define routes with views from separate namespaces
 (router/link :ty.site/docs
@@ -135,6 +130,13 @@
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
   (router/rendered? :ty.site/docs false))
+
+(defn scroll-main-to-top!
+  "Smoothly scrolls the main content area to the top"
+  []
+  (when-let [main-element (.querySelector js/document "main.overflow-auto")]
+    (.scrollTo main-element #js {:top 0
+                                 :behavior "smooth"})))
 
 ;; Component sidebar for docs
 (defn docs-sidebar-item
@@ -161,7 +163,9 @@
        (docs-sidebar-item
          {:component component
           :icon icon
-          :on {:click #(router/navigate! id)}
+          :on {:click #(do
+                         (router/navigate! id)
+                         (js/setTimeout scroll-main-to-top! 100))}
           :active? (router/rendered? id true)})])]
 
    ;; Getting Started Section
@@ -172,7 +176,9 @@
        (docs-sidebar-item
          {:component component
           :icon icon
-          :on {:click #(router/navigate! id)}
+          :on {:click #(do
+                         (router/navigate! id)
+                         (js/setTimeout scroll-main-to-top! 100))}
           :active? (router/rendered? id true)})])]])
 
 ;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block

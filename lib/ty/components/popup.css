@@ -3,9 +3,9 @@
 
 .popup-dialog {
   position: fixed;
-  top: var(--popup-y, 0px);
-  left: var(--popup-x, 0px);
-  
+  top: 0;
+  left: 0;
+
   /* Reset dialog defaults */
   margin: 0;
   padding: 0;
@@ -13,20 +13,31 @@
   background: transparent;
   max-width: none;
   max-height: none;
-  
-  /* Hidden by default */
+
+  /* Hidden by default - even when [open] (for positioning phase) */
   visibility: hidden;
   opacity: 0;
-  transform: scale(0.95);
-  
+  /* NO TRANSFORM here - apply only when animating to avoid measurement errors! */
+
   /* Smooth transitions */
-  transition: 
+  transition:
     opacity 150ms ease-out,
     visibility 150ms ease-out,
     transform 150ms ease-out;
-  
+
   /* Prevent interactions when hidden */
   pointer-events: none;
+}
+
+/* Apply position variables only when position is calculated (like dropdown) */
+.popup-dialog.position-calculated {
+  top: var(--popup-y, 0px);
+  left: var(--popup-x, 0px);
+}
+
+/* Apply scale for entrance animation (right before .open) */
+.popup-dialog.preparing-animation {
+  transform: scale(0.95);
 }
 
 /* When open - smooth entrance animation */
@@ -52,15 +63,15 @@
 #popup-content ::slotted(*) {
   /* Ensure slotted content is positioned relative */
   position: relative;
-  
+
   /* Add default popup styling if none provided */
   background: var(--ty-surface-floating, #fff);
   border: 1px solid var(--ty-border, rgba(0, 0, 0, 0.1));
   border-radius: 8px;
-  box-shadow: 
+  box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.1),
     0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  
+
   /* Prevent content from being too wide */
   max-width: min(400px, 90vw);
   max-height: min(500px, 80vh);
@@ -72,7 +83,7 @@
   #popup-content ::slotted(*) {
     background: var(--ty-surface-floating, #1a1a1a);
     border-color: var(--ty-border, rgba(255, 255, 255, 0.1));
-    box-shadow: 
+    box-shadow:
       0 10px 15px -3px rgba(0, 0, 0, 0.3),
       0 4px 6px -2px rgba(0, 0, 0, 0.2);
   }

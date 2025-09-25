@@ -1,6 +1,11 @@
 (ns ty.site.docs.popup
   "ty-popup component documentation"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+  (:require [ty.site.docs.common
+             :refer [code-block
+                     attribute-table
+                     event-table
+                     doc-section
+                     example-section]]))
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -17,10 +22,14 @@
 
     ;; Attributes
     (attribute-table
-      [{:name "trigger"
-        :type "string"
-        :default "\"manual\""
-        :description "How to open the popup: \"click\", \"manual\""}
+      [{:name "manual"
+        :type "boolean"
+        :default "false"
+        :description "Override click trigger - popup opens only via JavaScript"}
+       {:name "disable-close"
+        :type "boolean"
+        :default "false"
+        :description "Disable auto-close - popup closes only via JavaScript"}
        {:name "placement"
         :type "string"
         :default "\"bottom\""
@@ -28,21 +37,17 @@
        {:name "offset"
         :type "number"
         :default "8"
-        :description "Distance in pixels between the popup and anchor element"}
-       {:name "dismiss"
-        :type "string"
-        :default "\"outside\""
-        :description "How to close the popup: \"outside\", \"escape\", \"both\""}])
+        :description "Distance in pixels between the popup and anchor element"}])
 
     ;; Structure
     [:div.mt-6
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "Structure"]
      [:div.ty-bg-neutral-.rounded-lg.p-4
       [:code.text-sm.ty-text
-       "<!-- Parent-child relationship (like tooltip) -->\n"
+       "<!-- Parent-child relationship with defaults: click to open, ESC/outside to close -->\n"
        "<ty-button>\n"
        "  Click me\n"
-       "  <ty-popup trigger=\"click\">\n"
+       "  <ty-popup>\n"
        "    <div>Popup content</div>\n"
        "  </ty-popup>\n"
        "</ty-button>"]]]]
@@ -51,15 +56,13 @@
    [:div.ty-content.rounded-lg.p-6.mb-8
     [:h2.text-xl.font-semibold.ty-text++.mb-4 "Basic Usage"]
     [:p.ty-text-.mb-4
-     "ty-popup uses a parent-child relationship where the popup is placed inside its anchor element. "
+     "ty-popup uses smart defaults: click the parent element to open, ESC key or click outside to close. "
      "The popup automatically detects its parent as the anchor and positions relative to it."]
 
     [:div.mb-4
      [:ty-button {:flavor "primary"}
       "Click to Open Popup"
-      [:ty-popup {:trigger "click"
-                  :placement "bottom"
-                  :dismiss "outside"}
+      [:ty-popup {:placement "bottom"}
        [:div.p-4.ty-elevated.rounded-lg.shadow-lg
         [:h4.font-bold.mb-2 "Popup Content"]
         [:p.ty-text-.mb-3 "This popup opens on click and closes when you click outside or press ESC."]
@@ -71,13 +74,13 @@
           "Cancel"]]]]]]
 
     (code-block
-      "<!-- Basic popup with click trigger -->
+      "<!-- Basic popup with smart defaults -->
 <ty-button flavor=\"primary\">
   Click to Open Popup
-  <ty-popup trigger=\"click\" placement=\"bottom\" dismiss=\"outside\">
+  <ty-popup placement=\"bottom\">
     <div class=\"p-4 ty-elevated rounded-lg shadow-lg\">
       <h4>Popup Content</h4>
-      <p>This popup opens on click and closes when you click outside.</p>
+      <p>Opens on click, closes with ESC or click outside</p>
     </div>
   </ty-popup>
 </ty-button>")]
@@ -93,140 +96,66 @@
        [:div
         [:ty-button {:flavor "primary"}
          "Top Popup"
-         [:ty-popup {:trigger "click"
-                     :placement "top"}
+         [:ty-popup {:placement "top"}
           [:div.p-3.ty-bg-primary+.rounded.ty-text++ "Appears above"]]]]
 
        [:div
         [:ty-button {:flavor "success"}
          "Bottom Popup"
-         [:ty-popup {:trigger "click"
-                     :placement "bottom"}
+         [:ty-popup {:placement "bottom"}
           [:div.p-3.ty-bg-success+.rounded.ty-text++ "Appears below"]]]]
 
        [:div
         [:ty-button {:flavor "warning"}
          "Left Popup"
-         [:ty-popup {:trigger "click"
-                     :placement "left"}
+         [:ty-popup {:placement "left"}
           [:div.p-3.ty-bg-warning+.rounded.ty-text++ "Appears to the left"]]]]
 
        [:div
         [:ty-button
          {:flavor "danger"}
          "Right Popup"
-         [:ty-popup {:trigger "click"
-                     :placement "right"}
+         [:ty-popup {:placement "right"}
           [:div.p-3.ty-bg-danger+.rounded.ty-text++ "Appears to the right"]]]]]
       "<!-- Different placement options -->
 <ty-button flavor=\"primary\">
   Top Popup
-  <ty-popup trigger=\"click\" placement=\"top\">
+  <ty-popup placement=\"top\">
     <div>Content appears above</div>
   </ty-popup>
 </ty-button>
 
 <ty-button flavor=\"success\">
   Right Popup  
-  <ty-popup trigger=\"click\" placement=\"right\">
+  <ty-popup placement=\"right\">
     <div>Content appears to the right</div>
   </ty-popup>
 </ty-button>")
-
-    ;; Dismiss Behaviors Example
-    (example-section
-      "Dismiss Behaviors"
-      [:div.flex.gap-4.items-center.flex-wrap
-       [:ty-button
-        "Click Outside"
-        [:ty-popup {:trigger "click"
-                    :dismiss "outside"}
-         [:div.p-3.ty-elevated.rounded "Click outside to close"]]]
-
-       [:ty-button
-        "ESC Key"
-        [:ty-popup {:trigger "click"
-                    :dismiss "escape"}
-         [:div.p-3.ty-elevated.rounded "Press ESC to close"]]]
-
-       [:ty-button
-        "Both Methods"
-        [:ty-popup {:trigger "click"
-                    :dismiss "both"}
-         [:div.p-3.ty-elevated.rounded "Click outside OR press ESC"]]]]
-      "<!-- Different dismiss behaviors -->
-<ty-button>
-  Click Outside
-  <ty-popup trigger=\"click\" dismiss=\"outside\">
-    <div>Click outside to close</div>
-  </ty-popup>
-</ty-button>
-
-<ty-button>
-  ESC Key
-  <ty-popup trigger=\"click\" dismiss=\"escape\">
-    <div>Press ESC to close</div>
-  </ty-popup>
-</ty-button>")
-
-    ;; Manual Control Example
-    (example-section
-      "Manual Control"
-      [:div.flex.gap-4.items-center
-       [:span.ty-text- "Manual trigger allows programmatic control:"]
-       [:ty-button {:flavor "secondary"}
-        "Anchor Element"
-        [:ty-popup {:trigger "manual"
-                    :dismiss "outside"}
-         [:div.p-4.ty-elevated.rounded-lg
-          [:h4.font-bold.mb-2 "Manual Popup"]
-          [:p.ty-text-.mb-3 "This popup can only be controlled via JavaScript."]
-          [:ty-button {:size "sm"}
-           "Close"]]]]]
-      "<!-- Manual control via JavaScript -->
-<ty-button flavor=\"secondary\">
-  Anchor Element
-  <ty-popup trigger=\"manual\" dismiss=\"outside\">
-    <div>
-      <h4>Manual Popup</h4>
-      <p>Controlled programmatically</p>
-    </div>
-  </ty-popup>
-</ty-button>
-
-<script>
-// You would control this popup via your own JavaScript
-const popup = document.querySelector('ty-popup');
-// Custom logic to show/hide popup
-</script>")
 
     ;; Interactive Content Example
     (example-section
       "Interactive Content & Closing"
       [:ty-button {:flavor "primary"}
        "Contact Form"
-       [:ty-popup {:trigger "click"
-                   :placement "bottom"
-                   :offset "8"
-                   :dismiss "outside"}
+       [:ty-popup {:placement "bottom"
+                   :offset "8"}
         [:div.p-6.ty-elevated.rounded-lg.shadow-lg.w-80
          [:h4.font-bold.mb-4 "Contact Us"]
          [:div.space-y-4
-          [:div
-           [:label.block.ty-text+.text-sm.font-medium.mb-1 "Name"]
-           [:input.w-full.px-3.py-2.border.ty-border.rounded.ty-input
-            {:type "text"
-             :placeholder "Your name"}]]
-          [:div
-           [:label.block.ty-text+.text-sm.font-medium.mb-1 "Email"]
-           [:input.w-full.px-3.py-2.border.ty-border.rounded.ty-input
-            {:type "email"
-             :placeholder "your@email.com"}]]
-          [:div
-           [:label.block.ty-text+.text-sm.font-medium.mb-1 "Message"]
-           [:textarea.w-full.px-3.py-2.border.ty-border.rounded.ty-input
-            {:rows 3
-             :placeholder "Your message..."}]]
+          [:ty-input
+           {:label "Name"
+            :placeholder "Your name"
+            :required true}]
+          [:ty-input
+           {:label "Email"
+            :type "email"
+            :placeholder "your@email.com"
+            :required true}]
+          [:ty-textarea
+           {:label "Message"
+            :placeholder "Your message..."
+            :rows 3
+            :required true}]
           [:div.flex.gap-2.pt-2
            [:ty-button {:flavor "success"
                         :size "sm"
@@ -249,17 +178,12 @@ const popup = document.querySelector('ty-popup');
   <ty-popup trigger=\"click\" placement=\"bottom\">
     <div class=\"p-6 ty-elevated rounded-lg shadow-lg w-80\">
       <h4 class=\"font-bold mb-4\">Contact Us</h4>
-      <form>
-        <label>Name</label>
-        <input type=\"text\" placeholder=\"Your name\">
+      <div class=\"space-y-4\">
+        <ty-input label=\"Name\" placeholder=\"Your name\" required></ty-input>
+        <ty-input label=\"Email\" type=\"email\" placeholder=\"your@email.com\" required></ty-input>
+        <ty-textarea label=\"Message\" placeholder=\"Your message...\" rows=\"3\" required></ty-textarea>
         
-        <label>Email</label>  
-        <input type=\"email\" placeholder=\"your@email.com\">
-        
-        <label>Message</label>
-        <textarea placeholder=\"Your message...\"></textarea>
-        
-        <div class=\"flex gap-2\">
+        <div class=\"flex gap-2 pt-2\">
           <ty-button flavor=\"success\" size=\"sm\" type=\"button\" onclick=\"submitAndClose(this)\">
             Submit
           </ty-button>
@@ -267,7 +191,7 @@ const popup = document.querySelector('ty-popup');
             Cancel
           </ty-button>
         </div>
-      </form>
+      </div>
     </div>
   </ty-popup>
 </ty-button>
@@ -303,10 +227,8 @@ function closePopup(button) {
        [:span "John Doe"]
        [:ty-icon {:name "chevron-down"
                   :size "sm"}]
-       [:ty-popup {:trigger "click"
-                   :placement "bottom"
-                   :offset "8"
-                   :dismiss "outside"}
+       [:ty-popup {:placement "bottom"
+                   :offset "8"}
         [:div.ty-elevated.rounded-lg.shadow-lg.py-2
          {:class "min-w-[200px]"}
          [:div.px-4.py-2.border-b.ty-border
@@ -334,10 +256,8 @@ function closePopup(button) {
                    :size "sm"
                    :class "p-2"}
        [:ty-icon {:name "more-vertical"}]
-       [:ty-popup {:trigger "click"
-                   :placement "bottom"
-                   :offset "8"
-                   :dismiss "outside"}
+       [:ty-popup {:placement "bottom"
+                   :offset "8"}
         [:div.ty-elevated.rounded-lg.shadow-lg.py-2.w-48
          [:button.w-full.text-left.px-4.py-2.hover:ty-bg-neutral-.ty-text.flex.items-center.gap-2
           [:ty-icon {:name "edit"
@@ -403,10 +323,7 @@ popup.addEventListener('ty:popup-close', () => {
 popup.setAttribute('trigger', 'manual');
 
 // Change placement
-popup.setAttribute('placement', 'top');
-
-// Change dismiss behavior
-popup.setAttribute('dismiss', 'escape');" "javascript")]
+popup.setAttribute('placement', 'top');")]
 
    ;; Migration from v1
    [:div.ty-bg-warning-.ty-border-warning.border.rounded-lg.p-4.mb-8

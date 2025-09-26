@@ -351,7 +351,10 @@
     [:h3.text-xl.font-semibold.ty-text++.mb-4 "Native Form Support"]
     [:p.ty-text-.mb-4 "ty-input is a form-associated custom element that works seamlessly with native HTML forms. The error attribute is for display only - implement your own validation logic."]
 
-    [:form.space-y-4 {:onsubmit "event.preventDefault(); console.log('Form submitted'); return false;"}
+    [:form.space-y-4 {:on {:submit (fn [^js event]
+                                     (.preventDefault event)
+                                     (.log js/console "Form submitted!")
+                                     false)}}
      [:ty-input {:name "fullname"
                  :label "Full Name"
                  :required "true"}]

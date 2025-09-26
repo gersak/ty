@@ -37,26 +37,26 @@
     [:div.mb-6
      [:h3.text-lg.font-medium.ty-text.mb-3 "Attributes"]
      (attribute-table
-      [{:name "open"
-        :type "boolean"
-        :default "false"
-        :description "Controls modal visibility. When true, modal is shown."}
-       {:name "backdrop"
-        :type "boolean"
-        :default "true"
-        :description "Whether to show a backdrop behind the modal."}
-       {:name "close-on-outside-click"
-        :type "boolean"
-        :default "true"
-        :description "Whether clicking the backdrop closes the modal."}
-       {:name "close-on-escape"
-        :type "boolean"
-        :default "true"
-        :description "Whether pressing ESC key closes the modal."}
-       {:name "protected"
-        :type "boolean"
-        :default "false"
-        :description "When true, requires confirmation before closing (shows browser confirm dialog)."}])]
+       [{:name "open"
+         :type "boolean"
+         :default "false"
+         :description "Controls modal visibility. When true, modal is shown."}
+        {:name "backdrop"
+         :type "boolean"
+         :default "true"
+         :description "Whether to show a backdrop behind the modal."}
+        {:name "close-on-outside-click"
+         :type "boolean"
+         :default "true"
+         :description "Whether clicking the backdrop closes the modal."}
+        {:name "close-on-escape"
+         :type "boolean"
+         :default "true"
+         :description "Whether pressing ESC key closes the modal."}
+        {:name "protected"
+         :type "boolean"
+         :default "false"
+         :description "When true, requires confirmation before closing (shows browser confirm dialog)."}])]
 
     ;; Methods
     [:div.mb-6
@@ -79,12 +79,12 @@
     [:div.mb-6
      [:h3.text-lg.font-medium.ty-text.mb-3 "Events"]
      (event-table
-      [{:name "ty-modal-open"
-        :payload "{}"
-        :when-fired "Fired when the modal opens"}
-       {:name "ty-modal-close"
-        :payload "{reason: 'programmatic'|'native', returnValue?: string}"
-        :when-fired "Fired when the modal closes, includes reason and optional return value"}])]
+       [{:name "ty-modal-open"
+         :payload "{}"
+         :when-fired "Fired when the modal opens"}
+        {:name "ty-modal-close"
+         :payload "{reason: 'programmatic'|'native', returnValue?: string}"
+         :when-fired "Fired when the modal closes, includes reason and optional return value"}])]
 
     ;; Slots
     [:div
@@ -107,7 +107,7 @@
      "The modal is a pure wrapper - all styling (size, background, borders, padding) is applied by your content."]
 
     (code-block
-     "<!-- Button to open modal -->
+      "<!-- Button to open modal -->
 <ty-button onclick=\"document.getElementById('my-modal').show()\">
   Open Modal
 </ty-button>
@@ -145,7 +145,7 @@
     [:p.ty-text-.mb-4 "Control modal visibility using the " [:code "open"] " attribute."]
 
     (code-block
-     "<!-- Using a checkbox to control modal -->
+      "<!-- Using a checkbox to control modal -->
 <input type=\"checkbox\" id=\"modal-toggle\" 
        onchange=\"document.getElementById('declarative-modal').open = this.checked\">
 <label for=\"modal-toggle\">Toggle Modal</label>
@@ -176,7 +176,7 @@
      "Use " [:code "protected=\"true\""] " to require confirmation before closing. Useful for forms with unsaved changes."]
 
     (code-block
-     "<ty-modal id=\"protected-modal\" protected=\"true\">
+      "<ty-modal id=\"protected-modal\" protected=\"true\">
   <div class=\"p-6 max-w-md ty-elevated rounded-lg\">
     <h3 class=\"text-lg font-semibold mb-4\">Unsaved Changes</h3>
     <form>
@@ -209,7 +209,7 @@
     [:p.ty-text-.mb-4 "Disable the backdrop for a more integrated feel."]
 
     (code-block
-     "<ty-modal backdrop=\"false\" close-on-outside-click=\"false\">
+      "<ty-modal backdrop=\"false\" close-on-outside-click=\"false\">
   <div class=\"p-6 ty-floating rounded-lg shadow-xl\">
     <p>Modal without backdrop - page content remains visible</p>
   </div>
@@ -234,7 +234,7 @@
     [:p.ty-text-.mb-4 "Common pattern for form dialogs with actions."]
 
     (code-block
-     "<ty-modal id=\"form-modal\">
+      "<ty-modal id=\"form-modal\">
   <div class=\"p-6 max-w-lg ty-elevated rounded-lg\">
     <h3 class=\"text-xl font-semibold mb-4\">Create New Item</h3>
     
@@ -317,7 +317,7 @@
 
     (code-block
 
-     "// Get modal element
+      "// Get modal element
 const modal = document.getElementById('my-modal');
 
 // Open modal
@@ -339,7 +339,7 @@ modal.addEventListener('ty-modal-close', (e) => {
 // Control attributes
 modal.setAttribute('protected', 'true');
 modal.backdrop = false;"
-     "javascript")
+      "javascript")
 
     [:div.mt-4.space-y-3
      [:div.flex.gap-3
@@ -363,7 +363,7 @@ modal.backdrop = false;"
 
     (code-block
 
-     "const modal = document.getElementById('analytics-modal');
+      "const modal = document.getElementById('analytics-modal');
 
 modal.addEventListener('ty-modal-open', () => {
   // Track modal open
@@ -390,7 +390,7 @@ modal.addEventListener('ty-modal-close', (e) => {
   // Cleanup
   delete modal.openTime;
 });"
-     "javascript")]
+      "javascript")]
 
    ;; CSS Customization
    [:div.ty-content.rounded-lg.p-6.mb-6
@@ -399,7 +399,7 @@ modal.addEventListener('ty-modal-close', (e) => {
 
     (code-block
 
-     "/* Custom backdrop styles */
+      "/* Custom backdrop styles */
 ty-modal {
   --ty-modal-backdrop: rgba(0, 50, 100, 0.8);
   --ty-modal-backdrop-blur: blur(8px);
@@ -415,7 +415,7 @@ ty-modal {
   );
   --ty-modal-backdrop-blur: blur(20px);
 }"
-     "css")
+      "css")
 
     [:div.mt-4
      [:ty-button {:on {:click #(swap! state/state assoc :docs-modal-custom-css true)}}
@@ -423,9 +423,9 @@ ty-modal {
 
      [:ty-modal {:id "docs-modal-custom-css"
                  :open (get @state/state :docs-modal-custom-css false)
-                 :style {"--ty-modal-backdrop" "linear-gradient(to bottom, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8))"
-                         "--ty-modal-backdrop-blur" "blur(12px)"
-                         "--ty-modal-duration" "400ms"}
+                 :style {:--ty-modal-backdrop "linear-gradient(to bottom, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8))"
+                         :--ty-modal-backdrop-blur "blur(12px)"
+                         :--ty-modal-duration "400ms"}
                  :on {:ty-modal-close #(swap! state/state assoc :docs-modal-custom-css false)}}
       [:div.p-8.max-w-md.ty-floating.rounded-xl.shadow-2xl
        [:h3.text-xl.font-semibold.mb-4.ty-text "Custom Backdrop"]
@@ -465,7 +465,7 @@ ty-modal {
     [:p.ty-text-.mb-4 "Manage multiple modals with a simple JavaScript controller."]
 
     (code-block
-     "// Modal manager for handling multiple modals
+      "// Modal manager for handling multiple modals
 class ModalManager {
   constructor() {
     this.activeModals = new Set();
@@ -506,14 +506,14 @@ const modals = new ModalManager();
 modals.open('user-settings');
 modals.open('confirm-dialog');
 modals.closeAll(); // Close all open modals"
-     "javascript")]
+      "javascript")]
 
    [:div.ty-content.rounded-lg.p-6.mb-6
     [:h3.text-lg.font-medium.ty-text.mb-3 "Dynamic Content Loading"]
     [:p.ty-text-.mb-4 "Load modal content dynamically from server or templates."]
 
     (code-block
-     "// Dynamic modal content loading
+      "// Dynamic modal content loading
 async function openUserProfile(userId) {
   const modal = document.getElementById('profile-modal');
   const content = modal.querySelector('.modal-body');
@@ -551,14 +551,14 @@ async function openUserProfile(userId) {
 //     <ty-button onclick=\"this.closest('ty-modal').hide()\">Close</ty-button>
 //   </div>
 // </ty-modal>"
-     "javascript")]
+      "javascript")]
 
    [:div.ty-content.rounded-lg.p-6.mb-6
     [:h3.text-lg.font-medium.ty-text.mb-3 "Confirmation Dialog Pattern"]
     [:p.ty-text-.mb-4 "Create reusable confirmation dialogs with promises."]
 
     (code-block
-     "// Reusable confirmation dialog
+      "// Reusable confirmation dialog
 function confirm(message, options = {}) {
   return new Promise((resolve) => {
     const modal = document.getElementById('confirm-modal');
@@ -616,7 +616,7 @@ async function deleteItem(itemId) {
     console.log('Item deleted');
   }
 }"
-     "javascript")]
+      "javascript")]
 
    ;; Best Practices
    [:div.ty-elevated.rounded-lg.p-6

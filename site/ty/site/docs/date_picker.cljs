@@ -87,12 +87,13 @@
     [:div
      [:h3.text-lg.font-medium.ty-text+.mb-3 "Properties"]
      [:div.ty-bg-neutral-.rounded.p-4.overflow-x-auto
-      [:pre.text-sm.ty-text
-       "// JavaScript access
+      (code-block
+        "// JavaScript access
 const picker = document.querySelector('ty-date-picker');
 picker.value = '2024-09-21';  // Set date
 picker.value = '2024-09-21T14:30';  // Set date and time
-const currentValue = picker.value;  // Get current value"]]]]
+const currentValue = picker.value;  // Get current value"
+        "javascript")]]]
 
    ;; Basic Usage
    [:div.ty-content.rounded-lg.p-6.mb-8
@@ -312,17 +313,33 @@ document.getElementById('date-form').addEventListener('submit', (e) => {
      [:ty-date-picker {:id "prog-picker"
                        :label "Controlled Date"}]
      [:div.flex.gap-2.mt-4
-      [:button.ty-button.secondary.sm
-       {:onclick "document.getElementById('prog-picker').value = '2024-09-21'"}
+      [:ty-button
+       {:on {:click (fn [_]
+                      (when-let [el (.getElementById js/document "prog-picker")]
+                        (let [now (js/Date.)
+                              date (str (.getFullYear now) "-"
+                                        (.getMonth now) "-"
+                                        (.getDate now))]
+                          (set! (.-value el) date))))}}
        "Set Today"]
-      [:button.ty-button.secondary.sm
-       {:onclick "document.getElementById('prog-picker').value = '2024-12-25'"}
+      [:ty-button
+       {:on {:click (fn [_]
+                      (when-let [el (.getElementById js/document "prog-picker")]
+                        (set! (.-value el)
+                              (str
+                                (.getFullYear (js/Date.))
+                                "-12-25"))))}}
        "Set Christmas"]
-      [:button.ty-button.secondary.sm
-       {:onclick "document.getElementById('prog-picker').value = ''"}
+      [:ty-button
+       {:flavor "danger"
+        :on {:click (fn [_]
+                      (when-let [el (.getElementById js/document "prog-picker")]
+                        (set! (.-value el) "")))}}
        "Clear"]
-      [:button.ty-button.secondary.sm
-       {:onclick "alert('Current: ' + document.getElementById('prog-picker').value)"}
+      [:ty-button
+       {:on {:click (fn [_]
+                      (when-let [el (.getElementById js/document "prog-picker")]
+                        (.log js/console (.-value el))))}}
        "Get Value"]]]
     (code-block
       "<ty-date-picker id=\"date-picker\" label=\"Controlled Date\"></ty-date-picker>

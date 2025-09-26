@@ -1,29 +1,98 @@
 (ns ty.site.docs.common
   "Common utilities for component documentation"
   (:require
-   [goog.object]))
+    [goog.object]))
+
+(defn add-code-enhancements!
+  "Add copy button and language label to a highlighted code element"
+  [^js code-el lang]
+  (when-let [container (.-parentElement code-el)]
+    ;; Set container positioning
+    (set! (.. container -style -position) "relative")
+
+    ;; Add language label (if meaningful)
+    (when (and lang
+               (not= lang "hljs")
+               (not= lang "code"))
+      (let [label (.createElement js/document "div")]
+        (set! (.-textContent label) lang)
+        (set! (.-cssText (.-style label))
+              "position: absolute; top: 0.5rem; right: 3rem; font-size: 0.75rem;
+               color: var(--ty-text--); background: var(--ty-surface-content);
+               padding: 0.25rem 0.5rem; border-radius: 4px;
+               border: 1px solid var(--ty-border-); pointer-events: none; z-index: 10;")
+        (.appendChild container label)))
+
+    ;; Add copy button
+    (let [copy-btn (.createElement js/document "button")]
+      (set! (.-innerHTML copy-btn) "<ty-icon name=\"copy\" size=\"sm\"></ty-icon>")
+      (set! (.-title copy-btn) "Copy to clipboard")
+      (set! (.-cssText (.-style copy-btn))
+            "position: absolute; top: 0.5rem; right: 0.5rem; width: 2rem; height: 2rem;
+             background: var(--ty-surface-elevated); border: 1px solid var(--ty-border);
+             border-radius: 4px; cursor: pointer; opacity: 0.7;
+             transition: opacity 0.2s, background-color 0.2s;
+             display: flex; align-items: center; justify-content: center; padding: 0; z-index: 10;")
+
+      ;; Copy functionality
+      (.addEventListener copy-btn "click"
+                         (fn [e]
+                           (.preventDefault e)
+                           (.stopPropagation e)
+                           (let [code-text (.-textContent code-el)]
+                             (-> (js/navigator.clipboard.writeText code-text)
+                                 (.then (fn []
+                                          (set! (.-innerHTML copy-btn) "<ty-icon name=\"check\" size=\"sm\" class=\"ty-text-success\"></ty-icon>")
+                                          (set! (.. copy-btn -style -backgroundColor) "var(--ty-bg-success-)")
+                                          (js/setTimeout #(do (set! (.-innerHTML copy-btn) "<ty-icon name=\"copy\" size=\"sm\"></ty-icon>")
+                                                              (set! (.. copy-btn -style -backgroundColor) "var(--ty-surface-elevated)"))
+                                                         2000)))
+                                 (.catch (fn [err]
+                                           (js/console.error "Failed to copy code:" err)
+                                           (set! (.-innerHTML copy-btn) "<ty-icon name=\"x\" size=\"sm\" class=\"ty-text-danger\"></ty-icon>")
+                                           (set! (.. copy-btn -style -backgroundColor) "var(--ty-bg-danger-)")
+                                           (js/setTimeout #(do (set! (.-innerHTML copy-btn) "<ty-icon name=\"copy\" size=\"sm\"></ty-icon>")
+                                                               (set! (.. copy-btn -style -backgroundColor) "var(--ty-surface-elevated)"))
+                                                          2000)))))))
+
+      ;; Hover effects
+      (.addEventListener copy-btn "mouseenter"
+                         #(do (set! (.. copy-btn -style -opacity) "1")
+                              (set! (.. copy-btn -style -backgroundColor) "var(--ty-surface-floating)")))
+
+      (.addEventListener copy-btn "mouseleave"
+                         #(do (set! (.. copy-btn -style -opacity) "0.7")
+                              (set! (.. copy-btn -style -backgroundColor) "var(--ty-surface-elevated)")))
+
+      (.appendChild container copy-btn))))
 
 (defn code-block
   "Display a code block with syntax highlighting"
   ([code] (code-block code "html"))
   ([code lang]
-   [:div.ty-bg-neutral-.rounded.p-4.overflow-x-auto
+   [:div.ty-bg-neutral-.rounded-md.p-4.overflow-x-auto.my-4
     [:pre
      [:code.text-xs
       {:class (str "language-" lang)
        :replicant/on-mount (fn [{^js el :replicant/node}]
                              (js/setTimeout
-                              (fn []
-                                (when (and el
-                                           js/window.hljs
-                                           (.-highlightElement js/window.hljs)
-                                           ;; Safety check: only highlight if not already highlighted
-                                           (not (.. el -dataset -highlighted)))
-                                  (try
-                                    (js/window.hljs.highlightElement el)
-                                    (catch js/Error e
-                                      (js/console.warn "Failed to highlight code block:" e)))))
-                              100))}
+                               (fn []
+                                 (when (and el
+                                            js/window.hljs
+                                            (.-highlightElement js/window.hljs))
+                                   (try
+                                     ;; Always restore original text and clear highlight state
+                                     (when (.-dataset el)
+                                       (js-delete (.-dataset el) "highlighted"))
+
+                                     ;; Highlight the clean element
+                                     (js/window.hljs.highlightElement el)
+
+                                     ;; Add copy button and language label
+                                     (add-code-enhancements! el lang)
+                                     (catch js/Error e
+                                       (js/console.warn "Failed to highlight code block:" e)))))
+                               100))}
       code]]]))
 
 (defn attribute-table

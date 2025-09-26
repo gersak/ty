@@ -400,7 +400,7 @@
                                       (.appendChild container price-span))
                                     container)))))}]]]
 
-     [:div.mt-4
+     [:div.my-4
       [:h4.font-medium.ty-text.mb-2 "Key Implementation Points:"]
       [:ul.space-y-2.text-sm.ty-text-
        [:li.flex.items-start.gap-2
@@ -500,7 +500,7 @@ calendar.dayContentFn = function(dayContext) {
 // 3. Wrap in container for width control
 <div style=\"max-width: 600px\">
   <ty-calendar id=\"hotel-calendar\" month=\"12\" year=\"2024\"></ty-calendar>
-</div>")]
+</div>" "javascript")]
 
     ;; Localization
     [:div.ty-content.rounded-lg.p-6

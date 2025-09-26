@@ -19,56 +19,56 @@
     [:div.mb-6
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "Attributes"]
      (attribute-table
-      [{:name "flavor"
-        :type "string"
-        :default "\"neutral\""
-        :description "Semantic color theme: primary, secondary, success, danger, warning, neutral"}
-       {:name "size"
-        :type "string"
-        :default "\"md\""
-        :description "Tag size: sm, md, lg"}
-       {:name "pill"
-        :type "boolean"
-        :default "true"
-        :description "Use pill shape (fully rounded) instead of rectangular with rounded corners"}
-       {:name "not-pill"
-        :type "boolean"
-        :default "false"
-        :description "Alternative way to disable pill shape (equivalent to pill=\"false\")"}
-       {:name "clickable"
-        :type "boolean"
-        :default "false"
-        :description "Makes the tag clickable with hover/active states"}
-       {:name "dismissible"
-        :type "boolean"
-        :default "false"
-        :description "Shows a dismiss button (X) that triggers dismiss event"}
-       {:name "disabled"
-        :type "boolean"
-        :default "false"
-        :description "Disables all interactions"}
-       {:name "value"
-        :type "string"
-        :default "null"
-        :description "Value for the tag (useful in multiselect contexts)"}
-       {:name "selected"
-        :type "boolean"
-        :default "false"
-        :description "Selected state (primarily for multiselect integration)"}])]
+       [{:name "flavor"
+         :type "string"
+         :default "\"neutral\""
+         :description "Semantic color theme: primary, secondary, success, danger, warning, neutral"}
+        {:name "size"
+         :type "string"
+         :default "\"md\""
+         :description "Tag size: sm, md, lg"}
+        {:name "pill"
+         :type "boolean"
+         :default "true"
+         :description "Use pill shape (fully rounded) instead of rectangular with rounded corners"}
+        {:name "not-pill"
+         :type "boolean"
+         :default "false"
+         :description "Alternative way to disable pill shape (equivalent to pill=\"false\")"}
+        {:name "clickable"
+         :type "boolean"
+         :default "false"
+         :description "Makes the tag clickable with hover/active states"}
+        {:name "dismissible"
+         :type "boolean"
+         :default "false"
+         :description "Shows a dismiss button (X) that triggers dismiss event"}
+        {:name "disabled"
+         :type "boolean"
+         :default "false"
+         :description "Disables all interactions"}
+        {:name "value"
+         :type "string"
+         :default "null"
+         :description "Value for the tag (useful in multiselect contexts)"}
+        {:name "selected"
+         :type "boolean"
+         :default "false"
+         :description "Selected state (primarily for multiselect integration)"}])]
 
     ;; Events Table
     [:div.mb-6
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "Events"]
      (event-table
-      [{:name "pointerdown"
-        :payload "{target: HTMLElement}"
-        :when-fired "Fired when a clickable tag is clicked"}
-       {:name "ty-tag-click"
-        :payload "{target: HTMLElement}"
-        :when-fired "Fired when a clickable tag is clicked"}
-       {:name "ty-tag-dismiss"
-        :payload "{target: HTMLElement}"
-        :when-fired "Fired when the dismiss button is clicked"}])]
+       [{:name "pointerdown"
+         :payload "{target: HTMLElement}"
+         :when-fired "Fired when a clickable tag is clicked"}
+        {:name "ty-tag-click"
+         :payload "{target: HTMLElement}"
+         :when-fired "Fired when a clickable tag is clicked"}
+        {:name "ty-tag-dismiss"
+         :payload "{target: HTMLElement}"
+         :when-fired "Fired when the dismiss button is clicked"}])]
 
     ;; Slots Table
     [:div
@@ -90,27 +90,6 @@
          [:td.p-2.font-mono.text-xs "end"]
          [:td.p-2.ty-text "Content after the main text (badges, counts)"]]]]]]]
 
-   ;; Basic Usage
-   [:div.ty-content.rounded-lg.p-6.mb-8
-    [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Basic Usage"]
-    [:p.ty-text.mb-4 "Tags are simple to use - just add content and optionally set a flavor:"]
-
-    ;; Live Demo
-    [:div.mb-4.p-4.ty-bg-neutral-.rounded
-     [:div.flex.flex-wrap.gap-2
-      [:ty-tag "Default"]
-      [:ty-tag {:flavor "primary"} "Primary"]
-      [:ty-tag {:flavor "success"} "Success"]
-      [:ty-tag {:flavor "danger"} "Danger"]
-      [:ty-tag {:flavor "warning"} "Warning"]]]
-
-    (code-block
-     "<!-- Basic tags -->
-<ty-tag>Default</ty-tag>
-<ty-tag flavor=\"primary\">Primary</ty-tag>
-<ty-tag flavor=\"success\">Success</ty-tag>
-<ty-tag flavor=\"danger\">Danger</ty-tag>
-<ty-tag flavor=\"warning\">Warning</ty-tag>")]
 
    ;; Examples Section
    [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Examples"]
@@ -131,7 +110,7 @@
        [:ty-tag {:flavor "neutral"} "Neutral"]]]
 
      (code-block
-      "<ty-tag flavor=\"primary\">Primary</ty-tag>
+       "<ty-tag flavor=\"primary\">Primary</ty-tag>
 <ty-tag flavor=\"secondary\">Secondary</ty-tag>
 <ty-tag flavor=\"success\">Success</ty-tag>
 <ty-tag flavor=\"danger\">Danger</ty-tag>
@@ -153,7 +132,7 @@
                  :flavor "primary"} "Large"]]]
 
      (code-block
-      "<ty-tag size=\"sm\" flavor=\"primary\">Small</ty-tag>
+       "<ty-tag size=\"sm\" flavor=\"primary\">Small</ty-tag>
 <ty-tag size=\"md\" flavor=\"primary\">Medium (default)</ty-tag>
 <ty-tag size=\"lg\" flavor=\"primary\">Large</ty-tag>")]
 
@@ -171,7 +150,7 @@
                  :not-pill "true"} "Also Rectangular"]]]
 
      (code-block
-      "<!-- Pill shape (default) -->
+       "<!-- Pill shape (default) -->
 <ty-tag flavor=\"primary\">Pill (default)</ty-tag>
 
 <!-- Rectangular shape -->
@@ -206,7 +185,7 @@
                  :disabled "true"} "Disabled"]]]
 
      (code-block
-      "<!-- Clickable tag -->
+       "<!-- Clickable tag -->
 <ty-tag flavor=\"primary\" clickable onclick=\"alert('Tag clicked!')\">
   Click me
 </ty-tag>
@@ -259,7 +238,7 @@
         "Error"]]]
 
      (code-block
-      "<!-- With emoji -->
+       "<!-- With emoji -->
 <ty-tag flavor=\"primary\" size=\"sm\">
   <span slot=\"start\">🚀</span>
   Launch
@@ -314,7 +293,7 @@
         [:span {:slot "start"} "🐍"] "Python"]]]
 
      (code-block
-      "<ty-multiselect placeholder=\"Select skills...\" value=\"javascript,react\">
+       "<ty-multiselect placeholder=\"Select skills...\" value=\"javascript,react\">
   <ty-tag value=\"javascript\" flavor=\"warning\" size=\"sm\">
     <span slot=\"start\">📜</span>
     JavaScript
@@ -408,7 +387,7 @@
     [:p.ty-text-.mb-4 "Programmatic interaction with ty-tag:"]
 
     (code-block
-     "// Get tag element
+      "// Get tag element
 const tag = document.querySelector('ty-tag');
 
 // Properties
@@ -440,7 +419,7 @@ newTag.addEventListener('ty-tag-dismiss', (e) => {
 // Keyboard interactions (built-in)
 // - Enter/Space: Trigger click on clickable tags
 // - Delete/Backspace: Trigger dismiss on dismissible tags"
-     "javascript")]
+      "javascript")]
 
    ;; Best Practices
    [:div.ty-elevated.rounded-lg.p-6

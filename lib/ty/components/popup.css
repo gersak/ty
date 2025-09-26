@@ -8,11 +8,13 @@
 
   /* Reset dialog defaults */
   margin: 0;
-  padding: 0;
   border: none;
   background: transparent;
   max-width: none;
   max-height: none;
+
+  /* Shadow infrastructure - provide space for user shadows */
+  padding: var(--popup-padding, 16px);
 
   /* Hidden by default - even when [open] (for positioning phase) */
   visibility: hidden;
@@ -53,38 +55,32 @@
   background: transparent;
 }
 
+/* Inner container - neutral structural container */
+.popup-container {
+  /* No default styling - just provides structure */
+  /* Users control all visual aspects via slotted content */
+  display: contents;
+}
+
 /* Content slot styling */
 #popup-content {
   /* Allow slotted content to define its own styling */
   display: contents;
 }
 
-/* Default styling for slotted content */
+/* Remove default styling from slotted content - users have full control */
 #popup-content ::slotted(*) {
-  /* Ensure slotted content is positioned relative */
+  /* Remove default styling that conflicts with user styling */
+  /* Users now have complete control over popup appearance */
+  /* background: unset; */
+  /* border: unset; */
+  /* box-shadow: unset; */
+
+  /* Only maintain essential positioning */
   position: relative;
 
-  /* Add default popup styling if none provided */
-  background: var(--ty-surface-floating, #fff);
-  border: 1px solid var(--ty-border, rgba(0, 0, 0, 0.1));
-  border-radius: 8px;
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-
-  /* Prevent content from being too wide */
+  /* Prevent content from being too wide - still helpful */
   max-width: min(400px, 90vw);
   max-height: min(500px, 80vh);
   overflow: auto;
-}
-
-/* Dark mode adjustments */
-@media (prefers-color-scheme: dark) {
-  #popup-content ::slotted(*) {
-    background: var(--ty-surface-floating, #1a1a1a);
-    border-color: var(--ty-border, rgba(255, 255, 255, 0.1));
-    box-shadow:
-      0 10px 15px -3px rgba(0, 0, 0, 0.3),
-      0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  }
 }

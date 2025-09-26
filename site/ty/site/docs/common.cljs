@@ -107,7 +107,8 @@
    [:p.text-lg.ty-text-.mb-8 guide-description]
    [:div.ty-elevated.rounded-lg.p-6.text-center
     [:div.mb-6
-     [:ty-icon.mx-auto.mb-4 {:name "clock" :class "w-12 h-12 ty-text-"}]
+     [:ty-icon.mx-auto.mb-4 {:name "clock"
+                             :class "w-12 h-12 ty-text-"}]
      [:h2.text-xl.font-semibold.ty-text.mb-2 "Coming Soon"]
      [:p.ty-text-.mb-6 "This guide is currently under development. We're working hard to bring you comprehensive documentation for integrating Ty components with this technology."]]
 

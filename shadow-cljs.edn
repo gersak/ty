@@ -1,5 +1,4 @@
-{:dev-http {8000 "dev"
-            8001 "site/public"}
+{:dev-http {8000 "site/public"}
  :nrepl {:port 7888}
  :deps true
  :builds {:site {:target :browser

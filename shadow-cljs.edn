@@ -8,8 +8,8 @@
           :github {:target :browser
                    :asset-path "/ty/js"
                    :output-dir "docs/js"
-                   :closure-defines {'ty.site.core/ROUTER_BASE "/ty"
-                                     'ty.site.core/PRODUCTION true}
+                   :closure-defines {ty.site.core/ROUTER_BASE "ty"
+                                     ty.site.core/PRODUCTION true}
                    :compiler-options {:optimizations :advanced
                                       :source-map false
                                       :pretty-print false}}

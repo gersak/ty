@@ -39,7 +39,7 @@ npx shadow-cljs release bundle
 echo "📋 Copying files..."
 cp dist/*.js dist-cdn/
 cp dist/*.d.ts dist-cdn/ 2>/dev/null || true
-cp dev/css/ty.css dist-cdn/css/ 2>/dev/null || echo "⚠️ ty.css not found"
+cp resources/ty.css dist-cdn/css/ 2>/dev/null || echo "⚠️ ty.css not found"
 cp package-cdn.json dist-cdn/package.json
 cp README-CDN.md dist-cdn/README.md
 

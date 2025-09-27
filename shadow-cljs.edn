@@ -2,10 +2,7 @@
             8001 "site/public"}
  :nrepl {:port 7888}
  :deps true
- :builds {:dev {:target :browser
-                :output-dir "dev/js"
-                :modules {:demo {:init-fn ty.demo.core/init}}}
-          :site {:target :browser
+ :builds {:site {:target :browser
                  :output-dir "site/public/js"
                  :modules {:site {:init-fn ty.site.core/init}}}
           :react {:target :browser
@@ -18,7 +15,7 @@
                   :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"
-                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.10"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.11"
                    :compiler-options {:optimizations :advanced
                                       :externs ["externs.js"]
                                       :language-in :ecmascript-2017
@@ -28,7 +25,7 @@
                                   :init-fn ty.core/init}}}
           :lib {:target :browser
                 :output-dir "dist/"
-                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.10"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.11"
                 :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017

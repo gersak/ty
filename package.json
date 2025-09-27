@@ -61,18 +61,9 @@
     "tailwindcss": "4.1"
   },
   "scripts": {
-    "dev": "shadow-cljs -A:dev watch dev site",
-    "dev:css:watch": "npx @tailwindcss/cli -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --watch",
-    "site": "shadow-cljs -A:dev watch site",
-    "site:css:watch": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./site/public/css/site.css --watch",
-    "build": "shadow-cljs release dev",
+    "dev": "shadow-cljs -A:dev watch site",
+    "dev:css": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./dev/css/app.css --watch",
     "release": "shadow-cljs release lib",
-    "build:cdn": "npm run release && npm run build:css:dist && npm run sync:cdn",
-    "build:css:dist": "mkdir -p dist/css && cp dev/css/ty.css dist/css/ && find lib -name '*.css' -exec cp {} dist/css/ \\;",
-    "sync:cdn": "npm run sync:cdn:files && npm run sync:cdn:package",
-    "sync:cdn:files": "cp dist/*.js dist-cdn/ && cp dist/*.d.ts dist-cdn/ 2>/dev/null || true && cp -r dist/css dist-cdn/ 2>/dev/null || true",
-    "sync:cdn:package": "cp package-cdn.json dist-cdn/package.json && cp README.md dist-cdn/ && cp LICENSE dist-cdn/",
-    "dev:css:build": "npx @tailwindcss/cli -i ./demo/ty/demo/tailwind.css -o ./dev/css/app.css --minify",
     "prepublishOnly": "npm run build:cdn"
   }
 }

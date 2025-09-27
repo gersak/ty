@@ -73,26 +73,28 @@
    [:div.ty-bg-neutral-.rounded-md.p-4.overflow-x-auto.my-4
     [:pre
      [:code.text-xs
-      {:class (str "language-" lang)
+      {;:class (str "language-" lang)
        :replicant/on-mount (fn [{^js el :replicant/node}]
                              (when (and el
                                         js/window.hljs
                                         (.-highlightElement js/window.hljs))
                                    ;; Always restore original text and clear highlight state
-                               (when (.-dataset el)
+                               (when (and (.-dataset el)
+                                          (not= lang "html"))
                                  (js-delete (.-dataset el) "highlighted")
-                                 (set! (.-innerHTML el) ""))
+                                 (set! (.-innerHTML el) "")
+                                 (set! (.-innerHTML el) code))
                                (js/setTimeout
                                  (fn []
                                    (try
-                                     (set! (.-innerHTML el) code)
-                                     ;; Highlight the clean element
+                                      ;; Highlight the clean element
                                      (js/window.hljs.highlightElement el)
-                                     ;; Add copy button and language label
+                                      ;; Add copy button and language label
                                      (add-code-enhancements! el lang)
                                      (catch js/Error e
                                        (js/console.warn "Failed to highlight code block:" e))))
-                                 100)))}]]]))
+                                 100)))}
+      (when (= lang "html") code)]]]))
 
 (defn attribute-table
   "Display component attributes in a table format"

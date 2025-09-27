@@ -14,16 +14,41 @@ export interface TyDropdownEventDetail {
 
 // Type definitions for Ty Dropdown component
 export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
+  /** Semantic styling variant */
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  
+  /** Dropdown size */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  
+  /** Selected value */
   value?: string;
+  
+  /** Placeholder text */
   placeholder?: string;
+  
+  /** Dropdown label */
   label?: string;
+  
+  /** Disable the dropdown */
   disabled?: boolean;
+  
+  /** Make dropdown readonly */
   readonly?: boolean;
+  
+  /** Required field */
   required?: boolean;
+  
+  /** Enable search functionality */
   searchable?: boolean;
+  
+  /** Disable search functionality (ClojureScript: not-searchable) */
+  'not-searchable'?: boolean;
+  
+  /** @deprecated Use 'not-searchable' instead. External search handling */
   externalSearch?: boolean;
+  
+  /** Form field name for form submission */
+  name?: string;
   
   // Data-driven approach
   options?: OptionData[];
@@ -38,7 +63,17 @@ export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>,
 
 // React wrapper for ty-dropdown web component
 export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
-  ({ options, children, onChange, onSearch, disabled, ...props }, ref) => {
+  ({ 
+    options, 
+    children, 
+    onChange, 
+    onSearch, 
+    disabled, 
+    'not-searchable': notSearchable,
+    externalSearch,
+    name,
+    ...props 
+  }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleChange = useCallback((event: CustomEvent<TyDropdownEventDetail>) => {
@@ -108,13 +143,29 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
       return children;
     };
 
+    // Convert React props to web component attributes
+    const webComponentProps: Record<string, any> = {
+      ...props,
+      ref: elementRef,
+    };
+
+    // Add conditional attributes
+    if (disabled) webComponentProps.disabled = '';
+    
+    // Handle search functionality (prefer not-searchable over deprecated externalSearch)
+    if (notSearchable) {
+      webComponentProps['not-searchable'] = '';
+    } else if (externalSearch) {
+      // Support deprecated externalSearch for backward compatibility
+      webComponentProps['not-searchable'] = '';
+    }
+    
+    // Add string attributes
+    if (name) webComponentProps.name = name;
+
     return React.createElement(
       'ty-dropdown',
-      {
-        ...props,
-        ...(disabled && { disabled: "" }),
-        ref: elementRef,
-      },
+      webComponentProps,
       renderContent()
     );
   }

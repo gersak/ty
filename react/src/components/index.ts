@@ -48,7 +48,7 @@ export { TyDatePicker } from './TyDatePicker';
 export type { TyDatePickerProps, TyDatePickerEventDetail } from './TyDatePicker';
 
 export { TyPopup } from './TyPopup';
-export type { TyPopupProps } from './TyPopup';
+export type { TyPopupProps, TyPopupElement, TyPopupOpenEvent, TyPopupCloseEvent } from './TyPopup';
 
 // ===================================================================
 // SHORT NAME EXPORTS (Clean Style - Developer Choice)
@@ -109,7 +109,7 @@ export type { TyCalendarProps as CalendarProps, TyCalendarChangeEventDetail as C
 export type { TyDatePickerProps as DatePickerProps, TyDatePickerEventDetail as DatePickerEventDetail } from './TyDatePicker';
 
 // Popup types
-export type { TyPopupProps as PopupProps } from './TyPopup';
+export type { TyPopupProps as PopupProps, TyPopupElement as PopupElement, TyPopupOpenEvent as PopupOpenEvent, TyPopupCloseEvent as PopupCloseEvent } from './TyPopup';
 
 // ===================================================================
 // USAGE EXAMPLES

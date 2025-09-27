@@ -10,15 +10,38 @@ export interface TyInputEventDetail {
 
 // Type definitions for Ty Input component
 export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput' | 'onFocus' | 'onBlur'> {
+  /** Input type */
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
+  
+  /** Semantic styling variant */
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
+  
+  /** Input size */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  
+  /** Input value */
   value?: string;
+  
+  /** Placeholder text */
   placeholder?: string;
+  
+  /** Input label */
   label?: string;
+  
+  /** Error message */
   error?: string;
+  
+  /** Disable the input */
   disabled?: boolean;
+  
+  /** Required field */
   required?: boolean;
+  
+  /** Form field name for form submission */
+  name?: string;
+  
+  /** Checked state for checkbox inputs */
+  checked?: boolean;
   
   // Numeric formatting props
   currency?: string;
@@ -34,7 +57,7 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
 
 // React wrapper for ty-input web component
 export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
-  ({ onInput, onChange, onFocus, onBlur, disabled, ...props }, ref) => {
+  ({ onInput, onChange, onFocus, onBlur, disabled, name, checked, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleInput = useCallback((event: CustomEvent<TyInputEventDetail>) => {
@@ -110,13 +133,22 @@ export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
       }
     }, [ref]);
 
+    // Convert React props to web component attributes
+    const webComponentProps: Record<string, any> = {
+      ...props,
+      ref: elementRef,
+    };
+
+    // Add conditional attributes
+    if (disabled) webComponentProps.disabled = '';
+    if (checked) webComponentProps.checked = '';
+    
+    // Add string attributes
+    if (name) webComponentProps.name = name;
+
     return React.createElement(
       'ty-input',
-      {
-        ...props,
-        ...(disabled && { disabled: "" }),
-        ref: elementRef,
-      }
+      webComponentProps
     );
   }
 );

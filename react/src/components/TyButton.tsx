@@ -2,16 +2,67 @@ import React, { useEffect, useRef, useCallback } from 'react';
 
 // Type definitions for Ty Button component
 export interface TyButtonProps extends React.HTMLAttributes<HTMLElement> {
+  /** Semantic styling variant */
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  
+  /** Button size */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  
+  /** Button type for form submission */
   type?: 'button' | 'submit' | 'reset';
+  
+  /** Disable the button */
   disabled?: boolean;
+  
+  /** Filled button style (solid background) */
+  filled?: boolean;
+  
+  /** Outlined button style (border only) */
+  outlined?: boolean;
+  
+  /** Accent styling emphasis */
+  accent?: boolean;
+  
+  /** Pill-shaped button (rounded ends) */
+  pill?: boolean;
+  
+  /** Action button style (prominent call-to-action) */
+  action?: boolean;
+  
+  /** Plain button style (minimal styling) */
+  plain?: boolean;
+  
+  /** Accessible label for screen readers */
+  label?: string;
+  
+  /** Form field name for form submission */
+  name?: string;
+  
+  /** Form field value for form submission */
+  value?: string;
+  
+  /** Button content */
   children?: React.ReactNode;
 }
 
 // React wrapper for ty-button web component
 export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
-  ({ children, onClick, type, disabled,  ...props }, ref) => {
+  ({ 
+    children, 
+    onClick, 
+    type, 
+    disabled,
+    filled,
+    outlined,
+    accent,
+    pill,
+    action,
+    plain,
+    label,
+    name,
+    value,
+    ...props 
+  }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     // Handle form submission for submit-type buttons
@@ -26,7 +77,6 @@ export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
       // Prevent the web component's native form submission
       event.preventDefault();
       event.stopPropagation();
-
 
       // Create a synthetic submit event that React can handle
       const syntheticEvent = new Event('submit', {
@@ -44,7 +94,6 @@ export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
       if (!element) return;
 
       const handleClick = (event: Event) => {
-
         // For submit buttons, handle form submission
         if (type === 'submit') {
           handleFormSubmission(event);
@@ -74,14 +123,30 @@ export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
       }
     }, [ref]);
 
+    // Convert React props to web component attributes
+    const webComponentProps: Record<string, any> = {
+      ...props,
+      ref: elementRef,
+    };
+
+    // Add conditional attributes
+    if (disabled) webComponentProps.disabled = '';
+    if (filled) webComponentProps.filled = '';
+    if (outlined) webComponentProps.outlined = '';
+    if (accent) webComponentProps.accent = '';
+    if (pill) webComponentProps.pill = '';
+    if (action) webComponentProps.action = '';
+    if (plain) webComponentProps.plain = '';
+    
+    // Add string attributes
+    if (type) webComponentProps.type = type;
+    if (label) webComponentProps.label = label;
+    if (name) webComponentProps.name = name;
+    if (value) webComponentProps.value = value;
+
     return React.createElement(
       'ty-button',
-      {
-        ...props,
-        ...(disabled && { disabled: "" }),
-        type, // Make sure type is passed to web component
-        ref: elementRef,
-      },
+      webComponentProps,
       children
     );
   }

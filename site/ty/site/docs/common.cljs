@@ -75,25 +75,24 @@
      [:code.text-xs
       {:class (str "language-" lang)
        :replicant/on-mount (fn [{^js el :replicant/node}]
-                             (js/setTimeout
-                               (fn []
-                                 (when (and el
-                                            js/window.hljs
-                                            (.-highlightElement js/window.hljs))
+                             (when (and el
+                                        js/window.hljs
+                                        (.-highlightElement js/window.hljs))
+                                   ;; Always restore original text and clear highlight state
+                               (when (.-dataset el)
+                                 (js-delete (.-dataset el) "highlighted")
+                                 (set! (.-innerHTML el) ""))
+                               (js/setTimeout
+                                 (fn []
                                    (try
-                                     ;; Always restore original text and clear highlight state
-                                     (when (.-dataset el)
-                                       (js-delete (.-dataset el) "highlighted"))
-
+                                     (set! (.-innerHTML el) code)
                                      ;; Highlight the clean element
                                      (js/window.hljs.highlightElement el)
-
                                      ;; Add copy button and language label
                                      (add-code-enhancements! el lang)
                                      (catch js/Error e
-                                       (js/console.warn "Failed to highlight code block:" e)))))
-                               100))}
-      code]]]))
+                                       (js/console.warn "Failed to highlight code block:" e))))
+                                 100)))}]]]))
 
 (defn attribute-table
   "Display component attributes in a table format"

@@ -15,31 +15,36 @@
             [ty.site.views.ty-styles :as ty-styles]
             [ty.site.views.user-profile :as user-profile]))
 
+;; Configuration for GitHub Pages deployment
+;; These are replaced at build time via closure-defines
+(goog-define ROUTER_BASE "")
+(goog-define PRODUCTION false)
+
 ;; Define site routes
 (router/link ::router/root
              (concat
-               [{:id ::landing
-                 :segment ""
-                 :name "Welcome"}
-                {:id ::user-profile
-                 :segment "user-profile"
-                 :name "User Profile"}
-                {:id ::event-booking
-                 :segment "event-booking"
-                 :name "Event Booking"}
-                {:id ::contact-form
-                 :segment "contact-form"
-                 :name "Contact Form"}
-                {:id ::ty-styles
-                 :segment "ty-styles"
-                 :name "Ty Styles"}
-                {:id ::getting-started
-                 :segment "getting-started"
-                 :name "Getting Started"}
-                {:id :ty.site/docs
-                 :segment "docs"
-                 :view getting-started/view
-                 :name "Documentation"}]))
+              [{:id ::landing
+                :segment ""
+                :name "Welcome"}
+               {:id ::user-profile
+                :segment "user-profile"
+                :name "User Profile"}
+               {:id ::event-booking
+                :segment "event-booking"
+                :name "Event Booking"}
+               {:id ::contact-form
+                :segment "contact-form"
+                :name "Contact Form"}
+               {:id ::ty-styles
+                :segment "ty-styles"
+                :name "Ty Styles"}
+               {:id ::getting-started
+                :segment "getting-started"
+                :name "Getting Started"}
+               {:id :ty.site/docs
+                :segment "docs"
+                :view getting-started/view
+                :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -92,32 +97,32 @@
   [:div.space-y-6
    ;; Main Navigation
    (nav-section
-     {:items [{:route-id ::landing
-               :label "Welcome"
-               :icon "home"}]})
+    {:items [{:route-id ::landing
+              :label "Welcome"
+              :icon "home"}]})
 
    ;; Examples Section
    (nav-section
-     {:title "Live Examples"
-      :items [{:route-id ::user-profile
-               :label "User Profile"
-               :icon "user"}
-              {:route-id ::event-booking
-               :label "Event Booking"
-               :icon "calendar"}
-              {:route-id ::contact-form
-               :label "Contact Form"
-               :icon "mail"}]})
+    {:title "Live Examples"
+     :items [{:route-id ::user-profile
+              :label "User Profile"
+              :icon "user"}
+             {:route-id ::event-booking
+              :label "Event Booking"
+              :icon "calendar"}
+             {:route-id ::contact-form
+              :label "Contact Form"
+              :icon "mail"}]})
 
 ;; Getting Started Section
    (nav-section
-     {:title "Getting Started"
-      :items [{:route-id ::getting-started
-               :label "Setup Guide"
-               :icon "rocket"}
-              {:route-id ::ty-styles
-               :label "Style System"
-               :icon "palette"}]})])
+    {:title "Getting Started"
+     :items [{:route-id ::getting-started
+              :label "Setup Guide"
+              :icon "rocket"}
+             {:route-id ::ty-styles
+              :label "Style System"
+              :icon "palette"}]})])
 
 (defn sidebar []
   (if (docs/in-docs?)
@@ -255,10 +260,10 @@
       (.add (.-classList js/document.documentElement) "dark")
       (.remove (.-classList js/document.documentElement) "dark")))
 
-  ;; Initialize router
-  (router/init!)
+  ;; Initialize router with base path for GitHub Pages
+  (router/init! (when-not (str/blank? ROUTER_BASE) ROUTER_BASE))
 
-;; Watch router changes and re-render
+  ;; Watch router changes and re-render
   (add-watch router/*router* ::render
              (fn [_ _ _ _]
                (render-app!)

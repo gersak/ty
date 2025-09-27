@@ -17,3 +17,6 @@ dist/
 dist-cdn/
 
 target/
+.cpcache/
+.clojure-mcp/
+.git.new/

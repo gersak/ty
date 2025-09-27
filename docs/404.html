@@ -7,10 +7,10 @@
     <title>Ty - Modern Web Components Library</title>
 
     <!-- Ty CSS -->
-    <link rel="stylesheet" href="/ty/css/ty.lezm3.css">
+    <link rel="stylesheet" href="/ty/css/ty.B7NOE.css">
 
     <!-- Site-specific CSS -->
-    <link rel="stylesheet" href="/ty/css/site.lezm3.css">
+    <link rel="stylesheet" href="/ty/css/site.B7NOE.css">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -28,6 +28,23 @@
 
     <!-- Custom Highlight.js integration with Ty theme system -->
     <style>
+        /* Prevent horizontal scroll on mobile */
+        html,
+        body {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100vw;
+        }
+
+        /* Fix for code blocks that might overflow */
+        pre,
+        code {
+            overflow-x: auto;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        /* Custom Highlight.js integration with Ty theme system */
         .hljs {
             background: var(--ty-surface-elevated) !important;
             color: var(--ty-text) !important;
@@ -44,43 +61,38 @@
         .hljs-selector-tag,
         .hljs-built_in,
         .hljs-name {
-            color: var(--ty-text-strong) !important;
+            color: var(--ty-color-primary) !important;
         }
 
         .hljs-string,
         .hljs-attr {
-            color: var(--ty-color-danger) !important;
+            color: var(--ty-color-success) !important;
         }
 
         .hljs-number,
         .hljs-literal {
-            color: var(--ty-color-success) !important;
+            color: var(--ty-color-info) !important;
         }
 
         .hljs-comment {
-            color: var(--ty-text-soft) !important;
+            color: var(--ty-text--) !important;
             font-style: italic;
         }
 
         .hljs-function,
-        .hljs-symbol {
-            color: var(--ty-color-secondary) !important;
-        }
-
-
         .hljs-title {
-            color: var(--ty-color-primary);
+            color: var(--ty-color-secondary) !important;
             font-weight: 600;
         }
 
         .hljs-variable,
         .hljs-template-variable {
-            color: var(--ty-color-primary) !important;
+            color: var(--ty-color-warning) !important;
         }
 
         .hljs-type,
         .hljs-class {
-            color: var(--ty-text) !important;
+            color: var(--ty-color-info) !important;
         }
 
         /* Inline code styling */
@@ -97,6 +109,32 @@
         pre.hljs {
             white-space: pre;
             word-break: normal;
+        }
+
+        /* Mobile typography adjustments */
+        @media (max-width: 768px) {
+
+            /* Smaller base font size on mobile */
+            html {
+                font-size: 14px;
+            }
+
+            /* Adjust hero text for mobile */
+            .hero-title {
+                font-size: 2rem !important;
+                line-height: 1.2 !important;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem !important;
+                line-height: 1.4 !important;
+            }
+
+            /* Smaller padding for mobile */
+            .scenario-section {
+                margin-bottom: 2rem !important;
+                padding: 1rem !important;
+            }
         }
     </style>
 
@@ -139,7 +177,7 @@
     </div>
 
     <!-- Main application bundle -->
-    <script src="/ty/js/site.lezm3.js"></script>
+    <script src="/ty/js/site.B7NOE.js"></script>
 
 </body>
 

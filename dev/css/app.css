@@ -648,6 +648,9 @@
   .max-h-\[300px\] {
     max-height: 300px;
   }
+  .max-h-screen {
+    max-height: 100vh;
+  }
   .min-h-0 {
     min-height: calc(var(--spacing) * 0);
   }

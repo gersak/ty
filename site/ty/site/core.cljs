@@ -142,16 +142,10 @@
    ;; Quickstart (route navigation)
    (nav-section
      {:title "Quickstart"
-      :items (concat
-             ;; Getting Started from site-routes
-               [{:route-id ::getting-started
-                 :label "Getting Started"
-                 :icon "rocket"}]
-             ;; Guide routes from docs/guide-components
-               (for [route guide-routes]
-                 {:route-id (:id route)
-                  :label (:name route)
-                  :icon (:icon route)}))})
+      :items (for [route guide-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)})})
 
    ;; Components Section (route navigation to component docs)
    (nav-section
@@ -172,29 +166,31 @@
       (docs/render))))
 
 (defn sidebar []
-  [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
-   [:div.p-4.lg:p-6
+  [:aside.w-64.ty-elevated.border-r.ty-border+.h-full.flex.flex-col
+   [:div.p-4.lg:p-6.flex-shrink-0
     [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"]
     [:p.text-xs.lg:text-sm.ty-text- "Professional Web Components"]]
-   [:nav.px-2.lg:px-4.pb-4.lg:pb-6
+   [:nav.px-2.lg:px-4.pb-4.lg:pb-6.flex-1.overflow-y-auto
     (nav-items)]])
 
 (defn mobile-menu []
   [:div.lg:hidden
    [:ty-modal {:open (:mobile-menu-open @state)
                :on {:ty-modal-close toggle-mobile-menu!}}
-    [:div.p-6.mx-auto.space-y-6.rounded-lg.ty-floating.box-border
-     {:style {:width "240px"}}
-     ;; Header section
-     [:div.text-center.space-y-2
+    [:div.p-6.mx-auto.rounded-lg.ty-floating.box-border.flex.flex-col
+     {:style {:width "240px"
+              :max-height "90vh"}}
+     ;; Header section (fixed)
+     [:div.text-center.space-y-2.flex-shrink-0
       [:h2.text-xl.font-bold.ty-text
        (if (docs/in-docs?) "Documentation" "Navigation")]
       [:p.text-sm.ty-text-
        (if (docs/in-docs?) "Component Reference" "Choose your destination")]]
 
-     ;; Navigation content
-     [:div.space-y-4
-      [:div (nav-items)]]]]])
+     ;; Navigation content (scrollable)
+     [:div.flex-1.overflow-y-auto.mt-6.min-h-0
+      [:div.space-y-4
+       (nav-items)]]]]])
 
 (defn header []
   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4

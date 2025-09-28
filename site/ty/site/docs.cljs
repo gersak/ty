@@ -92,7 +92,12 @@
     :name "Tooltip"}])
 
 (def guide-components
-  [{:id :ty.site.docs/css
+  [{:id :ty.site.docs/getting-started
+    :segment "getting-started"
+    :name "Getting started"
+    :icon "rocket"
+    :view #(getting-started/view)}
+   {:id :ty.site.docs/css
     :segment "css"
     :name "CSS System"
     :icon "palette"

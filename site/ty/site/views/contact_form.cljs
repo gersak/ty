@@ -151,7 +151,7 @@
       [:h2.text-2xl.font-semibold.ty-text "Message Sent Successfully!"]
       [:p.ty-text- "Your message has been delivered and we'll respond within 24 hours."]]]
 
-    [:div.ty-bg-neutral-.p-6.rounded-lg.mb-6.ty-elevated
+    [:div.ty-bg-neutral-.p-6.rounded-lg.mb-6.ty-floating
      [:h3.text-lg.font-medium.ty-text.mb-4 "Submission Report"]
 
      (when submitted-data
@@ -229,7 +229,7 @@
 
       ;; Submission Status Messages
       (when submission-status
-        [:div.ty-elevated.p-6.rounded-lg
+        [:div.ty-floating.p-6.rounded-lg
          (if (= submission-status :success)
            [:div.flex.items-center.gap-4.ty-bg-success-.p-4.rounded-lg
             [:ty-icon {:name "check-circle"
@@ -263,7 +263,7 @@
         ;; Enhanced Four-Column Layout: Contact Info | Request Details | Tips/Newsletter | Message
         [:div.grid.grid-cols-1.lg:grid-cols-4.gap-8
          ;; Left Column - Contact Information (1/4)
-         [:div.ty-elevated.p-6.rounded-lg.shadow-lg
+         [:div.ty-floating.p-6.rounded-lg
           [:div.flex.items-center.gap-3.mb-6
            [:ty-icon {:name "user"
                       :size "lg"
@@ -320,7 +320,7 @@
                (get validation-errors :company)])]]]
 
          ;; Middle Column - Request Details (1/4)
-         [:div.ty-elevated.p-6.rounded-lg.shadow-lg
+         [:div.ty-floating.p-6.rounded-lg
           [:div.flex.items-center.gap-3.mb-6
            [:ty-icon {:name "settings"
                       :size "lg"
@@ -418,7 +418,7 @@
          ;; Third Column - Tips & Newsletter (1/4)
          [:div.space-y-6
           ;; Message tips
-          [:div.ty-elevated.p-4.rounded-lg.shadow-lg
+          [:div.ty-floating.p-4.rounded-lg
            [:div.flex.items-start.gap-3
             [:ty-icon {:name "lightbulb"
                        :size "lg"
@@ -440,7 +440,7 @@
                [:span "Tell us your preferred response method"]]]]]]
 
           ;; Newsletter consent
-          [:div.ty-elevated.p-4.rounded-lg.shadow-lg
+          [:div.ty-floating.p-4.rounded-lg
            [:div.flex.items-start.gap-3
             [:ty-icon {:name "mail"
                        :size "lg"
@@ -453,7 +453,7 @@
              [:p.text-xs.ty-text-.mt-2 "You can unsubscribe at any time. See our privacy policy for details."]]]]]
 
          ;; Right Column - Message (1/4)
-         [:div.ty-elevated.p-6.rounded-lg.shadow-lg
+         [:div.ty-floating.p-6.rounded-lg
           [:div.flex.items-center.gap-3.mb-6
            [:ty-icon {:name "message-square"
                       :size "lg"
@@ -534,7 +534,7 @@
               "Send Message"])]]]]]
 
       ;; Additional Information
-      [:div.ty-bg-neutral-.p-6.rounded-lg
+      [:div.ty-floating.p-6.rounded-lg
        [:h3.text-lg.font-semibold.ty-text.mb-4 "Other Ways to Reach Us"]
        [:div.grid.grid-cols-1.md:grid-cols-3.gap-6
         [:div.flex.items-center.gap-3

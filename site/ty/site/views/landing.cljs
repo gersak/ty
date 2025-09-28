@@ -1,10 +1,10 @@
 (ns ty.site.views.landing
   (:require
-   [ty.router :as router]
-   [ty.site.views.user-profile :as user-profile]
-   [ty.site.views.event-booking :as event-booking]
-   [ty.site.views.contact-form :as contact-form]
-   [ty.site.views.ty-styles :as ty-styles]))
+    [ty.router :as router]
+    [ty.site.views.contact-form :as contact-form]
+    [ty.site.views.event-booking :as event-booking]
+    [ty.site.views.ty-styles :as ty-styles]
+    [ty.site.views.user-profile :as user-profile]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto {:id "top"}
@@ -53,42 +53,22 @@
 
    ;; 📚 LIVE EXAMPLES - Interactive demonstrations
    [:div.mb-20
-    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4
-     "Try It Live"]
-    [:p.text-lg.ty-text-.text-center.mb-12.max-w-3xl.mx-auto
-     "Don't just read about it - interact with production-ready components. Each example showcases real-world complexity."]
-
     ;; User Profile Example
     [:section.mb-16 {:id "user-profile"}
-     [:div.mb-8
-      [:h3.text-3xl.font-bold.ty-text.mb-2 "User Profile Forms"]
-      [:p.text-lg.ty-text-.mb-4
-       "Rich dropdowns, multiselect with semantic tags, form validation that actually works."]]
-
      ;; Embedded preview
-     [:div.ty-elevated.p-8.rounded-xl
+     [:div.p-8.rounded-xl
       (user-profile/view)]]
 
     ;; Event Booking Example  
     [:section.mb-16 {:id "event-booking"}
-     [:div.mb-8
-      [:h3.text-3xl.font-bold.ty-text.mb-2 "Event Booking System"]
-      [:p.text-lg.ty-text-.mb-4
-       "Calendar with custom day rendering, time slots, booking workflow orchestration."]]
-
      ;; Embedded preview
-     [:div.ty-elevated.p-8.rounded-xl
+     [:div.p-8.rounded-xl
       (event-booking/view)]]
 
     ;; Contact Form Example
     [:section.mb-16 {:id "contact-form"}
-     [:div.mb-8
-      [:h3.text-3xl.font-bold.ty-text.mb-2 "Contact Form Validation"]
-      [:p.text-lg.ty-text-.mb-4
-       "Real-time validation, semantic error states, smooth user experience."]]
-
      ;; Embedded preview
-     [:div.ty-elevated.p-8.rounded-xl
+     [:div.p-8.rounded-xl
       (contact-form/view)]]]
 
    ;; 💎 THE BOTTOM LINE

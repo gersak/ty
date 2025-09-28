@@ -3,17 +3,19 @@
  :deps true
  :builds {:site {:target :browser
                  :output-dir "site/public/js"
+                 :externs ["externs.js"]
                  :compiler-options {:optimizations :advanced
-                                    :source-map false
+                                    :source-map true
                                     :pretty-print false}
                  :modules {:site {:init-fn ty.site.core/init}}}
           :github {:target :browser
                    :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                    :output-dir "docs/js"
+                   :externs ["externs.js"]
                    :closure-defines {ty.site.core/ROUTER_BASE "ty"
                                      ty.site.core/PRODUCTION true}
                    :compiler-options {:optimizations :advanced
-                                      :source-map false
+                                      :source-map true
                                       :pretty-print false}}
           :react {:target :browser
                   :output-dir "examples/react-nextjs/public/"

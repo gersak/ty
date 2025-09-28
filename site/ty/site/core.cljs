@@ -23,28 +23,29 @@
 ;; Define site routes
 (router/link ::router/root
              (concat
-              [{:id ::landing
-                :segment ""
-                :name "Welcome"}
-               {:id ::user-profile
-                :segment "user-profile"
-                :name "User Profile"}
-               {:id ::event-booking
-                :segment "event-booking"
-                :name "Event Booking"}
-               {:id ::contact-form
-                :segment "contact-form"
-                :name "Contact Form"}
-               {:id ::ty-styles
-                :segment "ty-styles"
-                :name "Ty Styles"}
-               {:id ::getting-started
-                :segment "getting-started"
-                :name "Getting Started"}
-               {:id :ty.site/docs
-                :segment "docs"
-                :view getting-started/view
-                :name "Documentation"}]))
+               [{:id ::landing
+                 :segment ""
+                 :name "Welcome"
+                 :landing 10}
+                {:id ::user-profile
+                 :segment "user-profile"
+                 :name "User Profile"}
+                {:id ::event-booking
+                 :segment "event-booking"
+                 :name "Event Booking"}
+                {:id ::contact-form
+                 :segment "contact-form"
+                 :name "Contact Form"}
+                {:id ::ty-styles
+                 :segment "ty-styles"
+                 :name "Ty Styles"}
+                {:id ::getting-started
+                 :segment "getting-started"
+                 :name "Getting Started"}
+                {:id :ty.site/docs
+                 :segment "docs"
+                 :view getting-started/view
+                 :name "Documentation"}]))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -97,32 +98,32 @@
   [:div.space-y-6
    ;; Main Navigation
    (nav-section
-    {:items [{:route-id ::landing
-              :label "Welcome"
-              :icon "home"}]})
+     {:items [{:route-id ::landing
+               :label "Welcome"
+               :icon "home"}]})
 
    ;; Examples Section
    (nav-section
-    {:title "Live Examples"
-     :items [{:route-id ::user-profile
-              :label "User Profile"
-              :icon "user"}
-             {:route-id ::event-booking
-              :label "Event Booking"
-              :icon "calendar"}
-             {:route-id ::contact-form
-              :label "Contact Form"
-              :icon "mail"}]})
+     {:title "Live Examples"
+      :items [{:route-id ::user-profile
+               :label "User Profile"
+               :icon "user"}
+              {:route-id ::event-booking
+               :label "Event Booking"
+               :icon "calendar"}
+              {:route-id ::contact-form
+               :label "Contact Form"
+               :icon "mail"}]})
 
 ;; Getting Started Section
    (nav-section
-    {:title "Getting Started"
-     :items [{:route-id ::getting-started
-              :label "Setup Guide"
-              :icon "rocket"}
-             {:route-id ::ty-styles
-              :label "Style System"
-              :icon "palette"}]})])
+     {:title "Getting Started"
+      :items [{:route-id ::getting-started
+               :label "Setup Guide"
+               :icon "rocket"}
+              {:route-id ::ty-styles
+               :label "Style System"
+               :icon "palette"}]})])
 
 (defn sidebar []
   (if (docs/in-docs?)
@@ -139,27 +140,27 @@
       (nav-items)]]))
 
 (defn mobile-menu []
-  (when (:mobile-menu-open @state)
-    [:div.fixed.inset-0.z-50.lg:hidden
-     ;; Backdrop
-     [:div.fixed.inset-0.bg-black.bg-opacity-50
-      {:on {:click toggle-mobile-menu!}}]
-     ;; Menu
-     [:div.fixed.inset-y-0.left-0.w-72.max-w-xs.ty-elevated.shadow-xl.overflow-y-auto
-      [:div.p-4
-       [:div.flex.items-center.justify-between.mb-4
-        [:h1.text-lg.font-bold.ty-text
-         (if (docs/in-docs?) "Documentation" "Ty Components")]
-        [:button.p-2.rounded-md.hover:ty-content
-         {:on {:click toggle-mobile-menu!}}
-         [:ty-icon {:name "x"
-                    :size "sm"}]]]
-       [:p.text-sm.ty-text-.mb-6
-        (if (docs/in-docs?) "Component Reference" "Professional Web Components")]]
-      [:nav.px-4.pb-6
-       (if (docs/in-docs?)
-         (docs/docs-sidebar)
-         (nav-items))]]]))
+  [:div.lg:hidden
+   [:ty-modal {:open (:mobile-menu-open @state)
+               :on {:ty-modal-close toggle-mobile-menu!}}
+    [:div.p-6.mx-auto.space-y-6.rounded-lg.ty-floating.box-border
+     {:style {:width "240px"}}
+     ;; Header section
+     [:div.text-center.space-y-2
+      [:h2.text-xl.font-bold.ty-text
+       (if (docs/in-docs?) "Documentation" "Navigation")]
+      [:p.text-sm.ty-text-
+       (if (docs/in-docs?) "Component Reference" "Choose your destination")]]
+
+     ;; Navigation content
+     [:div.space-y-4
+      (if (docs/in-docs?)
+        ;; Docs navigation
+        [:div.max-h-96.overflow-y-auto
+         (docs/docs-sidebar)]
+        ;; Main navigation  
+        [:div
+         (nav-items)])]]]])
 
 (defn header []
   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4

@@ -46,15 +46,6 @@ export interface TyDatePickerProps extends Omit<React.HTMLAttributes<HTMLElement
   /** Locale for date formatting (e.g., "en-US", "de-DE") */
   locale?: string;
   
-  /** Minimum selectable date (ISO string) */
-  minDate?: string;
-  
-  /** Maximum selectable date (ISO string) */
-  maxDate?: string;
-  
-  /** First day of the week (0 = Sunday, 1 = Monday, etc.) */
-  firstDayOfWeek?: number;
-  
   /** Whether to include time selection */
   withTime?: boolean;
   
@@ -82,9 +73,6 @@ export const TyDatePicker = React.forwardRef<HTMLElement, TyDatePickerProps>(
     clearable,
     format,
     locale,
-    minDate,
-    maxDate,
-    firstDayOfWeek,
     withTime,
     onChange,
     onOpen,
@@ -103,6 +91,15 @@ export const TyDatePicker = React.forwardRef<HTMLElement, TyDatePickerProps>(
         }
       }
     }, [ref]);
+
+    // Sync value property with the web component
+    useEffect(() => {
+      const element = elementRef.current;
+      if (element && value !== undefined) {
+        // Set the value property directly on the element
+        (element as any).value = value || '';
+      }
+    }, [value]);
 
     // Handle change events
     const handleChange = useCallback((event: Event) => {
@@ -208,20 +205,8 @@ export const TyDatePicker = React.forwardRef<HTMLElement, TyDatePickerProps>(
       webComponentProps.locale = locale;
     }
 
-    if (minDate) {
-      webComponentProps['min-date'] = minDate;
-    }
-
-    if (maxDate) {
-      webComponentProps['max-date'] = maxDate;
-    }
-
-    if (firstDayOfWeek !== undefined) {
-      webComponentProps['first-day-of-week'] = firstDayOfWeek.toString();
-    }
-
     if (withTime) {
-      webComponentProps['with-time'] = '';  // Boolean attributes as empty string
+      webComponentProps['with-time'] = '';  // Convert camelCase to kebab-case
     }
 
     return React.createElement('ty-date-picker', webComponentProps);

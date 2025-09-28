@@ -9,10 +9,9 @@
 /* This is part of the modal wrapper functionality, not user content styling */
 
 .close-button {
-  color: var(--ty-modal-color);
   position: absolute;
-  top: 5px;
-  right: 2px;
+  top: -8px;
+  right: -8px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -20,14 +19,44 @@
   border-radius: 4px;
   transition: var(--ty-transition-colors);
   z-index: 1;
-}
+  color: #d8d8d8;
 
-.dark .close-button {
-  color: white;
+  /* Remove all default browser styling that could cause outlines/borders */
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* Remove mobile tap highlights and focus rings */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .close-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  color: white;
+}
+
+/* Explicitly remove focus and active states for all interaction modes */
+.close-button:focus,
+.close-button:focus-visible,
+.close-button:focus-within,
+.close-button:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Override hover color even in focus/active states */
+.close-button:hover,
+.close-button:focus:hover,
+.close-button:active:hover {
+  color: white;
 }
 
 .close-button.hide {
@@ -39,8 +68,8 @@
 
 .ty-modal-dialog {
   /* Reset default dialog styles */
+  padding: 18px;
   border: none;
-  padding: 0;
   margin: 0;
   background: transparent;
 
@@ -52,12 +81,12 @@
 
   /* Layer management */
   z-index: 1000;
+  overflow: hidden;
 
   /* No sizing - let user content determine size */
   max-width: 80vw;
   max-height: 90vh;
 
-  /* Remove any default focus styling */
   outline: none;
 }
 
@@ -81,7 +110,6 @@
 
 .modal-content {
   color: var(--ty-text);
-  padding: 30px;
 }
 
 /* ===== ANIMATION KEYFRAMES ===== */
@@ -94,11 +122,4 @@
   to {
     opacity: 1;
   }
-}
-
-/* ===== FOCUS MANAGEMENT ===== */
-
-.ty-modal-dialog:focus-visible {
-  outline: 2px solid var(--ty-color-primary, #3b82f6);
-  outline-offset: 2px;
 }

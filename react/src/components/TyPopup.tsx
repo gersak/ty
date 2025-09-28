@@ -12,7 +12,7 @@ export interface TyPopupProps extends React.HTMLAttributes<HTMLElement> {
   manual?: boolean;
   
   /** Disable automatic close on outside click and ESC key */
-  'disable-close'?: boolean;
+  disableClose?: boolean;
   
   /** Popup content - popup should be a child of the anchor element */
   children?: React.ReactNode;
@@ -40,7 +40,7 @@ export const TyPopup = React.forwardRef<TyPopupElement, TyPopupProps>(
     placement, 
     offset, 
     manual, 
-    'disable-close': disableClose,
+    disableClose,
     children, 
     ...props 
   }, ref) => {

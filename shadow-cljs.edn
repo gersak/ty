@@ -1,17 +1,21 @@
-{:dev-http {8000 "dev"
-            8001 "site/public"}
+{:dev-http {8000 "site/public"}
  :nrepl {:port 7888}
  :deps true
  :builds {:site {:target :browser
                  :output-dir "site/public/js"
+                 :externs ["externs.js"]
+                 :compiler-options {:optimizations :advanced
+                                    :source-map true
+                                    :pretty-print false}
                  :modules {:site {:init-fn ty.site.core/init}}}
           :github {:target :browser
-                   :asset-path "/ty/js"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                    :output-dir "docs/js"
-                   :closure-defines {'ty.site.core/ROUTER_BASE "/ty"
-                                     'ty.site.core/PRODUCTION true}
+                   :externs ["externs.js"]
+                   :closure-defines {ty.site.core/ROUTER_BASE "ty"
+                                     ty.site.core/PRODUCTION true}
                    :compiler-options {:optimizations :advanced
-                                      :source-map false
+                                      :source-map true
                                       :pretty-print false}}
           :react {:target :browser
                   :output-dir "examples/react-nextjs/public/"
@@ -23,7 +27,7 @@
                   :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"
-                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.11"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                    :compiler-options {:optimizations :advanced
                                       :externs ["externs.js"]
                                       :language-in :ecmascript-2017
@@ -33,7 +37,7 @@
                                   :init-fn ty.core/init}}}
           :lib {:target :browser
                 :output-dir "dist/"
-                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.11"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                 :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017

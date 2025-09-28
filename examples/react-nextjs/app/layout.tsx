@@ -26,8 +26,8 @@ export default function RootLayout({
       <head>
         {/* Load Ty components and CSS - use local version for consistency */}
         <link rel="stylesheet" href="/ty.css" />
-        <script src="/ty.js"></script>
-        <script src="/icons.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/ty-lazy.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/css/ty.css" />
       </head>
       <body>
         <ThemeProvider>

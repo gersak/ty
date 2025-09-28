@@ -54,7 +54,6 @@
   max-width: 80vw;
   max-height: 90vh;
 
-  /* Remove any default focus styling */
   outline: none;
 }
 
@@ -90,11 +89,4 @@
   to {
     opacity: 1;
   }
-}
-
-/* ===== FOCUS MANAGEMENT ===== */
-
-.ty-modal-dialog:focus-visible {
-  outline: 2px solid var(--ty-color-primary, #3b82f6);
-  outline-offset: 2px;
 }

@@ -42,9 +42,9 @@ export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>,
   searchable?: boolean;
   
   /** Disable search functionality (ClojureScript: not-searchable) */
-  'not-searchable'?: boolean;
+  notSearchable?: boolean;
   
-  /** @deprecated Use 'not-searchable' instead. External search handling */
+  /** @deprecated Use notSearchable instead. External search handling */
   externalSearch?: boolean;
   
   /** Form field name for form submission */
@@ -69,7 +69,7 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
     onChange, 
     onSearch, 
     disabled, 
-    'not-searchable': notSearchable,
+    notSearchable,
     externalSearch,
     name,
     ...props 

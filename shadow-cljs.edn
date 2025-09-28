@@ -5,7 +5,7 @@
                  :output-dir "site/public/js"
                  :modules {:site {:init-fn ty.site.core/init}}}
           :github {:target :browser
-                   :asset-path "/ty/js"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                    :output-dir "docs/js"
                    :closure-defines {ty.site.core/ROUTER_BASE "ty"
                                      ty.site.core/PRODUCTION true}
@@ -22,7 +22,7 @@
                   :modules {:ty {:entries [ty.components]}}}
           :bundle {:target :browser
                    :output-dir "dist/"
-                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.11"
+                   :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                    :compiler-options {:optimizations :advanced
                                       :externs ["externs.js"]
                                       :language-in :ecmascript-2017
@@ -32,7 +32,7 @@
                                   :init-fn ty.core/init}}}
           :lib {:target :browser
                 :output-dir "dist/"
-                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.11"
+                :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"
                 :module-loader true
                 :compiler-options {:optimizations :advanced
                                    :language-in :ecmascript-2017

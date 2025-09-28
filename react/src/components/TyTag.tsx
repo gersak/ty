@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useCallback } from 'react';
 export interface TyTagProps extends React.HTMLAttributes<HTMLElement> {
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-  pill?: boolean;
+  notPill?: boolean;  // Component uses not-pill attribute
   clickable?: boolean;
   dismissible?: boolean;
   disabled?: boolean;
@@ -16,7 +16,7 @@ export interface TyTagProps extends React.HTMLAttributes<HTMLElement> {
 
 // React wrapper for ty-tag web component
 export const TyTag = React.forwardRef<HTMLElement, TyTagProps>(
-  ({ children, onTagClick, onTagDismiss, pill, clickable, dismissible, disabled, ...props }, ref) => {
+  ({ children, onTagClick, onTagDismiss, notPill, clickable, dismissible, disabled, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleTagClick = useCallback((event: CustomEvent) => {
@@ -69,7 +69,7 @@ export const TyTag = React.forwardRef<HTMLElement, TyTagProps>(
       'ty-tag',
       {
         ...props,
-        ...(pill && { pill: "" }),
+        ...(notPill && { 'not-pill': "" }),  // Convert camelCase to kebab-case
         ...(clickable && { clickable: "" }),
         ...(dismissible && { dismissible: "" }),
         ...(disabled && { disabled: "" }),

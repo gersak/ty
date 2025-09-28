@@ -21,8 +21,8 @@ export interface TyTextareaProps extends Omit<React.HTMLAttributes<HTMLElement>,
   rows?: string | number;
   cols?: string | number;
   resize?: 'none' | 'both' | 'horizontal' | 'vertical';
-  'min-height'?: string; // e.g., '100px'
-  'max-height'?: string; // e.g., '500px'
+  minHeight?: string; // e.g., '100px' - converts to min-height
+  maxHeight?: string; // e.g., '500px' - converts to max-height
   
   // React event handlers - override with our custom types
   onInput?: (event: CustomEvent<TyTextareaEventDetail>) => void;
@@ -33,7 +33,7 @@ export interface TyTextareaProps extends Omit<React.HTMLAttributes<HTMLElement>,
 
 // React wrapper for ty-textarea web component
 export const TyTextarea = React.forwardRef<HTMLElement, TyTextareaProps>(
-  ({ onInput, onChange, onFocus, onBlur, disabled, required, ...props }, ref) => {
+  ({ onInput, onChange, onFocus, onBlur, disabled, required, minHeight, maxHeight, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleInput = useCallback((event: CustomEvent<TyTextareaEventDetail>) => {
@@ -115,6 +115,8 @@ export const TyTextarea = React.forwardRef<HTMLElement, TyTextareaProps>(
         ...props,
         ...(disabled && { disabled: "" }),
         ...(required && { required: "" }),
+        ...(minHeight && { 'min-height': minHeight }),  // Convert camelCase to kebab-case
+        ...(maxHeight && { 'max-height': maxHeight }),  // Convert camelCase to kebab-case
         ref: elementRef,
       }
     );

@@ -1,6 +1,6 @@
 {
   "name": "@gersak/ty-react",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "React wrappers for Ty Web Components - TypeScript-friendly React integration",
   "main": "dist/index.js",
   "module": "dist/index.js",

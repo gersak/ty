@@ -140,27 +140,27 @@
       (nav-items)]]))
 
 (defn mobile-menu []
-  (when (:mobile-menu-open @state)
-    [:div.fixed.inset-0.z-50.lg:hidden
-     ;; Backdrop
-     [:div.fixed.inset-0.bg-black.bg-opacity-50
-      {:on {:click toggle-mobile-menu!}}]
-     ;; Menu
-     [:div.fixed.inset-y-0.left-0.w-72.max-w-xs.ty-elevated.shadow-xl.overflow-y-auto
-      [:div.p-4
-       [:div.flex.items-center.justify-between.mb-4
-        [:h1.text-lg.font-bold.ty-text
-         (if (docs/in-docs?) "Documentation" "Ty Components")]
-        [:button.p-2.rounded-md.hover:ty-content
-         {:on {:click toggle-mobile-menu!}}
-         [:ty-icon {:name "x"
-                    :size "sm"}]]]
-       [:p.text-sm.ty-text-.mb-6
-        (if (docs/in-docs?) "Component Reference" "Professional Web Components")]]
-      [:nav.px-4.pb-6
-       (if (docs/in-docs?)
-         (docs/docs-sidebar)
-         (nav-items))]]]))
+  [:div.lg:hidden
+   [:ty-modal {:open (:mobile-menu-open @state)
+               :on {:ty-modal-close toggle-mobile-menu!}}
+    [:div.p-6.mx-auto.space-y-6.rounded-lg.ty-floating.box-border
+     {:style {:width "240px"}}
+     ;; Header section
+     [:div.text-center.space-y-2
+      [:h2.text-xl.font-bold.ty-text
+       (if (docs/in-docs?) "Documentation" "Navigation")]
+      [:p.text-sm.ty-text-
+       (if (docs/in-docs?) "Component Reference" "Choose your destination")]]
+
+     ;; Navigation content
+     [:div.space-y-4
+      (if (docs/in-docs?)
+        ;; Docs navigation
+        [:div.max-h-96.overflow-y-auto
+         (docs/docs-sidebar)]
+        ;; Main navigation  
+        [:div
+         (nav-items)])]]]])
 
 (defn header []
   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4

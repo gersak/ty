@@ -915,7 +915,7 @@ export default function SettingsPanelExample() {
 
       {/* Confirmation Modal */}
       <TyModal ref={confirmModalRef}>
-        <div className="p-6 text-center">
+        <div className="p-6 text-center ty-elevated rounded-xl">
           <TyIcon name="alert-triangle" size="48" className="ty-text-warning mb-4 mx-auto" />
           <h2 className="mb-3 ty-text++ text-xl font-semibold">
             Reset Settings Section?
@@ -945,7 +945,7 @@ export default function SettingsPanelExample() {
 
       {/* Success Modal */}
       <TyModal ref={successModalRef}>
-        <div className="p-6 text-center">
+        <div className="p-6 text-center ty-elevated rounded-xl">
           <TyIcon name="check-circle" size="48" className="ty-text-success mb-4 mx-auto" />
           <h2 className="mb-3 ty-text++ text-xl font-semibold">
             Settings Saved Successfully!

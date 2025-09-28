@@ -9,10 +9,9 @@
 /* This is part of the modal wrapper functionality, not user content styling */
 
 .close-button {
-  color: var(--ty-modal-color);
   position: absolute;
-  top: 5px;
-  right: 2px;
+  top: -8px;
+  right: -8px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -20,14 +19,11 @@
   border-radius: 4px;
   transition: var(--ty-transition-colors);
   z-index: 1;
-}
-
-.dark .close-button {
-  color: white;
+  color: #d8d8d8;
 }
 
 .close-button:hover {
-  background: rgba(0, 0, 0, 0.1);
+  color: white;
 }
 
 .close-button.hide {
@@ -39,8 +35,8 @@
 
 .ty-modal-dialog {
   /* Reset default dialog styles */
+  padding: 18px;
   border: none;
-  padding: 0;
   margin: 0;
   background: transparent;
 
@@ -52,6 +48,7 @@
 
   /* Layer management */
   z-index: 1000;
+  overflow: hidden;
 
   /* No sizing - let user content determine size */
   max-width: 80vw;
@@ -81,7 +78,6 @@
 
 .modal-content {
   color: var(--ty-text);
-  padding: 30px;
 }
 
 /* ===== ANIMATION KEYFRAMES ===== */

@@ -20,9 +20,43 @@
   transition: var(--ty-transition-colors);
   z-index: 1;
   color: #d8d8d8;
+
+  /* Remove all default browser styling that could cause outlines/borders */
+  outline: none;
+  box-shadow: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* Remove mobile tap highlights and focus rings */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .close-button:hover {
+  color: white;
+}
+
+/* Explicitly remove focus and active states for all interaction modes */
+.close-button:focus,
+.close-button:focus-visible,
+.close-button:focus-within,
+.close-button:active {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+  background: transparent !important;
+  color: #d8d8d8;
+}
+
+/* Override hover color even in focus/active states */
+.close-button:hover,
+.close-button:focus:hover,
+.close-button:active:hover {
   color: white;
 }
 

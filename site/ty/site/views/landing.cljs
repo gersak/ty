@@ -1,6 +1,10 @@
 (ns ty.site.views.landing
   (:require
-    [ty.router :as router]))
+   [ty.router :as router]
+   [ty.site.views.user-profile :as user-profile]
+   [ty.site.views.event-booking :as event-booking]
+   [ty.site.views.contact-form :as contact-form]
+   [ty.site.views.ty-styles :as ty-styles]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto
@@ -345,6 +349,77 @@
          "[:ty-icon {:name \"lucide-rocket\"}]"]
         [:p.text-xs.ty-text-.mt-2
          "Tree-shaken. Only bundle what you use."]]]]]]
+
+   ;; 📚 LIVE EXAMPLES - Interactive demonstrations
+   [:div.mb-20
+    [:h2.text-4xl.font-bold.ty-text.text-center.mb-4
+     "Try It Live"]
+    [:p.text-lg.ty-text-.text-center.mb-12.max-w-3xl.mx-auto
+     "Don't just read about it - interact with production-ready components. Each example showcases real-world complexity."]
+
+    ;; User Profile Example
+    [:section.mb-16 {:id "user-profile"}
+     [:div.flex.items-center.justify-between.mb-8
+      [:div
+       [:h3.text-3xl.font-bold.ty-text.mb-2 "User Profile Forms"]
+       [:p.text-lg.ty-text-.mb-4
+        "Rich dropdowns, multiselect with semantic tags, form validation that actually works."]]
+      [:a.ty-bg-primary.ty-text++.px-6.py-3.rounded-lg.font-semibold.hover:shadow-lg.transition-all
+       {:href "#user-profile-full"
+        :on {:click #(router/navigate! :ty.site.core/user-profile)}}
+       "View Full Example →"]]
+
+     ;; Embedded preview
+     [:div.ty-elevated.p-8.rounded-xl
+      (user-profile/view)]]
+
+    ;; Event Booking Example  
+    [:section.mb-16 {:id "event-booking"}
+     [:div.flex.items-center.justify-between.mb-8
+      [:div
+       [:h3.text-3xl.font-bold.ty-text.mb-2 "Event Booking System"]
+       [:p.text-lg.ty-text-.mb-4
+        "Calendar with custom day rendering, time slots, booking workflow orchestration."]]
+      [:a.ty-bg-success.ty-text++.px-6.py-3.rounded-lg.font-semibold.hover:shadow-lg.transition-all
+       {:href "#event-booking-full"
+        :on {:click #(router/navigate! :ty.site.core/event-booking)}}
+       "View Full Example →"]]
+
+     ;; Embedded preview
+     [:div.ty-elevated.p-8.rounded-xl
+      (event-booking/view)]]
+
+    ;; Contact Form Example
+    [:section.mb-16 {:id "contact-form"}
+     [:div.flex.items-center.justify-between.mb-8
+      [:div
+       [:h3.text-3xl.font-bold.ty-text.mb-2 "Contact Form Validation"]
+       [:p.text-lg.ty-text-.mb-4
+        "Real-time validation, semantic error states, smooth user experience."]]
+      [:a.ty-bg-warning.ty-text++.px-6.py-3.rounded-lg.font-semibold.hover:shadow-lg.transition-all
+       {:href "#contact-form-full"
+        :on {:click #(router/navigate! :ty.site.core/contact-form)}}
+       "View Full Example →"]]
+
+     ;; Embedded preview
+     [:div.ty-elevated.p-8.rounded-xl
+      (contact-form/view)]]
+
+    ;; Style System Example
+    [:section.mb-16 {:id "ty-styles"}
+     [:div.flex.items-center.justify-between.mb-8
+      [:div
+       [:h3.text-3xl.font-bold.ty-text.mb-2 "Design System"]
+       [:p.text-lg.ty-text-.mb-4
+        "Semantic colors, 5-variant system, automatic dark mode, CSS variables."]]
+      [:a.ty-bg-secondary.ty-text++.px-6.py-3.rounded-lg.font-semibold.hover:shadow-lg.transition-all
+       {:href "#ty-styles-full"
+        :on {:click #(router/navigate! :ty.site.core/ty-styles)}}
+       "Explore System →"]]
+
+     ;; Embedded preview
+     [:div.ty-elevated.p-8.rounded-xl
+      (ty-styles/view)]]]
 
    ;; 💎 THE BOTTOM LINE
    [:div.ty-bg-neutral-.rounded-3xl.p-10.lg:p-16

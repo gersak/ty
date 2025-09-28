@@ -21,31 +21,65 @@
 (goog-define PRODUCTION false)
 
 ;; Define site routes
+
+;; Define all routes with their view handlers (like docs system)
+(def site-routes
+  [{:id ::landing
+    :segment ""
+    :name "Welcome"
+    :icon "home"
+    :landing 10
+    :view landing/view}
+   {:id ::user-profile
+    :segment "user-profile"
+    :name "User Profile"
+    :icon "user"
+    :view user-profile/view}
+   {:id ::event-booking
+    :segment "event-booking"
+    :name "Event Booking"
+    :icon "calendar"
+    :view event-booking/view}
+   {:id ::contact-form
+    :segment "contact-form"
+    :name "Contact Form"
+    :icon "mail"
+    :view contact-form/view}
+   {:id ::ty-styles
+    :segment "ty-styles"
+    :name "Ty Styles"
+    :icon "palette"
+    :view ty-styles/view}
+   {:id ::getting-started
+    :segment "getting-started"
+    :name "Getting Started"
+    :icon "rocket"
+    :view getting-started/view}
+   {:id :ty.site/docs
+    :segment "docs"
+    :view getting-started/view ; Default docs view
+    :name "Documentation"}])
+
+;; Import docs components that are already configured
+(def component-routes docs/docs-components)
+
+;; Import guide components (integration guides)
+(def guide-routes docs/guide-components)
+
 (router/link ::router/root
              (concat
-               [{:id ::landing
-                 :segment ""
-                 :name "Welcome"
-                 :landing 10}
-                {:id ::user-profile
-                 :segment "user-profile"
-                 :name "User Profile"}
-                {:id ::event-booking
-                 :segment "event-booking"
-                 :name "Event Booking"}
-                {:id ::contact-form
-                 :segment "contact-form"
-                 :name "Contact Form"}
-                {:id ::ty-styles
-                 :segment "ty-styles"
-                 :name "Ty Styles"}
-                {:id ::getting-started
-                 :segment "getting-started"
-                 :name "Getting Started"}
-                {:id :ty.site/docs
-                 :segment "docs"
-                 :view getting-started/view
-                 :name "Documentation"}]))
+              ;; Extract route configs from site-routes  
+               (map #(select-keys % [:id :segment :name :landing]) site-routes)
+              ;; Add component routes - docs-components already have correct structure
+               (map (fn [route]
+                      (-> route
+                          (select-keys [:id :segment :name])
+                          (update :segment (fn [segment] (str "docs/" segment))))) component-routes)
+              ;; Add guide routes - docs/guide-components  
+               (map (fn [route]
+                      (-> route
+                          (select-keys [:id :segment :name])
+                          (update :segment (fn [segment] (str "docs/" segment))))) guide-routes)))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -98,46 +132,71 @@
   [:div.space-y-6
    ;; Main Navigation
    (nav-section
-     {:items [{:route-id ::landing
-               :label "Welcome"
-               :icon "home"}]})
+     {:items [(let [route (first (filter #(= (:id %) ::landing) site-routes))]
+                {:route-id (:id route)
+                 :label (:name route)
+                 :icon (:icon route)})]})
 
-   ;; Examples Section
+   ;; Examples Section (anchor navigation)
    (nav-section
      {:title "Live Examples"
-      :items [{:route-id ::user-profile
+      :items [{:route-id "#user-profile"
                :label "User Profile"
-               :icon "user"}
-              {:route-id ::event-booking
+               :icon "user"
+               :on-click #(.scrollIntoView (.getElementById js/document "user-profile") #js {:behavior "smooth"})}
+              {:route-id "#event-booking"
                :label "Event Booking"
-               :icon "calendar"}
-              {:route-id ::contact-form
+               :icon "calendar"
+               :on-click #(.scrollIntoView (.getElementById js/document "event-booking") #js {:behavior "smooth"})}
+              {:route-id "#contact-form"
                :label "Contact Form"
-               :icon "mail"}]})
+               :icon "mail"
+               :on-click #(.scrollIntoView (.getElementById js/document "contact-form") #js {:behavior "smooth"})}]})
 
-;; Getting Started Section
+   ;; Quickstart (route navigation)
    (nav-section
-     {:title "Getting Started"
-      :items [{:route-id ::getting-started
-               :label "Setup Guide"
-               :icon "rocket"}
-              {:route-id ::ty-styles
-               :label "Style System"
-               :icon "palette"}]})])
+     {:title "Quickstart"
+      :items (concat
+             ;; Getting Started from site-routes
+               [{:route-id ::getting-started
+                 :label "Getting Started"
+                 :icon "rocket"}]
+             ;; Guide routes from docs/guide-components
+               (for [route guide-routes]
+                 {:route-id (:id route)
+                  :label (:name route)
+                  :icon (:icon route)}))})
+
+   ;; Components Section (route navigation to component docs)
+   (nav-section
+     {:title "Components"
+      :items (for [route component-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)})})])
+
+(defn render
+  "Render the appropriate view based on current route (like docs/render)"
+  []
+  (let [all-routes (concat site-routes component-routes guide-routes)
+        current-route (some #(when (router/rendered? (:id %) true) %) all-routes)]
+    (if current-route
+      ((:view current-route))
+      ;; Handle docs system separately for now
+      (if (docs/in-docs?)
+        (docs/render)
+        ;; Fallback for unknown routes
+        [:div.ty-elevated.p-8.rounded-lg.text-center
+         [:h1.text-2xl.font-bold.ty-text.mb-4 "Page Not Found"]
+         [:p.ty-text- "The requested page could not be found."]]))))
 
 (defn sidebar []
-  (if (docs/in-docs?)
-    ;; Docs mode sidebar
-    [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
-     [:nav.px-2.lg:px-4.pb-4.lg:pb-6
-      (docs/docs-sidebar)]]
-    ;; Regular sidebar
-    [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
-     [:div.p-4.lg:p-6
-      [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"]
-      [:p.text-xs.lg:text-sm.ty-text- "Professional Web Components"]]
-     [:nav.px-2.lg:px-4.pb-4.lg:pb-6
-      (nav-items)]]))
+  [:aside.w-64.ty-elevated.border-r.ty-border+.h-full
+   [:div.p-4.lg:p-6
+    [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"]
+    [:p.text-xs.lg:text-sm.ty-text- "Professional Web Components"]]
+   [:nav.px-2.lg:px-4.pb-4.lg:pb-6
+    (nav-items)]])
 
 (defn mobile-menu []
   [:div.lg:hidden
@@ -154,13 +213,7 @@
 
      ;; Navigation content
      [:div.space-y-4
-      (if (docs/in-docs?)
-        ;; Docs navigation
-        [:div.max-h-96.overflow-y-auto
-         (docs/docs-sidebar)]
-        ;; Main navigation  
-        [:div
-         (nav-items)])]]]])
+      [:div (nav-items)]]]]])
 
 (defn header []
   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4
@@ -184,28 +237,6 @@
 
     ;; Actions section with Docs/Examples toggle and Theme toggle
     [:div.flex.items-center.gap-2.lg:gap-3.flex-shrink-0
-     ;; Docs/Examples toggle button with icon in start slot
-     (if (docs/in-docs?)
-       ;; When in docs, show "Examples" button to go back
-       [:div.w-30
-        [:ty-button {:flavor "neutral"
-                     :size "md"
-                     :wide true
-                     :on {:click #(router/navigate! ::landing)}}
-         [:ty-icon {:slot "start"
-                    :name "layers"
-                    :size "sm"}]
-         "Examples"]]
-       ;; When not in docs, show "Docs" button
-       [:div.w-30
-        [:ty-button {:flavor "neutral"
-                     :wide true
-                     :on {:click #(router/navigate! :ty.site/docs)}}
-         [:ty-icon {:slot "start"
-                    :name "book-open"
-                    :size "sm"}]
-         "Docs"]])
-
      ;; Theme toggle button
      [:ty-button
       {:on {:click toggle-theme!}
@@ -229,21 +260,8 @@
          (layout/with-container
            {:width (- (layout/container-width) sidebar-width content-padding)
             :height (- (layout/container-height) header-height content-padding)}
-           (cond
-             ;; Regular views
-             (router/rendered? ::landing true) (landing/view)
-             (router/rendered? ::user-profile true) (user-profile/view)
-             (router/rendered? ::event-booking true) (event-booking/view)
-             (router/rendered? ::contact-form true) (contact-form/view)
-             (router/rendered? ::ty-styles true) (ty-styles/view)
-             (router/rendered? ::getting-started true) (getting-started/view)
-
-             (docs/in-docs?) (docs/render)
-
-             ;; Check for other component docs
-             :else [:div.ty-elevated.p-8.rounded-lg.text-center
-                    [:h1.text-2xl.font-bold.ty-text.mb-4 "Page Not Found"]
-                    [:p.ty-text- "The requested page could not be found."]]))]]])))
+           ;; Use unified render system
+           (render))]]])))
 
 (defn render-app! []
   (binding [context/*roles* (:user/roles @state)]

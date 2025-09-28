@@ -20,23 +20,23 @@
      [:div
       [:h4.font-medium.ty-text.mb-2 "Add to your <head> section:"]
       (common/code-block
-        "<!-- Ty Components CSS -->
+       "<!-- Ty Components CSS -->
 <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css\">
 
 <!-- Ty Components JS (registers all web components) -->
 <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js\"></script>"
-        "html")]
+       "html")]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "Use components anywhere in your HTML:"]
       (common/code-block
-        "<ty-button variant=\"primary\">Click me</ty-button>
+       "<ty-button variant=\"primary\">Click me</ty-button>
 <ty-input label=\"Email\" type=\"email\"></ty-input>
 <ty-dropdown label=\"Choose option\">
   <ty-option value=\"1\">Option 1</ty-option>
   <ty-option value=\"2\">Option 2</ty-option>
 </ty-dropdown>"
-        "html")]]]
+       "html")]]]
 
    ;; React Setup
    [:div.ty-elevated.p-6.rounded-xl
@@ -45,78 +45,71 @@
                                 :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "React / Next.js / Remix"]]
 
-    [:p.ty-text-.mb-4 "TypeScript-friendly React wrappers with full type support. You need both React wrappers AND web components runtime."]
+    [:p.ty-text-.mb-4 "Use TypeScript-friendly React wrappers with CDN for the easiest setup. Perfect for Next.js, Remix, and any React app."]
 
-    [:div.space-y-6
-     [:div.ty-bg-warning-.border.ty-border-warning.p-4.rounded-lg
-      [:div.flex.items-start.gap-2
-       [:ty-icon.ty-text-warning++.flex-shrink-0.mt-0.5 {:name "info"
-                                                         :size "sm"}]
-       [:div.text-sm.ty-text-warning++
-        [:strong "Important:"] " React wrappers (@gersak/ty-react) are just thin wrappers around web components. You still need the web components runtime (ty.js) loaded."]]]
-
+    [:div.space-y-4
      [:div
-      [:h4.font-medium.ty-text.mb-2 "Option 1: NPM Packages (Recommended)"]
-      [:div.space-y-3
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "1a. Install packages:"]
-        (common/code-block
-          "# Install React wrappers + base components
-npm install @gersak/ty-react @gersak/ty"
-          "bash")]
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "1b. Import everything in your app:"]
-        (common/code-block
-          "// Import CSS styles
-import '@gersak/ty/css/ty.css'
-// Import web components runtime (registers all <ty-*> components)
-import '@gersak/ty/ty.js'
-// Import React wrappers
-import { Button, Input, Dropdown } from '@gersak/ty-react'
-
-function App() {
-  return (
-    <div>
-      {/* Use React wrappers (recommended) */}
-      <Button variant=\"primary\">Click me</Button>
-      <Input label=\"Email\" type=\"email\" />
-      
-      {/* Or mix with web components directly */}
-      <ty-button variant=\"secondary\">Web Component</ty-button>
-    </div>
-  )
-}"
-          "javascript")]]]
-
-     [:div
-      [:h4.font-medium.ty-text.mb-2 "Option 2: CDN + NPM Hybrid"]
-      [:div.space-y-3
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "2a. Add CDN to your HTML head:"]
-        (common/code-block
-          "<!-- In your HTML head (index.html, _app.js, etc.) -->
+      [:h4.font-medium.ty-text.mb-2 "1. Add CDN to your HTML head:"]
+      (common/code-block
+       "<!-- In your HTML head (index.html, _app.js, etc.) -->
 <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css\">
 <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js\"></script>"
-          "html")]
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "2b. Install only React wrappers:"]
-        (common/code-block
-          "npm install @gersak/ty-react"
-          "bash")]
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "2c. Use React components (no imports needed):"]
-        (common/code-block
-          "import { Button, Input, Dropdown } from '@gersak/ty-react'
+       "html")]
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "2. Install React wrappers:"]
+      (common/code-block
+       "npm install @gersak/ty-react"
+       "bash")]
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "3. Use React components:"]
+      (common/code-block
+       "import { Button, Input, Dropdown, Calendar } from '@gersak/ty-react'
 
 function App() {
+  const [date, setDate] = useState(null)
+  
   return (
     <div>
-      <Button variant=\"primary\">Click me</Button>
-      <Input label=\"Email\" type=\"email\" />
+      <Button variant=\"primary\" onClick={() => alert('Clicked!')}>
+        Click me
+      </Button>
+      <Input 
+        label=\"Email\" 
+        type=\"email\" 
+        onChange={(e) => console.log(e.target.value)}
+      />
+      <Calendar 
+        value={date}
+        onChange={(e) => setDate(e.detail.date)}
+      />
     </div>
   )
 }"
-          "javascript")]]]]]
+       "javascript")]
+     [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
+      [:div.flex.items-start.gap-2
+       [:ty-icon.ty-text-success++.flex-shrink-0.mt-0.5 {:name "check-circle"
+                                                         :size "sm"}]
+       [:div.text-sm.ty-text-success++
+        [:strong "Why this approach?"] " CDN handles web components runtime automatically. React wrappers provide TypeScript support and React-friendly event handling. No version conflicts, minimal bundle size."]]]
+
+     [:div.ty-bg-info-.border.ty-border-info.p-4.rounded-lg
+      [:div.text-sm.ty-text-info++
+       [:h5.font-medium.mb-2 "💡 Available React wrappers:"]
+       [:div.grid.grid-cols-2.gap-2.text-xs
+        [:div
+         [:strong "Form Components:"]
+         [:ul.space-y-1.mt-1
+          [:li "• Button, Input, Textarea"]
+          [:li "• Dropdown, Multiselect"]
+          [:li "• Tag"]]]
+        [:div
+         [:strong "Complex Components:"]
+         [:ul.space-y-1.mt-1
+          [:li "• Calendar, DatePicker"]
+          [:li "• Modal, Popup"]
+          [:li "• Tooltip"]]]]
+       [:p.text-xs.mt-2 "Import as " [:code.ty-bg-info-.px-1.rounded "import { Button, Calendar } from '@gersak/ty-react'"] " or with destructuring."]]]]]
 
    ;; ClojureScript Vanilla (Replicant, etc.)
    [:div.ty-elevated.p-6.rounded-xl
@@ -131,20 +124,20 @@ function App() {
      [:div
       [:h4.font-medium.ty-text.mb-2 "1. Add to deps.edn:"]
       (common/code-block
-        "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}}}"
-        "clojure")]
+       "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}}}"
+       "clojure")]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Require components namespace:"]
       (common/code-block
-        "(ns my-app.core
+       "(ns my-app.core
   (:require [ty.components]))  ; Auto-registers ALL web components
 
 (defn app []
   [:div
-    [:ty-button {:variant \"primary\"} \"Click me\"]
+    [:ty-button {:flavor \"primary\"} \"Click me\"]
     [:ty-input {:label \"Email\" :type \"email\"}]])"
-        "clojure")]
+       "clojure")]
 
      [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
       [:div.flex.items-start.gap-2
@@ -160,70 +153,57 @@ function App() {
                              :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "ClojureScript + React (Reagent / UIx)"]]
 
-    [:p.ty-text-.mb-4 "For Reagent, UIx, and other React-based ClojureScript libraries - you have two great options."]
+    [:p.ty-text-.mb-4 "For Reagent, UIx, and other React-based ClojureScript libraries - use web components directly for the cleanest approach."]
 
-    [:div.space-y-6
+    [:div.space-y-4
      [:div
-      [:h4.font-medium.ty-text.mb-2 "Option 1: Pure ClojureScript (Recommended)"]
-      [:div.space-y-3
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "1a. Add ClojureScript dependency:"]
-        (common/code-block
-          ";; deps.edn
-{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}
-        com.pitch/uix.core {:mvn/version \"1.0.1\"}}}"
-          "clojure")]
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "1b. Use web components directly:"]
-        (common/code-block
-          "(ns my-app.core
+      [:h4.font-medium.ty-text.mb-2 "1. Add dependency to deps.edn:"]
+      (common/code-block
+       "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}
+         com.pitch/uix.core {:mvn/version \"1.0.1\"}}}"
+       "clojure")]
+     [:div
+      [:h4.font-medium.ty-text.mb-2 "2. Require ty.components to register web components:"]
+      (common/code-block
+       "(ns my-app.core
   (:require [uix.core :as uix :refer [$ defui]]
-            [ty.components]))  ; Registers all web components
+            [ty.components]))  ; Auto-registers ALL web components
 
 (defui app []
-  ($ :div
-    ;; Use web components with React/UIx
-    ($ :ty-button {:variant \"primary\"} \"Click me\")
-    ($ :ty-input {:label \"Email\" :type \"email\"})))"
-          "clojure")]
-       [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
-        [:div.flex.items-start.gap-2
-         [:ty-icon.ty-text-success++.flex-shrink-0.mt-0.5 {:name "check-circle"
-                                                           :size "sm"}]
-         [:div.text-sm.ty-text-success++
-          [:strong "Benefits:"] " No NPM dependencies, no version conflicts, everything managed through ClojureScript ecosystem."]]]]]
+  (let [[value set-value!] (uix/use-state \"\")]
+    ($ :div
+      ;; Use web components directly (recommended for ClojureScript)
+      ($ :ty-button {:flavor \"primary\" 
+                     :onClick #(js/alert \"Clicked!\")} \"Click me\")
+      ($ :ty-input {:label \"Email\" 
+                    :type \"email\"
+                    :value value
+                    :onChange #(set-value! (.. % -target -value))}))))"
+       "clojure")]
+     [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
+      [:div.flex.items-start.gap-2
+       [:ty-icon.ty-text-success++.flex-shrink-0.mt-0.5 {:name "check-circle"
+                                                         :size "sm"}]
+       [:div.text-sm.ty-text-success++
+        [:strong "Why this approach?"] " Everything is included in the ClojureScript dependency - no CDN needed! The ty.components namespace registers all web components and includes CSS automatically."]]]
 
-     [:div
-      [:h4.font-medium.ty-text.mb-2 "Option 2: NPM React Wrappers"]
-      [:div.space-y-3
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "2a. Add dependencies:"]
-        (common/code-block
-          ";; deps.edn - ClojureScript React lib
-{:deps {com.pitch/uix.core {:mvn/version \"1.0.1\"}}}
-
-// package.json - NPM packages
-{
-  \"@gersak/ty-react\": \"latest\",
-  \"@gersak/ty\": \"latest\"  // Needed for web components runtime
-}"
-          "clojure")]
-       [:div
-        [:h5.text-sm.font-medium.ty-text-.mb-2 "2b. Import and use React wrappers:"]
-        (common/code-block
-          "(ns my-app.core
-  (:require [uix.core :as uix :refer [$ defui]]
-            ;; Import CSS and JS runtime
-            [\"@gersak/ty/css/ty.css\"]
-            [\"@gersak/ty/ty.js\"]
-            ;; Import React wrappers
-            [\"@gersak/ty-react\" :refer [Button Input Dropdown]]))
-
-(defui app []
-  ($ :div
-    ($ Button {:variant \"primary\"} \"Click me\")
-    ($ Input {:label \"Email\" :type \"email\"})))"
-          "clojure")]]]]]
+     [:div.ty-bg-info-.border.ty-border-info.p-4.rounded-lg
+      [:div.text-sm.ty-text-info++
+       [:h5.font-medium.mb-2 "💡 Available web components:"]
+       [:div.grid.grid-cols-2.gap-2.text-xs
+        [:div
+         [:strong "Form Components:"]
+         [:ul.space-y-1.mt-1
+          [:li "• ty-button, ty-input, ty-textarea"]
+          [:li "• ty-dropdown, ty-multiselect"]
+          [:li "• ty-tag"]]]
+        [:div
+         [:strong "Complex Components:"]
+         [:ul.space-y-1.mt-1
+          [:li "• ty-calendar, ty-date-picker"]
+          [:li "• ty-modal, ty-popup"]
+          [:li "• ty-tooltip"]]]]
+       [:p.text-xs.mt-2 "All components work as native HTML elements with standard events and properties."]]]]]
 
    ;; Next Steps
    [:div.ty-bg-primary-.border.border-ty-border-primary.p-6.rounded-xl

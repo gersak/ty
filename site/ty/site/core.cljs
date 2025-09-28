@@ -6,14 +6,9 @@
             [ty.layout :as layout]
             [ty.router :as router]
             [ty.site.docs :as docs]
-            [ty.site.icons :as site-icons]
+            [ty.site.icons]
             [ty.site.state :refer [state]]
-            [ty.site.views.contact-form :as contact-form]
-            [ty.site.views.event-booking :as event-booking]
-            [ty.site.views.getting-started :as getting-started]
-            [ty.site.views.landing :as landing]
-            [ty.site.views.ty-styles :as ty-styles]
-            [ty.site.views.user-profile :as user-profile]))
+            [ty.site.views.landing :as landing]))
 
 ;; Configuration for GitHub Pages deployment
 ;; These are replaced at build time via closure-defines
@@ -24,41 +19,34 @@
 
 ;; Define all routes with their view handlers (like docs system)
 (def site-routes
-  [{:id ::landing
-    :segment ""
+  [;; Main landing page
+   {:id ::landing
+    :segment "welcome"
+    :hash "top"
     :name "Welcome"
     :icon "home"
     :landing 10
     :view landing/view}
-   {:id ::user-profile
-    :segment "user-profile"
+
+   ;; Landing page fragments for examples
+   {:id ::landing-user-profile
+    :segment "welcome"
+    :hash "user-profile"
     :name "User Profile"
     :icon "user"
-    :view user-profile/view}
-   {:id ::event-booking
-    :segment "event-booking"
+    :view landing/view}
+   {:id ::landing-event-booking
+    :segment "welcome"
+    :hash "event-booking"
     :name "Event Booking"
     :icon "calendar"
-    :view event-booking/view}
-   {:id ::contact-form
-    :segment "contact-form"
+    :view landing/view}
+   {:id ::landing-contact-form
+    :segment "welcome"
+    :hash "contact-form"
     :name "Contact Form"
     :icon "mail"
-    :view contact-form/view}
-   {:id ::ty-styles
-    :segment "ty-styles"
-    :name "Ty Styles"
-    :icon "palette"
-    :view ty-styles/view}
-   {:id ::getting-started
-    :segment "getting-started"
-    :name "Getting Started"
-    :icon "rocket"
-    :view getting-started/view}
-   {:id :ty.site/docs
-    :segment "docs"
-    :view getting-started/view ; Default docs view
-    :name "Documentation"}])
+    :view landing/view}])
 
 ;; Import docs components that are already configured
 (def component-routes docs/docs-components)
@@ -69,12 +57,12 @@
 (router/link ::router/root
              (concat
               ;; Extract route configs from site-routes  
-               (map #(select-keys % [:id :segment :name :landing]) site-routes)
+               site-routes
               ;; Add component routes - docs-components already have correct structure
                (map (fn [route]
                       (-> route
-                          (select-keys [:id :segment :name])
-                          (update :segment (fn [segment] (str "docs/" segment))))) component-routes)
+                          (update :segment (fn [segment] (str "docs/" segment)))))
+                    component-routes)
               ;; Add guide routes - docs/guide-components  
                (map (fn [route]
                       (-> route
@@ -99,20 +87,21 @@
     (.scrollTo main-element #js {:top 0
                                  :behavior "smooth"})))
 
-(defn nav-item [{:keys [route-id label icon on-click]}]
+(defn nav-item [{:keys [route-id label icon]}]
   (let [active? (router/rendered? route-id true)]
     [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
      {:class (if active?
                ["ty-bg-primary-" "ty-text-primary++"]
                ["hover:ty-bg-neutral" "ty-text"])
       :on {:click (fn []
-                    (when on-click (on-click))
-                    (when (and (not on-click) route-id)
-                      (router/navigate! route-id)
-                      ;; Scroll to top after navigation
-                      (js/setTimeout scroll-main-to-top! 100)
-                      ;; Close mobile menu after navigation
-                      (swap! state assoc :mobile-menu-open false)))}}
+                    (router/navigate! route-id)
+                    ;; Scroll to top after navigation (for non-fragment routes)
+                    (when-not (router/exact-match? (:tree @router/*router*)
+                                                   (router/get-current-url)
+                                                   route-id)
+                      (js/setTimeout scroll-main-to-top! 100))
+                    ;; Close mobile menu after navigation
+                    (swap! state assoc :mobile-menu-open false))}}
      (when icon
        [:ty-icon.mr-2 {:name icon
                        :size "sm"}])
@@ -137,21 +126,18 @@
                  :label (:name route)
                  :icon (:icon route)})]})
 
-   ;; Examples Section (anchor navigation)
+   ;; Examples Section (unified router navigation)
    (nav-section
      {:title "Live Examples"
-      :items [{:route-id "#user-profile"
+      :items [{:route-id ::landing-user-profile
                :label "User Profile"
-               :icon "user"
-               :on-click #(.scrollIntoView (.getElementById js/document "user-profile") #js {:behavior "smooth"})}
-              {:route-id "#event-booking"
+               :icon "user"}
+              {:route-id ::landing-event-booking
                :label "Event Booking"
-               :icon "calendar"
-               :on-click #(.scrollIntoView (.getElementById js/document "event-booking") #js {:behavior "smooth"})}
-              {:route-id "#contact-form"
+               :icon "calendar"}
+              {:route-id ::landing-contact-form
                :label "Contact Form"
-               :icon "mail"
-               :on-click #(.scrollIntoView (.getElementById js/document "contact-form") #js {:behavior "smooth"})}]})
+               :icon "mail"}]})
 
    ;; Quickstart (route navigation)
    (nav-section
@@ -183,12 +169,7 @@
     (if current-route
       ((:view current-route))
       ;; Handle docs system separately for now
-      (if (docs/in-docs?)
-        (docs/render)
-        ;; Fallback for unknown routes
-        [:div.ty-elevated.p-8.rounded-lg.text-center
-         [:h1.text-2xl.font-bold.ty-text.mb-4 "Page Not Found"]
-         [:p.ty-text- "The requested page could not be found."]]))))
+      (docs/render))))
 
 (defn sidebar []
   [:aside.w-64.ty-elevated.border-r.ty-border+.h-full

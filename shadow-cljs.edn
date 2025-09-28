@@ -3,6 +3,9 @@
  :deps true
  :builds {:site {:target :browser
                  :output-dir "site/public/js"
+                 :compiler-options {:optimizations :advanced
+                                    :source-map false
+                                    :pretty-print false}
                  :modules {:site {:init-fn ty.site.core/init}}}
           :github {:target :browser
                    :asset-path "https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12"

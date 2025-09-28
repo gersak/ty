@@ -1,28 +1,27 @@
 (ns ty.site.docs
-  "Documentation system for ty components - orchestrates all doc views"
+  "Documentation system for ty components - provides data and views"
   (:require
-    [clojure.string :as str]
-    [ty.router :as router]
-    [ty.site.docs.button :as button-docs]
-    [ty.site.docs.calendar :as calendar-docs]
-    [ty.site.docs.calendar-month :as calendar-month-docs]
-    [ty.site.docs.common :as common]
-    [ty.site.docs.date-picker :as date-picker-docs]
-    [ty.site.docs.dropdown :as dropdown-docs]
-    [ty.site.docs.icon :as icon-docs]
-    [ty.site.docs.input :as input-docs]
-    [ty.site.docs.modal :as modal-docs]
-    [ty.site.docs.multiselect :as multiselect-docs]
-    [ty.site.docs.popup :as popup-docs]
-    [ty.site.docs.react :as react-docs]
-    [ty.site.docs.replicant :as replicant-docs]
-    [ty.site.docs.tag :as tag-docs]
-    [ty.site.docs.textarea :as textarea-docs]
-    [ty.site.docs.tooltip :as tooltip-docs]
-    [ty.site.state :refer [state]]
+   [clojure.string :as str]
+   [ty.router :as router]
+   [ty.site.docs.button :as button-docs]
+   [ty.site.docs.calendar :as calendar-docs]
+   [ty.site.docs.calendar-month :as calendar-month-docs]
+   [ty.site.docs.common :as common]
+   [ty.site.docs.date-picker :as date-picker-docs]
+   [ty.site.docs.dropdown :as dropdown-docs]
+   [ty.site.docs.icon :as icon-docs]
+   [ty.site.docs.input :as input-docs]
+   [ty.site.docs.modal :as modal-docs]
+   [ty.site.docs.multiselect :as multiselect-docs]
+   [ty.site.docs.popup :as popup-docs]
+   [ty.site.docs.react :as react-docs]
+   [ty.site.docs.replicant :as replicant-docs]
+   [ty.site.docs.tag :as tag-docs]
+   [ty.site.docs.textarea :as textarea-docs]
+   [ty.site.docs.tooltip :as tooltip-docs]
     ;; Import component doc namespaces
-    [ty.site.views.getting-started :as getting-started]
-    [ty.site.views.ty-styles :as ty-styles]))
+   [ty.site.views.getting-started :as getting-started]
+   [ty.site.views.ty-styles :as ty-styles]))
 
 (def docs-components
   [{:id :ty.site.docs/button
@@ -117,79 +116,23 @@
     :name "JS React"
     :icon "react"
     :view #(common/guide-placeholder-view
-             "JavaScript React Integration"
-             "Learn how to integrate Ty web components with JavaScript React applications.")}
+            "JavaScript React Integration"
+            "Learn how to integrate Ty web components with JavaScript React applications.")}
    {:id :ty.site.docs/htmx
     :segment "htmx"
     :name "HTMX"
     :icon "server"
     :view #(common/guide-placeholder-view
-             "HTMX Integration"
-             "Discover how to use Ty components with HTMX for dynamic server-side applications.")}])
+            "HTMX Integration"
+            "Discover how to use Ty components with HTMX for dynamic server-side applications.")}])
 
 ;; Define routes with views from separate namespaces
-(router/link :ty.site/docs
-             (concat
-               docs-components
-               guide-components))
 
 ;; Helper to check if current route is a docs route
 (defn in-docs? []
   (router/rendered? :ty.site/docs false))
 
-(defn scroll-main-to-top!
-  "Smoothly scrolls the main content area to the top"
-  []
-  (when-let [main-element (.querySelector js/document "main.overflow-auto")]
-    (.scrollTo main-element #js {:top 0
-                                 :behavior "smooth"})))
-
-;; Component sidebar for docs
-(defn docs-sidebar-item
-  [{:keys [component icon active?]
-    {on-click :click} :on}]
-  [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
-   {:class (if active?
-             ["ty-bg-primary-" "ty-text-primary++"]
-             ["hover:ty-bg-neutral" "ty-text"])
-    :on {:click on-click}}
-   (when icon [:ty-icon.mr-2 {:name icon}])
-   [:div.flex.items-center.gap-2
-    [:span.text-sm component]]])
-
-(defn docs-sidebar []
-  [:div.space-y-4.mt-8
-   ;; Components Section
-   [:div.space-y-1
-    [:div.px-4.py-2.ty-text+.text-sm.font-medium "Components"]
-    (for [{component :name
-           icon :icon
-           id :id} docs-components]
-      [:div {:key component}
-       (docs-sidebar-item
-         {:component component
-          :icon icon
-          :on {:click #(do
-                         (router/navigate! id)
-                         (js/setTimeout scroll-main-to-top! 100)
-                         (swap! state assoc :mobile-menu-open false))}
-          :active? (router/rendered? id true)})])]
-
-   ;; Getting Started Section
-   [:div.space-y-1
-    [:div.px-4.py-2.ty-text+.text-sm.font-medium "Getting Started"]
-    (for [{:keys [component icon id]} guide-components]
-      [:div {:key component}
-       (docs-sidebar-item
-         {:component component
-          :icon icon
-          :on {:click #(do
-                         (router/navigate! id)
-                         (js/setTimeout scroll-main-to-top! 100)
-                         (swap! state assoc :mobile-menu-open false))}
-          :active? (router/rendered? id true)})])]])
-
-;; Removed highlight-all-code-blocks! - now using individual :replicant/on-mount in code-block
+;; Render function - fallback for docs routes not handled by site.core.cljs
 
 (defn render
   "Render the appropriate docs view based on current route"

@@ -87,6 +87,15 @@
     (.scrollTo main-element #js {:top 0
                                  :behavior "smooth"})))
 
+(defn should-scroll-for-route?
+  "Determine if navigation to target route should trigger scroll to top"
+  [target-route-id]
+  (let [target-url (router/component-path (:tree @router/*router*) target-route-id)
+        target-components (router/url->components (:tree @router/*router*) target-url)
+        target-component (last target-components)]
+    ;; Only scroll to top if target component doesn't have hash
+    (nil? (:hash target-component))))
+
 (defn nav-item [{:keys [route-id label icon]}]
   (let [active? (router/rendered? route-id true)]
     [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
@@ -94,14 +103,15 @@
                ["ty-bg-primary-" "ty-text-primary++"]
                ["hover:ty-bg-neutral" "ty-text"])
       :on {:click (fn []
-                    (router/navigate! route-id)
-                    ;; Scroll to top after navigation (for non-fragment routes)
-                    (when-not (router/exact-match? (:tree @router/*router*)
-                                                   (router/get-current-url)
-                                                   route-id)
-                      (js/setTimeout scroll-main-to-top! 100))
-                    ;; Close mobile menu after navigation
-                    (swap! state assoc :mobile-menu-open false))}}
+                    ;; Check if target route has hash before navigation
+                    (let [should-scroll-top? (should-scroll-for-route? route-id)]
+                      ;; Navigate
+                      (router/navigate! route-id)
+                      ;; Scroll to top only for non-fragment routes
+                      (when should-scroll-top?
+                        (js/setTimeout scroll-main-to-top! 100))
+                      ;; Close mobile menu
+                      (swap! state assoc :mobile-menu-open false)))}}
      (when icon
        [:ty-icon.mr-2 {:name icon
                        :size "sm"}])

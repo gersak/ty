@@ -8,14 +8,14 @@ Framework churn got old. React, Vue, Angular, Svelte... every year something new
 
 ## Why "ty"?
 
-<blockquote>
+<blockquote style="color: #414863">
 <p><em>"After playing around with Replicant, I realized I could build Web Components without React — actually, even without Replicant.</em></p>
 
 <p><em>I'm wondering if it's called 'Replicant' because of <strong>Blade Runner</strong> (I love Blade Runner).</em></p>
 
 <p><em>Maybe I could name my own library something similar... Tyrell? No, that feels too ambitious.</em></p>
 
-<p><em>I don't really want to do something long like <code>tyrell-button</code>. It should be shorter — maybe <code>ty-button</code>.</em></p>
+<p><em>Anyway, I don't really want to type something long like <code>tyrell-button</code>. It should be shorter — maybe <code>ty-button</code>.</em></p>
 
 <p><strong><em>Yes! Let's call it ty."</em></strong></p>
 </blockquote>

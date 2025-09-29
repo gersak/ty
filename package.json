@@ -62,7 +62,8 @@
   },
   "scripts": {
     "dev": "shadow-cljs -A:dev watch site",
-    "dev:css": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./dev/css/app.css --watch",
+    "dev:css": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./site/public/css/site.css --watch",
+    "release:css": "npx @tailwindcss/cli -i ./site/public/css/site.css -o ./site/public/css/site.css -m",
     "release": "shadow-cljs release lib",
     "prepublishOnly": "npm run build:cdn"
   }

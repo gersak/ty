@@ -261,7 +261,7 @@
         {:on {:submit handle-form-submit}}
 
         ;; Enhanced Four-Column Layout: Contact Info | Request Details | Tips/Newsletter | Message
-        [:div.grid.grid-cols-1.lg:grid-cols-4.gap-8
+        [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
          ;; Left Column - Contact Information (1/4)
          [:div.ty-floating.p-6.rounded-lg
           [:div.flex.items-center.gap-3.mb-6

@@ -20,13 +20,14 @@
       [:ty-icon.ty-text-danger++ {:name "swords"
                                   :size "lg"}]]
      [:h2.text-xl.font-bold.ty-text
-      "The Framework"]]
+      "Ecosystem Battles"]]
     [:p.text.ty-text.leading-relaxed
-     "Flutter vs React. Google vs Meta/Vercel. The marketing is overwhelming."]
+     "Flutter vs React vs Vue vs Svelte vs HTMX vs the next thing."]
     [:p.text.ty-text.leading-relaxed
-     "The volume of content and marketing materials is staggering. It creates the feeling that you " [:em "must choose"] ". But you only have the choices that " [:em "they"] " force on you. Pick your poison!"]
+     "The marketing is overwhelming, and the flood of content makes you feel like you " [:strong "must"] " choose a side. "]
+
     [:p.text.ty-text.leading-relaxed
-     "Every single one of them presents this as a " [:strong "(tech) revolution"] ". In fact, it's a " [:strong "war"] "! A war for profit, for market share, for your commitment and loyalty."]]
+     "Each framework is pitched as a " [:strong "revolution "] ", but what’s really happening is a battle for the same ground: your browser, your time, your commitment."]]
 
    ;; Pull Quote
    [:div.text-center.py-8

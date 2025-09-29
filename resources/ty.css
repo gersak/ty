@@ -1037,12 +1037,26 @@ html.dark .ty-sunken {
    INTERACTIVE STATES
    ================================================================= */
 
+
+.hover\:ty-bg-neutral--:hover {
+  background-color: var(--ty-bg-neutral-faint);
+}
+
+.hover\:ty-bg-neutral-:hover {
+  background-color: var(--ty-bg-neutral-soft);
+}
+
+
 .hover\:ty-bg-neutral:hover {
   background-color: var(--ty-bg-neutral);
 }
 
 .hover\:ty-bg-neutral\+:hover {
   background-color: var(--ty-bg-neutral-mild);
+}
+
+.hover\:ty-bg-neutral\+\+:hover {
+  background-color: var(--ty-bg-neutral-strong);
 }
 
 
@@ -1058,7 +1072,7 @@ html.dark .ty-sunken {
   background-color: var(--ty-bg-secondary);
 }
 
-.hover\:ty-bg-secondary+:hover {
+.hover\:ty-bg-secondary\+:hover {
   background-color: var(--ty-bg-secondary-mild);
 }
 
@@ -1066,7 +1080,7 @@ html.dark .ty-sunken {
   background-color: var(--ty-bg-success);
 }
 
-.hover\:ty-bg-success+:hover {
+.hover\:ty-bg-success\+:hover {
   background-color: var(--ty-bg-success-mild);
 }
 
@@ -1074,7 +1088,7 @@ html.dark .ty-sunken {
   background-color: var(--ty-bg-danger);
 }
 
-.hover\:ty-bg-danger+:hover {
+.hover\:ty-bg-danger\+:hover {
   background-color: var(--ty-bg-danger-mild);
 }
 

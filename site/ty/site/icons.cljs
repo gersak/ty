@@ -125,5 +125,12 @@
              "node-js" fav6-brands/node-js
              "github" fav6-brands/github
 
-             ;; Additional icons for why page
-             "swords" lucide/swords})
+;; Additional icons for why page
+             "swords" lucide/swords
+
+             ;; Development and WIP icons
+             "hammer" lucide/hammer
+             "wrench" lucide/wrench
+             "bug" lucide/bug
+             "git-branch" lucide/git-branch
+             "users" lucide/users})

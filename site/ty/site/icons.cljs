@@ -122,4 +122,8 @@
              ;; Framework icons from FontAwesome
              "react" fav6-brands/react
              "python" fav6-brands/python
-             "node-js" fav6-brands/node-js})
+             "node-js" fav6-brands/node-js
+             "github" fav6-brands/github
+
+             ;; Additional icons for why page
+             "swords" lucide/swords})

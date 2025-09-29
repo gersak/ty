@@ -101,6 +101,10 @@
       :else
       (println "  ⚠️  Warning: ty.css not found in resources/ or site/public/css/"))
 
+    (println "RUNNING: npm run release:css")
+    (println (:out (b/process {:command-args ["npm" "run" "release:css"]
+                               :out :capture
+                               :err :capture})))
     ;; Build site-specific CSS with Tailwind (if needed)
     (when (.exists (io/file "site/public/css/site.css"))
       (io/copy (io/file "site/public/css/site.css")

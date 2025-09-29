@@ -8,7 +8,8 @@
             [ty.site.docs :as docs]
             [ty.site.icons]
             [ty.site.state :refer [state]]
-            [ty.site.views.landing :as landing]))
+            [ty.site.views.landing :as landing]
+            [ty.site.views.why :as why]))
 
 ;; Configuration for GitHub Pages deployment
 ;; These are replaced at build time via closure-defines
@@ -25,8 +26,16 @@
     :hash "top"
     :name "Welcome"
     :icon "home"
-    :landing 10
+    :landing 20
     :view landing/view}
+
+   ;; Why Ty Exists - The story page
+   {:id ::why
+    :segment "why"
+    :name "Why Ty Exists"
+    :icon "lightbulb"
+    :landing 10
+    :view why/view}
 
    ;; Landing page fragments for examples
    {:id ::landing-user-profile
@@ -136,6 +145,12 @@
                  :label (:name route)
                  :icon (:icon route)})]})
 
+   ;; Why Ty Section
+   (nav-section
+     {:items [{:route-id ::why
+               :label "Why Ty Exists"
+               :icon "lightbulb"}]})
+
    ;; Examples Section (unified router navigation)
    (nav-section
      {:title "Live Examples"
@@ -170,10 +185,7 @@
   []
   (let [all-routes (concat site-routes component-routes guide-routes)
         current-route (some #(when (router/rendered? (:id %) true) %) all-routes)]
-    (if current-route
-      ((:view current-route))
-      ;; Handle docs system separately for now
-      (docs/render))))
+    ((:view current-route))))
 
 (defn sidebar []
   [:aside.w-64.ty-elevated.border-r.ty-border+.h-full.flex.flex-col
@@ -215,6 +227,7 @@
       (cond
         (docs/in-docs?) "Ty Documentation"
         (router/rendered? ::landing true) "Welcome to Ty Components"
+        (router/rendered? ::why true) "Why Ty Exists"
         (router/rendered? ::user-profile true) "User Profile Scenario"
         (router/rendered? ::event-booking true) "Event Booking Scenario"
         (router/rendered? ::contact-form true) "Contact Form Scenario"

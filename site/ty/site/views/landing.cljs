@@ -1,10 +1,10 @@
 (ns ty.site.views.landing
   (:require
-    [ty.router :as router]
-    [ty.site.views.contact-form :as contact-form]
-    [ty.site.views.event-booking :as event-booking]
-    [ty.site.views.ty-styles :as ty-styles]
-    [ty.site.views.user-profile :as user-profile]))
+   [ty.router :as router]
+   [ty.site.views.contact-form :as contact-form]
+   [ty.site.views.event-booking :as event-booking]
+   [ty.site.views.ty-styles :as ty-styles]
+   [ty.site.views.user-profile :as user-profile]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto {:id "top"}
@@ -85,11 +85,14 @@
      "Hope that components can be stable for years, not months. Useful across any framework. "
      "Simple enough that both humans and AI can work with them effortlessly."]
 
-    [:div.text-center.mb-12
+    [:div.text-center.mb-8
      [:p.text-xl.ty-text.font-semibold.mb-2
       "Built on the only thing that's guaranteed:"]
      [:p.text-2xl.ty-text++.font-bold
-      "Web Standards."]]
+      "Web Standards."]
+     [:button.text-sm.ty-text-primary.mt-4.hover:underline
+      {:on {:click #(router/navigate! :ty.site.core/why)}}
+      "Read the full story →"]]
 
     [:div.text-center.mt-12
      [:a.inline-block.ty-bg-primary.ty-text++.px-8.py-4.rounded-lg.text-lg.font-semibold.hover:shadow-lg.transition-all

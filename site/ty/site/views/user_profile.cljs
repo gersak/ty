@@ -1,6 +1,6 @@
 (ns ty.site.views.user-profile
-  (:require [ty.site.state :as state]
-            [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [ty.site.state :as state]))
 
 ;; ============================================================================
 ;; Validation Functions
@@ -80,11 +80,11 @@
 
         ;; Simulate API call
         (js/setTimeout
-         (fn []
-           (swap! state/state assoc-in [:user-profile :is-submitting] false)
-           (swap! state/state assoc-in [:user-profile :success-modal-open] true)
-           (swap! state/state assoc-in [:user-profile :saved-data] form-data))
-         1000))
+          (fn []
+            (swap! state/state assoc-in [:user-profile :is-submitting] false)
+            (swap! state/state assoc-in [:user-profile :success-modal-open] true)
+            (swap! state/state assoc-in [:user-profile :saved-data] form-data))
+          1000))
       ;; Set validation errors
       (swap! state/state assoc-in [:user-profile :validation-errors] errors))))
 
@@ -575,10 +575,10 @@
    ;; Status indicator
    [:div.flex.items-center.gap-2
     (if has-errors
-      [:<>
+      [:div
        [:ty-icon.ty-text-danger {:name "alert-circle"}]
        [:span.text-sm.ty-text-danger "Please fix validation errors before saving"]]
-      [:<>
+      [:div
        [:ty-icon.ty-text-success {:name "check-circle"}]
        [:span.text-sm.ty-text-success "Form is valid and ready to save"]])]
 

@@ -3,7 +3,6 @@
     [ty.router :as router]
     [ty.site.views.contact-form :as contact-form]
     [ty.site.views.event-booking :as event-booking]
-    [ty.site.views.ty-styles :as ty-styles]
     [ty.site.views.user-profile :as user-profile]))
 
 (defn view []
@@ -148,7 +147,7 @@
                        :size "sm"}]
        "Star on GitHub"]]
      [:p.text-xs.ty-text-
-      "npm install @gersak/ty • CDN available • MIT licensed"]]]
+      "CDN available • MIT licensed"]]]
 
    ;; LIVE EXAMPLES - Interactive demonstrations
    [:div.mb-20

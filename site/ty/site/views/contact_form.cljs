@@ -525,8 +525,11 @@
             :class (when is-submitting "opacity-75 cursor-not-allowed")}
            (if is-submitting
              [:div.flex.items-center.gap-2
-              [:ty-icon {:name "loader-2"
-                         :size "sm"}]
+              {:slot "start"}
+              [:ty-icon
+               {:name "loader-2"
+                :spin true
+                :size "sm"}]
               "Sending..."]
              [:div.flex.items-center.gap-2
               [:ty-icon {:name "send"

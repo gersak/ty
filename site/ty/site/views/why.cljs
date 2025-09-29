@@ -9,7 +9,7 @@
     [:div.inline-block.ty-bg-primary-.px-4.py-2.rounded-full.mb-4
      [:span.text-sm.ty-text-primary++.font-semibold.uppercase.tracking-wide "The Story"]]
     [:h1.text-5xl.lg:text-6xl.font-bold.ty-text.leading-tight
-     "Why ty Exists"]
+     "Why ty?"]
     [:p.text-2xl.ty-text-.max-w-2xl.mx-auto.leading-relaxed
      "Choosing standards over revolutions, and clarity over chaos."]]
 
@@ -20,30 +20,13 @@
       [:ty-icon.ty-text-danger++ {:name "swords"
                                   :size "lg"}]]
      [:h2.text-xl.font-bold.ty-text
-      "The Framework Wars"]]
+      "The Framework"]]
     [:p.text.ty-text.leading-relaxed
      "Flutter vs React. Google vs Meta/Vercel. The marketing is overwhelming."]
     [:p.text.ty-text.leading-relaxed
      "The volume of content and marketing materials is staggering. It creates the feeling that you " [:em "must choose"] ". But you only have the choices that " [:em "they"] " force on you. Pick your poison!"]
     [:p.text.ty-text.leading-relaxed
      "Every single one of them presents this as a " [:strong "(tech) revolution"] ". In fact, it's a " [:strong "war"] "! A war for profit, for market share, for your commitment and loyalty."]]
-
-
-   ;; Revolutions vs Wars
-   #_[:section.space-y-2.px-8
-      [:div.flex.items-center.gap-2.mb-2
-       [:div.ty-bg-warning-.p-2.rounded-md
-        [:ty-icon.ty-text-warning++ {:name "alert-triangle"
-                                     :size "md"}]]
-       [:h2.text-xl.font-bold.ty-text
-        "Revolutions vs Wars"]]
-      [:p.text-sm.ty-text.leading-relaxed
-       "Revolutions are positive in some sense because they don't go back to the old ways that made a critical mass of people angry and willing to participate in change with hope for a better future."]
-      [:p.text-sm.ty-text.leading-relaxed
-       "But do we need a revolution? Or is it just marketing that encourages this feeling?"]
-      [:div.ty-bg-neutral-.p-2.rounded-md.border-l-4.ty-border-warning
-       [:p.text-xs.ty-text.font-semibold
-        "Polarizing. Militarizing. Making us feel like we must pick a side."]]]
 
    ;; Pull Quote
    [:div.text-center.py-8
@@ -96,25 +79,6 @@
     [:div.ty-bg-success-.p-6.rounded-lg.border-l-4.ty-border-success
      [:p.text-sm.ty-text.leading-relaxed
       "This feels right. Not because it's revolutionary, but because it's " [:em "stable"] ". Built on standards that browsers already support. Components that will work the same way years from now."]]]
-
-   ;; What You Get - Narrative Style
-   #_[:section.space-y-6
-      [:div.flex.items-center.gap-4.mb-6
-       [:div.ty-bg-info-.p-3.rounded-lg
-        [:ty-icon.ty-text-info++ {:name "info"
-                                  :size "lg"}]]
-       [:h2.text-3xl.font-bold.ty-text
-        "What This Means"]]
-      [:div.flex.flex-col.gap-4
-       [:div.ty-elevated.p-8.rounded-xl.border-l-4.ty-border-primary
-        [:p.text.ty-text.leading-relaxed
-         "ty is built on " [:strong.ty-text-primary "Web Components"] "—the platform's native component system. This means your components work everywhere: React, HTMX, vanilla JS, ClojureScript, or any future framework that respects web standards."]]
-       [:div.ty-elevated.p-8.rounded-xl.border-l-4.ty-border-success
-        [:p.text.ty-text.leading-relaxed
-         "There's " [:strong.ty-text-success++ "no lock-in"] ". Your components will still work 5 years from now. No migration pain. No framework version anxiety. No rewriting everything when the next big thing arrives."]]
-       [:div.ty-elevated.p-8.rounded-xl.border-l-4.ty-border-neutral
-        [:p.text.ty-text.leading-relaxed
-         "It will be " [:strong.ty-text-info++ "production-ready"] "—real validation, calendar orchestration, modal management that handles edge cases. Not toy examples, but components you can actually ship."]]]]
 
    ;; The Bottom Line - More dramatic
    [:section.text-center.space-y-8.py-16.ty-bg-neutral-.rounded-2xl.p-12

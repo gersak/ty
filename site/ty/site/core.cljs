@@ -29,10 +29,10 @@
     :landing 20
     :view landing/view}
 
-   ;; Why Ty Exists - The story page
+   ;; Why ty Exists - The story page
    {:id ::why
     :segment "why"
-    :name "Why Ty Exists"
+    :name "Why ty exists"
     :icon "lightbulb"
     :landing 10
     :view why/view}
@@ -145,10 +145,10 @@
                  :label (:name route)
                  :icon (:icon route)})]})
 
-   ;; Why Ty Section
+   ;; Why ty Section
    (nav-section
      {:items [{:route-id ::why
-               :label "Why Ty Exists"
+               :label "Why ty exists"
                :icon "lightbulb"}]})
 
    ;; Examples Section (unified router navigation)
@@ -190,8 +190,7 @@
 (defn sidebar []
   [:aside.w-64.ty-elevated.border-r.ty-border+.h-full.flex.flex-col
    [:div.p-4.lg:p-6.flex-shrink-0
-    [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "Ty Components"]
-    [:p.text-xs.lg:text-sm.ty-text- "Professional Web Components"]]
+    [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "ty components"]]
    [:nav.px-2.lg:px-4.pb-4.lg:pb-6.flex-1.overflow-y-auto
     (nav-items)]])
 
@@ -225,15 +224,14 @@
                  :size "sm"}]]
      [:h2.text-base.lg:text-xl.font-semibold.ty-text.truncate
       (cond
-        (docs/in-docs?) "Ty Documentation"
-        (router/rendered? ::landing true) "Welcome to Ty Components"
-        (router/rendered? ::why true) "Why Ty Exists"
         (router/rendered? ::user-profile true) "User Profile Scenario"
         (router/rendered? ::event-booking true) "Event Booking Scenario"
         (router/rendered? ::contact-form true) "Contact Form Scenario"
-        (router/rendered? ::ty-styles true) "Ty Design System"
+        (router/rendered? ::landing) "Welcome"
+        (router/rendered? ::why true) "Why ty exists"
+        (router/rendered? ::ty-styles true) "ty Design System"
         (router/rendered? ::getting-started true) "Getting Started Guide"
-        :else "Ty Components")]]
+        :else "Documentation")]]
 
     ;; Actions section with Docs/Examples toggle and Theme toggle
     [:div.flex.items-center.gap-2.lg:gap-3.flex-shrink-0

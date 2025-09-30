@@ -24,7 +24,8 @@
     [ty.site.views.ty-styles :as ty-styles]))
 
 (def docs-components
-  [{:id :ty.site.docs/button
+  [{:id :ty.site/docs}
+   {:id :ty.site.docs/button
     :segment "button"
     :icon "square"
     :view button-docs/view

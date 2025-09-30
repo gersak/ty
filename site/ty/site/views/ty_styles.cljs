@@ -1,7 +1,7 @@
 (ns ty.site.views.ty-styles
   "Site view showcasing Ty CSS classes and design system"
   (:require
-   [ty.site.docs.common :as common]))
+    [ty.site.docs.common :as common]))
 
 (defn theme-toggle []
   "Simple theme toggle section"
@@ -24,61 +24,61 @@
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Primary Text Variants"]
      [:div.ty-bg-primary-.p-4.rounded-lg.space-y-2
-      [:div.ty-text-primary++ "ty-text-primary++ - Maximum emphasis"]
-      [:div.ty-text-primary+ "ty-text-primary+ - High emphasis"]
-      [:div.ty-text-primary "ty-text-primary - Base emphasis"]
-      [:div.ty-text-primary- "ty-text-primary- - Reduced emphasis"]
-      [:div.ty-text-primary-- "ty-text-primary-- - Minimal emphasis"]]]
+      [:div.ty-text-primary++ "ty-text-primary++"]
+      [:div.ty-text-primary+ "ty-text-primary+"]
+      [:div.ty-text-primary "ty-text-primary"]
+      [:div.ty-text-primary- "ty-text-primary-"]
+      [:div.ty-text-primary-- "ty-text-primary--"]]]
 
     ;; Secondary text variants
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Secondary Text Variants"]
      [:div.ty-bg-secondary-.p-4.rounded-lg.space-y-2
-      [:div.ty-text-secondary++ "ty-text-secondary++ - Maximum emphasis"]
-      [:div.ty-text-secondary+ "ty-text-secondary+ - High emphasis"]
-      [:div.ty-text-secondary "ty-text-secondary - Base emphasis"]
-      [:div.ty-text-secondary- "ty-text-secondary- - Reduced emphasis"]
-      [:div.ty-text-secondary-- "ty-text-secondary-- - Minimal emphasis"]]]
+      [:div.ty-text-secondary++ "ty-text-secondary++"]
+      [:div.ty-text-secondary+ "ty-text-secondary+"]
+      [:div.ty-text-secondary "ty-text-secondary"]
+      [:div.ty-text-secondary- "ty-text-secondary-"]
+      [:div.ty-text-secondary-- "ty-text-secondary--"]]]
 
     ;; Success text variants
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Success Text Variants"]
      [:div.ty-bg-success-.p-4.rounded-lg.space-y-2
-      [:div.ty-text-success++ "ty-text-success++ - Maximum emphasis"]
-      [:div.ty-text-success+ "ty-text-success+ - High emphasis"]
-      [:div.ty-text-success "ty-text-success - Base emphasis"]
-      [:div.ty-text-success- "ty-text-success- - Reduced emphasis"]
-      [:div.ty-text-success-- "ty-text-success-- - Minimal emphasis"]]]
+      [:div.ty-text-success++ "ty-text-success++"]
+      [:div.ty-text-success+ "ty-text-success+"]
+      [:div.ty-text-success "ty-text-success"]
+      [:div.ty-text-success- "ty-text-success-"]
+      [:div.ty-text-success-- "ty-text-success--"]]]
 
     ;; Danger text variants
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Danger Text Variants"]
      [:div.ty-bg-danger-.p-4.rounded-lg.space-y-2
-      [:div.ty-text-danger++ "ty-text-danger++ - Maximum emphasis"]
-      [:div.ty-text-danger+ "ty-text-danger+ - High emphasis"]
-      [:div.ty-text-danger "ty-text-danger - Base emphasis"]
-      [:div.ty-text-danger- "ty-text-danger- - Reduced emphasis"]
-      [:div.ty-text-danger-- "ty-text-danger-- - Minimal emphasis"]]]
+      [:div.ty-text-danger++ "ty-text-danger++"]
+      [:div.ty-text-danger+ "ty-text-danger+"]
+      [:div.ty-text-danger "ty-text-danger"]
+      [:div.ty-text-danger- "ty-text-danger-"]
+      [:div.ty-text-danger-- "ty-text-danger--"]]]
 
     ;; Warning text variants
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Warning Text Variants"]
      [:div.ty-bg-warning-.p-4.rounded-lg.space-y-2
-      [:div.ty-text-warning++ "ty-text-warning++ - Maximum emphasis"]
-      [:div.ty-text-warning+ "ty-text-warning+ - High emphasis"]
-      [:div.ty-text-warning "ty-text-warning - Base emphasis"]
-      [:div.ty-text-warning- "ty-text-warning- - Reduced emphasis"]
-      [:div.ty-text-warning-- "ty-text-warning-- - Minimal emphasis"]]]
+      [:div.ty-text-warning++ "ty-text-warning++"]
+      [:div.ty-text-warning+ "ty-text-warning+"]
+      [:div.ty-text-warning "ty-text-warning"]
+      [:div.ty-text-warning- "ty-text-warning-"]
+      [:div.ty-text-warning-- "ty-text-warning--"]]]
 
     ;; Neutral text variants
     [:div.space-y-3
      [:h4.text-sm.font-medium.ty-text "Neutral Text Variants"]
      [:div.ty-bg-neutral-.p-4.rounded-lg.space-y-2
-      [:div.ty-text-neutral++ "ty-text-neutral++ - Maximum emphasis"]
-      [:div.ty-text-neutral+ "ty-text-neutral+ - High emphasis"]
-      [:div.ty-text-neutral "ty-text-neutral - Base emphasis"]
-      [:div.ty-text-neutral- "ty-text-neutral- - Reduced emphasis"]
-      [:div.ty-text-neutral-- "ty-text-neutral-- - Minimal emphasis"]]]]])
+      [:div.ty-text-neutral++ "ty-text-neutral++"]
+      [:div.ty-text-neutral+ "ty-text-neutral+"]
+      [:div.ty-text-neutral "ty-text-neutral"]
+      [:div.ty-text-neutral- "ty-text-neutral-"]
+      [:div.ty-text-neutral-- "ty-text-neutral--"]]]]])
 
 (defn background-variants-demo []
   "Shows the 3-variant background system"
@@ -166,9 +166,9 @@
       [:div.ty-text-neutral.text-sm "Softer background"]]]]])
 
 (defn surface-classes-demo []
-  "Shows surface classes nested like babushkas to demonstrate layering hierarchy"
+  "Shows surface classes nested to demonstrate layering hierarchy"
   [:div.ty-elevated.p-6.rounded-lg
-   [:h3.text-lg.font-semibold.ty-text.mb-4 "Surface Hierarchy (Babushka Style)"]
+   [:h3.text-lg.font-semibold.ty-text.mb-4 "Surface Hierarchy"]
    [:p.ty-text-.mb-6 "Semantic surface classes nested to show layering and elevation hierarchy."]
 
    [:div.space-y-6

@@ -24,7 +24,7 @@
    :artifact-id "ty-icons"
    :version version
    :basis-alias :ty-icons-lib
-   :src-dirs ["gen"]
+   :src-dirs ["icons"]
    :resource-dirs ["resources/ty-icons"]
    :jar-file (format "target/ty-icons-%s.jar" version)})
 

@@ -15,6 +15,10 @@ site/public/
 
 dist/
 dist-cdn/
+dev/
+deploy.sh
+real_story.md
+ty
 
 target/
 .cpcache/

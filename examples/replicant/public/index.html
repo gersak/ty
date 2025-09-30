@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Replicant + Ty Web Components Example</title>
+    <!-- Load Ty CSS from local resources -->
+    <link rel="stylesheet" href="css/ty.css">
+    <!-- Load compiled Tailwind + Custom CSS -->
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body class="ty-canvas">
+    <div class="ty-content max-w-6xl mx-auto p-6">
+        <header class="mb-8">
+            <h1 class="ty-text++ text-3xl font-bold mb-2">Replicant + Ty Components</h1>
+            <p class="ty-text- text-lg">
+                Showcasing Replicant with dev.gersak/ty web components including icons,
+                dropdowns, multiselects, and calendar components styled with Tailwind CSS v4.
+            </p>
+        </header>
+
+        <main id="app">
+            <!-- Replicant will render content here -->
+            <div class="ty-elevated p-8 rounded-lg">
+                <p class="ty-text">Loading Replicant application...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Load Ty web components -->
+    <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.5/dist/ty.js"></script>
+
+    <!-- Load our ClojureScript app -->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

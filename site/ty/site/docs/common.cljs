@@ -74,25 +74,27 @@
     [:pre
      [:code.text-xs
       {;:class (str "language-" lang)
-       :replicant/on-mount (fn [{^js el :replicant/node}]
-                             (when (and el
-                                        js/window.hljs
-                                        (.-highlightElement js/window.hljs))
+       :replicant/on-render (fn [{^js el :replicant/node}]
+                              (when (and el
+                                         js/window.hljs
+                                         (.-highlightElement js/window.hljs))
                                    ;; Always restore original text and clear highlight state
-                               (when (.-dataset el)
-                                 (js-delete (.-dataset el) "highlighted")
-                                 (set! (.-innerHTML el) code)
-                                 (set! (.-textContent el) code))
-                               (js/setTimeout
-                                 (fn []
-                                   (try
+                                (when (.-dataset el)
+                                  (js-delete (.-dataset el) "highlighted")
+                                  (set! (.-innerHTML el) "")
+                                  (set! (.-textContent el) "")
+                                  (set! (.-innerHTML el) code)
+                                  (set! (.-textContent el) code))
+                                (js/setTimeout
+                                  (fn []
+                                    (try
                                      ;; Highlight the clean element
-                                     (js/window.hljs.highlightElement el)
+                                      (js/window.hljs.highlightElement el)
                                      ;; Add copy button and language label
-                                     (add-code-enhancements! el lang)
-                                     (catch js/Error e
-                                       (js/console.warn "Failed to highlight code block:" e))))
-                                 50)))}]]]))
+                                      (add-code-enhancements! el lang)
+                                      (catch js/Error e
+                                        (js/console.warn "Failed to highlight code block:" e))))
+                                  50)))}]]]))
 
 (defn attribute-table
   "Display component attributes in a table format"

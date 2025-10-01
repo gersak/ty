@@ -14,7 +14,7 @@
      "Choosing standards over revolutions, and clarity over chaos."]]
 
    ;; The Framework Wars
-   [:section.ty-elevated.p-10.rounded-xl.space-y-4.mb-6
+   [:section.ty-elevated.p-12.rounded-xl.space-y-4.mb-6
     [:div.flex.items-center.gap-2.mb-4
      [:div.ty-bg-danger-.p-3.rounded-lg
       [:ty-icon.ty-text-danger++ {:name "swords"
@@ -66,7 +66,7 @@
        "It is about building on something stable, something that would last."]]]]
 
    ;; The Perspective Shift
-   [:section.ty-elevated.p-10.rounded-xl.space-y-6
+   [:section.ty-elevated.p-12.rounded-xl.space-y-6
     [:div.flex.items-center.gap-4.mb-6
      [:div.ty-bg-success-.p-3.rounded-lg
       [:ty-icon.ty-text-success++ {:name "code"

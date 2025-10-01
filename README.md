@@ -6,7 +6,6 @@
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty-icons.svg)](https://clojars.org/dev.gersak/ty-icons)
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty.svg)](https://clojars.org/dev.gersak/ty)
 
-
 Framework churn got old. React, Vue, Angular, Svelte... every year something new, every migration a headache. So I built **ty** using Web Components instead. Turns out the browser's component system is pretty solid.
 
 ## Why "ty"?
@@ -23,23 +22,82 @@ Framework churn got old. React, Vue, Angular, Svelte... every year something new
 <p><strong><em>Yes! Let's call it ty."</em></strong></p>
 </blockquote>
 
+## ⚠️ Work in Progress - But Ready to Use
+
+**ty is actively being developed.** Components work, examples run, but expect rough edges. This is a real project with a real vision - web components that work everywhere, built on standards that won't break next year.
+
+If you're tired of framework churn and want to help build something different, you're in the right place.
+
+### What's Working Today
+
+✅ **Calendar** - Full calendar system with navigation, custom rendering, and form integration  
+✅ **Dropdown** - Rich dropdown with HTML content support  
+✅ **Modal** - Accessible modals with focus trapping  
+✅ **Input** - Enhanced inputs with validation and formatting  
+✅ **Button** - Semantic buttons with variants  
+✅ **Multiselect** - Multi-select with tags and search  
+✅ **Date Picker** - Date selection with calendar popup  
+✅ **Tag** - Chip/tag component with removable option  
+✅ **Tooltip** - Smart tooltips with positioning  
+✅ **Textarea** - Auto-resizing textarea  
+✅ **Popup** - Positioned popovers  
+✅ **Icon** - 200+ Lucide icons built-in
+
+**13 components total** - functional and used in production.
+
+### Why Use Something That's Still in Progress?
+
+- ✅ **It already works** - Components are functional and used in production
+- ✅ **Built on web standards** - Not another abstraction layer that will break
+- ✅ **Framework agnostic** - Use with React, Vue, HTMX, or vanilla HTML
+- ✅ **No build step required** - CDN ready, just add script tag
+- ✅ **Your input matters** - Early adopters shape the direction
+- ✅ **ClojureScript powered** - Built with a language designed to last
+
 ## The Idea
 
 Web Components work everywhere. React today, Vue tomorrow, vanilla JS next week - doesn't matter. Same components, same API. And if you're already using ClojureScript, they integrate beautifully with Google Closure compiler.
 
-**What I'm building:**
-- Components that adapt to desktop vs mobile automatically
-- Semantic design system that actually makes sense
-- Zero JavaScript dependencies (just ClojureScript when you want it)
-- Proper calendar handling that doesn't make you cry
+**The vision:** Components that automatically provide the best UX for each environment. Desktop gets hover states and keyboard navigation. Mobile gets touch-friendly interactions and gestures. No props, no configuration.
 
-Still working on it, but the foundation is solid.
+**See it in action:** [ty.gersak.io](https://gersak.github.io/ty)
 
-To se ty in action and read documentation go to [this link](https://gersak.github.io/ty).
+## ⚠️ Important: CSS is Required
+
+**Ty components require the `ty.css` stylesheet to display correctly.** The CSS file contains:
+
+- **CSS Variables** - Design tokens for all colors, surfaces, spacing, and typography
+- **Utility Classes** - Semantic classes like `.ty-bg-primary`, `.ty-text++`, `.ty-elevated`
+- **Theme System** - Light/dark mode definitions that swap automatically
+- **Component Styles** - Base styling that components depend on
+
+### What Happens Without CSS?
+
+❌ Components render but have **no styling**  
+❌ Colors are **undefined** (browser defaults)  
+❌ Layout may be **broken**  
+❌ Theme switching **doesn't work**
+
+### Always Include Both CSS and JavaScript
+
+```html
+<!-- 1. CSS first (required) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+
+<!-- 2. Then JavaScript components -->
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js"></script>
+```
+
+**Why separate CSS?**
+- **Global theming** - Change colors across all components by updating CSS variables
+- **Performance** - CSS loads once and applies to all components instantly
+- **Customization** - Override variables before components load for custom themes
+- **Standards** - Follows web component best practices (styles separate from logic)
 
 ## Try It Out
 
-**ClojureScript** (best experience):
+### ClojureScript (best experience)
+
 ```clojure
 ;; deps.edn
 {:deps {dev.gersak/ty {:mvn/version "0.1.0"}}}
@@ -49,19 +107,22 @@ To se ty in action and read documentation go to [this link](https://gersak.githu
 [:ty-calendar {:value @date, :on-date-select #(reset! date %)}]
 ```
 
-**React** (if that's your thing):
+### React
+
 ```jsx
 import { TyButton, TyCalendar } from '@gersak/ty-react'
 
 <TyCalendar onChange={(e) => setDate(e.detail.date)} />
 ```
 
-**Vanilla HTML** (works everywhere):
+### Vanilla HTML (works everywhere)
+
 ```html
 <ty-button flavor="primary">Click me</ty-button>
 <ty-calendar value="2024-12-25"></ty-calendar>
 
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.12/ty-lazy.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js"></script>
 ```
 
 ## What's Cool About It
@@ -97,8 +158,6 @@ import { TyButton, TyCalendar } from '@gersak/ty-react'
 <ty-tooltip message="Helpful info">Hover target</ty-tooltip>
 ```
 
-**13 components total.** Calendar system is pretty solid. Forms work well. Still adding stuff.
-
 ## The Bundle Situation
 
 - **Core**: ~80KB (50KB if you're using ClojureScript)
@@ -117,36 +176,64 @@ Not tiny, but reasonable for what you get. And with ClojureScript + Closure comp
 
 **ClojureScript**: Built-in router, i18n, and responsive layout system if you want them.
 
-## Current Status
-
-**Works well**: All the basic components, calendar system, forms, modals.
-
-**Still building**: 
-- Tabs component (soon)
-- Better mobile adaptations 
-- More infrastructure pieces
-
-**The vision**: Components that automatically provide the best UX for each environment. Desktop gets hover states and keyboard navigation. Mobile gets touch-friendly interactions and gestures. No props, no configuration.
-
 ## When It Makes Sense
 
-**Good fit**: ClojureScript projects, multi-framework orgs, teams tired of framework churn, wanting semantic design systems.
+**Good fit:**
+- ClojureScript projects
+- Multi-framework organizations
+- Teams tired of framework churn
+- Projects wanting semantic design systems
+- Long-term projects built on web standards
 
-**Maybe not**: React-only shops (plenty of React-specific options), need something battle-tested right now (give it a few months), highly specific design requirements.
+**Maybe not:**
+- React-only shops (plenty of React-specific options exist)
+- Need something battle-tested right now (give it a few months)
+- Highly specific design system requirements
+
+## 🤝 Join the Effort
+
+This project grows with community input. Every issue, PR, and discussion helps shape the direction.
+
+**Ways to contribute:**
+- 🐛 [**Report Issues**](https://github.com/gersak/ty/issues) - Found a bug? Let us know
+- 💬 [**Discussions**](https://github.com/gersak/ty/discussions) - Share ideas, ask questions, show what you've built
+- 🌟 [**Star on GitHub**](https://github.com/gersak/ty) - Show support for the project
+- 🔧 [**Pull Requests**](https://github.com/gersak/ty/pulls) - Documentation, components, examples - all contributions matter
+
+**Especially interested in:**
+- Mobile interaction improvements
+- New components
+- Real-world usage feedback
+- Documentation improvements
+
+## Current Development Status
+
+**Working well:**
+- ✅ All basic components (button, input, textarea, tag)
+- ✅ Calendar system with navigation and custom rendering
+- ✅ Form components with validation
+- ✅ Modals and popups
+- ✅ Semantic design system with automatic theming
+
+**Coming soon:**
+- 🚧 Tabs component
+- 🚧 Better mobile adaptations
+- 🚧 More layout components
+- 🚧 Enhanced accessibility features
+
+**Long-term vision:**
+Components that automatically adapt to their environment without configuration. The right UX for desktop (hover states, keyboard navigation) and mobile (touch gestures, larger targets) - all handled automatically.
 
 ## Links
 
-- **Docs & examples**: [gersak.github.io/ty](https://gersak.github.io/ty)
-- **Source**: [github.com/gersak/ty](https://github.com/gersak/ty)
-- **ClojureScript**: [clojars.org/dev.gersak/ty](https://clojars.org/dev.gersak/ty)
-- **React**: [@gersak/ty-react](https://www.npmjs.com/package/@gersak/ty-react)
-- **CDN**: [jsdelivr.net/npm/@gersak/ty](https://www.jsdelivr.net/npm/@gersak/ty)
+- 📚 **Docs & examples**: [gersak.github.io/ty](https://gersak.github.io/ty)
+- 💻 **Source**: [github.com/gersak/ty](https://github.com/gersak/ty)
+- 📦 **ClojureScript**: [clojars.org/dev.gersak/ty](https://clojars.org/dev.gersak/ty)
+- ⚛️ **React**: [@gersak/ty-react](https://www.npmjs.com/package/@gersak/ty-react)
+- 🌐 **CDN**: [jsdelivr.net/npm/@gersak/ty](https://www.jsdelivr.net/npm/@gersak/ty)
 
-## Contributing
+## Development
 
-Built this for the ClojureScript community. If you're using it and want to make it better, pull requests welcome. Especially interested in mobile interaction improvements and new components.
-
-**Development**:
 ```bash
 git clone https://github.com/gersak/ty.git
 cd ty
@@ -157,3 +244,5 @@ npm run dev  # http://localhost:8000
 ---
 
 Built with ClojureScript and Web Components. MIT licensed.
+
+**Work in progress. Getting better every day.**

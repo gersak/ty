@@ -77,11 +77,11 @@
      [:h3.text-lg.font-medium.ty-text+.mb-3 "Events"]
      (event-table
        [{:name "change"
-         :detail "{value: string, milliseconds: number, source: string, formatted: string}"
-         :description "Fired when date/time value changes. Source can be 'selection', 'time-change', 'clear', or 'external'"}
+         :payload "{value: string, milliseconds: number, source: string, formatted: string}"
+         :when-fired "Fired when date/time value changes. Source can be 'selection', 'time-change', 'clear', or 'external'"}
         {:name "open"
-         :detail "null"
-         :description "Fired when the calendar dropdown opens"}])]
+         :payload "null"
+         :when-fired "Fired when the calendar dropdown opens"}])]
 
     ;; Properties Table
     [:div

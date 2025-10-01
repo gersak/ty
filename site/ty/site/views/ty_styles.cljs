@@ -1,5 +1,5 @@
 (ns ty.site.views.ty-styles
-  "Site view showcasing Ty CSS classes and design system"
+  "Site view showcasing ty CSS classes and design system"
   (:require
     [ty.site.docs.common :as common]))
 
@@ -217,10 +217,10 @@
       [:div "• " [:strong.ty-text++ "ty-floating"] " - Modals, dropdowns, tooltips - highest elevation"]]]]])
 
 (defn practical-examples []
-  "Shows real-world component patterns using Ty classes"
+  "Shows real-world component patterns using ty classes"
   [:div.ty-elevated.p-6.rounded-lg
    [:h3.text-lg.font-semibold.ty-text.mb-4 "Practical Component Examples"]
-   [:p.ty-text-.mb-6 "Real-world patterns demonstrating proper Ty class usage."]
+   [:p.ty-text-.mb-6 "Real-world patterns demonstrating proper ty class usage."]
 
    [:div.space-y-6
     ;; Alert examples
@@ -281,10 +281,10 @@
       [:span.px-3.py-1.ty-bg-primary.ty-text-primary++.rounded-full.text-sm.font-medium "Featured"]]]]])
 
 (defn code-examples []
-  "Shows code patterns for using Ty classes"
+  "Shows code patterns for using ty classes"
   [:div.ty-elevated.p-6.rounded-lg
    [:h3.text-lg.font-semibold.ty-text.mb-4 "Code Examples"]
-   [:p.ty-text-.mb-6 "Copy these patterns to use Ty classes effectively in your components."]
+   [:p.ty-text-.mb-6 "Copy these patterns to use ty classes effectively in your components."]
 
    [:div.space-y-6
     ;; Alert pattern
@@ -317,10 +317,10 @@
                         "clojure")]]])
 
 (defn usage-guidelines []
-  "Shows best practices for using Ty classes"
+  "Shows best practices for using ty classes"
   [:div.ty-elevated.p-6.rounded-lg
    [:h3.text-lg.font-semibold.ty-text.mb-4 "Usage Guidelines"]
-   [:p.ty-text-.mb-6 "Best practices for effective use of the Ty design system."]
+   [:p.ty-text-.mb-6 "Best practices for effective use of the ty design system."]
 
    [:div.grid.gap-6.md:grid-cols-2
     [:div
@@ -349,14 +349,81 @@
       [:div.ty-text- "• Ignore accessibility contrast requirements"]
       [:div.ty-text- "• Use too many emphasis levels in one component"]]]]])
 
+(defn css-architecture-explanation []
+  "Critical section explaining why ty.css is required"
+  [:div.space-y-6
+   ;; Critical Warning Box
+   [:div.ty-bg-primary-.border.ty-border-primary.p-6.rounded-xl.mb-8
+    [:div.flex.items-start.gap-4
+     [:ty-icon.ty-text-primary++.flex-shrink-0.mt-1 {:name "alert-triangle"
+                                                     :size "lg"}]
+     [:div
+      [:h3.text-xl.font-bold.ty-text-primary++.mb-3 "ty.css is REQUIRED"]
+      [:p.ty-text-primary.mb-3
+       "Every setup below requires " [:code.ty-bg-primary.px-2.py-1.rounded.font-mono "ty.css"]
+       ". Components depend on CSS variables defined in this stylesheet. Without it, components "
+       [:strong "render but have no styling"] "."]
+      [:div.p-4.rounded-lg
+       [:p.text-sm.ty-text-primary++.font-medium.mb-2 "What breaks without ty.css:"]
+       [:ul.space-y-1.text-sm.ty-text-primary
+        [:li "❌ No colors (CSS variables undefined)"]
+        [:li "❌ No layout (surface hierarchy missing)"]
+        [:li "❌ No theme switching"]
+        [:li "❌ Utility classes (" [:code.font-mono "ty-bg-primary"] ") don't work"]]]]]]
+
+   ;; Architecture Explanation
+   [:div.ty-elevated.p-6.rounded-xl
+    [:h3.text-xl.font-semibold.ty-text.mb-4 "CSS Variable Architecture"]
+    [:p.ty-text-.mb-4
+     "ty uses CSS variables as design tokens. Components reference these variables for all styling."]
+    [:div.grid.gap-4.md:grid-cols-2
+     [:div.ty-content.p-4.rounded-lg
+      [:h4.font-semibold.ty-text.mb-2.flex.items-center.gap-2
+       [:span.ty-bg-primary.ty-text-primary++.w-8.h-8.rounded-full.flex.items-center.justify-center.text-sm "1"]
+       "CSS Variables"]
+      [:p.text-sm.ty-text-.mb-2 "Defined in ty.css:"]
+      [:ul.space-y-1.text-xs.ty-text-
+       [:li "• 130+ variables"]
+       [:li "• 7 colors × 5 variants"]
+       [:li "• Surface hierarchy"]
+       [:li "• Light/dark themes"]]]
+     [:div.ty-content.p-4.rounded-lg
+      [:h4.font-semibold.ty-text.mb-2.flex.items-center.gap-2
+       [:span.ty-bg-success.ty-text-success++.w-8.h-8.rounded-full.flex.items-center.justify-center.text-sm "2"]
+       "Components Use Them"]
+      [:p.text-sm.ty-text-.mb-2 "Reference variables:"]
+      [:ul.space-y-1.text-xs.ty-text-
+       [:li "• Web components"]
+       [:li "• Utility classes"]
+       [:li "• Your custom styles"]]]]
+    [:div.mt-4
+     (common/code-block
+       "/* Components reference CSS variables from ty.css */
+button {
+  background: var(--ty-color-primary);  /* undefined without ty.css! */
+  color: var(--ty-text-strong);         /* undefined without ty.css! */
+}"
+       "css")]]
+
+   ;; Installation Reminder
+   [:div.ty-bg-primary-.border.ty-border-primary.p-4.rounded-xl
+    [:h4.font-semibold.ty-text-primary.mb-3 "Always Include ty.css First"]
+    (common/code-block
+      "<!-- CSS first (required) -->
+<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css\">
+
+<!-- Then JavaScript -->
+<script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js\"></script>"
+      "html")]])
+
 (defn view []
   [:div.mx-auto.px-6.space-y-8
    {:style {:max-width "1000px"}}
    ;; Header
    [:div.text-center.mb-8
-    [:h1.text-3xl.font-bold.ty-text.mb-4 "Ty Design System"]
+    [:h1.text-3xl.font-bold.ty-text.mb-4 "ty Design System"]
     [:p.text-lg.ty-text-.max-w-3xl.mx-auto.leading-relaxed
-     "Explore the complete Ty CSS class system with semantic colors, backgrounds, and surfaces. "
+     "Explore the complete ty CSS class system with semantic colors, backgrounds, and surfaces. "
      "Built for consistency, accessibility, and automatic theme adaptation."]
 
     [:div.flex.flex-wrap.gap-3.justify-center.mt-6
@@ -367,6 +434,9 @@
 
    ;; Theme toggle
    (theme-toggle)
+
+   ;; CSS Architecture Explanation (CRITICAL - explains why ty.css is required)
+   (css-architecture-explanation)
 
    ;; Main content sections
    (text-variants-demo)
@@ -380,7 +450,7 @@
    [:div.ty-elevated.p-6.rounded-lg.text-center
     [:h4.text-lg.font-semibold.ty-text.mb-2 "Ready to Use ✨"]
     [:p.ty-text-
-     "The Ty design system provides a complete set of semantic CSS classes for building consistent, "
+     "The ty design system provides a complete set of semantic CSS classes for building consistent, "
      "accessible, and beautiful user interfaces. All classes automatically adapt between light and dark themes "
      "while maintaining proper contrast ratios."]]])
 

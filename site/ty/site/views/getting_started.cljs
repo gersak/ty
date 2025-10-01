@@ -7,6 +7,25 @@
     [:h1.text-3xl.font-bold.ty-text.mb-4 "Getting Started"]
     [:p.text-lg.ty-text-.max-w-2xl.mx-auto "Choose your setup based on your tech stack. All approaches require both CSS styles and web components runtime."]]
 
+   ;; CRITICAL CSS WARNING
+   [:div.ty-bg-primary-.border.ty-border-primary.p-6.rounded-xl.mb-8
+    [:div.flex.items-start.gap-4
+     [:ty-icon.ty-text-primary++.flex-shrink-0.mt-1 {:name "alert-triangle"
+                                                     :size "lg"}]
+     [:div
+      [:h3.text-xl.font-bold.ty-text-primary++.mb-3 "ty.css is REQUIRED"]
+      [:p.ty-text-primary.mb-3
+       "Every setup below requires " [:code.ty-bg-primary.px-2.py-1.rounded.font-mono "ty.css"]
+       ". Components depend on CSS variables defined in this stylesheet. Without it, components "
+       [:strong "render but have no styling"] "."]
+      [:div.p-4.rounded-lg
+       [:p.text-sm.ty-text-primary++.font-medium.mb-2 "What breaks without ty.css:"]
+       [:ul.space-y-1.text-sm.ty-text-primary
+        [:li "❌ No colors (CSS variables undefined)"]
+        [:li "❌ No layout (surface hierarchy missing)"]
+        [:li "❌ No theme switching"]
+        [:li "❌ Utility classes (" [:code.font-mono "ty-bg-primary"] ") don't work"]]]]]]
+
    ;; HTML/Backend Setup
    [:div.ty-elevated.p-6.rounded-xl
     [:div.flex.items-center.gap-3.mb-6
@@ -20,23 +39,23 @@
      [:div
       [:h4.font-medium.ty-text.mb-2 "Add to your <head> section:"]
       (common/code-block
-       "<!-- Ty Components CSS -->
+        "<!-- Ty Components CSS -->
 <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css\">
 
 <!-- Ty Components JS (registers all web components) -->
 <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js\"></script>"
-       "html")]
+        "html")]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "Use components anywhere in your HTML:"]
       (common/code-block
-       "<ty-button variant=\"primary\">Click me</ty-button>
+        "<ty-button variant=\"primary\">Click me</ty-button>
 <ty-input label=\"Email\" type=\"email\"></ty-input>
 <ty-dropdown label=\"Choose option\">
   <ty-option value=\"1\">Option 1</ty-option>
   <ty-option value=\"2\">Option 2</ty-option>
 </ty-dropdown>"
-       "html")]]]
+        "html")]]]
 
    ;; React Setup
    [:div.ty-elevated.p-6.rounded-xl
@@ -51,19 +70,19 @@
      [:div
       [:h4.font-medium.ty-text.mb-2 "1. Add CDN to your HTML head:"]
       (common/code-block
-       "<!-- In your HTML head (index.html, _app.js, etc.) -->
+        "<!-- In your HTML head (index.html, _app.js, etc.) -->
 <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css\">
 <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js\"></script>"
-       "html")]
+        "html")]
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Install React wrappers:"]
       (common/code-block
-       "npm install @gersak/ty-react"
-       "bash")]
+        "npm install @gersak/ty-react"
+        "bash")]
      [:div
       [:h4.font-medium.ty-text.mb-2 "3. Use React components:"]
       (common/code-block
-       "import { Button, Input, Dropdown, Calendar } from '@gersak/ty-react'
+        "import { Button, Input, Dropdown, Calendar } from '@gersak/ty-react'
 
 function App() {
   const [date, setDate] = useState(null)
@@ -85,7 +104,7 @@ function App() {
     </div>
   )
 }"
-       "javascript")]
+        "javascript")]
      [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
       [:div.flex.items-start.gap-2
        [:ty-icon.ty-text-success++.flex-shrink-0.mt-0.5 {:name "check-circle"
@@ -124,20 +143,20 @@ function App() {
      [:div
       [:h4.font-medium.ty-text.mb-2 "1. Add to deps.edn:"]
       (common/code-block
-       "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}}}"
-       "clojure")]
+        "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}}}"
+        "clojure")]
 
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Require components namespace:"]
       (common/code-block
-       "(ns my-app.core
+        "(ns my-app.core
   (:require [ty.components]))  ; Auto-registers ALL web components
 
 (defn app []
   [:div
     [:ty-button {:flavor \"primary\"} \"Click me\"]
     [:ty-input {:label \"Email\" :type \"email\"}]])"
-       "clojure")]
+        "clojure")]
 
      [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
       [:div.flex.items-start.gap-2
@@ -159,13 +178,13 @@ function App() {
      [:div
       [:h4.font-medium.ty-text.mb-2 "1. Add dependency to deps.edn:"]
       (common/code-block
-       "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}
+        "{:deps {dev.gersak/ty {:mvn/version \"0.1.5\"}
          com.pitch/uix.core {:mvn/version \"1.0.1\"}}}"
-       "clojure")]
+        "clojure")]
      [:div
       [:h4.font-medium.ty-text.mb-2 "2. Require ty.components to register web components:"]
       (common/code-block
-       "(ns my-app.core
+        "(ns my-app.core
   (:require [uix.core :as uix :refer [$ defui]]
             [ty.components]))  ; Auto-registers ALL web components
 
@@ -179,7 +198,7 @@ function App() {
                     :type \"email\"
                     :value value
                     :onChange #(set-value! (.. % -target -value))}))))"
-       "clojure")]
+        "clojure")]
      [:div.ty-bg-success-.border.ty-border-success.p-4.rounded-lg
       [:div.flex.items-start.gap-2
        [:ty-icon.ty-text-success++.flex-shrink-0.mt-0.5 {:name "check-circle"

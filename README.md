@@ -28,22 +28,7 @@ Framework churn got old. React, Vue, Angular, Svelte... every year something new
 
 If you're tired of framework churn and want to help build something different, you're in the right place.
 
-### What's Working Today
-
-✅ **Calendar** - Full calendar system with navigation, custom rendering, and form integration  
-✅ **Dropdown** - Rich dropdown with HTML content support  
-✅ **Modal** - Accessible modals with focus trapping  
-✅ **Input** - Enhanced inputs with validation and formatting  
-✅ **Button** - Semantic buttons with variants  
-✅ **Multiselect** - Multi-select with tags and search  
-✅ **Date Picker** - Date selection with calendar popup  
-✅ **Tag** - Chip/tag component with removable option  
-✅ **Tooltip** - Smart tooltips with positioning  
-✅ **Textarea** - Auto-resizing textarea  
-✅ **Popup** - Positioned popovers  
-✅ **Icon** - 200+ Lucide icons built-in
-
-**13 components total** - functional and used in production.
+**13 production-ready components** including calendar system, forms, modals, dropdowns, and more. See [Current Development Status](#current-development-status) for the complete list.
 
 ### Why Use Something That's Still in Progress?
 
@@ -52,13 +37,10 @@ If you're tired of framework churn and want to help build something different, y
 - ✅ **Framework agnostic** - Use with React, Vue, HTMX, or vanilla HTML
 - ✅ **No build step required** - CDN ready, just add script tag
 - ✅ **Your input matters** - Early adopters shape the direction
-- ✅ **ClojureScript powered** - Built with a language designed to last
 
-## The Idea
+## The Vision
 
-Web Components work everywhere. React today, Vue tomorrow, vanilla JS next week - doesn't matter. Same components, same API. And if you're already using ClojureScript, they integrate beautifully with Google Closure compiler.
-
-**The vision:** Components that automatically provide the best UX for each environment. Desktop gets hover states and keyboard navigation. Mobile gets touch-friendly interactions and gestures. No props, no configuration.
+Components that automatically provide the best UX for each environment. Desktop gets hover states and keyboard navigation. Mobile gets touch-friendly interactions and gestures. No props, no configuration.
 
 **See it in action:** [ty.gersak.io](https://gersak.github.io/ty)
 
@@ -96,7 +78,7 @@ Web Components work everywhere. React today, Vue tomorrow, vanilla JS next week 
 
 ## Try It Out
 
-### ClojureScript (best experience)
+### ClojureScript
 
 ```clojure
 ;; deps.edn
@@ -107,6 +89,8 @@ Web Components work everywhere. React today, Vue tomorrow, vanilla JS next week 
 [:ty-calendar {:value @date, :on-date-select #(reset! date %)}]
 ```
 
+**For ClojureScript folks**: ty adds about 50KB instead of the full 80KB because you share the runtime. Plus Google Closure compiler optimizations actually work - only the parts you use get bundled.
+
 ### React
 
 ```jsx
@@ -115,7 +99,7 @@ import { TyButton, TyCalendar } from '@gersak/ty-react'
 <TyCalendar onChange={(e) => setDate(e.detail.date)} />
 ```
 
-### Vanilla HTML (works everywhere)
+### Vanilla HTML
 
 ```html
 <ty-button flavor="primary">Click me</ty-button>
@@ -127,36 +111,9 @@ import { TyButton, TyCalendar } from '@gersak/ty-react'
 
 ## What's Cool About It
 
-**For ClojureScript folks**: When you're already using ClojureScript, ty adds about 50KB instead of the full 80KB because you share the runtime. Plus Google Closure compiler optimizations actually work.
-
-**For everyone else**: Components that work across frameworks. Build once, use everywhere.
-
 **Adaptive behavior**: Dropdowns that know when you're on mobile. Calendars that handle keyboard navigation on desktop and gestures on mobile. No configuration required.
 
 **Semantic colors**: Instead of `bg-blue-500`, you get `ty-bg-primary`. Colors that mean something and adapt to light/dark themes automatically.
-
-## What's Available
-
-```html
-<!-- Basic stuff -->
-<ty-button flavor="primary">Action</ty-button>
-<ty-input placeholder="Type here..." />
-<ty-tag removable>Skill</ty-tag>
-
-<!-- Selection -->
-<ty-dropdown>
-  <ty-option value="cljs">ClojureScript</ty-option>
-  <ty-option value="js">JavaScript</ty-option>
-</ty-dropdown>
-
-<!-- Calendar that doesn't suck -->
-<ty-calendar value="2024-12-25"></ty-calendar>
-<ty-date-picker name="birthday"></ty-date-picker>
-
-<!-- Layout -->
-<ty-modal>Your content here</ty-modal>
-<ty-tooltip message="Helpful info">Hover target</ty-tooltip>
-```
 
 ## The Bundle Situation
 
@@ -190,6 +147,32 @@ Not tiny, but reasonable for what you get. And with ClojureScript + Closure comp
 - Need something battle-tested right now (give it a few months)
 - Highly specific design system requirements
 
+## Current Development Status
+
+**Working well:**
+- ✅ **Button** - Semantic buttons with flavors and sizes
+- ✅ **Input** - Enhanced inputs with validation and formatting
+- ✅ **Textarea** - Auto-resizing textarea
+- ✅ **Calendar** - Full calendar system with navigation, custom rendering, and form integration
+- ✅ **Date Picker** - Date selection with calendar popup
+- ✅ **Dropdown** - Rich dropdown with HTML content support
+- ✅ **Multiselect** - Multi-select with tags and search
+- ✅ **Modal** - Accessible modals with focus trapping
+- ✅ **Popup** - Positioned popovers
+- ✅ **Tooltip** - Smart tooltips with positioning
+- ✅ **Tag** - Chip/tag component with removable option
+- ✅ **Icon** - 200+ Lucide icons built-in
+- ✅ **Semantic design system** - Automatic theming with CSS variables
+
+**Coming soon:**
+- 🚧 Tabs component
+- 🚧 Better mobile adaptations
+- 🚧 More layout components
+- 🚧 Enhanced accessibility features
+
+**Long-term vision:**
+Continue improving adaptive behavior so components automatically handle desktop (hover states, keyboard nav) and mobile (touch gestures, larger targets) without any configuration.
+
 ## 🤝 Join the Effort
 
 This project grows with community input. Every issue, PR, and discussion helps shape the direction.
@@ -205,24 +188,6 @@ This project grows with community input. Every issue, PR, and discussion helps s
 - New components
 - Real-world usage feedback
 - Documentation improvements
-
-## Current Development Status
-
-**Working well:**
-- ✅ All basic components (button, input, textarea, tag)
-- ✅ Calendar system with navigation and custom rendering
-- ✅ Form components with validation
-- ✅ Modals and popups
-- ✅ Semantic design system with automatic theming
-
-**Coming soon:**
-- 🚧 Tabs component
-- 🚧 Better mobile adaptations
-- 🚧 More layout components
-- 🚧 Enhanced accessibility features
-
-**Long-term vision:**
-Components that automatically adapt to their environment without configuration. The right UX for desktop (hover states, keyboard navigation) and mobile (touch gestures, larger targets) - all handled automatically.
 
 ## Links
 

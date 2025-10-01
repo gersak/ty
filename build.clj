@@ -6,7 +6,7 @@
             [deps-deploy.deps-deploy :as deploy]
             [ty.template :as template]))
 
-(def version "0.1.0-SNAPSHOT")
+(def version "0.1.1-SNAPSHOT")
 (def class-dir "target/classes")
 
 ;; Library configurations

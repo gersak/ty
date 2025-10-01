@@ -95,7 +95,6 @@ This project grows with community input. Every issue, PR, and discussion helps s
 
 **Ways to contribute:**
 - 🐛 [**Report Issues**](https://github.com/gersak/ty/issues) - Found a bug? Let us know
-- 💬 [**Discussions**](https://github.com/gersak/ty/discussions) - Share ideas, ask questions, show what you've built
 - 🌟 [**Star on GitHub**](https://github.com/gersak/ty) - Show support for the project
 - 🔧 [**Pull Requests**](https://github.com/gersak/ty/pulls) - Documentation, components, examples - all contributions matter
 

@@ -7,24 +7,7 @@
     [:h1.text-3xl.font-bold.ty-text.mb-4 "Getting Started"]
     [:p.text-lg.ty-text-.max-w-2xl.mx-auto "Choose your setup based on your tech stack. All approaches require both CSS styles and web components runtime."]]
 
-   ;; CRITICAL CSS WARNING
-   [:div.ty-bg-primary-.border.ty-border-primary.p-6.rounded-xl.mb-8
-    [:div.flex.items-start.gap-4
-     [:ty-icon.ty-text-primary++.flex-shrink-0.mt-1 {:name "alert-triangle"
-                                                     :size "lg"}]
-     [:div
-      [:h3.text-xl.font-bold.ty-text-primary++.mb-3 "ty.css is REQUIRED"]
-      [:p.ty-text-primary.mb-3
-       "Every setup below requires " [:code.ty-bg-primary.px-2.py-1.rounded.font-mono "ty.css"]
-       ". Components depend on CSS variables defined in this stylesheet. Without it, components "
-       [:strong "render but have no styling"] "."]
-      [:div.p-4.rounded-lg
-       [:p.text-sm.ty-text-primary++.font-medium.mb-2 "What breaks without ty.css:"]
-       [:ul.space-y-1.text-sm.ty-text-primary
-        [:li "❌ No colors (CSS variables undefined)"]
-        [:li "❌ No layout (surface hierarchy missing)"]
-        [:li "❌ No theme switching"]
-        [:li "❌ Utility classes (" [:code.font-mono "ty-bg-primary"] ") don't work"]]]]]]
+
 
    ;; HTML/Backend Setup
    [:div.ty-elevated.p-6.rounded-xl
@@ -223,6 +206,24 @@ function App() {
           [:li "• ty-modal, ty-popup"]
           [:li "• ty-tooltip"]]]]
        [:p.text-xs.mt-2 "All components work as native HTML elements with standard events and properties."]]]]]
+   ;; CRITICAL CSS WARNING
+   [:div.ty-bg-primary-.border.ty-border-primary.p-6.rounded-xl.mb-8
+    [:div.flex.items-start.gap-4
+     [:ty-icon.ty-text-primary++.flex-shrink-0.mt-1 {:name "alert-triangle"
+                                                     :size "lg"}]
+     [:div
+      [:h3.text-xl.font-bold.ty-text-primary++.mb-3 "ty.css is REQUIRED"]
+      [:p.ty-text-primary.mb-3
+       "Every setup below requires " [:code.ty-bg-primary.px-2.py-1.rounded.font-mono "ty.css"]
+       ". Components depend on CSS variables defined in this stylesheet. Without it, components "
+       [:strong "render but have no styling"] "."]
+      [:div.p-4.rounded-lg
+       [:p.text-sm.ty-text-primary++.font-medium.mb-2 "What breaks without ty.css:"]
+       [:ul.space-y-1.text-sm.ty-text-primary
+        [:li "❌ No colors (CSS variables undefined)"]
+        [:li "❌ No layout (surface hierarchy missing)"]
+        [:li "❌ No theme switching"]
+        [:li "❌ Utility classes (" [:code.font-mono "ty-bg-primary"] ") don't work"]]]]]]
 
    ;; Next Steps
    [:div.ty-bg-primary-.border.border-ty-border-primary.p-6.rounded-xl

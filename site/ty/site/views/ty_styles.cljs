@@ -436,7 +436,7 @@ button {
    (theme-toggle)
 
    ;; CSS Architecture Explanation (CRITICAL - explains why ty.css is required)
-   (css-architecture-explanation)
+
 
    ;; Main content sections
    (text-variants-demo)
@@ -444,6 +444,7 @@ button {
    (surface-classes-demo)
    (practical-examples)
    (code-examples)
+   (css-architecture-explanation)
    (usage-guidelines)
 
    ;; Footer summary

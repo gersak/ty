@@ -136,6 +136,38 @@
                 padding: 1rem !important;
             }
         }
+
+        /* Ensure grid layouts don't overflow */
+        .grid {
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        }
+
+        @media (max-width: 640px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Site-specific menu styles */
+        .menu-item {
+            @apply flex items-center gap-2 lg:gap-3 w-full px-2 lg:px-3 py-2 text-left rounded-md text-sm lg:text-base transition-colors;
+            @apply ty-text hover:ty-content;
+        }
+
+        .menu-item.active {
+            @apply ty-bg-primary- ty-text-primary+;
+        }
+
+        /* Site-specific responsive design */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+        }
     </style>
 
     <!-- Favicon -->

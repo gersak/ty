@@ -368,7 +368,7 @@
           [:div.text-xs.ty-text-info
            [:p.font-medium.mb-1 "Booking Policy"]
            [:p "Free cancellation up to 24 hours before your event. Full refund available for cancellations made 48 hours in advance."]]]]]
-;; Service Selection
+       ;; Service Selection
        [:div.ty-elevated.p-6.rounded-xl
         [:h2.text-xl.font-semibold.ty-text.mb-4 "🎯 Services & Add-ons"]
         [:p.ty-text-.text-sm.mb-6 "Customize your booking with additional services and amenities."]

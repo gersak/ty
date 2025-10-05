@@ -972,66 +972,6 @@ html.dark .ty-sunken {
   background-color: var(--ty-modal-backdrop);
 }
 
-/* =================================================================
-   LEGACY SEMANTIC SUPPORT
-   ================================================================= */
-
-/* Legacy semantic colors for backward compatibility */
-.ty-bg-important {
-  background-color: var(--ty-color-primary, #3b82f6);
-}
-
-.ty-bg-positive {
-  background-color: var(--ty-bg-success);
-}
-
-.ty-bg-positive\+ {
-  background-color: var(--ty-bg-success-mild);
-}
-
-.ty-bg-positive- {
-  background-color: var(--ty-bg-success-soft);
-}
-
-.ty-bg-negative {
-  background-color: var(--ty-color-danger, #ef4444);
-}
-
-.ty-bg-exception {
-  background-color: var(--ty-color-warning, #f59e0b);
-}
-
-.ty-text-important {
-  color: var(--ty-color-primary, #3b82f6);
-}
-
-.ty-text-positive {
-  color: var(--ty-color-success, #10b981);
-}
-
-.ty-text-negative {
-  color: var(--ty-color-danger, #ef4444);
-}
-
-.ty-text-exception {
-  color: var(--ty-color-warning, #f59e0b);
-}
-
-.ty-border-important {
-  border-color: var(--ty-color-primary, #3b82f6);
-}
-
-.ty-border-positive {
-  border-color: var(--ty-color-success, #10b981);
-}
-
-.ty-border-negative {
-  border-color: var(--ty-color-danger, #ef4444);
-}
-
-.ty-border-exception {
-  border-color: var(--ty-color-warning, #f59e0b);
-}
 
 /* =================================================================
    INTERACTIVE STATES
@@ -1092,6 +1032,10 @@ html.dark .ty-sunken {
   background-color: var(--ty-bg-danger-mild);
 }
 
+.hover\:ty-bg-danger-:hover {
+  background-color: var(--ty-bg-danger-soft);
+}
+
 /* Hover states for text colors */
 .hover\:ty-text:hover {
   color: var(--ty-text);
@@ -1113,17 +1057,223 @@ html.dark .ty-sunken {
   color: var(--ty-text-faint);
 }
 
-/* Focus states for borders */
+/* Hover states for semantic text colors */
+/* Primary text hover states */
+.hover\:ty-text-primary\+\+:hover {
+  color: var(--ty-color-primary-strong) !important;
+}
+
+.hover\:ty-text-primary\+:hover {
+  color: var(--ty-color-primary-mild) !important;
+}
+
+.hover\:ty-text-primary:hover {
+  color: var(--ty-color-primary) !important;
+}
+
+.hover\:ty-text-primary-:hover {
+  color: var(--ty-color-primary-soft) !important;
+}
+
+.hover\:ty-text-primary--:hover {
+  color: var(--ty-color-primary-faint) !important;
+}
+
+/* Secondary text hover states */
+.hover\:ty-text-secondary\+\+:hover {
+  color: var(--ty-color-secondary-strong) !important;
+}
+
+.hover\:ty-text-secondary\+:hover {
+  color: var(--ty-color-secondary-mild) !important;
+}
+
+.hover\:ty-text-secondary:hover {
+  color: var(--ty-color-secondary) !important;
+}
+
+.hover\:ty-text-secondary-:hover {
+  color: var(--ty-color-secondary-soft) !important;
+}
+
+.hover\:ty-text-secondary--:hover {
+  color: var(--ty-color-secondary-faint) !important;
+}
+
+/* Success text hover states */
+.hover\:ty-text-success\+\+:hover {
+  color: var(--ty-color-success-strong) !important;
+}
+
+.hover\:ty-text-success\+:hover {
+  color: var(--ty-color-success-mild) !important;
+}
+
+.hover\:ty-text-success:hover {
+  color: var(--ty-color-success) !important;
+}
+
+.hover\:ty-text-success-:hover {
+  color: var(--ty-color-success-soft) !important;
+}
+
+.hover\:ty-text-success--:hover {
+  color: var(--ty-color-success-faint) !important;
+}
+
+/* Danger text hover states */
+.hover\:ty-text-danger\+\+:hover {
+  color: var(--ty-color-danger-strong) !important;
+}
+
+.hover\:ty-text-danger\+:hover {
+  color: var(--ty-color-danger-mild) !important;
+}
+
+.hover\:ty-text-danger:hover {
+  color: var(--ty-color-danger) !important;
+}
+
+.hover\:ty-text-danger-:hover {
+  color: var(--ty-color-danger-soft) !important;
+}
+
+.hover\:ty-text-danger--:hover {
+  color: var(--ty-color-danger-faint) !important;
+}
+
+/* Warning text hover states */
+.hover\:ty-text-warning\+\+:hover {
+  color: var(--ty-color-warning-strong) !important;
+}
+
+.hover\:ty-text-warning\+:hover {
+  color: var(--ty-color-warning-mild) !important;
+}
+
+.hover\:ty-text-warning:hover {
+  color: var(--ty-color-warning) !important;
+}
+
+.hover\:ty-text-warning-:hover {
+  color: var(--ty-color-warning-soft) !important;
+}
+
+.hover\:ty-text-warning--:hover {
+  color: var(--ty-color-warning-faint) !important;
+}
+
+/* Neutral text hover states */
+.hover\:ty-text-neutral\+\+:hover {
+  color: var(--ty-color-neutral-strong) !important;
+}
+
+.hover\:ty-text-neutral+:hover {
+  color: var(--ty-color-neutral-mild) !important;
+}
+
+.hover\:ty-text-neutral:hover {
+  color: var(--ty-color-neutral) !important;
+}
+
+.hover\:ty-text-neutral-:hover {
+  color: var(--ty-color-neutral-soft) !important;
+}
+
+.hover\:ty-text-neutral--:hover {
+  color: var(--ty-color-neutral-faint) !important;
+}
+
+/* Hover states for borders */
+/* Base border hover states */
+.hover\:ty-border\+\+:hover {
+  border-color: var(--ty-border-strong) !important;
+}
+
+.hover\:ty-border\+:hover {
+  border-color: var(--ty-border-mild) !important;
+}
+
+.hover\:ty-border:hover {
+  border-color: var(--ty-border) !important;
+}
+
+.hover\:ty-border-:hover {
+  border-color: var(--ty-border-soft) !important;
+}
+
+.hover\:ty-border--:hover {
+  border-color: var(--ty-border-faint) !important;
+}
+
+/* Semantic border hover states */
+.hover\:ty-border-primary:hover {
+  border-color: var(--ty-border-primary) !important;
+}
+
+.hover\:ty-border-secondary:hover {
+  border-color: var(--ty-border-secondary) !important;
+}
+
+.hover\:ty-border-success:hover {
+  border-color: var(--ty-border-success) !important;
+}
+
+.hover\:ty-border-danger:hover {
+  border-color: var(--ty-border-danger) !important;
+}
+
+.hover\:ty-border-warning:hover {
+  border-color: var(--ty-border-warning) !important;
+}
+
+.hover\:ty-border-neutral:hover {
+  border-color: var(--ty-border-neutral) !important;
+}
+
+.focus\:ty-border\+\+:focus {
+  border-color: var(--ty-border-strong) !important;
+}
+
+.focus\:ty-border+:focus {
+  border-color: var(--ty-border-mild) !important;
+}
+
+.focus\:ty-border:focus {
+  border-color: var(--ty-border) !important;
+}
+
+.focus\:ty-border-:focus {
+  border-color: var(--ty-border-soft) !important;
+}
+
+.focus\:ty-border--:focus {
+  border-color: var(--ty-border-faint) !important;
+}
+
+/* Semantic border focus states */
 .focus\:ty-border-primary:focus {
-  border-color: var(--ty-border-primary);
+  border-color: var(--ty-border-primary) !important;
+}
+
+.focus\:ty-border-secondary:focus {
+  border-color: var(--ty-border-secondary) !important;
 }
 
 .focus\:ty-border-success:focus {
-  border-color: var(--ty-border-success);
+  border-color: var(--ty-border-success) !important;
 }
 
 .focus\:ty-border-danger:focus {
-  border-color: var(--ty-border-danger);
+  border-color: var(--ty-border-danger) !important;
+}
+
+.focus\:ty-border-warning:focus {
+  border-color: var(--ty-border-warning) !important;
+}
+
+.focus\:ty-border-neutral:focus {
+  border-color: var(--ty-border-neutral) !important;
 }
 
 /* =================================================================

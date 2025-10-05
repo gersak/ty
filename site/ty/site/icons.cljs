@@ -71,6 +71,8 @@
              "database" lucide/database ; Data icons
              "server" lucide/server ; Server icons
              "layout" lucide/layout
+             "maximize" lucide/maximize ; Tabs docs
+             "accessibility" lucide/accessibility ; Tabs docs
 
              ;; Loading and refresh icons
              "refresh-ccw" lucide/refresh-ccw

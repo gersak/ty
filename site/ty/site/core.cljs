@@ -74,17 +74,17 @@
 (router/link ::router/root
              (concat
               ;; Extract route configs from site-routes  
-              site-routes
+               site-routes
               ;; Add component routes - docs-components already have correct structure
-              (map (fn [route]
-                     (-> route
-                         (update :segment (fn [segment] (str "docs/" segment)))))
-                   component-routes)
+               (map (fn [route]
+                      (-> route
+                          (update :segment (fn [segment] (str "docs/" segment)))))
+                    component-routes)
               ;; Add guide routes - docs/guide-components  
-              (map (fn [route]
-                     (-> route
-                         (select-keys [:id :segment :name])
-                         (update :segment (fn [segment] (str "docs/" segment))))) guide-routes)))
+               (map (fn [route]
+                      (-> route
+                          (select-keys [:id :segment :name])
+                          (update :segment (fn [segment] (str "docs/" segment))))) guide-routes)))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -148,52 +148,52 @@
   [:div.space-y-6
    ;; Main Navigation
    (nav-section
-    {:items [(let [route (first (filter #(= (:id %) ::landing) site-routes))]
-               {:route-id (:id route)
-                :label (:name route)
-                :icon (:icon route)})]})
+     {:items [(let [route (first (filter #(= (:id %) ::landing) site-routes))]
+                {:route-id (:id route)
+                 :label (:name route)
+                 :icon (:icon route)})]})
 
    ;; Why ty Section
    (nav-section
-    {:items [{:route-id ::why
-              :label "Why ty exists"
-              :icon "lightbulb"}]})
+     {:items [{:route-id ::why
+               :label "Why ty exists"
+               :icon "lightbulb"}]})
 
    ;; Tabs Test Section
-   (nav-section
-    {:title "Development"
-     :items [{:route-id ::tabs-test
-              :label "Tabs Test"
-              :icon "layout"}]})
+   #_(nav-section
+       {:title "Development"
+        :items [{:route-id ::tabs-test
+                 :label "Tabs Test"
+                 :icon "layout"}]})
 
    ;; Examples Section (unified router navigation)
    (nav-section
-    {:title "Live Examples"
-     :items [{:route-id ::landing-user-profile
-              :label "User Profile"
-              :icon "user"}
-             {:route-id ::landing-event-booking
-              :label "Event Booking"
-              :icon "calendar"}
-             {:route-id ::landing-contact-form
-              :label "Contact Form"
-              :icon "mail"}]})
+     {:title "Live Examples"
+      :items [{:route-id ::landing-user-profile
+               :label "User Profile"
+               :icon "user"}
+              {:route-id ::landing-event-booking
+               :label "Event Booking"
+               :icon "calendar"}
+              {:route-id ::landing-contact-form
+               :label "Contact Form"
+               :icon "mail"}]})
 
    ;; Quickstart (route navigation)
    (nav-section
-    {:title "Quickstart"
-     :items (for [route guide-routes]
-              {:route-id (:id route)
-               :label (:name route)
-               :icon (:icon route)})})
+     {:title "Quickstart"
+      :items (for [route guide-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)})})
 
    ;; Components Section (route navigation to component docs)
    (nav-section
-    {:title "Components"
-     :items (for [route component-routes]
-              {:route-id (:id route)
-               :label (:name route)
-               :icon (:icon route)})})])
+     {:title "Components"
+      :items (for [route component-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)})})])
 
 (defn render
   "Render the appropriate view based on current route (like docs/render)"

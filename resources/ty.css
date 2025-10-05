@@ -1,30 +1,30 @@
 /* =================================================================
-   Ty Component Library - Complete CSS System
-   Industry-Standard Semantic Design System
-   
-   This file contains:
-   - CSS Variables (Design Tokens)
-   - Utility Classes
-   - Theme Support (Light/Dark)
-   - Surface System
-   - 5-Variant Color System
-   ================================================================= */
+Ty Component Library - Complete CSS System
+Industry-Standard Semantic Design System
+
+This file contains:
+- CSS Variables (Design Tokens)
+- Utility Classes
+- Theme Support (Light/Dark)
+- Surface System
+- 5-Variant Color System
+================================================================= */
 
 /* =================================================================
-   CSS VARIABLES - DESIGN TOKENS
-   ================================================================= */
+CSS VARIABLES - DESIGN TOKENS
+================================================================= */
 
 /* Default theme (light) */
 html {
   /* =================================================================
-     5-VARIANT COLOR SYSTEM
-     Simplified from 7 variants to 5 practical variants:
-     -strong = Strong emphasis - active states, strong borders
-     -mild = Moderate emphasis - hover states, focus rings  
-             = Base color - default appearance
-     -soft = Reduced emphasis - muted backgrounds, secondary
-     -faint = Minimal emphasis - subtle hints, disabled states
-     ================================================================= */
+5-VARIANT COLOR SYSTEM
+Simplified from 7 variants to 5 practical variants:
+-strong = Strong emphasis - active states, strong borders
+-mild = Moderate emphasis - hover states, focus rings  
+= Base color - default appearance
+-soft = Reduced emphasis - muted backgrounds, secondary
+-faint = Minimal emphasis - subtle hints, disabled states
+================================================================= */
 
   /* Primary */
   --ty-color-primary-strong: #0034c7;
@@ -69,8 +69,8 @@ html {
   --ty-color-neutral-faint: #d1d5db;
 
   /* =================================================================
-     BACKGROUND COLORS
-     ================================================================= */
+BACKGROUND COLORS
+================================================================= */
 
   --ty-bg-faint: #f8fafc;
   /* Very light canvas - for minimal backgrounds */
@@ -114,8 +114,8 @@ html {
   --ty-bg-neutral-soft: #f9fafb;
 
   /* =================================================================
-     BORDER COLORS
-     ================================================================= */
+BORDER COLORS
+================================================================= */
 
   --ty-border: #e5e7eb;
   --ty-border-mild: #d1d5db;
@@ -132,8 +132,8 @@ html {
   --ty-border-neutral: var(--ty-color-neutral);
 
   /* =================================================================
-     SURFACE SYSTEM
-     ================================================================= */
+SURFACE SYSTEM
+================================================================= */
 
   --ty-surface-canvas: #ebebeb;
   --ty-surface-content: #f4f4f4;
@@ -142,8 +142,8 @@ html {
   --ty-surface-input: #ffffff;
 
   /* =================================================================
-     TEXT HIERARCHY
-     ================================================================= */
+TEXT HIERARCHY
+================================================================= */
 
   /* Text hierarchy - emphasis based, not semantic */
   --ty-text: #111827;
@@ -158,8 +158,8 @@ html {
   /* Minimum emphasis - very light gray */
 
   /* =================================================================
-     COMPONENT TOKENS
-     ================================================================= */
+COMPONENT TOKENS
+================================================================= */
 
   /* Modal tokens */
   --ty-modal-bg: #ffffff;
@@ -208,8 +208,8 @@ html {
   --ty-accent-neutral: #414141;
 
   /* =================================================================
-     DESIGN SYSTEM TOKENS
-     ================================================================= */
+DESIGN SYSTEM TOKENS
+================================================================= */
 
   /* Spacing Scale */
   --ty-spacing-0: 0;
@@ -317,15 +317,15 @@ html {
 }
 
 /* =================================================================
-   DARK THEME OVERRIDES
-   ================================================================= */
+DARK THEME OVERRIDES
+================================================================= */
 
 html.dark,
 html[data-theme="dark"] {
   /* =================================================================
-     5-VARIANT COLOR SYSTEM - DARK THEME
-     Emphasis logic inverts: lighter = more emphasis
-     ================================================================= */
+5-VARIANT COLOR SYSTEM - DARK THEME
+Emphasis logic inverts: lighter = more emphasis
+================================================================= */
 
   /* Primary */
   --ty-color-primary-strong: #c9dff9;
@@ -460,9 +460,9 @@ html[data-theme="dark"] {
 }
 
 /* =================================================================
-   TEXT SELECTION STYLING
-   Global and semantic text selection colors
-   ================================================================= */
+TEXT SELECTION STYLING
+Global and semantic text selection colors
+================================================================= */
 
 /* Global text selection - uses primary colors by default */
 ::selection {
@@ -585,12 +585,12 @@ html.dark .ty-selection-neutral::-moz-selection {
 }
 
 /* =================================================================
-   UTILITY CLASSES
-   ================================================================= */
+UTILITY CLASSES
+================================================================= */
 
 /* =================================================================
-   SURFACE UTILITIES
-   ================================================================= */
+SURFACE UTILITIES
+================================================================= */
 
 /* Elevated surfaces - cards, panels, components */
 .ty-elevated {
@@ -641,8 +641,8 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   SEMANTIC BACKGROUND UTILITIES
-   ================================================================= */
+SEMANTIC BACKGROUND UTILITIES
+================================================================= */
 
 /* Semantic backgrounds - these are the key theme utilities */
 .ty-bg-primary {
@@ -731,8 +731,8 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   TEXT HIERARCHY UTILITIES
-   ================================================================= */
+TEXT HIERARCHY UTILITIES
+================================================================= */
 
 /* Base text hierarchy - emphasis based, not semantic */
 .ty-text {
@@ -756,8 +756,8 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   SEMANTIC TEXT COLORS - 5-VARIANT SYSTEM
-   ================================================================= */
+SEMANTIC TEXT COLORS - 5-VARIANT SYSTEM
+================================================================= */
 
 /* Primary text colors with full 5-variant system */
 .ty-text-primary\+\+ {
@@ -886,8 +886,8 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   BORDER UTILITIES
-   ================================================================= */
+BORDER UTILITIES
+================================================================= */
 
 /* Base border colors with emphasis */
 .ty-border {
@@ -936,8 +936,8 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   COMPONENT UTILITIES
-   ================================================================= */
+COMPONENT UTILITIES
+================================================================= */
 
 /* Card/Panel utilities */
 .ty-card {
@@ -974,8 +974,8 @@ html.dark .ty-sunken {
 
 
 /* =================================================================
-   INTERACTIVE STATES
-   ================================================================= */
+INTERACTIVE STATES
+================================================================= */
 
 
 .hover\:ty-bg-neutral--:hover {
@@ -1277,8 +1277,8 @@ html.dark .ty-sunken {
 }
 
 /* =================================================================
-   RESPONSIVE VARIANTS
-   ================================================================= */
+RESPONSIVE VARIANTS
+================================================================= */
 
 /* Small screens and up */
 @media (min-width: 640px) {

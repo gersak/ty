@@ -65,14 +65,60 @@
          [:th.text-left.px-4.py-2.ty-text+ "Default"]
          [:th.text-left.px-4.py-2.ty-text+ "Description"]]]
        [:tbody
+        ;; Animation
         [:tr.border-b.ty-border-
          [:td.px-4.py-2.ty-text.font-mono.text-sm "--transition-duration"]
          [:td.px-4.py-2.ty-text-.text-sm.font-mono "300ms"]
-         [:td.px-4.py-2.ty-text-.text-sm "Duration of panel slide animation"]]
+         [:td.px-4.py-2.ty-text-.text-sm "Duration of panel and marker animations"]]
         [:tr.border-b.ty-border-
          [:td.px-4.py-2.ty-text.font-mono.text-sm "--transition-easing"]
          [:td.px-4.py-2.ty-text-.text-sm.font-mono "ease-in-out"]
-         [:td.px-4.py-2.ty-text-.text-sm "Timing function for animations"]]]]]]
+         [:td.px-4.py-2.ty-text-.text-sm "Timing function for animations"]]
+        ;; Tray styling
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-bg"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "transparent"]
+         [:td.px-4.py-2.ty-text-.text-sm "Tab tray background color"]]
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-border-width"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "1px"]
+         [:td.px-4.py-2.ty-text-.text-sm "Tab tray border thickness (0 = no border)"]]
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-border-color"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "var(--ty-border)"]
+         [:td.px-4.py-2.ty-text-.text-sm "Tab tray border color"]]
+        ;; Button styling
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-padding"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "6px 12px"]
+         [:td.px-4.py-2.ty-text-.text-sm "Tab button padding"]]
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-gap"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "8px"]
+         [:td.px-4.py-2.ty-text-.text-sm "Gap between icon and text in buttons"]]
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-color"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "var(--ty-text-)"]
+         [:td.px-4.py-2.ty-text-.text-sm "Default button text color"]]
+        ;; Hover state
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-hover-bg"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "var(--ty-surface-elevated)"]
+         [:td.px-4.py-2.ty-text-.text-sm "Button hover background"]]
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-hover-color"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "var(--ty-text)"]
+         [:td.px-4.py-2.ty-text-.text-sm "Button hover text color"]]
+        ;; Disabled state
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-disabled-opacity"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "0.5"]
+         [:td.px-4.py-2.ty-text-.text-sm "Disabled button opacity"]]
+        ;; Focus state
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "--ty-tabs-button-focus-color"]
+         [:td.px-4.py-2.ty-text-.text-sm.font-mono "var(--ty-color-primary)"]
+         [:td.px-4.py-2.ty-text-.text-sm "Focus outline color"]]]]]]
 
     ;; Events
     [:div
@@ -114,8 +160,11 @@
          [:th.text-left.px-4.py-2.ty-text+ "Description"]]]
        [:tbody
         [:tr.border-b.ty-border-
-         [:td.px-4.py-2.ty-text.font-mono.text-sm "label"]
-         [:td.px-4.py-2.ty-text-.text-sm "Rich content for tab button (overrides label attribute). Can include icons, badges, etc."]]
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "marker"]
+         [:td.px-4.py-2.ty-text-.text-sm "Optional animated indicator that follows the active tab. Gives complete control over active tab appearance (background, underline, etc)."]]
+        [:tr.border-b.ty-border-
+         [:td.px-4.py-2.ty-text.font-mono.text-sm "label-{id}"]
+         [:td.px-4.py-2.ty-text-.text-sm "Rich content for tab button with given id (overrides label attribute). Can include icons, badges, etc."]]
         [:tr.border-b.ty-border-
          [:td.px-4.py-2.ty-text.font-mono.text-sm "(default)"]
          [:td.px-4.py-2.ty-text-.text-sm "Panel content that displays when tab is active"]]]]]]]])
@@ -418,6 +467,153 @@
   </ty-tab>
 </ty-tabs>")])
 
+(defn example-marker-styling []
+  [:section.mb-8
+   [:h3.text-xl.font-medium.ty-text.mb-3 "Marker Slot (Active Tab Styling)"]
+   [:p.ty-text-.text-sm.mb-4
+    "Tabs include a " [:strong "default 2px underline"] " that follows the active tab. You can customize this by providing a " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-xs "slot=\"marker\""] " element, which gives you complete control over active tab appearance. When you provide a custom marker, the default underline is automatically hidden."]
+
+   ;; Example 1: Underline marker
+   [:div.mb-6
+    [:h4.text-base.font-semibold.ty-text.mb-2 "Underline Marker"]
+    [:div.ty-elevated.rounded-lg.p-6.mb-4
+     [:ty-tabs {:width "100%"
+                :height "300px"}
+      ;; Underline marker
+      [:div {:slot "marker"
+             :style {:height "2px"
+                     :background "var(--ty-color-primary)"
+                     :position "absolute"
+                     :bottom "0"}}]
+
+      [:ty-tab {:id "tab1"
+                :label "Dashboard"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Dashboard"]
+        [:p.ty-text- "Simple underline indicator follows the active tab."]]]
+
+      [:ty-tab {:id "tab2"
+                :label "Analytics"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Analytics"]
+        [:p.ty-text- "Click between tabs to see the smooth animation."]]]
+
+      [:ty-tab {:id "tab3"
+                :label "Settings"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Settings"]
+        [:p.ty-text- "The marker position and width adjust automatically."]]]]]
+    (code-block "<ty-tabs width=\"100%\" height=\"300px\">
+  <!-- Simple underline marker -->
+  <div slot=\"marker\" style=\"
+    height: 2px;
+    background: var(--ty-color-primary);
+    position: absolute;
+    bottom: 0;
+  \"></div>
+  
+  <ty-tab id=\"tab1\" label=\"Dashboard\">...</ty-tab>
+  <ty-tab id=\"tab2\" label=\"Analytics\">...</ty-tab>
+  <ty-tab id=\"tab3\" label=\"Settings\">...</ty-tab>
+</ty-tabs>")]
+
+   ;; Example 2: Pill marker
+   [:div.mb-6
+    [:h4.text-base.font-semibold.ty-text.mb-2 "Pill Marker"]
+    [:div.ty-elevated.rounded-lg.p-6.mb-4
+     [:ty-tabs {:width "100%"
+                :height "300px"
+                :style {:--ty-tabs-border-width "0"
+                        :--ty-tabs-bg "var(--ty-surface-elevated)"}}
+      ;; Pill marker
+      [:div.ty-bg-primary.rounded-full.shadow-sm {:slot "marker"}]
+
+      [:ty-tab {:id "pill1"
+                :label "Home"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Home"]
+        [:p.ty-text- "Rounded pill background with shadow effect."]]]
+
+      [:ty-tab {:id "pill2"
+                :label "Projects"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Projects"]
+        [:p.ty-text- "Material Design inspired pill tabs."]]]
+
+      [:ty-tab {:id "pill3"
+                :label "Team"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Team"]
+        [:p.ty-text- "No border, subtle tray background."]]]]]
+    (code-block "<ty-tabs width=\"100%\" height=\"300px\" style=\"
+  --ty-tabs-border-width: 0;
+  --ty-tabs-bg: var(--ty-surface-elevated);
+\">
+  <!-- Rounded pill marker -->
+  <div slot=\"marker\" class=\"ty-bg-primary rounded-lg shadow-sm\"></div>
+  
+  <ty-tab id=\"home\" label=\"Home\">...</ty-tab>
+  <ty-tab id=\"projects\" label=\"Projects\">...</ty-tab>
+  <ty-tab id=\"team\" label=\"Team\">...</ty-tab>
+</ty-tabs>")]
+
+   ;; Example 3: Gradient marker
+   [:div.mb-6
+    [:h4.text-base.font-semibold.ty-text.mb-2 "Gradient Marker"]
+    [:div.ty-elevated.rounded-lg.p-6.mb-4
+     [:ty-tabs {:width "100%"
+                :height "300px"
+                :style {:--ty-tabs-border-width "0"}}
+      ;; Gradient marker
+      [:div {:slot "marker"
+             :style {:background "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+                     :border-radius "0.5rem"
+                     :box-shadow "0 2px 8px rgba(0,0,0,0.15)"}}]
+
+      [:ty-tab {:id "grad1"
+                :label "Overview"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Overview"]
+        [:p.ty-text- "Beautiful gradient background with shadow."]]]
+
+      [:ty-tab {:id "grad2"
+                :label "Details"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Details"]
+        [:p.ty-text- "Custom CSS gives you complete creative control."]]]
+
+      [:ty-tab {:id "grad3"
+                :label "Reports"}
+       [:div.p-6
+        [:h3.text-lg.font-bold.ty-text.mb-2 "Reports"]
+        [:p.ty-text- "Mix gradients, shadows, and any CSS effects."]]]]]
+    (code-block "<ty-tabs width=\"100%\" height=\"300px\" style=\"--ty-tabs-border-width: 0;\">
+  <!-- Gradient marker -->
+  <div slot=\"marker\" style=\"
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  \"></div>
+  
+  <ty-tab id=\"overview\" label=\"Overview\">...</ty-tab>
+  <ty-tab id=\"details\" label=\"Details\">...</ty-tab>
+  <ty-tab id=\"reports\" label=\"Reports\">...</ty-tab>
+</ty-tabs>")]
+
+   ;; Styling tips
+   [:div.ty-bg-primary-.ty-border-primary.border.rounded-lg.p-4.mt-6
+    [:div.flex.items-start.gap-3
+     [:ty-icon.ty-text-primary++.mt-0.5.flex-shrink-0 {:name "lightbulb"
+                                                       :size "md"}]
+     [:div
+      [:h4.text-base.font-semibold.ty-text-primary++.mb-2 "Marker Styling Tips"]
+      [:ul.list-disc.ml-4.space-y-1.ty-text-primary.text-sm
+       [:li "The marker automatically positions and resizes to match the active tab"]
+       [:li "Use Ty semantic classes like " [:code.ty-bg-neutral-.px-1.rounded "ty-bg-primary"] " for theme-aware colors"]
+       [:li "Combine with CSS variables for hover and border customization"]
+       [:li "No marker = clean tabs with just hover effects"]
+       [:li "The marker animates smoothly (300ms) - respects prefers-reduced-motion"]]]]]])
+
 (defn example-long-content []
   [:section.mb-8
    [:h3.text-xl.font-medium.ty-text.mb-3 "✅ Expected: Long Panel Content"]
@@ -476,6 +672,7 @@
    (basic-usage)
    (example-basic-text-labels)
    (example-rich-labels)
+   (example-marker-styling)
    (example-long-content)
    (key-features)
    (best-practices)

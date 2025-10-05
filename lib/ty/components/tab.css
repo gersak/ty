@@ -48,7 +48,7 @@
 }
 
 .tab-panel::-webkit-scrollbar-thumb:hover {
-  background: var(--ty-border+);
+  background: var(--ty-border-strong);
 }
 
 /* Inactive tabs are still rendered (for carousel) but not interactable */

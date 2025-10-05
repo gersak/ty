@@ -28,65 +28,88 @@
 .tab-buttons {
   display: flex;
   gap: 0;
-  border-bottom: 1px solid var(--ty-border);
-  background: var(--ty-surface-content);
+  border-bottom: var(--ty-tabs-border-width, 1px) solid var(--ty-tabs-border-color, var(--ty-border));
+  background: var(--ty-tabs-bg, transparent);
   flex-shrink: 0;
+  position: relative;
+  /* For absolute positioned marker */
+}
+
+/* ===================================== */
+/* Marker (Optional Animated Background) */
+/* ===================================== */
+
+.marker-wrapper {
+  position: absolute;
+  z-index: 0;
+  /* Behind buttons */
+  pointer-events: none;
+  /* Don't block clicks */
+  transition: left var(--transition-duration, 300ms) var(--transition-easing, ease-in-out),
+    width var(--transition-duration, 300ms) var(--transition-easing, ease-in-out),
+    height var(--transition-duration, 300ms) var(--transition-easing, ease-in-out),
+    top var(--transition-duration, 300ms) var(--transition-easing, ease-in-out);
+}
+
+/* Default marker - simple underline */
+.default-marker {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--ty-color-primary);
+  pointer-events: none;
+}
+
+/* User's marker element fills the wrapper */
+::slotted([slot="marker"]) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 /* Bottom placement moves border to top */
 .tabs-container[data-placement="bottom"] .tab-buttons {
   border-bottom: none;
-  border-top: 1px solid var(--ty-border);
+  border-top: var(--ty-tabs-border-width, 1px) solid var(--ty-tabs-border-color, var(--ty-border));
 }
 
 .tab-button {
   min-width: 120px;
-  padding: 6px 12px;
+  padding: var(--ty-tabs-button-padding, 6px 12px);
   border: none;
   background: transparent;
   cursor: pointer;
   font: inherit;
-  color: var(--ty-text-);
-  border-bottom: 2px solid transparent;
-  transition: border-color 200ms, color 200ms, background-color 200ms;
+  color: var(--ty-tabs-button-color, var(--ty-text-soft));
+  transition: color 200ms, background-color 200ms;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: var(--ty-tabs-button-gap, 8px);
   font-weight: var(--ty-font-bold);
   font-size: var(--ty-font-sm);
+  position: relative;
+  /* Establish stacking context */
+  z-index: 10;
+  /* Above marker */
 }
 
-.tab-button:hover:not([disabled]) {
-  color: var(--ty-text);
-  background: var(--ty-surface-elevated);
-}
-
-.tab-button[aria-selected="true"] {
-  color: var(--ty-text-primary-strong);
-  border-bottom-color: var(--ty-color-primary);
-}
-
-/* Bottom placement: border on top instead of bottom */
-.tabs-container[data-placement="bottom"] .tab-button {
-  border-bottom: none;
-  border-top: 2px solid transparent;
-}
-
-.tabs-container[data-placement="bottom"] .tab-button[aria-selected="true"] {
-  border-top-color: var(--ty-color-primary);
-  border-bottom-color: transparent;
+.tab-button[aria-selected=true] {
+  color: var(--ty-text-strong);
 }
 
 .tab-button[disabled] {
-  opacity: 0.5;
+  opacity: var(--ty-tabs-button-disabled-opacity, 0.5);
   cursor: not-allowed;
   pointer-events: none;
 }
 
 .tab-button:focus-visible {
-  outline: 2px solid var(--ty-color-primary);
+  outline: 2px solid var(--ty-tabs-button-focus-color, var(--ty-color-primary));
   outline-offset: -2px;
 }
 
@@ -116,6 +139,10 @@
 /* Respect user's motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .panels-wrapper {
+    transition-duration: 0ms !important;
+  }
+
+  .marker-wrapper {
     transition-duration: 0ms !important;
   }
 }

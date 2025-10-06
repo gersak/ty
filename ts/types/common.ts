@@ -14,6 +14,19 @@ export type Flavor =
 /** Component size variants */
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
+/** Input types supported by ty-input */
+export type InputType = 
+  | 'text' 
+  | 'password' 
+  | 'email' 
+  | 'url' 
+  | 'tel'
+  | 'date' 
+  | 'time' 
+  | 'datetime-local'
+  | 'number'
+  | 'checkbox'
+
 /** Base properties shared by all Ty components */
 export interface TyBaseElement extends HTMLElement {
   /** Semantic color flavor */
@@ -61,6 +74,68 @@ export interface TyIconElement extends HTMLElement {
   pulse?: boolean
   /** Animation tempo */
   tempo?: IconTempo
+}
+
+/** Tag component custom event detail */
+export interface TyTagEventDetail {
+  /** Target tag element */
+  target: HTMLElement
+}
+
+/** Tag component interface */
+export interface TyTagElement extends TyBaseElement {
+  /** Tag value */
+  value?: string
+  /** Tag size */
+  size?: Size
+  /** Selected state */
+  selected?: boolean
+  /** Pill shape (fully rounded) - default true */
+  pill?: boolean
+  /** Clickable state */
+  clickable?: boolean
+  /** Dismissible state */
+  dismissible?: boolean
+  /** Disabled state */
+  disabled?: boolean
+}
+
+/** Option component interface - omit 'hidden' from HTMLElement to avoid conflict */
+export interface TyOptionElement extends Omit<HTMLElement, 'hidden'> {
+  /** Option value */
+  value?: string
+  /** Selected state */
+  selected?: boolean
+  /** Disabled state */
+  disabled?: boolean
+  /** Highlighted state (keyboard navigation) */
+  highlighted?: boolean
+  /** Hidden state - overrides HTMLElement's hidden */
+  hidden?: boolean
+}
+
+/** Input component interface */
+export interface TyInputElement extends TyBaseElement {
+  /** Input type */
+  type?: InputType
+  /** Input value */
+  value?: string
+  /** Input name (for forms) */
+  name?: string
+  /** Placeholder text */
+  placeholder?: string
+  /** Label text */
+  label?: string
+  /** Disabled state */
+  disabled?: boolean
+  /** Required field */
+  required?: boolean
+  /** Error message */
+  error?: string
+  /** Input size */
+  size?: Size
+  /** Associated form */
+  readonly form?: HTMLFormElement | null
 }
 
 /** CSS style content */

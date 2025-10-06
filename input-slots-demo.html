@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ty Input - Icon Slots Demo</title>
+
+  <!-- Ty CSS Variables System -->
+  <link rel="stylesheet" href="dev/css/app.css">
+  <link rel="stylesheet" href="resources/ty.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--ty-font-sans);
+      padding: 2rem;
+      background: var(--ty-surface-canvas);
+      color: var(--ty-color-text);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--ty-surface-content);
+      padding: 2rem;
+      border-radius: var(--ty-radius-lg);
+      box-shadow: var(--ty-shadow-md);
+    }
+
+    h1 {
+      color: var(--ty-color-text);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--ty-color-text-soft);
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .demo-section {
+      margin-bottom: 3rem;
+      padding: 1.5rem;
+      background: var(--ty-surface-elevated);
+      border-radius: var(--ty-radius-md);
+    }
+
+    .demo-section h2 {
+      color: var(--ty-color-text-mild);
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .demo-section p {
+      color: var(--ty-color-text-soft);
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .input-single {
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: var(--ty-bg-primary-soft);
+      color: var(--ty-color-primary);
+      border-radius: var(--ty-radius-sm);
+      margin-bottom: 2rem;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🎨 Ty Input - Icon Slots Demo</h1>
+    <p class="subtitle">Start and end slots for custom styling with icons</p>
+    <div class="badge">
+      ✨ New Feature: Flexible icon placement with proper flexbox layout
+    </div>
+
+    <!-- Basic Icon Usage -->
+    <div class="demo-section">
+      <h2>Basic Icon Usage</h2>
+      <p>Add icons to the start or end of inputs using slots</p>
+
+      <div class="input-single">
+        <ty-input label="Search" placeholder="Search...">
+          <ty-icon slot="start" name="search"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Email" type="email" placeholder="user@example.com">
+          <ty-icon slot="end" name="mail"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Password" type="password" placeholder="Enter password">
+          <ty-icon slot="end" name="eye"></ty-icon>
+        </ty-input>
+      </div>
+    </div>
+
+    <!-- Both Slots -->
+    <div class="demo-section">
+      <h2>Using Both Start & End Slots</h2>
+      <p>Combine icons on both sides for richer UX</p>
+
+      <div class="input-single">
+        <ty-input label="Email with Validation" type="email" placeholder="user@example.com">
+          <ty-icon slot="start" name="mail"></ty-icon>
+          <ty-icon slot="end" name="check-circle"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Username" placeholder="Enter username">
+          <ty-icon slot="start" name="user"></ty-icon>
+          <ty-icon slot="end" name="settings"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Location" placeholder="Enter location">
+          <ty-icon slot="start" name="map-pin"></ty-icon>
+          <ty-icon slot="end" name="navigation"></ty-icon>
+        </ty-input>
+      </div>
+    </div>
+
+    <!-- Custom Content in Slots -->
+    <div class="demo-section">
+      <h2>Custom Content in Slots</h2>
+      <p>Slots accept any HTML content, not just icons</p>
+
+      <div class="input-single">
+        <ty-input label="Currency Amount" placeholder="0.00">
+          <span slot="start" style="font-weight: 600; color: var(--ty-color-text-soft);">$</span>
+          <span slot="end" style="font-size: 0.875rem; color: var(--ty-color-text-soft);">USD</span>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Percentage" placeholder="0">
+          <span slot="end" style="font-weight: 600; color: var(--ty-color-text-soft);">%</span>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Weight" placeholder="0">
+          <span slot="start" style="font-size: 0.875rem; color: var(--ty-color-text-soft);">kg</span>
+        </ty-input>
+      </div>
+    </div>
+
+    <!-- Different Sizes with Icons -->
+    <div class="demo-section">
+      <h2>Different Sizes with Icons</h2>
+      <p>Icons automatically scale with input size</p>
+
+      <div class="input-single">
+        <ty-input label="Extra Small" size="xs" placeholder="XS input">
+          <ty-icon slot="start" name="search"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Small" size="sm" placeholder="Small input">
+          <ty-icon slot="start" name="search"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Medium (Default)" size="md" placeholder="Medium input">
+          <ty-icon slot="start" name="search"></ty-icon>
+          <ty-icon slot="end" name="x"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Large" size="lg" placeholder="Large input">
+          <ty-icon slot="start" name="mail"></ty-icon>
+          <ty-icon slot="end" name="send"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Extra Large" size="xl" placeholder="XL input">
+          <ty-icon slot="start" name="user"></ty-icon>
+          <ty-icon slot="end" name="check"></ty-icon>
+        </ty-input>
+      </div>
+    </div>
+
+    <!-- Semantic Flavors with Icons -->
+    <div class="demo-section">
+      <h2>Semantic Flavors with Icons</h2>
+      <p>Icons work seamlessly with semantic color flavors</p>
+
+      <div class="input-single">
+        <ty-input label="Primary Search" flavor="primary" placeholder="Primary flavor">
+          <ty-icon slot="start" name="search"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Success Email" flavor="success" placeholder="Verified email" value="user@example.com">
+          <ty-icon slot="start" name="mail"></ty-icon>
+          <ty-icon slot="end" name="check-circle"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Danger Password" flavor="danger" placeholder="Invalid password" error="Password too short">
+          <ty-icon slot="start" name="lock"></ty-icon>
+          <ty-icon slot="end" name="alert-circle"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Warning Field" flavor="warning" placeholder="Needs attention" value="Check this">
+          <ty-icon slot="start" name="alert-triangle"></ty-icon>
+        </ty-input>
+      </div>
+    </div>
+
+    <!-- Real-World Examples -->
+    <div class="demo-section">
+      <h2>Real-World Examples</h2>
+      <p>Common input patterns with icons</p>
+
+      <div class="input-single">
+        <ty-input label="Search Products" placeholder="Search for products...">
+          <ty-icon slot="start" name="search"></ty-icon>
+          <ty-icon slot="end" name="filter"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Phone Number" type="tel" placeholder="+1 (555) 123-4567">
+          <ty-icon slot="start" name="phone"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Website URL" type="url" placeholder="https://example.com">
+          <ty-icon slot="start" name="globe"></ty-icon>
+          <ty-icon slot="end" name="external-link"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Credit Card" placeholder="1234 5678 9012 3456">
+          <ty-icon slot="start" name="credit-card"></ty-icon>
+          <ty-icon slot="end" name="lock"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Calendar Date" type="date">
+          <ty-icon slot="start" name="calendar"></ty-icon>
+        </ty-input>
+      </div>
+
+      <div class="input-single">
+        <ty-input label="Time Picker" type="time">
+          <ty-icon slot="start" name="clock"></ty-icon>
+        </ty-input>
+      </div>
+    </div>
+
+    <!-- Interactive Example -->
+    <div class="demo-section">
+      <h2>Interactive Password Toggle</h2>
+      <p>Click the eye icon to toggle password visibility</p>
+
+      <div class="input-single">
+        <ty-input id="password-toggle" label="Password" type="password" placeholder="Enter password">
+          <ty-icon slot="end" id="eye-icon" name="eye" style="cursor: pointer;"></ty-icon>
+        </ty-input>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load TypeScript compiled JavaScript -->
+  <script type="module">
+    // Import components
+    import './dist-ts/components/input.js'
+    import './dist-ts/components/icon.js'
+    import {IconRegistry} from './dist-ts/components/icon.js'
+
+    // Import only the icons we need from generated Lucide file
+    // This enables perfect tree-shaking!
+    import {
+      searchIcon,
+      mail,
+      eye,
+      eyeOff,
+      checkCircle,
+      user,
+      settings,
+      sendIcon,
+      lock,
+      alertCircle,
+      alertTriangle,
+      filterIcon,
+      phone,
+      globe,
+      externalLink,
+      creditCard,
+      calendar,
+      clock,
+      x,
+      check,
+      mapPin,
+      navigation
+    } from './dist-ts/icons/lucide.js'
+
+    // Register all icons used in this demo
+    IconRegistry.registerIcons({
+      'search': searchIcon,
+      'mail': mail,
+      'eye': eye,
+      'eye-off': eyeOff,
+      'check-circle': checkCircle,
+      'user': user,
+      'settings': settings,
+      'send': sendIcon,
+      'lock': lock,
+      'alert-circle': alertCircle,
+      'alert-triangle': alertTriangle,
+      'filter': filterIcon,
+      'phone': phone,
+      'globe': globe,
+      'external-link': externalLink,
+      'credit-card': creditCard,
+      'calendar': calendar,
+      'clock': clock,
+      'x': x,
+      'check': check,
+      'map-pin': mapPin,
+      'navigation': navigation
+    })
+
+    console.log('✅ Input slots demo loaded')
+    console.log('📦 Icons registered:', IconRegistry.getIconCount())
+
+    // Password toggle functionality
+    const passwordInput = document.getElementById('password-toggle')
+    const eyeIcon = document.getElementById('eye-icon')
+    let isPasswordVisible = false
+
+    eyeIcon.addEventListener('click', () => {
+      isPasswordVisible = !isPasswordVisible
+      passwordInput.type = isPasswordVisible ? 'text' : 'password'
+      eyeIcon.name = isPasswordVisible ? 'eye-off' : 'eye'
+    })
+  </script>
+</body>
+
+</html>

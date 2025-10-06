@@ -1,45 +1,36 @@
 {
   "name": "@gersak/ty",
-  "version": "0.1.5",
-  "description": "Modern Web Components Library built with ClojureScript - Zero dependency, modular web components",
-  "main": "dist/ty.js",
-  "module": "dist/ty.js",
-  "types": "dist/ty.d.ts",
+  "version": "0.2.0",
+  "description": "Modern Web Components Library - Zero dependency, modular web components",
+  "main": "dist-ts/index.js",
+  "module": "dist-ts/index.js",
+  "types": "dist-ts/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/ty.js",
-      "require": "./dist/ty.js"
+      "import": "./dist-ts/index.js",
+      "types": "./dist-ts/index.d.ts"
     },
-    "./bundle": {
-      "import": "./dist/ty.bundle.js"
-    },
-    "./calendar": {
-      "import": "./dist/ty-calendar.js"
-    },
-    "./calendar-month": {
-      "import": "./dist/ty-calendar-month.js"
-    },
-    "./date-picker": {
-      "import": "./dist/ty-date-picker.js"
-    },
-    "./dropdown": {
-      "import": "./dist/ty-dropdown.js"
-    },
-    "./multiselect": {
-      "import": "./dist/ty-multiselect.js"
+    "./button": {
+      "import": "./dist-ts/components/button.js",
+      "types": "./dist-ts/components/button.d.ts"
     },
     "./css": {
       "import": "./dev/css/ty.css"
+    },
+    "./cljs": {
+      "import": "./dist/ty.js"
     }
   },
   "files": [
+    "dist-ts/**/*",
     "dist/**/*",
+    "dev/css/ty.css",
     "README.md",
     "LICENSE"
   ],
   "keywords": [
     "web-components",
-    "clojurescript",
+    "typescript",
     "ui-components",
     "modular",
     "zero-dependency",
@@ -55,16 +46,31 @@
   "license": "MIT",
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.0",
+    "@types/node": "^22.0.0",
     "autoprefixer": "^10.4.21",
+    "esbuild": "^0.24.0",
     "postcss": "^8.5.6",
     "shadow-cljs": "^2.28.0",
-    "tailwindcss": "4.1"
+    "tailwindcss": "4.1",
+    "typescript": "^5.7.0",
+    "xml2js": "^0.6.2"
   },
   "scripts": {
     "dev": "shadow-cljs -A:dev watch site",
     "dev:css": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./site/public/css/site.css --watch",
-    "release:css": "npx @tailwindcss/cli -i ./site/public/css/site.css -o ./site/public/css/site.css -m",
-    "release": "shadow-cljs release lib",
-    "prepublishOnly": "npm run build:cdn"
+    "dev:ts": "tsc --watch",
+    "test:ts": "npm run build:ts && python3 -m http.server 8000",
+    "build:ts": "tsc && npm run bundle:ts",
+    "bundle:ts": "node scripts/bundle.js",
+    "build:cljs": "shadow-cljs release lib",
+    "build:css": "npx @tailwindcss/cli -i ./site/public/css/site.css -o ./site/public/css/site.css -m",
+    "build": "npm run build:ts && npm run build:cljs",
+    "generate:lucide": "node scripts/generate-lucide-icons.mjs",
+    "generate:heroicons": "node scripts/generate-heroicons.mjs",
+    "generate:material": "node scripts/generate-material.mjs",
+    "generate:fontawesome": "node scripts/generate-fontawesome.mjs",
+    "generate:icons": "node scripts/generate-custom-icons.mjs",
+    "generate:all": "npm run generate:lucide && npm run generate:heroicons && npm run generate:material && npm run generate:fontawesome",
+    "prepublishOnly": "npm run build"
   }
 }

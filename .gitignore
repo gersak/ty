@@ -1,5 +1,6 @@
 .clj-kondo/
 .icons/
+ts/icons/
 .lsp/
 .shadow-cljs/
 dev/js/cljs-runtime/

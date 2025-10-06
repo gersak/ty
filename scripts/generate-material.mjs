@@ -1,0 +1,287 @@
+#!/usr/bin/env node
+/**
+ * Material Design Icons Generator for TypeScript
+ * Generates TypeScript icon files from Material Design Icons repository
+ * 
+ * Material has 5 styles:
+ * - filled: Default filled style
+ * - outlined: Outlined style
+ * - round: Rounded corners
+ * - sharp: Sharp corners
+ * - two-tone: Two-tone style
+ * 
+ * Similar to: gen/ty/generate/material.clj
+ * 
+ * IMPORTANT: Material icons get currentColor attributes added!
+ */
+
+import { execSync } from 'child_process'
+import { makeSafeIdentifier } from './reserved-words.mjs'
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync, rmSync } from 'fs'
+import { join, basename } from 'path'
+import { parseString, Builder } from 'xml2js'
+
+const ROOT = '.icons'
+const REPO_URL = 'https://github.com/google/material-design-icons.git'
+const REPO_PATH = join(ROOT, 'material')
+const OUTPUT_DIR = 'ts/icons/material'
+
+const STYLES = {
+  filled: '',
+  outlined: 'outlined',
+  round: 'round',
+  sharp: 'sharp',
+  'two-tone': 'twotone'
+}
+
+function ensureRoot() {
+  if (!existsSync(ROOT)) {
+    mkdirSync(ROOT, { recursive: true })
+  }
+}
+
+function cloneRepo() {
+  console.log('📦 Cloning Material Design Icons repository...')
+  console.log('⚠️  This is a large repo (~2 GB), may take a while...')
+  try {
+    execSync(`git clone --depth 1 ${REPO_URL} ${REPO_PATH}`, { stdio: 'inherit' })
+    console.log('✅ Repository cloned')
+  } catch (error) {
+    console.error('❌ Failed to clone repository:', error.message)
+    process.exit(1)
+  }
+}
+
+function cleanRepo() {
+  if (existsSync(REPO_PATH)) {
+    console.log('🧹 Cleaning up repository...')
+    rmSync(REPO_PATH, { recursive: true, force: true })
+    console.log('✅ Repository cleaned')
+  }
+}
+
+function listIcons(style) {
+  const styleSuffix = STYLES[style]
+  const srcPath = join(REPO_PATH, 'src')
+  
+  if (!existsSync(srcPath)) {
+    console.error(`❌ Source directory not found: ${srcPath}`)
+    return []
+  }
+
+  const iconPaths = []
+  const categories = readdirSync(srcPath).filter(name => name !== '.DS_Store')
+  
+  for (const category of categories) {
+    const categoryPath = join(srcPath, category)
+    if (!existsSync(categoryPath)) continue
+    
+    const icons = readdirSync(categoryPath).filter(name => name !== '.DS_Store')
+    
+    for (const icon of icons) {
+      const iconPath = join(categoryPath, icon, `materialicons${styleSuffix}`, '24px.svg')
+      if (existsSync(iconPath)) {
+        iconPaths.push(iconPath)
+      }
+    }
+  }
+  
+  return iconPaths
+}
+
+function toCamelCase(str) {
+  return str.replace(/[-_]([a-z0-9])/g, (_, letter) => letter.toUpperCase())
+}
+
+function toValidIdentifier(name) {
+  // Convert underscores to hyphens first
+  name = name.replace(/_/g, '-')
+  
+  // Replace invalid characters
+  name = name.replace(/[^a-zA-Z0-9-]/g, '-')
+  
+  // Remove consecutive hyphens
+  name = name.replace(/-+/g, '-')
+  
+  // Remove leading/trailing hyphens
+  name = name.replace(/^-+|-+$/g, '')
+  
+  // If starts with number, prefix with 'icon-'
+  if (/^\d/.test(name)) {
+    name = 'icon-' + name
+  }
+  
+  const identifier = toCamelCase(name)
+  
+  // Make safe by avoiding JS reserved words
+  return makeSafeIdentifier(identifier)
+}
+
+/**
+ * Add currentColor attributes to SVG
+ * Material icons need these attributes!
+ */
+function addCurrentColorAttributes(svgContent) {
+  return new Promise((resolve, reject) => {
+    parseString(svgContent, (err, result) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      
+      // Add attributes to svg element
+      if (!result.svg.$) {
+        result.svg.$ = {}
+      }
+      
+      result.svg.$['stroke-width'] = '0'
+      result.svg.$.stroke = 'currentColor'
+      result.svg.$.fill = 'currentColor'
+      
+      const builder = new Builder({ headless: true })
+      resolve(builder.buildObject(result))
+    })
+  })
+}
+
+async function processSvg(path) {
+  let svgContent = readFileSync(path, 'utf-8')
+  
+  // Extract icon name from path: .../[icon_name]/materialicons.../24px.svg
+  const pathParts = path.split('/')
+  const iconName = pathParts[pathParts.length - 3]
+  const identifier = toValidIdentifier(iconName)
+  
+  // Add currentColor attributes (Material needs this!)
+  try {
+    svgContent = await addCurrentColorAttributes(svgContent)
+  } catch (error) {
+    console.warn(`⚠️  Failed to process ${iconName}, using original SVG`)
+  }
+  
+  const cleanedSvg = svgContent
+    .replace(/<\?xml[^>]*\?>/g, '')
+    .trim()
+  
+  const escapedSvg = cleanedSvg
+    .replace(/\\/g, '\\\\')
+    .replace(/`/g, '\\`')
+    .replace(/\$/g, '\\$')
+  
+  return { identifier, iconName: iconName.replace(/_/g, '-'), svg: escapedSvg }
+}
+
+function generateTypeScript(icons, style) {
+  const styleName = style.replace(/-/g, '')
+  const exportName = `material${styleName.charAt(0).toUpperCase() + styleName.slice(1)}`
+  
+  const lines = [
+    '/**',
+    ` * Material Design Icons ${style.toUpperCase()} - Auto-generated`,
+    ' * DO NOT EDIT THIS FILE MANUALLY',
+    ' * Generated from: https://github.com/google/material-design-icons',
+    ` * Style: ${style}`,
+    ` * Total icons: ${icons.length}`,
+    ' *',
+    ' * Note: Material icons have currentColor attributes added',
+    ' */',
+    ''
+  ]
+
+  // Track used identifiers to avoid duplicates
+  const usedIdentifiers = new Set()
+  const skippedIcons = []
+
+  // Individual constants
+  for (const icon of icons) {
+    if (usedIdentifiers.has(icon.identifier)) {
+      skippedIcons.push(icon.iconName)
+      console.warn(`⚠️  Skipping duplicate: ${icon.identifier} (${icon.iconName})`)
+      continue
+    }
+    
+    usedIdentifiers.add(icon.identifier)
+    lines.push(`export const ${icon.identifier} = \`${icon.svg}\``)
+  }
+  
+  lines.push('')
+  lines.push('/** Icon registry - OPTIONAL */')
+  lines.push(`export const ${exportName}: Record<string, string> = {`)
+  
+  for (const icon of icons) {
+    if (!usedIdentifiers.has(icon.identifier)) continue
+    lines.push(`  '${icon.iconName}': ${icon.identifier},`)
+  }
+  
+  lines.push('}')
+  lines.push('')
+  lines.push(`export const ICON_COUNT = ${usedIdentifiers.size}`)
+  lines.push(`export const ICON_NAMES = Object.keys(${exportName})`)
+  
+  if (skippedIcons.length > 0) {
+    console.log(`⚠️  Skipped ${skippedIcons.length} duplicate icons`)
+  }
+  
+  return lines.join('\n')
+}
+
+async function generateStyle(style) {
+  console.log(`\n📋 Processing ${style} icons...`)
+  
+  const iconPaths = listIcons(style)
+  console.log(`✅ Found ${iconPaths.length} icons`)
+  
+  if (iconPaths.length === 0) {
+    console.warn(`⚠️  No icons found for ${style}`)
+    return
+  }
+  
+  console.log('⚙️  Processing SVGs and adding currentColor attributes...')
+  const icons = await Promise.all(iconPaths.map(processSvg))
+  const tsContent = generateTypeScript(icons, style)
+  
+  const outputPath = join(OUTPUT_DIR, `${style}.ts`)
+  const outputDir = join(outputPath, '..')
+  
+  if (!existsSync(outputDir)) {
+    mkdirSync(outputDir, { recursive: true })
+  }
+  
+  writeFileSync(outputPath, tsContent, 'utf-8')
+  console.log(`✅ Generated ${outputPath}`)
+  
+  const fileSize = (tsContent.length / 1024).toFixed(2)
+  console.log(`   File size: ${fileSize} KB`)
+}
+
+async function generate() {
+  console.log('🎨 Material Design Icons Generator for TypeScript')
+  console.log('==================================================\n')
+  
+  ensureRoot()
+  
+  if (!existsSync(REPO_PATH)) {
+    cloneRepo()
+  } else {
+    console.log('📁 Using existing repository')
+  }
+  
+  // Generate all styles
+  for (const style of Object.keys(STYLES)) {
+    await generateStyle(style)
+  }
+  
+  cleanRepo()
+  
+  console.log('\n✅ Generation complete!')
+  console.log('\n💡 Usage:')
+  console.log('   import { home, settings } from \'./ts/icons/material/filled.js\'')
+  console.log('   import { favorite } from \'./ts/icons/material/outlined.js\'')
+}
+
+try {
+  await generate()
+} catch (error) {
+  console.error('\n❌ Generation failed:', error)
+  process.exit(1)
+}

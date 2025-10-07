@@ -1,14 +1,25 @@
 /**
  * TyInput Web Component
  * PORTED FROM: clj/ty/components/input.cljs
- * Phase A: Core input functionality (no checkbox, no numeric formatting)
+ * Phase C: Complete with numeric formatting (currency, percent, compact)
  * 
- * Enhanced input component with label, error messages, semantic styling, and icon slots
+ * Enhanced input component with:
+ * - Label, error messages, semantic styling
+ * - Icon slots (start/end)
+ * - Numeric formatting with shadow values
+ * - Currency, percent, compact notation
+ * - Format-on-blur / raw-on-focus behavior
  */
 
 import type { Flavor, Size, InputType, TyInputElement } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { inputStyles } from '../styles/input.js'
+import {
+  formatNumber,
+  parseNumericValue,
+  shouldFormat as shouldFormatType,
+  type FormatConfig
+} from '../utils/number-format.js'
 
 /**
  * Required indicator SVG icon (from Lucide)
@@ -16,16 +27,33 @@ import { inputStyles } from '../styles/input.js'
 const REQUIRED_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk"><path d="M12 6v12"/><path d="M17.196 9 6.804 15"/><path d="m6.804 9 10.392 6"/></svg>`
 
 /**
- * Ty Input Component (Phase A)
+ * Ty Input Component (Phase C - Complete)
  * 
  * @example
  * ```html
+ * <!-- Basic input -->
  * <ty-input label="Email" type="email" placeholder="Enter email" required></ty-input>
+ * 
+ * <!-- With icons -->
  * <ty-input label="Search">
  *   <ty-icon slot="start" name="search"></ty-icon>
  * </ty-input>
- * <ty-input label="Password" type="password">
- *   <ty-icon slot="end" name="eye"></ty-icon>
+ * 
+ * <!-- Currency formatting -->
+ * <ty-input 
+ *   label="Price" 
+ *   type="currency" 
+ *   currency="USD"
+ *   locale="en-US"
+ *   value="1234.56">
+ * </ty-input>
+ * 
+ * <!-- Percent formatting -->
+ * <ty-input 
+ *   label="Tax Rate" 
+ *   type="percent"
+ *   value="15"
+ *   precision="2">
  * </ty-input>
  * ```
  */
@@ -45,6 +73,13 @@ export class TyInput extends HTMLElement implements TyInputElement {
   private _flavor: Flavor = 'neutral'
   private _listenersSetup = false
 
+  // Numeric formatting properties (Phase C)
+  private _shadowValue: number | string | null = null
+  private _isFocused = false
+  private _currency: string = 'USD'
+  private _locale: string = 'en-US'
+  private _precision: number | undefined = undefined
+
   constructor() {
     super()
     this._internals = this.attachInternals()
@@ -58,11 +93,14 @@ export class TyInput extends HTMLElement implements TyInputElement {
   static get observedAttributes(): string[] {
     return [
       'type', 'value', 'name', 'placeholder', 'label',
-      'disabled', 'required', 'error', 'size', 'flavor'
+      'disabled', 'required', 'error', 'size', 'flavor',
+      'currency', 'locale', 'precision'  // Phase C
     ]
   }
 
   connectedCallback(): void {
+    // Initialize shadow value from initial value
+    this.initializeShadowValue()
     this.render()
     this.setupEventListeners()
   }
@@ -80,6 +118,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
         break
       case 'value':
         this._value = newValue || ''
+        // Re-parse shadow value when value attribute changes
+        this._shadowValue = this.parseShadowValue(this._value)
         break
       case 'name':
         this._name = newValue || ''
@@ -109,9 +149,88 @@ export class TyInput extends HTMLElement implements TyInputElement {
       case 'flavor':
         this._flavor = this.validateFlavor(newValue)
         break
+      // Phase C attributes
+      case 'currency':
+        this._currency = newValue || 'USD'
+        break
+      case 'locale':
+        this._locale = newValue || 'en-US'
+        break
+      case 'precision':
+        this._precision = newValue ? parseInt(newValue, 10) : undefined
+        break
     }
 
     this.render()
+  }
+
+  /**
+   * Initialize shadow value from the initial value attribute
+   */
+  private initializeShadowValue(): void {
+    if (this._value) {
+      this._shadowValue = this.parseShadowValue(this._value)
+      // Update form value
+      this._internals.setFormValue(
+        this._shadowValue !== null ? String(this._shadowValue) : null
+      )
+    }
+  }
+
+  /**
+   * Parse a string value to the appropriate shadow value type
+   */
+  private parseShadowValue(value: string): number | string | null {
+    if (!value || value.trim() === '') return null
+
+    // For numeric types, parse to number
+    if (shouldFormatType(this._type)) {
+      return parseNumericValue(value)
+    }
+
+    // For other types, keep as string
+    return value
+  }
+
+  /**
+   * Check if current input should format numbers
+   */
+  private shouldFormat(): boolean {
+    return shouldFormatType(this._type) &&
+      !this._isFocused &&
+      this._shadowValue !== null &&
+      typeof this._shadowValue === 'number'
+  }
+
+  /**
+   * Get the format configuration for current input
+   */
+  private getFormatConfig(): FormatConfig {
+    return {
+      type: this._type as 'number' | 'currency' | 'percent' | 'compact',
+      locale: this._locale,
+      currency: this._currency,
+      precision: this._precision
+    }
+  }
+
+  /**
+   * Get the display value (formatted or raw)
+   */
+  private getDisplayValue(): string {
+    if (this.shouldFormat()) {
+      let valueToFormat = this._shadowValue as number
+
+      // For percent: divide by 100 (user enters 15, displays as 15%)
+      // This matches ClojureScript behavior
+      if (this._type === 'percent') {
+        valueToFormat = valueToFormat / 100
+      }
+
+      return formatNumber(valueToFormat, this.getFormatConfig())
+    }
+
+    return this._shadowValue !== null ? String(this._shadowValue) : ''
   }
 
   /**
@@ -143,19 +262,25 @@ export class TyInput extends HTMLElement implements TyInputElement {
     if (this._type !== value) {
       this._type = value
       this.setAttribute('type', value)
+      // Re-parse shadow value with new type
+      this._shadowValue = this.parseShadowValue(this._value)
       this.render()
     }
   }
 
   get value(): string {
-    return this._value
+    // Return shadow value as string
+    return this._shadowValue !== null ? String(this._shadowValue) : ''
   }
 
   set value(val: string) {
     if (this._value !== val) {
       this._value = val
+      this._shadowValue = this.parseShadowValue(val)
       this.setAttribute('value', val)
-      this._internals.setFormValue(val)
+      this._internals.setFormValue(
+        this._shadowValue !== null ? String(this._shadowValue) : null
+      )
       this.render()
     }
   }
@@ -271,6 +396,49 @@ export class TyInput extends HTMLElement implements TyInputElement {
     return this._internals.form
   }
 
+  // Phase C getters/setters
+
+  get currency(): string {
+    return this._currency
+  }
+
+  set currency(value: string) {
+    if (this._currency !== value) {
+      this._currency = value
+      this.setAttribute('currency', value)
+      this.render()
+    }
+  }
+
+  get locale(): string {
+    return this._locale
+  }
+
+  set locale(value: string) {
+    if (this._locale !== value) {
+      this._locale = value
+      this.setAttribute('locale', value)
+      this.render()
+    }
+  }
+
+  get precision(): number | undefined {
+    return this._precision
+  }
+
+  set precision(value: number | string | undefined) {
+    const numValue = typeof value === 'string' ? parseInt(value, 10) : value
+    if (this._precision !== numValue) {
+      this._precision = numValue
+      if (numValue !== undefined) {
+        this.setAttribute('precision', String(numValue))
+      } else {
+        this.removeAttribute('precision')
+      }
+      this.render()
+    }
+  }
+
   /**
    * Build CSS class list for input wrapper
    */
@@ -297,15 +465,27 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
     if (!inputEl || !wrapperEl) return
 
-    // Input event - update value and form
+    // Input event - update shadow value and form
     inputEl.addEventListener('input', (e) => {
       const target = e.target as HTMLInputElement
-      this._value = target.value
-      this._internals.setFormValue(this._value)
+      const rawValue = target.value
 
-      // Emit custom event
+      // Parse to shadow value
+      this._shadowValue = this.parseShadowValue(rawValue)
+
+      // Update form value with shadow value
+      this._internals.setFormValue(
+        this._shadowValue !== null ? String(this._shadowValue) : null
+      )
+
+      // Emit custom event with shadow value and formatted value
       this.dispatchEvent(new CustomEvent('input', {
-        detail: { value: this._value, originalEvent: e },
+        detail: {
+          value: this._shadowValue,
+          formattedValue: this.shouldFormat() ? this.getDisplayValue() : null,
+          rawValue: rawValue,
+          originalEvent: e
+        },
         bubbles: true,
         composed: true
       }))
@@ -314,20 +494,39 @@ export class TyInput extends HTMLElement implements TyInputElement {
     // Change event
     inputEl.addEventListener('change', (e) => {
       const target = e.target as HTMLInputElement
-      this._value = target.value
-      this._internals.setFormValue(this._value)
+      const rawValue = target.value
+
+      // Parse to shadow value
+      this._shadowValue = this.parseShadowValue(rawValue)
+
+      // Update form value
+      this._internals.setFormValue(
+        this._shadowValue !== null ? String(this._shadowValue) : null
+      )
 
       // Emit custom event
       this.dispatchEvent(new CustomEvent('change', {
-        detail: { value: this._value, originalEvent: e },
+        detail: {
+          value: this._shadowValue,
+          formattedValue: this.shouldFormat() ? this.getDisplayValue() : null,
+          rawValue: rawValue,
+          originalEvent: e
+        },
         bubbles: true,
         composed: true
       }))
     })
 
-    // Focus event - add focused class to wrapper
+    // Focus event - show raw value for numeric types
     inputEl.addEventListener('focus', (e) => {
+      this._isFocused = true
       wrapperEl.classList.add('focused')
+
+      // For numeric types, show raw shadow value
+      if (shouldFormatType(this._type) && this._shadowValue !== null) {
+        inputEl.value = String(this._shadowValue)
+      }
+
       this.dispatchEvent(new CustomEvent('focus', {
         detail: { originalEvent: e },
         bubbles: true,
@@ -335,9 +534,16 @@ export class TyInput extends HTMLElement implements TyInputElement {
       }))
     })
 
-    // Blur event - remove focused class from wrapper
+    // Blur event - show formatted value for numeric types
     inputEl.addEventListener('blur', (e) => {
+      this._isFocused = false
       wrapperEl.classList.remove('focused')
+
+      // For numeric types, show formatted value
+      if (this.shouldFormat()) {
+        inputEl.value = this.getDisplayValue()
+      }
+
       this.dispatchEvent(new CustomEvent('blur', {
         detail: { originalEvent: e },
         bubbles: true,
@@ -350,7 +556,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
   /**
    * Render the input component with wrapper and slots
-   * UPDATED: Input wrapper with start/end slots for icons
+   * Phase C: Uses getDisplayValue() for formatted output
    */
   private render(): void {
     const shadow = this.shadowRoot!
@@ -360,15 +566,18 @@ export class TyInput extends HTMLElement implements TyInputElement {
     const existingError = shadow.querySelector('.error-message')
     const classes = this.buildClassList()
 
-    // Map input type
+    // Map input type (all numeric types use 'text' in DOM)
     const inputType = ['password', 'date', 'time', 'datetime-local'].includes(this._type)
       ? this._type
       : 'text'
 
+    // Get display value (formatted or raw based on focus)
+    const displayValue = this.getDisplayValue()
+
     // If input exists, just update properties (like ClojureScript does)
     if (existingInput && existingWrapper) {
       existingInput.type = inputType
-      existingInput.value = this._value
+      existingInput.value = displayValue  // Use formatted/raw value
       existingInput.placeholder = this._placeholder
       existingInput.name = this._name
 
@@ -436,7 +645,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
             </div>
             <input
               type="${inputType}"
-              value="${this._value}"
+              value="${displayValue}"
               placeholder="${this._placeholder}"
               name="${this._name}"
             />

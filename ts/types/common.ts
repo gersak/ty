@@ -24,7 +24,10 @@ export type InputType =
   | 'date' 
   | 'time' 
   | 'datetime-local'
-  | 'number'
+  | 'number'          // NEW: Basic number with optional precision
+  | 'currency'        // NEW: Currency formatting
+  | 'percent'         // NEW: Percentage formatting
+  | 'compact'         // NEW: Compact notation (1.2K, 3.4M)
   | 'checkbox'
 
 /** Base properties shared by all Ty components */
@@ -136,6 +139,14 @@ export interface TyInputElement extends TyBaseElement {
   size?: Size
   /** Associated form */
   readonly form?: HTMLFormElement | null
+  
+  // Numeric formatting properties (NEW)
+  /** Currency code for currency type (e.g., 'USD', 'EUR', 'HRK') */
+  currency?: string
+  /** Locale for formatting (e.g., 'en-US', 'hr-HR') */
+  locale?: string
+  /** Number of decimal places */
+  precision?: number | string
 }
 
 /** CSS style content */

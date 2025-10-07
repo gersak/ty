@@ -1,7 +1,7 @@
 /**
  * TyInput Web Component
  * PORTED FROM: clj/ty/components/input.cljs
- * Phase C: Complete with numeric formatting (currency, percent, compact)
+ * Phase D: Complete with delay/debounce feature for input and change events
  * 
  * Enhanced input component with:
  * - Label, error messages, semantic styling
@@ -9,6 +9,8 @@
  * - Numeric formatting with shadow values
  * - Currency, percent, compact notation
  * - Format-on-blur / raw-on-focus behavior
+ * - Debounce delay (0-5000ms) for input/change events
+ * - Immediate event firing on blur (cancels pending debounce)
  */
 
 import type { Flavor, Size, InputType, TyInputElement } from '../types/common.js'
@@ -27,7 +29,7 @@ import {
 const REQUIRED_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk"><path d="M12 6v12"/><path d="M17.196 9 6.804 15"/><path d="m6.804 9 10.392 6"/></svg>`
 
 /**
- * Ty Input Component (Phase C - Complete)
+ * Ty Input Component (Phase D - Complete with Delay/Debounce)
  * 
  * @example
  * ```html
@@ -37,6 +39,13 @@ const REQUIRED_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" he
  * <!-- With icons -->
  * <ty-input label="Search">
  *   <ty-icon slot="start" name="search"></ty-icon>
+ * </ty-input>
+ * 
+ * <!-- With debounce delay (500ms) -->
+ * <ty-input 
+ *   label="Search" 
+ *   delay="500" 
+ *   placeholder="Type to search...">
  * </ty-input>
  * 
  * <!-- Currency formatting -->
@@ -80,6 +89,11 @@ export class TyInput extends HTMLElement implements TyInputElement {
   private _locale: string = 'en-US'
   private _precision: number | undefined = undefined
 
+  // Delay/debounce properties (Phase D)
+  private _delay: number = 0
+  private _inputDebounceTimer: number | null = null
+  private _changeDebounceTimer: number | null = null
+
   constructor() {
     super()
     this._internals = this.attachInternals()
@@ -94,7 +108,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
     return [
       'type', 'value', 'name', 'placeholder', 'label',
       'disabled', 'required', 'error', 'size', 'flavor',
-      'currency', 'locale', 'precision'  // Phase C
+      'currency', 'locale', 'precision',  // Phase C,
+      'delay'  // Phase D
     ]
   }
 
@@ -106,7 +121,15 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   disconnectedCallback(): void {
-    // Cleanup handled by shadow DOM removal
+    // Clear any pending debounce timers
+    if (this._inputDebounceTimer !== null) {
+      clearTimeout(this._inputDebounceTimer)
+      this._inputDebounceTimer = null
+    }
+    if (this._changeDebounceTimer !== null) {
+      clearTimeout(this._changeDebounceTimer)
+      this._changeDebounceTimer = null
+    }
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
@@ -159,14 +182,29 @@ export class TyInput extends HTMLElement implements TyInputElement {
       case 'precision':
         this._precision = newValue ? parseInt(newValue, 10) : undefined
         break
+      // Phase D attribute
+      case 'delay':
+        this._delay = this.parseDelay(newValue)
+        break
     }
 
     this.render()
   }
 
   /**
-   * Initialize shadow value from the initial value attribute
+   * Parse and validate delay value (0-5000ms)
    */
+  private parseDelay(value: string | null): number {
+    if (!value) return 0
+    const parsed = parseInt(value, 10)
+    if (isNaN(parsed)) return 0
+    // Clamp between 0 and 5000ms
+    return Math.max(0, Math.min(5000, parsed))
+  }
+
+  /**
+ * Initialize shadow value from the initial value attribute
+ */
   private initializeShadowValue(): void {
     if (this._value) {
       this._shadowValue = this.parseShadowValue(this._value)
@@ -439,6 +477,25 @@ export class TyInput extends HTMLElement implements TyInputElement {
     }
   }
 
+  // Phase D getter/setter
+
+  get delay(): number {
+    return this._delay
+  }
+
+  set delay(value: number | string) {
+    const numValue = typeof value === 'string' ? parseInt(value, 10) : value
+    const clamped = this.parseDelay(String(numValue))
+    if (this._delay !== clamped) {
+      this._delay = clamped
+      if (clamped > 0) {
+        this.setAttribute('delay', String(clamped))
+      } else {
+        this.removeAttribute('delay')
+      }
+    }
+  }
+
   /**
    * Build CSS class list for input wrapper
    */
@@ -453,9 +510,41 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   /**
-   * Setup event listeners for input element
-   * IMPORTANT: Only called ONCE, not on every render (like ClojureScript)
+   * Dispatch input event (helper method for debouncing)
    */
+  private dispatchInputEvent(rawValue: string, originalEvent: Event): void {
+    this.dispatchEvent(new CustomEvent('input', {
+      detail: {
+        value: this._shadowValue,
+        formattedValue: this.shouldFormat() ? this.getDisplayValue() : null,
+        rawValue: rawValue,
+        originalEvent: originalEvent
+      },
+      bubbles: true,
+      composed: true
+    }))
+  }
+
+  /**
+   * Dispatch change event (helper method for debouncing)
+   */
+  private dispatchChangeEvent(rawValue: string, originalEvent: Event): void {
+    this.dispatchEvent(new CustomEvent('change', {
+      detail: {
+        value: this._shadowValue,
+        formattedValue: this.shouldFormat() ? this.getDisplayValue() : null,
+        rawValue: rawValue,
+        originalEvent: originalEvent
+      },
+      bubbles: true,
+      composed: true
+    }))
+  }
+
+  /**
+ * Setup event listeners for input element
+ * IMPORTANT: Only called ONCE, not on every render (like ClojureScript)
+ */
   private setupEventListeners(): void {
     if (this._listenersSetup) return // Already setup
 
@@ -465,8 +554,12 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
     if (!inputEl || !wrapperEl) return
 
-    // Input event - update shadow value and form
+    // Input event - update shadow value and form (with debounce support)
     inputEl.addEventListener('input', (e) => {
+      // Stop native event from propagating - only our custom event should bubble
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+
       const target = e.target as HTMLInputElement
       const rawValue = target.value
 
@@ -478,21 +571,30 @@ export class TyInput extends HTMLElement implements TyInputElement {
         this._shadowValue !== null ? String(this._shadowValue) : null
       )
 
-      // Emit custom event with shadow value and formatted value
-      this.dispatchEvent(new CustomEvent('input', {
-        detail: {
-          value: this._shadowValue,
-          formattedValue: this.shouldFormat() ? this.getDisplayValue() : null,
-          rawValue: rawValue,
-          originalEvent: e
-        },
-        bubbles: true,
-        composed: true
-      }))
+      // Clear existing timer
+      if (this._inputDebounceTimer !== null) {
+        clearTimeout(this._inputDebounceTimer)
+      }
+
+      // If delay is set, debounce the event
+      if (this._delay > 0) {
+        this._inputDebounceTimer = window.setTimeout(() => {
+          // Use current value, not the captured rawValue
+          this.dispatchInputEvent(inputEl.value, e)
+          this._inputDebounceTimer = null
+        }, this._delay)
+      } else {
+        // Fire immediately if no delay
+        this.dispatchInputEvent(rawValue, e)
+      }
     })
 
-    // Change event
+    // Change event (with debounce support)
     inputEl.addEventListener('change', (e) => {
+      // Stop native event from propagating - only our custom event should bubble
+      e.stopPropagation()
+      e.stopImmediatePropagation()
+
       const target = e.target as HTMLInputElement
       const rawValue = target.value
 
@@ -504,17 +606,22 @@ export class TyInput extends HTMLElement implements TyInputElement {
         this._shadowValue !== null ? String(this._shadowValue) : null
       )
 
-      // Emit custom event
-      this.dispatchEvent(new CustomEvent('change', {
-        detail: {
-          value: this._shadowValue,
-          formattedValue: this.shouldFormat() ? this.getDisplayValue() : null,
-          rawValue: rawValue,
-          originalEvent: e
-        },
-        bubbles: true,
-        composed: true
-      }))
+      // Clear existing timer
+      if (this._changeDebounceTimer !== null) {
+        clearTimeout(this._changeDebounceTimer)
+      }
+
+      // If delay is set, debounce the event
+      if (this._delay > 0) {
+        this._changeDebounceTimer = window.setTimeout(() => {
+          // Use current value, not the captured rawValue
+          this.dispatchChangeEvent(inputEl.value, e)
+          this._changeDebounceTimer = null
+        }, this._delay)
+      } else {
+        // Fire immediately if no delay
+        this.dispatchChangeEvent(rawValue, e)
+      }
     })
 
     // Focus event - show raw value for numeric types
@@ -534,8 +641,25 @@ export class TyInput extends HTMLElement implements TyInputElement {
       }))
     })
 
-    // Blur event - show formatted value for numeric types
+    // Blur event - fire pending debounced events immediately, then show formatted value
     inputEl.addEventListener('blur', (e) => {
+      const target = e.target as HTMLInputElement
+      const rawValue = target.value
+
+      // Fire any pending debounced input event immediately on blur
+      if (this._inputDebounceTimer !== null) {
+        clearTimeout(this._inputDebounceTimer)
+        this._inputDebounceTimer = null
+        this.dispatchInputEvent(rawValue, e)
+      }
+
+      // Fire any pending debounced change event immediately on blur
+      if (this._changeDebounceTimer !== null) {
+        clearTimeout(this._changeDebounceTimer)
+        this._changeDebounceTimer = null
+        this.dispatchChangeEvent(rawValue, e)
+      }
+
       this._isFocused = false
       wrapperEl.classList.remove('focused')
 

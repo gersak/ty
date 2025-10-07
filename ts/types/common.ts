@@ -147,6 +147,10 @@ export interface TyInputElement extends TyBaseElement {
   locale?: string
   /** Number of decimal places */
   precision?: number | string
+  
+  // Debounce/delay property (Phase D)
+  /** Delay in milliseconds before firing input/change events (0-5000ms) */
+  delay?: number | string
 }
 
 /** CSS style content */

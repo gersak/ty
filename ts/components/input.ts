@@ -11,6 +11,8 @@
  * - Format-on-blur / raw-on-focus behavior
  * - Debounce delay (0-5000ms) for input/change events
  * - Immediate event firing on blur (cancels pending debounce)
+ * 
+ * NOTE: Checkbox functionality is in separate ty-checkbox component
  */
 
 import type { Flavor, Size, InputType, TyInputElement } from '../types/common.js'
@@ -82,6 +84,12 @@ export class TyInput extends HTMLElement implements TyInputElement {
   private _flavor: Flavor = 'neutral'
   private _listenersSetup = false
 
+  // Store references to handlers for cleanup
+  private _inputHandler: ((e: Event) => void) | null = null
+  private _changeHandler: ((e: Event) => void) | null = null
+  private _focusHandler: ((e: Event) => void) | null = null
+  private _blurHandler: ((e: Event) => void) | null = null
+
   // Numeric formatting properties (Phase C)
   private _shadowValue: number | string | null = null
   private _isFocused = false
@@ -108,7 +116,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
     return [
       'type', 'value', 'name', 'placeholder', 'label',
       'disabled', 'required', 'error', 'size', 'flavor',
-      'currency', 'locale', 'precision',  // Phase C,
+      'currency', 'locale', 'precision',  // Phase C
       'delay'  // Phase D
     ]
   }
@@ -121,6 +129,9 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   disconnectedCallback(): void {
+    // Clean up event listeners
+    this.removeEventListeners()
+    
     // Clear any pending debounce timers
     if (this._inputDebounceTimer !== null) {
       clearTimeout(this._inputDebounceTimer)
@@ -542,6 +553,42 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   /**
+   * Remove event listeners for cleanup
+   */
+  private removeEventListeners(): void {
+    if (!this._listenersSetup) return
+
+    const shadow = this.shadowRoot
+    if (!shadow) return
+
+    const inputEl = shadow.querySelector('input')
+    if (!inputEl) return
+
+    // Remove all event listeners using stored handler references
+    if (this._inputHandler) {
+      inputEl.removeEventListener('input', this._inputHandler)
+      this._inputHandler = null
+    }
+
+    if (this._changeHandler) {
+      inputEl.removeEventListener('change', this._changeHandler)
+      this._changeHandler = null
+    }
+
+    if (this._focusHandler) {
+      inputEl.removeEventListener('focus', this._focusHandler)
+      this._focusHandler = null
+    }
+
+    if (this._blurHandler) {
+      inputEl.removeEventListener('blur', this._blurHandler)
+      this._blurHandler = null
+    }
+
+    this._listenersSetup = false
+  }
+
+  /**
  * Setup event listeners for input element
  * IMPORTANT: Only called ONCE, not on every render (like ClojureScript)
  */
@@ -554,8 +601,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
     if (!inputEl || !wrapperEl) return
 
+    // Create and store handler references for cleanup
+    
     // Input event - update shadow value and form (with debounce support)
-    inputEl.addEventListener('input', (e) => {
+    this._inputHandler = (e: Event) => {
       // Stop native event from propagating - only our custom event should bubble
       e.stopPropagation()
       e.stopImmediatePropagation()
@@ -587,10 +636,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
         // Fire immediately if no delay
         this.dispatchInputEvent(rawValue, e)
       }
-    })
+    }
 
     // Change event (with debounce support)
-    inputEl.addEventListener('change', (e) => {
+    this._changeHandler = (e: Event) => {
       // Stop native event from propagating - only our custom event should bubble
       e.stopPropagation()
       e.stopImmediatePropagation()
@@ -622,10 +671,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
         // Fire immediately if no delay
         this.dispatchChangeEvent(rawValue, e)
       }
-    })
+    }
 
     // Focus event - show raw value for numeric types
-    inputEl.addEventListener('focus', (e) => {
+    this._focusHandler = (e: Event) => {
       this._isFocused = true
       wrapperEl.classList.add('focused')
 
@@ -639,10 +688,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
         bubbles: true,
         composed: true
       }))
-    })
+    }
 
     // Blur event - fire pending debounced events immediately, then show formatted value
-    inputEl.addEventListener('blur', (e) => {
+    this._blurHandler = (e: Event) => {
       const target = e.target as HTMLInputElement
       const rawValue = target.value
 
@@ -673,7 +722,13 @@ export class TyInput extends HTMLElement implements TyInputElement {
         bubbles: true,
         composed: true
       }))
-    })
+    }
+
+    // Add event listeners
+    inputEl.addEventListener('input', this._inputHandler)
+    inputEl.addEventListener('change', this._changeHandler)
+    inputEl.addEventListener('focus', this._focusHandler)
+    inputEl.addEventListener('blur', this._blurHandler)
 
     this._listenersSetup = true
   }
@@ -701,7 +756,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
     // If input exists, just update properties (like ClojureScript does)
     if (existingInput && existingWrapper) {
       existingInput.type = inputType
-      existingInput.value = displayValue  // Use formatted/raw value
+      existingInput.value = displayValue
       existingInput.placeholder = this._placeholder
       existingInput.name = this._name
 
@@ -750,36 +805,36 @@ export class TyInput extends HTMLElement implements TyInputElement {
     } else {
       // Create initial structure with wrapper and slots
       const labelHtml = this._label ? `
-        <label class="input-label">
-          ${this._label}
-          ${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}
-        </label>
-      ` : ''
+          <label class="input-label">
+            ${this._label}
+            ${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}
+          </label>
+        ` : ''
 
       const errorHtml = this._error ? `
-        <div class="error-message">${this._error}</div>
-      ` : ''
+          <div class="error-message">${this._error}</div>
+        ` : ''
 
       shadow.innerHTML = `
-        <div class="input-container">
-          ${labelHtml}
-          <div class="input-wrapper ${classes}">
-            <div class="input-start">
-              <slot name="start"></slot>
+          <div class="input-container">
+            ${labelHtml}
+            <div class="input-wrapper ${classes}">
+              <div class="input-start">
+                <slot name="start"></slot>
+              </div>
+              <input
+                type="${inputType}"
+                value="${displayValue}"
+                placeholder="${this._placeholder}"
+                name="${this._name}"
+              />
+              <div class="input-end">
+                <slot name="end"></slot>
+              </div>
             </div>
-            <input
-              type="${inputType}"
-              value="${displayValue}"
-              placeholder="${this._placeholder}"
-              name="${this._name}"
-            />
-            <div class="input-end">
-              <slot name="end"></slot>
-            </div>
+            ${errorHtml}
           </div>
-          ${errorHtml}
-        </div>
-      `
+        `
 
       // Set boolean properties after creating element
       const inputEl = shadow.querySelector('input')!

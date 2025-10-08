@@ -10,6 +10,7 @@ export { TyCheckbox } from './components/checkbox.js'
 export { TyTextarea } from './components/textarea.js'
 export { TyTooltip } from './components/tooltip.js'
 export { TyPopup } from './components/popup.js'
+export { TyModal } from './components/modal.js'
 
 // Types
 export type { 
@@ -30,6 +31,7 @@ export type { TyCheckboxElement } from './components/checkbox.js'
 export type { TyTextareaElement } from './components/textarea.js'
 export type { TooltipFlavor, TooltipAttributes } from './components/tooltip.js'
 export type { PopupAttributes } from './components/popup.js'
+export type { ModalAttributes, ModalCloseDetail } from './components/modal.js'
 
 // Utilities
 export { 

@@ -94,12 +94,12 @@ export class TyButton extends HTMLElement implements TyButtonElement {
   private validateFlavor(flavor: string | null): Flavor {
     const validFlavors: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
     const normalized = (flavor || 'neutral') as Flavor
-    
+
     if (!validFlavors.includes(normalized)) {
       console.warn(`[ty-button] Invalid flavor '${flavor}'. Using 'neutral'. Valid flavors: ${validFlavors.join(', ')}`)
       return 'neutral'
     }
-    
+
     return normalized
   }
 
@@ -319,10 +319,10 @@ export class TyButton extends HTMLElement implements TyButtonElement {
   private render(): void {
     const classes = this.buildClasses()
     const shadow = this.shadowRoot!
-    
+
     // Check if button already exists
     let button = shadow.querySelector('button')
-    
+
     if (button) {
       // Update existing button
       button.disabled = this._disabled
@@ -346,20 +346,24 @@ export class TyButton extends HTMLElement implements TyButtonElement {
 
   private setupEventHandlers(): void {
     const shadow = this.shadowRoot!
-    
+
     // Use event delegation on shadow root
-    shadow.addEventListener('click', (e) => {
-      if (this._disabled) return
-      
+    shadow.addEventListener('click', (e: Event) => {
+      if (this._disabled) {
+        e.preventDefault()
+        e.stopPropagation()
+        return
+      }
+
       const button = shadow.querySelector('button')
       if (!button || !button.contains(e.target as Node)) return
-
-      e.stopPropagation()
 
       // Handle form action first (like ClojureScript)
       this.handleFormAction()
 
-      // Then dispatch custom event
+      // Dispatch custom event for framework integration
+      // NOTE: We don't stop propagation on the native event!
+      // This allows onclick, onmousedown, etc. handlers to work naturally
       this.dispatchEvent(new CustomEvent('ty-click', {
         bubbles: true,
         composed: true,
@@ -369,6 +373,9 @@ export class TyButton extends HTMLElement implements TyButtonElement {
           originalEvent: e
         }
       }))
+
+      // Native events (click, mousedown, mouseup, pointerdown, etc.) 
+      // automatically bubble with composed:true, so they work on the host!
     })
   }
 }

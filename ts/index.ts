@@ -8,6 +8,8 @@ export { TyOption } from './components/option.js'
 export { TyInput } from './components/input.js'
 export { TyCheckbox } from './components/checkbox.js'
 export { TyTextarea } from './components/textarea.js'
+export { TyTooltip } from './components/tooltip.js'
+export { TyPopup } from './components/popup.js'
 
 // Types
 export type { 
@@ -26,6 +28,27 @@ export type {
 
 export type { TyCheckboxElement } from './components/checkbox.js'
 export type { TyTextareaElement } from './components/textarea.js'
+export type { TooltipFlavor, TooltipAttributes } from './components/tooltip.js'
+export type { PopupAttributes } from './components/popup.js'
+
+// Utilities
+export { 
+  lockScroll, 
+  unlockScroll, 
+  forceUnlockAll,
+  isLocked,
+  isLockedBy,
+  getActiveLocks,
+  getLockState,
+  enableDebug as enableScrollLockDebug,
+  disableDebug as disableScrollLockDebug
+} from './utils/scroll-lock.js'
+
+export type { 
+  Placement, 
+  PositionResult, 
+  CleanupFn 
+} from './utils/positioning.js'
 
 // Version
 export const VERSION = '0.2.0'

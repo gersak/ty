@@ -507,4 +507,182 @@ export const dropdownStyles = `
   border-color: var(--ty-color-warning-mild);
   box-shadow: 0 0 0 3px var(--ty-color-warning-faint);
 }
+
+/* ===== MOBILE MODE STYLES ===== */
+
+/* Mobile modal container - full screen overlay */
+.mobile-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 300ms ease;
+  pointer-events: none;
+}
+
+.mobile-modal.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Mobile backdrop */
+.mobile-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Mobile content container */
+.mobile-modal-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--ty-surface-elevated);
+  transform: translateY(100%);
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.mobile-modal.open .mobile-modal-content {
+  transform: translateY(0);
+}
+
+/* Mobile search header - only shown when searchable */
+.mobile-search-header {
+  flex-shrink: 0;
+  padding: 16px;
+  border-bottom: 1px solid var(--ty-border);
+  background: var(--ty-surface-content);
+}
+
+.mobile-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Header for non-searchable (close button only) */
+.mobile-header-nosearch {
+  flex-shrink: 0;
+  padding: 16px;
+  border-bottom: 1px solid var(--ty-border);
+  background: var(--ty-surface-content);
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Close button styling */
+.mobile-close-button {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  border-radius: var(--ty-radius-md);
+  color: var(--ty-color-text);
+  cursor: pointer;
+  transition: var(--ty-transition-colors);
+  padding: 0;
+}
+
+.mobile-close-button:hover {
+  background: var(--ty-bg-neutral-soft);
+}
+
+.mobile-close-button:active {
+  background: var(--ty-bg-neutral);
+  transform: scale(0.95);
+}
+
+.mobile-close-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-search-input {
+  flex: 1;
+  min-width: 0;
+  min-height: 48px; /* Touch-friendly */
+  font-size: 16px;   /* Prevents zoom on iOS */
+  box-sizing: border-box;
+  background: var(--ty-input-bg);
+  color: var(--ty-input-color);
+  border: 1px solid var(--ty-input-border);
+  border-radius: var(--ty-radius-md);
+  font-family: var(--ty-font-sans);
+  font-weight: var(--ty-font-normal);
+  line-height: var(--ty-line-height-tight);
+  padding: 12px 16px;
+  transition: var(--ty-transition-all);
+  outline: none;
+}
+
+.mobile-search-input:focus {
+  border-color: var(--ty-input-border-focus);
+  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
+}
+
+.mobile-search-input::placeholder {
+  color: var(--ty-input-placeholder);
+}
+
+/* Mobile options container */
+.mobile-options-container {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  background: var(--ty-surface-elevated);
+}
+
+/* Mobile option styling - native <option> only */
+.mobile-options-container ::slotted(option) {
+  display: flex;
+  align-items: center;
+  min-height: 48px; /* Touch-friendly */
+  padding: 12px 16px;
+  color: var(--ty-input-color);
+  cursor: pointer;
+  transition: var(--ty-transition-colors);
+  border: none;
+  background: none;
+  font-size: 16px;
+  font-family: inherit;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--ty-border-soft);
+}
+
+.mobile-options-container ::slotted(option:last-child) {
+  border-bottom: none;
+}
+
+.mobile-options-container ::slotted(option:active) {
+  background-color: var(--ty-bg-neutral-soft);
+}
+
+.mobile-options-container ::slotted(option[highlighted]) {
+  background-color: var(--ty-bg-primary-soft);
+  color: var(--ty-color-primary-mild);
+}
+
+.mobile-options-container ::slotted(option[selected]) {
+  background-color: var(--ty-color-primary);
+  color: #ffffff;
+  font-weight: var(--ty-font-medium);
+}
+
+.mobile-options-container ::slotted(option[hidden]) {
+  display: none;
+}
 `

@@ -2,11 +2,9 @@
  * TyDropdown Web Component
  * PORTED FROM: clj/ty/components/dropdown.cljs
  * 
- * Phase 1: Foundation & Desktop Core
- * 
  * A semantic dropdown component with:
  * - Desktop mode with smart positioning
- * - Mobile mode with full-screen modal (Phase 6)
+ * - Mobile mode with full-screen modal
  * - Search and filtering capabilities
  * - Keyboard navigation
  * - Form association for native form submission
@@ -42,6 +40,24 @@ import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { dropdownStyles } from '../styles/dropdown.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
+
+// ============================================================================
+// DEVICE DETECTION
+// ============================================================================
+
+/**
+ * Detect if we're on a mobile device
+ * - Screen width <= 768px (mobile phones)
+ * - Screen width <= 1024px + touch capability (tablets)
+ * 
+ * This matches the ClojureScript is-mobile-device? logic
+ */
+function isMobileDevice(): boolean {
+  const width = window.innerWidth
+  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  
+  return width <= 768 || (width <= 1024 && hasTouch)
+}
 
 // ============================================================================
 // Element Hash Utility (equivalent to ClojureScript's hash function)
@@ -108,6 +124,7 @@ interface DropdownState {
   highlightedIndex: number
   filteredOptions: OptionData[]
   currentValue: string | null
+  mode: 'desktop' | 'mobile'
 }
 
 /**
@@ -134,7 +151,8 @@ export class TyDropdown extends HTMLElement {
     search: '',
     highlightedIndex: -1,
     filteredOptions: [],
-    currentValue: null
+    currentValue: null,
+    mode: isMobileDevice() ? 'mobile' : 'desktop'
   }
 
   // Scroll lock ID (consistent across open/close cycles)
@@ -148,6 +166,10 @@ export class TyDropdown extends HTMLElement {
   private _searchBlurHandler: ((e: Event) => void) | null = null
   private _keyboardHandler: ((e: KeyboardEvent) => void) | null = null
 
+  // Delay/debounce properties for ty-search event
+  private _delay: number = 0
+  private _searchDebounceTimer: number | null = null
+
   constructor() {
     super()
     this._internals = this.attachInternals()
@@ -155,7 +177,12 @@ export class TyDropdown extends HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: dropdownStyles, id: 'ty-dropdown' })
 
-    this.renderDesktop()
+    // Render based on device type
+    if (this._state.mode === 'mobile') {
+      this.renderMobile()
+    } else {
+      this.renderDesktop()
+    }
   }
 
   static get observedAttributes(): string[] {
@@ -163,7 +190,7 @@ export class TyDropdown extends HTMLElement {
       'value', 'name', 'placeholder', 'label',
       'disabled', 'readonly', 'required',
       'searchable', 'not-searchable',
-      'size', 'flavor'
+      'size', 'flavor', 'delay'
     ]
   }
 
@@ -184,6 +211,12 @@ export class TyDropdown extends HTMLElement {
     if (keyboardHandler) {
       document.removeEventListener('keydown', keyboardHandler)
       ;(this as any).tyKeyboardHandler = null
+    }
+
+    // Clear any pending debounce timer
+    if (this._searchDebounceTimer !== null) {
+      clearTimeout(this._searchDebounceTimer)
+      this._searchDebounceTimer = null
     }
   }
 
@@ -229,9 +262,23 @@ export class TyDropdown extends HTMLElement {
       case 'flavor':
         this._flavor = this.validateFlavor(newValue)
         break
+      case 'delay':
+        this._delay = this.parseDelay(newValue)
+        break
     }
 
     this.renderDesktop()
+  }
+
+  /**
+   * Parse and validate delay value (0-5000ms)
+   */
+  private parseDelay(value: string | null): number {
+    if (!value) return 0
+    const parsed = parseInt(value, 10)
+    if (isNaN(parsed)) return 0
+    // Clamp between 0 and 5000ms
+    return Math.max(0, Math.min(5000, parsed))
   }
 
   /**
@@ -566,6 +613,8 @@ export class TyDropdown extends HTMLElement {
   // removeEventListeners removed - now using ClojureScript pattern
 
   // ============================================================================
+  // DESKTOP IMPLEMENTATION
+  // ============================================================================
   // Phase 2: Dialog & Positioning
   // ============================================================================
 
@@ -822,8 +871,31 @@ export class TyDropdown extends HTMLElement {
 
   /**
    * Dispatch search event for external search handling
+   * With optional delay/debounce support
    */
   private dispatchSearchEvent(query: string): void {
+    // Clear existing timer
+    if (this._searchDebounceTimer !== null) {
+      clearTimeout(this._searchDebounceTimer)
+      this._searchDebounceTimer = null
+    }
+
+    // If delay is set, debounce the event
+    if (this._delay > 0) {
+      this._searchDebounceTimer = window.setTimeout(() => {
+        this.fireSearchEvent(query)
+        this._searchDebounceTimer = null
+      }, this._delay)
+    } else {
+      // Fire immediately if no delay
+      this.fireSearchEvent(query)
+    }
+  }
+
+  /**
+   * Fire the actual ty-search event
+   */
+  private fireSearchEvent(query: string): void {
     this.dispatchEvent(new CustomEvent('ty-search', {
       detail: {
         query,
@@ -1035,7 +1107,256 @@ export class TyDropdown extends HTMLElement {
     this.updateSelectionDisplay()
   }
 
-  // Public API - Getters/Setters
+  // ============================================================================
+  // MOBILE IMPLEMENTATION
+  // ============================================================================
+
+  /**
+   * Render mobile mode with full-screen modal
+   */
+  private renderMobile(): void {
+    const shadow = this.shadowRoot!
+    
+    // Only set innerHTML and setup listeners if container doesn't exist
+    if (!shadow.querySelector('.dropdown-container')) {
+      const stubClasses = this.buildStubClasses()
+
+      const labelHtml = this._label ? `
+        <label class="dropdown-label">
+          ${this._label}
+          ${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}
+        </label>
+      ` : ''
+
+      // Close button SVG (X icon)
+      const closeButtonSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>`
+
+      // Conditional search header - only show when searchable
+      const searchHeaderHtml = this._searchable ? `
+        <div class="mobile-search-header">
+          <div class="mobile-header-content">
+            <input 
+              class="mobile-search-input ${this._size}" 
+              type="text"
+              placeholder="Search..."
+              ${this._disabled ? 'disabled' : ''}
+            />
+            <button class="mobile-close-button" type="button" aria-label="Close">
+              ${closeButtonSvg}
+            </button>
+          </div>
+        </div>
+      ` : `
+        <div class="mobile-header-nosearch">
+          <button class="mobile-close-button" type="button" aria-label="Close">
+            ${closeButtonSvg}
+          </button>
+        </div>
+      `
+
+      shadow.innerHTML = `
+        <div class="dropdown-container">
+          ${labelHtml}
+          <div class="dropdown-wrapper">
+            <div class="dropdown-stub ${stubClasses}" 
+                 ${this._disabled ? 'disabled' : ''}>
+              <slot name="selected"></slot>
+              <span class="dropdown-placeholder">${this._placeholder}</span>
+              <div class="dropdown-chevron">
+                ${CHEVRON_DOWN_SVG}
+              </div>
+            </div>
+            <div class="mobile-modal" style="display: none;">
+              <div class="mobile-modal-backdrop"></div>
+              <div class="mobile-modal-content">
+                ${searchHeaderHtml}
+                <div class="mobile-options-container">
+                  <slot id="options-slot"></slot>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+
+      // Setup event listeners ONCE (only when rendering for the first time)
+      this.setupMobileEventListeners()
+    }
+
+    // Always update selection display
+    this.updateSelectionDisplay()
+  }
+
+  /**
+   * Setup event listeners for mobile mode
+   */
+  private setupMobileEventListeners(): void {
+    const shadow = this.shadowRoot!
+    const stub = shadow.querySelector('.dropdown-stub')
+    const optionsSlot = shadow.querySelector('#options-slot')
+    const searchInput = shadow.querySelector('.mobile-search-input')
+    const backdrop = shadow.querySelector('.mobile-modal-backdrop')
+    const closeButton = shadow.querySelector('.mobile-close-button')
+
+    if (stub) {
+      stub.addEventListener('click', (e) => this.handleMobileStubClick(e))
+    }
+
+    // Add option click handler to slot
+    if (optionsSlot) {
+      optionsSlot.addEventListener('click', (e) => this.handleMobileOptionClick(e))
+    }
+
+    // Add search input handlers (if searchable)
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => this.handleSearchInput(e))
+    }
+
+    // Close button click
+    if (closeButton) {
+      closeButton.addEventListener('click', () => this.closeMobileModal())
+    }
+
+    // Backdrop click to close
+    if (backdrop) {
+      backdrop.addEventListener('click', () => this.closeMobileModal())
+    }
+
+    // Document keyboard handler for Escape key
+    const keyboardHandler = (e: KeyboardEvent) => this.handleMobileKeyboard(e)
+    document.addEventListener('keydown', keyboardHandler)
+    ;(this as any).tyKeyboardHandler = keyboardHandler
+  }
+
+  /**
+   * Handle mobile stub click - open modal
+   */
+  private handleMobileStubClick(e: Event): void {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (this._disabled || this._readonly) {
+      return
+    }
+
+    this.openMobileModal()
+  }
+
+  /**
+   * Handle mobile option click - select and close
+   */
+  private handleMobileOptionClick(e: Event): void {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.target as HTMLElement
+    
+    // Find the option element (might be clicking on child element)
+    const option = target.closest('option, ty-option, ty-tag') as HTMLElement
+    if (!option) return
+
+    // Select the option
+    this.selectOption(option)
+    
+    // Update display
+    this.updateSelectionDisplay()
+
+    // Close modal
+    this.closeMobileModal()
+  }
+
+  /**
+   * Handle mobile keyboard navigation
+   */
+  private handleMobileKeyboard(e: KeyboardEvent): void {
+    if (!this._state.open) return
+
+    // Only handle Escape key on mobile (no arrow navigation needed for touch)
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopPropagation()
+      this.closeMobileModal()
+    }
+  }
+
+  /**
+   * Open mobile modal
+   */
+  private openMobileModal(): void {
+    const shadow = this.shadowRoot!
+    const modal = shadow.querySelector('.mobile-modal') as HTMLElement
+    if (!modal) return
+
+    // Generate consistent unique ID for scroll locking
+    const dropdownId = `dropdown-${this.id || 'anon'}-${getElementHash(this)}`
+    this._scrollLockId = dropdownId
+    
+    // Lock scroll
+    lockScroll(dropdownId)
+
+    // Show modal with animation
+    modal.style.display = 'flex'
+    requestAnimationFrame(() => {
+      modal.classList.add('open')
+    })
+
+    // Update component state
+    this._state.open = true
+
+    // Initialize options state
+    const options = this.getOptions().map(el => this.getOptionData(el))
+    this._state.filteredOptions = options
+
+    // Focus search input if searchable
+    if (this._searchable) {
+      const searchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
+      if (searchInput) {
+        // Small delay to ensure modal is visible and keyboard doesn't glitch
+        setTimeout(() => searchInput.focus(), 300)
+      }
+    }
+  }
+
+  /**
+   * Close mobile modal
+   */
+  private closeMobileModal(): void {
+    const shadow = this.shadowRoot!
+    const modal = shadow.querySelector('.mobile-modal') as HTMLElement
+    if (!modal) return
+
+    // Unlock scroll using stored consistent ID
+    if (this._scrollLockId) {
+      unlockScroll(this._scrollLockId)
+      this._scrollLockId = null
+    }
+
+    // Hide modal with animation
+    modal.classList.remove('open')
+    setTimeout(() => {
+      modal.style.display = 'none'
+    }, 300) // Match CSS transition duration
+
+    // Update state
+    this._state.open = false
+    this._state.highlightedIndex = -1
+
+    // Reset search if searchable
+    if (this._searchable) {
+      this._state.search = ''
+      const searchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
+      if (searchInput) {
+        searchInput.value = ''
+      }
+    }
+  }
+
+  // ============================================================================
+  // PUBLIC API - Getters/Setters
+  // ============================================================================
 
   get value(): string {
     return this._state.currentValue || ''
@@ -1149,6 +1470,23 @@ export class TyDropdown extends HTMLElement {
         this.setAttribute('not-searchable', '')
       }
       this.renderDesktop()
+    }
+  }
+
+  get delay(): number {
+    return this._delay
+  }
+
+  set delay(value: number | string) {
+    const numValue = typeof value === 'string' ? parseInt(value, 10) : value
+    const clamped = this.parseDelay(String(numValue))
+    if (this._delay !== clamped) {
+      this._delay = clamped
+      if (clamped > 0) {
+        this.setAttribute('delay', String(clamped))
+      } else {
+        this.removeAttribute('delay')
+      }
     }
   }
 

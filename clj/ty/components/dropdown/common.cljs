@@ -129,6 +129,32 @@
         (.setFormValue internals (str current-value))
         (.setFormValue internals "")))))
 
+(defn update-validity!
+  "Update validation state using ElementInternals"
+  [^js el]
+  (when-let [internals (get-form-internals el)]
+    (let [{:keys [required]} (dropdown-attributes el)
+          {:keys [current-value]} (get-dropdown-state el)
+          is-empty? (or (nil? current-value) (= "" current-value))]
+
+      (if (and required is-empty?)
+        ;; Set invalid state with validation message
+        (let [stub (when-let [root (.-shadowRoot el)]
+                     (.querySelector root ".dropdown-stub"))]
+          (.setValidity internals
+                        #js {:valueMissing true}
+                        "Please select an option"
+                        stub))
+        ;; Set valid state (empty flags object)
+        (.setValidity internals #js {})))))
+
+(defn validate-dropdown!
+  "Validate dropdown and return validity state"
+  [^js el]
+  (update-validity! el)
+  (when-let [internals (get-form-internals el)]
+    (.-valid (.-validity internals))))
+
 (defn clear-selection!
   "Remove selection from all options and clear selected slot (self-contained)"
   [^js el]
@@ -184,9 +210,11 @@
       (update-component-value! el)
       (sync-selected-option! el)
       (update-selection-display! el)
-        ;; Update form value for HTMX compatibility (if form-associated)
+      ;; Update form value for HTMX compatibility (if form-associated)
       (when (get-form-internals el)
-        (update-form-value! el)))
+        (update-form-value! el)
+        ;; Update validation state
+        (update-validity! el)))
     new-state))
 
 (defn enrich-delta
@@ -200,9 +228,9 @@
     (let [{:keys [current-value]} (get-dropdown-state el)
           new-value (parse-dropdown-value (get delta "value"))]
       (->
-        delta
-        (assoc :current-value new-value)
-        (dissoc "value"))))) ; Flag that value processing is needed
+       delta
+       (assoc :current-value new-value)
+       (dissoc "value"))))) ; Flag that value processing is needed
 
 ;; =====================================================
 ;; OPTION MANAGEMENT
@@ -346,6 +374,10 @@
   (ensure-styles! shadow-root dropdown-styles "ty-dropdown"))
 
 (defn init-dropdown-state!
+  "Initialize dropdown state and validation"
   [^js el]
   (let [state (get-dropdown-state el)]
-    (sync-selected-option! el)))
+    (sync-selected-option! el)
+    ;; Initialize validation state if form-associated
+    (when (get-form-internals el)
+      (update-validity! el))))

@@ -1,12 +1,15 @@
-/* Dropdown Component Styles */
+/**
+ * Dropdown Component Styles
+ * Ported from: clj/ty/components/dropdown.css
+ */
 
+export const dropdownStyles = `
 /* ===== HOST ELEMENT STYLES ===== */
 
 :host {
   display: block;
   width: auto;
   min-width: 200px;
-  /* Default reasonable min-width */
 }
 
 /* ===== CONTAINER STRUCTURE ===== */
@@ -29,7 +32,7 @@
   padding-left: 12px;
 }
 
-/* Required indicator - using SVG icon instead of CSS */
+/* Required indicator - using SVG icon */
 .required-icon {
   display: inline-flex;
   align-items: center;
@@ -51,8 +54,6 @@
 /* ===== DROPDOWN STUB (CLICKABLE TRIGGER) ===== */
 
 .dropdown-stub {
-  /* Layout */
-  /* min-width: 206px; */
   width: 100%;
   cursor: pointer;
   box-sizing: border-box;
@@ -77,7 +78,7 @@
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
   padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
 
-  /* Transitions - includes opacity for open state */
+  /* Transitions */
   transition: var(--ty-transition-all), opacity 0.2s ease;
   outline: none;
 }
@@ -105,7 +106,6 @@
 
 /* ===== SIZE VARIANTS ===== */
 
-/* Extra Small */
 .dropdown-stub.xs {
   min-height: var(--ty-size-xs);
   font-size: var(--ty-font-xs);
@@ -113,7 +113,6 @@
   padding-right: calc(var(--ty-spacing-2) + 1rem + var(--ty-spacing-1));
 }
 
-/* Small */
 .dropdown-stub.sm {
   min-height: var(--ty-size-sm);
   font-size: var(--ty-font-sm);
@@ -121,7 +120,6 @@
   padding-right: calc(var(--ty-spacing-2) + 1rem + var(--ty-spacing-1));
 }
 
-/* Medium (default - already defined above, but explicit for clarity) */
 .dropdown-stub.md {
   min-height: var(--ty-size-md);
   font-size: var(--ty-font-sm);
@@ -129,7 +127,6 @@
   padding-right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2));
 }
 
-/* Large */
 .dropdown-stub.lg {
   min-height: var(--ty-size-lg);
   font-size: var(--ty-font-base);
@@ -137,7 +134,6 @@
   padding-right: calc(var(--ty-spacing-4) + 1rem + var(--ty-spacing-3));
 }
 
-/* Extra Large */
 .dropdown-stub.xl {
   min-height: var(--ty-size-xl);
   font-size: var(--ty-font-lg);
@@ -158,7 +154,7 @@
   display: none;
 }
 
-/* Selected content styling - only takes space when content exists */
+/* Selected content styling */
 .dropdown-stub slot[name="selected"] {
   display: block;
 }
@@ -209,12 +205,10 @@
   display: none;
 }
 
-/* Adjust padding for read-only dropdowns since no chevron */
 :host([readonly]) .dropdown-stub {
   padding-right: var(--ty-spacing-3);
 }
 
-/* Read-only dropdowns should use initial cursor */
 :host([readonly]) .dropdown-stub,
 :host([readonly]) .dropdown-stub slot[name="selected"] {
   cursor: initial;
@@ -233,7 +227,6 @@
   background: transparent;
   box-sizing: border-box;
   padding: var(--dropdown-padding, 20px);
-  /* Modal handles z-index automatically */
 
   /* Hidden by default */
   opacity: 0;
@@ -244,7 +237,7 @@
   left: -1000px;
 }
 
-/* Direction-based positioning with CSS classes */
+/* Direction-based positioning */
 .dropdown-dialog.position-below {
   left: var(--dropdown-x);
   top: var(--dropdown-y);
@@ -257,22 +250,19 @@
   flex-direction: column-reverse;
 }
 
-.dropdown-dialog.dropdown-dialog.position-above .dropdown-header {
+.dropdown-dialog.position-above .dropdown-header {
   margin-top: 4px;
 }
 
-
-.dropdown-dialog.dropdown-dialog.dropdown-dialog.position-below .dropdown-header {
+.dropdown-dialog.position-below .dropdown-header {
   margin-bottom: 4px;
 }
 
 .dropdown-dialog.position-below .dropdown-options {
-  /* Optional: Add upward-pointing shadow for below positioning */
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1), var(--ty-shadow-md);
 }
 
 .dropdown-dialog.open {
-  /* opacity: 1 is sufficient */
   display: flex;
   opacity: 1;
 }
@@ -298,7 +288,6 @@
 .dropdown-search-input {
   width: 100%;
   min-width: 0;
-  /* Allow input to shrink below its intrinsic minimum */
   box-sizing: border-box;
   background: var(--ty-input-bg);
   color: var(--ty-input-color);
@@ -388,25 +377,6 @@
   height: 100%;
 }
 
-.dropdown-close {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: var(--ty-spacing-1);
-  border-radius: var(--ty-radius-base);
-  color: var(--ty-color-neutral);
-  transition: var(--ty-transition-colors);
-}
-
-.dropdown-close:hover {
-  background-color: var(--ty-bg-neutral-mild);
-}
-
-.dropdown-close svg {
-  width: 1rem;
-  height: 1rem;
-}
-
 /* ===== OPTIONS CONTAINER ===== */
 
 .dropdown-options {
@@ -417,11 +387,8 @@
   box-shadow: var(--ty-shadow-md);
   max-height: 16rem;
   width: 100%;
-  /* Force options to respect dialog width */
   max-width: 100%;
-  /* Prevent expansion beyond dialog */
   overflow-x: hidden;
-  /* Hide horizontal overflow */
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;
@@ -429,7 +396,7 @@
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
 
-  /* Animation properties */
+  /* Animation */
   transform: translateY(-20px) scale(0.90);
   transition:
     opacity 100ms cubic-bezier(0.16, 1, 0.3, 1),
@@ -438,6 +405,14 @@
 
 /* ===== OPTION ELEMENTS ===== */
 
+/* 
+ * STYLING STRATEGY:
+ * - <option>: Native HTML element - needs default styling for usability
+ * - <ty-option>: Custom element - NO default styling, users have full control
+ * - <ty-tag>: Custom element - NO default styling, users have full control
+ */
+
+/* Default styling for native <option> elements only */
 .dropdown-options ::slotted(option) {
   padding: var(--ty-spacing-2) var(--ty-spacing-3);
   color: var(--ty-input-color);
@@ -469,270 +444,67 @@
   color: #ffffff;
 }
 
-.dropdown-options ::slotted(option[hidden]) {}
-
-/* ===== MOBILE MODE STYLES ===== */
-
-.mobile-dropdown-content {
-  display: flex;
-  flex-direction: column;
-  width: 60vw;
-  height: 60vh;
-  background: var(--ty-bg-neutral);
-  border-radius: var(--ty-radius-2xl);
-  overflow: hidden;
-  box-sizing: border-box;
+/* Hidden state applies to all option types */
+.dropdown-options ::slotted(option[hidden]),
+.dropdown-options ::slotted(ty-option[hidden]),
+.dropdown-options ::slotted(ty-tag[hidden]) {
+  display: none;
 }
 
-.mobile-search-header {
-  padding: var(--ty-spacing-4);
-  border-bottom: 1px solid var(--ty-border);
-  background: var(--ty-bg);
-  flex-shrink: 0;
-}
-
-.mobile-search-input {
-  width: 100%;
-  box-sizing: border-box;
-  background: var(--ty-input-bg);
-  color: var(--ty-input-color);
-  border: 1px solid var(--ty-input-border);
-  border-radius: var(--ty-radius-lg);
-  font-family: var(--ty-font-sans);
-  font-size: var(--ty-font-base);
-  font-weight: var(--ty-font-normal);
-  line-height: var(--ty-line-height-tight);
-  min-height: var(--ty-size-lg);
-  padding: var(--ty-spacing-3) var(--ty-spacing-4);
-  transition: var(--ty-transition-all);
-  outline: none;
-}
-
-.mobile-search-input:focus {
-  border-color: var(--ty-input-border-focus);
-  box-shadow: 0 0 0 3px var(--ty-input-shadow-focus);
-}
-
-.mobile-search-input:disabled {
-  background-color: var(--ty-input-disabled-bg);
-  color: var(--ty-input-disabled-color);
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.mobile-search-input::placeholder {
-  color: var(--ty-input-placeholder);
-}
-
-/* Mobile search input size variants */
-.mobile-search-input.xs {
-  min-height: var(--ty-size-xs);
-  font-size: var(--ty-font-xs);
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
-}
-
-.mobile-search-input.sm {
-  min-height: var(--ty-size-sm);
-  font-size: var(--ty-font-sm);
-  padding: var(--ty-spacing-2) var(--ty-spacing-3);
-}
-
-.mobile-search-input.md {
-  min-height: var(--ty-size-md);
-  font-size: var(--ty-font-base);
-  padding: var(--ty-spacing-3) var(--ty-spacing-4);
-}
-
-.mobile-search-input.lg {
-  min-height: var(--ty-size-lg);
-  font-size: var(--ty-font-lg);
-  padding: var(--ty-spacing-4) var(--ty-spacing-5);
-}
-
-.mobile-search-input.xl {
-  min-height: var(--ty-size-xl);
-  font-size: var(--ty-font-xl);
-  padding: var(--ty-spacing-5) var(--ty-spacing-6);
-}
-
-.mobile-options-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0;
-  background: var(--ty-bg);
-  width: 100%;
-  max-height: calc(100vh - 120px);
-  box-sizing: border-box;
-}
-
-.mobile-options-list ::slotted(option) {
-  align-items: center;
-  padding: var(--ty-spacing-4) var(--ty-spacing-4);
-  color: var(--ty-input-color);
-  cursor: pointer;
-  transition: var(--ty-transition-colors);
-  border: none;
-  background: none;
-  font-size: var(--ty-font-base);
-  font-family: inherit;
-  width: 100%;
-  text-align: left;
-  box-sizing: border-box;
-  border-bottom: 1px solid var(--ty-border-soft);
-  min-height: var(--ty-size-lg);
-}
-
-.mobile-options-list ::slotted(option:last-child) {
-  border-bottom: none;
-}
-
-.mobile-options-list ::slotted(option:hover),
-.mobile-options-list ::slotted(option:active) {
-  background-color: var(--ty-bg-neutral-soft);
-}
-
-.mobile-options-list ::slotted(option[highlighted]) {
-  background-color: var(--ty-bg-primary-soft);
-  color: var(--ty-color-primary-mild);
-}
-
-.mobile-options-list ::slotted(option[selected]) {
-  background-color: var(--ty-color-primary);
-  color: #ffffff;
-  font-weight: var(--ty-font-medium);
-}
-
-.mobile-options-list ::slotted(option[hidden]) {}
-
-/* ===== NEW: INDUSTRY-STANDARD SEMANTIC FLAVOR VARIANTS ===== */
+/* ===== FLAVOR VARIANTS ===== */
 
 :host([flavor="primary"]) .dropdown-stub,
-:host([flavor="primary"]) .dropdown-search-input,
-:host([flavor="primary"]) .mobile-search-input {
+:host([flavor="primary"]) .dropdown-search-input {
   border-color: var(--ty-color-primary);
 }
 
 :host([flavor="primary"]) .dropdown-stub:hover,
-:host([flavor="primary"]) .dropdown-search-input:focus,
-:host([flavor="primary"]) .mobile-search-input:focus {
+:host([flavor="primary"]) .dropdown-search-input:focus {
   border-color: var(--ty-color-primary-mild);
   box-shadow: 0 0 0 3px var(--ty-color-primary-faint);
 }
 
 :host([flavor="secondary"]) .dropdown-stub,
-:host([flavor="secondary"]) .dropdown-search-input,
-:host([flavor="secondary"]) .mobile-search-input {
+:host([flavor="secondary"]) .dropdown-search-input {
   border-color: var(--ty-color-secondary);
 }
 
 :host([flavor="secondary"]) .dropdown-stub:hover,
-:host([flavor="secondary"]) .dropdown-search-input:focus,
-:host([flavor="secondary"]) .mobile-search-input:focus {
+:host([flavor="secondary"]) .dropdown-search-input:focus {
   border-color: var(--ty-color-secondary-mild);
   box-shadow: 0 0 0 3px var(--ty-color-secondary-faint);
 }
 
 :host([flavor="success"]) .dropdown-stub,
-:host([flavor="success"]) .dropdown-search-input,
-:host([flavor="success"]) .mobile-search-input {
+:host([flavor="success"]) .dropdown-search-input {
   border-color: var(--ty-color-success);
 }
 
 :host([flavor="success"]) .dropdown-stub:hover,
-:host([flavor="success"]) .dropdown-search-input:focus,
-:host([flavor="success"]) .mobile-search-input:focus {
+:host([flavor="success"]) .dropdown-search-input:focus {
   border-color: var(--ty-color-success-mild);
   box-shadow: 0 0 0 3px var(--ty-color-success-faint);
 }
 
 :host([flavor="danger"]) .dropdown-stub,
-:host([flavor="danger"]) .dropdown-search-input,
-:host([flavor="danger"]) .mobile-search-input {
+:host([flavor="danger"]) .dropdown-search-input {
   border-color: var(--ty-color-danger);
 }
 
 :host([flavor="danger"]) .dropdown-stub:hover,
-:host([flavor="danger"]) .dropdown-search-input:focus,
-:host([flavor="danger"]) .mobile-search-input:focus {
+:host([flavor="danger"]) .dropdown-search-input:focus {
   border-color: var(--ty-color-danger-mild);
   box-shadow: 0 0 0 3px var(--ty-color-danger-faint);
 }
 
 :host([flavor="warning"]) .dropdown-stub,
-:host([flavor="warning"]) .dropdown-search-input,
-:host([flavor="warning"]) .mobile-search-input {
+:host([flavor="warning"]) .dropdown-search-input {
   border-color: var(--ty-color-warning);
 }
 
 :host([flavor="warning"]) .dropdown-stub:hover,
-:host([flavor="warning"]) .dropdown-search-input:focus,
-:host([flavor="warning"]) .mobile-search-input:focus {
+:host([flavor="warning"]) .dropdown-search-input:focus {
   border-color: var(--ty-color-warning-mild);
   box-shadow: 0 0 0 3px var(--ty-color-warning-faint);
 }
-
-:host([flavor="info"]) .dropdown-stub,
-:host([flavor="info"]) .dropdown-search-input,
-:host([flavor="info"]) .mobile-search-input {
-  border-color: var(--ty-color-info);
-}
-
-:host([flavor="info"]) .dropdown-stub:hover,
-:host([flavor="info"]) .dropdown-search-input:focus,
-:host([flavor="info"]) .mobile-search-input:focus {
-  border-color: var(--ty-color-info-mild);
-  box-shadow: 0 0 0 3px var(--ty-color-info-faint);
-}
-
-/* ===== MOBILE RESPONSIVE ADJUSTMENTS ===== */
-
-@media (max-width: 768px) {
-  .mobile-search-header {
-    padding: var(--ty-spacing-3);
-  }
-
-  .mobile-search-input {
-    font-size: var(--ty-font-sm);
-    min-height: var(--ty-size-md);
-    padding: var(--ty-spacing-2) var(--ty-spacing-3);
-  }
-
-  .mobile-options-list ::slotted(option) {
-    padding: var(--ty-spacing-3) var(--ty-spacing-3);
-    font-size: var(--ty-font-sm);
-    min-height: var(--ty-size-md);
-  }
-}
-
-/* ===== FORM VALIDATION STYLES ===== */
-
-/* Invalid state for required fields */
-:host(:invalid) .dropdown-stub {
-  border-color: var(--ty-color-danger);
-}
-
-:host(:invalid:focus-within) .dropdown-stub,
-:host(:invalid) .dropdown-stub:focus {
-  border-color: var(--ty-color-danger-mild);
-  box-shadow: 0 0 0 3px var(--ty-color-danger-faint);
-}
-
-/* Invalid state for mobile search input */
-:host(:invalid) .mobile-search-input {
-  border-color: var(--ty-color-danger);
-}
-
-:host(:invalid) .mobile-search-input:focus {
-  border-color: var(--ty-color-danger-mild);
-  box-shadow: 0 0 0 3px var(--ty-color-danger-faint);
-}
-
-/* Invalid state for desktop search input */
-:host(:invalid) .dropdown-search-input {
-  border-color: var(--ty-color-danger);
-}
-
-:host(:invalid) .dropdown-search-input:focus {
-  border-color: var(--ty-color-danger-mild);
-  box-shadow: 0 0 0 3px var(--ty-color-danger-faint);
-}
+`

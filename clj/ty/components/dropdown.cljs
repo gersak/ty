@@ -39,19 +39,26 @@
 ;; =====================================================
 
 (def configuration
-  {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :flavor :label :required :name] ; ← Add :name
+  {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :flavor :label :required :name]
    :props {:value nil} ; ← Enable property watching for framework integration
    :form-associated true
    :connected (fn [^js el]
                 (common/init-dropdown-state! el)
                 (render! el))
    :disconnected cleanup!
+   :form-reset (fn [^js el]
+                 ;; Reset to initial value or empty
+                 (let [initial-value (.getAttribute el "value")]
+                   (common/update-dropdown-state!
+                    el
+                    {:current-value (common/parse-dropdown-value initial-value)})
+                   (render! el)))
    :attr (fn [^js el delta]
            (let [delta' (common/enrich-delta delta el)]
              (when (or
-                     (seq (dissoc delta "value")) ; Non-value changes always render
-                     (not= delta delta') ; Value parsing changed something  
-                     (contains? delta' :current-value)) ; Value changed
+                    (seq (dissoc delta "value")) ; Non-value changes always render
+                    (not= delta delta') ; Value parsing changed something  
+                    (contains? delta' :current-value)) ; Value changed
                ;; Sync dropdown with new state
                (common/update-dropdown-state! el delta')
                (render! el))))
@@ -59,9 +66,9 @@
    :prop (fn [^js el delta]
            (let [delta' (common/enrich-delta delta el)]
              (when (or
-                     (seq (dissoc delta "value"))
-                     (not= delta delta')
-                     (contains? delta' :current-value))
+                    (seq (dissoc delta "value"))
+                    (not= delta delta')
+                    (contains? delta' :current-value))
                (common/update-dropdown-state! el delta')
                (render! el))))})
 

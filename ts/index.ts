@@ -11,6 +11,7 @@ export { TyTextarea } from './components/textarea.js'
 export { TyTooltip } from './components/tooltip.js'
 export { TyPopup } from './components/popup.js'
 export { TyModal } from './components/modal.js'
+export { TyDropdown } from './components/dropdown.js'
 
 // Types
 export type { 

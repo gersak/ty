@@ -349,7 +349,7 @@ function updateAriaAttributes(el: TyTabs, shadowRoot: ShadowRoot, activeId: stri
 }
 
 /**
- * Update pointer-events and opacity on tab panels without re-rendering
+ * Update pointer-events, opacity, and data-active on tab panels without re-rendering
  */
 function updatePanelInteraction(el: TyTabs, activeId: string): void {
   const tabs = getChildTabs(el);
@@ -359,6 +359,9 @@ function updatePanelInteraction(el: TyTabs, activeId: string): void {
     if (!tabId) return;
     
     const isActive = tabId === activeId;
+    
+    // Set data-active attribute for framework conditional rendering
+    tab.setAttribute('data-active', String(isActive));
     
     if (isActive) {
       (tab as HTMLElement).style.pointerEvents = 'auto';
@@ -385,11 +388,14 @@ function calculateMarkerPosition(
   if (!button || !buttonsContainer) return null;
   
   const buttonRect = button.getBoundingClientRect();
-  const containerRect = buttonsContainer.getBoundingClientRect();
+  
+  // Use offset properties for position relative to container (accounts for padding)
+  const left = button.offsetLeft;
+  const top = button.offsetTop;
   
   return {
-    left: buttonRect.left - containerRect.left,
-    top: 0,
+    left,
+    top,
     width: buttonRect.width,
     height: buttonRect.height,
   };
@@ -555,8 +561,8 @@ function renderTabButtons(tabsEl: TyTabs, tabs: HTMLElement[], activeId: string 
   }).join('');
   
   return `
-    <div class="tab-buttons" role="tablist">
-      <div class="marker-wrapper">
+    <div class="tab-buttons" role="tablist" part="buttons-container">
+      <div class="marker-wrapper" part="marker-wrapper">
         ${!hasCustomMarker(tabsEl) ? '<div class="default-marker"></div>' : ''}
         <slot name="marker"></slot>
       </div>
@@ -683,7 +689,7 @@ function render(el: TyTabs): void {
     shadowRoot.innerHTML = `
       <div class="tabs-container" data-placement="${placement}">
         ${renderTabButtons(el, tabs, activeId)}
-        <div class="panels-viewport">
+        <div class="panels-viewport" part="panels-container">
           <div class="panels-wrapper">
             <slot></slot>
           </div>

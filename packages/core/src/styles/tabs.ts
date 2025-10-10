@@ -7,7 +7,7 @@
  * - Animated marker that follows active tab
  * - Carousel viewport with transform animations
  * - Responsive design with prefers-reduced-motion support
- * - Customizable via CSS variables
+ * - Fully customizable via CSS Parts (::part)
  */
 
 export const tabsStyles = `
@@ -33,21 +33,31 @@ export const tabsStyles = `
 }
 
 /* ===================================== */
-/* Tab Buttons */
+/* Tab Buttons Container */
+/* Expose as CSS Part for full styling control */
 /* ===================================== */
 
 .tab-buttons {
   display: flex;
   gap: 0;
-  border-bottom: var(--ty-tabs-border-width, 1px) solid var(--ty-tabs-border-color, var(--ty-border));
-  background: var(--ty-tabs-bg, transparent);
   flex-shrink: 0;
   position: relative;
   /* For absolute positioned marker */
+  
+  /* Default minimal styling - customize via ::part(buttons-container) */
+  border-bottom: 1px solid var(--ty-border);
+  background: transparent;
+}
+
+/* Bottom placement moves border to top */
+.tabs-container[data-placement="bottom"] .tab-buttons {
+  border-bottom: none;
+  border-top: 1px solid var(--ty-border);
 }
 
 /* ===================================== */
-/* Marker (Optional Animated Background) */
+/* Marker Wrapper */
+/* Expose as CSS Part for custom marker styling */
 /* ===================================== */
 
 .marker-wrapper {
@@ -81,26 +91,24 @@ export const tabsStyles = `
   box-sizing: border-box;
 }
 
-/* Bottom placement moves border to top */
-.tabs-container[data-placement="bottom"] .tab-buttons {
-  border-bottom: none;
-  border-top: var(--ty-tabs-border-width, 1px) solid var(--ty-tabs-border-color, var(--ty-border));
-}
+/* ===================================== */
+/* Tab Buttons */
+/* ===================================== */
 
 .tab-button {
   min-width: 120px;
-  padding: var(--ty-tabs-button-padding, 6px 12px);
+  padding: 6px 12px;
   border: none;
   background: transparent;
   cursor: pointer;
   font: inherit;
-  color: var(--ty-tabs-button-color, var(--ty-text-soft));
+  color: var(--ty-text-soft);
   transition: color 200ms, background-color 200ms;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--ty-tabs-button-gap, 8px);
+  gap: 8px;
   font-weight: var(--ty-font-bold);
   font-size: var(--ty-font-sm);
   position: relative;
@@ -114,18 +122,19 @@ export const tabsStyles = `
 }
 
 .tab-button[disabled] {
-  opacity: var(--ty-tabs-button-disabled-opacity, 0.5);
+  opacity: 0.5;
   cursor: not-allowed;
   pointer-events: none;
 }
 
 .tab-button:focus-visible {
-  outline: 2px solid var(--ty-tabs-button-focus-color, var(--ty-color-primary));
+  outline: 2px solid var(--ty-color-primary);
   outline-offset: -2px;
 }
 
 /* ===================================== */
-/* Panels Viewport (clips overflow) */
+/* Panels Viewport */
+/* Expose as CSS Part for panels container styling */
 /* ===================================== */
 
 .panels-viewport {

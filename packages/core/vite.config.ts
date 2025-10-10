@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import dts from 'vite-plugin-dts'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [
     dts({
       include: ['src/**/*'],
@@ -84,8 +84,8 @@ export default defineConfig({
     // Terser options for maximum compression
     terserOptions: {
       compress: {
-        // Remove console statements in production
-        drop_console: true,
+        // Remove console statements ONLY in production
+        drop_console: mode === 'production',
         drop_debugger: true,
         
         // More aggressive optimizations
@@ -129,4 +129,4 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
-})
+}))

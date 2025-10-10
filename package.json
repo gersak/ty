@@ -2,17 +2,17 @@
   "name": "@gersak/ty",
   "version": "0.2.0",
   "description": "Modern Web Components Library - Zero dependency, modular web components",
-  "main": "dist-ts/index.js",
-  "module": "dist-ts/index.js",
-  "types": "dist-ts/index.d.ts",
+  "main": "packages/core/dist/index.js",
+  "module": "packages/core/dist/index.js",
+  "types": "packages/core/dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist-ts/index.js",
-      "types": "./dist-ts/index.d.ts"
+      "import": "./packages/core/dist/index.js",
+      "types": "./packages/core/dist/index.d.ts"
     },
     "./button": {
-      "import": "./dist-ts/components/button.js",
-      "types": "./dist-ts/components/button.d.ts"
+      "import": "./packages/core/dist/components/button.js",
+      "types": "./packages/core/dist/components/button.d.ts"
     },
     "./css": {
       "import": "./dev/css/ty.css"
@@ -22,7 +22,7 @@
     }
   },
   "files": [
-    "dist-ts/**/*",
+    "packages/core/dist/**/*",
     "dist/**/*",
     "dev/css/ty.css",
     "README.md",
@@ -58,10 +58,11 @@
   "scripts": {
     "dev": "shadow-cljs -A:dev watch site",
     "dev:css": "npx @tailwindcss/cli -i ./site/tailwind.css -o ./site/public/css/site.css --watch",
-    "dev:ts": "tsc --watch",
+    "dev:ts": "cd packages/core && npm run dev",
     "test:ts": "npm run build:ts && python3 -m http.server 8000",
-    "build:ts": "tsc && npm run bundle:ts",
-    "bundle:ts": "node scripts/bundle.js",
+    "build:ts": "cd packages/core && npm run build",
+    "build:ts:cdn": "cd packages/core && npm run build:cdn",
+    "build:ts:all": "cd packages/core && npm run build:all",
     "build:cljs": "shadow-cljs release lib",
     "build:css": "npx @tailwindcss/cli -i ./site/public/css/site.css -o ./site/public/css/site.css -m",
     "build": "npm run build:ts && npm run build:cljs",

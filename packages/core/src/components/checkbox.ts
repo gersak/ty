@@ -37,7 +37,6 @@ export interface TyCheckboxElement extends HTMLElement {
   checked: boolean
   value: string
   name: string
-  label: string
   disabled: boolean
   required: boolean
   error: string
@@ -52,31 +51,37 @@ export interface TyCheckboxElement extends HTMLElement {
  * @example
  * ```html
  * <!-- Basic checkbox -->
- * <ty-checkbox label="Subscribe to newsletter"></ty-checkbox>
+ * <ty-checkbox>Subscribe to newsletter</ty-checkbox>
  * 
  * <!-- Pre-checked with custom value -->
  * <ty-checkbox 
- *   label="Accept terms" 
  *   checked 
  *   value="accepted"
  *   required>
+ *   Accept terms
  * </ty-checkbox>
  * 
  * <!-- With error state -->
  * <ty-checkbox 
- *   label="Agree to terms" 
  *   required 
  *   error="You must agree to continue"
  *   flavor="danger">
+ *   Agree to terms
  * </ty-checkbox>
  * 
  * <!-- Different sizes -->
- * <ty-checkbox label="Small" size="sm"></ty-checkbox>
- * <ty-checkbox label="Large" size="lg"></ty-checkbox>
+ * <ty-checkbox size="sm">Small</ty-checkbox>
+ * <ty-checkbox size="lg">Large</ty-checkbox>
  * 
  * <!-- Semantic flavors -->
- * <ty-checkbox label="Primary" flavor="primary" checked></ty-checkbox>
- * <ty-checkbox label="Success" flavor="success" checked></ty-checkbox>
+ * <ty-checkbox flavor="primary" checked>Primary</ty-checkbox>
+ * <ty-checkbox flavor="success" checked>Success</ty-checkbox>
+ * 
+ * <!-- Rich content (with icon) -->
+ * <ty-checkbox checked>
+ *   <ty-icon name="star"></ty-icon>
+ *   Premium feature
+ * </ty-checkbox>
  * ```
  */
 export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
@@ -86,7 +91,6 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
   private _checked: boolean = false
   private _value: string = 'on'
   private _name: string = ''
-  private _label: string = ''
   private _disabled: boolean = false
   private _required: boolean = false
   private _error: string = ''
@@ -107,12 +111,12 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: inputStyles, id: 'ty-checkbox' })
 
-    this.render()
+    // Don't render here - wait for connectedCallback to avoid double rendering
   }
 
   static get observedAttributes(): string[] {
     return [
-      'checked', 'value', 'name', 'label',
+      'checked', 'value', 'name',
       'disabled', 'required', 'error', 'size', 'flavor'
     ]
   }
@@ -141,9 +145,6 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
         break
       case 'name':
         this._name = newValue || ''
-        break
-      case 'label':
-        this._label = newValue || ''
         break
       case 'disabled':
         this._disabled = newValue !== null
@@ -355,91 +356,45 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
    */
   private render(): void {
     const shadow = this.shadowRoot!
-    const existingLabel = shadow.querySelector('label')
-    const existingCheckbox = shadow.querySelector('.checkbox-container')
-    const existingError = shadow.querySelector('.error-message')
+    let container = shadow.querySelector('.input-container') as HTMLElement
     const classes = this.buildClassList()
 
-    // Setup event listeners once we have the checkbox container
-    // This handles both new and existing structures
-    if (existingCheckbox && !this._listenersSetup) {
-      this.setupEventListeners()
-    }
-
-    if (existingLabel && existingCheckbox) {
-      // Update existing checkbox elements
-
-      // Update label
-      if (this._label) {
-        existingLabel.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
-        existingLabel.style.display = 'flex'
-        existingLabel.style.alignItems = 'center'
-      } else {
-        existingLabel.style.display = 'none'
-      }
-
-      // Update checkbox icon
-      const checkboxIcon = existingCheckbox.querySelector('.checkbox-icon')
-      if (checkboxIcon) {
-        checkboxIcon.innerHTML = this._checked
-          ? CHECKBOX_CHECKED_ICON
-          : CHECKBOX_UNCHECKED_ICON
-
-        existingCheckbox.className = 'checkbox-container ' + classes
-
-        // Set tabindex for keyboard accessibility
-        const checkboxElement = existingCheckbox as HTMLElement
-        checkboxElement.tabIndex = this._disabled ? -1 : 0
-        existingCheckbox.setAttribute('role', 'checkbox')
-        existingCheckbox.setAttribute('aria-checked', String(this._checked))
-        existingCheckbox.setAttribute('aria-disabled', String(this._disabled))
-      }
-
-      // Update error message
-      if (this._error) {
-        if (existingError) {
-          existingError.textContent = this._error
-        } else {
-          const errorEl = document.createElement('div')
-          errorEl.className = 'error-message'
-          errorEl.textContent = this._error
-          shadow.querySelector('.input-container')?.appendChild(errorEl)
-        }
-      } else if (existingError) {
-        existingError.remove()
-      }
-    } else {
-      // Create new checkbox structure
-      const container = document.createElement('div')
+    // Create structure if it doesn't exist
+    if (!container) {
+      // Create container
+      container = document.createElement('div')
       container.className = 'input-container'
 
-      const labelEl = document.createElement('label')
-      labelEl.className = 'checkbox-label'
-
+      // Create checkbox element
       const checkboxEl = document.createElement('div')
       checkboxEl.className = 'checkbox-container ' + classes
-
-      const checkboxIcon = document.createElement('div')
-      checkboxIcon.className = 'checkbox-icon'
-      checkboxIcon.innerHTML = this._checked
-        ? CHECKBOX_CHECKED_ICON
-        : CHECKBOX_UNCHECKED_ICON
-
-      // Accessibility attributes
       checkboxEl.tabIndex = this._disabled ? -1 : 0
       checkboxEl.setAttribute('role', 'checkbox')
       checkboxEl.setAttribute('aria-checked', String(this._checked))
       checkboxEl.setAttribute('aria-disabled', String(this._disabled))
 
-      // Append checkbox icon to container
-      checkboxEl.appendChild(checkboxIcon)
+      // Create checkbox icon
+      const checkboxIcon = document.createElement('div')
+      checkboxIcon.className = 'checkbox-icon'
+      checkboxIcon.innerHTML = this._checked ? CHECKBOX_CHECKED_ICON : CHECKBOX_UNCHECKED_ICON
 
-      // Build structure
-      if (this._label) {
-        labelEl.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
-        checkboxEl.appendChild(labelEl)
+      // Create slot for label content
+      const labelSlot = document.createElement('slot')
+      labelSlot.className = 'checkbox-label-slot'
+
+      // Append icon and slot to checkbox
+      checkboxEl.appendChild(checkboxIcon)
+      checkboxEl.appendChild(labelSlot)
+
+      // Add required indicator if needed (in separate wrapper after slot)
+      if (this._required) {
+        const requiredIndicator = document.createElement('span')
+        requiredIndicator.className = 'required-icon'
+        requiredIndicator.innerHTML = REQUIRED_ICON_SVG
+        checkboxEl.appendChild(requiredIndicator)
       }
 
+      // Append checkbox to container
       container.appendChild(checkboxEl)
 
       // Add error message if present
@@ -450,11 +405,58 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
         container.appendChild(errorEl)
       }
 
-      // Append new structure to shadow DOM (should be empty on first render)
+      // Append to shadow DOM
       shadow.appendChild(container)
 
       // Setup event listeners after creating structure
       this.setupEventListeners()
+    } else {
+      // Update existing structure
+      const checkboxEl = container.querySelector('.checkbox-container') as HTMLElement
+      
+      if (checkboxEl) {
+        // Update classes
+        checkboxEl.className = 'checkbox-container ' + classes
+        
+        // Update accessibility attributes
+        checkboxEl.tabIndex = this._disabled ? -1 : 0
+        checkboxEl.setAttribute('aria-checked', String(this._checked))
+        checkboxEl.setAttribute('aria-disabled', String(this._disabled))
+
+        // Update checkbox icon
+        const checkboxIcon = checkboxEl.querySelector('.checkbox-icon')
+        if (checkboxIcon) {
+          checkboxIcon.innerHTML = this._checked ? CHECKBOX_CHECKED_ICON : CHECKBOX_UNCHECKED_ICON
+        }
+
+        // Update or add required indicator
+        let requiredIndicator = checkboxEl.querySelector('.required-icon') as HTMLElement
+        if (this._required) {
+          if (!requiredIndicator) {
+            requiredIndicator = document.createElement('span')
+            requiredIndicator.className = 'required-icon'
+            requiredIndicator.innerHTML = REQUIRED_ICON_SVG
+            checkboxEl.appendChild(requiredIndicator)
+          }
+        } else if (requiredIndicator) {
+          requiredIndicator.remove()
+        }
+      }
+
+      // Update error message
+      let errorEl = container.querySelector('.error-message') as HTMLElement
+      if (this._error) {
+        if (errorEl) {
+          errorEl.textContent = this._error
+        } else {
+          errorEl = document.createElement('div')
+          errorEl.className = 'error-message'
+          errorEl.textContent = this._error
+          container.appendChild(errorEl)
+        }
+      } else if (errorEl) {
+        errorEl.remove()
+      }
     }
   }
 
@@ -503,18 +505,6 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
     if (this._name !== val) {
       this._name = val
       this.setAttribute('name', val)
-    }
-  }
-
-  get label(): string {
-    return this._label
-  }
-
-  set label(val: string) {
-    if (this._label !== val) {
-      this._label = val
-      this.setAttribute('label', val)
-      this.render()
     }
   }
 

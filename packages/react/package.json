@@ -1,0 +1,33 @@
+{
+  "name": "@gersak/ty-react",
+  "version": "0.2.0",
+  "description": "React wrappers for Ty Web Components",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist/**/*", "README.md"],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@gersak/ty-core": "workspace:*",
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "typescript": "^5.7.0",
+    "vite": "^5.2.0"
+  },
+  "license": "MIT"
+}

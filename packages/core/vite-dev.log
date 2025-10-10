@@ -1,0 +1,12 @@
+
+> @gersak/ty-core@0.2.0 dev
+> vite
+
+Re-optimizing dependencies because lockfile has changed
+Port 3000 is in use, trying another one...
+Port 3001 is in use, trying another one...
+
+  VITE v5.4.11  ready in 817 ms
+
+  ➜  Local:   http://localhost:3002/
+  ➜  Network: use --host to expose

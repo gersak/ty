@@ -12,6 +12,9 @@ export { TyTooltip } from './components/tooltip.js'
 export { TyPopup } from './components/popup.js'
 export { TyModal } from './components/modal.js'
 export { TyDropdown } from './components/dropdown.js'
+export { TyMultiselect } from './components/multiselect.js'
+export { TyTabs } from './components/tabs.js'
+export { TyTab } from './components/tab.js'
 
 // Types
 export type { 
@@ -33,6 +36,8 @@ export type { TyTextareaElement } from './components/textarea.js'
 export type { TooltipFlavor, TooltipAttributes } from './components/tooltip.js'
 export type { PopupAttributes } from './components/popup.js'
 export type { ModalAttributes, ModalCloseDetail } from './components/modal.js'
+export type { TabsAttributes, TabChangeDetail } from './components/tabs.js'
+export type { TabAttributes } from './components/tab.js'
 
 // Utilities
 export { 

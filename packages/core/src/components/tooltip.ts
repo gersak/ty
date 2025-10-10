@@ -140,22 +140,22 @@ function getAnchorElement(el: TyTooltip): HTMLElement | null {
  */
 function getOrCreatePopover(el: TyTooltip): HTMLElement {
   let popover = popoverElements.get(el);
-  
+
   if (!popover) {
     // Create popover element
     popover = document.createElement('div');
     popover.id = `ty-tooltip-${Math.random().toString(36).substr(2, 9)}`;
     popover.setAttribute('popover', 'manual');
     popover.className = 'ty-tooltip-popover';
-    
+
     // Get initial attributes
     const { flavor } = getTooltipAttributes(el);
     popover.setAttribute('data-flavor', flavor);
-    
+
     // Copy content from slot
     const content = el.textContent || '';
     popover.textContent = content;
-    
+
     // Apply inline styles (since popover is outside shadow DOM, we need inline styles)
     const styles = `
       position: fixed;
@@ -173,19 +173,19 @@ function getOrCreatePopover(el: TyTooltip): HTMLElement {
       user-select: none;
       pointer-events: none;
     `;
-    
+
     popover.style.cssText = styles;
-    
+
     // Apply flavor-specific styles
     applyFlavorStyles(popover, flavor);
-    
+
     // Append to body
     document.body.appendChild(popover);
-    
+
     // Store reference
     popoverElements.set(el, popover);
   }
-  
+
   return popover;
 }
 
@@ -197,7 +197,7 @@ function applyFlavorStyles(popover: HTMLElement, flavor: TooltipFlavor): void {
   popover.style.removeProperty('background');
   popover.style.removeProperty('color');
   popover.style.removeProperty('border-color');
-  
+
   // Apply flavor-specific styles
   switch (flavor) {
     case 'primary':
@@ -378,12 +378,12 @@ function showTooltip(el: TyTooltip): void {
 
   // Create popover if it doesn't exist
   const popover = getOrCreatePopover(el);
-  
+
   try {
     // Show using Popover API
     popover.showPopover();
     el._open = true;
-    
+
     // Position and setup observers
     updatePosition(el);
     setupAutoUpdate(el);
@@ -398,7 +398,7 @@ function showTooltip(el: TyTooltip): void {
 function hideTooltip(el: TyTooltip): void {
   const popover = popoverElements.get(el);
   if (!popover) return;
-  
+
   try {
     popover.hidePopover();
     el._open = false;

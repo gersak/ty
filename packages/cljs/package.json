@@ -1,0 +1,50 @@
+{
+  "name": "@gersak/ty-cljs",
+  "version": "0.2.0",
+  "description": "Ty Web Components - ClojureScript Implementation & CLJS-only features",
+  "main": "dist/ty.js",
+  "exports": {
+    ".": {
+      "import": "./dist/ty.js"
+    },
+    "./calendar": {
+      "import": "./dist/ty-calendar.js"
+    },
+    "./calendar-month": {
+      "import": "./dist/ty-calendar-month.js"
+    },
+    "./date-picker": {
+      "import": "./dist/ty-date-picker.js"
+    },
+    "./dropdown": {
+      "import": "./dist/ty-dropdown.js"
+    },
+    "./multiselect": {
+      "import": "./dist/ty-multiselect.js"
+    },
+    "./lazy": {
+      "import": "./dist/ty-lazy.js"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md"
+  ],
+  "keywords": [
+    "web-components",
+    "clojurescript",
+    "calendar",
+    "router",
+    "i18n"
+  ],
+  "scripts": {
+    "dev": "shadow-cljs -A:dev watch lib",
+    "build": "shadow-cljs -A:dev release lib bundle",
+    "clean": "rm -rf dist .shadow-cljs"
+  },
+  "devDependencies": {
+    "shadow-cljs": "^2.28.0"
+  },
+  "author": "Gersak <dev@gersak.io>",
+  "license": "MIT"
+}

@@ -1,0 +1,93 @@
+{
+  "name": "@gersak/ty-core",
+  "version": "0.2.0",
+  "description": "Ty Web Components - TypeScript Implementation",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./button": {
+      "import": "./dist/components/button.js",
+      "types": "./dist/components/button.d.ts"
+    },
+    "./modal": {
+      "import": "./dist/components/modal.js",
+      "types": "./dist/components/modal.d.ts"
+    },
+    "./input": {
+      "import": "./dist/components/input.js",
+      "types": "./dist/components/input.d.ts"
+    },
+    "./dropdown": {
+      "import": "./dist/components/dropdown.js",
+      "types": "./dist/components/dropdown.d.ts"
+    },
+    "./checkbox": {
+      "import": "./dist/components/checkbox.js",
+      "types": "./dist/components/checkbox.d.ts"
+    },
+    "./textarea": {
+      "import": "./dist/components/textarea.js",
+      "types": "./dist/components/textarea.d.ts"
+    },
+    "./popup": {
+      "import": "./dist/components/popup.js",
+      "types": "./dist/components/popup.d.ts"
+    },
+    "./tooltip": {
+      "import": "./dist/components/tooltip.js",
+      "types": "./dist/components/tooltip.d.ts"
+    },
+    "./tag": {
+      "import": "./dist/components/tag.js",
+      "types": "./dist/components/tag.d.ts"
+    },
+    "./option": {
+      "import": "./dist/components/option.js",
+      "types": "./dist/components/option.d.ts"
+    },
+    "./icon": {
+      "import": "./dist/components/icon.js",
+      "types": "./dist/components/icon.d.ts"
+    }
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "web-components",
+    "typescript",
+    "ui-components",
+    "custom-elements",
+    "shadow-dom"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "build:optimized": "cp vite.config.optimized.ts vite.config.ts && vite build && cp vite.config.dev.ts vite.config.ts || true",
+    "build:size": "npm run build && echo \"\" && echo \"=== Bundle Sizes ===\" && ls -lh dist/components/*.js | grep -v \".map\" | awk '{printf \"%-30s %s\\n\", $9, $5}'",
+    "build:cdn": "vite build --config vite.config.cdn.ts",
+    "build:all": "npm run build && npm run build:cdn",
+    "size:cdn": "npm run build:cdn && echo \"\" && echo \"=== CDN Bundle Sizes ===\" && ls -lh dist-cdn/*.js | awk '{printf \"%-30s %s\\n\", $9, $5}'"
+  },
+  "devDependencies": {
+    "@rollup/plugin-terser": "^0.4.4",
+    "autoprefixer": "^10.4.21",
+    "terser": "^5.44.0",
+    "typescript": "^5.7.0",
+    "vite": "^5.4.11",
+    "vite-plugin-dts": "^4.3.0"
+  },
+  "author": "Gersak <dev@gersak.io>",
+  "license": "MIT",
+  "type": "module"
+}

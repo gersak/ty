@@ -134,14 +134,19 @@ export const calendarMonthStyles = `
 
 /* Selected State (for custom usage) */
 .calendar-day-cell.selected {
-  color: var(--ty-color-neutral-strong) !important;
-  border-color: var(--ty-border-mild);
-  background-color: var(--ty-bg-neutral);
-  font-weight: 500;
+  background-color: var(--ty-bg-primary) !important;
+  color: var(--ty-color-primary-strong) !important;
+  border-color: var(--ty-color-primary) !important;
+  font-weight: 600;
+}
+
+.calendar-day-cell.selected:hover {
+  background-color: var(--ty-bg-primary-mild) !important;
+  border-color: var(--ty-color-primary-mild) !important;
 }
 
 .calendar-day-cell.selected.other-month {
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 /* ============================================================================

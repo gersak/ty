@@ -160,6 +160,7 @@ export class TyCalendar extends HTMLElement {
   private _state: CalendarState;
   private _locale: string = 'en-US';
   private _showNavigation: boolean = true;
+  private _stateless: boolean = false;
   private _size: CalendarSize = 'md';
   private _width?: string;
   private _dayContentFn?: DayContentFn;
@@ -181,7 +182,7 @@ export class TyCalendar extends HTMLElement {
    * Observed attributes
    */
   static get observedAttributes(): string[] {
-    return ['year', 'month', 'day', 'show-navigation', 'locale', 'name', 'size', 'width'];
+    return ['year', 'month', 'day', 'show-navigation', 'stateless', 'locale', 'name', 'size', 'width'];
   }
 
   constructor() {
@@ -240,6 +241,11 @@ export class TyCalendar extends HTMLElement {
         this.render();
         break;
 
+      case 'stateless':
+        this._stateless = newValue !== null && newValue !== 'false';
+        // No re-render needed, just changes behavior
+        break;
+
       case 'locale':
         this._locale = newValue || 'en-US';
         this.syncChildComponents();
@@ -282,15 +288,26 @@ export class TyCalendar extends HTMLElement {
 
   set year(value: number | undefined) {
     if (value !== undefined) {
-      this._state.selectedYear = value;
-      this._state.displayYear = value;
-      this.setAttribute('year', value.toString());
+      // In stateless mode, only update display
+      if (this._stateless) {
+        this._state.displayYear = value;
+        this.setAttribute('year', value.toString());
+      } else {
+        // In stateful mode, update both selection and display
+        this._state.selectedYear = value;
+        this._state.displayYear = value;
+        this.setAttribute('year', value.toString());
+      }
     } else {
-      delete this._state.selectedYear;
+      if (!this._stateless) {
+        delete this._state.selectedYear;
+      }
       this.removeAttribute('year');
     }
     this.syncChildComponents();
-    this.updateFormValue();
+    if (!this._stateless) {
+      this.updateFormValue();
+    }
   }
 
   get month(): number | undefined {
@@ -299,15 +316,26 @@ export class TyCalendar extends HTMLElement {
 
   set month(value: number | undefined) {
     if (value !== undefined) {
-      this._state.selectedMonth = value;
-      this._state.displayMonth = value;
-      this.setAttribute('month', value.toString());
+      // In stateless mode, only update display
+      if (this._stateless) {
+        this._state.displayMonth = value;
+        this.setAttribute('month', value.toString());
+      } else {
+        // In stateful mode, update both selection and display
+        this._state.selectedMonth = value;
+        this._state.displayMonth = value;
+        this.setAttribute('month', value.toString());
+      }
     } else {
-      delete this._state.selectedMonth;
+      if (!this._stateless) {
+        delete this._state.selectedMonth;
+      }
       this.removeAttribute('month');
     }
     this.syncChildComponents();
-    this.updateFormValue();
+    if (!this._stateless) {
+      this.updateFormValue();
+    }
   }
 
   get day(): number | undefined {
@@ -342,6 +370,19 @@ export class TyCalendar extends HTMLElement {
   set showNavigation(value: boolean) {
     this._showNavigation = value;
     this.setAttribute('show-navigation', value.toString());
+  }
+
+  get stateless(): boolean {
+    return this._stateless;
+  }
+
+  set stateless(value: boolean) {
+    this._stateless = value;
+    if (value) {
+      this.setAttribute('stateless', '');
+    } else {
+      this.removeAttribute('stateless');
+    }
   }
 
   get size(): CalendarSize {
@@ -410,9 +451,13 @@ export class TyCalendar extends HTMLElement {
       delete this._state.selectedYear;
       delete this._state.selectedMonth;
       delete this._state.selectedDay;
-      this.removeAttribute('year');
-      this.removeAttribute('month');
-      this.removeAttribute('day');
+      
+      // In normal mode, also clear attributes
+      if (!this._stateless) {
+        this.removeAttribute('year');
+        this.removeAttribute('month');
+        this.removeAttribute('day');
+      }
     } else {
       // Parse ISO date (YYYY-MM-DD)
       const match = isoDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -421,19 +466,30 @@ export class TyCalendar extends HTMLElement {
         const month = parseInt(match[2], 10);
         const day = parseInt(match[3], 10);
 
+        // Update internal selection state
         this._state.selectedYear = year;
         this._state.selectedMonth = month;
         this._state.selectedDay = day;
+        
+        // Update display to show this month
         this._state.displayYear = year;
         this._state.displayMonth = month;
 
-        this.setAttribute('year', year.toString());
-        this.setAttribute('month', month.toString());
-        this.setAttribute('day', day.toString());
+        // In normal mode, update attributes
+        // In stateless mode, skip attribute updates (parent controls attributes)
+        if (!this._stateless) {
+          this.setAttribute('year', year.toString());
+          this.setAttribute('month', month.toString());
+          this.setAttribute('day', day.toString());
+        }
       }
     }
     this.syncChildComponents();
-    this.updateFormValue();
+    
+    // In normal mode, update form value
+    if (!this._stateless) {
+      this.updateFormValue();
+    }
   }
 
   // ==========================================================================
@@ -449,6 +505,7 @@ export class TyCalendar extends HTMLElement {
     const dayStr = this.getAttribute('day');
     const localeStr = this.getAttribute('locale');
     const showNavStr = this.getAttribute('show-navigation');
+    const statelessStr = this.getAttribute('stateless');
     const sizeStr = this.getAttribute('size');
     const widthStr = this.getAttribute('width');
 
@@ -482,6 +539,11 @@ export class TyCalendar extends HTMLElement {
     // Show navigation
     if (showNavStr) {
       this._showNavigation = showNavStr !== 'false';
+    }
+
+    // Stateless mode
+    if (statelessStr !== null) {
+      this._stateless = statelessStr !== 'false';
     }
 
     // Size
@@ -579,6 +641,9 @@ export class TyCalendar extends HTMLElement {
    * Update form value using ElementInternals
    */
   private updateFormValue(): void {
+    // Skip form participation in stateless mode
+    if (this._stateless) return;
+    
     if (!this._internals) return;
 
     const elementName = this.getAttribute('name');
@@ -637,7 +702,19 @@ export class TyCalendar extends HTMLElement {
 
     const { dayContext, year, month, day } = event.detail;
 
-    // Update selection state
+    // In stateless mode, just re-dispatch the event without updating internal state
+    if (this._stateless) {
+      // Re-dispatch day-click event for parent to handle
+      this.dispatchEvent(new CustomEvent('day-click', {
+        detail: event.detail,
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+      }));
+      return;
+    }
+
+    // Normal mode: update selection state
     this._state.selectedYear = year;
     this._state.selectedMonth = month;
     this._state.selectedDay = day;
@@ -671,6 +748,18 @@ export class TyCalendar extends HTMLElement {
       composed: true,
       cancelable: false,
     }));
+  }
+
+  // ==========================================================================
+  // Public Methods
+  // ==========================================================================
+
+  /**
+   * Force re-render of the calendar
+   * Useful after updating dayContentFn or other dynamic properties
+   */
+  refresh(): void {
+    this.syncChildComponents();
   }
 
   // ==========================================================================

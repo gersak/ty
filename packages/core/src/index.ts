@@ -18,6 +18,7 @@ export { TyTab } from './components/tab.js'
 export { TyCalendarMonth } from './components/calendar-month.js'
 export { TyCalendarNavigation } from './components/calendar-navigation.js'
 export { TyCalendar } from './components/calendar.js'
+export { TyDatePicker } from './components/date-picker.js'
 
 // Types
 export type { 
@@ -44,6 +45,7 @@ export type { TabAttributes } from './components/tab.js'
 export type { DayContentFn, DayClickDetail, CalendarSize } from './components/calendar-month.js'
 export type { NavigationChangeDetail } from './components/calendar-navigation.js'
 export type { CalendarChangeDetail, CalendarNavigateDetail } from './components/calendar.js'
+export type { DatePickerChangeDetail } from './components/date-picker.js'
 export type { DayContext } from './utils/calendar-utils.js'
 
 // Utilities

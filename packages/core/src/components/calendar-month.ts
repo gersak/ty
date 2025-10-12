@@ -43,6 +43,7 @@ import {
   getLocalizedWeekdays,
   type DayContext
 } from '../utils/calendar-utils.js';
+import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
 
 // ============================================================================
 // Types
@@ -146,6 +147,7 @@ export class TyCalendarMonth extends HTMLElement {
   private _dayContentFn?: DayContentFn;
   private _customCSS?: CSSStyleSheet;
   private _value?: number; // Selected date as timestamp (from parent calendar)
+  private _localeObserver?: () => void; // Cleanup function for locale observer
 
   /**
    * Observed attributes (minimal - mainly for debugging)
@@ -186,8 +188,21 @@ export class TyCalendarMonth extends HTMLElement {
     if (sizeAttr && (sizeAttr === 'sm' || sizeAttr === 'md' || sizeAttr === 'lg')) {
       this._size = sizeAttr;
     }
+    
+    // Setup locale observer to watch for ancestor lang changes
+    this._localeObserver = observeLocaleChanges(this, () => {
+      this.render();
+    });
 
     this.render();
+  }
+
+  disconnectedCallback() {
+    // Cleanup locale observer
+    if (this._localeObserver) {
+      this._localeObserver();
+      this._localeObserver = undefined;
+    }
   }
 
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null) {
@@ -229,7 +244,7 @@ export class TyCalendarMonth extends HTMLElement {
   }
 
   get locale(): string {
-    return this._locale;
+    return getEffectiveLocale(this, this.getAttribute('locale'));
   }
 
   set locale(value: string) {

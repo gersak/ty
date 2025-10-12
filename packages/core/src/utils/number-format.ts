@@ -69,7 +69,14 @@ export function formatNumber(
   }
   
   const formatter = new Intl.NumberFormat(locale, options)
-  return formatter.format(value)
+  const formatted = formatter.format(value)
+  
+  // Normalize Unicode spaces for better HTML input compatibility
+  // Replace narrow no-break space (U+202F) and thin space (U+2009) with regular non-breaking space (U+00A0)
+  // This ensures proper rendering in HTML input elements
+  return formatted
+    .replace(/\u202F/g, '\u00A0')  // Narrow no-break space → non-breaking space
+    .replace(/\u2009/g, '\u00A0')  // Thin space → non-breaking space
 }
 
 /**

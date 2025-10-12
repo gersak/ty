@@ -36,6 +36,7 @@
 import { ensureStyles } from '../utils/styles.js';
 import { calendarNavigationStyles } from '../styles/calendar-navigation.js';
 import { getMonthName } from '../utils/calendar-utils.js';
+import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
 
 // ============================================================================
 // Types
@@ -105,6 +106,7 @@ export class TyCalendarNavigation extends HTMLElement {
   private _locale: string = 'en-US';
   private _size: 'sm' | 'md' | 'lg' = 'md';
   private _width?: string;
+  private _localeObserver?: () => void; // Cleanup function for locale observer
   
   /**
    * Observed attributes (minimal - properties are primary API)
@@ -140,7 +142,20 @@ export class TyCalendarNavigation extends HTMLElement {
       this._locale = this.getAttribute('locale') || 'en-US';
     }
     
+    // Setup locale observer to watch for ancestor lang changes
+    this._localeObserver = observeLocaleChanges(this, () => {
+      this.render();
+    });
+    
     this.render();
+  }
+  
+  disconnectedCallback() {
+    // Cleanup locale observer
+    if (this._localeObserver) {
+      this._localeObserver();
+      this._localeObserver = undefined;
+    }
   }
   
   attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null) {
@@ -177,7 +192,7 @@ export class TyCalendarNavigation extends HTMLElement {
   }
   
   get locale(): string {
-    return this._locale;
+    return getEffectiveLocale(this, this.getAttribute('locale'));
   }
   
   set locale(value: string) {
@@ -327,7 +342,7 @@ export class TyCalendarNavigation extends HTMLElement {
     this.applyWidthProperty();
     
     // Get localized month name
-    const monthName = getMonthName(this._displayMonth, this._locale, 'long');
+    const monthName = getMonthName(this._displayMonth, this.locale, 'long');
     
     // Clear and rebuild
     root.innerHTML = '';

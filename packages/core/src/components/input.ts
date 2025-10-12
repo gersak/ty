@@ -24,6 +24,7 @@ import {
   shouldFormat as shouldFormatType,
   type FormatConfig
 } from '../utils/number-format.js'
+import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js'
 
 /**
  * Required indicator SVG icon (from Lucide)
@@ -101,6 +102,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
   private _delay: number = 0
   private _inputDebounceTimer: number | null = null
   private _changeDebounceTimer: number | null = null
+  private _localeObserver?: () => void // Cleanup function for locale observer
 
   constructor() {
     super()
@@ -126,11 +128,22 @@ export class TyInput extends HTMLElement implements TyInputElement {
     this.initializeShadowValue()
     this.render()
     this.setupEventListeners()
+    
+    // Setup locale observer to watch for ancestor lang changes
+    this._localeObserver = observeLocaleChanges(this, () => {
+      this.render()
+    })
   }
 
   disconnectedCallback(): void {
     // Clean up event listeners
     this.removeEventListeners()
+    
+    // Cleanup locale observer
+    if (this._localeObserver) {
+      this._localeObserver()
+      this._localeObserver = undefined
+    }
     
     // Clear any pending debounce timers
     if (this._inputDebounceTimer !== null) {
@@ -257,7 +270,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
   private getFormatConfig(): FormatConfig {
     return {
       type: this._type as 'number' | 'currency' | 'percent' | 'compact',
-      locale: this._locale,
+      locale: this.locale,  // Use getter which calls getEffectiveLocale correctly
       currency: this._currency,
       precision: this._precision
     }
@@ -460,7 +473,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   get locale(): string {
-    return this._locale
+    return getEffectiveLocale(this, this.getAttribute('locale'))
   }
 
   set locale(value: string) {

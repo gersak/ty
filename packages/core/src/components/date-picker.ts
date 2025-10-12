@@ -50,6 +50,7 @@
 import { ensureStyles } from '../utils/styles.js';
 import { datePickerStyles } from '../styles/date-picker.js';
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js';
+import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
 
 // ============================================================================
 // Types
@@ -682,6 +683,9 @@ export class TyDatePicker extends HTMLElement {
 
   // Time input element reference
   private _timeInput?: TimeInput;
+  
+  // Locale observer cleanup
+  private _localeObserver?: () => void;
 
   /**
    * Form-associated custom element
@@ -725,9 +729,20 @@ export class TyDatePicker extends HTMLElement {
   connectedCallback() {
     this.initializeState();
     this.render();
+    
+    // Setup locale observer to watch for ancestor lang changes
+    this._localeObserver = observeLocaleChanges(this, () => {
+      this.render();
+    });
   }
 
   disconnectedCallback() {
+    // Cleanup locale observer
+    if (this._localeObserver) {
+      this._localeObserver();
+      this._localeObserver = undefined;
+    }
+    
     this.cleanup();
   }
 
@@ -883,7 +898,7 @@ export class TyDatePicker extends HTMLElement {
     const formatted = components ? formatDisplayValue(
       components,
       (this.getAttribute('format') as DateFormatType) || 'long',
-      this.getAttribute('locale') || 'en-US',
+      getEffectiveLocale(this, this.getAttribute('locale')),
       this._state.withTime
     ) : null;
 
@@ -979,7 +994,7 @@ export class TyDatePicker extends HTMLElement {
       ? formatDisplayValue(
           components,
           (this.getAttribute('format') as DateFormatType) || 'long',
-          this.getAttribute('locale') || 'en-US',
+          getEffectiveLocale(this, this.getAttribute('locale')),
           this._state.withTime
         )
       : null;
@@ -1088,7 +1103,7 @@ export class TyDatePicker extends HTMLElement {
       calendar.setAttribute('day', this._state.day.toString());
     }
 
-    const locale = this.getAttribute('locale');
+    const locale = getEffectiveLocale(this, this.getAttribute('locale'));
     if (locale) {
       calendar.setAttribute('locale', locale);
     }
@@ -1257,7 +1272,7 @@ export class TyDatePicker extends HTMLElement {
         ? formatDisplayValue(
             components,
             (this.getAttribute('format') as DateFormatType) || 'long',
-            this.getAttribute('locale') || 'en-US',
+            getEffectiveLocale(this, this.getAttribute('locale')),
             this._state.withTime
           )
         : null;

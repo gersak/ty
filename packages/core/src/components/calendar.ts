@@ -55,6 +55,7 @@ import { calendarStyles } from '../styles/calendar.js';
 import type { DayContentFn, DayClickDetail, CalendarSize } from './calendar-month.js';
 import type { NavigationChangeDetail } from './calendar-navigation.js';
 import type { DayContext } from '../utils/calendar-utils.js';
+import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
 
 // ============================================================================
 // Types
@@ -172,6 +173,9 @@ export class TyCalendar extends HTMLElement {
 
   // Form integration
   private _internals?: ElementInternals;
+  
+  // Locale observer cleanup
+  private _localeObserver?: () => void;
 
   /**
    * Form-associated custom element
@@ -216,9 +220,20 @@ export class TyCalendar extends HTMLElement {
 
     // Set initial form value if date is selected
     this.updateFormValue();
+    
+    // Setup locale observer to watch for ancestor lang changes
+    this._localeObserver = observeLocaleChanges(this, () => {
+      this.render();
+    });
   }
 
   disconnectedCallback() {
+    // Cleanup locale observer
+    if (this._localeObserver) {
+      this._localeObserver();
+      this._localeObserver = undefined;
+    }
+    
     // Cleanup references
     this._navigation = undefined;
     this._monthDisplay = undefined;
@@ -355,7 +370,7 @@ export class TyCalendar extends HTMLElement {
   }
 
   get locale(): string {
-    return this._locale;
+    return getEffectiveLocale(this, this.getAttribute('locale'));
   }
 
   set locale(value: string) {
@@ -601,7 +616,7 @@ export class TyCalendar extends HTMLElement {
     if (this._navigation) {
       (this._navigation as any).displayMonth = this._state.displayMonth;
       (this._navigation as any).displayYear = this._state.displayYear;
-      (this._navigation as any).locale = this._locale;
+      (this._navigation as any).locale = this.locale;
       (this._navigation as any).size = this._size;
       // Always sync width (set or clear)
       (this._navigation as any).width = this._width;
@@ -611,7 +626,7 @@ export class TyCalendar extends HTMLElement {
     if (this._monthDisplay) {
       (this._monthDisplay as any).displayMonth = this._state.displayMonth;
       (this._monthDisplay as any).displayYear = this._state.displayYear;
-      (this._monthDisplay as any).locale = this._locale;
+      (this._monthDisplay as any).locale = this.locale;
       (this._monthDisplay as any).size = this._size;
       // Always sync width (set or clear)
       (this._monthDisplay as any).width = this._width;
@@ -775,7 +790,7 @@ export class TyCalendar extends HTMLElement {
     // Set properties
     (nav as any).displayMonth = this._state.displayMonth;
     (nav as any).displayYear = this._state.displayYear;
-    (nav as any).locale = this._locale;
+    (nav as any).locale = this.locale;
     (nav as any).size = this._size;
 
     // Only set width if explicitly provided
@@ -801,7 +816,7 @@ export class TyCalendar extends HTMLElement {
     // Set properties
     (month as any).displayMonth = this._state.displayMonth;
     (month as any).displayYear = this._state.displayYear;
-    (month as any).locale = this._locale;
+    (month as any).locale = this.locale;
     (month as any).size = this._size;
 
     // Only set width if explicitly provided

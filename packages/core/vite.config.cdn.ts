@@ -1,12 +1,15 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import dts from 'vite-plugin-dts'
 
 /**
  * CDN Build Configuration
  * 
  * Creates heavily optimized UMD bundle for CDN distribution.
- * Focus: MINIMUM SIZE over everything else.
+ * 
+ * COMPONENTS ONLY - NO ICON DATA
+ * - Users get icon registry utilities to register their own icons
+ * - Keeps bundle size minimal
+ * - Icons distributed separately via NPM for tree-shaking
  * 
  * Strategy:
  * 1. Single UMD bundle (all components in one file)
@@ -20,20 +23,18 @@ import dts from 'vite-plugin-dts'
  */
 
 export default defineConfig({
-  plugins: [
-    // Skip type declarations for CDN build (not needed)
-  ],
+  plugins: [],
   
   build: {
-    // NO SOURCE MAPS for CDN
+    // NO SOURCE MAPS for CDN (size critical)
     sourcemap: false,
     
     // Single bundle library mode
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: resolve(__dirname, 'src/cdn.ts'),  // ← CDN entry point (NO icons!)
       name: 'Ty',
-      formats: ['umd'], // UMD only for CDN
-      fileName: () => 'ty.js', // Simple name: ty.js
+      formats: ['umd'], // UMD for browser <script> tag
+      fileName: () => 'ty.js',
     },
     
     rollupOptions: {
@@ -74,8 +75,8 @@ export default defineConfig({
     // Target modern browsers (more optimizations possible)
     target: 'es2020',
     
-    // CDN output directory - root dist/cdn/
-    outDir: resolve(__dirname, '../../dist/cdn'),
+    // CDN output directory - local dist/
+    outDir: resolve(__dirname, 'dist'),
     
     emptyOutDir: true,
     
@@ -125,7 +126,7 @@ export default defineConfig({
         join_vars: true,
         sequences: true,
         
-        // AGGRESSIVE optimizations (can break code - test thoroughly!)
+        // AGGRESSIVE optimizations
         unsafe: true,              // Aggressive optimizations
         unsafe_arrows: true,       // Optimize arrow functions
         unsafe_comps: true,        // Optimize comparisons
@@ -151,7 +152,7 @@ export default defineConfig({
         properties: {
           // Only mangle properties starting with underscore
           regex: /^_/,
-          // Keep these properties unmangle (web component lifecycle)
+          // Keep these properties unmangled (web component lifecycle)
           reserved: [
             'connectedCallback',
             'disconnectedCallback',
@@ -160,6 +161,10 @@ export default defineConfig({
             'observedAttributes',
             'shadowRoot',
             'customElements',
+            'register',
+            'get',
+            'has',
+            'list',
           ],
         },
         
@@ -197,7 +202,7 @@ export default defineConfig({
         wrap_iife: false,
         
         // Add banner for license/attribution
-        preamble: '/*! Ty Web Components v0.2.0 | MIT License | https://github.com/gersak/ty */',
+        preamble: '/*! Ty Web Components v0.2.0 | Components Only (NO Icons) | MIT License | https://github.com/gersak/ty */',
       },
     },
     

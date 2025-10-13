@@ -1,9 +1,9 @@
 (ns ty.site.views.landing
   (:require
-   [ty.router :as router]
-   [ty.site.views.contact-form :as contact-form]
-   [ty.site.views.event-booking :as event-booking]
-   [ty.site.views.user-profile :as user-profile]))
+    [ty.router :as router]
+    [ty.site.views.contact-form :as contact-form]
+    [ty.site.views.event-booking :as event-booking]
+    [ty.site.views.user-profile :as user-profile]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto {:id "top"}
@@ -12,7 +12,7 @@
 
     ;; WIP as the MAIN message
 
-;; Simple, direct title
+    ;; Simple, direct title
     [:h1.text-3xl.lg:text-5xl.font-bold.ty-text.mb-4
      "ty Web Components"]
 
@@ -129,8 +129,8 @@
      [:div.flex.gap-3
       [:button.ty-bg-primary.ty-text++.px-6.py-3.rounded-lg.font-semibold.border.ty-border-primary.cursor-pointer
        {:on {:click #(.scrollIntoView
-                      (.getElementById js/document "user-profile")
-                      #js {:behavior "smooth"})}}
+                       (.getElementById js/document "user-profile")
+                       #js {:behavior "smooth"})}}
        "See Examples ↓"]
       [:button.ty-bg-success.ty-text++.px-6.py-3.rounded-lg.font-semibold.border.ty-border-success.cursor-pointer.flex.items-center
        {:on {:click #(do
@@ -171,7 +171,8 @@
           {:href "https://github.com/gersak/ty/blob/master/site/ty/site/views/user_profile.cljs"
            :target "_blank"
            :rel "noopener noreferrer"}
-          [:ty-icon {:name "external-link" :size "xs"}]
+          [:ty-icon {:name "external-link"
+                     :size "xs"}]
           "View Source"]]]]
       [:div.p-8
        (user-profile/view)]]]
@@ -189,7 +190,8 @@
           {:href "https://github.com/gersak/ty/blob/master/site/ty/site/views/event_booking.cljs"
            :target "_blank"
            :rel "noopener noreferrer"}
-          [:ty-icon {:name "external-link" :size "xs"}]
+          [:ty-icon {:name "external-link"
+                     :size "xs"}]
           "View Source"]]]]
       [:div.p-8
        (event-booking/view)]]]
@@ -207,7 +209,8 @@
           {:href "https://github.com/gersak/ty/blob/master/site/ty/site/views/contact_form.cljs"
            :target "_blank"
            :rel "noopener noreferrer"}
-          [:ty-icon {:name "external-link" :size "xs"}]
+          [:ty-icon {:name "external-link"
+                     :size "xs"}]
           "View Source"]]]]
       [:div.p-8
        (contact-form/view)]]]]

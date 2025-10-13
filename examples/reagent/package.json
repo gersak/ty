@@ -5,23 +5,21 @@
   "description": "Simple Reagent example with Ty Web Components",
   "scripts": {
     "dev": "shadow-cljs -A:dev watch app",
-    "build": "npm run css:build && shadow-cljs release app",
-    "css:watch": "@tailwindcss/cli -i ./src/input.css -o ./public/css/app.css --watch",
-    "css:build": "@tailwindcss/cli -i ./src/input.css -o ./public/css/app.css --minify",
+    "build": "shadow-cljs release app",
     "clean": "shadow-cljs clean",
     "server": "shadow-cljs server"
   },
   "devDependencies": {
     "@tailwindcss/cli": "^4.1.0",
+    "autoprefixer": "^10.4.16",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "shadow-cljs": "^2.28.10",
-    "tailwindcss": "4.1",
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.31",
-    "concurrently": "^8.2.2"
+    "tailwindcss": "4.1"
   },
   "dependencies": {
-    "@gersak/ty-react": "^0.0.3"
+    "@gersak/ty-react": "^0.1.903"
   }
 }

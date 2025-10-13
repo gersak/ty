@@ -2,121 +2,150 @@
   "name": "@gersak/ty",
   "version": "0.2.0",
   "description": "Ty Web Components - Framework-agnostic UI components with semantic design system",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./lib/index.js",
+  "module": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
     },
     "./button": {
-      "import": "./dist/components/button.js",
-      "types": "./dist/components/button.d.ts"
+      "types": "./lib/components/button.d.ts",
+      "import": "./lib/components/button.js"
     },
     "./modal": {
-      "import": "./dist/components/modal.js",
-      "types": "./dist/components/modal.d.ts"
+      "types": "./lib/components/modal.d.ts",
+      "import": "./lib/components/modal.js"
     },
     "./input": {
-      "import": "./dist/components/input.js",
-      "types": "./dist/components/input.d.ts"
+      "types": "./lib/components/input.d.ts",
+      "import": "./lib/components/input.js"
     },
     "./dropdown": {
-      "import": "./dist/components/dropdown.js",
-      "types": "./dist/components/dropdown.d.ts"
+      "types": "./lib/components/dropdown.d.ts",
+      "import": "./lib/components/dropdown.js"
     },
     "./checkbox": {
-      "import": "./dist/components/checkbox.js",
-      "types": "./dist/components/checkbox.d.ts"
+      "types": "./lib/components/checkbox.d.ts",
+      "import": "./lib/components/checkbox.js"
     },
     "./textarea": {
-      "import": "./dist/components/textarea.js",
-      "types": "./dist/components/textarea.d.ts"
+      "types": "./lib/components/textarea.d.ts",
+      "import": "./lib/components/textarea.js"
     },
     "./popup": {
-      "import": "./dist/components/popup.js",
-      "types": "./dist/components/popup.d.ts"
+      "types": "./lib/components/popup.d.ts",
+      "import": "./lib/components/popup.js"
     },
     "./tooltip": {
-      "import": "./dist/components/tooltip.js",
-      "types": "./dist/components/tooltip.d.ts"
+      "types": "./lib/components/tooltip.d.ts",
+      "import": "./lib/components/tooltip.js"
     },
     "./tag": {
-      "import": "./dist/components/tag.js",
-      "types": "./dist/components/tag.d.ts"
+      "types": "./lib/components/tag.d.ts",
+      "import": "./lib/components/tag.js"
     },
     "./option": {
-      "import": "./dist/components/option.js",
-      "types": "./dist/components/option.d.ts"
+      "types": "./lib/components/option.d.ts",
+      "import": "./lib/components/option.js"
     },
     "./icon": {
-      "import": "./dist/components/icon.js",
-      "types": "./dist/components/icon.d.ts"
+      "types": "./lib/components/icon.d.ts",
+      "import": "./lib/components/icon.js"
     },
-    "./css": {
-      "import": "./css/ty.css"
+    "./tabs": {
+      "types": "./lib/components/tabs.d.ts",
+      "import": "./lib/components/tabs.js"
     },
+    "./tab": {
+      "types": "./lib/components/tab.d.ts",
+      "import": "./lib/components/tab.js"
+    },
+    "./calendar": {
+      "types": "./lib/components/calendar.d.ts",
+      "import": "./lib/components/calendar.js"
+    },
+    "./calendar-month": {
+      "types": "./lib/components/calendar-month.d.ts",
+      "import": "./lib/components/calendar-month.js"
+    },
+    "./calendar-navigation": {
+      "types": "./lib/components/calendar-navigation.d.ts",
+      "import": "./lib/components/calendar-navigation.js"
+    },
+    "./date-picker": {
+      "types": "./lib/components/date-picker.d.ts",
+      "import": "./lib/components/date-picker.js"
+    },
+    "./multiselect": {
+      "types": "./lib/components/multiselect.d.ts",
+      "import": "./lib/components/multiselect.js"
+    },
+    "./css/*": "./css/*",
     "./icons/registry": {
-      "import": "./dist/utils/icon-registry.js",
-      "types": "./dist/utils/icon-registry.d.ts"
+      "types": "./lib/utils/icon-registry.d.ts",
+      "import": "./lib/utils/icon-registry.js"
     },
     "./icons/lucide": {
-      "import": "./dist/icons/lucide.js",
-      "types": "./dist/icons/lucide.d.ts"
+      "types": "./lib/icons/lucide.d.ts",
+      "import": "./lib/icons/lucide.js"
     },
     "./icons/heroicons/outline": {
-      "import": "./dist/icons/heroicons/outline.js",
-      "types": "./dist/icons/heroicons/outline.d.ts"
+      "types": "./lib/icons/heroicons/outline.d.ts",
+      "import": "./lib/icons/heroicons/outline.js"
     },
     "./icons/heroicons/solid": {
-      "import": "./dist/icons/heroicons/solid.js",
-      "types": "./dist/icons/heroicons/solid.d.ts"
+      "types": "./lib/icons/heroicons/solid.d.ts",
+      "import": "./lib/icons/heroicons/solid.js"
     },
     "./icons/heroicons/mini": {
-      "import": "./dist/icons/heroicons/mini.js",
-      "types": "./dist/icons/heroicons/mini.d.ts"
+      "types": "./lib/icons/heroicons/mini.d.ts",
+      "import": "./lib/icons/heroicons/mini.js"
     },
     "./icons/heroicons/micro": {
-      "import": "./dist/icons/heroicons/micro.js",
-      "types": "./dist/icons/heroicons/micro.d.ts"
+      "types": "./lib/icons/heroicons/micro.d.ts",
+      "import": "./lib/icons/heroicons/micro.js"
     },
     "./icons/material/filled": {
-      "import": "./dist/icons/material/filled.js",
-      "types": "./dist/icons/material/filled.d.ts"
+      "types": "./lib/icons/material/filled.d.ts",
+      "import": "./lib/icons/material/filled.js"
     },
     "./icons/material/outlined": {
-      "import": "./dist/icons/material/outlined.js",
-      "types": "./dist/icons/material/outlined.d.ts"
+      "types": "./lib/icons/material/outlined.d.ts",
+      "import": "./lib/icons/material/outlined.js"
     },
     "./icons/material/round": {
-      "import": "./dist/icons/material/round.js",
-      "types": "./dist/icons/material/round.d.ts"
+      "types": "./lib/icons/material/round.d.ts",
+      "import": "./lib/icons/material/round.js"
     },
     "./icons/material/sharp": {
-      "import": "./dist/icons/material/sharp.js",
-      "types": "./dist/icons/material/sharp.d.ts"
+      "types": "./lib/icons/material/sharp.d.ts",
+      "import": "./lib/icons/material/sharp.js"
     },
     "./icons/material/two-tone": {
-      "import": "./dist/icons/material/two-tone.js",
-      "types": "./dist/icons/material/two-tone.d.ts"
+      "types": "./lib/icons/material/two-tone.d.ts",
+      "import": "./lib/icons/material/two-tone.js"
     },
     "./icons/fontawesome/solid": {
-      "import": "./dist/icons/fontawesome/solid.js",
-      "types": "./dist/icons/fontawesome/solid.d.ts"
+      "types": "./lib/icons/fontawesome/solid.d.ts",
+      "import": "./lib/icons/fontawesome/solid.js"
     },
     "./icons/fontawesome/regular": {
-      "import": "./dist/icons/fontawesome/regular.js",
-      "types": "./dist/icons/fontawesome/regular.d.ts"
+      "types": "./lib/icons/fontawesome/regular.d.ts",
+      "import": "./lib/icons/fontawesome/regular.js"
     },
     "./icons/fontawesome/brands": {
-      "import": "./dist/icons/fontawesome/brands.js",
-      "types": "./dist/icons/fontawesome/brands.d.ts"
-    }
+      "types": "./lib/icons/fontawesome/brands.d.ts",
+      "import": "./lib/icons/fontawesome/brands.js"
+    },
+    "./cdn": "./dist/ty.js"
   },
   "files": [
-    "dist/**/*",
+    "lib/**/*",
     "css/**/*",
+    "dist/**/*",
     "README.md",
     "LICENSE"
   ],
@@ -136,27 +165,17 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "type-check": "tsc --noEmit",
-    "clean": "rm -rf dist",
-    "build:optimized": "cp vite.config.optimized.ts vite.config.ts && vite build && cp vite.config.dev.ts vite.config.ts || true",
-    "build:size": "npm run build && echo \"\" && echo \"=== Bundle Sizes ===\" && ls -lh dist/components/*.js | grep -v \".map\" | awk '{printf \"%-30s %s\\n\", $9, $5}'",
-    "build:cdn": "vite build --config vite.config.cdn.ts",
-    "build:all": "npm run build && npm run build:cdn",
-    "size:cdn": "npm run build:cdn && echo \"\" && echo \"=== CDN Bundle Sizes ===\" && ls -lh dist-cdn/*.js | awk '{printf \"%-30s %s\\n\", $9, $5}'",
-    "pack": "npm run build && npm pack",
-    "pack:list": "npm pack --dry-run"
+    "build:lib": "tsc --project tsconfig.lib.json",
+    "build:cdn": "vite build --config vite.config.cdn.ts && cp css/ty.css dist/ty.css",
+    "build": "npm run build:lib && npm run build:cdn",
+    "prepublishOnly": "npm run build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",
-    "autoprefixer": "^10.4.21",
-    "terser": "^5.44.0",
     "typescript": "^5.7.0",
-    "vite": "^5.4.11",
-    "vite-plugin-dts": "^4.3.0"
+    "vite": "^5.4.11"
   },
   "author": "Gersak <dev@gersak.io>",
-  "license": "MIT",
-  "type": "module"
+  "license": "MIT"
 }

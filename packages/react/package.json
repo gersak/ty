@@ -1,33 +1,53 @@
 {
   "name": "@gersak/ty-react",
-  "version": "0.2.0",
+  "version": "0.1.903",
   "description": "React wrappers for Ty Web Components",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/components/index.js",
+  "types": "./dist/components/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js",
+      "default": "./dist/components/index.js"
     }
   },
-  "files": ["dist/**/*", "README.md"],
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "build": "tsc && vite build",
-    "dev": "tsc --watch",
-    "clean": "rm -rf dist"
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "peerDependencies": {
-    "@gersak/ty": "workspace:*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
-    "typescript": "^5.7.0",
-    "vite": "^5.2.0"
+    "typescript": "^5.7.0"
   },
-  "license": "MIT"
+  "keywords": [
+    "react",
+    "web-components",
+    "typescript",
+    "ui-components",
+    "ty",
+    "wrapper",
+    "clojurescript",
+    "reagent",
+    "uix"
+  ],
+  "author": "Gersak <dev@gersak.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gersak/ty.git",
+    "directory": "packages/react"
+  }
 }

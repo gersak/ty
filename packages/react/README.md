@@ -1,103 +1,105 @@
 # @gersak/ty-react
 
-React wrappers for [Ty Web Components](https://github.com/gersak/ty) - bringing ClojureScript web components to React with full TypeScript support.
+**React wrappers for Ty Web Components** - bringing framework-agnostic web components to React with full TypeScript support.
 
-## Features
+## 🎯 Philosophy
 
-✅ **Complete TypeScript Support** - Full type safety for all components and events  
-✅ **Zero Bundle Overhead** - Only ~2KB of wrapper code  
-✅ **React 18+ Compatible** - Works with Strict Mode and Concurrent Features  
-✅ **Event System Integration** - Native React event handlers with typed custom events  
-✅ **Ref Forwarding** - Direct access to underlying web component elements  
-✅ **Imperative Methods** - useImperativeHandle for components requiring programmatic control
+Ty web components are **distributed via CDN** and loaded as standard web components. These React wrappers provide:
+- ✅ **React-friendly API** - Props instead of attributes
+- ✅ **TypeScript types** - Full type safety
+- ✅ **Event handling** - React synthetic events
+- ✅ **Ref forwarding** - Direct DOM access
+- ✅ **Zero bundle overhead** - Just thin wrappers (~2KB)
 
-## Installation
+## 📦 Installation
 
-### Option 1: npm + npm (Recommended)
-```bash
-npm install @gersak/ty @gersak/ty-react
-```
+### Step 1: Load Ty Web Components (CDN)
 
-### Option 2: CDN + npm (Optimal Bundle Size)
+Add to your `index.html`:
+
 ```html
-<!-- Load Ty components via CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/css/ty.css">
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Ty Web Components & Styles via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/dist/index.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/css/ty.css">
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
 ```
 
+### Step 2: Install React Wrappers
+
 ```bash
-# Only install React wrappers
 npm install @gersak/ty-react
 ```
 
-## Quick Start
+That's it! No build complexity, no bundler configuration.
 
-### Option 1: With npm packages
+## 🚀 Quick Start
+
 ```tsx
-import React from 'react';
-import '@gersak/ty';  // Required: registers web components
-import '@gersak/ty/css';  // Required: loads styles
+import React, { useState } from 'react';
 import { TyButton, TyInput, TyModal } from '@gersak/ty-react';
 
 function App() {
-  const [inputValue, setInputValue] = useState('');
+  const [value, setValue] = useState('');
 
   return (
     <div>
       <TyButton flavor="primary" onClick={() => alert('Hello!')}>
-        Click me
+        Click Me
       </TyButton>
       
       <TyInput 
-        type="email"
-        placeholder="Enter email..."
-        value={inputValue}
-        onChange={(e) => setInputValue(e.detail.value)}
+        placeholder="Enter text..."
+        value={value}
+        onInput={(e) => setValue(e.detail.value)}
       />
     </div>
   );
 }
 ```
 
-### Option 2: With CDN (smaller bundle)
-```tsx
-import React from 'react';
-// No imports needed - components loaded via CDN
-import { TyButton, TyInput } from '@gersak/ty-react';
+## 📚 Available Components
 
-function App() {
-  return (
-    <TyButton flavor="success">Ready to go!</TyButton>
-  );
-}
-```
+All 18 components wrapped:
 
-## Available Components
+| Component | Description |
+|-----------|-------------|
+| `TyButton` | Semantic button with multiple flavors |
+| `TyInput` | Form input with validation |
+| `TyTextarea` | Multi-line text input |
+| `TyCheckbox` | Checkbox with custom styling |
+| `TyDropdown` | Dropdown selection |
+| `TyOption` | Dropdown option |
+| `TyMultiselect` | Multi-value selection |
+| `TyTag` | Tag/badge component |
+| `TyModal` | Modal dialogs |
+| `TyPopup` | Smart popup positioning |
+| `TyTooltip` | Tooltip component |
+| `TyIcon` | Icon component (3000+ icons) |
+| `TyCalendar` | Full calendar |
+| `TyCalendarMonth` | Month view |
+| `TyCalendarNavigation` | Calendar navigation |
+| `TyDatePicker` | Date picker with calendar |
+| `TyTabs` | Tab container |
+| `TyTab` | Individual tab |
 
-| Component | Description | Key Features |
-|-----------|-------------|--------------|
-| `TyButton` | Button component | Multiple flavors, sizes, event handling |
-| `TyInput` | Form input | Type validation, formatting, custom events |
-| `TyModal` | Modal dialogs | Imperative methods, backdrop control |
-| `TyDropdown` | Dropdown selection | Options or children, search support |
-| `TyIcon` | Icon component | 60+ icons, animations, size variants |
-| `TyTooltip` | Tooltip component | Rich content, placement options |
-| `TyMultiselect` | Multi-selection | Tag-based selection, form integration |
-| `TyCalendar` | Calendar component | Date selection, custom rendering |
-| `TyDatePicker` | Date picker | Form integration, validation |
-| `TyTag` | Tag component | Dismissible, clickable, flavors |
-| `TyPopup` | Popup positioning | Smart placement, triggers |
+## 💡 Usage Examples
 
-## Usage Examples
+### Form with Validation
 
-### Form Integration
 ```tsx
 import { TyInput, TyDropdown, TyOption, TyButton } from '@gersak/ty-react';
 
 function ContactForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
     console.log(Object.fromEntries(formData));
   };
 
@@ -107,7 +109,7 @@ function ContactForm() {
         name="email"
         type="email" 
         required 
-        placeholder="Email address"
+        placeholder="your@email.com"
       />
       
       <TyDropdown name="role" required>
@@ -123,7 +125,8 @@ function ContactForm() {
 }
 ```
 
-### Modal with Imperative Control
+### Modal with Imperative API
+
 ```tsx
 import { useRef } from 'react';
 import { TyModal, TyButton, type TyModalRef } from '@gersak/ty-react';
@@ -141,68 +144,71 @@ function ModalExample() {
         ref={modalRef}
         onClose={(e) => console.log('Closed:', e.detail.reason)}
       >
-        <div style={{ padding: '2rem' }}>
-          <h2>Modal Content</h2>
-          <TyButton onClick={() => modalRef.current?.hide()}>
-            Close
-          </TyButton>
-        </div>
+        <h2>Modal Content</h2>
+        <TyButton onClick={() => modalRef.current?.hide()}>
+          Close
+        </TyButton>
       </TyModal>
     </>
   );
 }
 ```
 
-### State Management
+### Calendar with Custom Rendering
+
 ```tsx
 import { useState } from 'react';
-import { TyMultiselect, TyTag } from '@gersak/ty-react';
+import { TyCalendar } from '@gersak/ty-react';
 
-function StateExample() {
-  const [selected, setSelected] = useState<string[]>(['react']);
-
-  return (
-    <TyMultiselect
-      value={selected}
-      onChange={(e) => setSelected(e.detail.values)}
-      placeholder="Select technologies..."
-    >
-      <TyTag value="react">React</TyTag>
-      <TyTag value="vue">Vue</TyTag>
-      <TyTag value="angular">Angular</TyTag>
-      <TyTag value="svelte">Svelte</TyTag>
-    </TyMultiselect>
-  );
-}
-```
-
-### Custom Event Handling
-```tsx
-import { TyInput, type TyInputEventDetail } from '@gersak/ty-react';
-
-function EventExample() {
-  const handleInputChange = (e: CustomEvent<TyInputEventDetail>) => {
-    console.log('Raw value:', e.detail.rawValue);
-    console.log('Processed value:', e.detail.value);
-    console.log('Formatted value:', e.detail.formattedValue);
-  };
+function CalendarExample() {
+  const [selected, setSelected] = useState<Date | null>(null);
 
   return (
-    <TyInput
-      type="number"
-      currency="USD"
-      onInput={handleInputChange}
-      onChange={handleInputChange}
-      onFocus={() => console.log('Focused')}
-      onBlur={() => console.log('Blurred')}
+    <TyCalendar
+      value={selected?.getTime()}
+      onChange={(e) => setSelected(new Date(e.detail.date))}
+      min="2024-01-01"
+      max="2024-12-31"
     />
   );
 }
 ```
 
-## TypeScript Support
+## 🎨 Icons (3000+ Available)
 
-All components come with complete TypeScript definitions:
+Register icons via CDN before use:
+
+```html
+<!-- In index.html -->
+<script type="module">
+  import { check, heart, star } from 'https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/dist/icons/lucide.js';
+  
+  window.ty.icons.register({ check, heart, star });
+</script>
+```
+
+Then use in React:
+
+```tsx
+import { TyIcon, TyButton } from '@gersak/ty-react';
+
+function IconExample() {
+  return (
+    <>
+      <TyIcon name="check" size="lg" />
+      
+      <TyButton flavor="primary">
+        <TyIcon name="heart" />
+        Like
+      </TyButton>
+    </>
+  );
+}
+```
+
+## 📘 TypeScript Support
+
+Full TypeScript definitions included:
 
 ```tsx
 import type { 
@@ -214,56 +220,84 @@ import type {
 
 // Type-safe props
 const buttonProps: TyButtonProps = {
-  flavor: 'primary',  // Autocompleted!
-  size: 'lg',         // Type-checked!
+  flavor: 'primary',  // ✅ Autocomplete
+  size: 'lg',         // ✅ Type-checked
   disabled: false
 };
 
 // Type-safe event handlers
-const handleDropdownChange = (e: CustomEvent<TyDropdownEventDetail>) => {
-  const selectedOption = e.detail.option;  // HTMLElement
-  const value = selectedOption.getAttribute('value');
+const handleChange = (e: CustomEvent<TyInputEventDetail>) => {
+  console.log(e.detail.value);      // ✅ Typed
+  console.log(e.detail.rawValue);   // ✅ Typed
 };
 ```
 
-## Tree Shaking
+## 🌐 ClojureScript Support
 
-Import only the components you need:
+Works perfectly with Reagent and UIx:
 
-```tsx
-// Import specific components
-import { TyButton } from '@gersak/ty-react';
+### Reagent
 
-// Or import all (still tree-shakeable)
-import { TyButton, TyInput, TyModal } from '@gersak/ty-react';
+```clojure
+(ns my-app.core
+  (:require ["@gersak/ty-react" :as ty]))
+
+(defn my-component []
+  [:div
+   [:> ty/TyButton {:flavor "primary"} "Click Me"]
+   [:> ty/TyInput {:placeholder "Enter text..."}]])
 ```
 
-## Peer Dependencies
+### UIx
 
-This package requires:
-- `@gersak/ty` ^0.1.0 - The core web components
-- `react` >=18.0.0 - React library  
-- `react-dom` >=18.0.0 - React DOM
+```clojure
+(ns my-app.core
+  (:require [uix.core :as uix]
+            ["@gersak/ty-react" :refer [TyButton TyInput]]))
 
-## Browser Support
+(defn my-component []
+  (uix/view
+    [:<>
+     [TyButton {:flavor "primary"} "Click Me"]
+     [TyInput {:placeholder "Enter text..."}]]))
+```
 
-Supports all modern browsers with Web Components support:
+## 🔧 Peer Dependencies
+
+Only React is required:
+- `react` >=18.0.0
+- `react-dom` >=18.0.0
+
+**Note:** The core `@gersak/ty` web components are loaded via CDN, not as an npm dependency!
+
+## 🌍 Browser Support
+
+Modern browsers with Web Components support:
 - Chrome 67+
-- Firefox 63+  
+- Firefox 63+
 - Safari 13.1+
 - Edge 79+
 
-## Contributing
+## 📝 Why CDN Distribution?
 
-This package is part of the [Ty monorepo](https://github.com/gersak/ty). See the main repository for contribution guidelines.
+**Ty web components are framework-agnostic** and designed for CDN distribution:
 
-## License
+✅ **Zero version conflicts** - One version serves all frameworks  
+✅ **Smaller bundles** - Web components load once, shared across all React components  
+✅ **No build complexity** - Just script tags  
+✅ **Better caching** - CDN edge network  
+✅ **Framework freedom** - Same components work in React, Vue, Svelte, vanilla JS
 
-MIT License - see [LICENSE](./LICENSE) file for details.
+## 🤝 Contributing
 
-## Links
+This package is part of the [Ty monorepo](https://github.com/gersak/ty).
 
-- [Main Ty Repository](https://github.com/gersak/ty)
-- [Ty Documentation](https://github.com/gersak/ty#readme)  
-- [Demo Application](https://github.com/gersak/ty/tree/main/react/src/App.tsx)
-- [npm Package](https://www.npmjs.com/package/@gersak/ty-react)
+## 📄 License
+
+MIT License - see [LICENSE](./LICENSE)
+
+## 🔗 Links
+
+- [Ty Core Package](https://www.npmjs.com/package/@gersak/ty)
+- [GitHub Repository](https://github.com/gersak/ty)
+- [Documentation](https://ty.gersak.dev) (Coming Soon)

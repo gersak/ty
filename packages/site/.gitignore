@@ -1,0 +1,17 @@
+# Shadow-cljs
+.shadow-cljs/
+node_modules/
+.cpcache/
+
+# Build output
+public/js/cljs-runtime/
+public/js/manifest.edn
+public/js/*.js
+public/js/*.js.map
+
+# REPL
+.nrepl-port
+
+# Editor
+.lsp/
+.clj-kondo/.cache/

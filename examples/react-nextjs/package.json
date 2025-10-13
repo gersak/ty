@@ -12,9 +12,9 @@
     "build:css": "tailwindcss -i ./app/tailwind-input.css -o ./app/globals.css",
     "build:css:watch": "tailwindcss -i ./app/tailwind-input.css -o ./app/globals.css --watch",
     "dev:full": "concurrently \"npm run build:css:watch\" \"npm run dev\"",
-    "copy:ty": "rm -rf public/ty && mkdir -p public/ty && cp -r ../../packages/core/dist/* public/ty/ && cp ../../packages/core/css/ty.css public/ty/ && echo '✅ Ty files copied from packages/core/dist/'",
-    "rebuild:ty": "cd ../../packages/core && npm run pack && cd - && npm install ../../packages/core/gersak-ty-0.2.0.tgz && npm run copy:ty",
-    "dev:with-ty": "npm run copy:ty && npm run dev"
+    "link:ty": "rm -rf public/@gersak && mkdir -p public/@gersak/ty && cd public/@gersak/ty && ln -s \"$(pwd)/../../../packages/core/dist\" dist && ln -s \"$(pwd)/../../../packages/core/css\" css && echo '✅ Ty symlinks created (mirrors CDN structure)'",
+    "rebuild:ty": "cd ../../packages/core && npm run pack && cd - && npm install ../../packages/core/gersak-ty-0.2.0.tgz && npm run link:ty",
+    "dev:with-ty": "npm run link:ty && npm run dev"
   },
   "dependencies": {
     "@gersak/ty": "file:../../packages/core/gersak-ty-0.2.0.tgz",

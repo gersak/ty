@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 // Type definitions for Ty Checkbox component
-export interface TyCheckboxProps extends React.HTMLAttributes<HTMLElement> {
+export interface TyCheckboxProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput'> {
   /** Checked state */
   checked?: boolean;
   

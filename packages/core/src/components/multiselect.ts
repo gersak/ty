@@ -772,47 +772,55 @@ export class TyMultiselect extends HTMLElement {
     e.stopPropagation()
     
     const tagValue = this.getTagData(tag).value
-    const isSelected = tag.hasAttribute('selected')
-    const oldValues = [...this._state.selectedValues]
+    const currentlySelected = tag.hasAttribute('selected')
     
-    if (isSelected) {
-      // Deselect
-      this.deselectTag(tag)
-      const newValues = this.getSelectedValues()
-      this._state.selectedValues = newValues
-      this.updateComponentValue()
-      this.updateFormValue()
-      
-      // Dispatch change event
-      const detail: ChangeEventDetail = {
-        values: newValues,
-        action: 'remove',
-        item: tagValue
-      }
-      this.dispatchChangeEvent(detail)
+    // Get current selected values from DOM (fresh read like ClojureScript version)
+    const currentValues = this.getSelectedValues()
+    let newValues: string[]
+    let action: ChangeAction
+    
+    if (currentlySelected) {
+      // Deselect - remove from current values
+      newValues = currentValues.filter(v => v !== tagValue)
+      action = 'remove'
     } else {
-      // Select
-      this.selectTag(tag)
-      const newValues = this.getSelectedValues()
-      this._state.selectedValues = newValues
-      this.updateComponentValue()
-      this.updateFormValue()
-      
-      // Dispatch change event
-      const detail: ChangeEventDetail = {
-        values: newValues,
-        action: 'add',
-        item: tagValue
+      // Select - add to current values (avoid duplicates)
+      if (!currentValues.includes(tagValue)) {
+        newValues = [...currentValues, tagValue]
+      } else {
+        newValues = currentValues
       }
-      this.dispatchChangeEvent(detail)
-      
-      // Auto-close if all tags selected
-      if (this.allTagsSelected()) {
-        if (this._state.mode === 'desktop') {
-          this.closeDropdown()
-        } else {
-          this.closeMobileModal()
-        }
+      action = 'add'
+    }
+    
+    // Update state
+    this._state.selectedValues = newValues
+    
+    // Update value attribute/property
+    const valueStr = newValues.join(',')
+    this.setAttribute('value', valueStr)
+    this._value = valueStr
+    
+    // Sync tags to match new state (like ClojureScript version)
+    this.syncSelectedTags()
+    
+    // Update form value
+    this.updateFormValue()
+    
+    // Dispatch change event
+    const detail: ChangeEventDetail = {
+      values: newValues,
+      action,
+      item: tagValue
+    }
+    this.dispatchChangeEvent(detail)
+    
+    // Auto-close if all tags selected
+    if (this.allTagsSelected()) {
+      if (this._state.mode === 'desktop') {
+        this.closeDropdown()
+      } else {
+        this.closeMobileModal()
       }
     }
     
@@ -829,13 +837,23 @@ export class TyMultiselect extends HTMLElement {
     if (!tag) return
     
     const tagValue = this.getTagData(tag).value
-    const oldValues = [...this._state.selectedValues]
     
-    // Deselect the tag
-    this.deselectTag(tag)
-    const newValues = this.getSelectedValues()
+    // Get current selected values from DOM (fresh read like ClojureScript version)
+    const currentValues = this.getSelectedValues()
+    const newValues = currentValues.filter(v => v !== tagValue)
+    
+    // Update state
     this._state.selectedValues = newValues
-    this.updateComponentValue()
+    
+    // Update value attribute/property
+    const valueStr = newValues.join(',')
+    this.setAttribute('value', valueStr)
+    this._value = valueStr
+    
+    // Sync tags to match new state
+    this.syncSelectedTags()
+    
+    // Update form value
     this.updateFormValue()
     
     // Dispatch change event

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 // Type definitions for Ty Calendar Navigation component
-export interface TyCalendarNavigationProps extends React.HTMLAttributes<HTMLElement> {
+export interface TyCalendarNavigationProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
   /** Display month (1-12) */
   displayMonth?: number;
   

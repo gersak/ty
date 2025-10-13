@@ -13,9 +13,15 @@ __pycache__/
 cljs-runtime/
 
 
-dist/
-dist-cdn/
-dev/
+# Root level directories (ClojureScript build outputs)
+/dist/
+/dist-cdn/
+/dev/
+
+# TypeScript/NPM build outputs
+packages/core/lib/
+packages/core/dist/
+
 deploy.sh
 real_story.md
 

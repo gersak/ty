@@ -7,7 +7,7 @@
         "dark")
       "light"))
 
-(defonce app-state 
+(defonce app-state
   (r/atom {:theme (get-initial-theme)
            :current-route :home
            :mobile-menu-open false
@@ -27,7 +27,6 @@
 (def routes
   {:home {:name "Home" :icon "home"}
    :forms {:name "Forms" :icon "edit"}
-   :forms-react {:name "Forms (React)" :icon "edit"}
    :buttons {:name "Buttons" :icon "click"}
    :components {:name "Components" :icon "grid"}})
 

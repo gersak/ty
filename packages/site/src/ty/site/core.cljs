@@ -1,7 +1,6 @@
 (ns ty.site.core
   (:require [clojure.string :as str]
             [replicant.dom :as rdom]
-            [ty.components]
             [ty.context :as context]
             [ty.layout :as layout]
             [ty.router :as router]
@@ -11,6 +10,7 @@
             [ty.site.views.landing :as landing]
             [ty.site.views.tabs-test :as tabs-test]
             [ty.site.views.why :as why]))
+
 
 ;; Configuration for GitHub Pages deployment
 ;; These are replaced at build time via closure-defines
@@ -199,8 +199,9 @@
   "Render the appropriate view based on current route (like docs/render)"
   []
   (let [all-routes (concat site-routes component-routes guide-routes)
-        current-route (some #(when (router/rendered? (:id %) true) %) all-routes)]
-    ((:view current-route))))
+        current-route (some #(when (router/rendered? (:id %) true) %) all-routes)
+        view (:view current-route)]
+    (when (ifn? view) (view))))
 
 (defn sidebar []
   [:aside.w-64.ty-elevated.border-r.ty-border+.h-full.flex.flex-col
@@ -291,6 +292,8 @@
     (if (= theme "dark")
       (.add (.-classList js/document.documentElement) "dark")
       (.remove (.-classList js/document.documentElement) "dark")))
+
+  ; (ty.site.icons/register-icons!)
 
   ;; Initialize router with base path for GitHub Pages
   (router/init! (when-not (str/blank? ROUTER_BASE) ROUTER_BASE))

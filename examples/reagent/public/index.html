@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reagent + Ty + Tailwind</title>
-    <link href="css/app.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.8/css/ty.css" />
+    
+    <!-- Tailwind CSS Play CDN (JIT compilation, no build needed) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Ty Web Components & CSS from local dist (symlinked) -->
+    <script src="@gersak/ty/ty.js"></script>
+    <link rel="stylesheet" href="@gersak/ty/ty.css" />
 </head>
 
 <body class="ty-canvas">

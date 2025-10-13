@@ -1,0 +1,38 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Output to lib/ directory for NPM
+    "outDir": "./lib",
+    "rootDir": "./src",
+    
+    // Generate declarations
+    "declaration": true,
+    "declarationMap": true,
+    
+    // Source maps for debugging
+    "sourceMap": true,
+    
+    // ES2020 modules (tree-shakeable)
+    "target": "ES2020",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    
+    // Preserve JSX (if needed in future)
+    "jsx": "preserve",
+    
+    // Emit everything individually (no bundling)
+    "outDir": "./lib",
+    
+    // Keep file structure
+    "declarationMap": true,
+    
+    // Strict type checking
+    "strict": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "lib", "dist", "dev", "src/cdn.ts"]
+}

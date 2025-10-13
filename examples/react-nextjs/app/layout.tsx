@@ -15,9 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Load Ty components and CSS from local build */}
-        <link rel="stylesheet" href="/ty/ty.css" />
-        <script type="module" src="/ty/index.js"></script>
+        {/* Load Ty components and CSS from CDN build */}
+        <link rel="stylesheet" href="/@gersak/ty/ty.css" />
+        <script type="module" src="/@gersak/ty/ty.js"></script>
       </head>
       <body>
         <ThemeProvider>

@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 // Type definitions for Ty Tabs component
-export interface TyTabsProps extends React.HTMLAttributes<HTMLElement> {
+export interface TyTabsProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
   /** Content area width (accepts px or %) */
   width?: string;
   

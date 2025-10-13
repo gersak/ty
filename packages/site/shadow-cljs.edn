@@ -1,0 +1,25 @@
+{:deps true
+ :nrepl {:port 7888}
+ :dev-http {8000 "public"}
+
+ :builds
+ {:site
+  {:target :browser
+   :output-dir "public/js"
+   :asset-path "/js"
+   :modules {:site {:init-fn ty.site.core/init}}
+   :compiler-options {:optimizations :none
+                      :source-map true}}
+
+  ;; GitHub Pages deployment build
+  :github
+  {:target :browser
+   :output-dir "../../docs/js"
+   :asset-path "js"
+   :modules {:site {:init-fn ty.site.core/init}}
+   :closure-defines {ty.site.core/ROUTER_BASE "ty"
+                     ty.site.core/PRODUCTION true}
+   :compiler-options {:optimizations :advanced
+                      :source-map true
+                      :pretty-print false
+                      :infer-externs :auto}}}}

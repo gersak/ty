@@ -10,6 +10,16 @@
  * - Rich day context with metadata
  * - Localized weekday names
  * - No external dependencies (native Date API only)
+ * 
+ * Note on Timestamps:
+ * - `value`: UTC timestamp at midnight UTC (timezone-independent, use for storage/server)
+ * - `localValue`: Local timestamp at midnight local time (use for display/local calculations)
+ * - `year/month/dayInMonth`: Calendar date components (user's mental model)
+ * 
+ * Example for October 13, 2025:
+ * - value = Date.UTC(2025, 9, 13) = consistent worldwide
+ * - localValue = new Date(2025, 9, 13).getTime() = varies by timezone
+ * - Both represent the same calendar date, different moments in time
  */
 
 // ============================================================================
@@ -21,8 +31,11 @@
  * Contains all metadata needed for rendering and event handling
  */
 export interface DayContext {
-  /** Timestamp in milliseconds (UTC) */
+  /** Timestamp in milliseconds (UTC midnight) - use for server communication and storage */
   value: number;
+  
+  /** Timestamp in milliseconds (local midnight) - use for local calculations and display */
+  localValue: number;
   
   /** Year (e.g., 2025) */
   year: number;
@@ -65,11 +78,34 @@ export interface DayContext {
 }
 
 // ============================================================================
+// Validation Functions
+// ============================================================================
+
+/**
+ * Validate month value (1-12)
+ */
+function validateMonth(month: number): void {
+  if (!Number.isInteger(month) || month < 1 || month > 12) {
+    throw new RangeError(`Invalid month: ${month}. Must be an integer between 1 and 12.`);
+  }
+}
+
+/**
+ * Validate year value (reasonable range)
+ */
+function validateYear(year: number): void {
+  if (!Number.isInteger(year) || year < 1 || year > 9999) {
+    throw new RangeError(`Invalid year: ${year}. Must be an integer between 1 and 9999.`);
+  }
+}
+
+// ============================================================================
 // Helper Functions
 // ============================================================================
 
 /**
  * Check if two dates are on the same day (ignoring time)
+ * Works in local timezone
  */
 function isSameDay(date1: Date, date2: Date): boolean {
   return date1.getFullYear() === date2.getFullYear()
@@ -78,9 +114,26 @@ function isSameDay(date1: Date, date2: Date): boolean {
 }
 
 /**
+ * Create a date at midnight local time
+ * This ensures consistent behavior across the application
+ */
+function createMidnightDate(year: number, month: number, day: number): Date {
+  return new Date(year, month - 1, day, 0, 0, 0, 0);
+}
+
+/**
+ * Get today's date at midnight local time
+ * Used for consistent "today" detection
+ */
+function getTodayMidnight(): Date {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+}
+
+/**
  * Create a DayContext from a Date object
  * 
- * @param date - The date to create context for
+ * @param date - The date to create context for (should be at midnight)
  * @param targetYear - The year of the calendar month being displayed
  * @param targetMonth - The month (1-12) of the calendar month being displayed
  * @param selection - Optional selection state from calendar
@@ -112,17 +165,24 @@ function createDayContext(
     }
   }
   
-  // Check if today
-  const today = new Date();
-  const isToday = isSameDay(date, today);
+  // Check if today (compare dates at midnight for consistency)
+  const todayMidnight = getTodayMidnight();
+  const isToday = isSameDay(date, todayMidnight);
   
   // Check if this day is selected
   const isSelected = selection?.year === year 
     && selection?.month === month 
     && selection?.day === dayInMonth;
   
+  // Calculate both UTC and local timestamps
+  // value: UTC midnight (consistent worldwide for the same date)
+  // localValue: Local midnight (respects user's timezone)
+  const utcValue = Date.UTC(year, month - 1, dayInMonth, 0, 0, 0, 0);
+  const localValue = date.getTime();
+  
   return {
-    value: date.getTime(),
+    value: utcValue,
+    localValue,
     year,
     month,
     dayInMonth,
@@ -143,7 +203,7 @@ function createDayContext(
  * (Monday = start of week in ISO 8601)
  * 
  * @param date - Any date
- * @returns The Monday of that week
+ * @returns The Monday of that week at midnight
  */
 function getMondayOfWeek(date: Date): Date {
   const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
@@ -155,8 +215,10 @@ function getMondayOfWeek(date: Date): Date {
   // ...
   const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   
+  // Create new date at Monday midnight
   const monday = new Date(date);
   monday.setDate(date.getDate() - daysToMonday);
+  monday.setHours(0, 0, 0, 0); // Ensure midnight
   
   return monday;
 }
@@ -170,11 +232,25 @@ function getMondayOfWeek(date: Date): Date {
  * @returns The Monday that starts the calendar grid
  */
 function getMonthGridStart(year: number, month: number): Date {
-  // Get first day of month (month is 1-based, Date constructor is 0-based)
-  const firstDay = new Date(year, month - 1, 1);
+  // Get first day of month at midnight (month is 1-based, Date constructor is 0-based)
+  const firstDay = createMidnightDate(year, month, 1);
   
   // Get the Monday of that week
   return getMondayOfWeek(firstDay);
+}
+
+/**
+ * Add days to a date safely
+ * Creates a new date without mutating the original
+ * 
+ * @param date - Starting date
+ * @param days - Number of days to add
+ * @returns New date with days added
+ */
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
 }
 
 /**
@@ -194,11 +270,14 @@ function generateDays(
   targetMonth: number,
   selection?: { year?: number; month?: number; day?: number }
 ): DayContext[] {
-  return Array.from({ length: count }, (_, i) => {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
-    return createDayContext(date, targetYear, targetMonth, selection);
-  });
+  const days: DayContext[] = [];
+  
+  for (let i = 0; i < count; i++) {
+    const date = addDays(startDate, i);
+    days.push(createDayContext(date, targetYear, targetMonth, selection));
+  }
+  
+  return days;
 }
 
 // ============================================================================
@@ -217,6 +296,8 @@ function generateDays(
  * @param selection - Optional selection state to include in day contexts
  * @returns Array of 42 day contexts with rich metadata
  * 
+ * @throws {RangeError} If year or month are invalid
+ * 
  * @example
  * const days = getCalendarMonthDays(2025, 10); // October 2025
  * console.log(days.length); // 42
@@ -227,6 +308,10 @@ export function getCalendarMonthDays(
   month: number,
   selection?: { year?: number; month?: number; day?: number }
 ): DayContext[] {
+  // Validate inputs
+  validateYear(year);
+  validateMonth(month);
+  
   const startDate = getMonthGridStart(year, month);
   return generateDays(startDate, 42, year, month, selection);
 }
@@ -254,13 +339,12 @@ export function getLocalizedWeekdays(
 ): string[] {
   const formatter = new Intl.DateTimeFormat(locale, { weekday: style });
   
-  // Create a Sunday (base date)
-  const sunday = new Date(2024, 0, 7); // January 7, 2024 is a Sunday
+  // Create a Sunday (base date) - January 7, 2024 is a Sunday
+  const sunday = new Date(2024, 0, 7);
   
   // Generate Sunday-first array: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
   const sundayFirst = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date(sunday);
-    date.setDate(sunday.getDate() + i);
+    const date = addDays(sunday, i);
     return formatter.format(date);
   });
   
@@ -280,12 +364,16 @@ export function getLocalizedWeekdays(
  * @param locale - Locale string
  * @param style - Display style
  * @returns Localized month name
+ * 
+ * @throws {RangeError} If month is invalid
  */
 export function getMonthName(
   month: number,
   locale: string = 'en-US',
   style: 'long' | 'short' | 'narrow' = 'long'
 ): string {
+  validateMonth(month);
+  
   const date = new Date(2024, month - 1, 1);
   const formatter = new Intl.DateTimeFormat(locale, { month: style });
   return formatter.format(date);
@@ -296,6 +384,10 @@ export function getMonthName(
  * 
  * @param dayContext - Day context to format
  * @returns ISO date string (YYYY-MM-DD)
+ * 
+ * @example
+ * formatDayContext({ year: 2025, month: 10, dayInMonth: 13, ... })
+ * // Returns: "2025-10-13"
  */
 export function formatDayContext(dayContext: DayContext): string {
   const { year, month, dayInMonth } = dayContext;
@@ -312,6 +404,9 @@ export function formatDayContext(dayContext: DayContext): string {
  * @param month - Target month (1-12)
  * @param day - Target day
  * @returns True if the day context matches
+ * 
+ * @example
+ * isDayContext(dayCtx, 2025, 10, 13) // true if context is Oct 13, 2025
  */
 export function isDayContext(
   dayContext: DayContext,
@@ -322,4 +417,74 @@ export function isDayContext(
   return dayContext.year === year
     && dayContext.month === month
     && dayContext.dayInMonth === day;
+}
+
+/**
+ * Parse an ISO date string (YYYY-MM-DD) into year, month, day components
+ * 
+ * @param isoString - ISO date string (YYYY-MM-DD)
+ * @returns Object with year, month (1-12), and day, or null if invalid
+ * 
+ * @example
+ * parseISODate("2025-10-13")
+ * // Returns: { year: 2025, month: 10, day: 13 }
+ */
+export function parseISODate(isoString: string): { year: number; month: number; day: number } | null {
+  const match = isoString.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  
+  const year = parseInt(match[1], 10);
+  const month = parseInt(match[2], 10);
+  const day = parseInt(match[3], 10);
+  
+  // Validate ranges
+  if (year < 1 || year > 9999) return null;
+  if (month < 1 || month > 12) return null;
+  if (day < 1 || day > 31) return null;
+  
+  // Check if date is valid (handles Feb 30, etc.)
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return null;
+  }
+  
+  return { year, month, day };
+}
+
+/**
+ * Convert a UTC timestamp to an ISO date string
+ * Interprets the timestamp as UTC midnight and returns the date
+ * 
+ * @param utcTimestamp - UTC timestamp in milliseconds
+ * @returns ISO date string (YYYY-MM-DD)
+ * 
+ * @example
+ * const ctx = getCalendarMonthDays(2025, 10)[0];
+ * utcTimestampToISO(ctx.value) // "2025-10-13"
+ */
+export function utcTimestampToISO(utcTimestamp: number): string {
+  const date = new Date(utcTimestamp);
+  const year = date.getUTCFullYear();
+  const month = (date.getUTCMonth() + 1).toString().padStart(2, '0');
+  const day = date.getUTCDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
+/**
+ * Convert a local timestamp to an ISO date string
+ * Interprets the timestamp in local timezone and returns the date
+ * 
+ * @param localTimestamp - Local timestamp in milliseconds
+ * @returns ISO date string (YYYY-MM-DD)
+ * 
+ * @example
+ * const ctx = getCalendarMonthDays(2025, 10)[0];
+ * localTimestampToISO(ctx.localValue) // "2025-10-13"
+ */
+export function localTimestampToISO(localTimestamp: number): string {
+  const date = new Date(localTimestamp);
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
 }

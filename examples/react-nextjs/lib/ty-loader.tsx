@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react'
 
 /**
- * Client-side Ty Components CDN Loader
+ * Client-side Ty Components Loader
  * 
- * This component waits for Ty components to be available from the CDN
+ * This component waits for Ty components to be available from the local build
  * that's loaded in the layout.tsx <head> section.
  * 
  * It handles React Strict Mode and provides loading states.
@@ -14,13 +14,8 @@ import { useEffect, useState } from 'react'
 // Global flag to prevent double checks in React Strict Mode
 declare global {
   interface Window {
-    __TY_CDN_LOADED__?: boolean;
-    ty?: {
-      icons?: {
-        add: (icons: Record<string, string>) => void;
-        registry?: Record<string, string>;
-      };
-    };
+    __TY_LOADED__?: boolean;
+    customElements?: CustomElementRegistry;
   }
 }
 
@@ -30,12 +25,12 @@ export function TyLoader({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Skip if already verified as loaded
-    if (typeof window !== 'undefined' && window.__TY_CDN_LOADED__) {
+    if (typeof window !== 'undefined' && window.__TY_LOADED__) {
       setTyLoaded(true)
       return
     }
 
-    // Check for Ty components from CDN
+    // Check for Ty components
     if (typeof window !== 'undefined') {
       let attempts = 0
       const maxAttempts = 20
@@ -43,11 +38,12 @@ export function TyLoader({ children }: { children: React.ReactNode }) {
       const checkTyLoaded = () => {
         attempts++
         
-        // Check if Ty components are available
-        if (window.ty && window.ty.icons && typeof window.ty.icons.add === 'function') {
-          window.__TY_CDN_LOADED__ = true
+        // Check if Ty components are registered
+        // We check for ty-button as it's a core component that should always be available
+        if (window.customElements && window.customElements.get('ty-button')) {
+          window.__TY_LOADED__ = true
           setTyLoaded(true)
-          console.log('✅ Ty components loaded from CDN successfully')
+          console.log('✅ Ty components loaded successfully')
           return
         }
         
@@ -56,8 +52,8 @@ export function TyLoader({ children }: { children: React.ReactNode }) {
           const delay = Math.min(50 + attempts * 25, 300)
           setTimeout(checkTyLoaded, delay)
         } else {
-          console.error('❌ Failed to load Ty components from CDN after', maxAttempts, 'attempts')
-          setTyError('Ty components failed to load from CDN. Please check your internet connection.')
+          console.error('❌ Failed to load Ty components after', maxAttempts, 'attempts')
+          setTyError('Ty components failed to load. Please check the console for errors.')
         }
       }
       
@@ -90,14 +86,14 @@ export function TyLoader({ children }: { children: React.ReactNode }) {
         margin: '20px',
         color: '#dc2626'
       }}>
-        <h3>⚠️ Ty Components CDN Load Error</h3>
+        <h3>⚠️ Ty Components Load Error</h3>
         <p>{tyError}</p>
         <details style={{ marginTop: '10px' }}>
           <summary>Troubleshooting</summary>
           <ul style={{ marginTop: '8px', paddingLeft: '20px' }}>
-            <li>Check if jsDelivr CDN is accessible</li>
+            <li>Check if /ty/ty.js is accessible at /public/ty/ty.js</li>
             <li>Look for console errors in browser dev tools</li>
-            <li>Verify the CDN URLs in layout.tsx are correct</li>
+            <li>Verify the script is loaded in layout.tsx</li>
             <li>Try refreshing the page</li>
           </ul>
         </details>
@@ -113,7 +109,7 @@ export function TyLoader({ children }: { children: React.ReactNode }) {
         textAlign: 'center',
         color: '#666'
       }}>
-        <p>🔄 Loading Ty components from CDN...</p>
+        <p>🔄 Loading Ty components...</p>
         <small style={{ color: '#999' }}>This should only take a moment</small>
       </div>
     )

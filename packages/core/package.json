@@ -1,7 +1,7 @@
 {
-  "name": "@gersak/ty-core",
+  "name": "@gersak/ty",
   "version": "0.2.0",
-  "description": "Ty Web Components - TypeScript Implementation",
+  "description": "Ty Web Components - Framework-agnostic UI components with semantic design system",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -53,10 +53,70 @@
     "./icon": {
       "import": "./dist/components/icon.js",
       "types": "./dist/components/icon.d.ts"
+    },
+    "./css": {
+      "import": "./css/ty.css"
+    },
+    "./icons/registry": {
+      "import": "./dist/utils/icon-registry.js",
+      "types": "./dist/utils/icon-registry.d.ts"
+    },
+    "./icons/lucide": {
+      "import": "./dist/icons/lucide.js",
+      "types": "./dist/icons/lucide.d.ts"
+    },
+    "./icons/heroicons/outline": {
+      "import": "./dist/icons/heroicons/outline.js",
+      "types": "./dist/icons/heroicons/outline.d.ts"
+    },
+    "./icons/heroicons/solid": {
+      "import": "./dist/icons/heroicons/solid.js",
+      "types": "./dist/icons/heroicons/solid.d.ts"
+    },
+    "./icons/heroicons/mini": {
+      "import": "./dist/icons/heroicons/mini.js",
+      "types": "./dist/icons/heroicons/mini.d.ts"
+    },
+    "./icons/heroicons/micro": {
+      "import": "./dist/icons/heroicons/micro.js",
+      "types": "./dist/icons/heroicons/micro.d.ts"
+    },
+    "./icons/material/filled": {
+      "import": "./dist/icons/material/filled.js",
+      "types": "./dist/icons/material/filled.d.ts"
+    },
+    "./icons/material/outlined": {
+      "import": "./dist/icons/material/outlined.js",
+      "types": "./dist/icons/material/outlined.d.ts"
+    },
+    "./icons/material/round": {
+      "import": "./dist/icons/material/round.js",
+      "types": "./dist/icons/material/round.d.ts"
+    },
+    "./icons/material/sharp": {
+      "import": "./dist/icons/material/sharp.js",
+      "types": "./dist/icons/material/sharp.d.ts"
+    },
+    "./icons/material/two-tone": {
+      "import": "./dist/icons/material/two-tone.js",
+      "types": "./dist/icons/material/two-tone.d.ts"
+    },
+    "./icons/fontawesome/solid": {
+      "import": "./dist/icons/fontawesome/solid.js",
+      "types": "./dist/icons/fontawesome/solid.d.ts"
+    },
+    "./icons/fontawesome/regular": {
+      "import": "./dist/icons/fontawesome/regular.js",
+      "types": "./dist/icons/fontawesome/regular.d.ts"
+    },
+    "./icons/fontawesome/brands": {
+      "import": "./dist/icons/fontawesome/brands.js",
+      "types": "./dist/icons/fontawesome/brands.d.ts"
     }
   },
   "files": [
     "dist/**/*",
+    "css/**/*",
     "README.md",
     "LICENSE"
   ],
@@ -65,7 +125,14 @@
     "typescript",
     "ui-components",
     "custom-elements",
-    "shadow-dom"
+    "shadow-dom",
+    "icons",
+    "lucide",
+    "heroicons",
+    "material-design",
+    "fontawesome",
+    "semantic-design",
+    "design-system"
   ],
   "scripts": {
     "dev": "vite",
@@ -77,7 +144,9 @@
     "build:size": "npm run build && echo \"\" && echo \"=== Bundle Sizes ===\" && ls -lh dist/components/*.js | grep -v \".map\" | awk '{printf \"%-30s %s\\n\", $9, $5}'",
     "build:cdn": "vite build --config vite.config.cdn.ts",
     "build:all": "npm run build && npm run build:cdn",
-    "size:cdn": "npm run build:cdn && echo \"\" && echo \"=== CDN Bundle Sizes ===\" && ls -lh dist-cdn/*.js | awk '{printf \"%-30s %s\\n\", $9, $5}'"
+    "size:cdn": "npm run build:cdn && echo \"\" && echo \"=== CDN Bundle Sizes ===\" && ls -lh dist-cdn/*.js | awk '{printf \"%-30s %s\\n\", $9, $5}'",
+    "pack": "npm run build && npm pack",
+    "pack:list": "npm pack --dry-run"
   },
   "devDependencies": {
     "@rollup/plugin-terser": "^0.4.4",

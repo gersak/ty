@@ -50,6 +50,21 @@ export type { TyDatePickerProps, TyDatePickerEventDetail } from './TyDatePicker'
 export { TyPopup } from './TyPopup';
 export type { TyPopupProps, TyPopupElement, TyPopupOpenEvent, TyPopupCloseEvent } from './TyPopup';
 
+export { TyCheckbox } from './TyCheckbox';
+export type { TyCheckboxProps, TyCheckboxEventDetail } from './TyCheckbox';
+
+export { TyTabs } from './TyTabs';
+export type { TyTabsProps, TabChangeDetail } from './TyTabs';
+
+export { TyTab } from './TyTab';
+export type { TyTabProps } from './TyTab';
+
+export { TyCalendarMonth } from './TyCalendarMonth';
+export type { TyCalendarMonthProps, DayClickDetail } from './TyCalendarMonth';
+
+export { TyCalendarNavigation } from './TyCalendarNavigation';
+export type { TyCalendarNavigationProps, NavigationChangeDetail } from './TyCalendarNavigation';
+
 // ===================================================================
 // SHORT NAME EXPORTS (Clean Style - Developer Choice)
 // ===================================================================
@@ -67,6 +82,11 @@ export { TyMultiselect as Multiselect } from './TyMultiselect';
 export { TyCalendar as Calendar } from './TyCalendar';
 export { TyDatePicker as DatePicker } from './TyDatePicker';
 export { TyPopup as Popup } from './TyPopup';
+export { TyCheckbox as Checkbox } from './TyCheckbox';
+export { TyTabs as Tabs } from './TyTabs';
+export { TyTab as Tab } from './TyTab';
+export { TyCalendarMonth as CalendarMonth } from './TyCalendarMonth';
+export { TyCalendarNavigation as CalendarNavigation } from './TyCalendarNavigation';
 
 // ===================================================================
 // TYPE ALIASES (Both Styles Supported)
@@ -110,6 +130,21 @@ export type { TyDatePickerProps as DatePickerProps, TyDatePickerEventDetail as D
 
 // Popup types
 export type { TyPopupProps as PopupProps, TyPopupElement as PopupElement, TyPopupOpenEvent as PopupOpenEvent, TyPopupCloseEvent as PopupCloseEvent } from './TyPopup';
+
+// Checkbox types
+export type { TyCheckboxProps as CheckboxProps, TyCheckboxEventDetail as CheckboxEventDetail } from './TyCheckbox';
+
+// Tabs types
+export type { TyTabsProps as TabsProps, TabChangeDetail } from './TyTabs';
+
+// Tab types
+export type { TyTabProps as TabProps } from './TyTab';
+
+// CalendarMonth types
+export type { TyCalendarMonthProps as CalendarMonthProps, DayClickDetail } from './TyCalendarMonth';
+
+// CalendarNavigation types
+export type { TyCalendarNavigationProps as CalendarNavigationProps, NavigationChangeDetail } from './TyCalendarNavigation';
 
 // ===================================================================
 // USAGE EXAMPLES

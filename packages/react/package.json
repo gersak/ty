@@ -19,7 +19,7 @@
     "clean": "rm -rf dist"
   },
   "peerDependencies": {
-    "@gersak/ty-core": "workspace:*",
+    "@gersak/ty": "workspace:*",
     "react": ">=18.0.0",
     "react-dom": ">=18.0.0"
   },

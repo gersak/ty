@@ -83,22 +83,12 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     const attrValue = this.getAttribute('value')
     const textValue = this.textContent?.trim() || ''
     const resolved = propValue || attrValue || textValue
-
-    // Debug logging in development (only if there's a mismatch)
-    if (process.env.NODE_ENV === 'development' && propValue && attrValue && propValue !== attrValue) {
-      console.warn(
-        '[ty-option] Property and attribute value mismatch:',
-        'property=', propValue, 'attribute=', attrValue,
-        'Using property value.'
-      )
-    }
-
     return resolved
   }
 
   // Public API - Getters/Setters
   // NOTE: All setters trigger re-render to support property changes from frameworks like React
-  
+
   get value(): string | undefined {
     return this.getOptionValue()
   }

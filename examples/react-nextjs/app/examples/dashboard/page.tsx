@@ -148,15 +148,17 @@ export default function DataDashboardExample() {
   // Create custom day content function for calendar
   const createDayContentFn = () => {
     return (dayContext: any) => {
-      const dayInMonth = dayContext['day-in-month']
-      const isToday = dayContext['today?']
-      const otherMonth = dayContext['other-month']
-      const year = dayContext['year']
-      const month = dayContext['month']
+      // Use correct TypeScript camelCase property names
+      const dayInMonth = dayContext.dayInMonth
+      const isToday = dayContext.today
+      const otherMonth = dayContext.otherMonth
+      const year = dayContext.year
+      const month = dayContext.month
 
-      // Create date string for this day
-      const dayDate = new Date(year, month - 1, dayInMonth)
-      const dateStr = dayDate.toISOString().split('T')[0]
+      // Create date string using UTC value (proper way)
+      // The value is UTC timestamp, extract date in UTC
+      const utcDate = new Date(dayContext.value)
+      const dateStr = `${utcDate.getUTCFullYear()}-${String(utcDate.getUTCMonth() + 1).padStart(2, '0')}-${String(utcDate.getUTCDate()).padStart(2, '0')}`
 
       // Find metrics for this day
       const dayMetric = dashboardData.metrics.find(m => m.date === dateStr)

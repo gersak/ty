@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => ({
   plugins: [
     dts({
       include: ['src/**/*'],
-      outDir: 'dist',
+      outDir: resolve(__dirname, 'dist'), // Output to packages/core/dist/
       rollupTypes: true,
     })
   ],
@@ -34,6 +34,24 @@ export default defineConfig(({ mode }) => ({
         'components/icon': resolve(__dirname, 'src/components/icon.ts'),
         'components/tabs': resolve(__dirname, 'src/components/tabs.ts'),
         'components/tab': resolve(__dirname, 'src/components/tab.ts'),
+        
+        // Utils for tree-shakeable imports
+        'utils/icon-registry': resolve(__dirname, 'src/utils/icon-registry.ts'),
+        
+        // Icon sets for tree-shakeable imports
+        'icons/lucide': resolve(__dirname, 'src/icons/lucide.ts'),
+        'icons/heroicons/outline': resolve(__dirname, 'src/icons/heroicons/outline.ts'),
+        'icons/heroicons/solid': resolve(__dirname, 'src/icons/heroicons/solid.ts'),
+        'icons/heroicons/mini': resolve(__dirname, 'src/icons/heroicons/mini.ts'),
+        'icons/heroicons/micro': resolve(__dirname, 'src/icons/heroicons/micro.ts'),
+        'icons/material/filled': resolve(__dirname, 'src/icons/material/filled.ts'),
+        'icons/material/outlined': resolve(__dirname, 'src/icons/material/outlined.ts'),
+        'icons/material/round': resolve(__dirname, 'src/icons/material/round.ts'),
+        'icons/material/sharp': resolve(__dirname, 'src/icons/material/sharp.ts'),
+        'icons/material/two-tone': resolve(__dirname, 'src/icons/material/two-tone.ts'),
+        'icons/fontawesome/solid': resolve(__dirname, 'src/icons/fontawesome/solid.ts'),
+        'icons/fontawesome/regular': resolve(__dirname, 'src/icons/fontawesome/regular.ts'),
+        'icons/fontawesome/brands': resolve(__dirname, 'src/icons/fontawesome/brands.ts'),
       },
       formats: ['es'],
       fileName: (format, entryName) => `${entryName}.js`,
@@ -71,8 +89,8 @@ export default defineConfig(({ mode }) => ({
     // Target modern browsers (allows more optimizations)
     target: 'es2020',
     
-    // Output directory
-    outDir: 'dist',
+    // Output directory - local dist/
+    outDir: resolve(__dirname, 'dist'),
     
     // Empty output dir before build
     emptyOutDir: true,

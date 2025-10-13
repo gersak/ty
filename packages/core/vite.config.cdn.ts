@@ -5,16 +5,18 @@ import dts from 'vite-plugin-dts'
 /**
  * CDN Build Configuration
  * 
- * Creates heavily optimized single-file bundles for CDN distribution.
+ * Creates heavily optimized UMD bundle for CDN distribution.
  * Focus: MINIMUM SIZE over everything else.
  * 
  * Strategy:
- * 1. Single bundle (all components in one file)
+ * 1. Single UMD bundle (all components in one file)
  * 2. No source maps (size critical)
  * 3. Maximum Terser optimization
  * 4. Aggressive mangling (internal code only)
  * 5. Zero whitespace
  * 6. Drop all console statements
+ * 
+ * Output: ../../dist/cdn/ty.js (root dist/ folder)
  */
 
 export default defineConfig({
@@ -30,8 +32,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
       name: 'Ty',
-      formats: ['es', 'umd'],
-      fileName: (format) => `ty.${format}.js`,
+      formats: ['umd'], // UMD only for CDN
+      fileName: () => 'ty.js', // Simple name: ty.js
     },
     
     rollupOptions: {
@@ -72,8 +74,8 @@ export default defineConfig({
     // Target modern browsers (more optimizations possible)
     target: 'es2020',
     
-    // CDN output directory
-    outDir: 'dist-cdn',
+    // CDN output directory - root dist/cdn/
+    outDir: resolve(__dirname, '../../dist/cdn'),
     
     emptyOutDir: true,
     

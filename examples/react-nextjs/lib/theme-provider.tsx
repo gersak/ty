@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
+import { initializeIcons } from './icons'
 
 type Theme = 'light' | 'dark'
 
@@ -25,6 +26,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // Initialize icons once at startup
+    initializeIcons()
+    
     // Get theme from localStorage or system preference
     const stored = localStorage.getItem('ty-theme') as Theme
     const systemPreference = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'

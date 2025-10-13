@@ -1,5 +1,6 @@
-// Ty TypeScript Components
-// Modern, zero-dependency web components
+// Ty TypeScript Components - CDN Entry Point
+// Components ONLY - NO icon data included
+// Users can register icons via IconRegistry
 
 export { TyButton } from './components/button.js'
 export { TyIcon, IconRegistry } from './components/icon.js'
@@ -48,7 +49,7 @@ export type { CalendarChangeDetail, CalendarNavigateDetail } from './components/
 export type { DatePickerChangeDetail } from './components/date-picker.js'
 export type { DayContext } from './utils/calendar-utils.js'
 
-// Utilities
+// Utilities - Including Icon Registry
 export { 
   lockScroll, 
   unlockScroll, 
@@ -66,22 +67,6 @@ export type {
   PositionResult, 
   CleanupFn 
 } from './utils/positioning.js'
-
-// Icons
-// Export icon sets for tree-shakeable imports
-export * as lucideIcons from './icons/lucide.js'
-export * as heroiconsOutline from './icons/heroicons/outline.js'
-export * as heroiconsSolid from './icons/heroicons/solid.js'
-export * as heroiconsMini from './icons/heroicons/mini.js'
-export * as heroiconsMicro from './icons/heroicons/micro.js'
-export * as materialFilled from './icons/material/filled.js'
-export * as materialOutlined from './icons/material/outlined.js'
-export * as materialRound from './icons/material/round.js'
-export * as materialSharp from './icons/material/sharp.js'
-export * as materialTwoTone from './icons/material/two-tone.js'
-export * as fontawesomeSolid from './icons/fontawesome/solid.js'
-export * as fontawesomeRegular from './icons/fontawesome/regular.js'
-export * as fontawesomeBrands from './icons/fontawesome/brands.js'
 
 // Version
 export const VERSION = '0.2.0'

@@ -39,11 +39,14 @@
   ],
   "scripts": {
     "dev": "shadow-cljs -A:dev watch lib",
+    "dev:site": "shadow-cljs -A:dev watch site",
     "build": "shadow-cljs -A:dev release lib bundle",
-    "clean": "rm -rf dist .shadow-cljs"
+    "build:site": "shadow-cljs -A:dev release site",
+    "build:github": "shadow-cljs -A:dev release github",
+    "clean": "rm -rf dist public/js .shadow-cljs"
   },
   "devDependencies": {
-    "shadow-cljs": "^2.28.0"
+    "shadow-cljs": "^2.28.19"
   },
   "author": "Gersak <dev@gersak.io>",
   "license": "MIT"

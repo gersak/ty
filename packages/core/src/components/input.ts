@@ -243,7 +243,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
    * Parse a string value to the appropriate shadow value type
    */
   private parseShadowValue(value: string): number | string | null {
-    if (!value || value.trim() === '') return null
+    // Defensive check: ensure value is actually a string before calling .trim()
+    if (!value || typeof value !== 'string' || value.trim() === '') return null
 
     // For numeric types, parse to number
     if (shouldFormatType(this._type)) {

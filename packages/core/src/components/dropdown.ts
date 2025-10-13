@@ -297,7 +297,8 @@ export class TyDropdown extends HTMLElement {
    * Parse dropdown value (single string)
    */
   private parseValue(value: string | null): string | null {
-    if (!value || value.trim() === '') return null
+    // Defensive check: ensure value is actually a string before calling .trim()
+    if (!value || typeof value !== 'string' || value.trim() === '') return null
     return value.trim()
   }
 

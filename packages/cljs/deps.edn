@@ -1,25 +1,25 @@
-{:paths ["src"]
+{:paths ["src" "components"]
 
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/clojurescript {:mvn/version "1.11.121"}
+        no.cjohansen/replicant {:mvn/version "2025.06.21"}
         dev.gersak/timing.core {:mvn/version "0.6.4"}
         cljs-bean/cljs-bean {:mvn/version "1.9.0"}}
 
  :aliases
- {:dev {:extra-paths ["icons" "gen"]
-        :extra-deps {thheller/shadow-cljs {:mvn/version "2.28.19"}
-                     no.cjohansen/replicant {:mvn/version "2025.06.21"}}}
+ {:dev {:extra-paths ["icons" "gen" "site"]
+        :extra-deps {thheller/shadow-cljs {:mvn/version "2.28.19"}}}
 
-  :ty-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
-                          org.clojure/clojurescript {:mvn/version "1.11.121"}
+  :ty-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.12.0"}
+                          org.clojure/clojurescript {:mvn/version "1.12.42"}
                           no.cjohansen/replicant {:mvn/version "2025.06.21"}
                           dev.gersak/timing.core {:mvn/version "0.6.4"}
                           cljs-bean/cljs-bean {:mvn/version "1.9.0"}}
            :replace-paths ["src/clj" "resources/ty"]
            :exec-fn clojure.tools.build.api/create-basis}
 
-  :ty-icons-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.11.1"}
-                                org.clojure/clojurescript {:mvn/version "1.11.121"}}
+  :ty-icons-lib {:replace-deps {org.clojure/clojure {:mvn/version "1.12.0"}
+                                org.clojure/clojurescript {:mvn/version "1.12.42"}}
                  :replace-paths ["gen" "icons" "resources/ty-icons"]
                  :exec-fn clojure.tools.build.api/create-basis}
 

@@ -318,7 +318,8 @@ export class TyMultiselect extends HTMLElement {
    * Parse multiselect value (comma-separated string to array)
    */
   private parseValue(value: string | null): string[] {
-    if (!value || value.trim() === '') return []
+    // Defensive check: ensure value is actually a string before calling .trim()
+    if (!value || typeof value !== 'string' || value.trim() === '') return []
     return value.split(',').map(v => v.trim()).filter(v => v !== '')
   }
 

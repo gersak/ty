@@ -27,7 +27,8 @@
     ;; For checkboxes, parse boolean values from various inputs
     (cond
       (boolean? value) value
-      (string? value) (contains? #{"true" "1" "on" "checked"} (str/lower-case value))
+      (and (string? value) (not (str/blank? value)))
+      (contains? #{"true" "1" "on" "checked"} (str/lower-case value))
       (number? value) (not (zero? value))
       :else (boolean value))
 
@@ -225,8 +226,8 @@
 (defn get-input-type
   [^js event]
   (or
-    (.. event -target -type)
-    "text"))
+   (.. event -target -type)
+   "text"))
 
 (defn handle-input-event
   "Handle input event - update shadow value"
@@ -254,16 +255,16 @@
     (update-component-state! el {:shadow-value new-value})
     ;; Emit custom events after a brief delay to allow native events to process first
     (js/setTimeout
-      (fn []
-        (let [data #js {:bubbles true
-                        :composed true
-                        :detail #js {:value new-value
-                                     :checked new-value
-                                     :formValue (when new-value (get-checkbox-value el))
-                                     :originalEvent e}}]
-          (doseq [event-type ["input" "change"]]
-            (.dispatchEvent el (js/CustomEvent. event-type data)))))
-      0)))
+     (fn []
+       (let [data #js {:bubbles true
+                       :composed true
+                       :detail #js {:value new-value
+                                    :checked new-value
+                                    :formValue (when new-value (get-checkbox-value el))
+                                    :originalEvent e}}]
+         (doseq [event-type ["input" "change"]]
+           (.dispatchEvent el (js/CustomEvent. event-type data)))))
+     0)))
 
 (defn handle-checkbox-keydown
   "Handle checkbox keyboard events - space/enter to toggle"
@@ -622,15 +623,15 @@
            (let [delta' (enrich-delta delta el)]
              (update-component-state! el delta')
              (when (or
-                     (seq (dissoc delta "value"))
-                     (not= delta delta'))
+                    (seq (dissoc delta "value"))
+                    (not= delta delta'))
                (render! el))))
    :prop (fn [^js el delta]
            (let [delta' (enrich-delta delta el)]
              (update-component-state! el delta')
              (when (or
-                     (seq (dissoc delta "value"))
-                     (not= delta delta'))
+                    (seq (dissoc delta "value"))
+                    (not= delta delta'))
                (render! el))))})
 
 (wcs/define! "ty-input" configuration)

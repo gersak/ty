@@ -12,7 +12,7 @@
 
     ;; WIP as the MAIN message
 
-    ;; Simple, direct title
+;; Simple, direct title
     [:h1.text-3xl.lg:text-5xl.font-bold.ty-text.mb-4
      "ty Web Components"]
 

@@ -1,7 +1,7 @@
 (ns ty.site.docs.icon
   "Documentation for ty-icon component - dynamic icon rendering with animations"
   (:require
-    [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+   [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -20,30 +20,30 @@
      [:div
       [:h3.text-lg.font-medium.ty-text+.mb-3 "Attributes"]
       (attribute-table
-        [{:name "name"
-          :type "string"
-          :default "-"
-          :description "Icon name from the registry (e.g., 'check', 'plus', 'trash')"}
-         {:name "size"
-          :type "string"
-          :default "-"
-          :description "Icon size: xs, sm, md, lg, xl"}
-         {:name "spin"
-          :type "boolean"
-          :default "false"
-          :description "Apply continuous rotation animation"}
-         {:name "pulse"
-          :type "boolean"
-          :default "false"
-          :description "Apply pulsing animation"}
-         {:name "tempo"
-          :type "string"
-          :default "-"
-          :description "Animation speed: slow, normal, fast"}
-         {:name "class"
-          :type "string"
-          :default "-"
-          :description "Additional CSS classes (e.g., 'ty-text-success')"}])]]]
+       [{:name "name"
+         :type "string"
+         :default "-"
+         :description "Icon name from the registry (e.g., 'check', 'plus', 'trash')"}
+        {:name "size"
+         :type "string"
+         :default "-"
+         :description "Icon size: xs, sm, md, lg, xl"}
+        {:name "spin"
+         :type "boolean"
+         :default "false"
+         :description "Apply continuous rotation animation"}
+        {:name "pulse"
+         :type "boolean"
+         :default "false"
+         :description "Apply pulsing animation"}
+        {:name "tempo"
+         :type "string"
+         :default "-"
+         :description "Animation speed: slow, normal, fast"}
+        {:name "class"
+         :type "string"
+         :default "-"
+         :description "Additional CSS classes (e.g., 'ty-text-success')"}])]]]
 
    ;; Basic Usage
    [:div.ty-content.rounded-lg.p-6.mb-8
@@ -62,7 +62,7 @@
                  :size "xl"}]]
 
      (code-block
-       "<ty-icon name=\"check\" size=\"sm\"></ty-icon>
+      "<ty-icon name=\"check\" size=\"sm\"></ty-icon>
 <ty-icon name=\"plus\" size=\"md\"></ty-icon>
 <ty-icon name=\"trash\" size=\"lg\"></ty-icon>
 <ty-icon name=\"settings\" size=\"xl\"></ty-icon>")]]
@@ -97,7 +97,7 @@
        [:p.ty-text--.text-xs.mt-1 "xl"]]]
 
      (code-block
-       "<ty-icon name=\"star\" size=\"xs\"></ty-icon>
+      "<ty-icon name=\"star\" size=\"xs\"></ty-icon>
 <ty-icon name=\"star\" size=\"sm\"></ty-icon>
 <ty-icon name=\"star\" size=\"md\"></ty-icon>
 <ty-icon name=\"star\" size=\"lg\"></ty-icon>
@@ -119,7 +119,7 @@
                                    :size "md"}]]
 
      (code-block
-       "<ty-icon class=\"ty-text-primary\" name=\"info\" size=\"md\"></ty-icon>
+      "<ty-icon class=\"ty-text-primary\" name=\"info\" size=\"md\"></ty-icon>
 <ty-icon class=\"ty-text-success\" name=\"check-circle\" size=\"md\"></ty-icon>
 <ty-icon class=\"ty-text-warning\" name=\"alert-triangle\" size=\"md\"></ty-icon>
 <ty-icon class=\"ty-text-danger\" name=\"x-circle\" size=\"md\"></ty-icon>
@@ -153,7 +153,7 @@
        [:p.ty-text--.text-xs.mt-2 "Fast Pulse"]]]
 
      (code-block
-       "<ty-icon name=\"loader\" spin=\"true\"></ty-icon>
+      "<ty-icon name=\"loader\" spin=\"true\"></ty-icon>
 <ty-icon name=\"heart\" pulse=\"true\"></ty-icon>
 <ty-icon name=\"refresh-cw\" spin=\"true\" tempo=\"slow\"></ty-icon>
 <ty-icon name=\"zap\" pulse=\"true\" tempo=\"fast\"></ty-icon>")]
@@ -188,7 +188,7 @@
                   :size "sm"}]]]
 
      (code-block
-       "<ty-button flavor=\"primary\">
+      "<ty-button flavor=\"primary\">
   <ty-icon slot=\"start\" name=\"save\" size=\"sm\"></ty-icon>
   Save
 </ty-button>
@@ -215,7 +215,7 @@
        "Preferred method: Import icon libraries and selectively register needed icons."]
 
       (code-block
-        "(ns my.app.icons
+       "(ns my.app.icons
   (:require [ty.lucide :as lucide]
             [ty.heroicons.outline :as heroicons]
             [ty.fav6.brands :as brands]
@@ -233,7 +233,7 @@
 ;; Usage in components
 [:ty-icon {:name \"home\"}]
 [:ty-icon {:name \"check\" :class \"ty-text-success\"}]"
-        "clojure")]
+       "clojure")]
 
      ;; React/Next.js
      [:div
@@ -245,7 +245,7 @@
        "Preferred method: Create a separate icons.js file for centralized registration."]
 
       (code-block
-        "// public/icons.js - Icon registration script
+       "// public/icons.js - Icon registration script
 (function() {
   'use strict';
   
@@ -258,8 +258,8 @@
   };
   
   function initializeIcons() {
-    if (window.ty && window.ty.icons) {
-      window.ty.icons.add(ICON_DEFINITIONS);
+    if (window.tyIcons) {
+      window.tyIcons.register(ICON_DEFINITIONS);
       console.log('✅ Icons registered successfully');
     } else {
       setTimeout(initializeIcons, 50); // Retry
@@ -280,7 +280,7 @@
 // Usage in JSX
 <ty-icon name=\"home\"></ty-icon>
 <ty-icon name=\"user\" size=\"md\"></ty-icon>"
-        "javascript")]
+       "javascript")]
 
      ;; HTMX/Flask/Django  
      [:div
@@ -292,30 +292,20 @@
        "Preferred method: Use sprite sheets for optimal performance with server-rendered content."]
 
       (code-block
-        "<!-- Method 1: SVG Sprite Sheet (Recommended) -->
-<!DOCTYPE html>
+       "<!DOCTYPE html>
 <html>
 <head>
   <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js\"></script>
+  <script src=\"/static/js/icons.js\"></script>
 </head>
 <body>
-  <!-- Hidden sprite sheet -->
-  <svg style=\"display:none\">
-    <symbol id=\"icon-check\" viewBox=\"0 0 24 24\">
-      <path d=\"M20 6 9 17l-5-5\"/>
-    </symbol>
-    <symbol id=\"icon-home\" viewBox=\"0 0 24 24\">
-      <path d=\"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>
-    </symbol>
-    <symbol id=\"icon-user\" viewBox=\"0 0 24 24\">
-      <path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/>
-      <circle cx=\"12\" cy=\"7\" r=\"4\"/>
-    </symbol>
-  </svg>
-
+  <!-- /static/js/icons.js -->
   <script>
-    // Auto-register all sprites with 'icon-' prefix
-    ty.icons.autoRegisterSprites('symbol[id^=\"icon-\"]');
+    window.tyIcons.register({
+      'check': '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"><path d=\"M20 6 9 17l-5-5\"/></svg>',
+      'home': '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"><path d=\"m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg>',
+      'user': '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\"><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>'
+    });
   </script>
 
   <!-- Clean usage -->
@@ -326,17 +316,15 @@
   <div hx-get=\"/status\" hx-target=\"#status\">
     <ty-icon name=\"user\"></ty-icon> Check Status
   </div>
+  
+  <!-- Flask template example -->
+  {% for user in users %}
+  <div hx-get=\"/user/{{ user.id }}\" hx-target=\"#details\">
+    <ty-icon name=\"user\"></ty-icon> {{ user.name }}
+  </div>
+  {% endfor %}
 </body>
-</html>
-
-<!-- Method 2: Dynamic Registration -->
-<script>
-ty.icons.register('*', async (name) => {
-  const response = await fetch(`/api/icons/${name}.svg`);
-  if (response.ok) return response.text();
-  return null;
-}, 'loader');
-</script>")]
+</html>")]
 
      ;; Vanilla JavaScript
      [:div
@@ -348,47 +336,27 @@ ty.icons.register('*', async (name) => {
        "Preferred method: Direct registration or URL-based loading for maximum flexibility."]
 
       (code-block
-        "// Method 1: Direct Registration
-ty.icons.registerIcons({
+       "// Direct Registration with window.tyIcons
+window.tyIcons.register({
   'home': '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">...</svg>',
   'user': '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">...</svg>',
   'settings': '<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">...</svg>'
 });
 
-// Method 2: URL-based Loading
-ty.icons.registerSources({
-  'logo': '/assets/logo.svg',
-  'banner': '/assets/banner.svg',
-  'custom-icon': '/assets/custom.svg'
-});
-
-// Method 3: Pattern-based Dynamic Loading
-ty.icons.register('lucide-*', async (name) => {
-  const iconName = name.replace('lucide-', '');
-  const response = await fetch(`https://cdn.jsdelivr.net/npm/lucide@latest/icons/${iconName}.svg`);
-  if (response.ok) return response.text();
-  return null;
-}, 'loader');
-
-// Method 4: CDN Integration
-ty.icons.configure({
-  basePath: 'https://cdn.example.com/icons/v2/',
-  fallback: 'not-found'
-});
-
-ty.icons.register('material-*', (name) => {
-  const iconName = name.replace('material-', '');
-  return `${ty.icons.config.basePath}/material/${iconName}.svg`;
-}, 'source');
-
-// Usage
+// Usage in HTML
 document.body.innerHTML = `
   <ty-icon name=\"home\"></ty-icon>
-  <ty-icon name=\"logo\"></ty-icon>
-  <ty-icon name=\"lucide-star\"></ty-icon>
-  <ty-icon name=\"material-favorite\"></ty-icon>
-`;"
-        "javascript")]]]
+  <ty-icon name=\"user\" size=\"lg\"></ty-icon>
+  <ty-icon name=\"settings\" class=\"ty-text-primary\"></ty-icon>
+`;
+
+// Check if icons are registered
+console.log(window.tyIcons.has('home')); // true
+console.log(window.tyIcons.list()); // ['home', 'user', 'settings']
+
+// Get SVG string
+const homeSvg = window.tyIcons.get('home');"
+       "javascript")]]]
 
 ;; JavaScript API Reference
    [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -397,33 +365,24 @@ document.body.innerHTML = `
      [:div
       [:h3.text-lg.font-medium.ty-text+.mb-3 "Registration Methods"]
       (code-block
-        "// Icon registry (in-memory, fastest)
-ty.icons.registerIcons({name: 'svg-string', ...})
-
-// Sprite registry (DOM references, fast)  
-ty.icons.registerSprites({name: '#symbol-id', ...})
-
-// Source registry (URLs, cached after first load)
-ty.icons.registerSources({name: '/path/to/icon.svg', ...})
-
-// Loader registry (dynamic/async resolution)
-ty.icons.registerLoaders({
-  'pattern-*': (name) => fetch(`/api/icons/${name}`).then(r => r.text())
+       "// Register icons using window.tyIcons API
+window.tyIcons.register({
+  'home': '<svg>...</svg>',
+  'user': '<svg>...</svg>',
+  'check': '<svg>...</svg>'
 })
 
-// Auto-register sprites from DOM
-ty.icons.autoRegisterSprites('symbol[id^=\"icon-\"]')"
-        "javascript")]
+// Check if icon exists
+window.tyIcons.has('home') // true
 
-     [:div
-      [:h3.text-lg.font-medium.ty-text+.mb-3 "Legacy Compatibility"]
-      (code-block
-        "// Legacy methods (still supported)
-ty.icons.add({name: 'svg-string', ...})  // Same as registerIcons
-ty.icons.set({name: 'svg-string', ...})  // Replace all icons"
-        "javascript")]]]
+// Get icon SVG string
+window.tyIcons.get('home') // '<svg>...</svg>'
 
-   ;; Best Practices
+// List all registered icons
+window.tyIcons.list() // ['home', 'user', 'check']"
+       "javascript")]]]
+
+;; Best Practices
    [:div.ty-elevated.rounded-lg.p-6
     [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Best Practices"]
     [:div.space-y-4

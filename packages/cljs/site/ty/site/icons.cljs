@@ -1,14 +1,15 @@
 (ns ty.site.icons
-  "Icon registration for the site application using window.ty.icons.register API"
+  "Icon registration for the site application using window.tyIcons.register API"
   (:require [ty.fav6.brands :as fav6-brands]
             [ty.lucide :as lucide]))
 
-
 (defn register-icons!
   "Register all icons used in the site with the TypeScript icon registry.
-   Uses window.ty.icons.register for proper dead code elimination via Closure compiler."
+   Uses window.tyIcons.register for proper dead code elimination via Closure compiler."
   []
-  (when-let [register js/window.ty.icons.register]
+  (if-let [register (some->
+                      js/window.tyIcons
+                      (.-register))]
     (when (ifn? register)
       (register #js {;; Core navigation icons
                      "home" lucide/home
@@ -141,4 +142,8 @@
                      "wrench" lucide/wrench
                      "bug" lucide/bug
                      "git-branch" lucide/git-branch
-                     "users" lucide/users}))))
+                     "users" lucide/users}))
+    (do
+      (.warn js/console "⚠️ window.tyIcons not available yet, retrying in 50ms...")
+      (.log js/console "window.tyIcons:" js/window.tyIcons)
+      (js/setTimeout register-icons! 50))))

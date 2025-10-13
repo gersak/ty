@@ -1,7 +1,7 @@
 (ns ty.site.views.contact-form
   (:require
-    [clojure.string :as str]
-    [ty.site.state :as state]))
+   [clojure.string :as str]
+   [ty.site.state :as state]))
 
 ;; Validation functions
 (defn validate-email [email]
@@ -63,16 +63,16 @@
 ;; Form submission
 (defn simulate-form-submission [_]
   (js/Promise.
-    (fn [resolve reject]
-      (js/setTimeout
-        (fn []
+   (fn [resolve reject]
+     (js/setTimeout
+      (fn []
         ;; Simulate 90% success rate
-          (if (> (js/Math.random) 0.1)
-            (resolve {:success true
-                      :message "Thank you! Your message has been sent successfully. We'll get back to you within 24 hours."})
-            (reject {:success false
-                     :message "Sorry, there was an error sending your message. Please try again or contact us directly at support@example.com."})))
-        2000))))
+        (if (> (js/Math.random) 0.1)
+          (resolve {:success true
+                    :message "Thank you! Your message has been sent successfully. We'll get back to you within 24 hours."})
+          (reject {:success false
+                   :message "Sorry, there was an error sending your message. Please try again or contact us directly at support@example.com."})))
+      2000))))
 
 (defn handle-form-submit [event]
   (.preventDefault event)
@@ -446,10 +446,9 @@
                        :size "lg"
                        :class "ty-text-info"}]
             [:div.flex-1
-             [:ty-input {:type "checkbox"
-                         :label "I would like to receive updates and marketing communications about your products and services."
-                         :checked (:newsletter-consent form-data)
-                         :on {:change (handle-checkbox-change :newsletter-consent)}}]
+             [:ty-checkbox {:label "I would like to receive updates and marketing communications about your products and services."
+                            :checked (:newsletter-consent form-data)
+                            :on {:change (handle-checkbox-change :newsletter-consent)}}]
              [:p.text-xs.ty-text-.mt-2 "You can unsubscribe at any time. See our privacy policy for details."]]]]]
 
          ;; Right Column - Message (1/4)

@@ -37,8 +37,9 @@ export function ensureStyles(
     }
   }
   
-  // Attach to shadow root
-  shadowRoot.adoptedStyleSheets = [sheet]
+  // Append to existing stylesheets instead of replacing
+  const existing = shadowRoot.adoptedStyleSheets || []
+  shadowRoot.adoptedStyleSheets = [...existing, sheet]
 }
 
 /**

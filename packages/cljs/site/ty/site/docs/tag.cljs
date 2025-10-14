@@ -317,7 +317,7 @@
 </ty-multiselect>")]]
 
    ;; Common Use Cases
-   [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Common Use Cases"]
+   [:h2.text-2xl.font-semibold.ty-text++.my-6 "Common Use Cases"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
     ;; Status Indicators
@@ -382,7 +382,7 @@
                 :size "sm"} "Free Shipping"]]]]
 
    ;; JavaScript API
-   [:div.ty-elevated.rounded-lg.p-6.mb-8
+   [:div.ty-elevated.rounded-lg.p-6.my-8
     [:h2.text-2xl.font-semibold.ty-text++.mb-4 "JavaScript API"]
     [:p.ty-text-.mb-4 "Programmatic interaction with ty-tag:"]
 
@@ -483,7 +483,7 @@ newTag.addEventListener('ty-tag-dismiss', (e) => {
         [:span "Don't overuse different flavors - maintain visual hierarchy"]]]]]]
 
    ;; Accessibility
-   [:div.ty-content.rounded-lg.p-6.mb-8
+   [:div.ty-content.rounded-lg.p-6.my-8
     [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Accessibility"]
     [:p.ty-text.mb-4
      "ty-tag includes built-in accessibility features:"]

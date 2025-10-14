@@ -446,9 +446,9 @@
                        :size "lg"
                        :class "ty-text-info"}]
             [:div.flex-1
-             [:ty-checkbox {:label "I would like to receive updates and marketing communications about your products and services."
-                            :checked (:newsletter-consent form-data)
-                            :on {:change (handle-checkbox-change :newsletter-consent)}}]
+             [:ty-checkbox {:checked (:newsletter-consent form-data)
+                            :on {:change (handle-checkbox-change :newsletter-consent)}}
+              "I would like to receive updates and marketing communications about your products and services."]
              [:p.text-xs.ty-text-.mt-2 "You can unsubscribe at any time. See our privacy policy for details."]]]]]
 
          ;; Right Column - Message (1/4)

@@ -34,6 +34,7 @@ export class TyButton extends HTMLElement implements TyButtonElement {
   private _accent = false
   private _plain = false
   private _action = false
+  private _wide = false
 
   constructor() {
     super()
@@ -43,13 +44,12 @@ export class TyButton extends HTMLElement implements TyButtonElement {
     ensureStyles(shadow, { css: buttonStyles, id: 'ty-button' })
 
     this.render()
-    this.setupEventHandlers()
   }
 
   static get observedAttributes(): string[] {
     return [
       'flavor', 'size', 'disabled', 'type',
-      'pill', 'outlined', 'filled', 'accent', 'plain', 'action',
+      'pill', 'outlined', 'filled', 'accent', 'plain', 'action', 'wide',
       'name', 'value'
     ]
   }
@@ -85,6 +85,9 @@ export class TyButton extends HTMLElement implements TyButtonElement {
         break
       case 'action':
         this._action = newValue !== null
+        break
+      case 'wide':
+        this._wide = newValue !== null
         break
     }
     this.render()
@@ -254,6 +257,22 @@ export class TyButton extends HTMLElement implements TyButtonElement {
     }
   }
 
+  get wide(): boolean {
+    return this._wide
+  }
+
+  set wide(value: boolean) {
+    if (this._wide !== value) {
+      this._wide = value
+      if (value) {
+        this.setAttribute('wide', 'true')
+      } else {
+        this.removeAttribute('wide')
+      }
+      // No need to render() - wide is handled by CSS attribute selector
+    }
+  }
+
   // Form association
   get form(): HTMLFormElement | null {
     return this._internals.form
@@ -329,54 +348,45 @@ export class TyButton extends HTMLElement implements TyButtonElement {
       button.className = classes
     } else {
       // Create new button structure (matches ClojureScript structure)
-      shadow.innerHTML = `
-        <button 
-          class="${classes}"
-          type="${this._type}"
-          ?disabled="${this._disabled}"
-          part="button"
-        >
-          <slot name="start" class="start"></slot>
-          <slot></slot>
-          <slot name="end" class="end"></slot>
-        </button>
-      `
-    }
-  }
+      button = document.createElement('button')
+      button.disabled = this._disabled
+      button.className = classes
 
-  private setupEventHandlers(): void {
-    const shadow = this.shadowRoot!
+      const startSlot = document.createElement('slot')
+      startSlot.name = 'start'
+      startSlot.className = 'start'
 
-    // Use event delegation on shadow root
-    shadow.addEventListener('click', (e: Event) => {
-      if (this._disabled) {
-        e.preventDefault()
+      const defaultSlot = document.createElement('slot')
+
+      const endSlot = document.createElement('slot')
+      endSlot.name = 'end'
+      endSlot.className = 'end'
+
+      button.appendChild(startSlot)
+      button.appendChild(defaultSlot)
+      button.appendChild(endSlot)
+
+      // Attach click handler to inner button (matches ClojureScript pattern)
+      button.addEventListener('click', (e: Event) => {
+        if (this._disabled) return
+
+        // CRITICAL: Stop propagation on inner button click (matches ClojureScript)
         e.stopPropagation()
-        return
-      }
 
-      const button = shadow.querySelector('button')
-      if (!button || !button.contains(e.target as Node)) return
+        // Handle form action (submit/reset) first
+        this.handleFormAction()
 
-      // Handle form action first (like ClojureScript)
-      this.handleFormAction()
+        // Dispatch NEW 'click' event on host element (not 'ty-click'!)
+        // This matches ClojureScript exactly
+        this.dispatchEvent(new CustomEvent('click', {
+          bubbles: true,
+          composed: true,
+          detail: { originalEvent: e }
+        }))
+      })
 
-      // Dispatch custom event for framework integration
-      // NOTE: We don't stop propagation on the native event!
-      // This allows onclick, onmousedown, etc. handlers to work naturally
-      this.dispatchEvent(new CustomEvent('ty-click', {
-        bubbles: true,
-        composed: true,
-        detail: {
-          flavor: this._flavor,
-          disabled: this._disabled,
-          originalEvent: e
-        }
-      }))
-
-      // Native events (click, mousedown, mouseup, pointerdown, etc.) 
-      // automatically bubble with composed:true, so they work on the host!
-    })
+      shadow.appendChild(button)
+    }
   }
 }
 

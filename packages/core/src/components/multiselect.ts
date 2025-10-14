@@ -58,7 +58,7 @@ import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
 function isMobileDevice(): boolean {
   const width = window.innerWidth
   const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-  
+
   return width <= 768 || (width <= 1024 && hasTouch)
 }
 
@@ -213,22 +213,37 @@ export class TyMultiselect extends HTMLElement {
   }
 
   connectedCallback(): void {
-    this.initializeState()
+    console.log('🔌 connectedCallback')
+    
+    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
+    // Check if value was set directly on the instance before our getter/setter was available
+    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+    if (instanceValue && instanceValue.value !== undefined) {
+      this._value = instanceValue.value
+      // Clean up the instance property so our getter/setter works
+      delete this.value
+    }
+    
+    // Initialize after element is connected and children are available
+    requestAnimationFrame(() => {
+      console.log('⏰ requestAnimationFrame callback')
+      this.initializeState()
+    })
   }
 
   disconnectedCallback(): void {
     // Clean up document-level listeners
     const outsideClickHandler = (this as any).tyOutsideClickHandler
     const keyboardHandler = (this as any).tyKeyboardHandler
-    
+
     if (outsideClickHandler) {
       document.removeEventListener('click', outsideClickHandler)
-      ;(this as any).tyOutsideClickHandler = null
+        ; (this as any).tyOutsideClickHandler = null
     }
-    
+
     if (keyboardHandler) {
       document.removeEventListener('keydown', keyboardHandler)
-      ;(this as any).tyKeyboardHandler = null
+        ; (this as any).tyKeyboardHandler = null
     }
 
     // Clear any pending debounce timer
@@ -249,10 +264,9 @@ export class TyMultiselect extends HTMLElement {
 
     switch (name) {
       case 'value':
-        this._value = newValue || ''
-        this._state.selectedValues = this.parseValue(newValue)
-        this.syncSelectedTags()
-        this.updateFormValue()
+        const newValueStr = newValue || ''
+        const selectedValues = this.parseValue(newValueStr)
+        this.updateComponentValue(selectedValues, false)
         break
       case 'name':
         this._name = newValue || ''
@@ -343,12 +357,28 @@ export class TyMultiselect extends HTMLElement {
 
   /**
    * Initialize component state from attributes
+   * Reads from both property and attribute (like ClojureScript version)
    */
   private initializeState(): void {
-    if (this._value) {
-      this._state.selectedValues = this.parseValue(this._value)
-      this.syncSelectedTags()
-      this.updateFormValue()
+    // Check for Reagent-style property (set directly on instance)
+    const instanceValue = (this as any).value
+    const hasInstanceProperty = typeof instanceValue === 'string' && instanceValue !== ''
+    
+    console.log('🚀 initializeState')
+    console.log('  instanceValue:', instanceValue)
+    console.log('  hasInstanceProperty:', hasInstanceProperty)
+    console.log('  getAttribute("value"):', this.getAttribute('value'))
+    
+    // Read initial value from property or attribute
+    const initialValue = hasInstanceProperty ? instanceValue : this.getAttribute('value') || ''
+    console.log('  initialValue:', initialValue)
+    
+    if (initialValue) {
+      const selectedValues = this.parseValue(initialValue)
+      console.log('  parsed selectedValues:', selectedValues)
+      this.updateComponentValue(selectedValues, false)
+    } else {
+      console.log('  ⚠️  No initial value!')
     }
   }
 
@@ -358,7 +388,7 @@ export class TyMultiselect extends HTMLElement {
    */
   private updateFormValue(): void {
     const selectedValues = this._state.selectedValues
-    
+
     if (this._name && selectedValues.length > 0) {
       // Multiple values with same name using FormData (HTMX standard)
       const formData = new FormData()
@@ -377,15 +407,11 @@ export class TyMultiselect extends HTMLElement {
   // ============================================================================
 
   /**
-   * Get all ty-tag elements from the component (not from shadow root)
-   * Only ty-tag elements are supported for multiselect options
+   * Get all ty-tag elements from the component (ALL slots)
    */
   private getTagElements(): HTMLElement[] {
-    const slot = this.shadowRoot!.querySelector('slot:not([name])') as HTMLSlotElement
-    if (!slot) return []
-
-    const assigned = slot.assignedElements ? slot.assignedElements() : []
-    return (assigned as HTMLElement[]).filter(el => el.tagName === 'TY-TAG')
+    // Get ALL ty-tag children, regardless of slot assignment
+    return Array.from(this.querySelectorAll('ty-tag')) as HTMLElement[]
   }
 
   /**
@@ -395,7 +421,7 @@ export class TyMultiselect extends HTMLElement {
     // Get value from either property or attribute
     const value = (element as any).value || element.getAttribute('value') || element.textContent || ''
     const text = element.textContent || ''
-    
+
     return { value, text, element }
   }
 
@@ -405,13 +431,13 @@ export class TyMultiselect extends HTMLElement {
   private selectTag(tag: HTMLElement): void {
     // Set selected attribute
     tag.setAttribute('selected', '')
-    
+
     // Move to selected slot
     tag.setAttribute('slot', 'selected')
-    
+
     // Make dismissible
     tag.setAttribute('dismissible', 'true')
-    
+
     // Force re-slotting by removing and re-adding
     const parent = tag.parentNode
     if (parent) {
@@ -426,13 +452,13 @@ export class TyMultiselect extends HTMLElement {
   private deselectTag(tag: HTMLElement): void {
     // Remove selected attribute
     tag.removeAttribute('selected')
-    
+
     // Remove from selected slot
     tag.removeAttribute('slot')
-    
+
     // Remove dismissible
     tag.removeAttribute('dismissible')
-    
+
     // Force re-slotting by removing and re-adding
     const parent = tag.parentNode
     if (parent) {
@@ -442,7 +468,7 @@ export class TyMultiselect extends HTMLElement {
   }
 
   /**
-   * Get array of currently selected values from tags
+   * Get array of currently selected values from tags (ALWAYS reads from DOM)
    */
   private getSelectedValues(): string[] {
     return this.getTagElements()
@@ -457,7 +483,7 @@ export class TyMultiselect extends HTMLElement {
   private allTagsSelected(): boolean {
     const tags = this.getTagElements()
     if (tags.length === 0) return false
-    
+
     const selectedCount = tags.filter(tag => tag.hasAttribute('selected')).length
     return selectedCount === tags.length
   }
@@ -468,7 +494,7 @@ export class TyMultiselect extends HTMLElement {
   private updateComponentValue(): void {
     const selectedValues = this.getSelectedValues()
     const valueStr = selectedValues.join(',')
-    
+
     // Update both attribute and property for consistency
     this.setAttribute('value', valueStr)
     this._value = valueStr
@@ -476,25 +502,73 @@ export class TyMultiselect extends HTMLElement {
   }
 
   /**
-   * Sync tag selection states with current selectedValues state
+   * Sync tag selection states with desired values
    */
-  private syncSelectedTags(): void {
-    const selectedSet = new Set(this._state.selectedValues)
+  private syncSelectedTags(selectedValues: string[]): void {
+    const selectedSet = new Set(selectedValues)
     const tags = this.getTagElements()
     
+    console.log('🔄 syncSelectedTags')
+    console.log('  selectedValues:', selectedValues)
+    console.log('  tags found:', tags.length)
+
     tags.forEach(tag => {
       const tagValue = this.getTagData(tag).value
       const shouldBeSelected = selectedSet.has(tagValue)
       const isSelected = tag.hasAttribute('selected')
       
+      console.log(`  tag ${tagValue}: should=${shouldBeSelected}, is=${isSelected}`)
+
       if (shouldBeSelected && !isSelected) {
+        console.log(`    ✅ selecting ${tagValue}`)
         this.selectTag(tag)
-      } else if (!isSelected && isSelected) {
+      } else if (!shouldBeSelected && isSelected) {
+        console.log(`    ❌ deselecting ${tagValue}`)
         this.deselectTag(tag)
       }
     })
+  }
+
+  /**
+   * Central update function - synchronizes everything
+   * Like ClojureScript's update-component-state!
+   */
+  private updateComponentValue(newValues: string[], dispatchChange: boolean = false, action: ChangeAction = 'set', item: string | null = null): void {
+    const oldValues = this.getSelectedValues()
+    const valueStr = newValues.join(',')
     
-    this.updatePlaceholderVisibility()
+    console.log('🔄 updateComponentValue called')
+    console.log('  oldValues:', oldValues)
+    console.log('  newValues:', newValues)
+    console.log('  dispatchChange:', dispatchChange)
+    
+    // Only update if changed
+    if (JSON.stringify(newValues.sort()) !== JSON.stringify(oldValues.sort())) {
+      console.log('  ✅ Values changed, updating...')
+      
+      // 1. Sync tags with new values
+      this.syncSelectedTags(newValues)
+      
+      // 2. Update value attribute
+      this.setAttribute('value', valueStr)
+      
+      // 3. Update form value (FormData for HTMX)
+      this.updateFormValue()
+      
+      // 4. Update placeholder visibility
+      this.updatePlaceholderVisibility()
+      
+      // 5. Dispatch change event if requested
+      if (dispatchChange) {
+        this.dispatchChangeEvent({
+          values: newValues,
+          action,
+          item
+        })
+      }
+    } else {
+      console.log('  ⏭️  Values unchanged, skipping')
+    }
   }
 
   // ============================================================================
@@ -508,7 +582,7 @@ export class TyMultiselect extends HTMLElement {
     const shadow = this.shadowRoot!
     const stub = shadow.querySelector('.multiselect-stub') as HTMLElement
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
-    
+
     if (!stub || !dialog) return
 
     const stubRect = stub.getBoundingClientRect()
@@ -573,7 +647,7 @@ export class TyMultiselect extends HTMLElement {
     // Generate consistent unique ID for scroll locking
     const dropdownId = `multiselect-${this.id || 'anon'}-${getElementHash(this)}`
     this._scrollLockId = dropdownId
-    
+
     // Lock scroll
     lockScroll(dropdownId)
 
@@ -660,7 +734,7 @@ export class TyMultiselect extends HTMLElement {
     // Generate consistent unique ID for scroll locking
     const dropdownId = `multiselect-${this.id || 'anon'}-${getElementHash(this)}`
     this._scrollLockId = dropdownId
-    
+
     // Lock scroll
     lockScroll(dropdownId)
 
@@ -746,7 +820,7 @@ export class TyMultiselect extends HTMLElement {
 
     const target = e.target as Node
     const shadow = this.shadowRoot!
-    
+
     // Check if click is inside .dropdown-wrapper
     const wrapper = shadow.querySelector('.dropdown-wrapper')
     const clickedInside = wrapper && wrapper.contains(target)
@@ -758,64 +832,25 @@ export class TyMultiselect extends HTMLElement {
 
   private handleTagClick(e: Event): void {
     const target = e.target as HTMLElement
-    
-    // Find the ty-tag element (might be clicking on child element)
-    const tag = target.tagName === 'TY-TAG' 
-      ? target 
+
+    // Find the ty-tag element
+    const tag = target.tagName === 'TY-TAG'
+      ? target
       : target.closest('ty-tag') as HTMLElement | null
-    
-    if (!tag) return
-    
-    // Don't handle disabled tags
-    if (tag.hasAttribute('disabled')) return
-    
+
+    if (!tag || tag.hasAttribute('disabled')) return
+    if (tag.hasAttribute('selected')) return // Already selected
+
     e.preventDefault()
     e.stopPropagation()
-    
+
     const tagValue = this.getTagData(tag).value
-    const currentlySelected = tag.hasAttribute('selected')
-    
-    // Get current selected values from DOM (fresh read like ClojureScript version)
     const currentValues = this.getSelectedValues()
-    let newValues: string[]
-    let action: ChangeAction
-    
-    if (currentlySelected) {
-      // Deselect - remove from current values
-      newValues = currentValues.filter(v => v !== tagValue)
-      action = 'remove'
-    } else {
-      // Select - add to current values (avoid duplicates)
-      if (!currentValues.includes(tagValue)) {
-        newValues = [...currentValues, tagValue]
-      } else {
-        newValues = currentValues
-      }
-      action = 'add'
-    }
-    
-    // Update state
-    this._state.selectedValues = newValues
-    
-    // Update value attribute/property
-    const valueStr = newValues.join(',')
-    this.setAttribute('value', valueStr)
-    this._value = valueStr
-    
-    // Sync tags to match new state (like ClojureScript version)
-    this.syncSelectedTags()
-    
-    // Update form value
-    this.updateFormValue()
-    
-    // Dispatch change event
-    const detail: ChangeEventDetail = {
-      values: newValues,
-      action,
-      item: tagValue
-    }
-    this.dispatchChangeEvent(detail)
-    
+    const newValues = [...currentValues, tagValue]
+
+    // Use central update function with change event
+    this.updateComponentValue(newValues, true, 'add', tagValue)
+
     // Auto-close if all tags selected
     if (this.allTagsSelected()) {
       if (this._state.mode === 'desktop') {
@@ -824,54 +859,28 @@ export class TyMultiselect extends HTMLElement {
         this.closeMobileModal()
       }
     }
-    
-    this.updatePlaceholderVisibility()
   }
 
   private handleTagDismiss(e: Event): void {
     e.preventDefault()
     e.stopPropagation()
-    
+
     const customEvent = e as CustomEvent
     const tag = customEvent.detail?.target as HTMLElement
-    
     if (!tag) return
-    
+
     const tagValue = this.getTagData(tag).value
-    
-    // Get current selected values from DOM (fresh read like ClojureScript version)
     const currentValues = this.getSelectedValues()
     const newValues = currentValues.filter(v => v !== tagValue)
-    
-    // Update state
-    this._state.selectedValues = newValues
-    
-    // Update value attribute/property
-    const valueStr = newValues.join(',')
-    this.setAttribute('value', valueStr)
-    this._value = valueStr
-    
-    // Sync tags to match new state
-    this.syncSelectedTags()
-    
-    // Update form value
-    this.updateFormValue()
-    
-    // Dispatch change event
-    const detail: ChangeEventDetail = {
-      values: newValues,
-      action: 'remove',
-      item: tagValue
-    }
-    this.dispatchChangeEvent(detail)
-    
-    this.updatePlaceholderVisibility()
+
+    // Use central update function with change event
+    this.updateComponentValue(newValues, true, 'remove', tagValue)
   }
 
   private handleSearchInput(e: Event): void {
     const target = e.target as HTMLInputElement
     const query = target.value
-    
+
     // Update search state
     this._state.search = query
 
@@ -879,14 +888,14 @@ export class TyMultiselect extends HTMLElement {
       // Internal search: filter tags locally
       const allTags = this.getTagElements().map(el => this.getTagData(el))
       const filtered = this.filterTags(allTags, query)
-      
+
       // Update state
       this._state.filteredTags = filtered
       this._state.highlightedIndex = -1
-      
+
       // Update visibility
       this.updateTagVisibility(filtered, allTags)
-      
+
       // Clear highlights
       this.clearHighlights(allTags)
     } else {
@@ -900,7 +909,7 @@ export class TyMultiselect extends HTMLElement {
 
     // Reset search
     this._state.search = ''
-    
+
     const shadow = this.shadowRoot!
     const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
     if (searchInput) {
@@ -924,8 +933,8 @@ export class TyMultiselect extends HTMLElement {
     // Only handle navigation keys when dropdown is open and either:
     // 1. Event comes from search input, OR
     // 2. Event comes from document but search input is not focused
-    const shouldHandle = target === searchInput || 
-                        document.activeElement !== searchInput
+    const shouldHandle = target === searchInput ||
+      document.activeElement !== searchInput
 
     if (!shouldHandle) return
 
@@ -955,7 +964,7 @@ export class TyMultiselect extends HTMLElement {
         e.preventDefault()
         e.stopPropagation()
         let newIndexUp: number
-        
+
         if (tagsCount === 0) {
           newIndexUp = -1
         } else if (currentHighlightedIndex === -1) {
@@ -968,7 +977,7 @@ export class TyMultiselect extends HTMLElement {
           // Move up one
           newIndexUp = currentHighlightedIndex - 1
         }
-        
+
         this._state.highlightedIndex = newIndexUp
         this.highlightTag(filteredTags, newIndexUp)
         break
@@ -977,7 +986,7 @@ export class TyMultiselect extends HTMLElement {
         e.preventDefault()
         e.stopPropagation()
         let newIndexDown: number
-        
+
         if (tagsCount === 0) {
           newIndexDown = -1
         } else if (currentHighlightedIndex === -1) {
@@ -990,7 +999,7 @@ export class TyMultiselect extends HTMLElement {
           // Move down one
           newIndexDown = currentHighlightedIndex + 1
         }
-        
+
         this._state.highlightedIndex = newIndexDown
         this.highlightTag(filteredTags, newIndexDown)
         break
@@ -1010,7 +1019,7 @@ export class TyMultiselect extends HTMLElement {
     }
 
     const searchLower = query.toLowerCase()
-    return tags.filter(({ text }) => 
+    return tags.filter(({ text }) =>
       text.toLowerCase().includes(searchLower)
     )
   }
@@ -1020,7 +1029,7 @@ export class TyMultiselect extends HTMLElement {
    */
   private updateTagVisibility(filteredTags: TagData[], allTags: TagData[]): void {
     const visibleValues = new Set(filteredTags.map(tag => tag.value))
-    
+
     allTags.forEach(({ value, element }) => {
       if (visibleValues.has(value)) {
         element.removeAttribute('hidden')
@@ -1044,11 +1053,11 @@ export class TyMultiselect extends HTMLElement {
    */
   private highlightTag(tags: TagData[], index: number): void {
     this.clearHighlights(tags)
-    
+
     if (index >= 0 && index < tags.length) {
       const { element } = tags[index]
       element.setAttribute('highlighted', '')
-      
+
       // Scroll into view
       element.scrollIntoView({
         behavior: 'smooth',
@@ -1105,26 +1114,26 @@ export class TyMultiselect extends HTMLElement {
   private determineChangeAction(oldValues: string[], newValues: string[]): { action: ChangeAction; item: string | null } {
     const oldSet = new Set(oldValues)
     const newSet = new Set(newValues)
-    
+
     // Find differences
     const added = [...newSet].filter(v => !oldSet.has(v))
     const removed = [...oldSet].filter(v => !newSet.has(v))
-    
+
     // Single addition
     if (added.length === 1 && removed.length === 0) {
       return { action: 'add', item: added[0] }
     }
-    
+
     // Single removal
     if (removed.length === 1 && added.length === 0) {
       return { action: 'remove', item: removed[0] }
     }
-    
+
     // Clear all
     if (oldValues.length > 0 && newValues.length === 0) {
       return { action: 'clear', item: null }
     }
-    
+
     // Multiple changes or complete replacement
     return { action: 'set', item: null }
   }
@@ -1168,7 +1177,7 @@ export class TyMultiselect extends HTMLElement {
     if (searchInput) {
       this._searchInputHandler = this.handleSearchInput.bind(this)
       this._searchBlurHandler = this.handleSearchBlur.bind(this)
-      
+
       searchInput.addEventListener('input', this._searchInputHandler)
       searchInput.addEventListener('blur', this._searchBlurHandler)
     }
@@ -1176,10 +1185,10 @@ export class TyMultiselect extends HTMLElement {
     // Setup document-level event listeners
     this._outsideClickHandler = this.handleOutsideClick.bind(this)
     this._keyboardHandler = this.handleKeyboard.bind(this)
-    
+
     document.addEventListener('click', this._outsideClickHandler)
     document.addEventListener('keydown', this._keyboardHandler)
-    
+
     // Listen for ty-tag-dismiss events from selected tags
     this._tagDismissHandler = this.handleTagDismiss.bind(this)
     this.addEventListener('ty-tag-dismiss', this._tagDismissHandler)
@@ -1199,7 +1208,7 @@ export class TyMultiselect extends HTMLElement {
    */
   private renderDesktop(): void {
     const shadow = this.shadowRoot!
-    
+
     // Only set innerHTML and setup listeners if container doesn't exist
     if (!shadow.querySelector('.multiselect-container')) {
       const stubClasses = this.buildStubClasses()
@@ -1249,9 +1258,12 @@ export class TyMultiselect extends HTMLElement {
 
       // Setup event listeners ONCE
       this.setupEventListeners()
+
+      // Don't initialize here - will be done in connectedCallback
+      // after properties are set and children are available
     }
 
-    // Always update placeholder visibility
+    // Always update placeholder visibility on re-render
     this.updatePlaceholderVisibility()
   }
 
@@ -1260,7 +1272,7 @@ export class TyMultiselect extends HTMLElement {
    */
   private renderMobile(): void {
     const shadow = this.shadowRoot!
-    
+
     // Only set innerHTML and setup listeners if container doesn't exist
     if (!shadow.querySelector('.multiselect-container')) {
       const stubClasses = this.buildStubClasses()
@@ -1374,7 +1386,7 @@ export class TyMultiselect extends HTMLElement {
     // Document keyboard handler for Escape key
     const keyboardHandler = (e: KeyboardEvent) => this.handleMobileKeyboard(e)
     document.addEventListener('keydown', keyboardHandler)
-    ;(this as any).tyKeyboardHandler = keyboardHandler
+      ; (this as any).tyKeyboardHandler = keyboardHandler
   }
 
   /**
@@ -1426,10 +1438,10 @@ export class TyMultiselect extends HTMLElement {
     const shadow = this.shadowRoot!
     const placeholder = shadow.querySelector('.dropdown-placeholder')
     const stub = shadow.querySelector('.multiselect-stub')
-    
+
     if (placeholder && stub) {
       const hasSelection = this._state.selectedValues.length > 0
-      
+
       if (hasSelection) {
         placeholder.classList.add('hidden')
         stub.classList.add('has-selection')
@@ -1445,17 +1457,13 @@ export class TyMultiselect extends HTMLElement {
   // ============================================================================
 
   get value(): string {
-    return this._state.selectedValues.join(',')
+    // Always read from DOM - tags with 'selected' attribute are source of truth
+    return this.getSelectedValues().join(',')
   }
 
   set value(val: string) {
-    if (this._value !== val) {
-      this._value = val
-      this._state.selectedValues = this.parseValue(val)
-      this.setAttribute('value', val)
-      this.syncSelectedTags()
-      this.updateFormValue()
-    }
+    const selectedValues = this.parseValue(val)
+    this.updateComponentValue(selectedValues, false)
   }
 
   get name(): string {

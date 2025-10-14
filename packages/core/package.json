@@ -167,6 +167,8 @@
     "dev": "vite",
     "build:lib": "tsc --project tsconfig.lib.json",
     "build:cdn": "vite build --config vite.config.cdn.ts && cp css/ty.css dist/ty.css",
+    "build:dev": "vite build --config vite.config.dev.ts && cp css/ty.css dist/ty.css",
+    "build:dev:watch": "vite build --config vite.config.dev.ts --watch",
     "build": "npm run build:lib && npm run build:cdn",
     "prepublishOnly": "npm run build",
     "preview": "vite preview"

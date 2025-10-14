@@ -510,52 +510,49 @@
      [:div
       [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
       [:div.space-y-4
-       [:ty-checkbox {:label "Product updates and announcements"
-                      :name "notifications-updates"
+       [:ty-checkbox {:name "notifications-updates"
                       :value "enabled"
-                      :checked true}]
-       [:ty-checkbox {:label "Weekly newsletter"
-                      :name "notifications-newsletter"
+                      :checked ""}
+        "Product updates and announcements"]
+       [:ty-checkbox {:name "notifications-newsletter"
                       :value "enabled"
-                      :checked true}]
-       [:ty-checkbox {:label "Marketing promotions and offers"
-                      :name "notifications-marketing"
-                      :value "enabled"
-                      :checked false}]]]
+                      :checked ""}
+        "Weekly newsletter"]
+       [:ty-checkbox {:name "notifications-marketing"
+                      :value "enabled"}
+        "Marketing promotions and offers"]]]
 
      ;; Privacy & Security Preferences
      [:div
       [:h4.text-sm.font-medium.ty-text.mb-4 "Privacy & Security"]
       [:div.space-y-4
-       [:ty-checkbox {:label "Enable two-factor authentication"
-                      :name "privacy-2fa"
+       [:ty-checkbox {:name "privacy-2fa"
+                      :value "enabled"}
+        "Enable two-factor authentication"]
+       [:ty-checkbox {:name "privacy-profile-public"
                       :value "enabled"
-                      :checked false}]
-       [:ty-checkbox {:label "Make profile public"
-                      :name "privacy-profile-public"
+                      :checked ""}
+        "Make profile public"]
+       [:ty-checkbox {:name "privacy-allow-contact"
                       :value "enabled"
-                      :checked true}]
-       [:ty-checkbox {:label "Allow contact from other users"
-                      :name "privacy-allow-contact"
-                      :value "enabled"
-                      :checked true}]]]
+                      :checked ""}
+        "Allow contact from other users"]]]
 
      ;; Account Preferences
      [:div
       [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
       [:div.space-y-3
-       [:ty-checkbox {:label "Auto-save drafts"
-                      :name "account-autosave"
+       [:ty-checkbox {:name "account-autosave"
                       :value "enabled"
-                      :checked true}]
-       [:ty-checkbox {:label "Show online status"
-                      :name "account-online-status"
+                      :checked ""}
+        "Auto-save drafts"]
+       [:ty-checkbox {:name "account-online-status"
                       :value "enabled"
-                      :checked true}]
-       [:ty-checkbox {:label "Remember login for 30 days"
-                      :name "account-remember-login"
-                      :value "enabled"
-                      :checked false}]]]]]])
+                      :checked ""}
+        "Show online status"]
+       [:ty-checkbox {:name "account-remember-login"
+                      :value "enabled"}
+        "Remember login for 30 days"]]]]]])
 
 ;; ============================================================================
 ;; Form Actions

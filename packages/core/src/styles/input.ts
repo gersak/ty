@@ -11,6 +11,24 @@ export const inputStyles = `
   width: 100%;
 }
 
+:host([size="xl"]) {
+  font-size: 20px;
+}
+
+
+:host([size="xs"]) {
+  font-size: 12px;
+}
+
+
+:host([size="sm"]) {
+  font-size: 14px;
+}
+
+:host([size="lg"]) {
+  font-size: 18px;
+}
+
 .input-container {
   display: flex;
   flex-direction: column;
@@ -464,8 +482,18 @@ input:focus-visible {
 
 
 .checkbox-container.lg svg {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
+}
+
+.checkbox-container.xl svg {
+  width: 32px;
+  height: 32px;
+}
+
+
+.checkbox-container.xl svg {
+  font-size: 20px;
 }
 
 /* Adjust error message margin for LG */
@@ -473,11 +501,6 @@ input:focus-visible {
   margin-left: 56px;
 }
 
-
-.checkbox-container.xl svg {
-  width: 24px;
-  height: 24px;
-}
 
 /* Adjust error message margin for XL */
 .input-container.checkbox-layout .checkbox-container.xl~.error-message {

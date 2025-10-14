@@ -156,6 +156,16 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
   // ===== LIFECYCLE CALLBACKS =====
 
   connectedCallback(): void {
+    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
+    // Check if value was set directly on the instance before our getter/setter was available
+    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+    if (instanceValue && instanceValue.value !== undefined) {
+      this._value = instanceValue.value
+      this._state.value = instanceValue.value
+      // Clean up the instance property so our getter/setter works
+      delete this.value
+    }
+    
     // Initialize value from attribute if present
     const attrValue = this.getAttribute('value')
     if (attrValue !== null) {

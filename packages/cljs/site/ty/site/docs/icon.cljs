@@ -202,7 +202,7 @@
    [:div.ty-elevated.rounded-lg.p-6.mb-8
     [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Icon Registration"]
     [:p.ty-text-.mb-6
-     "Icons must be registered before use. The system supports multiple registration methods optimized for different technology stacks."]
+     "Icons must be registered before use. The system uses a unified window.tyIcons API across all technology stacks for consistency."]
 
     [:div.space-y-8
      ;; ClojureScript/Reagent
@@ -212,23 +212,37 @@
                   :size "sm"}]
        "ClojureScript / Reagent / Replicant / UIx"]
       [:p.ty-text-.text-sm.mb-4
-       "Preferred method: Import icon libraries and selectively register needed icons."]
+       "Import icon namespaces and register using the global window.tyIcons API for consistency with other platforms."]
 
       (code-block
        "(ns my.app.icons
   (:require [ty.lucide :as lucide]
             [ty.heroicons.outline :as heroicons]
-            [ty.fav6.brands :as brands]
-            [ty.icons :as icons]))
+            [ty.fav6.brands :as brands]))
 
-;; Register only the icons you need
-(icons/add! {\"home\" lucide/home
-             \"user\" lucide/user
-             \"check\" lucide/check
-             \"plus\" lucide/plus
-             \"settings\" lucide/settings
-             \"react\" brands/react
-             \"python\" brands/python})
+;; Register icons using window.tyIcons (JavaScript interop)
+(js/window.tyIcons.register
+  #js {:home lucide/home
+       :user lucide/user
+       :check lucide/check
+       :plus lucide/plus
+       :settings lucide/settings
+       :arrow-left heroicons/arrow-left
+       :arrow-right heroicons/arrow-right
+       :react brands/react
+       :python brands/python})
+
+;; Or convert ClojureScript map to JS object
+(js/window.tyIcons.register
+  (clj->js {:home lucide/home
+            :user lucide/user
+            :check lucide/check}))
+
+;; Check if icon is registered
+(js/window.tyIcons.has \"home\") ;; => true
+
+;; List all registered icons
+(js/window.tyIcons.list) ;; => #js [\"home\" \"user\" \"check\" ...]
 
 ;; Usage in components
 [:ty-icon {:name \"home\"}]
@@ -242,7 +256,7 @@
                   :size "sm"}]
        "React / Next.js / TypeScript"]
       [:p.ty-text-.text-sm.mb-4
-       "Preferred method: Create a separate icons.js file for centralized registration."]
+       "Create a separate icons.js file for centralized registration using the window.tyIcons API."]
 
       (code-block
        "// public/icons.js - Icon registration script
@@ -260,7 +274,7 @@
   function initializeIcons() {
     if (window.tyIcons) {
       window.tyIcons.register(ICON_DEFINITIONS);
-      console.log('✅ Icons registered successfully');
+      console.log('✅ Icons registered:', window.tyIcons.list().length);
     } else {
       setTimeout(initializeIcons, 50); // Retry
     }
@@ -289,7 +303,7 @@
                   :size "sm"}]
        "HTMX / Flask / Django / Server-Side"]
       [:p.ty-text-.text-sm.mb-4
-       "Preferred method: Use sprite sheets for optimal performance with server-rendered content."]
+       "Use window.tyIcons API for optimal performance with server-rendered content."]
 
       (code-block
        "<!DOCTYPE html>
@@ -333,7 +347,7 @@
                   :size "sm"}]
        "Vanilla JavaScript / Static Sites"]
       [:p.ty-text-.text-sm.mb-4
-       "Preferred method: Direct registration or URL-based loading for maximum flexibility."]
+       "Direct registration using window.tyIcons API for maximum flexibility."]
 
       (code-block
        "// Direct Registration with window.tyIcons
@@ -358,14 +372,14 @@ console.log(window.tyIcons.list()); // ['home', 'user', 'settings']
 const homeSvg = window.tyIcons.get('home');"
        "javascript")]]]
 
-;; JavaScript API Reference
+   ;; JavaScript API Reference
    [:div.ty-elevated.rounded-lg.p-6.mb-8
     [:h2.text-2xl.font-semibold.ty-text++.mb-6 "JavaScript API"]
     [:div.space-y-4
      [:div
-      [:h3.text-lg.font-medium.ty-text+.mb-3 "Registration Methods"]
+      [:h3.text-lg.font-medium.ty-text+.mb-3 "window.tyIcons Methods"]
       (code-block
-       "// Register icons using window.tyIcons API
+       "// Register icons (accepts plain object)
 window.tyIcons.register({
   'home': '<svg>...</svg>',
   'user': '<svg>...</svg>',
@@ -382,7 +396,7 @@ window.tyIcons.get('home') // '<svg>...</svg>'
 window.tyIcons.list() // ['home', 'user', 'check']"
        "javascript")]]]
 
-;; Best Practices
+   ;; Best Practices
    [:div.ty-elevated.rounded-lg.p-6
     [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Best Practices"]
     [:div.space-y-4
@@ -390,8 +404,8 @@ window.tyIcons.list() // ['home', 'user', 'check']"
       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
                                         :size "sm"}]
       [:div
-       [:p.ty-text+.font-medium "Choose the right registration method"]
-       [:p.ty-text-.text-sm "Use selective registration for ClojureScript, sprite sheets for HTMX, icon files for React"]]]
+       [:p.ty-text+.font-medium "Use consistent API across platforms"]
+       [:p.ty-text-.text-sm "window.tyIcons works the same in ClojureScript, React, HTMX, and vanilla JS"]]]
 
      [:div.flex.gap-3
       [:ty-icon.ty-text-success.mt-0.5 {:name "check"

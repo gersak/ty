@@ -212,6 +212,225 @@
 
 <ty-button flavor=\"success\" disabled>Success Disabled</ty-button>")]
 
+    ;; Wide Buttons
+    [:div.ty-content.rounded-lg.p-6
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Wide Buttons"]
+     [:p.ty-text-.text-sm.mb-4
+      "Wide buttons expand to take full available width. Perfect for mobile layouts, forms, and call-to-action sections."]
+
+     [:div.space-y-4
+      ;; Single wide button
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Single Wide Button"]
+       [:div.mb-3
+        [:ty-button {:wide true :flavor "primary"}
+         [:ty-icon {:slot "start" :name "log-in" :size "sm"}]
+         "Sign In"]]
+       (code-block "<ty-button wide=\"true\" flavor=\"primary\">
+  <ty-icon slot=\"start\" name=\"log-in\" size=\"sm\"></ty-icon>
+  Sign In
+</ty-button>")]
+
+      ;; Wide buttons in a grid
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Wide Buttons in Grid"]
+       [:div.grid.grid-cols-2.gap-3.mb-3
+        [:ty-button {:wide true :flavor "primary"}
+         [:ty-icon {:slot "start" :name "check" :size "sm"}]
+         "Confirm"]
+        [:ty-button {:wide true :flavor "secondary"}
+         [:ty-icon {:slot "start" :name "x" :size "sm"}]
+         "Cancel"]]
+       (code-block "<div class=\"grid grid-cols-2 gap-3\">
+  <ty-button wide=\"true\" flavor=\"primary\">
+    <ty-icon slot=\"start\" name=\"check\" size=\"sm\"></ty-icon>
+    Confirm
+  </ty-button>
+  <ty-button wide=\"true\" flavor=\"secondary\">
+    <ty-icon slot=\"start\" name=\"x\" size=\"sm\"></ty-icon>
+    Cancel
+  </ty-button>
+</div>")]
+
+      ;; Three wide buttons in a row
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Action Panel (Three Buttons)"]
+       [:div.grid.grid-cols-3.gap-2.mb-3
+        [:ty-button {:wide true :flavor "success"}
+         [:ty-icon {:slot "start" :name "download" :size "sm"}]
+         "Download"]
+        [:ty-button {:wide true :flavor "secondary"}
+         [:ty-icon {:slot "start" :name "share-2" :size "sm"}]
+         "Share"]
+        [:ty-button {:wide true :flavor "danger"}
+         [:ty-icon {:slot "start" :name "trash" :size "sm"}]
+         "Delete"]]
+       (code-block "<div class=\"grid grid-cols-3 gap-2\">
+  <ty-button wide=\"true\" flavor=\"success\">
+    <ty-icon slot=\"start\" name=\"download\" size=\"sm\"></ty-icon>
+    Download
+  </ty-button>
+  <ty-button wide=\"true\" flavor=\"secondary\">
+    <ty-icon slot=\"start\" name=\"share-2\" size=\"sm\"></ty-icon>
+    Share
+  </ty-button>
+  <ty-button wide=\"true\" flavor=\"danger\">
+    <ty-icon slot=\"start\" name=\"trash\" size=\"sm\"></ty-icon>
+    Delete
+  </ty-button>
+</div>")]
+
+      ;; Mobile form example
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Mobile Form Layout"]
+       [:div.max-w-sm.space-y-2.mb-3
+        [:ty-button {:wide true :flavor "primary" :size "lg"}
+         [:ty-icon {:slot "start" :name "log-in" :size "sm"}]
+         "Sign In with Email"]
+        [:ty-button {:wide true :flavor "secondary" :size "lg"}
+         [:ty-icon {:slot "start" :name "github" :size "sm"}]
+         "Sign In with GitHub"]
+        [:ty-button {:wide true :flavor "secondary" :size "lg"}
+         [:ty-icon {:slot "start" :name "mail" :size "sm"}]
+         "Sign In with Google"]]
+       (code-block "<div class=\"space-y-2\">
+  <ty-button wide=\"true\" flavor=\"primary\" size=\"lg\">
+    <ty-icon slot=\"start\" name=\"log-in\" size=\"sm\"></ty-icon>
+    Sign In with Email
+  </ty-button>
+  <ty-button wide=\"true\" flavor=\"secondary\" size=\"lg\">
+    <ty-icon slot=\"start\" name=\"github\" size=\"sm\"></ty-icon>
+    Sign In with GitHub
+  </ty-button>
+  <ty-button wide=\"true\" flavor=\"secondary\" size=\"lg\">
+    <ty-icon slot=\"start\" name=\"mail\" size=\"sm\"></ty-icon>
+    Sign In with Google
+  </ty-button>
+</div>")]]]
+
+    ;; Form Integration
+    [:div.ty-content.rounded-lg.p-6
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Form Integration"]
+     [:p.ty-text-.text-sm.mb-4
+      "ty-button fully supports HTML form integration with type, name, and value attributes. Default type is 'submit' like native HTML buttons."]
+
+     [:div.space-y-4
+      ;; Basic Form
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Basic Form with Submit"]
+       [:form.ty-elevated.rounded-lg.p-4.mb-3
+        {:on-submit (fn [e]
+                      (.preventDefault e)
+                      (let [form-data (js/FormData. (.-target e))
+                            data (js/Object.fromEntries form-data)]
+                        (js/alert (str "Form submitted!\n" (js/JSON.stringify data nil 2)))))}
+        [:div.space-y-3
+         [:div
+          [:label.block.ty-text+.text-sm.mb-1 {:for "username"} "Username"]
+          [:input#username.ty-input.ty-border.border.rounded.px-3.py-2.w-full
+           {:name "username" :required true :placeholder "Enter username"}]]
+         [:div
+          [:label.block.ty-text+.text-sm.mb-1 {:for "email"} "Email"]
+          [:input#email.ty-input.ty-border.border.rounded.px-3.py-2.w-full
+           {:name "email" :type "email" :required true :placeholder "Enter email"}]]
+         [:div.flex.gap-2
+          [:ty-button {:type "submit" :flavor "primary"}
+           [:ty-icon {:slot "start" :name "check" :size "sm"}]
+           "Submit"]
+          [:ty-button {:type "reset" :flavor "secondary"}
+           [:ty-icon {:slot "start" :name "x" :size "sm"}]
+           "Reset"]
+          [:ty-button {:type "button" :flavor "secondary"}
+           "Cancel"]]]]
+       (code-block "<form>
+  <input name=\"username\" required>
+  <input name=\"email\" type=\"email\" required>
+  
+  <!-- type=\"submit\" (default) - submits the form -->
+  <ty-button type=\"submit\" flavor=\"primary\">Submit</ty-button>
+  
+  <!-- type=\"reset\" - clears the form -->
+  <ty-button type=\"reset\" flavor=\"secondary\">Reset</ty-button>
+  
+  <!-- type=\"button\" - does nothing, for custom JS -->
+  <ty-button type=\"button\" flavor=\"secondary\">Cancel</ty-button>
+</form>")]
+
+      ;; Form with Named Submit Buttons
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Multiple Submit Buttons with Name/Value"]
+       [:form.ty-elevated.rounded-lg.p-4.mb-3
+        {:on-submit (fn [e]
+                      (.preventDefault e)
+                      (let [form-data (js/FormData. (.-target e))
+                            data (js/Object.fromEntries form-data)]
+                        (js/alert (str "Form submitted with action: " (or (.-action data) "none") "\n\nData:\n" (js/JSON.stringify data nil 2)))))}
+        [:div.space-y-3
+         [:div
+          [:label.block.ty-text+.text-sm.mb-1 {:for "comment"} "Your Comment"]
+          [:textarea#comment.ty-input.ty-border.border.rounded.px-3.py-2.w-full
+           {:name "comment" :rows 3 :required true :placeholder "Enter your comment"}]]
+         [:div.ty-elevated.rounded.p-3.bg-opacity-50
+          [:p.ty-text-.text-sm.mb-3 "Multiple submit buttons can have different name/value pairs:"]
+          [:div.flex.flex-wrap.gap-2
+           [:ty-button {:type "submit" :name "action" :value "save_draft" :flavor "secondary"}
+            [:ty-icon {:slot "start" :name "save" :size "sm"}]
+            "Save Draft"]
+           [:ty-button {:type "submit" :name "action" :value "publish" :flavor "primary"}
+            [:ty-icon {:slot "start" :name "send" :size "sm"}]
+            "Publish"]
+           [:ty-button {:type "submit" :name "action" :value "schedule" :flavor "secondary"}
+            [:ty-icon {:slot "start" :name "clock" :size "sm"}]
+            "Schedule"]]]]]
+       (code-block "<form>
+  <textarea name=\"comment\" required></textarea>
+  
+  <!-- Each button can have different name/value -->
+  <!-- Only the clicked button's value is submitted -->
+  <ty-button type=\"submit\" name=\"action\" value=\"save_draft\">
+    Save Draft
+  </ty-button>
+  
+  <ty-button type=\"submit\" name=\"action\" value=\"publish\">
+    Publish
+  </ty-button>
+  
+  <ty-button type=\"submit\" name=\"action\" value=\"schedule\">
+    Schedule
+  </ty-button>
+</form>")]
+
+      ;; Form Type Comparison
+      [:div
+       [:h4.text-sm.font-medium.ty-text.mb-2 "Button Types Comparison"]
+       [:div.ty-elevated.rounded.p-4.mb-3
+        [:table.w-full.text-sm
+         [:thead
+          [:tr.border-b.ty-border
+           [:th.text-left.px-2.py-2.ty-text+ "Type"]
+           [:th.text-left.px-2.py-2.ty-text+ "Behavior"]
+           [:th.text-left.px-2.py-2.ty-text+ "Use Case"]]]
+         [:tbody
+          [:tr.border-b.ty-border-
+           [:td.px-2.py-2.ty-text.font-mono "submit"]
+           [:td.px-2.py-2.ty-text- "Submits the form"]
+           [:td.px-2.py-2.ty-text- "Primary action, save data"]]
+          [:tr.border-b.ty-border-
+           [:td.px-2.py-2.ty-text.font-mono "reset"]
+           [:td.px-2.py-2.ty-text- "Clears all fields"]
+           [:td.px-2.py-2.ty-text- "Reset form to initial state"]]
+          [:tr
+           [:td.px-2.py-2.ty-text.font-mono "button"]
+           [:td.px-2.py-2.ty-text- "Does nothing"]
+           [:td.px-2.py-2.ty-text- "Custom JavaScript actions"]]]]]
+       (code-block "<!-- Default behavior (submit) -->
+<ty-button>Submit Form</ty-button>
+
+<!-- Explicitly set type -->
+<ty-button type=\"submit\">Submit</ty-button>
+<ty-button type=\"reset\">Clear</ty-button>
+<ty-button type=\"button\">Custom Action</ty-button>")]]]
+
     ;; Loading State Patterns
     [:div.ty-content.rounded-lg.p-6
      [:h3.text-lg.font-medium.ty-text.mb-4 "Loading State Patterns"]

@@ -85,13 +85,13 @@
                     :isWeekend (:weekend day-context)
                     :isOtherMonth (:other-month day-context)}]
     (doseq [event (map
-                    (fn [type]
-                      (js/CustomEvent.
-                        type
-                        #js {:detail detail
-                             :bubbles true
-                             :cancelable true}))
-                    ["day-click" "day-select"])]
+                   (fn [type]
+                     (js/CustomEvent.
+                      type
+                      #js {:detail detail
+                           :bubbles true
+                           :cancelable true}))
+                   ["day-click" "day-select"])]
       (.dispatchEvent el event))))
 
 (defn render-day-cell
@@ -147,10 +147,15 @@
         today (js/Date.)
 
         ;; Direct property access with intelligent defaults
-        display-year (or (.-displayYear el) (.getFullYear today))
-        display-month (or (.-displayMonth el) (inc (.getMonth today)))
+        ;; IMPORTANT: Coerce to int to ensure proper integer type
+        display-year (int (or (.-displayYear el) (.getFullYear today)))
+        display-month (int (or (.-displayMonth el) (inc (.getMonth today))))
         value (.-value el)
         locale (get-locale-with-fallback el)
+
+        ;; DEBUG: Log the values
+        _ (js/console.log "calendar-month render! - display-year:" display-year "type:" (type display-year))
+        _ (js/console.log "calendar-month render! - display-month:" display-month "type:" (type display-month))
 
         ;; Generate days using date utils
         days (date/calendar-month-days display-year display-month)
@@ -219,10 +224,11 @@
            :locale nil} ; Context integration
    :connected (fn [^js el]
                 ;; Set defaults with context fallbacks
+                ;; IMPORTANT: Coerce to int to ensure proper integer type
                 (when-not (.-displayMonth el)
-                  (set! (.-displayMonth el) (inc (.getMonth (js/Date.)))))
+                  (set! (.-displayMonth el) (int (inc (.getMonth (js/Date.))))))
                 (when-not (.-displayYear el)
-                  (set! (.-displayYear el) (.getFullYear (js/Date.))))
+                  (set! (.-displayYear el) (int (.getFullYear (js/Date.)))))
                 (when-not (.-locale el)
                   (set! (.-locale el) (or (value/get-attribute el "locale") context/*locale* "en-US")))
                 (render! el))

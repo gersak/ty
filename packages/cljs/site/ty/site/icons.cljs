@@ -39,9 +39,11 @@
 
                     ;; Form and interaction icons
                      "check" lucide/check
+                     "check-square" lucide/check-square
                      "plus" lucide/plus
                      "minus" lucide/minus
                      "edit" lucide/edit
+                     "edit-3" lucide/edit-3
                      "save" lucide/save
                      "upload" lucide/upload
                      "download" lucide/download
@@ -137,6 +139,7 @@
                     ;; Additional icons for why page
                      "swords" lucide/swords
 
+                     "inputs" lucide/notebook-pen
                     ;; Development and WIP icons
                      "hammer" lucide/hammer
                      "wrench" lucide/wrench
@@ -145,5 +148,4 @@
                      "users" lucide/users}))
     (do
       (.warn js/console "⚠️ window.tyIcons not available yet, retrying in 50ms...")
-      (.log js/console "window.tyIcons:" js/window.tyIcons)
-      (js/setTimeout register-icons! 50))))
+      (js/setTimeout register-icons! 10))))

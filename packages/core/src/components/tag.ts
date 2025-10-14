@@ -28,7 +28,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
   private _clickable = false
   private _dismissible = false
   private _disabled = false
-  
+
   // Event listener cleanup function
   private _cleanup: (() => void) | null = null
 
@@ -43,12 +43,21 @@ export class TyTag extends HTMLElement implements TyTagElement {
 
   static get observedAttributes(): string[] {
     return [
-      'size', 'flavor', 'pill', 'not-pill', 'clickable', 
+      'size', 'flavor', 'pill', 'not-pill', 'clickable',
       'dismissible', 'disabled', 'value', 'selected'
     ]
   }
 
   connectedCallback(): void {
+    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
+    // Check if value was set directly on the instance before our getter/setter was available
+    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+    if (instanceValue && instanceValue.value !== undefined) {
+      this._value = instanceValue.value
+      // Clean up the instance property so our getter/setter works
+      delete this.value
+    }
+    
     this.render()
     this.setupEventListeners()
   }
@@ -107,7 +116,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
   private validateFlavor(flavor: string | null): Flavor {
     const validFlavors: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
     const normalized = (flavor || 'neutral') as Flavor
-    
+
     if (!validFlavors.includes(normalized)) {
       console.warn(
         `[ty-tag] Invalid flavor '${flavor}'. Using 'neutral'. ` +
@@ -115,13 +124,13 @@ export class TyTag extends HTMLElement implements TyTagElement {
       )
       return 'neutral'
     }
-    
+
     return normalized
   }
 
   // Public API - Getters/Setters
   // NOTE: All setters trigger re-render to support property changes from frameworks like React
-  
+
   get flavor(): Flavor {
     return this._flavor
   }
@@ -257,6 +266,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
     this.dispatchEvent(new CustomEvent(eventType, {
       detail,
       bubbles: true,
+      composed: true, // Allow event to cross shadow DOM boundaries
       cancelable: true
     }))
   }
@@ -303,7 +313,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
           this.dispatchTagEvent('ty-tag-click', { target: this })
         }
         break
-      
+
       // DELETE or BACKSPACE - trigger dismiss if dismissible
       case 8:  // Backspace
       case 46: // Delete

@@ -14,6 +14,7 @@
 import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { inputStyles } from '../styles/input.js'
+import { parseBoolean, isBooleanString } from '../utils/parse-boolean.js'
 
 /**
  * Checkbox unchecked icon (Font Awesome)
@@ -136,21 +137,35 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue) return
 
+    // Debug logging
+    if (name === 'checked' || name === 'value') {
+      console.log(`ty-checkbox: ${name}="${newValue}" → parsing as boolean:`, parseBoolean(newValue))
+    }
+
     switch (name) {
       case 'checked':
-        this._checked = newValue !== null
+        // Parse checked as boolean intelligently
+        this._checked = parseBoolean(newValue)
+        console.log(`ty-checkbox: _checked set to`, this._checked)
         break
       case 'value':
-        this._value = newValue || 'on'
+        // If value looks like a boolean, use it to set checked state (framework friendly)
+        // Otherwise, use it as the form submission value
+        if (isBooleanString(newValue)) {
+          this._checked = parseBoolean(newValue)
+          console.log(`ty-checkbox: value is boolean-like, _checked set to`, this._checked)
+        } else {
+          this._value = newValue || 'on'
+        }
         break
       case 'name':
         this._name = newValue || ''
         break
       case 'disabled':
-        this._disabled = newValue !== null
+        this._disabled = parseBoolean(newValue)
         break
       case 'required':
-        this._required = newValue !== null
+        this._required = parseBoolean(newValue)
         break
       case 'error':
         this._error = newValue || ''
@@ -174,7 +189,16 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
    * Initialize checkbox state from attributes
    */
   private initializeCheckboxState(): void {
-    const initialChecked = this.hasAttribute('checked') || this._checked
+    // Check both checked attribute and value attribute for initial state
+    const checkedAttr = this.getAttribute('checked')
+    const valueAttr = this.getAttribute('value')
+
+    // Priority: explicit checked attribute, then value if it's boolean-like
+    let initialChecked = parseBoolean(checkedAttr)
+    if (!initialChecked && isBooleanString(valueAttr)) {
+      initialChecked = parseBoolean(valueAttr)
+    }
+
     this._checked = initialChecked
 
     // Set form value: string when checked, null when unchecked
@@ -413,11 +437,11 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
     } else {
       // Update existing structure
       const checkboxEl = container.querySelector('.checkbox-container') as HTMLElement
-      
+
       if (checkboxEl) {
         // Update classes
         checkboxEl.className = 'checkbox-container ' + classes
-        
+
         // Update accessibility attributes
         checkboxEl.tabIndex = this._disabled ? -1 : 0
         checkboxEl.setAttribute('aria-checked', String(this._checked))

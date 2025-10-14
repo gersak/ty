@@ -7,6 +7,7 @@ export { TyTag } from './components/tag.js'
 export { TyOption } from './components/option.js'
 export { TyInput } from './components/input.js'
 export { TyCheckbox } from './components/checkbox.js'
+export { TyCopy } from './components/copy.js'
 export { TyTextarea } from './components/textarea.js'
 export { TyTooltip } from './components/tooltip.js'
 export { TyPopup } from './components/popup.js'
@@ -21,8 +22,8 @@ export { TyCalendar } from './components/calendar.js'
 export { TyDatePicker } from './components/date-picker.js'
 
 // Types
-export type { 
-  Flavor, 
+export type {
+  Flavor,
   Size,
   InputType,
   IconSize,
@@ -36,6 +37,7 @@ export type {
 } from './types/common.js'
 
 export type { TyCheckboxElement } from './components/checkbox.js'
+export type { TyCopyElement } from './components/copy.js'
 export type { TyTextareaElement } from './components/textarea.js'
 export type { TooltipFlavor, TooltipAttributes } from './components/tooltip.js'
 export type { PopupAttributes } from './components/popup.js'
@@ -49,9 +51,9 @@ export type { DatePickerChangeDetail } from './components/date-picker.js'
 export type { DayContext } from './utils/calendar-utils.js'
 
 // Utilities
-export { 
-  lockScroll, 
-  unlockScroll, 
+export {
+  lockScroll,
+  unlockScroll,
   forceUnlockAll,
   isLocked,
   isLockedBy,
@@ -61,10 +63,10 @@ export {
   disableDebug as disableScrollLockDebug
 } from './utils/scroll-lock.js'
 
-export type { 
-  Placement, 
-  PositionResult, 
-  CleanupFn 
+export type {
+  Placement,
+  PositionResult,
+  CleanupFn
 } from './utils/positioning.js'
 
 // Icons

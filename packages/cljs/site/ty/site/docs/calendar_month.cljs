@@ -1,18 +1,27 @@
 (ns ty.site.docs.calendar-month
   "Documentation for ty-calendar-month component"
   (:require
-    [cljs-bean.core :refer [->clj]]
-    [clojure.string :as str]
-    [ty.i18n :as i18n]
-    [ty.site.docs.common
-     :refer [code-block
-             attribute-table
-             event-table]])
+   [cljs-bean.core :refer [->clj]]
+   [clojure.string :as str]
+   [ty.i18n :as i18n]
+   [ty.site.docs.common
+    :refer [code-block
+            attribute-table
+            event-table]])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Custom styles for documentation examples  
 (defstyles availability-styles "ty/site/docs/calendar-month-availability.css")
 (defstyles custom-classes-styles "ty/site/docs/calendar-month-custom-classes.css")
+
+(defn ensure-display-values!
+  "IMPORTANT: Initialize displayMonth and displayYear before setting custom functions.
+   Setting dayContentFn or dayClassesFn triggers render, which needs valid integers."
+  [^js el]
+  (when-not (.-displayMonth el)
+    (set! (.-displayMonth el) (int (inc (.getMonth (js/Date.))))))
+  (when-not (.-displayYear el)
+    (set! (.-displayYear el) (int (.getFullYear (js/Date.))))))
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -31,54 +40,54 @@
      [:h3.text-lg.font-medium.ty-text+.mb-4 "Properties"]
      [:p.text-sm.ty-text-.mb-4 "All properties are directly accessible as JavaScript properties. Changes trigger automatic re-rendering."]
      (attribute-table
-       [{:name "displayMonth"
-         :type "number"
-         :default "Current month"
-         :description "Month to display (1-12)"}
-        {:name "displayYear"
-         :type "number"
-         :default "Current year"
-         :description "Year to display"}
-        {:name "value"
-         :type "number"
-         :default "null"
-         :description "Selected date as timestamp (milliseconds)"}
-        {:name "locale"
-         :type "string"
-         :default "Context locale or \"en-US\""
-         :description "Locale for internationalization"}
-        {:name "width"
-         :type "string"
-         :default "\"fit-content\""
-         :description "Component width (any CSS value)"}
-        {:name "minWidth"
-         :type "string"
-         :default "\"280px\""
-         :description "Minimum width constraint"}
-        {:name "maxWidth"
-         :type "string"
-         :default "\"none\""
-         :description "Maximum width constraint"}
-        {:name "dayContentFn"
-         :type "function"
-         :default "Shows day number"
-         :description "Custom day content renderer function"}
-        {:name "dayClassesFn"
-         :type "function"
-         :default "Basic classes"
-         :description "Custom CSS classes function"}
-        {:name "customCSS"
-         :type "CSSStyleSheet"
-         :default "null"
-         :description "Custom stylesheet injection"}])]
+      [{:name "displayMonth"
+        :type "number"
+        :default "Current month"
+        :description "Month to display (1-12)"}
+       {:name "displayYear"
+        :type "number"
+        :default "Current year"
+        :description "Year to display"}
+       {:name "value"
+        :type "number"
+        :default "null"
+        :description "Selected date as timestamp (milliseconds)"}
+       {:name "locale"
+        :type "string"
+        :default "Context locale or \"en-US\""
+        :description "Locale for internationalization"}
+       {:name "width"
+        :type "string"
+        :default "\"fit-content\""
+        :description "Component width (any CSS value)"}
+       {:name "minWidth"
+        :type "string"
+        :default "\"280px\""
+        :description "Minimum width constraint"}
+       {:name "maxWidth"
+        :type "string"
+        :default "\"none\""
+        :description "Maximum width constraint"}
+       {:name "dayContentFn"
+        :type "function"
+        :default "Shows day number"
+        :description "Custom day content renderer function"}
+       {:name "dayClassesFn"
+        :type "function"
+        :default "Basic classes"
+        :description "Custom CSS classes function"}
+       {:name "customCSS"
+        :type "CSSStyleSheet"
+        :default "null"
+        :description "Custom stylesheet injection"}])]
 
     ;; Events
     [:div.mb-8
      [:h3.text-lg.font-medium.ty-text+.mb-4 "Events"]
      (event-table
-       [{:name "day-click"
-         :payload "DayContext object"
-         :when-fired "When a day cell is clicked"}])]
+      [{:name "day-click"
+        :payload "DayContext object"
+        :when-fired "When a day cell is clicked"}])]
 
     ;; Day Context Structure
     [:div

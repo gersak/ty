@@ -18,6 +18,7 @@
 import type { Flavor, Size, InputType, TyInputElement } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { inputStyles } from '../styles/input.js'
+import { parseBoolean } from '../utils/parse-boolean.js'
 import {
   formatNumber,
   parseNumericValue,
@@ -111,7 +112,6 @@ export class TyInput extends HTMLElement implements TyInputElement {
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: inputStyles, id: 'ty-input' })
 
-    this.render()
   }
 
   static get observedAttributes(): string[] {
@@ -124,11 +124,20 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   connectedCallback(): void {
+    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
+    // Check if value was set directly on the instance before our getter/setter was available
+    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+    if (instanceValue && instanceValue.value !== undefined) {
+      this._value = instanceValue.value
+      // Clean up the instance property so our getter/setter works
+      delete this.value
+    }
+    
     // Initialize shadow value from initial value
     this.initializeShadowValue()
     this.render()
     this.setupEventListeners()
-    
+
     // Setup locale observer to watch for ancestor lang changes
     this._localeObserver = observeLocaleChanges(this, () => {
       this.render()
@@ -138,13 +147,13 @@ export class TyInput extends HTMLElement implements TyInputElement {
   disconnectedCallback(): void {
     // Clean up event listeners
     this.removeEventListeners()
-    
+
     // Cleanup locale observer
     if (this._localeObserver) {
       this._localeObserver()
       this._localeObserver = undefined
     }
-    
+
     // Clear any pending debounce timers
     if (this._inputDebounceTimer !== null) {
       clearTimeout(this._inputDebounceTimer)
@@ -178,10 +187,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
         this._label = newValue || ''
         break
       case 'disabled':
-        this._disabled = newValue !== null
+        this._disabled = parseBoolean(newValue)
         break
       case 'required':
-        this._required = newValue !== null
+        this._required = parseBoolean(newValue)
         break
       case 'error':
         this._error = newValue || ''
@@ -333,10 +342,12 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
   get value(): string {
     // Return shadow value as string
+    console.log('Getting input value: ');
     return this._shadowValue !== null ? String(this._shadowValue) : ''
   }
 
   set value(val: string) {
+    console.log('Setting input value: ', val)
     if (this._value !== val) {
       this._value = val
       this._shadowValue = this.parseShadowValue(val)
@@ -616,7 +627,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
     if (!inputEl || !wrapperEl) return
 
     // Create and store handler references for cleanup
-    
+
     // Input event - update shadow value and form (with debounce support)
     this._inputHandler = (e: Event) => {
       // Stop native event from propagating - only our custom event should bubble
@@ -750,12 +761,15 @@ export class TyInput extends HTMLElement implements TyInputElement {
   /**
    * Render the input component with wrapper and slots
    * Phase C: Uses getDisplayValue() for formatted output
+   * 
+   * BUG FIX: This method now properly handles dynamic label creation
    */
   private render(): void {
+
     const shadow = this.shadowRoot!
     const existingInput = shadow.querySelector('input')
     const existingWrapper = shadow.querySelector('.input-wrapper')
-    const existingLabel = shadow.querySelector('label')
+    const existingLabel = shadow.querySelector('.input-label')
     const existingError = shadow.querySelector('.error-message')
     const classes = this.buildClassList()
 
@@ -769,6 +783,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
     // If input exists, just update properties (like ClojureScript does)
     if (existingInput && existingWrapper) {
+
       existingInput.type = inputType
       existingInput.value = displayValue
       existingInput.placeholder = this._placeholder
@@ -793,14 +808,28 @@ export class TyInput extends HTMLElement implements TyInputElement {
         existingInput.removeAttribute('required')
       }
 
-      // Update label
-      if (existingLabel) {
-        if (this._label) {
+      // ===== BUG FIX: Dynamic label creation =====
+      // Update or CREATE label if needed
+      if (this._label) {
+        if (existingLabel) {
+          // Label exists, just update it
           existingLabel.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
           existingLabel.style.display = 'flex'
         } else {
-          existingLabel.style.display = 'none'
+          // Label doesn't exist but we need one - CREATE IT!
+          const labelEl = document.createElement('label')
+          labelEl.className = 'input-label'
+          labelEl.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
+
+          // Insert label BEFORE the input-wrapper
+          const container = shadow.querySelector('.input-container')
+          if (container) {
+            container.insertBefore(labelEl, existingWrapper)
+          }
         }
+      } else if (existingLabel) {
+        // No label text, hide existing label
+        existingLabel.style.display = 'none'
       }
 
       // Update error message
@@ -817,6 +846,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
         existingError.remove()
       }
     } else {
+
       // Create initial structure with wrapper and slots
       const labelHtml = this._label ? `
           <label class="input-label">

@@ -47,6 +47,15 @@ export class TyOption extends HTMLElement implements TyOptionElement {
   }
 
   connectedCallback(): void {
+    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
+    // Check if value was set directly on the instance before our getter/setter was available
+    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+    if (instanceValue && instanceValue.value !== undefined) {
+      this._value = instanceValue.value
+      // Clean up the instance property so our getter/setter works
+      delete this.value
+    }
+    
     this.render()
   }
 

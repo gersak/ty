@@ -1,28 +1,30 @@
 (ns ty.site.docs
   "Documentation system for ty components - provides data and views"
   (:require
-   [clojure.string :as str]
-   [ty.router :as router]
-   [ty.site.docs.button :as button-docs]
-   [ty.site.docs.calendar :as calendar-docs]
-   [ty.site.docs.calendar-month :as calendar-month-docs]
-   [ty.site.docs.common :as common]
-   [ty.site.docs.date-picker :as date-picker-docs]
-   [ty.site.docs.dropdown :as dropdown-docs]
-   [ty.site.docs.icon :as icon-docs]
-   [ty.site.docs.input :as input-docs]
-   [ty.site.docs.modal :as modal-docs]
-   [ty.site.docs.multiselect :as multiselect-docs]
-   [ty.site.docs.popup :as popup-docs]
-   [ty.site.docs.react :as react-docs]
-   [ty.site.docs.replicant :as replicant-docs]
-   [ty.site.docs.tabs :as tabs-docs]
-   [ty.site.docs.tag :as tag-docs]
-   [ty.site.docs.textarea :as textarea-docs]
-   [ty.site.docs.tooltip :as tooltip-docs]
+    [clojure.string :as str]
+    [ty.router :as router]
+    [ty.site.docs.button :as button-docs]
+    [ty.site.docs.calendar :as calendar-docs]
+    [ty.site.docs.calendar-month :as calendar-month-docs]
+    [ty.site.docs.checkbox :as checkbox-docs]
+    [ty.site.docs.common :as common]
+    [ty.site.docs.copy-field :as copy-field-docs]
+    [ty.site.docs.date-picker :as date-picker-docs]
+    [ty.site.docs.dropdown :as dropdown-docs]
+    [ty.site.docs.icon :as icon-docs]
+    [ty.site.docs.input-field :as input-field-docs]
+    [ty.site.docs.modal :as modal-docs]
+    [ty.site.docs.multiselect :as multiselect-docs]
+    [ty.site.docs.popup :as popup-docs]
+    [ty.site.docs.react :as react-docs]
+    [ty.site.docs.replicant :as replicant-docs]
+    [ty.site.docs.tabs :as tabs-docs]
+    [ty.site.docs.tag :as tag-docs]
+    [ty.site.docs.textarea :as textarea-docs]
+    [ty.site.docs.tooltip :as tooltip-docs]
     ;; Import component doc namespaces
-   [ty.site.views.getting-started :as getting-started]
-   [ty.site.views.ty-styles :as ty-styles]))
+    [ty.site.views.getting-started :as getting-started]
+    [ty.site.views.ty-styles :as ty-styles]))
 
 (def docs-components
   [{:id :ty.site/docs}
@@ -56,11 +58,26 @@
     :icon "star"
     :view icon-docs/view
     :name "Icon"}
-   {:id :ty.site.docs/input
-    :segment "input"
-    :icon "type"
-    :view input-docs/view
-    :name "Input"}
+   {:id :ty.site.docs/inputs
+    :segment "inputs"
+    :icon "inputs"
+    :name "Inputs"
+    :view (fn [] (router/navigate! :ty.site.docs/input-field) nil)
+    :children [{:id :ty.site.docs/input-field
+                :segment "input-field"
+                :icon "edit-3"
+                :view input-field-docs/view
+                :name "Input Field"}
+               {:id :ty.site.docs/checkbox
+                :segment "checkbox"
+                :icon "check-square"
+                :view checkbox-docs/view
+                :name "Checkbox"}
+               {:id :ty.site.docs/copy-field
+                :segment "copy-field"
+                :icon "copy"
+                :view copy-field-docs/view
+                :name "Copy Field"}]}
    {:id :ty.site.docs/modal
     :segment "modal"
     :icon "layout"
@@ -123,15 +140,15 @@
     :name "JS React"
     :icon "react"
     :view #(common/guide-placeholder-view
-            "JavaScript React Integration"
-            "Learn how to integrate Ty web components with JavaScript React applications.")}
+             "JavaScript React Integration"
+             "Learn how to integrate Ty web components with JavaScript React applications.")}
    {:id :ty.site.docs/htmx
     :segment "htmx"
     :name "HTMX"
     :icon "server"
     :view #(common/guide-placeholder-view
-            "HTMX Integration"
-            "Discover how to use Ty components with HTMX for dynamic server-side applications.")}])
+             "HTMX Integration"
+             "Discover how to use Ty components with HTMX for dynamic server-side applications.")}])
 
 ;; Define routes with views from separate namespaces
 

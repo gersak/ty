@@ -112,12 +112,16 @@
     ;; Only scroll to top if target component doesn't have hash
     (nil? (:hash target-component))))
 
-(defn nav-item [{:keys [route-id label icon]}]
+(defn nav-item
+  "Render a single navigation item (can be parent or child)"
+  [{:keys [route-id label icon indented?]}]
   (let [active? (router/rendered? route-id true)]
     [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
-     {:class (if active?
-               ["ty-bg-primary-" "ty-text-primary++"]
-               ["hover:ty-bg-neutral" "ty-text"])
+     {:class (concat
+              (if active?
+                ["ty-bg-primary-" "ty-text-primary++"]
+                ["hover:ty-bg-neutral" "ty-text"])
+              (when indented? ["pl-8"])) ; Indent child items
       :on {:click (fn []
                     ;; Check if target route has hash before navigation
                     (let [should-scroll-top? (should-scroll-for-route? route-id)]
@@ -126,6 +130,15 @@
                       ;; Scroll to top only for non-fragment routes
                       (when should-scroll-top?
                         (js/setTimeout scroll-main-to-top! 100))
+                      ;; If it has a hash, scroll to that section
+                      (when-not should-scroll-top?
+                        (js/setTimeout
+                         #(when-let [hash (:hash (last (router/url->components
+                                                        (:tree @router/*router*)
+                                                        (router/component-path (:tree @router/*router*) route-id))))]
+                            (when-let [target (.getElementById js/document hash)]
+                              (.scrollIntoView target #js {:behavior "smooth" :block "start"})))
+                         200))
                       ;; Close mobile menu
                       (swap! state assoc :mobile-menu-open false)))}}
      (when icon
@@ -134,14 +147,26 @@
      [:div.flex.items-center.gap-2
       [:span.text-sm label]]]))
 
-(defn nav-section [{:keys [title items]}]
+(defn nav-section
+  "Render a navigation section with optional children"
+  [{:keys [title items]}]
   [:div.mb-4
    (when title
      [:div.px-4.py-2
       [:h3.text-xs.font-medium.ty-text-.uppercase.tracking-wider.mb-2 title]])
    [:div.space-y-0.5
     (for [item items]
-      ^{:key (:label item)} (nav-item item))]])
+      (let [has-children? (seq (:children item))]
+        ^{:key (:label item)}
+        [:div
+         ;; Parent item
+         (nav-item (assoc item :indented? false))
+         ;; Children items (indented)
+         (when has-children?
+           [:div.space-y-0.5
+            (for [child (:children item)]
+              ^{:key (:label child)}
+              (nav-item (assoc child :indented? true)))])]))]])
 
 (defn nav-items []
   [:div.space-y-6
@@ -192,12 +217,27 @@
      :items (for [route component-routes]
               {:route-id (:id route)
                :label (:name route)
-               :icon (:icon route)})})])
+               :icon (:icon route)
+               :children (when-let [children (:children route)]
+                           (map (fn [child]
+                                  {:route-id (:id child)
+                                   :label (:name child)
+                                   :icon (:icon child)})
+                                children))})})])
+
+(defn flatten-routes
+  "Recursively flatten routes including children"
+  [routes]
+  (mapcat (fn [route]
+            (if-let [children (:children route)]
+              (cons (dissoc route :children) (flatten-routes children))
+              [route]))
+          routes))
 
 (defn render
   "Render the appropriate view based on current route (like docs/render)"
   []
-  (let [all-routes (concat site-routes component-routes guide-routes)
+  (let [all-routes (flatten-routes (concat site-routes component-routes guide-routes))
         current-route (some #(when (router/rendered? (:id %) true) %) all-routes)
         view (:view current-route)]
     (when (ifn? view) (view))))

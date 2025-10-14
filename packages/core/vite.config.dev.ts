@@ -1,127 +1,84 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
-import dts from 'vite-plugin-dts'
+
+/**
+ * Development Build Configuration
+ * 
+ * Creates UNMINIFIED bundle for development and debugging.
+ * 
+ * SAME OUTPUT FILENAME as production (dist/ty.js)
+ * - ClojureScript site always loads the same file
+ * - Switch between dev/prod by running different build command
+ * - Use with --watch for continuous rebuilds
+ * 
+ * Strategy:
+ * 1. Keep ALL console.logs (debugging!)
+ * 2. NO minification - readable code
+ * 3. Source maps enabled
+ * 4. Fast builds
+ * 5. Same filename as production build
+ * 
+ * Usage:
+ *   npm run build:dev              # Single build
+ *   npm run build:dev:watch        # Watch mode (auto-rebuild)
+ * 
+ * Output: dist/ty.js (UNMINIFIED)
+ */
 
 export default defineConfig({
-  plugins: [
-    dts({
-      include: ['src/**/*'],
-      outDir: 'dist',
-      rollupTypes: true,
-    })
-  ],
+  plugins: [],
   
   build: {
-    // Generate sourcemaps (disable for smallest size)
+    // SOURCE MAPS for debugging
     sourcemap: true,
     
+    // Single bundle library mode
     lib: {
-      entry: {
-        // Main entry point
-        index: resolve(__dirname, 'src/index.ts'),
-        
-        // Individual component entries for tree-shaking
-        'components/button': resolve(__dirname, 'src/components/button.ts'),
-        'components/modal': resolve(__dirname, 'src/components/modal.ts'),
-        'components/input': resolve(__dirname, 'src/components/input.ts'),
-        'components/dropdown': resolve(__dirname, 'src/components/dropdown.ts'),
-        'components/checkbox': resolve(__dirname, 'src/components/checkbox.ts'),
-        'components/textarea': resolve(__dirname, 'src/components/textarea.ts'),
-        'components/popup': resolve(__dirname, 'src/components/popup.ts'),
-        'components/tooltip': resolve(__dirname, 'src/components/tooltip.ts'),
-        'components/tag': resolve(__dirname, 'src/components/tag.ts'),
-        'components/option': resolve(__dirname, 'src/components/option.ts'),
-        'components/icon': resolve(__dirname, 'src/components/icon.ts'),
-      },
-      formats: ['es'],
-      fileName: (format, entryName) => `${entryName}.js`,
+      entry: resolve(__dirname, 'src/cdn.ts'),
+      name: 'Ty',
+      formats: ['umd'],
+      fileName: () => 'ty.js',  // Same filename as production!
     },
     
     rollupOptions: {
-      // Externalize dependencies
       external: [],
       
       output: {
-        // Preserve module structure
-        preserveModules: false,
-        
-        // Use named exports
+        name: 'Ty',
         exports: 'named',
+        inlineDynamicImports: true,
         
-        // Advanced mangling for smaller output
-        compact: true,
+        // Readable code formatting
+        compact: false,
         
-        // More aggressive tree-shaking
         generatedCode: {
           constBindings: true,
           objectShorthand: true,
+          arrowFunctions: true,
         },
       },
       
-      // Tree-shaking configuration
+      // Keep tree-shaking but don't be aggressive
       treeshake: {
-        moduleSideEffects: false,
-        propertyReadSideEffects: false,
-        tryCatchDeoptimization: false,
+        moduleSideEffects: true,  // Keep side effects for debugging
+        propertyReadSideEffects: true,
       },
     },
     
-    // Target modern browsers (allows more optimizations)
     target: 'es2020',
     
-    // Output directory
-    outDir: 'dist',
+    // Output to dist/ (same as production)
+    outDir: resolve(__dirname, 'dist'),
     
-    // Empty output dir before build
-    emptyOutDir: true,
+    // Don't empty outDir - preserve ty.css
+    emptyOutDir: false,
     
-    // Use Terser for better compression (slower build, smaller output)
-    // Options: 'esbuild' (fast), 'terser' (smaller)
-    minify: 'terser',
+    // NO MINIFICATION for development
+    minify: false,
     
-    // Terser options for maximum compression
-    terserOptions: {
-      compress: {
-        // Remove console statements in production
-        drop_console: true,
-        drop_debugger: true,
-        
-        // More aggressive optimizations
-        passes: 2,
-        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
-        pure_getters: true,
-        unsafe: false,
-        unsafe_comps: false,
-        unsafe_math: false,
-        unsafe_methods: false,
-      },
-      mangle: {
-        // Mangle property names for smaller output
-        properties: {
-          // Don't mangle properties starting with _
-          regex: /^_/,
-        },
-      },
-      format: {
-        // Remove comments
-        comments: false,
-        
-        // Shorter output
-        ecma: 2020,
-      },
-    },
-    
-    // Chunk size warnings
-    chunkSizeWarningLimit: 100,
+    chunkSizeWarningLimit: 1000, // Dev bundle is bigger, that's OK
   },
   
-  // Development server configuration
-  server: {
-    port: 3000,
-    open: '/dev/index.html',
-  },
-  
-  // Resolve configuration
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src'),

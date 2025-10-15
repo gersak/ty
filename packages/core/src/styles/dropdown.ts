@@ -141,6 +141,27 @@ export const dropdownStyles = `
   padding-right: calc(var(--ty-spacing-5) + 1rem + var(--ty-spacing-4));
 }
 
+/* Size-specific clearable adjustments */
+.dropdown-stub.xs.clearable.has-selection {
+  padding-right: calc(var(--ty-spacing-2) + 2rem + var(--ty-spacing-2));
+}
+
+.dropdown-stub.sm.clearable.has-selection {
+  padding-right: calc(var(--ty-spacing-2) + 2rem + var(--ty-spacing-2));
+}
+
+.dropdown-stub.md.clearable.has-selection {
+  padding-right: calc(var(--ty-spacing-3) + 2rem + var(--ty-spacing-3));
+}
+
+.dropdown-stub.lg.clearable.has-selection {
+  padding-right: calc(var(--ty-spacing-4) + 2rem + var(--ty-spacing-4));
+}
+
+.dropdown-stub.xl.clearable.has-selection {
+  padding-right: calc(var(--ty-spacing-5) + 2rem + var(--ty-spacing-5));
+}
+
 /* Placeholder styling */
 .dropdown-placeholder {
   color: var(--ty-input-placeholder);
@@ -198,6 +219,43 @@ export const dropdownStyles = `
 .dropdown-chevron svg {
   width: 100%;
   height: 100%;
+}
+
+/* ===== CLEAR BUTTON ===== */
+
+.dropdown-clear-btn {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--ty-spacing-3) + 1rem + var(--ty-spacing-2)); /* Before chevron */
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--ty-input-placeholder);
+  cursor: pointer;
+  transition: var(--ty-transition-colors);
+  display: none; /* Hidden by default, shown via JS */
+}
+
+.dropdown-clear-btn:hover {
+  color: var(--ty-color-danger);
+}
+
+.dropdown-clear-btn:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.dropdown-clear-btn svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Adjust stub padding when clearable AND has selection */
+.dropdown-stub.clearable.has-selection {
+  padding-right: calc(var(--ty-spacing-3) + 2rem + var(--ty-spacing-3)); /* Room for X + chevron */
 }
 
 /* Hide chevron for read-only dropdowns */
@@ -519,7 +577,8 @@ export const dropdownStyles = `
   bottom: 0;
   z-index: 9999;
   display: flex;
-  flex-direction: column;
+  align-items: flex-end; /* Align to bottom */
+  justify-content: center;
   opacity: 0;
   transition: opacity 300ms ease;
   pointer-events: none;
@@ -535,17 +594,22 @@ export const dropdownStyles = `
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   z-index: 1;
 }
 
-/* Mobile content container */
+/* Mobile content container - bottom sheet */
 .mobile-modal-content {
   position: relative;
   z-index: 2;
   display: flex;
   flex-direction: column;
-  height: 100%;
+  width: 100%;
+  max-height: 80vh;
   background: var(--ty-surface-elevated);
+  border-radius: 16px 16px 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
   transform: translateY(100%);
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -554,10 +618,24 @@ export const dropdownStyles = `
   transform: translateY(0);
 }
 
+/* Mobile modal handle (drag indicator) */
+.mobile-modal-content::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  height: 4px;
+  background: var(--ty-border);
+  border-radius: 2px;
+  opacity: 0.4;
+}
+
 /* Mobile search header - only shown when searchable */
 .mobile-search-header {
   flex-shrink: 0;
-  padding: 16px;
+  padding: 20px 16px 16px 16px; /* Extra top padding for handle */
   border-bottom: 1px solid var(--ty-border);
   background: var(--ty-surface-content);
 }
@@ -571,7 +649,7 @@ export const dropdownStyles = `
 /* Header for non-searchable (close button only) */
 .mobile-header-nosearch {
   flex-shrink: 0;
-  padding: 16px;
+  padding: 20px 16px 12px 16px; /* Extra top padding for handle */
   border-bottom: 1px solid var(--ty-border);
   background: var(--ty-surface-content);
   display: flex;
@@ -638,6 +716,7 @@ export const dropdownStyles = `
 
 /* Mobile options container */
 .mobile-options-container {
+  position: relative;
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -677,12 +756,15 @@ export const dropdownStyles = `
 }
 
 .mobile-options-container ::slotted(option[selected]) {
-  background-color: var(--ty-color-primary);
-  color: #ffffff;
-  font-weight: var(--ty-font-medium);
+  /* Don't style native selected attribute - we use .mobile-selected class instead */
+  background: transparent;
 }
 
 .mobile-options-container ::slotted(option[hidden]) {
   display: none;
 }
+
+
+
+
 `

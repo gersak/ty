@@ -196,7 +196,7 @@
 </form>")
 
     [:div.ty-bg-info-.ty-border-info.border.rounded-lg.p-4.mt-4
-     [:p.ty-text-info.text-sm
+     [:p.ty-text.text-sm
       [:strong "💡 Tip: "]
       "The component is form-associated and participates in form validation and submission like native textarea elements."]]]
 

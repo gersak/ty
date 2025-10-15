@@ -135,11 +135,11 @@
     [:div.ty-bg-info-.rounded-lg.p-4
      [:ul.space-y-2.text-sm.ty-text
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "arrow-right"
+       [:ty-icon.ty-text.mt-0.5 {:name "arrow-right"
                                       :size "xs"}]
        [:span [:code.ty-elevated.px-1 "dayContentFn"] " - Your custom day rendering function"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "arrow-right"
+       [:ty-icon.ty-text.mt-0.5 {:name "arrow-right"
                                       :size "xs"}]
        [:span [:code.ty-elevated.px-1 "customCSS"] " - Your custom stylesheet for shadow DOM"]]]]]])
 
@@ -170,11 +170,11 @@
                                          :size "xs"}]
        [:span [:strong "Pass-through:"] " Forwards customization to ty-calendar-month"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "info"
+       [:ty-icon.ty-text.mt-0.5 {:name "info"
                                       :size "xs"}]
        [:span [:strong "Stateful mode:"] " Manages selection internally"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "info"
+       [:ty-icon.ty-text.mt-0.5 {:name "info"
                                       :size "xs"}]
        [:span [:strong "Stateless mode:"] " Parent controls all state"]]]]
     [:div
@@ -184,19 +184,19 @@
       "ty-calendar-month (Foundation)"]
      [:ul.space-y-2.text-sm.ty-text-
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-0.5 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "Always Stateless:"] " Parent controls all state"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-0.5 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "No Navigation:"] " Just renders a single month"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-0.5 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "Foundation:"] " Building block for calendar UIs"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-info.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-0.5 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "Direct Control:"] " You manage everything"]]]]]])
 

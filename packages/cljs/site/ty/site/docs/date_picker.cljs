@@ -1,12 +1,12 @@
 (ns ty.site.docs.date-picker
   "Documentation for ty-date-picker component"
   (:require
-    [ty.site.docs.common
-     :refer [code-block
-             attribute-table
-             event-table
-             doc-section
-             example-section]]))
+   [ty.site.docs.common
+    :refer [code-block
+            attribute-table
+            event-table
+            doc-section
+            example-section]]))
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
@@ -23,77 +23,77 @@
     [:div.mb-8
      [:h3.text-lg.font-medium.ty-text+.mb-3 "Attributes"]
      (attribute-table
-       [{:name "value"
-         :type "string"
-         :default "null"
-         :description "Initial date value (ISO format: YYYY-MM-DD or YYYY-MM-DDTHH:mm)"}
-        {:name "size"
-         :type "string"
-         :default "\"md\""
-         :description "Size variant: xs, sm, md, lg, xl"}
-        {:name "flavor"
-         :type "string"
-         :default "null"
-         :description "Color flavor: primary, secondary, success, danger, warning"}
-        {:name "label"
-         :type "string"
-         :default "null"
-         :description "Label text displayed above the input"}
-        {:name "placeholder"
-         :type "string"
-         :default "\"Select date...\""
-         :description "Placeholder text when no date is selected"}
-        {:name "required"
-         :type "boolean"
-         :default "false"
-         :description "Whether the field is required"}
-        {:name "disabled"
-         :type "boolean"
-         :default "false"
-         :description "Disable the date picker"}
-        {:name "clearable"
-         :type "boolean"
-         :default "false"
-         :description "Show clear button when value is present"}
-        {:name "with-time"
-         :type "boolean"
-         :default "false"
-         :description "Enable time selection alongside date"}
-        {:name "format"
-         :type "string"
-         :default "\"long\""
-         :description "Date format style: short, medium, long, full"}
-        {:name "locale"
-         :type "string"
-         :default "\"en-US\""
-         :description "Locale for formatting (e.g., 'de-DE', 'fr-FR')"}
-        {:name "name"
-         :type "string"
-         :default "null"
-         :description "Form field name for submission"}])]
+      [{:name "value"
+        :type "string"
+        :default "null"
+        :description "Initial date value (ISO format: YYYY-MM-DD or YYYY-MM-DDTHH:mm)"}
+       {:name "size"
+        :type "string"
+        :default "\"md\""
+        :description "Size variant: xs, sm, md, lg, xl"}
+       {:name "flavor"
+        :type "string"
+        :default "null"
+        :description "Color flavor: primary, secondary, success, danger, warning"}
+       {:name "label"
+        :type "string"
+        :default "null"
+        :description "Label text displayed above the input"}
+       {:name "placeholder"
+        :type "string"
+        :default "\"Select date...\""
+        :description "Placeholder text when no date is selected"}
+       {:name "required"
+        :type "boolean"
+        :default "false"
+        :description "Whether the field is required"}
+       {:name "disabled"
+        :type "boolean"
+        :default "false"
+        :description "Disable the date picker"}
+       {:name "clearable"
+        :type "boolean"
+        :default "true"
+        :description "Show clear button when value is present"}
+       {:name "with-time"
+        :type "boolean"
+        :default "false"
+        :description "Enable time selection alongside date"}
+       {:name "format"
+        :type "string"
+        :default "\"long\""
+        :description "Date format style: short, medium, long, full"}
+       {:name "locale"
+        :type "string"
+        :default "\"en-US\""
+        :description "Locale for formatting (e.g., 'de-DE', 'fr-FR')"}
+       {:name "name"
+        :type "string"
+        :default "null"
+        :description "Form field name for submission"}])]
 
     ;; Events Table
     [:div.mb-8
      [:h3.text-lg.font-medium.ty-text+.mb-3 "Events"]
      (event-table
-       [{:name "change"
-         :payload "{value: string, milliseconds: number, source: string, formatted: string}"
-         :when-fired "Fired when date/time value changes. Source can be 'selection', 'time-change', 'clear', or 'external'"}
-        {:name "open"
-         :payload "null"
-         :when-fired "Fired when the calendar dropdown opens"}])]
+      [{:name "change"
+        :payload "{value: string, milliseconds: number, source: string, formatted: string}"
+        :when-fired "Fired when date/time value changes. Source can be 'selection', 'time-change', 'clear', or 'external'"}
+       {:name "open"
+        :payload "null"
+        :when-fired "Fired when the calendar dropdown opens"}])]
 
     ;; Properties Table
     [:div
      [:h3.text-lg.font-medium.ty-text+.mb-3 "Properties"]
      [:div.ty-bg-neutral-.rounded.p-4.overflow-x-auto
       (code-block
-        "// JavaScript access
+       "// JavaScript access
 const picker = document.querySelector('ty-date-picker');
 picker.value = '2024-09-21';  // Set date
 picker.value = '2024-09-21T14:30';  // Set date and time
 const currentValue = picker.value;  // Get current value"
-        "javascript")]]]
+       "javascript")]]]
 
    ;; Basic Usage
    [:div.ty-content.rounded-lg.p-6.mb-8
@@ -104,7 +104,7 @@ const currentValue = picker.value;  // Get current value"
      [:div.mb-4
       [:ty-date-picker {:label "Select Date"}]]
      (code-block
-       "<ty-date-picker label=\"Select Date\"></ty-date-picker>")]
+      "<ty-date-picker label=\"Select Date\"></ty-date-picker>")]
 
     [:div.mb-6
      [:h3.text-lg.font-medium.ty-text+.mb-3 "With Initial Value"]
@@ -112,7 +112,7 @@ const currentValue = picker.value;  // Get current value"
       [:ty-date-picker {:label "Event Date"
                         :value "2024-09-21"}]]
      (code-block
-       "<ty-date-picker 
+      "<ty-date-picker 
   label=\"Event Date\" 
   value=\"2024-09-21\">
 </ty-date-picker>")]
@@ -124,7 +124,7 @@ const currentValue = picker.value;  // Get current value"
                         :with-time "true"
                         :value "2024-09-21T14:30"}]]
      (code-block
-       "<ty-date-picker 
+      "<ty-date-picker 
   label=\"Appointment\" 
   with-time=\"true\"
   value=\"2024-09-21T14:30\">
@@ -148,7 +148,7 @@ const currentValue = picker.value;  // Get current value"
      [:ty-date-picker {:size "xl"
                        :placeholder "Extra Large"}]]
     (code-block
-      "<ty-date-picker size=\"xs\" placeholder=\"Extra Small\"></ty-date-picker>
+     "<ty-date-picker size=\"xs\" placeholder=\"Extra Small\"></ty-date-picker>
 <ty-date-picker size=\"sm\" placeholder=\"Small\"></ty-date-picker>
 <ty-date-picker size=\"md\" placeholder=\"Medium (default)\"></ty-date-picker>
 <ty-date-picker size=\"lg\" placeholder=\"Large\"></ty-date-picker>
@@ -174,7 +174,7 @@ const currentValue = picker.value;  // Get current value"
                        :label "Warning"
                        :value "2024-09-21"}]]
     (code-block
-      "<ty-date-picker flavor=\"primary\" label=\"Primary\" value=\"2024-09-21\"></ty-date-picker>
+     "<ty-date-picker flavor=\"primary\" label=\"Primary\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker flavor=\"secondary\" label=\"Secondary\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker flavor=\"success\" label=\"Success\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker flavor=\"danger\" label=\"Danger\" value=\"2024-09-21\"></ty-date-picker>
@@ -197,7 +197,7 @@ const currentValue = picker.value;  // Get current value"
                        :label "Full format"
                        :value "2024-09-21"}]]
     (code-block
-      "<ty-date-picker format=\"short\" label=\"Short format\" value=\"2024-09-21\"></ty-date-picker>
+     "<ty-date-picker format=\"short\" label=\"Short format\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker format=\"medium\" label=\"Medium format\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker format=\"long\" label=\"Long format (default)\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker format=\"full\" label=\"Full format\" value=\"2024-09-21\"></ty-date-picker>")]
@@ -222,7 +222,7 @@ const currentValue = picker.value;  // Get current value"
                        :label "Spanish"
                        :value "2024-09-21"}]]
     (code-block
-      "<ty-date-picker locale=\"en-US\" label=\"English (US)\" value=\"2024-09-21\"></ty-date-picker>
+     "<ty-date-picker locale=\"en-US\" label=\"English (US)\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker locale=\"de-DE\" label=\"German\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker locale=\"fr-FR\" label=\"French\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker locale=\"ja-JP\" label=\"Japanese\" value=\"2024-09-21\"></ty-date-picker>
@@ -234,8 +234,10 @@ const currentValue = picker.value;  // Get current value"
     [:div.space-y-4.mb-4
      [:ty-date-picker {:label "Required field"
                        :required "true"}]
-     [:ty-date-picker {:label "Clearable"
-                       :clearable "true"
+     [:ty-date-picker {:label "With clear button (default)"
+                       :value "2024-09-21"}]
+     [:ty-date-picker {:label "Without clear button"
+                       :clearable "false"
                        :value "2024-09-21"}]
      [:ty-date-picker {:label "Disabled"
                        :disabled "true"
@@ -243,8 +245,9 @@ const currentValue = picker.value;  // Get current value"
      [:ty-date-picker {:label "With placeholder"
                        :placeholder "Pick a date..."}]]
     (code-block
-      "<ty-date-picker label=\"Required field\" required=\"true\"></ty-date-picker>
-<ty-date-picker label=\"Clearable\" clearable=\"true\" value=\"2024-09-21\"></ty-date-picker>
+     "<ty-date-picker label=\"Required field\" required=\"true\"></ty-date-picker>
+<ty-date-picker label=\"With clear button (default)\" value=\"2024-09-21\"></ty-date-picker>
+<ty-date-picker label=\"Without clear button\" clearable=\"false\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker label=\"Disabled\" disabled=\"true\" value=\"2024-09-21\"></ty-date-picker>
 <ty-date-picker label=\"With placeholder\" placeholder=\"Pick a date...\"></ty-date-picker>")]
 
@@ -268,7 +271,7 @@ const currentValue = picker.value;  // Get current value"
                        :format "short"
                        :value "2024-09-21T23:59"}]]
     (code-block
-      "<ty-date-picker label=\"Meeting time\" with-time=\"true\"></ty-date-picker>
+     "<ty-date-picker label=\"Meeting time\" with-time=\"true\"></ty-date-picker>
 <ty-date-picker label=\"Appointment\" with-time=\"true\" value=\"2024-09-21T14:30\"></ty-date-picker>
 <ty-date-picker label=\"Deadline\" with-time=\"true\" format=\"short\" value=\"2024-09-21T23:59\"></ty-date-picker>")]
 
@@ -289,7 +292,7 @@ const currentValue = picker.value;  // Get current value"
        [:button.ty-button.primary {:type "submit"} "Submit"]]
       [:div#date-result.ty-text-.mt-4]]]
     (code-block
-      "<form id=\"date-form\">
+     "<form id=\"date-form\">
   <ty-date-picker 
     label=\"Event Date\" 
     name=\"event-date\" 
@@ -327,8 +330,8 @@ document.getElementById('date-form').addEventListener('submit', (e) => {
                       (when-let [el (.getElementById js/document "prog-picker")]
                         (set! (.-value el)
                               (str
-                                (.getFullYear (js/Date.))
-                                "-12-25"))))}}
+                               (.getFullYear (js/Date.))
+                               "-12-25"))))}}
        "Set Christmas"]
       [:ty-button
        {:flavor "danger"
@@ -342,7 +345,7 @@ document.getElementById('date-form').addEventListener('submit', (e) => {
                         (.log js/console (.-value el))))}}
        "Get Value"]]]
     (code-block
-      "<ty-date-picker id=\"date-picker\" label=\"Controlled Date\"></ty-date-picker>
+     "<ty-date-picker id=\"date-picker\" label=\"Controlled Date\"></ty-date-picker>
 
 <script>
 const picker = document.getElementById('date-picker');
@@ -383,7 +386,7 @@ picker.addEventListener('open', () => {
                         :name "appointment"
                         :with-time "true"}]]]
     (code-block
-      "<!-- Date range selection -->
+     "<!-- Date range selection -->
 <ty-date-picker 
   label=\"Check-in Date\" 
   name=\"checkin\">
@@ -417,7 +420,7 @@ picker.addEventListener('open', () => {
                         :name "deadline"
                         :clearable "true"}]]]
     (code-block
-      "<!-- Event scheduling with time -->
+     "<!-- Event scheduling with time -->
 <ty-date-picker 
   label=\"Event Start\" 
   name=\"event-start\" 
@@ -466,6 +469,10 @@ picker.addEventListener('open', () => {
        [:li.flex.items-start.gap-2
         [:ty-icon.ty-text-success.mt-1 {:name "check"
                                         :size "16"}]
+        [:span "Keep default clear button for better UX (enabled by default)"]]
+       [:li.flex.items-start.gap-2
+        [:ty-icon.ty-text-success.mt-1 {:name "check"
+                                        :size "16"}]
         [:span "Validate dates programmatically in your application"]]
        [:li.flex.items-start.gap-2
         [:ty-icon.ty-text-success.mt-1 {:name "check"
@@ -502,7 +509,11 @@ picker.addEventListener('open', () => {
        [:li.flex.items-start.gap-2
         [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                        :size "16"}]
-        [:span "Don't ignore timezone considerations for datetime values"]]]]]]
+        [:span "Don't ignore timezone considerations for datetime values"]]
+       [:li.flex.items-start.gap-2
+        [:ty-icon.ty-text-danger.mt-1 {:name "x"
+                                       :size "16"}]
+        [:span "Don't disable clearable unless required by your use case"]]]]]]
 
    ;; Notes
    [:div.ty-bg-warning-.ty-border-warning.border.rounded-lg.p-4.mt-8

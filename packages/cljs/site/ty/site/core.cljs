@@ -294,7 +294,7 @@
           sidebar-width (if show-sidebar? 256 0)
           header-height (if (layout/breakpoint>= :lg) 64 56) ; Smaller header on mobile
           content-padding (if (layout/breakpoint>= :lg) 48 32)] ; Less padding on mobile
-      [:div.h-screen.flex.ty-canvas
+      [:div.h-screen.flex.ty-canvas.ty-text
        (mobile-menu)
        (when show-sidebar? (sidebar))
        [:div.flex-1.flex.flex-col.min-w-0

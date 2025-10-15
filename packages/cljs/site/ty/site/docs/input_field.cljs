@@ -9,66 +9,66 @@
    [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-input Attributes"]
 
    (attribute-table
-    [{:name "type"
-      :type "string"
-      :default "'text'"
-      :description "Input type: text, number, currency, percent, compact, password, date, email"}
-     {:name "value"
-      :type "string | number"
-      :default "null"
-      :description "Initial value of the input"}
-     {:name "placeholder"
-      :type "string"
-      :default "null"
-      :description "Placeholder text for the input"}
-     {:name "label"
-      :type "string"
-      :default "null"
-      :description "Label displayed above the input"}
-     {:name "name"
-      :type "string"
-      :default "null"
-      :description "Name for form submission"}
-     {:name "disabled"
-      :type "boolean"
-      :default "false"
-      :description "Whether the input is disabled"}
-     {:name "required"
-      :type "boolean"
-      :default "false"
-      :description "Whether the input is required (shows asterisk)"}
-     {:name "error"
-      :type "string"
-      :default "null"
-      :description "Error message to display (sets danger flavor)"}
-     {:name "size"
-      :type "string"
-      :default "'md'"
-      :description "Size variant: xs, sm, md, lg, xl"}
-     {:name "flavor"
-      :type "string"
-      :default "'neutral'"
-      :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-     {:name "currency"
-      :type "string"
-      :default "'USD'"
-      :description "Currency code for type='currency' (e.g., USD, EUR, GBP)"}
-     {:name "locale"
-      :type "string"
-      :default "browser locale"
-      :description "Locale for number formatting (e.g., en-US, de-DE)"}
-     {:name "precision"
-      :type "number"
-      :default "null"
-      :description "Number of decimal places for numeric types"}
-     {:name "delay"
-      :type "number"
-      :default "0"
-      :description "Debounce delay in milliseconds (0-5000ms) for input/change events. Useful for search inputs and API calls."}
-     {:name "class"
-      :type "string"
-      :default "null"
-      :description "Additional CSS classes"}])
+     [{:name "type"
+       :type "string"
+       :default "'text'"
+       :description "Input type: text, number, currency, percent, compact, password, date, email"}
+      {:name "value"
+       :type "string | number"
+       :default "null"
+       :description "Initial value of the input"}
+      {:name "placeholder"
+       :type "string"
+       :default "null"
+       :description "Placeholder text for the input"}
+      {:name "label"
+       :type "string"
+       :default "null"
+       :description "Label displayed above the input"}
+      {:name "name"
+       :type "string"
+       :default "null"
+       :description "Name for form submission"}
+      {:name "disabled"
+       :type "boolean"
+       :default "false"
+       :description "Whether the input is disabled"}
+      {:name "required"
+       :type "boolean"
+       :default "false"
+       :description "Whether the input is required (shows asterisk)"}
+      {:name "error"
+       :type "string"
+       :default "null"
+       :description "Error message to display (sets danger flavor)"}
+      {:name "size"
+       :type "string"
+       :default "'md'"
+       :description "Size variant: xs, sm, md, lg, xl"}
+      {:name "flavor"
+       :type "string"
+       :default "'neutral'"
+       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+      {:name "currency"
+       :type "string"
+       :default "'USD'"
+       :description "Currency code for type='currency' (e.g., USD, EUR, GBP)"}
+      {:name "locale"
+       :type "string"
+       :default "browser locale"
+       :description "Locale for number formatting (e.g., en-US, de-DE)"}
+      {:name "precision"
+       :type "number"
+       :default "null"
+       :description "Number of decimal places for numeric types"}
+      {:name "delay"
+       :type "number"
+       :default "0"
+       :description "Debounce delay in milliseconds (0-5000ms) for input/change events. Useful for search inputs and API calls."}
+      {:name "class"
+       :type "string"
+       :default "null"
+       :description "Additional CSS classes"}])
 
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-input Slots"]
@@ -89,18 +89,18 @@
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-input Events"]
     (event-table
-     [{:name "input"
-       :when-fired "Fired on each input change (respects delay attribute)"
-       :payload "{value, formattedValue?, rawValue, originalEvent}"}
-      {:name "change"
-       :when-fired "Fired when input loses focus after change (respects delay attribute)"
-       :payload "{value, formattedValue?, rawValue, originalEvent}"}
-      {:name "focus"
-       :when-fired "Fired when input gains focus"
-       :payload "Standard FocusEvent"}
-      {:name "blur"
-       :when-fired "Fired when input loses focus (fires pending debounced events immediately)"
-       :payload "Standard FocusEvent"}])]])
+      [{:name "input"
+        :when-fired "Fired on each input change (respects delay attribute)"
+        :payload "{value, formattedValue?, rawValue, originalEvent}"}
+       {:name "change"
+        :when-fired "Fired when input loses focus after change (respects delay attribute)"
+        :payload "{value, formattedValue?, rawValue, originalEvent}"}
+       {:name "focus"
+        :when-fired "Fired when input gains focus"
+        :payload "Standard FocusEvent"}
+       {:name "blur"
+        :when-fired "Fired when input loses focus (fires pending debounced events immediately)"
+        :payload "Standard FocusEvent"}])]])
 
 (defn basic-usage-section []
   [:div.ty-content.rounded-lg.p-6.mb-8
@@ -254,7 +254,6 @@
       [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#delay-1000-count "0"]]]]
 
     [:script "
-// Track event counts
 let instantCount = 0;
 let delay300Count = 0;
 let delay1000Count = 0;

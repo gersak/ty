@@ -49,8 +49,8 @@
        :payload "{error: Error} - The error that occurred"}])]
 
    [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
-    [:h4.text-sm.font-semibold.ty-text-info++.mb-2 "💡 Copy Field Behavior"]
-    [:ul.space-y-1.ty-text-info.text-sm
+    [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 Copy Field Behavior"]
+    [:ul.space-y-1.ty-text.text-sm
      [:li "• Read-only field with automatic copy-to-clipboard functionality"]
      [:li "• Click anywhere on the field to copy (not just the icon)"]
      [:li "• Icon animates: copy → check → copy (2 seconds)"]

@@ -85,12 +85,12 @@
                     "clojure")
 
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mt-4
-                   [:p.ty-text-info.text-sm.font-medium "💡 Why prefer @gersak/ty-react?"]
+                   [:p.ty-text.text-sm.font-medium "💡 Why prefer @gersak/ty-react?"]
                    [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-3.mt-3
                     [:p.ty-text-warning.text-xs.font-medium.mb-2 "⚠️ Critical: React & CustomEvents"]
                     [:p.ty-text-warning.text-xs
                      "React cannot pick up CustomEvents from web components. The @gersak/ty-react wrapper listens for these CustomEvents and converts them to React SyntheticEvents, ensuring proper event handling and state updates."]]
-                   [:ul.ty-text-info.text-xs.mt-2.space-y-1
+                   [:ul.ty-text.text-xs.mt-2.space-y-1
                     [:li "• Converts web component CustomEvents to React SyntheticEvents"]
                     [:li "• Better React integration (proper props, refs, events)"]
                     [:li "• Full TypeScript support with autocomplete"]
@@ -220,7 +220,7 @@
                 (example-section
                   "Main App Component"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Root component that handles routing and navigation"]]
+                   [:p.ty-text.text-sm "Root component that handles routing and navigation"]]
                   "(ns my-app.main
   (:require [uix.core :as uix :refer [defui $]]
             [uix.dom]
@@ -374,7 +374,7 @@
                 (example-section
                   "Adding Translations"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Set up translations using qualified keywords"]]
+                   [:p.ty-text.text-sm "Set up translations using qualified keywords"]]
                   "(ns my-app.core
   (:require [uix.core :as uix :refer [defui $]]
             [ty.react :refer [TyButton]]
@@ -551,7 +551,7 @@
                 (example-section
                   "Dynamic Price Display"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Price component that updates with locale changes"]]
+                   [:p.ty-text.text-sm "Price component that updates with locale changes"]]
                   "(defui price-display [{:keys [amount currency]}]
   (let [{:keys [locale]} (use-locale)]
     (binding [i18n/*locale* locale]

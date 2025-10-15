@@ -7,7 +7,10 @@ export const optionStyles = `
 /* Ty Option Component Styles */
 
 .option-content {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ty-spacing-2);
   box-sizing: border-box;
   width: 100%;
 
@@ -45,6 +48,45 @@ export const optionStyles = `
   background: var(--ty-bg-primary-mild);
   color: var(--ty-text-strong);
   font-weight: var(--ty-font-medium);
+}
+
+.option-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.option-clear-btn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  transition: background 200ms ease;
+}
+
+.option-clear-btn:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.option-clear-btn:active {
+  background: rgba(0, 0, 0, 0.9);
+  transform: scale(0.95);
+}
+
+.option-clear-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #ffffff;
+  stroke-width: 2.5;
 }
 
 .option-content[disabled] {

@@ -1053,7 +1053,7 @@ export class TyDatePicker extends HTMLElement {
     iconContainer.className = 'stub-icons';
 
     // Clear button
-    const clearable = this.getAttribute('clearable') === 'true';
+    const clearable = this.getAttribute('clearable') !== 'false';
     if (clearable && formattedValue && !disabled) {
       const clearButton = document.createElement('button');
       clearButton.className = 'stub-clear';

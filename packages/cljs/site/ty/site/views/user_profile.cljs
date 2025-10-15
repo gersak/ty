@@ -120,7 +120,7 @@
     [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Rich Dropdowns"]
     [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Visual Multiselects"]
     [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Modal Integration"]
-    [:span.px-3.py-1.ty-bg-neutral-.ty-text-info.rounded-full.text-sm.font-medium "Form Validation"]]])
+    [:span.px-3.py-1.ty-bg-neutral-.ty-text.rounded-full.text-sm.font-medium "Form Validation"]]])
 
 ;; ============================================================================
 ;; Avatar Section
@@ -412,7 +412,7 @@
       [:ty-option {:value "utc"}
        [:div.flex.items-center.justify-between
         [:div.flex.items-center.gap-2
-         [:ty-icon.ty-text-info {:name "globe"
+         [:ty-icon.ty-text {:name "globe"
                                  :size "sm"}]
          [:span.font-medium "Coordinated Universal"]]
         [:span.text-xs.ty-text-.font-mono "UTC+0"]]]]]
@@ -618,7 +618,7 @@
       [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "JPG"]
       [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "PNG"]
       [:span.px-2.py-1.ty-bg-success-.ty-text-success.rounded.text-xs.font-medium "WebP"]
-      [:span.px-2.py-1.ty-bg-info-.ty-text-info.rounded.text-xs.font-medium "Max 5MB"]]
+      [:span.px-2.py-1.ty-bg-info-.ty-text.rounded.text-xs.font-medium "Max 5MB"]]
 
      [:input.hidden {:type "file"
                      :accept "image/*"

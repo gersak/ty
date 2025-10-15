@@ -40,7 +40,7 @@
        [:span.px-3.py-1.ty-bg-success-.ty-text-success.rounded-full.text-sm.font-medium "Calendar Integration"]
        [:span.px-3.py-1.ty-bg-primary-.ty-text-primary.rounded-full.text-sm.font-medium "Time Slot Selection"]
        [:span.px-3.py-1.ty-bg-warning-.ty-text-warning.rounded-full.text-sm.font-medium "Service Options"]
-       [:span.px-3.py-1.ty-bg-info-.ty-text-info.rounded-full.text-sm.font-medium "Confirmation Flow"]]]
+       [:span.px-3.py-1.ty-bg-info-.ty-text.rounded-full.text-sm.font-medium "Confirmation Flow"]]]
 
      ;; Main Booking Interface
      [:div.grid.grid-cols-1.lg:grid-cols-3.gap-8
@@ -367,7 +367,7 @@
           [:ty-icon.ty-text-neutral.mt-0.5
            {:name "info"
             :size "sm"}]
-          [:div.text-xs.ty-text-info
+          [:div.text-xs.ty-text
            [:p.font-medium.mb-1 "Booking Policy"]
            [:p "Free cancellation up to 24 hours before your event. Full refund available for cancellations made 48 hours in advance."]]]]]
        ;; Service Selection
@@ -623,8 +623,8 @@
         [:div.flex.items-center.gap-3.ty-text-neutral
          [:ty-icon {:name "info"}]
          [:div.flex-1
-          [:div.font-medium.ty-text-info "Booking Reference"]
-          [:div.text-sm.ty-text-info.font-mono "BK-2024-001234"]]]]
+          [:div.font-medium.ty-text "Booking Reference"]
+          [:div.text-sm.ty-text.font-mono "BK-2024-001234"]]]]
 
        ;; Action buttons
        [:div.flex.gap-3.justify-end

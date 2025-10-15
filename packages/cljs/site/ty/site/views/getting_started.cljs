@@ -96,7 +96,7 @@ function App() {
         [:strong "Why this approach?"] " CDN handles web components runtime automatically. React wrappers provide TypeScript support and React-friendly event handling. No version conflicts, minimal bundle size."]]]
 
      [:div.ty-bg-info-.border.ty-border-info.p-4.rounded-lg
-      [:div.text-sm.ty-text-info++
+      [:div.text-sm.ty-text++
        [:h5.font-medium.mb-2 "💡 Available React wrappers:"]
        [:div.grid.grid-cols-2.gap-2.text-xs
         [:div
@@ -151,7 +151,7 @@ function App() {
    ;; ClojureScript + React (Reagent, UIx, etc.)
    [:div.ty-elevated.p-6.rounded-xl
     [:div.flex.items-center.gap-3.mb-6
-     [:ty-icon.ty-text-info {:name "lambda"
+     [:ty-icon.ty-text {:name "lambda"
                              :size "lg"}]
      [:h2.text-xl.font-semibold.ty-text "ClojureScript + React (Reagent / UIx)"]]
 
@@ -190,7 +190,7 @@ function App() {
         [:strong "Why this approach?"] " Everything is included in the ClojureScript dependency - no CDN needed! The ty.components namespace registers all web components and includes CSS automatically."]]]
 
      [:div.ty-bg-info-.border.ty-border-info.p-4.rounded-lg
-      [:div.text-sm.ty-text-info++
+      [:div.text-sm.ty-text++
        [:h5.font-medium.mb-2 "💡 Available web components:"]
        [:div.grid.grid-cols-2.gap-2.text-xs
         [:div

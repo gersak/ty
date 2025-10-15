@@ -31,8 +31,8 @@
 
    ;; Content Note
    [:div.ty-bg-info-.ty-border-info.border.rounded-lg.p-4.mt-4
-    [:h3.ty-text-info++.font-semibold.mb-1 "Content"]
-    [:p.ty-text-info.text-sm
+    [:h3.ty-text++.font-semibold.mb-1 "Content"]
+    [:p.ty-text.text-sm
      "Tooltip content is provided as children of the ty-tooltip element. "
      "Can be plain text or HTML elements."]]])
 
@@ -250,8 +250,8 @@
 
 (defn best-practices-section []
   [:div.ty-bg-info-.ty-border-info.border.rounded-lg.p-6.mb-8
-   [:h3.ty-text-info++.text-lg.font-semibold.mb-3 "Best Practices"]
-   [:ul.list-disc.ml-6.space-y-2.ty-text-info
+   [:h3.ty-text++.text-lg.font-semibold.mb-3 "Best Practices"]
+   [:ul.list-disc.ml-6.space-y-2.ty-text
     [:li "Keep tooltip text concise and helpful"]
     [:li "Use tooltips for icon-only buttons to provide context"]
     [:li "Match tooltip flavor to button flavor for consistency"]

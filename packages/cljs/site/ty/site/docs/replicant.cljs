@@ -50,7 +50,7 @@
                 (example-section
                   "Main Namespace (my-app.main)"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Main namespace that links to site-specific routes"]]
+                   [:p.ty-text.text-sm "Main namespace that links to site-specific routes"]]
                   "(ns my-app.main
   (:require [replicant.dom :as d]
             [replicant.core :as r]
@@ -240,7 +240,7 @@
                 (example-section
                   "Adding Translations"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Use qualified keywords for locale-specific translations"]]
+                   [:p.ty-text.text-sm "Use qualified keywords for locale-specific translations"]]
                   "(ns my-app.core
   (:require [replicant.dom :as d]
             [replicant.core :as r]
@@ -382,7 +382,7 @@
                 (example-section
                   "Basic Number Formatting"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Numbers are formatted using the current locale automatically"]]
+                   [:p.ty-text.text-sm "Numbers are formatted using the current locale automatically"]]
                   "(defonce app-state (r/atom {:locale :hr}))
 
 (defn price-display [state]
@@ -547,7 +547,7 @@
                 (example-section
                   "Locale-Specific Names"
                   [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                   [:p.ty-text-info.text-sm "Get month and weekday names in any supported locale"]]
+                   [:p.ty-text.text-sm "Get month and weekday names in any supported locale"]]
                   "(require '[ty.i18n :as i18n])
 
 (defn locale-names [state]

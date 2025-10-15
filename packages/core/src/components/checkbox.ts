@@ -137,23 +137,17 @@ export class TyCheckbox extends HTMLElement implements TyCheckboxElement {
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue) return
 
-    // Debug logging
-    if (name === 'checked' || name === 'value') {
-      console.log(`ty-checkbox: ${name}="${newValue}" → parsing as boolean:`, parseBoolean(newValue))
-    }
 
     switch (name) {
       case 'checked':
         // Parse checked as boolean intelligently
         this._checked = parseBoolean(newValue)
-        console.log(`ty-checkbox: _checked set to`, this._checked)
         break
       case 'value':
         // If value looks like a boolean, use it to set checked state (framework friendly)
         // Otherwise, use it as the form submission value
         if (isBooleanString(newValue)) {
           this._checked = parseBoolean(newValue)
-          console.log(`ty-checkbox: value is boolean-like, _checked set to`, this._checked)
         } else {
           this._value = newValue || 'on'
         }

@@ -170,7 +170,7 @@
             [:span.capitalize.px-2.py-1.rounded.text-xs
              {:class (case (:priority submitted-data)
                        "low" "ty-bg-neutral- ty-text-neutral"
-                       "medium" "ty-bg-info- ty-text-info"
+                       "medium" "ty-bg-info- ty-text"
                        "high" "ty-bg-warning- ty-text-warning"
                        "critical" "ty-bg-danger- ty-text-danger"
                        "ty-bg-neutral- ty-text-neutral")}
@@ -444,7 +444,7 @@
            [:div.flex.items-start.gap-3
             [:ty-icon {:name "mail"
                        :size "lg"
-                       :class "ty-text-info"}]
+                       :class "ty-text"}]
             [:div.flex-1
              [:ty-checkbox {:checked (:newsletter-consent form-data)
                             :on {:change (handle-checkbox-change :newsletter-consent)}}
@@ -563,8 +563,8 @@
          [:ty-icon {:name "info"
                     :size "sm"}]
          [:div.text-sm
-          [:p.ty-text-info.font-medium "Response Time"]
-          [:p.ty-text-info "We typically respond to all inquiries within 24 hours during business days. For urgent technical issues, please call us directly."]]]]]]
+          [:p.ty-text.font-medium "Response Time"]
+          [:p.ty-text "We typically respond to all inquiries within 24 hours during business days. For urgent technical issues, please call us directly."]]]]]]
 
      ;; Success Modal  
      (when success-modal-open

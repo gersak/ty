@@ -57,8 +57,8 @@
        :payload "{value, checked, formValue, originalEvent}"}])]
 
    [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
-    [:h4.text-sm.font-semibold.ty-text-info++.mb-2 "💡 How Checkbox Values Work"]
-    [:ul.space-y-1.ty-text-info.text-sm
+    [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 How Checkbox Values Work"]
+    [:ul.space-y-1.ty-text.text-sm
      [:li "• Content goes in the default slot (appears after the checkbox icon)"]
      [:li "• When " [:code.ty-bg-neutral-.px-1.rounded "checked"] ": submits the " [:code.ty-bg-neutral-.px-1.rounded "value"] " attribute"]
      [:li "• When " [:code.ty-bg-neutral-.px-1.rounded "unchecked"] ": submits nothing (null in FormData)"]

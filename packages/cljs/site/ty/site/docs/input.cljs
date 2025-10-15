@@ -187,8 +187,8 @@
      [:code.ty-bg-neutral-.px-1.rounded "multiline"] " for long text that should wrap."]]
 
    [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
-    [:h4.text-sm.font-semibold.ty-text-info++.mb-2 "💡 Copy Field Usage"]
-    [:ul.space-y-1.ty-text-info.text-sm
+    [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 Copy Field Usage"]
+    [:ul.space-y-1.ty-text.text-sm
      [:li "• Perfect for API keys, tokens, URLs, and install commands"]
      [:li "• Read-only display prevents accidental editing"]
      [:li "• Automatic icon animation provides visual feedback"]
@@ -247,8 +247,8 @@
      "When unchecked, submits nothing (null in FormData)."]]
 
    [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
-    [:h4.text-sm.font-semibold.ty-text-info++.mb-2 "💡 Checkbox vs Input vs Copy"]
-    [:ul.space-y-1.ty-text-info.text-sm
+    [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 Checkbox vs Input vs Copy"]
+    [:ul.space-y-1.ty-text.text-sm
      [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "ty-checkbox"] " for boolean states (agree/disagree, on/off)"]
      [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "ty-input"] " for text, numbers, dates, and other data entry"]
      [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "ty-copy"] " for read-only values that need copying (API keys, tokens, URLs)"]

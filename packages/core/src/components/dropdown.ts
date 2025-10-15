@@ -207,8 +207,11 @@ export class TyDropdown extends HTMLElement {
     // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
     // Check if value was set directly on the instance before our getter/setter was available
     const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+
     if (instanceValue && instanceValue.value !== undefined) {
       this._value = instanceValue.value
+      // CRITICAL: Also update state immediately
+      this._state.currentValue = this.parseValue(instanceValue.value)
       // Clean up the instance property so our getter/setter works
       delete this.value
     }
@@ -345,24 +348,30 @@ export class TyDropdown extends HTMLElement {
    * Initialize component state from attributes
    */
   private initializeState(): void {
+
     if (this._value) {
       this._state.currentValue = this.parseValue(this._value)
-      this.syncSelectedOption()
-      this.updateFormValue()
+
+      // CRITICAL: Options may not be slotted yet when connectedCallback runs
+      // Defer sync to next frame to ensure options are available
+      requestAnimationFrame(() => {
+        this.syncSelectedOption()
+        this.updateFormValue()
+      })
     }
 
     // Listen for clear-selection events from ty-options (mobile clear button)
     this.addEventListener('clear-selection', (e: Event) => {
       const customEvent = e as CustomEvent
       e.stopPropagation() // Prevent bubbling
-      
+
       // Clear the selection
       this.clearSelection()
       this._state.currentValue = null
       this.updateComponentValue()
       this.updateSelectionDisplay()
       this.updateFormValue()
-      
+
       // Dispatch change event
       this.dispatchEvent(new CustomEvent('change', {
         detail: {
@@ -374,7 +383,7 @@ export class TyDropdown extends HTMLElement {
         bubbles: true,
         composed: true
       }))
-      
+
       // If in mobile modal, close it
       if (this._state.open && this._state.mode === 'mobile') {
         this.closeMobileModal()
@@ -423,8 +432,11 @@ export class TyDropdown extends HTMLElement {
     }
 
     if (tag === 'TY-OPTION') {
+      // CRITICAL: Use .value property, not getAttribute!
+      // Framework may set property before attribute
+      const tyOption = element as any
       return {
-        value: element.getAttribute('value') || element.textContent || '',
+        value: tyOption.value || element.textContent || '',
         text: element.textContent || '',
         element
       }
@@ -472,7 +484,8 @@ export class TyDropdown extends HTMLElement {
     const isEmpty = !optionData.value || optionData.value.trim() === ''
 
     this.clearSelection()// If value is empty, just clear and don't clone anything
-    if (isEmpty) {this._state.currentValue = null
+    if (isEmpty) {
+      this._state.currentValue = null
     } else {
       // Clone option for display in stub
       const clone = option.cloneNode(true) as HTMLElement
@@ -552,27 +565,18 @@ export class TyDropdown extends HTMLElement {
     this.updateClearButton()
   }
 
-  /**
-   * Update clear button visibility
-   * Show only when:
-   * - clearable=true
-   * - has selection
-   * - not disabled
-   * - not readonly
-   * - dropdown is NOT open (only visible on stub, not during search)
-   */
   private updateClearButton(): void {
     const shadow = this.shadowRoot!
     const clearBtn = shadow.querySelector('.dropdown-clear-btn') as HTMLElement
     if (!clearBtn) return
 
     const hasSelection = this._state.currentValue !== null && this._state.currentValue !== ''
-    const shouldShow = this._clearable && 
-                      hasSelection && 
-                      !this._disabled && 
-                      !this._readonly &&
-                      !this._state.open &&
-                      this._state.mode !== 'mobile' // CRITICAL: Only show when dropdown is closed
+    const shouldShow = this._clearable &&
+      hasSelection &&
+      !this._disabled &&
+      !this._readonly &&
+      !this._state.open &&
+      this._state.mode !== 'mobile' // CRITICAL: Only show when dropdown is closed
 
     if (shouldShow) {
       clearBtn.style.display = 'block'
@@ -599,14 +603,6 @@ export class TyDropdown extends HTMLElement {
     }))
   }
 
-  // ============================================================================
-  // Phase 3: Option Visibility & Filtering Helpers
-  // (Used in Phase 4: Search & Filtering and Phase 5: Keyboard Navigation)
-  // ============================================================================
-
-  /**
-   * Filter options based on search query
-   */
   private filterOptions(options: OptionData[], query: string): OptionData[] {
     if (!query || query.trim() === '') {
       return options
@@ -618,11 +614,6 @@ export class TyDropdown extends HTMLElement {
     )
   }
 
-  /**
-   * Update visibility of options based on filtered list
-   * @internal Used in Phase 4
-   */
-  // @ts-ignore - Used in Phase 4
   private updateOptionVisibility(filteredOptions: OptionData[], allOptions: OptionData[]): void {
     const visibleValues = new Set(filteredOptions.map(opt => opt.value))
 
@@ -644,11 +635,6 @@ export class TyDropdown extends HTMLElement {
     })
   }
 
-  /**
-   * Highlight option at specific index
-   * @internal Used in Phase 5
-   */
-  // @ts-ignore - Used in Phase 5
   private highlightOption(options: OptionData[], index: number): void {
     this.clearHighlights(options)
 
@@ -713,8 +699,6 @@ export class TyDropdown extends HTMLElement {
 
   // ============================================================================
   // DESKTOP IMPLEMENTATION
-  // ============================================================================
-  // Phase 2: Dialog & Positioning
   // ============================================================================
 
   /**
@@ -907,10 +891,6 @@ export class TyDropdown extends HTMLElement {
     }
   }
 
-  // ============================================================================
-  // Phase 4: Search & Filtering
-  // ============================================================================
-
   /**
    * Handle search input changes
    */
@@ -1001,7 +981,7 @@ export class TyDropdown extends HTMLElement {
   }
 
   // ============================================================================
-  // Phase 5: Keyboard Navigation
+  // Keyboard Navigation
   // ============================================================================
 
   /**
@@ -1233,12 +1213,12 @@ export class TyDropdown extends HTMLElement {
     const existingLabel = shadow.querySelector('.dropdown-label')
     const container = shadow.querySelector('.dropdown-container')
     const wrapper = shadow.querySelector('.dropdown-wrapper')
-    
+
     if (this._label) {
       if (existingLabel) {
         // Label exists, update it
         existingLabel.innerHTML = this._label + (this._required ? '<span class="required-icon">' + REQUIRED_ICON_SVG + '</span>' : '')
-        ;(existingLabel as HTMLElement).style.display = 'flex'
+          ; (existingLabel as HTMLElement).style.display = 'flex'
       } else if (container && wrapper) {
         // Label doesn't exist but we need one - CREATE IT!
         const labelEl = document.createElement('label')
@@ -1248,9 +1228,9 @@ export class TyDropdown extends HTMLElement {
       }
     } else if (existingLabel) {
       // No label text, hide existing label
-      ;(existingLabel as HTMLElement).style.display = 'none'
+      ; (existingLabel as HTMLElement).style.display = 'none'
     }
-    
+
     // Always update selection display
     this.updateSelectionDisplay()
   }
@@ -1439,21 +1419,21 @@ export class TyDropdown extends HTMLElement {
   }
 
 
-  
+
   /**
    * Handle clear click in mobile modal
    */
   private handleMobileClearClick(e: Event): void {
     e.preventDefault()
     e.stopPropagation()
-    
+
     // Clear the selection
     this.clearSelection()
     this._state.currentValue = null
     this.updateComponentValue()
     this.updateSelectionDisplay()
     this.updateFormValue()
-    
+
     // Dispatch change event
     this.dispatchEvent(new CustomEvent('change', {
       detail: {
@@ -1465,16 +1445,16 @@ export class TyDropdown extends HTMLElement {
       bubbles: true,
       composed: true
     }))
-    
+
     // Close the modal after clearing
     this.closeMobileModal()
   }
-  
 
 
-/**
-   * Open mobile modal
-   */
+
+  /**
+     * Open mobile modal
+     */
   private openMobileModal(): void {
     const shadow = this.shadowRoot!
     const modal = shadow.querySelector('.mobile-modal') as HTMLElement

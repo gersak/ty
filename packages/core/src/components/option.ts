@@ -75,6 +75,7 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
     // Check if value was set directly on the instance before our getter/setter was available
     const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
+
     if (instanceValue && instanceValue.value !== undefined) {
       this._value = instanceValue.value
       // Clean up the instance property so our getter/setter works
@@ -84,7 +85,7 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     this.render()
   }
 
-  
+
   disconnectedCallback(): void {
     // Clean up clear button event listener
     this.removeClearButtonListener()
@@ -119,11 +120,19 @@ export class TyOption extends HTMLElement implements TyOptionElement {
    * Property takes precedence (for framework compatibility).
    */
   private getOptionValue(): string {
-    const propValue = this._value
+    // Explicit priority: property > attribute > textContent
+    // This correctly handles empty strings
+    
+    if (this._value !== undefined) {
+      return this._value
+    }
+    
     const attrValue = this.getAttribute('value')
-    const textValue = this.textContent?.trim() || ''
-    const resolved = propValue || attrValue || textValue
-    return resolved
+    if (attrValue !== null) {
+      return attrValue
+    }
+    
+    return this.textContent?.trim() || ''
   }
 
   // Public API - Getters/Setters
@@ -217,7 +226,8 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     if (this._clearButtonHandler) {
       const clearBtn = this.shadowRoot?.querySelector('.option-clear-btn')
       if (clearBtn) {
-        clearBtn.removeEventListener('click', this._clearButtonHandler)}
+        clearBtn.removeEventListener('click', this._clearButtonHandler)
+      }
       this._clearButtonHandler = null
     }
   }
@@ -233,7 +243,7 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     this._clearButtonHandler = (e: Event) => {
       e.preventDefault()
       e.stopPropagation()
-      
+
       this.dispatchEvent(new CustomEvent('clear-selection', {
         bubbles: true,
         composed: true,
@@ -245,9 +255,9 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     clearBtn.addEventListener('click', this._clearButtonHandler)
   }
 
-    /**
-   * Render the option component with rich HTML content and property sync
-   */
+  /**
+ * Render the option component with rich HTML content and property sync
+ */
   private render(): void {
     const shadow = this.shadowRoot!
     const value = this.getOptionValue()
@@ -346,16 +356,6 @@ export class TyOption extends HTMLElement implements TyOptionElement {
         content.setAttribute('hidden', '')
       } else {
         content.removeAttribute('hidden')
-      }
-    }
-
-    // CRITICAL: Ensure value property is set using robust resolution
-    // This handles cases where frameworks set property before connection
-    if (value) {
-      this._value = value
-      // Also ensure attribute is set for CSS selectors and debugging
-      if (!this.hasAttribute('value')) {
-        this.setAttribute('value', value)
       }
     }
   }

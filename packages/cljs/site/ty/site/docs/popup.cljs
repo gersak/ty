@@ -25,29 +25,93 @@
    [:h2.text-xl.font-semibold.ty-text++.mb-4 "API Reference"]
 
    ;; Attributes
+   [:h3.text-lg.font-semibold.ty-text+.mb-3 "Attributes"]
    (attribute-table
-     [{:name "manual"
-       :type "boolean"
-       :default "false"
-       :description "Override click trigger - popup opens only via JavaScript"}
-      {:name "disable-close"
-       :type "boolean"
-       :default "false"
-       :description "Disable auto-close - popup closes only via JavaScript"}
-      {:name "placement"
-       :type "string"
-       :default "\"bottom\""
-       :description "Preferred placement position: \"top\", \"bottom\", \"left\", \"right\""}
-      {:name "offset"
-       :type "number"
-       :default "8"
-       :description "Distance in pixels between the popup and anchor element"}])
+    [{:name "manual"
+      :type "boolean"
+      :default "false"
+      :description "Override click trigger - popup opens only via JavaScript"}
+     {:name "disable-close"
+      :type "boolean"
+      :default "false"
+      :description "Disable auto-close - popup closes only via JavaScript"}
+     {:name "placement"
+      :type "string"
+      :default "\"bottom\""
+      :description "Preferred placement position: \"top\", \"bottom\", \"left\", \"right\""}
+     {:name "offset"
+      :type "number"
+      :default "8"
+      :description "Distance in pixels between the popup and anchor element"}])
+
+   ;; Events
+   [:div.mt-6
+    [:h3.text-lg.font-semibold.ty-text+.mb-3 "Events"]
+    (event-table
+     [{:name "ty:popup-open"
+       :when-fired "Fired when popup opens"
+       :payload "None (bubbles: true)"}
+      {:name "ty:popup-close"
+       :when-fired "Fired when popup closes"
+       :payload "None (bubbles: true)"}
+      {:name "ty:close-popup"
+       :when-fired "Custom event to request popup closure from inside content"
+       :payload "None"}])]
+
+   ;; Methods
+   [:div.mt-6
+    [:h3.text-lg.font-semibold.ty-text+.mb-3 "Methods"]
+    [:div.overflow-x-auto
+     [:table.w-full.text-sm
+      [:thead.ty-border-b.ty-border
+       [:tr
+        [:th.text-left.py-2.px-4.ty-text+ "Method"]
+        [:th.text-left.py-2.px-4.ty-text+ "Description"]]]
+      [:tbody.divide-y.ty-border--
+       [:tr
+        [:td.py-2.px-4.font-mono.text-xs "openPopup()"]
+        [:td.py-2.px-4.ty-text- "Programmatically open the popup"]]
+       [:tr
+        [:td.py-2.px-4.font-mono.text-xs "closePopup()"]
+        [:td.py-2.px-4.ty-text- "Programmatically close the popup"]]
+       [:tr
+        [:td.py-2.px-4.font-mono.text-xs "togglePopup()"]
+        [:td.py-2.px-4.ty-text- "Toggle popup open/close state"]]]]]]
 
    ;; Structure
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text+.mb-3 "Structure"]
     (code-block
-      "<!-- Parent-child relationship with defaults: click to open, ESC/outside to close -->\n<ty-button>\n  Click me\n  <ty-popup>\n    <div>Popup content</div>\n  </ty-popup>\n</ty-button>")]])
+     "<!-- Parent-child relationship with defaults: click to open, ESC/outside to close -->
+<ty-button>
+  Click me
+  <ty-popup>
+    <div>Popup content</div>
+  </ty-popup>
+</ty-button>
+
+<!-- Programmatic control -->
+<script>
+const popup = document.querySelector('ty-popup');
+
+// Open
+popup.openPopup();
+
+// Close
+popup.closePopup();
+
+// Toggle
+popup.togglePopup();
+
+// Listen for events
+popup.addEventListener('ty:popup-open', () => {
+  console.log('Popup opened!');
+});
+
+popup.addEventListener('ty:popup-close', () => {
+  console.log('Popup closed!');
+});
+</script>")]])
 
 (defn basic-usage-section []
   [:div.ty-content.rounded-lg.p-6.mb-8
@@ -71,7 +135,7 @@
          "Cancel"]]]]]]
 
    (code-block
-     "<!-- Basic popup with smart defaults -->
+    "<!-- Basic popup with smart defaults -->
 <ty-button flavor=\"primary\">
   Click to Open Popup
   <ty-popup placement=\"bottom\">
@@ -114,7 +178,7 @@
            "Cancel"]]]]]]
 
      (code-block
-       ";; ClojureScript - Current Best Practice\n[:ty-button {:flavor \"primary\"}\n \"Delete Item\"\n [:ty-popup {:placement \"bottom\" :disable-close true}\n  [:div.p-6.ty-elevated.rounded-lg.w-96\n   [:h4 \"Delete Item?\"]\n   [:p \"This action cannot be undone.\"]\n   [:div.flex.gap-3.justify-end\n    [:ty-button {:flavor \"danger\" :size \"sm\"\n                 :on {:click (fn [^js e]\n                               (delete-item! item-id)\n                               ;; Close using closest - CURRENT BEST PRACTICE\n                               (.closePopup (.closest (.-target e) \"ty-popup\")))}}]\n     \"Delete\"]\n    [:ty-button {:flavor \"ghost\" :size \"sm\"\n                 :on {:click (fn [^js e]\n                               (.closePopup (.closest (.-target e) \"ty-popup\")))}}]\n     \"Cancel\"]]]]]" "clojure")]
+      ";; ClojureScript - Current Best Practice\n[:ty-button {:flavor \"primary\"}\n \"Delete Item\"\n [:ty-popup {:placement \"bottom\" :disable-close true}\n  [:div.p-6.ty-elevated.rounded-lg.w-96\n   [:h4 \"Delete Item?\"]\n   [:p \"This action cannot be undone.\"]\n   [:div.flex.gap-3.justify-end\n    [:ty-button {:flavor \"danger\" :size \"sm\"\n                 :on {:click (fn [^js e]\n                               (delete-item! item-id)\n                               ;; Close using closest - CURRENT BEST PRACTICE\n                               (.closePopup (.closest (.-target e) \"ty-popup\")))}}]\n     \"Delete\"]\n    [:ty-button {:flavor \"ghost\" :size \"sm\"\n                 :on {:click (fn [^js e]\n                               (.closePopup (.closest (.-target e) \"ty-popup\")))}}]\n     \"Cancel\"]]]]]" "clojure")]
 
     ;; JavaScript Best Practice
     [:div.ty-content.rounded-lg.p-6
@@ -122,7 +186,7 @@
      [:p.ty-text-.mb-4 "Clean pattern for closing popups from within their content."]
 
      (code-block
-       "// JavaScript - Current Best Practice\n\n// Generic close function for any button inside popup\nfunction closePopup(buttonElement) {\n  const popup = buttonElement.closest('ty-popup');\n  if (popup) {\n    popup.closePopup();\n  }\n}\n\n// React example\nfunction ConfirmDialog({ onConfirm }) {\n  const handleConfirm = (e) => {\n    onConfirm();\n    // Close popup using closest - CURRENT BEST PRACTICE\n    const popup = e.target.closest('ty-popup');\n    popup?.closePopup();\n  };\n\n  return (\n    <div className=\"p-6 ty-elevated rounded-lg w-96\">\n      <h4>Confirm Action</h4>\n      <button onClick={handleConfirm}>\n        Confirm\n      </button>\n      <button onClick={(e) => {\n        const popup = e.target.closest('ty-popup');\n        popup?.closePopup();\n      }}>\n        Cancel\n      </button>\n    </div>\n  );\n}" "javascript")]]])
+      "// JavaScript - Current Best Practice\n\n// Generic close function for any button inside popup\nfunction closePopup(buttonElement) {\n  const popup = buttonElement.closest('ty-popup');\n  if (popup) {\n    popup.closePopup();\n  }\n}\n\n// React example\nfunction ConfirmDialog({ onConfirm }) {\n  const handleConfirm = (e) => {\n    onConfirm();\n    // Close popup using closest - CURRENT BEST PRACTICE\n    const popup = e.target.closest('ty-popup');\n    popup?.closePopup();\n  };\n\n  return (\n    <div className=\"p-6 ty-elevated rounded-lg w-96\">\n      <h4>Confirm Action</h4>\n      <button onClick={handleConfirm}>\n        Confirm\n      </button>\n      <button onClick={(e) => {\n        const popup = e.target.closest('ty-popup');\n        popup?.closePopup();\n      }}>\n        Cancel\n      </button>\n    </div>\n  );\n}" "javascript")]]])
 
 (defn examples-section []
   [:div
@@ -131,40 +195,40 @@
    [:div.space-y-8
     ;; Contact Form Example
     (example-section
-      "Interactive Contact Form"
-      [:ty-button {:flavor "primary"}
-       "Contact Form"
-       [:ty-popup {:placement "bottom"
-                   :offset "8"}
-        [:div.p-6.ty-elevated.rounded-lg.w-80.border.ty-border+
-         [:h4.font-bold.mb-4 "Contact Us"]
-         [:div.space-y-4
-          [:ty-input
-           {:label "Name"
-            :placeholder "Your name"
-            :required true}]
-          [:ty-input
-           {:label "Email"
-            :type "email"
-            :placeholder "your@email.com"
-            :required true}]
-          [:ty-textarea
-           {:label "Message"
-            :placeholder "Your message..."
-            :rows 3
-            :required true}]
-          [:div.flex.gap-2.pt-2
-           [:ty-button {:flavor "success"
-                        :size "sm"
-                        :on {:click (fn [^js e]
-                                      (js/alert "Form submitted!")
-                                      (.closePopup (.closest (.-target e) "ty-popup")))}}
-            "Submit"]
-           [:ty-button {:size "sm"
-                        :on {:click (fn [^js e]
-                                      (.closePopup (.closest (.-target e) "ty-popup")))}}
-            "Cancel"]]]]]]
-      "<!-- Interactive popup with form controls -->
+     "Interactive Contact Form"
+     [:ty-button {:flavor "primary"}
+      "Contact Form"
+      [:ty-popup {:placement "bottom"
+                  :offset "8"}
+       [:div.p-6.ty-elevated.rounded-lg.w-80.border.ty-border+
+        [:h4.font-bold.mb-4 "Contact Us"]
+        [:div.space-y-4
+         [:ty-input
+          {:label "Name"
+           :placeholder "Your name"
+           :required true}]
+         [:ty-input
+          {:label "Email"
+           :type "email"
+           :placeholder "your@email.com"
+           :required true}]
+         [:ty-textarea
+          {:label "Message"
+           :placeholder "Your message..."
+           :rows 3
+           :required true}]
+         [:div.flex.gap-2.pt-2
+          [:ty-button {:flavor "success"
+                       :size "sm"
+                       :on {:click (fn [^js e]
+                                     (js/alert "Form submitted!")
+                                     (.closePopup (.closest (.-target e) "ty-popup")))}}
+           "Submit"]
+          [:ty-button {:size "sm"
+                       :on {:click (fn [^js e]
+                                     (.closePopup (.closest (.-target e) "ty-popup")))}}
+           "Cancel"]]]]]]
+     "<!-- Interactive popup with form controls -->
 <ty-button flavor=\"primary\">
   Contact Form
   <ty-popup placement=\"bottom\">
@@ -190,26 +254,26 @@
 
     ;; Protected Dialog Example
     (example-section
-      "Protected Dialog (disable-close)"
-      [:ty-button {:flavor "warning"}
-       "Protected Dialog"
-       [:ty-popup {:placement "bottom"
-                   :disable-close true}
-        [:div.p-6.ty-elevated.rounded-lg.w-80
-         [:h4.ty-text++.font-bold.mb-4 "Are you sure?"]
-         [:p.ty-text-.mb-6 "This popup won't close when clicking outside or pressing ESC. You must choose an action."]
-         [:div.flex.gap-2.justify-end
-          [:ty-button {:flavor "danger"
-                       :size "sm"
-                       :on {:click (fn [^js e]
-                                     (js/alert "Deleted!")
-                                     (.closePopup (.closest (.-target e) "ty-popup")))}}
-           "Delete"]
-          [:ty-button {:size "sm"
-                       :on {:click (fn [^js e]
-                                     (.closePopup (.closest (.-target e) "ty-popup")))}}
-           "Cancel"]]]]]
-      "<!-- Popup that ignores outside clicks and ESC key -->
+     "Protected Dialog (disable-close)"
+     [:ty-button {:flavor "warning"}
+      "Protected Dialog"
+      [:ty-popup {:placement "bottom"
+                  :disable-close true}
+       [:div.p-6.ty-elevated.rounded-lg.w-80
+        [:h4.ty-text++.font-bold.mb-4 "Are you sure?"]
+        [:p.ty-text-.mb-6 "This popup won't close when clicking outside or pressing ESC. You must choose an action."]
+        [:div.flex.gap-2.justify-end
+         [:ty-button {:flavor "danger"
+                      :size "sm"
+                      :on {:click (fn [^js e]
+                                    (js/alert "Deleted!")
+                                    (.closePopup (.closest (.-target e) "ty-popup")))}}
+          "Delete"]
+         [:ty-button {:size "sm"
+                      :on {:click (fn [^js e]
+                                    (.closePopup (.closest (.-target e) "ty-popup")))}}
+          "Cancel"]]]]]
+     "<!-- Popup that ignores outside clicks and ESC key -->
 <ty-button flavor=\"warning\">
   Protected Dialog
   <ty-popup placement=\"bottom\" disable-close=\"true\">
@@ -230,33 +294,33 @@
 
     ;; Placement Options Example
     (example-section
-      "Placement Options"
-      [:div.grid.grid-cols-2.gap-4.items-center
-       [:div
-        [:ty-button {:flavor "primary"}
-         "Top Popup"
-         [:ty-popup {:placement "top"}
-          [:div.p-3.ty-bg-primary+.rounded.ty-text++ "Appears above"]]]]
+     "Placement Options"
+     [:div.grid.grid-cols-2.gap-4.items-center
+      [:div
+       [:ty-button {:flavor "primary"}
+        "Top Popup"
+        [:ty-popup {:placement "top"}
+         [:div.p-3.ty-bg-primary+.rounded.ty-text++ "Appears above"]]]]
 
-       [:div
-        [:ty-button {:flavor "success"}
-         "Bottom Popup"
-         [:ty-popup {:placement "bottom"}
-          [:div.p-3.ty-bg-success+.rounded.ty-text++ "Appears below"]]]]
+      [:div
+       [:ty-button {:flavor "success"}
+        "Bottom Popup"
+        [:ty-popup {:placement "bottom"}
+         [:div.p-3.ty-bg-success+.rounded.ty-text++ "Appears below"]]]]
 
-       [:div
-        [:ty-button {:flavor "warning"}
-         "Left Popup"
-         [:ty-popup {:placement "left"}
-          [:div.p-3.ty-bg-warning+.rounded.ty-text++ "Appears to the left"]]]]
+      [:div
+       [:ty-button {:flavor "warning"}
+        "Left Popup"
+        [:ty-popup {:placement "left"}
+         [:div.p-3.ty-bg-warning+.rounded.ty-text++ "Appears to the left"]]]]
 
-       [:div
-        [:ty-button
-         {:flavor "danger"}
-         "Right Popup"
-         [:ty-popup {:placement "right"}
-          [:div.p-3.ty-bg-danger+.rounded.ty-text++ "Appears to the right"]]]]]
-      "<!-- Different placement options -->
+      [:div
+       [:ty-button
+        {:flavor "danger"}
+        "Right Popup"
+        [:ty-popup {:placement "right"}
+         [:div.p-3.ty-bg-danger+.rounded.ty-text++ "Appears to the right"]]]]]
+     "<!-- Different placement options -->
 <ty-button flavor=\"primary\">
   Top Popup
   <ty-popup placement=\"top\">

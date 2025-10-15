@@ -20,7 +20,6 @@
   background: #10b981;
   color: white;
   padding: 0.125rem 0.5rem;
-  border-radius: 0.375rem;
   font-size: 0.5rem;
   font-weight: 600;
   text-align: center;
@@ -28,11 +27,11 @@
 }
 
 .hotel-calendar-day .price-tag.weekend-price {
-  background: #10b981;
+  background: #2da87f;
 }
 
 .hotel-calendar-day .price-tag.high-demand {
-  background: #f59e0b;
+  background: #e55c1e;
 }
 
 .hotel-calendar-day.other-month {

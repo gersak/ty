@@ -73,17 +73,17 @@
 (router/link ::router/root
              (concat
               ;; Extract route configs from site-routes  
-              site-routes
+               site-routes
               ;; Add component routes - docs-components already have correct structure
-              (map (fn [route]
-                     (-> route
-                         (update :segment (fn [segment] (str "docs/" segment)))))
-                   component-routes)
+               (map (fn [route]
+                      (-> route
+                          (update :segment (fn [segment] (str "docs/" segment)))))
+                    component-routes)
               ;; Add guide routes - docs/guide-components  
-              (map (fn [route]
-                     (-> route
-                         (select-keys [:id :segment :name])
-                         (update :segment (fn [segment] (str "docs/" segment))))) guide-routes)))
+               (map (fn [route]
+                      (-> route
+                          (select-keys [:id :segment :name])
+                          (update :segment (fn [segment] (str "docs/" segment))))) guide-routes)))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -118,10 +118,10 @@
   (let [active? (router/rendered? route-id true)]
     [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
      {:class (concat
-              (if active?
-                ["ty-bg-primary-" "ty-text-primary++"]
-                ["hover:ty-bg-neutral" "ty-text"])
-              (when indented? ["pl-8"])) ; Indent child items
+               (if active?
+                 ["ty-bg-primary-" "ty-text-primary++"]
+                 ["hover:ty-bg-neutral" "ty-text"])
+               (when indented? ["pl-8"])) ; Indent child items
       :on {:click (fn []
                     ;; Check if target route has hash before navigation
                     (let [should-scroll-top? (should-scroll-for-route? route-id)]
@@ -130,15 +130,6 @@
                       ;; Scroll to top only for non-fragment routes
                       (when should-scroll-top?
                         (js/setTimeout scroll-main-to-top! 100))
-                      ;; If it has a hash, scroll to that section
-                      (when-not should-scroll-top?
-                        (js/setTimeout
-                         #(when-let [hash (:hash (last (router/url->components
-                                                        (:tree @router/*router*)
-                                                        (router/component-path (:tree @router/*router*) route-id))))]
-                            (when-let [target (.getElementById js/document hash)]
-                              (.scrollIntoView target #js {:behavior "smooth" :block "start"})))
-                         200))
                       ;; Close mobile menu
                       (swap! state assoc :mobile-menu-open false)))}}
      (when icon
@@ -172,58 +163,58 @@
   [:div.space-y-6
    ;; Main Navigation
    (nav-section
-    {:items [(let [route (first (filter #(= (:id %) ::landing) site-routes))]
-               {:route-id (:id route)
-                :label (:name route)
-                :icon (:icon route)})]})
+     {:items [(let [route (first (filter #(= (:id %) ::landing) site-routes))]
+                {:route-id (:id route)
+                 :label (:name route)
+                 :icon (:icon route)})]})
 
    ;; Why ty Section
    (nav-section
-    {:items [{:route-id ::why
-              :label "Why ty exists"
-              :icon "lightbulb"}]})
+     {:items [{:route-id ::why
+               :label "Why ty exists"
+               :icon "lightbulb"}]})
 
    ;; Tabs Test Section
    #_(nav-section
-      {:title "Development"
-       :items [{:route-id ::tabs-test
-                :label "Tabs Test"
-                :icon "layout"}]})
+       {:title "Development"
+        :items [{:route-id ::tabs-test
+                 :label "Tabs Test"
+                 :icon "layout"}]})
 
    ;; Examples Section (unified router navigation)
    (nav-section
-    {:title "Live Examples"
-     :items [{:route-id ::landing-user-profile
-              :label "User Profile"
-              :icon "user"}
-             {:route-id ::landing-event-booking
-              :label "Event Booking"
-              :icon "calendar"}
-             {:route-id ::landing-contact-form
-              :label "Contact Form"
-              :icon "mail"}]})
+     {:title "Live Examples"
+      :items [{:route-id ::landing-user-profile
+               :label "User Profile"
+               :icon "user"}
+              {:route-id ::landing-event-booking
+               :label "Event Booking"
+               :icon "calendar"}
+              {:route-id ::landing-contact-form
+               :label "Contact Form"
+               :icon "mail"}]})
 
    ;; Quickstart (route navigation)
    (nav-section
-    {:title "Quickstart"
-     :items (for [route guide-routes]
-              {:route-id (:id route)
-               :label (:name route)
-               :icon (:icon route)})})
+     {:title "Quickstart"
+      :items (for [route guide-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)})})
 
    ;; Components Section (route navigation to component docs)
    (nav-section
-    {:title "Components"
-     :items (for [route component-routes]
-              {:route-id (:id route)
-               :label (:name route)
-               :icon (:icon route)
-               :children (when-let [children (:children route)]
-                           (map (fn [child]
-                                  {:route-id (:id child)
-                                   :label (:name child)
-                                   :icon (:icon child)})
-                                children))})})])
+     {:title "Components"
+      :items (for [route component-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)
+                :children (when-let [children (:children route)]
+                            (map (fn [child]
+                                   {:route-id (:id child)
+                                    :label (:name child)
+                                    :icon (:icon child)})
+                                 children))})})])
 
 (defn flatten-routes
   "Recursively flatten routes including children"

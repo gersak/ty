@@ -160,16 +160,17 @@ function getOrCreatePopover(el: TyTooltip): HTMLElement {
     const styles = `
       position: fixed;
       margin: 0;
-      padding: 6px 10px;
-      background: var(--ty-bg-neutral-soft, #4b5563);
-      color: var(--ty-color-neutral-strong, #f3f4f6);
-      border: 2px solid var(--ty-border-strong, #6b7280);
-      border-radius: 4px;
+      padding: 8px 12px;
+      background: var(--ty-tooltip-bg, #1f2937);
+      color: #ffffff;
+      border: none;
+      border-radius: 6px;
       font-size: var(--ty-font-sm, 14px);
       font-weight: var(--ty-font-semibold, 600);
       line-height: 1.5;
       max-width: 250px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
       user-select: none;
       pointer-events: none;
     `;

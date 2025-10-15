@@ -94,20 +94,36 @@
                    ["day-click" "day-select"])]
       (.dispatchEvent el event))))
 
+(defn day-context->js
+  "Convert day context to JS object with explicit integer coercion for numeric fields.
+   This ensures custom render functions receive proper JavaScript integers."
+  [day-context]
+  (-> day-context
+      (update :year int)
+      (update :month int)
+      (update :day-in-month int)
+      (update :day-in-week int)
+      (update :week-in-year int)
+      (update :value int)
+      (->js)))
+
 (defn render-day-cell
   "Render a single day cell with customizable content and styling"
   [day-context ^js el day-content-fn day-classes-fn]
   (let [day-element (.createElement js/document "div")
 
+        ;; Convert day context to JS with proper integer coercion
+        js-context (day-context->js day-context)
+
         ;; Get content using render function or default
         content (if (ifn? day-content-fn)
-                  (day-content-fn (->js day-context))
-                  (default-day-content (->js day-context)))
+                  (day-content-fn js-context)
+                  (default-day-content js-context))
 
         ;; Get classes using render function or default  
         classes (if day-classes-fn
-                  (day-classes-fn (->js day-context))
-                  (default-day-classes (->js day-context)))]
+                  (day-classes-fn js-context)
+                  (default-day-classes js-context))]
 
     ;; STRICT DOM-ONLY CHECK: Throw error immediately if custom function returns non-DOM content
     (when (and day-content-fn content (not (.-nodeType content)))

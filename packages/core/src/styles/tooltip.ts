@@ -1,7 +1,8 @@
 /**
  * Tooltip Styles
  * 
- * CSS for ty-tooltip component with semantic flavor system
+ * Bold, button-like tooltips with high contrast and semantic colors.
+ * Designed to grab attention and provide clear, readable information.
  */
 
 import type { StyleContent } from '../types/common.js';
@@ -30,7 +31,10 @@ export const tooltipStyles: StyleContent = {
   pointer-events: none;
   user-select: none;
   -webkit-user-select: none;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1), var(--ty-shadow-md);
+  
+  /* Bold shadow for depth */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 
+              0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 
 /* When open */
@@ -39,18 +43,27 @@ export const tooltipStyles: StyleContent = {
   opacity: 1;
 }
 
-/* Default tooltip content styles */
+/* Base tooltip styling - Dark inverted style (like buttons) */
 #tooltip-container {
-  /* Base styles */
-  background: var(--ty-bg-neutral-soft);
-  color: var(--ty-color-neutral-strong);
-  padding: var(--ty-tooltip-padding, 6px 10px);
-  border-radius: var(--ty-tooltip-radius, 4px);
-  border: 2px solid var(--ty-border-strong);
+  /* Bold, high-contrast styling */
+  background: var(--ty-tooltip-bg, #1f2937);
+  color: var(--ty-tooltip-color, #ffffff);
+  
+  /* Comfortable padding */
+  padding: var(--ty-tooltip-padding, 8px 12px);
+  border-radius: var(--ty-tooltip-radius, 6px);
+  
+  /* No border - solid color provides contrast */
+  border: none;
+  
+  /* Sizing */
   max-width: var(--ty-tooltip-max-width, 250px);
-  font-size: var(--ty-font-sm);
-  font-weight: var(--ty-font-semibold);
+  
+  /* Typography - clear and readable */
+  font-size: var(--ty-font-sm, 14px);
+  font-weight: var(--ty-font-semibold, 600);
   line-height: 1.5;
+  text-align: center;
 }
 
 /* Content slot */
@@ -61,59 +74,65 @@ export const tooltipStyles: StyleContent = {
   line-height: inherit;
 }
 
-/* Flavor variants - semantic colors */
+/* ============================================ */
+/* Flavor Variants - Bold, Button-like Colors  */
+/* ============================================ */
+
+/* Primary - Bold blue (like primary button) */
 #tooltip-container[data-flavor="primary"] {
-  background: var(--ty-bg-primary);
-  color: var(--ty-color-primary-strong);
-  border-color: var(--ty-border-primary);
+  background: var(--ty-color-primary, #3b82f6);
+  color: #ffffff;
 }
 
-#tooltip-container[data-flavor="secondary"] {
-  background: var(--ty-bg-secondary);
-  color: var(--ty-color-secondary-strong);
-  border-color: var(--ty-border-secondary);
-}
-
+/* Success - Bold green */
 #tooltip-container[data-flavor="success"] {
-  background: var(--ty-bg-success-mild);
-  color: var(--ty-color-success-strong);
-  border-color: var(--ty-border-success);
+  background: var(--ty-color-success, #10b981);
+  color: #ffffff;
 }
 
+/* Danger - Bold red */
 #tooltip-container[data-flavor="danger"] {
-  background: var(--ty-bg-danger);
-  color: var(--ty-color-danger-strong);
-  border-color: var(--ty-border-danger);
+  background: var(--ty-color-danger, #ef4444);
+  color: #ffffff;
 }
 
+/* Warning - Bold orange/amber */
 #tooltip-container[data-flavor="warning"] {
-  background: var(--ty-bg-warning);
-  color: var(--ty-color-warning-strong);
-  border-color: var(--ty-border-warning);
+  background: var(--ty-color-warning, #f59e0b);
+  color: #ffffff;
 }
 
+/* Info - Bold cyan/blue */
 #tooltip-container[data-flavor="info"] {
-  background: var(--ty-bg-info);
-  color: var(--ty-text-strong);
-  border-color: var(--ty-border-info);
+  background: var(--ty-color-info, #06b6d4);
+  color: #ffffff;
 }
 
-#tooltip-container[data-flavor="light"] {
-  background: var(--ty-surface-elevated);
-  color: var(--ty-text-strong);
-  border-color: var(--ty-border);
-}
-
-#tooltip-container[data-flavor="dark"] {
-  background: var(--ty-bg-neutral-soft);
-  color: var(--ty-color-neutral-strong);
-  border-color: var(--ty-border-strong);
-}
-
+/* Neutral - Medium gray (default alternative) */
 #tooltip-container[data-flavor="neutral"] {
-  background: var(--ty-bg-neutral);
-  color: var(--ty-color-neutral-strong);
-  border-color: var(--ty-border-neutral);
+  background: var(--ty-color-neutral, #6b7280);
+  color: #ffffff;
+}
+
+/* Light - For dark backgrounds */
+#tooltip-container[data-flavor="light"] {
+  background: var(--ty-surface-elevated, #ffffff);
+  color: var(--ty-text-strong, #111827);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.15), 
+              0 4px 6px -4px rgba(0, 0, 0, 0.1),
+              0 0 0 1px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark - Inverted style (default) */
+#tooltip-container[data-flavor="dark"] {
+  background: var(--ty-tooltip-bg, #1f2937);
+  color: #ffffff;
+}
+
+/* Secondary - Purple/indigo */
+#tooltip-container[data-flavor="secondary"] {
+  background: var(--ty-color-secondary, #8b5cf6);
+  color: #ffffff;
 }
 `,
 };

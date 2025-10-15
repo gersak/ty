@@ -62,7 +62,9 @@
                                  (set! (.-dayContentFn el)
                                        (fn [day-context]
 
-                                         (let [{:keys [other-month today? day-in-month]} (->clj day-context)
+                                         (let [{other-month :otherMont
+                                                today? :today
+                                                day-in-month :dayInMonth} (->clj day-context)
                                                availability (cond
                                                               (< day-in-month 5) "booked" ; First few days booked
                                                               (< day-in-month 15) "available" ; Middle days available

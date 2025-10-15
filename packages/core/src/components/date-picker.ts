@@ -107,6 +107,7 @@ type DateFormatType = 'short' | 'medium' | 'long' | 'full';
  */
 export interface DatePickerChangeDetail {
   value: string | null;        // UTC ISO string
+  localValue: string | null;   // Local datetime-local format (e.g., "2024-09-21T10:30")
   milliseconds: number | null; // Epoch timestamp
   formatted: string | null;    // Local formatted display
   source: 'selection' | 'time-change' | 'clear' | 'external';
@@ -220,6 +221,36 @@ function componentsToOutputValue(components: DateComponents, withTime: boolean):
 
   const dateObj = componentsToDateObject(components);
   return dateObj ? dateObj.toISOString() : null;
+}
+
+/**
+ * Convert internal components to local datetime-local format.
+ * 
+ * For date+time mode: Outputs local datetime without timezone
+ * Example: '2024-09-21T10:30'
+ * 
+ * For date-only mode: Outputs date only
+ * Example: '2024-09-21'
+ * 
+ * This format matches HTML5 <input type="datetime-local"> and is useful
+ * for setting other inputs or displaying local time without timezone conversion.
+ */
+function componentsToLocalValue(components: DateComponents, withTime: boolean): string | null {
+  if (!components.year || !components.month || !components.day) {
+    return null;
+  }
+
+  const year = components.year.toString().padStart(4, '0');
+  const month = components.month.toString().padStart(2, '0');
+  const day = components.day.toString().padStart(2, '0');
+
+  if (withTime) {
+    const hour = (components.hour || 0).toString().padStart(2, '0');
+    const minute = (components.minute || 0).toString().padStart(2, '0');
+    return `${year}-${month}-${day}T${hour}:${minute}`;
+  } else {
+    return `${year}-${month}-${day}`;
+  }
 }
 
 /**
@@ -903,6 +934,7 @@ export class TyDatePicker extends HTMLElement {
    */
   private emitChangeEvent(components: DateComponents | null, source: 'selection' | 'time-change' | 'clear' | 'external'): void {
     const utcValue = components ? componentsToOutputValue(components, this._state.withTime) : null;
+    const localValue = components ? componentsToLocalValue(components, this._state.withTime) : null;
     const milliseconds = components ? componentsToDateObject(components)?.getTime() ?? null : null;
     const formatted = components ? formatDisplayValue(
       components,
@@ -913,6 +945,7 @@ export class TyDatePicker extends HTMLElement {
 
     const detail: DatePickerChangeDetail = {
       value: utcValue,
+      localValue,
       milliseconds,
       formatted,
       source,
@@ -1490,6 +1523,13 @@ export class TyDatePicker extends HTMLElement {
     if (this._state.open) return;
 
     this.updateState({ open: true });
+    
+    // Dispatch open event
+    this.dispatchEvent(new CustomEvent('open', {
+      bubbles: true,
+      composed: true
+    }));
+    
     this.render();
 
     requestAnimationFrame(() => {

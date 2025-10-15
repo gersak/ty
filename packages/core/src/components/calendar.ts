@@ -215,6 +215,53 @@ export class TyCalendar extends HTMLElement {
     // Parse initial attributes
     this.initializeFromAttributes();
 
+    // ✅ CHECK: Properties set before custom element upgrade
+    // When scripts run before element is fully upgraded, properties are set as plain properties
+    // without triggering setters. We need to migrate them to private fields.
+    
+    // Check for dayContentFn set before upgrade
+    const plainDayContentFn = (this as any).dayContentFn;
+    if (plainDayContentFn && !this._dayContentFn) {
+      console.log('📦 Migrating calendar dayContentFn set before upgrade');
+      this._dayContentFn = plainDayContentFn;
+      delete (this as any).dayContentFn; // Clean up plain property
+    }
+
+    // Check for customCSS set before upgrade
+    const plainCustomCSS = (this as any).customCSS;
+    if (plainCustomCSS && !this._customCSS) {
+      console.log('📦 Migrating calendar customCSS set before upgrade');
+      this._customCSS = plainCustomCSS;
+      delete (this as any).customCSS; // Clean up plain property
+    }
+
+    // Check for value set before upgrade
+    const plainValue = (this as any).value;
+    if (plainValue && typeof plainValue === 'string' && plainValue !== this.value) {
+      console.log('📦 Migrating calendar value set before upgrade:', plainValue);
+      // Parse and set the value properly
+      const match = plainValue.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+      if (match) {
+        const year = parseInt(match[1], 10);
+        const month = parseInt(match[2], 10);
+        const day = parseInt(match[3], 10);
+        
+        this._state.selectedYear = year;
+        this._state.selectedMonth = month;
+        this._state.selectedDay = day;
+        this._state.displayYear = year;
+        this._state.displayMonth = month;
+        
+        // Update attributes if not in stateless mode
+        if (!this._stateless) {
+          this.setAttribute('year', year.toString());
+          this.setAttribute('month', month.toString());
+          this.setAttribute('day', day.toString());
+        }
+      }
+      delete (this as any).value; // Clean up plain property
+    }
+
     // Render the calendar
     this.render();
 

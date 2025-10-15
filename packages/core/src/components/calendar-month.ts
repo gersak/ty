@@ -188,7 +188,21 @@ export class TyCalendarMonth extends HTMLElement {
     if (sizeAttr && (sizeAttr === 'sm' || sizeAttr === 'md' || sizeAttr === 'lg')) {
       this._size = sizeAttr;
     }
-    
+
+    // Check for dayContentFn set before upgrade
+    const plainDayContentFn = (this as any).dayContentFn;
+    if (plainDayContentFn && !this._dayContentFn) {
+      this._dayContentFn = plainDayContentFn;
+      delete (this as any).dayContentFn; // Clean up plain property
+    }
+
+    // Check for customCSS set before upgrade
+    const plainCustomCSS = (this as any).customCSS;
+    if (plainCustomCSS && !this._customCSS) {
+      this._customCSS = plainCustomCSS;
+      delete (this as any).customCSS; // Clean up plain property
+    }
+
     // Setup locale observer to watch for ancestor lang changes
     this._localeObserver = observeLocaleChanges(this, () => {
       this.render();

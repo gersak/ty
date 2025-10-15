@@ -19,66 +19,70 @@
 
     ;; Attributes Table
     (attribute-table
-      [{:name "value"
-        :type "string"
-        :default "null"
-        :description "Selected option value"}
-       {:name "placeholder"
-        :type "string"
-        :default "null"
-        :description "Placeholder text when no option is selected"}
-       {:name "label"
-        :type "string"
-        :default "null"
-        :description "Label displayed above the dropdown"}
-       {:name "name"
-        :type "string"
-        :default "null"
-        :description "Name for form submission"}
-       {:name "searchable"
-        :type "boolean"
-        :default "true"
-        :description "Enable/disable search functionality"}
-       {:name "disabled"
-        :type "boolean"
-        :default "false"
-        :description "Whether the dropdown is disabled"}
-       {:name "readonly"
-        :type "boolean"
-        :default "false"
-        :description "Read-only mode (hides chevron, uses initial cursor, allows selection)"}
-       {:name "required"
-        :type "boolean"
-        :default "false"
-        :description "Whether the dropdown is required (shows asterisk)"}
-       {:name "size"
-        :type "string"
-        :default "'md'"
-        :description "Size variant: xs, sm, md, lg, xl"}
-       {:name "flavor"
-        :type "string"
-        :default "'neutral'"
-        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-       {:name "class"
-        :type "string"
-        :default "null"
-        :description "Additional CSS classes"}])
+     [{:name "value"
+       :type "string"
+       :default "null"
+       :description "Selected option value"}
+      {:name "placeholder"
+       :type "string"
+       :default "null"
+       :description "Placeholder text when no option is selected"}
+      {:name "label"
+       :type "string"
+       :default "null"
+       :description "Label displayed above the dropdown"}
+      {:name "name"
+       :type "string"
+       :default "null"
+       :description "Name for form submission"}
+      {:name "searchable"
+       :type "boolean"
+       :default "true"
+       :description "Enable/disable search functionality"}
+      {:name "disabled"
+       :type "boolean"
+       :default "false"
+       :description "Whether the dropdown is disabled"}
+      {:name "readonly"
+       :type "boolean"
+       :default "false"
+       :description "Read-only mode (hides chevron, uses initial cursor, allows selection)"}
+      {:name "required"
+       :type "boolean"
+       :default "false"
+       :description "Whether the dropdown is required (shows asterisk)"}
+      {:name "delay"
+       :type "number"
+       :default "0"
+       :description "Debounce delay for search events in milliseconds (0-5000ms). Only applies when searchable=\"false\" for external search."}
+      {:name "size"
+       :type "string"
+       :default "'md'"
+       :description "Size variant: xs, sm, md, lg, xl"}
+      {:name "flavor"
+       :type "string"
+       :default "'neutral'"
+       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+      {:name "class"
+       :type "string"
+       :default "null"
+       :description "Additional CSS classes"}])
 
     [:div.mt-6
      [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
      (event-table
-       [{:name "change"
-         :when-fired "Fired when selection changes"
-         :payload "{option: selectedOption, value, text, originalEvent}"}
-        {:name "search"
-         :when-fired "Fired when user types in search field"
-         :payload "{query: searchString, originalEvent}"}
-        {:name "focus"
-         :when-fired "Fired when dropdown gains focus"
-         :payload "Standard FocusEvent"}
-        {:name "blur"
-         :when-fired "Fired when dropdown loses focus"
-         :payload "Standard FocusEvent"}])
+      [{:name "change"
+        :when-fired "Fired when selection changes"
+        :payload "{option: selectedOption, value, text, originalEvent}"}
+       {:name "search"
+        :when-fired "Fired when user types in search field (external search only)"
+        :payload "{query: searchString, originalEvent}"}
+       {:name "focus"
+        :when-fired "Fired when dropdown gains focus"
+        :payload "Standard FocusEvent"}
+       {:name "blur"
+        :when-fired "Fired when dropdown loses focus"
+        :payload "Standard FocusEvent"}])
 
      [:div.mt-4
       [:h3.text-lg.font-semibold.ty-text++.mb-2 "Slots"]
@@ -130,7 +134,7 @@
     [:h2.text-2xl.font-bold.ty-text++.mb-4 "External Search Control"]
     [:p.ty-text-.mb-4
      "When " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "searchable=\"false\""]
-     " the dropdown sends " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "ty-search"]
+     " the dropdown sends " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "search"]
      " events instead of filtering internally. You control which options are visible."]
 
     [:div.mb-6
@@ -155,8 +159,8 @@
                   setTimeout(() => {
                     const dropdown = document.getElementById('external-search-dropdown');
                     if (dropdown) {
-                      dropdown.addEventListener('ty-search', function(event) {
-                        const query = event.detail.search;
+                      dropdown.addEventListener('search', function(event) {
+                        const query = event.detail.query;
                         console.log('External search query:', query);
                         
                         // Trigger state update for the demo
@@ -184,8 +188,8 @@
 
 <!-- Vanilla JavaScript -->
 <script>
-document.getElementById('lang-dropdown').addEventListener('ty-search', function(event) {
-  const query = event.detail.search;
+document.getElementById('lang-dropdown').addEventListener('search', function(event) {
+  const query = event.detail.query;
   // Filter your data and update DOM
   updateDropdownOptions(query);
 });
@@ -195,7 +199,7 @@ document.getElementById('lang-dropdown').addEventListener('ty-search', function(
 <TyDropdown 
   searchable={false}
   onSearch={(e) => {
-    const query = e.detail.search;
+    const query = e.detail.query;
     setFilteredOptions(filterData(query));
   }}>
   {filteredOptions.map(option => 
@@ -207,11 +211,43 @@ document.getElementById('lang-dropdown').addEventListener('ty-search', function(
 
 <!-- HTMX -->
 <ty-dropdown searchable=\"false\" 
-             hx-on:ty-search=\"htmx.ajax('GET', '/search?q=' + event.detail.search, '#results')\">
+             hx-on:search=\"htmx.ajax('GET', '/search?q=' + event.detail.query, '#results')\">
   <div id=\"results\">
     <!-- Server renders filtered options -->
   </div>
-</ty-dropdown>")]]
+</ty-dropdown>")]
+
+    ;; NEW: Debouncing Example
+    [:div.mb-6
+     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Debouncing Search Events"]
+     [:p.ty-text-.mb-3
+      "Use the " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "delay"]
+      " attribute to debounce search events. Useful for API calls to reduce server load."]
+
+     [:div.mb-4
+      [:ty-dropdown {:searchable false
+                     :delay 500
+                     :placeholder "Search (500ms debounce)..."
+                     :style {:min-width "280px"}}
+       [:ty-option {:value "opt1"} "Option 1"]
+       [:ty-option {:value "opt2"} "Option 2"]
+       [:ty-option {:value "opt3"} "Option 3"]]]
+
+     (code-block "<!-- Debounce search events by 500ms -->
+<ty-dropdown searchable=\"false\" delay=\"500\" placeholder=\"Search...\">
+  <ty-option value=\"opt1\">Option 1</ty-option>
+  <ty-option value=\"opt2\">Option 2</ty-option>
+</ty-dropdown>
+
+<script>
+dropdown.addEventListener('search', async (e) => {
+  const query = e.detail.query;
+  
+  // This fires only after user stops typing for 500ms
+  const results = await fetch(`/api/search?q=${query}`);
+  updateOptions(await results.json());
+});
+</script>")]]
 
 ;; IMPORTANT: Option Clearing Notice
    [:div.ty-bg-warning-.border.border-amber-300.rounded-lg.p-4.mb-8
@@ -511,7 +547,8 @@ document.getElementById('lang-dropdown').addEventListener('ty-search', function(
        [:li "• Use rich content for better UX (badges, avatars, descriptions)"]
        [:li "• Set appropriate min-width for content"]
        [:li "• Use semantic flavors for meaning"]
-       [:li "• Enable search for long lists (default behavior)"]]]
+       [:li "• Enable search for long lists (default behavior)"]
+       [:li "• Use delay attribute to debounce external search (300-500ms recommended)"]]]
 
      ;; Don'ts
      [:div
@@ -539,7 +576,8 @@ document.getElementById('lang-dropdown').addEventListener('ty-search', function(
       [:li "• The dropdown automatically handles keyboard navigation"]
       [:li "• Set explicit min-width styles to prevent layout shifts"]
       [:li "• Rich content works great for teams, files, languages, and complex data"]
-      [:li "• Read-only dropdowns hide the chevron but still allow selection"]]]]
+      [:li "• Read-only dropdowns hide the chevron but still allow selection"]
+      [:li "• Use delay=\"300\" or delay=\"500\" to debounce API search calls"]]]]
 
    ;; Related Components
    [:div.mt-8.p-4.ty-border.border.rounded-lg
@@ -548,3 +586,255 @@ document.getElementById('lang-dropdown').addEventListener('ty-search', function(
      [:a.ty-text-primary.hover:underline {:href "/docs/input"} "ty-input →"]
      [:a.ty-text-primary.hover:underline {:href "/docs/multiselect"} "ty-multiselect →"]
      [:a.ty-text-primary.hover:underline {:href "/docs/button"} "ty-button →"]]]])
+
+;; Form Integration Examples
+[:div.ty-content.rounded-lg.p-6.mb-8
+ [:h2.text-2xl.font-bold.ty-text++.mb-4 "Form Integration"]
+ [:p.ty-text-.mb-4
+  "ty-dropdown is a " [:strong "form-associated custom element"]
+  " that works seamlessly with native HTML forms, HTMX, and any framework."]
+
+    ;; Native HTML Form
+ [:div.mb-6
+  [:h3.text-lg.font-semibold.ty-text+.mb-2 "Native HTML Form"]
+  [:p.ty-text-.mb-3
+   "Works with standard HTML forms using the " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "name"]
+   " attribute. Supports both " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "<option>"]
+   " and " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "<ty-option>"] " elements."]
+
+  [:form {:id "native-form-demo"
+          :class "p-4 ty-bg-neutral- rounded"
+          :on-submit (fn [e]
+                       (.preventDefault e)
+                       (let [form-data (js/FormData. (.-target e))
+                             data (js/Object.fromEntries form-data)]
+                         (js/alert (str "Form submitted!\nPriority: " (.-priority data) "\nCategory: " (.-category data)))))}
+   [:div.space-y-4
+    [:ty-dropdown {:name "priority"
+                   :label "Priority Level"
+                   :required true
+                   :style {:min-width "200px"}}
+     [:option {:value ""} "-- Select Priority --"]
+     [:option {:value "low"} "Low Priority"]
+     [:option {:value "medium"} "Medium Priority"]
+     [:option {:value "high"} "High Priority"]]
+
+    [:ty-dropdown {:name "category"
+                   :label "Category"
+                   :style {:min-width "200px"}}
+     [:ty-option {:value ""} "-- Select Category --"]
+     [:ty-option {:value "bug"} "🐛 Bug"]
+     [:ty-option {:value "feature"} "✨ Feature"]
+     [:ty-option {:value "docs"} "📚 Documentation"]]
+
+    [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded
+     {:type "submit"} "Submit Form"]]]
+
+  (code-block "<!-- Native HTML Form -->
+<form action=\"/api/submit\" method=\"POST\">
+  <ty-dropdown name=\"priority\" label=\"Priority\" required>
+    <option value=\"\">-- Select --</option>
+    <option value=\"low\">Low</option>
+    <option value=\"high\">High</option>
+  </ty-dropdown>
+  
+  <ty-dropdown name=\"category\" label=\"Category\">
+    <ty-option value=\"bug\">🐛 Bug</ty-option>
+    <ty-option value=\"feature\">✨ Feature</ty-option>
+  </ty-dropdown>
+  
+  <button type=\"submit\">Submit</button>
+</form>
+
+<script>
+// Access form values
+const form = document.querySelector('form');
+const formData = new FormData(form);
+console.log(formData.get('priority')); // 'low', 'high', etc.
+
+// Validation works automatically
+form.addEventListener('submit', (e) => {
+  if (!form.checkValidity()) {
+    e.preventDefault();
+    alert('Please fill required fields');
+  }
+});
+</script>")]
+
+    ;; HTMX Integration
+ [:div.mb-6
+  [:h3.text-lg.font-semibold.ty-text+.mb-2 "HTMX Integration"]
+  [:p.ty-text-.mb-3
+   "Works perfectly with HTMX for server-driven interactions. Dropdown automatically includes its value in HTMX requests."]
+
+  (code-block "<!-- HTMX Dynamic Loading -->
+<ty-dropdown 
+  name=\"country\" 
+  label=\"Country\"
+  hx-get=\"/api/states\" 
+  hx-trigger=\"change\" 
+  hx-target=\"#states-dropdown\"
+  hx-include=\"this\">
+  <option value=\"\">Select Country</option>
+  <option value=\"us\">United States</option>
+  <option value=\"uk\">United Kingdom</option>
+  <option value=\"ca\">Canada</option>
+</ty-dropdown>
+
+<div id=\"states-dropdown\">
+  <!-- Server renders states dropdown based on country -->
+</div>
+
+<!-- HTMX Form Submission -->
+<form hx-post=\"/api/tickets\" hx-target=\"#result\">
+  <ty-dropdown name=\"priority\" required>
+    <option value=\"low\">Low</option>
+    <option value=\"high\">High</option>
+  </ty-dropdown>
+  
+  <ty-dropdown name=\"assignee\" searchable=\"false\"
+               hx-get=\"/api/search/users\"
+               hx-trigger=\"search\"
+               hx-target=\"this\"
+               hx-swap=\"innerHTML\">
+    <!-- Server returns filtered user options -->
+  </ty-dropdown>
+  
+  <button type=\"submit\">Create Ticket</button>
+</form>
+
+<div id=\"result\"></div>")]
+
+    ;; JavaScript Access
+ [:div.mb-6
+  [:h3.text-lg.font-semibold.ty-text+.mb-2 "JavaScript Access"]
+  [:p.ty-text-.mb-3
+   "Form-associated properties and methods work as expected."]
+
+  (code-block "const dropdown = document.querySelector('ty-dropdown');
+
+// Read/write value
+console.log(dropdown.value);        // Current value
+dropdown.value = 'new-value';       // Set value programmatically
+
+// Form properties
+console.log(dropdown.name);         // 'priority'
+console.log(dropdown.form);         // Parent form element
+console.log(dropdown.disabled);     // Boolean
+console.log(dropdown.required);     // Boolean
+
+// Validation
+console.log(dropdown.validity);     // ValidityState
+console.log(dropdown.checkValidity()); // Boolean
+
+// Listen to changes
+dropdown.addEventListener('change', (e) => {
+  console.log('Selected:', e.detail.value);
+  console.log('Option text:', e.detail.text);
+  console.log('Option element:', e.detail.option);
+});
+
+// External search
+dropdown.addEventListener('search', (e) => {
+  const query = e.detail.query;
+  fetch(`/api/search?q=${query}`)
+    .then(r => r.json())
+    .then(results => updateOptions(results));
+});")]
+
+    ;; Framework Compatibility
+ [:div.mb-6
+  [:h3.text-lg.font-semibold.ty-text+.mb-2 "Framework Compatibility"]
+
+  [:div.space-y-4
+      ;; React
+   [:div
+    [:h4.font-medium.ty-text.mb-2 "React / Next.js"]
+    (code-block "import { TyDropdown } from '@gersak/ty';
+
+function MyForm() {
+  const [value, setValue] = useState('');
+  
+  return (
+    <form onSubmit={handleSubmit}>
+      <TyDropdown
+        name=\"priority\"
+        value={value}
+        onChange={(e) => setValue(e.detail.value)}
+        required
+      >
+        <option value=\"\">Select</option>
+        <option value=\"low\">Low</option>
+        <option value=\"high\">High</option>
+      </TyDropdown>
+      
+      <button type=\"submit\">Submit</button>
+    </form>
+  );
+}")]
+
+      ;; Vue
+   [:div
+    [:h4.font-medium.ty-text.mb-2 "Vue 3"]
+    (code-block "<template>
+  <form @submit.prevent=\"handleSubmit\">
+    <ty-dropdown
+      name=\"priority\"
+      :value=\"priority\"
+      @change=\"priority = $event.detail.value\"
+      required
+    >
+      <option value=\"\">Select</option>
+      <option value=\"low\">Low</option>
+      <option value=\"high\">High</option>
+    </ty-dropdown>
+    
+    <button type=\"submit\">Submit</button>
+  </form>
+</template>
+
+<script setup>
+import { ref } from 'vue';
+
+const priority = ref('');
+
+const handleSubmit = (e) => {
+  const formData = new FormData(e.target);
+  console.log(formData.get('priority'));
+};
+</script>")]
+
+      ;; ClojureScript
+   [:div
+    [:h4.font-medium.ty-text.mb-2 "ClojureScript / Reagent"]
+    (code-block "(ns my-app.form
+  (:require [reagent.core :as r]))
+
+(defn priority-form []
+  (let [priority (r/atom \"\")]
+    (fn []
+      [:form {:on-submit (fn [e]
+                          (.preventDefault e)
+                          (js/console.log @priority))}
+       [:ty-dropdown {:name \"priority\"
+                      :value @priority
+                      :on-change #(reset! priority (.. % -detail -value))
+                      :required true}
+        [:option {:value \"\"} \"Select\"]
+        [:option {:value \"low\"} \"Low\"]
+        [:option {:value \"high\"} \"High\"]]
+       [:button {:type \"submit\"} \"Submit\"]])))")]]]
+
+    ;; Key Points
+ [:div.p-4.ty-bg-primary-.rounded
+  [:h4.font-semibold.ty-text-primary++.mb-2 "Form Integration Key Points"]
+  [:ul.space-y-1.text-sm.ty-text-primary
+   [:li "✅ Native FormData support via " [:code.ty-bg-primary.px-1.rounded "name"] " attribute"]
+   [:li "✅ Works with form validation (required, disabled, readonly)"]
+   [:li "✅ Participates in form submission"]
+   [:li "✅ Supports both " [:code.ty-bg-primary.px-1.rounded "<option>"] " and " [:code.ty-bg-primary.px-1.rounded "<ty-option>"] " elements"]
+   [:li "✅ HTMX compatible - included in " [:code.ty-bg-primary.px-1.rounded "hx-include"] " automatically"]
+   [:li "✅ Framework agnostic - works with React, Vue, Svelte, etc."]
+   [:li "✅ Access via " [:code.ty-bg-primary.px-1.rounded "dropdown.form"] " property"]
+   [:li "✅ Standard " [:code.ty-bg-primary.px-1.rounded "change"] " events with detailed payload"]]]]
+

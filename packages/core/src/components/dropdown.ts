@@ -166,7 +166,7 @@ export class TyDropdown extends HTMLElement {
   private _searchBlurHandler: ((e: Event) => void) | null = null
   private _keyboardHandler: ((e: KeyboardEvent) => void) | null = null
 
-  // Delay/debounce properties for ty-search event
+  // Delay/debounce properties for search event
   private _delay: number = 0
   private _searchDebounceTimer: number | null = null
 
@@ -425,27 +425,34 @@ export class TyDropdown extends HTMLElement {
   /**
    * Select an option
    */
-  private selectOption(option: HTMLElement): void {
-    this.clearSelection()
-
-    // Clone option for display in stub
-    const clone = option.cloneNode(true) as HTMLElement
-    clone.setAttribute('slot', 'selected')
-    clone.setAttribute('cloned', 'true')
-    option.parentNode!.appendChild(clone)
-
-    // Mark original as selected
-    option.setAttribute('selected', '')
-
-    // Update state and form
+  private selectOption(option: HTMLElement, originalEvent?: Event): void {
     const optionData = this.getOptionData(option)
-    this._state.currentValue = optionData.value
+    const isEmpty = !optionData.value || optionData.value.trim() === ''
+    
+    this.clearSelection()
+    
+    // If value is empty, just clear and don't clone anything
+    if (isEmpty) {
+      this._state.currentValue = null
+    } else {
+      // Clone option for display in stub
+      const clone = option.cloneNode(true) as HTMLElement
+      clone.setAttribute('slot', 'selected')
+      clone.setAttribute('cloned', 'true')
+      option.parentNode!.appendChild(clone)
+      
+      // Mark original as selected
+      option.setAttribute('selected', '')
+      
+      // Update state
+      this._state.currentValue = optionData.value
+    }
     this.updateComponentValue()
     this.updateSelectionDisplay()
     this.updateFormValue()
 
     // Dispatch change event
-    this.dispatchChangeEvent(option)
+    this.dispatchChangeEvent(option, originalEvent)
   }
 
   /**
@@ -506,11 +513,15 @@ export class TyDropdown extends HTMLElement {
   /**
    * Dispatch change event
    */
-  private dispatchChangeEvent(option: HTMLElement): void {
+  private dispatchChangeEvent(option: HTMLElement, originalEvent?: Event): void {
+    const optionData = this.getOptionData(option)
+    
     this.dispatchEvent(new CustomEvent('change', {
       detail: {
         value: this._state.currentValue,
-        option
+        text: optionData.text,
+        option,
+        originalEvent: originalEvent || null
       },
       bubbles: true,
       composed: true
@@ -693,22 +704,19 @@ export class TyDropdown extends HTMLElement {
    * Open dropdown dialog
    */
   private openDropdown(): void {
-    console.log('[Dropdown] openDropdown called')
+    
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
-    if (!dialog) {
-      console.warn('[Dropdown] No dialog found to open')
-      return
-    }
+    if (!dialog) return
 
     // Generate consistent unique ID for scroll locking (like ClojureScript's hash)
     const dropdownId = `dropdown-${this.id || 'anon'}-${getElementHash(this)}`
     this._scrollLockId = dropdownId
     
     // Lock scroll
-    console.log('[Dropdown] Locking scroll with ID:', dropdownId)
+    
     lockScroll(dropdownId)
-    console.log('[Dropdown] Scroll locked')
+    
 
     // Show modal first so browser can calculate dimensions
     dialog.showModal()
@@ -757,20 +765,17 @@ export class TyDropdown extends HTMLElement {
    * Close dropdown dialog
    */
   private closeDropdown(): void {
-    console.log('[Dropdown] closeDropdown called')
+    
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
-    if (!dialog) {
-      console.warn('[Dropdown] No dialog found to close')
-      return
-    }
+    if (!dialog) return
 
     // Unlock scroll using stored consistent ID
     if (this._scrollLockId) {
-      console.log('[Dropdown] Unlocking scroll with ID:', this._scrollLockId)
+      
       unlockScroll(this._scrollLockId)
       this._scrollLockId = null
-      console.log('[Dropdown] Scroll unlocked')
+      
     }
 
     // Close dialog
@@ -810,15 +815,10 @@ export class TyDropdown extends HTMLElement {
     const wrapper = shadow.querySelector('.dropdown-wrapper')
     const clickedInside = wrapper && wrapper.contains(target)
 
-    console.log('[Dropdown] Outside click check:', {
-      target: target,
-      wrapper: wrapper,
-      clickedInside,
-      targetNodeName: (target as Element).nodeName
-    })
+    
 
     if (!clickedInside) {
-      console.log('[Dropdown] Closing dropdown - outside click detected')
+      
       this.closeDropdown()
     }
   }
@@ -853,7 +853,7 @@ export class TyDropdown extends HTMLElement {
       this.clearHighlights(allOptions)
     } else {
       // External search: dispatch event for external handling
-      this.dispatchSearchEvent(query)
+      this.dispatchSearchEvent(query, e)
     }
   }
 
@@ -883,7 +883,7 @@ export class TyDropdown extends HTMLElement {
    * Dispatch search event for external search handling
    * With optional delay/debounce support
    */
-  private dispatchSearchEvent(query: string): void {
+  private dispatchSearchEvent(query: string, originalEvent?: Event): void {
     // Clear existing timer
     if (this._searchDebounceTimer !== null) {
       clearTimeout(this._searchDebounceTimer)
@@ -893,23 +893,23 @@ export class TyDropdown extends HTMLElement {
     // If delay is set, debounce the event
     if (this._delay > 0) {
       this._searchDebounceTimer = window.setTimeout(() => {
-        this.fireSearchEvent(query)
+        this.fireSearchEvent(query, originalEvent)
         this._searchDebounceTimer = null
       }, this._delay)
     } else {
       // Fire immediately if no delay
-      this.fireSearchEvent(query)
+      this.fireSearchEvent(query, originalEvent)
     }
   }
 
   /**
-   * Fire the actual ty-search event
+   * Fire the actual search event
    */
-  private fireSearchEvent(query: string): void {
-    this.dispatchEvent(new CustomEvent('ty-search', {
+  private fireSearchEvent(query: string, originalEvent?: Event): void {
+    this.dispatchEvent(new CustomEvent('search', {
       detail: {
         query,
-        element: this
+        originalEvent: originalEvent || null
       },
       bubbles: true,
       composed: true
@@ -943,7 +943,7 @@ export class TyDropdown extends HTMLElement {
     const optionsCount = filteredOptions.length
     const currentHighlightedIndex = this._state.highlightedIndex
 
-    console.log('[Keyboard] Key pressed:', e.key, 'Current index:', currentHighlightedIndex, 'Options count:', optionsCount)
+    
 
     switch (e.key) {
       case 'Escape':
@@ -958,7 +958,7 @@ export class TyDropdown extends HTMLElement {
         // Select highlighted option if any
         if (currentHighlightedIndex >= 0 && currentHighlightedIndex < optionsCount) {
           const option = filteredOptions[currentHighlightedIndex]
-          this.selectOption(option.element)
+          this.selectOption(option.element, e)
           this.updateSelectionDisplay()
           this.closeDropdown()
         }
@@ -982,7 +982,7 @@ export class TyDropdown extends HTMLElement {
           newIndexUp = currentHighlightedIndex - 1
         }
         
-        console.log('[Keyboard] ArrowUp: Moving from', currentHighlightedIndex, 'to', newIndexUp)
+        
         this._state.highlightedIndex = newIndexUp
         this.highlightOption(filteredOptions, newIndexUp)
         break
@@ -1005,7 +1005,7 @@ export class TyDropdown extends HTMLElement {
           newIndexDown = currentHighlightedIndex + 1
         }
         
-        console.log('[Keyboard] ArrowDown: Moving from', currentHighlightedIndex, 'to', newIndexDown)
+        
         this._state.highlightedIndex = newIndexDown
         this.highlightOption(filteredOptions, newIndexDown)
         break
@@ -1040,7 +1040,7 @@ export class TyDropdown extends HTMLElement {
     if (!option) return
 
     // Select the option
-    this.selectOption(option)
+    this.selectOption(option, e)
     
     // Update display
     this.updateSelectionDisplay()
@@ -1269,7 +1269,7 @@ export class TyDropdown extends HTMLElement {
     if (!option) return
 
     // Select the option
-    this.selectOption(option)
+    this.selectOption(option, e)
     
     // Update display
     this.updateSelectionDisplay()

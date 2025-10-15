@@ -362,7 +362,6 @@ export class TyDropdown extends HTMLElement {
       this.updateComponentValue()
       this.updateSelectionDisplay()
       this.updateFormValue()
-      this.markSelectedOption()
       
       // Dispatch change event
       this.dispatchEvent(new CustomEvent('change', {
@@ -472,14 +471,8 @@ export class TyDropdown extends HTMLElement {
     const optionData = this.getOptionData(option)
     const isEmpty = !optionData.value || optionData.value.trim() === ''
 
-    this.clearSelection()
-
-    console.log("selecting option", option)
-    console.log("Is empty?", isEmpty)
-    // If value is empty, just clear and don't clone anything
-    if (isEmpty) {
-      console.log('setting value to nil!')
-      this._state.currentValue = null
+    this.clearSelection()// If value is empty, just clear and don't clone anything
+    if (isEmpty) {this._state.currentValue = null
     } else {
       // Clone option for display in stub
       const clone = option.cloneNode(true) as HTMLElement
@@ -1460,7 +1453,6 @@ export class TyDropdown extends HTMLElement {
     this.updateComponentValue()
     this.updateSelectionDisplay()
     this.updateFormValue()
-    this.markSelectedOption()
     
     // Dispatch change event
     this.dispatchEvent(new CustomEvent('change', {

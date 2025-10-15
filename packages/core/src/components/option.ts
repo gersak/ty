@@ -50,8 +50,10 @@ export class TyOption extends HTMLElement implements TyOptionElement {
   private _disabled = false
   private _highlighted = false
   private _hidden = false
-  private _clearable = false
   private _isMobile: boolean
+
+  // Clear button event handler reference for cleanup
+  private _clearButtonHandler: ((e: Event) => void) | null = null
 
   constructor() {
     super()
@@ -66,7 +68,7 @@ export class TyOption extends HTMLElement implements TyOptionElement {
   }
 
   static get observedAttributes(): string[] {
-    return ['value', 'disabled', 'selected', 'highlighted', 'hidden', 'clearable']
+    return ['value', 'disabled', 'selected', 'highlighted', 'hidden']
   }
 
   connectedCallback(): void {
@@ -78,8 +80,14 @@ export class TyOption extends HTMLElement implements TyOptionElement {
       // Clean up the instance property so our getter/setter works
       delete this.value
     }
-    
+
     this.render()
+  }
+
+  
+  disconnectedCallback(): void {
+    // Clean up clear button event listener
+    this.removeClearButtonListener()
   }
 
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
@@ -100,9 +108,6 @@ export class TyOption extends HTMLElement implements TyOptionElement {
         break
       case 'hidden':
         this._hidden = newValue !== null
-        break
-      case 'clearable':
-        this._clearable = newValue !== null
         break
     }
 
@@ -204,7 +209,43 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     }
   }
 
+
   /**
+   * Remove clear button event listener if it exists
+   */
+  private removeClearButtonListener(): void {
+    if (this._clearButtonHandler) {
+      const clearBtn = this.shadowRoot?.querySelector('.option-clear-btn')
+      if (clearBtn) {
+        clearBtn.removeEventListener('click', this._clearButtonHandler)}
+      this._clearButtonHandler = null
+    }
+  }
+
+  /**
+   * Add clear button event listener (only if not already added)
+   */
+  private addClearButtonListener(clearBtn: Element): void {
+    // Remove existing listener first (if any)
+    this.removeClearButtonListener()
+
+    // Create new handler
+    this._clearButtonHandler = (e: Event) => {
+      e.preventDefault()
+      e.stopPropagation()
+      
+      this.dispatchEvent(new CustomEvent('clear-selection', {
+        bubbles: true,
+        composed: true,
+        detail: { value: this._value }
+      }))
+    }
+
+    // Add listener
+    clearBtn.addEventListener('click', this._clearButtonHandler)
+  }
+
+    /**
    * Render the option component with rich HTML content and property sync
    */
   private render(): void {
@@ -213,8 +254,8 @@ export class TyOption extends HTMLElement implements TyOptionElement {
 
     // Create wrapper with optional clear button
     if (!shadow.querySelector('.option-content')) {
-      const shouldShowClear = this._selected && this._clearable && this._isMobile
-      
+      const shouldShowClear = this._selected && this._isMobile
+
       if (shouldShowClear) {
         shadow.innerHTML = `
           <div class="option-content">
@@ -227,28 +268,20 @@ export class TyOption extends HTMLElement implements TyOptionElement {
             </button>
           </div>
         `
-        
+
         // Add clear button click handler
         const clearBtn = shadow.querySelector('.option-clear-btn')
         if (clearBtn) {
-          clearBtn.addEventListener('click', (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            this.dispatchEvent(new CustomEvent('clear-selection', {
-              bubbles: true,
-              composed: true,
-              detail: { value: this._value }
-            }))
-          })
+          this.addClearButtonListener(clearBtn)
         }
       } else {
         shadow.innerHTML = '<div class="option-content"><slot></slot></div>'
       }
     } else {
       // Update existing content - add/remove clear button as needed
-      const shouldShowClear = this._selected && this._clearable && this._isMobile
+      const shouldShowClear = this._selected && this._isMobile
       const existingClearBtn = shadow.querySelector('.option-clear-btn')
-      
+
       if (shouldShowClear && !existingClearBtn) {
         // Need to add clear button
         const content = shadow.querySelector('.option-content')
@@ -261,7 +294,7 @@ export class TyOption extends HTMLElement implements TyOptionElement {
             slot.parentNode?.insertBefore(textSpan, slot)
             textSpan.appendChild(slot)
           }
-          
+
           // Add clear button
           const clearBtn = document.createElement('button')
           clearBtn.className = 'option-clear-btn'
@@ -273,20 +306,14 @@ export class TyOption extends HTMLElement implements TyOptionElement {
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
           `
-          clearBtn.addEventListener('click', (e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            this.dispatchEvent(new CustomEvent('clear-selection', {
-              bubbles: true,
-              composed: true,
-              detail: { value: this._value }
-            }))
-          })
+          this.addClearButtonListener(clearBtn)
           content.appendChild(clearBtn)
         }
       } else if (!shouldShowClear && existingClearBtn) {
         // Remove clear button
         existingClearBtn.remove()
+        // Clean up event listener
+        this.removeClearButtonListener()
       }
     }
 

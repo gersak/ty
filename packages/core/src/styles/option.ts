@@ -60,31 +60,34 @@ export const optionStyles = `
 
 .option-clear-btn {
   flex-shrink: 0;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   border: none;
   border-radius: 50%;
   cursor: pointer;
   padding: 0;
-  transition: background 200ms ease;
+  transition: all 150ms ease;
+  opacity: 0.9;
 }
 
 .option-clear-btn:hover {
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.7);
+  opacity: 1;
+  transform: scale(1.05);
 }
 
 .option-clear-btn:active {
-  background: rgba(0, 0, 0, 0.9);
+  background: rgba(0, 0, 0, 0.85);
   transform: scale(0.95);
 }
 
 .option-clear-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: #ffffff;
   stroke-width: 2.5;
 }
@@ -98,6 +101,15 @@ export const optionStyles = `
 
 /* Ensure nested elements inherit proper styling */
 .option-content * {
+  pointer-events: none;
+}
+
+/* CRITICAL: Re-enable pointer events on clear button */
+.option-clear-btn {
+  pointer-events: auto !important;
+}
+
+.option-clear-btn * {
   pointer-events: none;
 }
 `

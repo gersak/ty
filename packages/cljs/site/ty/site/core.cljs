@@ -93,8 +93,11 @@
       (.remove (.-classList js/document.documentElement) "dark"))
     (.setItem js/localStorage "theme" theme)))
 
-(defn toggle-mobile-menu! []
-  (swap! state update :mobile-menu-open not))
+(defn toggle-mobile-menu!
+  ([] (swap! state update :mobile-menu-open not)))
+
+(defn close-mobile-menu!
+  ([] (swap! state assoc :mobile-menu-open false)))
 
 (defn scroll-main-to-top!
   "Smoothly scrolls the main content area to the top"
@@ -241,23 +244,24 @@
     (nav-items)]])
 
 (defn mobile-menu []
-  [:div.lg:hidden
-   [:ty-modal {:open (:mobile-menu-open @state)
-               :on {:ty-modal-close toggle-mobile-menu!}}
-    [:div.p-6.mx-auto.rounded-lg.ty-floating.box-border.flex.flex-col
-     {:style {:width "240px"
-              :max-height "90vh"}}
+  (when (:mobile-menu-open @state)
+    [:div.lg:hidden
+     [:ty-modal {:open true
+                 :on {:ty-modal-close close-mobile-menu!}}
+      [:div.p-6.mx-auto.rounded-lg.ty-floating.box-border.flex.flex-col
+       {:style {:width "320px"
+                :max-height "90vh"}}
      ;; Header section (fixed)
-     [:div.text-center.space-y-2.flex-shrink-0
-      [:h2.text-xl.font-bold.ty-text
-       (if (docs/in-docs?) "Documentation" "Navigation")]
-      [:p.text-sm.ty-text-
-       (if (docs/in-docs?) "Component Reference" "Choose your destination")]]
+       [:div.text-center.space-y-2.flex-shrink-0
+        [:h2.text-xl.font-bold.ty-text
+         (if (docs/in-docs?) "Documentation" "Navigation")]
+        [:p.text-sm.ty-text-
+         (if (docs/in-docs?) "Component Reference" "Choose your destination")]]
 
      ;; Navigation content (scrollable)
-     [:div.flex-1.overflow-y-auto.mt-6.min-h-0
-      [:div.space-y-4
-       (nav-items)]]]]])
+       [:div.flex-1.overflow-y-auto.mt-6.min-h-0
+        [:div.space-y-4
+         (nav-items)]]]]]))
 
 (defn header []
   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4

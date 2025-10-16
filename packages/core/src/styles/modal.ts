@@ -92,7 +92,7 @@ export const modalStyles = `
   overflow: hidden;
 
   /* No sizing - let user content determine size */
-  max-width: 80vw;
+  max-width: 85vw;
   max-height: 90vh;
 
   outline: none;

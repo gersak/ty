@@ -1,10 +1,10 @@
 (ns ty.site.docs.dropdown
   "Documentation for ty-dropdown component"
   (:require
-    [ty.site.docs.common
-     :refer [code-block attribute-table event-table
-             doc-section example-section]]
-    [ty.site.state :as state]))
+   [ty.site.docs.common
+    :refer [code-block attribute-table event-table
+            doc-section example-section]]
+   [ty.site.state :as state]))
 
 (defn header-section
   "Title and description section"
@@ -24,74 +24,82 @@
 
    ;; Attributes Table
    (attribute-table
-     [{:name "value"
-       :type "string"
-       :default "null"
-       :description "Selected option value"}
-      {:name "placeholder"
-       :type "string"
-       :default "null"
-       :description "Placeholder text when no option is selected"}
-      {:name "label"
-       :type "string"
-       :default "null"
-       :description "Label displayed above the dropdown"}
-      {:name "name"
-       :type "string"
-       :default "null"
-       :description "Name for form submission"}
-      {:name "searchable"
-       :type "boolean"
-       :default "true"
-       :description "Enable/disable search functionality"}
-      {:name "clearable"
-       :type "boolean"
-       :default "true"
-       :description "Show clear button (X) to reset selection. Button appears when dropdown has a value."}
-      {:name "disabled"
-       :type "boolean"
-       :default "false"
-       :description "Whether the dropdown is disabled"}
-      {:name "readonly"
-       :type "boolean"
-       :default "false"
-       :description "Read-only mode (hides chevron, uses initial cursor, allows selection)"}
-      {:name "required"
-       :type "boolean"
-       :default "false"
-       :description "Whether the dropdown is required (shows asterisk)"}
-      {:name "delay"
-       :type "number"
-       :default "0"
-       :description "Debounce delay for search events in milliseconds (0-5000ms). Only applies when searchable=\"false\" for external search."}
-      {:name "size"
-       :type "string"
-       :default "'md'"
-       :description "Size variant: xs, sm, md, lg, xl"}
-      {:name "flavor"
-       :type "string"
-       :default "'neutral'"
-       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-      {:name "class"
-       :type "string"
-       :default "null"
-       :description "Additional CSS classes"}])
+    [{:name "value"
+      :type "string"
+      :default "null"
+      :description "Selected option value"}
+     {:name "placeholder"
+      :type "string"
+      :default "null"
+      :description "Placeholder text when no option is selected"}
+     {:name "label"
+      :type "string"
+      :default "null"
+      :description "Label displayed above the dropdown"}
+     {:name "name"
+      :type "string"
+      :default "null"
+      :description "Name for form submission"}
+     {:name "searchable"
+      :type "boolean"
+      :default "true"
+      :description "Enable/disable search functionality. Note: Use 'not-searchable' to disable."}
+     {:name "not-searchable"
+      :type "boolean"
+      :default "false"
+      :description "Explicitly disable search. Preferred over searchable=\"false\" for better HTML compatibility."}
+     {:name "clearable"
+      :type "boolean"
+      :default "true"
+      :description "Show clear button (X) to reset selection. Note: Use 'not-clearable' to disable."}
+     {:name "not-clearable"
+      :type "boolean"
+      :default "false"
+      :description "Explicitly disable the clear button. Preferred over clearable=\"false\" for better HTML compatibility."}
+     {:name "disabled"
+      :type "boolean"
+      :default "false"
+      :description "Whether the dropdown is disabled"}
+     {:name "readonly"
+      :type "boolean"
+      :default "false"
+      :description "Read-only mode (hides chevron, uses initial cursor, allows selection)"}
+     {:name "required"
+      :type "boolean"
+      :default "false"
+      :description "Whether the dropdown is required (shows asterisk)"}
+     {:name "delay"
+      :type "number"
+      :default "0"
+      :description "Debounce delay for search events in milliseconds (0-5000ms). Only applies when searchable=\"false\" for external search."}
+     {:name "size"
+      :type "string"
+      :default "'md'"
+      :description "Size variant: xs, sm, md, lg, xl"}
+     {:name "flavor"
+      :type "string"
+      :default "'neutral'"
+      :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+     {:name "class"
+      :type "string"
+      :default "null"
+      :description "Additional CSS classes"}])
 
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
     (event-table
-      [{:name "change"
-        :when-fired "Fired when selection changes"
-        :payload "{option: selectedOption, value, text, originalEvent}"}
-       {:name "search"
-        :when-fired "Fired when user types in search field (external search only)"
-        :payload "{query: searchString, originalEvent}"}
-       {:name "focus"
-        :when-fired "Fired when dropdown gains focus"
-        :payload "Standard FocusEvent"}
-       {:name "blur"
-        :when-fired "Fired when dropdown loses focus"
-        :payload "Standard FocusEvent"}])
+     [{:name "change"
+       :when-fired "Fired when selection changes"
+       :payload "{option: selectedOption, value, text, originalEvent}"}
+      {:name "search"
+       :when-fired "Fired when user types in search field (external search only)"
+       :payload "{query: searchString, originalEvent}"}
+      {:name "focus"
+       :when-fired "Fired when dropdown gains focus"
+       :payload "Standard FocusEvent"}
+      {:name "blur"
+       :when-fired "Fired when dropdown loses focus"
+       :payload "Standard FocusEvent"}])
 
     [:div.mt-4
      [:h3.text-lg.font-semibold.ty-text++.mb-2 "Slots"]
@@ -344,11 +352,11 @@
    [:div.mb-6
     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Disable Clear Button"]
     [:p.ty-text-.mb-3
-     "Set " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "clearable=\"false\""]
+     "Set " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "not-clearable"]
      " to hide the clear button and prevent users from clearing their selection."]
     [:div.mb-4
      [:ty-dropdown {:value "admin"
-                    :clearable false
+                    :not-clearable true
                     :label "Role (no clear button)"
                     :placeholder "Select role..."
                     :style {:min-width "220px"}}
@@ -356,7 +364,7 @@
       [:ty-option {:value "editor"} "Editor"]
       [:ty-option {:value "viewer"} "Viewer"]]]
     (code-block "<!-- Explicitly disable clear button -->
-<ty-dropdown value=\"admin\" clearable=\"false\" label=\"Role\" placeholder=\"Select role...\">
+<ty-dropdown value=\"admin\" not-clearable label=\"Role\" placeholder=\"Select role...\">
   <ty-option value=\"admin\">Administrator</ty-option>
   <ty-option value=\"editor\">Editor</ty-option>
   <ty-option value=\"viewer\">Viewer</ty-option>
@@ -373,7 +381,18 @@
      [:li "✅ Automatically hidden when dropdown is open"]
      [:li "✅ Automatically hidden when disabled or readonly"]
      [:li "✅ Dispatches change event with null value when clicked"]
-     [:li "✅ Prevents dropdown from opening when clicked"]]]])
+     [:li "✅ Prevents dropdown from opening when clicked"]]]
+
+   [:div.mt-6.p-4.ty-bg-warning-.rounded
+    [:h4.font-semibold.ty-text-warning++.mb-2.flex.items-center.gap-2
+     [:ty-icon {:name "alert-triangle"
+                :size "18"}]
+     "Note: Boolean Attribute Handling"]
+    [:p.text-sm.ty-text-warning
+     "Use " [:code "not-clearable"] " instead of " [:code "clearable=\"false\""]
+     " for better compatibility. HTML boolean attributes can be tricky - the presence "
+     "of the attribute itself (even with value=\"false\") can be interpreted as true. "
+     "The " [:code "not-clearable"] " pattern avoids this ambiguity."]]])
 
 (defn external-search-section
   "External search control with debouncing examples"
@@ -898,6 +917,88 @@ const handleSubmit = (e) => {
      [:li "✅ Access via " [:code.ty-bg-primary.px-1.rounded "dropdown.form"] " property"]
      [:li "✅ Standard " [:code.ty-bg-primary.px-1.rounded "change"] " events with detailed payload"]]]])
 
+(defn large-dataset-section
+  "Testing dropdown with many options for scroll performance"
+  []
+  [:div.ty-content.rounded-lg.p-6.mb-8
+   [:h2.text-2xl.font-bold.ty-text++.mb-4 "Large Dataset - Scroll Performance"]
+   [:p.ty-text-.mb-4
+    "Testing dropdown behavior with 100+ options. Search should filter smoothly, and scrolling should be performant."]
+
+   [:div.mb-6
+    [:h3.text-lg.font-semibold.ty-text+.mb-2 "100 Countries"]
+    [:div.mb-4
+     [:ty-dropdown {:label "Select Country"
+                    :placeholder "Search for a country..."
+                    :style {:min-width "300px"}}
+      ;; Generate 100+ country options
+      (for [country ["Afghanistan" "Albania" "Algeria" "Andorra" "Angola"
+                     "Argentina" "Armenia" "Australia" "Austria" "Azerbaijan"
+                     "Bahamas" "Bahrain" "Bangladesh" "Barbados" "Belarus"
+                     "Belgium" "Belize" "Benin" "Bhutan" "Bolivia"
+                     "Bosnia and Herzegovina" "Botswana" "Brazil" "Brunei" "Bulgaria"
+                     "Burkina Faso" "Burundi" "Cambodia" "Cameroon" "Canada"
+                     "Cape Verde" "Central African Republic" "Chad" "Chile" "China"
+                     "Colombia" "Comoros" "Congo" "Costa Rica" "Croatia"
+                     "Cuba" "Cyprus" "Czech Republic" "Denmark" "Djibouti"
+                     "Dominica" "Dominican Republic" "East Timor" "Ecuador" "Egypt"
+                     "El Salvador" "Equatorial Guinea" "Eritrea" "Estonia" "Ethiopia"
+                     "Fiji" "Finland" "France" "Gabon" "Gambia"
+                     "Georgia" "Germany" "Ghana" "Greece" "Grenada"
+                     "Guatemala" "Guinea" "Guinea-Bissau" "Guyana" "Haiti"
+                     "Honduras" "Hungary" "Iceland" "India" "Indonesia"
+                     "Iran" "Iraq" "Ireland" "Israel" "Italy"
+                     "Jamaica" "Japan" "Jordan" "Kazakhstan" "Kenya"
+                     "Kiribati" "North Korea" "South Korea" "Kosovo" "Kuwait"
+                     "Kyrgyzstan" "Laos" "Latvia" "Lebanon" "Lesotho"
+                     "Liberia" "Libya" "Liechtenstein" "Lithuania" "Luxembourg"
+                     "Madagascar" "Malawi" "Malaysia" "Maldives" "Mali"
+                     "Malta" "Marshall Islands" "Mauritania" "Mauritius" "Mexico"
+                     "Micronesia" "Moldova" "Monaco" "Mongolia" "Montenegro"
+                     "Morocco" "Mozambique" "Myanmar" "Namibia" "Nauru"
+                     "Nepal" "Netherlands" "New Zealand" "Nicaragua" "Niger"
+                     "Nigeria" "North Macedonia" "Norway" "Oman" "Pakistan"
+                     "Palau" "Palestine" "Panama" "Papua New Guinea" "Paraguay"
+                     "Peru" "Philippines" "Poland" "Portugal" "Qatar"
+                     "Romania" "Russia" "Rwanda" "Saint Kitts and Nevis" "Saint Lucia"
+                     "Saint Vincent and the Grenadines" "Samoa" "San Marino" "Sao Tome and Principe" "Saudi Arabia"
+                     "Senegal" "Serbia" "Seychelles" "Sierra Leone" "Singapore"
+                     "Slovakia" "Slovenia" "Solomon Islands" "Somalia" "South Africa"
+                     "South Sudan" "Spain" "Sri Lanka" "Sudan" "Suriname"
+                     "Sweden" "Switzerland" "Syria" "Taiwan" "Tajikistan"
+                     "Tanzania" "Thailand" "Togo" "Tonga" "Trinidad and Tobago"
+                     "Tunisia" "Turkey" "Turkmenistan" "Tuvalu" "Uganda"
+                     "Ukraine" "United Arab Emirates" "United Kingdom" "United States" "Uruguay"
+                     "Uzbekistan" "Vanuatu" "Vatican City" "Venezuela" "Vietnam"
+                     "Yemen" "Zambia" "Zimbabwe"]]
+        [:ty-option {:key country
+                     :value (clojure.string/lower-case country)}
+         country])]]
+
+    (code-block "<ty-dropdown label=\"Select Country\" placeholder=\"Search for a country...\">
+  <ty-option value=\"afghanistan\">Afghanistan</ty-option>
+  <ty-option value=\"albania\">Albania</ty-option>
+  <ty-option value=\"algeria\">Algeria</ty-option>
+  <!-- ... 190+ more countries ... -->
+  <ty-option value=\"zimbabwe\">Zimbabwe</ty-option>
+</ty-dropdown>
+
+<!-- Performance notes:
+  - Built-in search filters 190+ options instantly
+  - Scroll is smooth with CSS containment
+  - Mobile shows modal with full-screen scrolling
+-->")]
+
+   [:div.mb-6
+    [:h3.text-lg.font-semibold.ty-text+.mb-2 "Performance Tips"]
+    [:ul.space-y-2.ty-text-
+     [:li "✅ " [:strong "Search is enabled by default"] " - filters large lists instantly"]
+     [:li "✅ " [:strong "Virtual scrolling"] " - only visible items are rendered in the DOM"]
+     [:li "✅ " [:strong "CSS containment"] " - isolates layout calculations for smooth scrolling"]
+     [:li "✅ " [:strong "Mobile optimization"] " - full-screen modal prevents body scroll issues"]
+     [:li "⚠ For 1000+ options, consider " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "searchable=\"false\""]
+      " with server-side filtering"]]]])
+
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
    (header-section)
@@ -906,6 +1007,7 @@ const handleSubmit = (e) => {
    (external-search-section)
    (clearable-section)
    (rich-content-section)
+   (large-dataset-section)
    (sizes-flavors-section)
    (states-section)
    (form-integration-section)

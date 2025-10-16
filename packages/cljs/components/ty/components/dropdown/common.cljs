@@ -58,7 +58,12 @@
      :size (or (wcs/attr el "size") "md")
      :flavor validated-flavor
      :label (wcs/attr el "label")
-     :required (wcs/parse-bool-attr el "required")}))
+     :required (wcs/parse-bool-attr el "required")
+     :clearable (let [clearable-attr (wcs/attr el "clearable")]
+                  (cond
+                    (= clearable-attr "false") false
+                    (= clearable-attr "true") true
+                    :else true))}))
 
 ;; =====================================================
 ;; COMPONENT STATE MANAGEMENT

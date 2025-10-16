@@ -198,7 +198,7 @@ export class TyDropdown extends HTMLElement {
     return [
       'value', 'name', 'placeholder', 'label',
       'disabled', 'readonly', 'required',
-      'searchable', 'not-searchable', 'clearable',
+      'searchable', 'not-searchable', 'clearable', 'not-clearable',
       'size', 'flavor', 'delay'
     ]
   }
@@ -206,14 +206,22 @@ export class TyDropdown extends HTMLElement {
   connectedCallback(): void {
     // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
     // Check if value was set directly on the instance before our getter/setter was available
+    // CRITICAL: Handle properties set before connection (value, clearable, etc.)
     const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
-
     if (instanceValue && instanceValue.value !== undefined) {
       this._value = instanceValue.value
       // CRITICAL: Also update state immediately
       this._state.currentValue = this.parseValue(instanceValue.value)
       // Clean up the instance property so our getter/setter works
       delete this.value
+    }
+
+    // Handle clearable property set before connection
+    const instanceClearable = Object.getOwnPropertyDescriptor(this, 'clearable')
+    if (instanceClearable && instanceClearable.value !== undefined) {
+      this._clearable = instanceClearable.value
+      // Clean up the instance property so our getter/setter works
+      delete this.clearable
     }
 
     this.initializeState()
@@ -278,7 +286,12 @@ export class TyDropdown extends HTMLElement {
         }
         break
       case 'clearable':
-        this._clearable = newValue !== null
+        this._clearable = this.parseClearable(newValue)
+        break
+      case 'not-clearable':
+        if (newValue !== null) {
+          this._clearable = false
+        }
         break
       case 'size':
         this._size = (newValue as Size) || 'md'
@@ -314,6 +327,20 @@ export class TyDropdown extends HTMLElement {
   private parseSearchable(value: string | null): boolean {
     if (value === 'false') return false
     if (this.hasAttribute('not-searchable')) return false
+    return true
+  }
+
+  /**
+   * Parse clearable attribute logic
+   * - If 'clearable' is explicitly set to false, return false
+   * - If 'not-clearable' attribute exists, return false
+   * - If attribute doesn't exist, default to true (clearable by default)
+   * - Otherwise return true
+   */
+  private parseClearable(value: string | null): boolean {
+    if (value === 'false') return false
+    if (this.hasAttribute('not-clearable')) return false
+    if (value === null) return true  // Default: clearable
     return true
   }
 
@@ -576,7 +603,9 @@ export class TyDropdown extends HTMLElement {
       !this._disabled &&
       !this._readonly &&
       !this._state.open &&
-      this._state.mode !== 'mobile' // CRITICAL: Only show when dropdown is closed
+      this._state.mode !== 'mobile'
+    
+    // CRITICAL: Only show clear button when dropdown is closed
 
     if (shouldShow) {
       clearBtn.style.display = 'block'
@@ -1088,6 +1117,32 @@ export class TyDropdown extends HTMLElement {
     }
 
     this.openDropdown()
+  }
+
+  /**
+   * Handle clear button click - clear selection
+   */
+  private handleClearClick(e: Event): void {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Clear the selection
+    this.clearSelection()
+
+    // Dispatch change event with null value
+    this.dispatchEvent(new CustomEvent('change', {
+      detail: {
+        value: null,
+        text: '',
+        option: null,
+        originalEvent: e
+      },
+      bubbles: true,
+      composed: true
+    }))
+
+    // Update display
+    this.updateSelectionDisplay()
   }
 
   /**
@@ -1653,7 +1708,9 @@ export class TyDropdown extends HTMLElement {
   }
 
   set clearable(value: boolean) {
+    console.log('[ty-dropdown] clearable setter called:', { value, current: this._clearable })
     if (this._clearable !== value) {
+      console.log('[ty-dropdown] clearable setter - updating from', this._clearable, 'to', value)
       this._clearable = value
       if (value) {
         this.setAttribute('clearable', '')

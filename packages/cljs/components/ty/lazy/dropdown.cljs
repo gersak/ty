@@ -10,7 +10,7 @@
 (wcs/define!
   "ty-dropdown"
   (merge
-   {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :flavor :label :required :external-search :name]
+   {:observed [:value :placeholder :searchable :not-searchable :disabled :readonly :flavor :label :required :external-search :name :clearable]
     :props {:value nil}
     :form-associated true}
    (lazy-util/create-lazy-lifecycle config)))

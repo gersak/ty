@@ -604,7 +604,7 @@ export class TyDropdown extends HTMLElement {
       !this._readonly &&
       !this._state.open &&
       this._state.mode !== 'mobile'
-    
+
     // CRITICAL: Only show clear button when dropdown is closed
 
     if (shouldShow) {

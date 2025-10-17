@@ -45,6 +45,8 @@ import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { multiselectStyles } from '../styles/multiselect.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
+import { TyComponent } from '../base/ty-component.js'
+import type { PropertyChange } from '../utils/property-manager.js'
 
 // ============================================================================
 // DEVICE DETECTION
@@ -147,10 +149,95 @@ interface ChangeEventDetail {
 /**
  * Ty Multiselect Component
  */
-export class TyMultiselect extends HTMLElement {
-  static formAssociated = true
+export class TyMultiselect extends TyComponent<MultiselectState> {
+  // ============================================================================
+  // PROPERTY CONFIGURATION - Declarative property lifecycle
+  // ============================================================================
+  protected static properties = {
+    value: {
+      type: 'string' as const,
+      visual: true,
+      formValue: true,
+      emitChange: false,
+      default: ''
+    },
+    name: {
+      type: 'string' as const,
+      default: ''
+    },
+    placeholder: {
+      type: 'string' as const,
+      visual: true,
+      default: 'Select options...'
+    },
+    label: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    disabled: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    readonly: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    required: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    searchable: {
+      type: 'boolean' as const,
+      visual: true,
+      default: true,
+      aliases: { 'not-searchable': false }
+    },
+    size: {
+      type: 'string' as const,
+      visual: true,
+      default: 'md',
+      validate: (v: any) => ['sm', 'md', 'lg'].includes(v),
+      coerce: (v: any) => {
+        if (!['sm', 'md', 'lg'].includes(v)) {
+          console.warn(`[ty-multiselect] Invalid size. Using md.`)
+          return 'md'
+        }
+        return v
+      }
+    },
+    flavor: {
+      type: 'string' as const,
+      visual: true,
+      default: 'neutral',
+      validate: (v: any) => ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral'].includes(v),
+      coerce: (v: any) => {
+        const valid = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
+        if (!valid.includes(v)) {
+          console.warn(`[ty-multiselect] Invalid flavor. Using neutral.`)
+          return 'neutral'
+        }
+        return v
+      }
+    },
+    delay: {
+      type: 'number' as const,
+      default: 0,
+      validate: (v: any) => v >= 0 && v <= 5000,
+      coerce: (v: any) => {
+        const num = Number(v)
+        if (isNaN(num)) return 0
+        return Math.max(0, Math.min(5000, num))
+      }
+    }
+  }
 
-  private _internals: ElementInternals
+  // ============================================================================
+  // INTERNAL STATE
+  // ============================================================================
   private _value: string = ''
   private _name: string = ''
   private _placeholder: string = 'Select options...'
@@ -189,10 +276,9 @@ export class TyMultiselect extends HTMLElement {
   private _searchDebounceTimer: number | null = null
 
   constructor() {
-    super()
-    this._internals = this.attachInternals()
+    super() // TyComponent handles attachInternals() and attachShadow()
 
-    const shadow = this.attachShadow({ mode: 'open' })
+    const shadow = this.shadowRoot!
     ensureStyles(shadow, { css: multiselectStyles, id: 'ty-multiselect' })
 
     // Render based on device type
@@ -203,26 +289,12 @@ export class TyMultiselect extends HTMLElement {
     }
   }
 
-  static get observedAttributes(): string[] {
-    return [
-      'value', 'name', 'placeholder', 'label',
-      'disabled', 'readonly', 'required',
-      'searchable', 'not-searchable',
-      'size', 'flavor', 'delay'
-    ]
-  }
-
-  connectedCallback(): void {
-    console.log('🔌 connectedCallback')
-    
-    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
-    // Check if value was set directly on the instance before our getter/setter was available
-    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
-    if (instanceValue && instanceValue.value !== undefined) {
-      this._value = instanceValue.value
-      // Clean up the instance property so our getter/setter works
-      delete this.value
-    }
+  /**
+   * Called when component is connected to DOM
+   * TyComponent handles property capture automatically
+   */
+  protected onConnect(): void {
+    console.log('🔌 onConnect')
     
     // Initialize after element is connected and children are available
     requestAnimationFrame(() => {
@@ -231,7 +303,11 @@ export class TyMultiselect extends HTMLElement {
     })
   }
 
-  disconnectedCallback(): void {
+  /**
+   * Called when component is disconnected from DOM
+   * Clean up event listeners and timers
+   */
+  protected onDisconnect(): void {
     // Clean up document-level listeners
     const outsideClickHandler = (this as any).tyOutsideClickHandler
     const keyboardHandler = (this as any).tyKeyboardHandler
@@ -259,73 +335,71 @@ export class TyMultiselect extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    if (oldValue === newValue) return
-
-    switch (name) {
-      case 'value':
-        const newValueStr = newValue || ''
-        const selectedValues = this.parseValue(newValueStr)
-        this.updateComponentValue(selectedValues, false)
-        break
-      case 'name':
-        this._name = newValue || ''
-        break
-      case 'placeholder':
-        this._placeholder = newValue || 'Select options...'
-        break
-      case 'label':
-        this._label = newValue || ''
-        break
-      case 'disabled':
-        this._disabled = newValue !== null
-        break
-      case 'readonly':
-        this._readonly = newValue !== null
-        break
-      case 'required':
-        this._required = newValue !== null
-        break
-      case 'searchable':
-        this._searchable = this.parseSearchable(newValue)
-        break
-      case 'not-searchable':
-        if (newValue !== null) {
-          this._searchable = false
-        }
-        break
-      case 'size':
-        this._size = (newValue as Size) || 'md'
-        break
-      case 'flavor':
-        this._flavor = this.validateFlavor(newValue)
-        break
-      case 'delay':
-        this._delay = this.parseDelay(newValue)
-        break
+  /**
+   * Called when properties change
+   * Handle state synchronization BEFORE render
+   */
+  protected onPropertiesChanged(changes: PropertyChange[]): void {
+    for (const { name, newValue } of changes) {
+      switch (name) {
+        case 'value':
+          this._value = newValue || ''
+          const selectedValues = this.parseValue(newValue)
+          this._state.selectedValues = selectedValues
+          this.syncSelectedTags(selectedValues)
+          this.updatePlaceholderVisibility()
+          break
+        case 'name':
+          this._name = newValue || ''
+          break
+        case 'placeholder':
+          this._placeholder = newValue || 'Select options...'
+          this.updatePlaceholderVisibility()
+          break
+        case 'label':
+          this._label = newValue || ''
+          break
+        case 'disabled':
+          this._disabled = newValue
+          break
+        case 'readonly':
+          this._readonly = newValue
+          break
+        case 'required':
+          this._required = newValue
+          break
+        case 'searchable':
+          this._searchable = newValue
+          break
+        case 'size':
+          this._size = newValue
+          break
+        case 'flavor':
+          this._flavor = newValue
+          break
+        case 'delay':
+          this._delay = newValue
+          break
+      }
     }
-
-    this.renderDesktop()
   }
 
   /**
-   * Parse and validate delay value (0-5000ms)
+   * Get the form value for this component
+   * Returns FormData with multiple entries (HTMX standard)
    */
-  private parseDelay(value: string | null): number {
-    if (!value) return 0
-    const parsed = parseInt(value, 10)
-    if (isNaN(parsed)) return 0
-    // Clamp between 0 and 5000ms
-    return Math.max(0, Math.min(5000, parsed))
-  }
+  protected getFormValue(): FormDataEntryValue | FormData | null {
+    const selectedValues = this._state.selectedValues
 
-  /**
-   * Parse searchable attribute logic
-   */
-  private parseSearchable(value: string | null): boolean {
-    if (value === 'false') return false
-    if (this.hasAttribute('not-searchable')) return false
-    return true
+    if (this._name && selectedValues.length > 0) {
+      const formData = new FormData()
+      selectedValues.forEach(value => {
+        formData.append(this._name, value)
+      })
+      return formData
+    }
+    
+    return null
   }
 
   /**
@@ -338,39 +412,14 @@ export class TyMultiselect extends HTMLElement {
   }
 
   /**
-   * Validate flavor attribute
-   */
-  private validateFlavor(flavor: string | null): Flavor {
-    const validFlavors: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
-    const normalized = (flavor || 'neutral') as Flavor
-
-    if (!validFlavors.includes(normalized)) {
-      console.warn(
-        `[ty-multiselect] Invalid flavor '${flavor}'. Using 'neutral'. ` +
-        `Valid flavors: ${validFlavors.join(', ')}`
-      )
-      return 'neutral'
-    }
-
-    return normalized
-  }
-
-  /**
    * Initialize component state from attributes
    * Reads from both property and attribute (like ClojureScript version)
    */
   private initializeState(): void {
-    // Check for Reagent-style property (set directly on instance)
-    const instanceValue = (this as any).value
-    const hasInstanceProperty = typeof instanceValue === 'string' && instanceValue !== ''
-    
     console.log('🚀 initializeState')
-    console.log('  instanceValue:', instanceValue)
-    console.log('  hasInstanceProperty:', hasInstanceProperty)
-    console.log('  getAttribute("value"):', this.getAttribute('value'))
+    console.log('  value from props:', this.getProperty('value'))
     
-    // Read initial value from property or attribute
-    const initialValue = hasInstanceProperty ? instanceValue : this.getAttribute('value') || ''
+    const initialValue = this.getProperty('value') || ''
     console.log('  initialValue:', initialValue)
     
     if (initialValue) {
@@ -379,26 +428,6 @@ export class TyMultiselect extends HTMLElement {
       this.updateComponentValue(selectedValues, false)
     } else {
       console.log('  ⚠️  No initial value!')
-    }
-  }
-
-  /**
-   * Update form value via ElementInternals
-   * Creates FormData with multiple entries using same name (HTMX standard)
-   */
-  private updateFormValue(): void {
-    const selectedValues = this._state.selectedValues
-
-    if (this._name && selectedValues.length > 0) {
-      // Multiple values with same name using FormData (HTMX standard)
-      const formData = new FormData()
-      selectedValues.forEach(value => {
-        formData.append(this._name, value)
-      })
-      this._internals.setFormValue(formData)
-    } else {
-      // No selection or no name - empty form value
-      this._internals.setFormValue('')
     }
   }
 
@@ -489,19 +518,6 @@ export class TyMultiselect extends HTMLElement {
   }
 
   /**
-   * Update the component's value attribute based on selected tags
-   */
-  private updateComponentValue(): void {
-    const selectedValues = this.getSelectedValues()
-    const valueStr = selectedValues.join(',')
-
-    // Update both attribute and property for consistency
-    this.setAttribute('value', valueStr)
-    this._value = valueStr
-    this._state.selectedValues = selectedValues
-  }
-
-  /**
    * Sync tag selection states with desired values
    */
   private syncSelectedTags(selectedValues: string[]): void {
@@ -531,7 +547,7 @@ export class TyMultiselect extends HTMLElement {
 
   /**
    * Central update function - synchronizes everything
-   * Like ClojureScript's update-component-state!
+   * Uses TyComponent's property system for proper lifecycle
    */
   private updateComponentValue(newValues: string[], dispatchChange: boolean = false, action: ChangeAction = 'set', item: string | null = null): void {
     const oldValues = this.getSelectedValues()
@@ -546,19 +562,14 @@ export class TyMultiselect extends HTMLElement {
     if (JSON.stringify(newValues.sort()) !== JSON.stringify(oldValues.sort())) {
       console.log('  ✅ Values changed, updating...')
       
-      // 1. Sync tags with new values
-      this.syncSelectedTags(newValues)
+      // Use TyComponent's property system - this will trigger:
+      // 1. onPropertiesChanged() → syncs tags via syncSelectedTags()
+      // 2. onPropertiesChanged() → updates placeholder via updatePlaceholderVisibility()
+      // 3. updateFormValue() → automatic (formValue: true in config)
+      // 4. render() → automatic if visual properties changed
+      this.setProperty('value', valueStr)
       
-      // 2. Update value attribute
-      this.setAttribute('value', valueStr)
-      
-      // 3. Update form value (FormData for HTMX)
-      this.updateFormValue()
-      
-      // 4. Update placeholder visibility
-      this.updatePlaceholderVisibility()
-      
-      // 5. Dispatch change event if requested
+      // Dispatch custom multiselect change event (with action/item details)
       if (dispatchChange) {
         this.dispatchChangeEvent({
           values: newValues,
@@ -1154,6 +1165,18 @@ export class TyMultiselect extends HTMLElement {
   // ============================================================================
 
   /**
+   * Main render method (required by TyComponent)
+   * Delegates to mode-specific renderer
+   */
+  protected render(): void {
+    if (this._state.mode === 'mobile') {
+      this.renderMobile()
+    } else {
+      this.renderDesktop()
+    }
+  }
+
+  /**
    * Setup event listeners
    */
   private setupEventListeners(): void {
@@ -1462,150 +1485,88 @@ export class TyMultiselect extends HTMLElement {
   }
 
   set value(val: string) {
-    const selectedValues = this.parseValue(val)
-    this.updateComponentValue(selectedValues, false)
+    this.setProperty('value', val)
   }
 
   get name(): string {
-    return this._name
+    return this.getProperty('name')
   }
 
   set name(val: string) {
-    if (this._name !== val) {
-      this._name = val
-      this.setAttribute('name', val)
-    }
+    this.setProperty('name', val)
   }
 
   get placeholder(): string {
-    return this._placeholder
+    return this.getProperty('placeholder')
   }
 
   set placeholder(val: string) {
-    if (this._placeholder !== val) {
-      this._placeholder = val
-      this.setAttribute('placeholder', val)
-      this.renderDesktop()
-    }
+    this.setProperty('placeholder', val)
   }
 
   get label(): string {
-    return this._label
+    return this.getProperty('label')
   }
 
   set label(val: string) {
-    if (this._label !== val) {
-      this._label = val
-      this.setAttribute('label', val)
-      this.renderDesktop()
-    }
+    this.setProperty('label', val)
   }
 
   get disabled(): boolean {
-    return this._disabled
+    return this.getProperty('disabled')
   }
 
   set disabled(value: boolean) {
-    if (this._disabled !== value) {
-      this._disabled = value
-      if (value) {
-        this.setAttribute('disabled', '')
-      } else {
-        this.removeAttribute('disabled')
-      }
-      this.renderDesktop()
-    }
+    this.setProperty('disabled', value)
   }
 
   get readonly(): boolean {
-    return this._readonly
+    return this.getProperty('readonly')
   }
 
   set readonly(value: boolean) {
-    if (this._readonly !== value) {
-      this._readonly = value
-      if (value) {
-        this.setAttribute('readonly', '')
-      } else {
-        this.removeAttribute('readonly')
-      }
-      this.renderDesktop()
-    }
+    this.setProperty('readonly', value)
   }
 
   get required(): boolean {
-    return this._required
+    return this.getProperty('required')
   }
 
   set required(value: boolean) {
-    if (this._required !== value) {
-      this._required = value
-      if (value) {
-        this.setAttribute('required', '')
-      } else {
-        this.removeAttribute('required')
-      }
-      this.renderDesktop()
-    }
+    this.setProperty('required', value)
   }
 
   get searchable(): boolean {
-    return this._searchable
+    return this.getProperty('searchable')
   }
 
   set searchable(value: boolean) {
-    if (this._searchable !== value) {
-      this._searchable = value
-      if (value) {
-        this.setAttribute('searchable', '')
-        this.removeAttribute('not-searchable')
-      } else {
-        this.removeAttribute('searchable')
-        this.setAttribute('not-searchable', '')
-      }
-      this.renderDesktop()
-    }
+    this.setProperty('searchable', value)
   }
 
   get delay(): number {
-    return this._delay
+    return this.getProperty('delay')
   }
 
   set delay(value: number | string) {
     const numValue = typeof value === 'string' ? parseInt(value, 10) : value
-    const clamped = this.parseDelay(String(numValue))
-    if (this._delay !== clamped) {
-      this._delay = clamped
-      if (clamped > 0) {
-        this.setAttribute('delay', String(clamped))
-      } else {
-        this.removeAttribute('delay')
-      }
-    }
+    this.setProperty('delay', numValue)
   }
 
   get size(): Size {
-    return this._size
+    return this.getProperty('size') as Size
   }
 
   set size(value: Size) {
-    if (this._size !== value) {
-      this._size = value
-      this.setAttribute('size', value)
-      this.renderDesktop()
-    }
+    this.setProperty('size', value)
   }
 
   get flavor(): Flavor {
-    return this._flavor
+    return this.getProperty('flavor') as Flavor
   }
 
   set flavor(value: Flavor) {
-    if (this._flavor !== value) {
-      this._flavor = this.validateFlavor(value)
-      this.setAttribute('flavor', value)
-      this.renderDesktop()
-    }
+    this.setProperty('flavor', value)
   }
 
   get form(): HTMLFormElement | null {

@@ -186,7 +186,12 @@ export class TyDropdown extends HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: dropdownStyles, id: 'ty-dropdown' })
 
+    console.log('state mode', this._state.mode)
     // Render based on device type
+    this.render();
+  }
+
+  render(): void {
     if (this._state.mode === 'mobile') {
       this.renderMobile()
     } else {
@@ -204,23 +209,17 @@ export class TyDropdown extends HTMLElement {
   }
 
   connectedCallback(): void {
-    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
-    // Check if value was set directly on the instance before our getter/setter was available
-    // CRITICAL: Handle properties set before connection (value, clearable, etc.)
     const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
     if (instanceValue && instanceValue.value !== undefined) {
       this._value = instanceValue.value
-      // CRITICAL: Also update state immediately
       this._state.currentValue = this.parseValue(instanceValue.value)
       // Clean up the instance property so our getter/setter works
       delete this.value
     }
 
-    // Handle clearable property set before connection
     const instanceClearable = Object.getOwnPropertyDescriptor(this, 'clearable')
     if (instanceClearable && instanceClearable.value !== undefined) {
       this._clearable = instanceClearable.value
-      // Clean up the instance property so our getter/setter works
       delete this.clearable
     }
 
@@ -304,7 +303,7 @@ export class TyDropdown extends HTMLElement {
         break
     }
 
-    this.renderDesktop()
+    this.render()
   }
 
   /**
@@ -389,7 +388,6 @@ export class TyDropdown extends HTMLElement {
 
     // Listen for clear-selection events from ty-options (mobile clear button)
     this.addEventListener('clear-selection', (e: Event) => {
-      const customEvent = e as CustomEvent
       e.stopPropagation() // Prevent bubbling
 
       // Clear the selection
@@ -417,6 +415,44 @@ export class TyDropdown extends HTMLElement {
       }
     })
   }
+
+
+  // ============================================================================
+  // SHARED CORE METHODS
+  // ============================================================================
+  // Methods used by BOTH desktop and mobile implementations:
+  // 
+  // OPTION MANAGEMENT:
+  // - getOptions(): Get all option elements from slot
+  // - getOptionData(): Extract value and text from option element
+  // - selectOption(): Select an option (used by both desktop/mobile clicks)
+  // - clearSelection(): Clear all selections
+  // - syncSelectedOption(): Sync selected option based on current value
+  // 
+  // STATE SYNCHRONIZATION:
+  // - updateComponentValue(): Update component value attribute
+  // - updateFormValue(): Update form value via ElementInternals
+  // 
+  // DISPLAY UPDATES:
+  // - updateSelectionDisplay(): Show/hide placeholder
+  // - updateClearButton(): Show/hide clear button (desktop only)
+  // 
+  // EVENT DISPATCHING:
+  // - dispatchChangeEvent(): Dispatch change event
+  // - dispatchSearchEvent(): Dispatch search event with debounce
+  // - fireSearchEvent(): Fire the actual search event
+  // 
+  // FILTERING & SEARCH:
+  // - filterOptions(): Filter options by query
+  // - updateOptionVisibility(): Show/hide options based on filter
+  // 
+  // HIGHLIGHTING (keyboard navigation):
+  // - clearHighlights(): Clear all option highlights
+  // - highlightOption(): Highlight option at index
+  // 
+  // UTILITY:
+  // - buildStubClasses(): Build CSS class list for stub
+  // ============================================================================
 
   /**
    * Update form value via ElementInternals
@@ -680,23 +716,38 @@ export class TyDropdown extends HTMLElement {
     }
   }
 
+
+  // ============================================================================
+  // SHARED EVENT HANDLERS
+  // ============================================================================
+  // Event handlers used by BOTH desktop and mobile:
+  // 
+  // - handleSearchInput(): Handles search input for both dialog and modal
+  //   * Desktop: Filters options locally OR dispatches search event
+  //   * Mobile: Same behavior
+  // 
+  // - handleSearchBlur(): Resets search when input loses focus
+  //   * Desktop: Clears search and shows all options
+  //   * Mobile: Same behavior
+  // ============================================================================
+
   /**
    * Setup event listeners
    */
-  private setupEventListeners(): void {
+  private setupDesktopEventListeners(): void {
     const shadow = this.shadowRoot!
     const stub = shadow.querySelector('.dropdown-stub')
     const optionsSlot = shadow.querySelector('#options-slot')
     const searchInput = shadow.querySelector('.dropdown-search-input')
 
     if (stub) {
-      this._stubClickHandler = this.handleStubClick.bind(this)
+      this._stubClickHandler = this.handleDesktopStubClick.bind(this)
       stub.addEventListener('click', this._stubClickHandler)
     }
 
     // Add option click handler to slot
     if (optionsSlot) {
-      this._optionClickHandler = this.handleOptionClick.bind(this)
+      this._optionClickHandler = this.handleDesktopOptionClick.bind(this)
       optionsSlot.addEventListener('click', this._optionClickHandler)
     }
 
@@ -712,13 +763,13 @@ export class TyDropdown extends HTMLElement {
     // Add clear button handler
     const clearBtn = shadow.querySelector('.dropdown-clear-btn')
     if (clearBtn) {
-      this._clearClickHandler = this.handleClearClick.bind(this)
+      this._clearClickHandler = this.handleDesktopClearClick.bind(this)
       clearBtn.addEventListener('click', this._clearClickHandler)
     }
 
     // Setup document-level event listeners immediately (like ClojureScript version)
-    this._outsideClickHandler = this.handleOutsideClick.bind(this)
-    this._keyboardHandler = this.handleKeyboard.bind(this)
+    this._outsideClickHandler = this.handleDesktopOutsideClick.bind(this)
+    this._keyboardHandler = this.handleDesktopKeyboard.bind(this)
 
     document.addEventListener('click', this._outsideClickHandler)
     document.addEventListener('keydown', this._keyboardHandler)
@@ -726,14 +777,165 @@ export class TyDropdown extends HTMLElement {
 
   // removeEventListeners removed - now using ClojureScript pattern
 
+
   // ============================================================================
-  // DESKTOP IMPLEMENTATION
+  // SHARED HELPER METHODS (Internal)
   // ============================================================================
+  // Internal helpers that reduce duplication between desktop and mobile.
+  // These are called by both implementations but not exposed publicly.
+  // ============================================================================
+
+  /**
+   * Lock scroll with consistent ID generation
+   */
+  private lockDropdownScroll(): void {
+    const dropdownId = `dropdown-${this.id || 'anon'}-${getElementHash(this)}`
+    this._scrollLockId = dropdownId
+    lockScroll(dropdownId)
+  }
+
+  /**
+   * Unlock scroll using stored ID
+   */
+  private unlockDropdownScroll(): void {
+    if (this._scrollLockId) {
+      unlockScroll(this._scrollLockId)
+      this._scrollLockId = null
+    }
+  }
+
+  /**
+   * Initialize options state when opening dropdown/modal
+   * @param highlightSelected - Whether to highlight the currently selected option
+   */
+  private initializeOptionsState(highlightSelected: boolean = false): void {
+    const options = this.getOptions().map(el => this.getOptionData(el))
+    const currentValue = this._state.currentValue
+
+    this._state.filteredOptions = options
+
+    if (highlightSelected && currentValue) {
+      // Find the index of the currently selected option
+      const selectedIndex = options.findIndex(opt => opt.value === currentValue)
+      this._state.highlightedIndex = selectedIndex
+
+      // Highlight and scroll to selected option if it exists
+      if (selectedIndex >= 0) {
+        this.highlightOption(options, selectedIndex)
+      }
+    } else {
+      this._state.highlightedIndex = -1
+    }
+  }
+
+  /**
+   * Base stub click handler - validates state then calls open callback
+   * @param e - Click event
+   * @param openCallback - Function to call to open (desktop or mobile)
+   */
+  private handleStubClickBase(e: Event, openCallback: () => void): void {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (this._disabled || this._readonly) {
+      return
+    }
+
+    openCallback()
+  }
+
+  /**
+   * Base option click handler - finds option, selects it, then calls close callback
+   * @param e - Click event
+   * @param closeCallback - Function to call to close (desktop or mobile)
+   */
+  private handleOptionClickBase(e: Event, closeCallback: () => void): void {
+    e.preventDefault()
+    e.stopPropagation()
+
+    const target = e.target as HTMLElement
+
+    // Find the option element (might be clicking on child element)
+    const option = target.closest('option, ty-option, ty-tag') as HTMLElement
+    if (!option) return
+
+    // Select the option
+    this.selectOption(option, e)
+
+    // Update display
+    this.updateSelectionDisplay()
+
+    // Close dropdown/modal
+    closeCallback()
+  }
+
+  /**
+   * Base clear click handler - clears selection and optionally closes
+   * @param e - Click event
+   * @param closeCallback - Optional function to call to close (mobile only)
+   */
+  private handleClearClickBase(e: Event, closeCallback?: () => void): void {
+    e.preventDefault()
+    e.stopPropagation()
+
+    // Clear the selection
+    this.clearSelection()
+    this._state.currentValue = null
+    this.updateComponentValue()
+    this.updateSelectionDisplay()
+    this.updateFormValue()
+
+    // Dispatch change event with null value
+    this.dispatchEvent(new CustomEvent('change', {
+      detail: {
+        value: null,
+        text: '',
+        option: null,
+        originalEvent: e
+      },
+      bubbles: true,
+      composed: true
+    }))
+
+    // Close if callback provided (mobile modal case)
+    if (closeCallback) {
+      closeCallback()
+    }
+  }
+
+  // ============================================================================
+  // DESKTOP IMPLEMENTATION (Dialog-based)
+  // ============================================================================
+  // Desktop uses <dialog> element with smart positioning.
+  // 
+  // EVENT FLOW:
+  // 1. User clicks stub → handleDesktopStubClick() → openDesktopDropdown()
+  // 2. Dialog shown with showModal(), positioned via calculateDesktopPosition()
+  // 3. User types in search → handleSearchInput() [SHARED]
+  // 4. User clicks option → handleDesktopOptionClick() → selectOption() [SHARED] → closeDesktopDropdown()
+  // 5. User clicks outside → handleDesktopOutsideClick() → closeDesktopDropdown()
+  // 6. User presses Escape → handleDesktopKeyboard() → closeDesktopDropdown()
+  // 7. User clicks clear button → handleDesktopClearClick() → clearSelection() [SHARED]
+  // 
+  // METHODS:
+  // - calculateDesktopPosition(): Smart dropdown positioning (below/above stub)
+  // - openDesktopDropdown(): Open desktop dialog
+  // - closeDesktopDropdown(): Close desktop dialog
+  // - handleDesktopStubClick(): Open on stub click
+  // - handleDesktopOptionClick(): Select option and close
+  // - handleDesktopClearClick(): Clear selection
+  // - handleDesktopOutsideClick(): Close on outside click
+  // - handleDesktopKeyboard(): Arrow navigation + Enter/Escape
+  // - renderDesktop(): Render desktop HTML
+  // - setupDesktopEventListeners(): Setup desktop event handlers
+  // ============================================================================
+
+
 
   /**
    * Calculate and set dropdown position with smart direction detection
    */
-  private calculatePosition(): void {
+  private calculateDesktopPosition(): void {
     const shadow = this.shadowRoot!
     const stub = shadow.querySelector('.dropdown-stub') as HTMLElement
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
@@ -794,27 +996,21 @@ export class TyDropdown extends HTMLElement {
   /**
    * Open dropdown dialog
    */
-  private openDropdown(): void {
-
+  private openDesktopDropdown(): void {
+    console.log('opening desktop dropdown')
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
     if (!dialog) return
 
-    // Generate consistent unique ID for scroll locking (like ClojureScript's hash)
-    const dropdownId = `dropdown-${this.id || 'anon'}-${getElementHash(this)}`
-    this._scrollLockId = dropdownId
-
     // Lock scroll
-
-    lockScroll(dropdownId)
-
+    this.lockDropdownScroll()
 
     // Show modal first so browser can calculate dimensions
     dialog.showModal()
     dialog.classList.add('open')
 
     // Position dropdown AFTER showing modal
-    this.calculatePosition()
+    this.calculateDesktopPosition()
 
     // Update component state
     this._state.open = true
@@ -826,22 +1022,8 @@ export class TyDropdown extends HTMLElement {
     const searchChevron = shadow.querySelector('.dropdown-search-chevron')
     if (searchChevron) searchChevron.classList.add('open')
 
-    // Initialize options state and find selected option
-    const options = this.getOptions().map(el => this.getOptionData(el))
-    const currentValue = this._state.currentValue
-
-    // Find the index of the currently selected option
-    const selectedIndex = currentValue
-      ? options.findIndex(opt => opt.value === currentValue)
-      : -1
-
-    this._state.filteredOptions = options
-    this._state.highlightedIndex = selectedIndex
-
-    // Highlight and scroll to selected option if it exists
-    if (selectedIndex >= 0) {
-      this.highlightOption(options, selectedIndex)
-    }
+    // Initialize options state and highlight selected option
+    this.initializeOptionsState(true)
 
     // Focus search input if searchable
     if (this._searchable) {
@@ -858,19 +1040,13 @@ export class TyDropdown extends HTMLElement {
   /**
    * Close dropdown dialog
    */
-  private closeDropdown(): void {
-
+  private closeDesktopDropdown(): void {
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
     if (!dialog) return
 
-    // Unlock scroll using stored consistent ID
-    if (this._scrollLockId) {
-
-      unlockScroll(this._scrollLockId)
-      this._scrollLockId = null
-
-    }
+    // Unlock scroll
+    this.unlockDropdownScroll()
 
     // Close dialog
     dialog.classList.remove('open')
@@ -901,7 +1077,7 @@ export class TyDropdown extends HTMLElement {
   /**
    * Handle outside click to close dropdown
    */
-  private handleOutsideClick(e: Event): void {
+  private handleDesktopOutsideClick(e: Event): void {
     if (!this._state.open) return
 
     const target = e.target as Node
@@ -916,7 +1092,7 @@ export class TyDropdown extends HTMLElement {
 
     if (!clickedInside) {
 
-      this.closeDropdown()
+      this.closeDesktopDropdown()
     }
   }
 
@@ -1010,13 +1186,19 @@ export class TyDropdown extends HTMLElement {
   }
 
   // ============================================================================
-  // Keyboard Navigation
+  // DESKTOP KEYBOARD NAVIGATION
   // ============================================================================
+  // Handles: Escape, Enter, ArrowUp, ArrowDown
+  // Works with both search input focus and document-level events
+  // Wraps around: ArrowUp at index 0 → last option, ArrowDown at last → first
+  // ============================================================================
+
+
 
   /**
    * Handle keyboard navigation
    */
-  private handleKeyboard(e: KeyboardEvent): void {
+  private handleDesktopKeyboard(e: KeyboardEvent): void {
     if (!this._state.open) return
 
     const shadow = this.shadowRoot!
@@ -1042,7 +1224,7 @@ export class TyDropdown extends HTMLElement {
       case 'Escape':
         e.preventDefault()
         e.stopPropagation()
-        this.closeDropdown()
+        this.closeDesktopDropdown()
         break
 
       case 'Enter':
@@ -1053,7 +1235,7 @@ export class TyDropdown extends HTMLElement {
           const option = filteredOptions[currentHighlightedIndex]
           this.selectOption(option.element, e)
           this.updateSelectionDisplay()
-          this.closeDropdown()
+          this.closeDesktopDropdown()
         }
         break
 
@@ -1108,92 +1290,25 @@ export class TyDropdown extends HTMLElement {
   /**
    * Handle stub click - open dropdown
    */
-  private handleStubClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    if (this._disabled || this._readonly) {
-      return
-    }
-
-    this.openDropdown()
+  private handleDesktopStubClick(e: Event): void {
+    this.handleStubClickBase(e, () => this.openDesktopDropdown())
   }
 
-  /**
-   * Handle clear button click - clear selection
-   */
-  private handleClearClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    // Clear the selection
-    this.clearSelection()
-
-    // Dispatch change event with null value
-    this.dispatchEvent(new CustomEvent('change', {
-      detail: {
-        value: null,
-        text: '',
-        option: null,
-        originalEvent: e
-      },
-      bubbles: true,
-      composed: true
-    }))
-
-    // Update display
-    this.updateSelectionDisplay()
-  }
 
   /**
    * Handle option click - select option and close
    */
-  private handleOptionClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    const target = e.target as HTMLElement
-
-    // Find the option element (might be clicking on child element)
-    const option = target.closest('option, ty-option, ty-tag') as HTMLElement
-    if (!option) return
-
-    // Select the option
-    this.selectOption(option, e)
-
-    // Update display
-    this.updateSelectionDisplay()
-
-    // Close dropdown
-    this.closeDropdown()
+  private handleDesktopOptionClick(e: Event): void {
+    this.handleOptionClickBase(e, () => this.closeDesktopDropdown())
   }
 
   /**
    * Handle clear button click - clear selection
    * CRITICAL: Must prevent dropdown from opening!
    */
-  private handleClearClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    // Clear the selection
-    this.clearSelection()
-    this._state.currentValue = null
-    this.updateComponentValue()
-    this.updateSelectionDisplay()
-    this.updateFormValue()
-
-    // Dispatch change event with null value
-    this.dispatchEvent(new CustomEvent('change', {
-      detail: {
-        value: null,
-        text: '',
-        option: null,
-        originalEvent: e
-      },
-      bubbles: true,
-      composed: true
-    }))
+  private handleDesktopClearClick(e: Event): void {
+    this.handleClearClickBase(e)
+    // Desktop doesn't close on clear, just clears the selection
   }
 
   /**
@@ -1241,19 +1356,21 @@ export class TyDropdown extends HTMLElement {
               </div>
             </div>
             <dialog class="dropdown-dialog">
-              <div class="dropdown-header">
-                <input 
-                  class="dropdown-search-input ${this._size}" 
-                  type="text"
-                  placeholder="${searchPlaceholder}"
-                  ${this._disabled ? 'disabled' : ''}
-                />
-                <div class="dropdown-search-chevron">
-                  ${CHEVRON_DOWN_SVG}
+              <div class="dropdown-panel">
+                <div class="dropdown-header">
+                  <input 
+                    class="dropdown-search-input ${this._size}" 
+                    type="text"
+                    placeholder="${searchPlaceholder}"
+                    ${this._disabled ? 'disabled' : ''}
+                  />
+                  <div class="dropdown-search-chevron">
+                    ${CHEVRON_DOWN_SVG}
+                  </div>
                 </div>
-              </div>
-              <div class="dropdown-options">
-                <slot id="options-slot"></slot>
+                <div class="dropdown-options">
+                  <slot id="options-slot"></slot>
+                </div>
               </div>
             </dialog>
           </div>
@@ -1261,7 +1378,7 @@ export class TyDropdown extends HTMLElement {
       `
 
       // Setup event listeners ONCE (only when rendering for the first time)
-      this.setupEventListeners()
+      this.setupDesktopEventListeners()
     }
 
     // Dynamic label creation (like input.ts fix)
@@ -1291,8 +1408,32 @@ export class TyDropdown extends HTMLElement {
   }
 
   // ============================================================================
-  // MOBILE IMPLEMENTATION
+  // MOBILE IMPLEMENTATION (Full-screen Modal)
   // ============================================================================
+  // Mobile uses full-screen modal with backdrop.
+  // 
+  // EVENT FLOW:
+  // 1. User clicks stub → handleMobileStubClick() → openMobileModal()
+  // 2. Modal shown with CSS animation (display: flex + open class)
+  // 3. User types in search → handleSearchInput() [SHARED]
+  // 4. User clicks option → handleMobileOptionClick() → selectOption() [SHARED] → closeMobileModal()
+  // 5. User clicks backdrop → closeMobileModal()
+  // 6. User clicks close button → closeMobileModal()
+  // 7. User presses Escape → handleMobileKeyboard() → closeMobileModal()
+  // 8. ty-option dispatches clear-selection → handleMobileClearClick() → closeMobileModal()
+  // 
+  // METHODS:
+  // - openMobileModal(): Open mobile modal
+  // - closeMobileModal(): Close mobile modal
+  // - handleMobileStubClick(): Open on stub click
+  // - handleMobileOptionClick(): Select option and close
+  // - handleMobileClearClick(): Clear selection and close
+  // - handleMobileKeyboard(): Escape key handler only (no arrow navigation)
+  // - renderMobile(): Render mobile HTML
+  // - setupMobileEventListeners(): Setup mobile event handlers
+  // ============================================================================
+
+
 
   /**
    * Render mobile mode with full-screen modal
@@ -1426,37 +1567,14 @@ export class TyDropdown extends HTMLElement {
    * Handle mobile stub click - open modal
    */
   private handleMobileStubClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    if (this._disabled || this._readonly) {
-      return
-    }
-
-    this.openMobileModal()
+    this.handleStubClickBase(e, () => this.openMobileModal())
   }
 
   /**
    * Handle mobile option click - select and close
    */
   private handleMobileOptionClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    const target = e.target as HTMLElement
-
-    // Find the option element (might be clicking on child element)
-    const option = target.closest('option, ty-option, ty-tag') as HTMLElement
-    if (!option) return
-
-    // Select the option
-    this.selectOption(option, e)
-
-    // Update display
-    this.updateSelectionDisplay()
-
-    // Close modal
-    this.closeMobileModal()
+    this.handleOptionClickBase(e, () => this.closeMobileModal())
   }
 
   /**
@@ -1479,30 +1597,8 @@ export class TyDropdown extends HTMLElement {
    * Handle clear click in mobile modal
    */
   private handleMobileClearClick(e: Event): void {
-    e.preventDefault()
-    e.stopPropagation()
-
-    // Clear the selection
-    this.clearSelection()
-    this._state.currentValue = null
-    this.updateComponentValue()
-    this.updateSelectionDisplay()
-    this.updateFormValue()
-
-    // Dispatch change event
-    this.dispatchEvent(new CustomEvent('change', {
-      detail: {
-        value: null,
-        text: '',
-        option: null,
-        originalEvent: e
-      },
-      bubbles: true,
-      composed: true
-    }))
-
-    // Close the modal after clearing
-    this.closeMobileModal()
+    this.handleClearClickBase(e, () => this.closeMobileModal())
+    // Mobile closes modal after clearing
   }
 
 
@@ -1515,12 +1611,8 @@ export class TyDropdown extends HTMLElement {
     const modal = shadow.querySelector('.mobile-modal') as HTMLElement
     if (!modal) return
 
-    // Generate consistent unique ID for scroll locking
-    const dropdownId = `dropdown-${this.id || 'anon'}-${getElementHash(this)}`
-    this._scrollLockId = dropdownId
-
     // Lock scroll
-    lockScroll(dropdownId)
+    this.lockDropdownScroll()
 
     // Show modal with animation
     modal.style.display = 'flex'
@@ -1531,9 +1623,8 @@ export class TyDropdown extends HTMLElement {
     // Update component state
     this._state.open = true
 
-    // Initialize options state
-    const options = this.getOptions().map(el => this.getOptionData(el))
-    this._state.filteredOptions = options
+    // Initialize options state (no highlight on mobile)
+    this.initializeOptionsState(false)
 
     // Focus search input if searchable
     if (this._searchable) {
@@ -1555,11 +1646,8 @@ export class TyDropdown extends HTMLElement {
     const modal = shadow.querySelector('.mobile-modal') as HTMLElement
     if (!modal) return
 
-    // Unlock scroll using stored consistent ID
-    if (this._scrollLockId) {
-      unlockScroll(this._scrollLockId)
-      this._scrollLockId = null
-    }
+    // Unlock scroll
+    this.unlockDropdownScroll()
 
     // Hide modal with animation
     modal.classList.remove('open')
@@ -1621,7 +1709,7 @@ export class TyDropdown extends HTMLElement {
     if (this._placeholder !== val) {
       this._placeholder = val
       this.setAttribute('placeholder', val)
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1633,7 +1721,7 @@ export class TyDropdown extends HTMLElement {
     if (this._label !== val) {
       this._label = val
       this.setAttribute('label', val)
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1649,7 +1737,7 @@ export class TyDropdown extends HTMLElement {
       } else {
         this.removeAttribute('disabled')
       }
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1665,7 +1753,7 @@ export class TyDropdown extends HTMLElement {
       } else {
         this.removeAttribute('readonly')
       }
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1681,7 +1769,7 @@ export class TyDropdown extends HTMLElement {
       } else {
         this.removeAttribute('required')
       }
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1699,7 +1787,7 @@ export class TyDropdown extends HTMLElement {
         this.removeAttribute('searchable')
         this.setAttribute('not-searchable', '')
       }
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1746,7 +1834,7 @@ export class TyDropdown extends HTMLElement {
     if (this._size !== value) {
       this._size = value
       this.setAttribute('size', value)
-      this.renderDesktop()
+      this.render()
     }
   }
 
@@ -1758,7 +1846,7 @@ export class TyDropdown extends HTMLElement {
     if (this._flavor !== value) {
       this._flavor = this.validateFlavor(value)
       this.setAttribute('flavor', value)
-      this.renderDesktop()
+      this.render()
     }
   }
 

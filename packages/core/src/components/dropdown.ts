@@ -40,7 +40,8 @@ import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { dropdownStyles } from '../styles/dropdown.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
-import { getCapturedValues } from '../utils/property-capture.js'
+import { TyComponent } from '../base/ty-component.js'
+import type { PropertyChange } from '../utils/property-manager.js'
 
 // ============================================================================
 // DEVICE DETECTION
@@ -138,10 +139,101 @@ interface DropdownState {
 /**
  * Ty Dropdown Component
  */
-export class TyDropdown extends HTMLElement {
-  static formAssociated = true
+export class TyDropdown extends TyComponent<DropdownState> {
+  // ============================================================================
+  // PROPERTY CONFIGURATION - Declarative property lifecycle
+  // ============================================================================
+  protected static properties = {
+    value: {
+      type: 'string' as const,
+      visual: true,
+      formValue: true,
+      emitChange: true,
+      default: ''
+    },
+    name: {
+      type: 'string' as const,
+      default: ''
+    },
+    placeholder: {
+      type: 'string' as const,
+      visual: true,
+      default: 'Select an option...'
+    },
+    label: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    disabled: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    readonly: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    required: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    searchable: {
+      type: 'boolean' as const,
+      visual: true,
+      default: true,
+      aliases: { 'not-searchable': false }
+    },
+    clearable: {
+      type: 'boolean' as const,
+      visual: true,
+      default: true,
+      aliases: { 'not-clearable': false }
+    },
+    size: {
+      type: 'string' as const,
+      visual: true,
+      default: 'md',
+      validate: (v: any) => ['sm', 'md', 'lg'].includes(v),
+      coerce: (v: any) => {
+        if (!['sm', 'md', 'lg'].includes(v)) {
+          console.warn(`[ty-dropdown] Invalid size. Using md.`)
+          return 'md'
+        }
+        return v
+      }
+    },
+    flavor: {
+      type: 'string' as const,
+      visual: true,
+      default: 'neutral',
+      validate: (v: any) => ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral'].includes(v),
+      coerce: (v: any) => {
+        const valid = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
+        if (!valid.includes(v)) {
+          console.warn(`[ty-dropdown] Invalid flavor. Using neutral.`)
+          return 'neutral'
+        }
+        return v
+      }
+    },
+    delay: {
+      type: 'number' as const,
+      default: 0,
+      validate: (v: any) => v >= 0 && v <= 5000,
+      coerce: (v: any) => {
+        const num = Number(v)
+        if (isNaN(num)) return 0
+        return Math.max(0, Math.min(5000, num))
+      }
+    }
+  }
 
-  private _internals: ElementInternals
+  // ============================================================================
+  // PRIVATE FIELDS (will be removed in Phase 3)
+  // ============================================================================
   private _value: string = ''
   private _name: string = ''
   private _placeholder: string = 'Select an option...'
@@ -181,10 +273,9 @@ export class TyDropdown extends HTMLElement {
   private _searchDebounceTimer: number | null = null
 
   constructor() {
-    super()
-    this._internals = this.attachInternals()
+    super() // TyComponent handles attachInternals() and attachShadow()
 
-    const shadow = this.attachShadow({ mode: 'open' })
+    const shadow = this.shadowRoot!
     ensureStyles(shadow, { css: dropdownStyles, id: 'ty-dropdown' })
 
     // Render based on device type
@@ -198,76 +289,25 @@ export class TyDropdown extends HTMLElement {
     }
   }
 
-  static get observedAttributes(): string[] {
-    return [
-      'value', 'name', 'placeholder', 'label',
-      'disabled', 'readonly', 'required',
-      'searchable', 'not-searchable', 'clearable', 'not-clearable',
-      'size', 'flavor', 'delay'
-    ]
-  }
 
-  connectedCallback(): void {
-    // CRITICAL: React/Reagent set properties BEFORE connectedCallback
-    // Capture any pre-set properties and apply them properly
-    const preSetProps = getCapturedValues(this, [
-      'value',
-      'clearable',
-      'disabled',
-      'readonly',
-      'required',
-      'searchable',
-      'placeholder',
-      'label',
-      'size',
-      'flavor',
-      'delay'
-    ])
+  // ============================================================================
+  // LIFECYCLE HOOKS - TyComponent integration
+  // ============================================================================
 
-    // Apply captured value with proper state sync
-    if (preSetProps.value !== undefined) {
-      this._value = preSetProps.value
-      this._state.currentValue = this.parseValue(preSetProps.value)
-    }
-
-    // Apply other captured properties
-    if (preSetProps.clearable !== undefined) {
-      this._clearable = preSetProps.clearable
-    }
-    if (preSetProps.disabled !== undefined) {
-      this._disabled = preSetProps.disabled
-    }
-    if (preSetProps.readonly !== undefined) {
-      this._readonly = preSetProps.readonly
-    }
-    if (preSetProps.required !== undefined) {
-      this._required = preSetProps.required
-    }
-    if (preSetProps.searchable !== undefined) {
-      this._searchable = preSetProps.searchable
-    }
-    if (preSetProps.placeholder !== undefined) {
-      this._placeholder = preSetProps.placeholder
-      this.updatePlaceholderInDOM()
-    }
-    if (preSetProps.label !== undefined) {
-      this._label = preSetProps.label
-    }
-    if (preSetProps.size !== undefined) {
-      this._size = preSetProps.size as Size
-    }
-    if (preSetProps.flavor !== undefined) {
-      this._flavor = this.validateFlavor(preSetProps.flavor)
-    }
-    if (preSetProps.delay !== undefined) {
-      this._delay = this.parseDelay(String(preSetProps.delay))
-    }
-
+  /**
+   * Called when component is connected to DOM
+   * TyComponent handles property capture automatically
+   */
+  protected onConnect(): void {
     this.initializeState()
   }
 
-  disconnectedCallback(): void {
-    // Clean up document-level listeners using stored handlers (like ClojureScript)
+  /**
+   * Called when component is disconnected from DOM
+   * Clean up event listeners and timers
+   */
+  protected onDisconnect(): void {
+    // Clean up document-level listeners
     const outsideClickHandler = (this as any).tyOutsideClickHandler
     const keyboardHandler = (this as any).tyKeyboardHandler
 
@@ -288,100 +328,76 @@ export class TyDropdown extends HTMLElement {
     }
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    if (oldValue === newValue) return
+  /**
+   * Called when properties change
+   * Handle state synchronization BEFORE render
+   */
+  protected onPropertiesChanged(changes: PropertyChange[]): void {
+    // Sync private fields from PropertyManager
+    // (Render methods still use private fields)
+    for (const { name, newValue } of changes) {
+      switch (name) {
+        case 'value':
+          this._value = newValue || ''
+          this._state.currentValue = newValue || null
+          this.syncSelectedOption()
+          break
 
-    switch (name) {
-      case 'value':
-        this._value = newValue || ''
-        this._state.currentValue = this.parseValue(newValue)
-        this.syncSelectedOption()
-        this.updateFormValue()
-        break
-      case 'name':
-        this._name = newValue || ''
-        break
-      case 'placeholder':
-        this._placeholder = newValue || 'Select an option...'
-        this.updatePlaceholderInDOM()
-        break
-      case 'label':
-        this._label = newValue || ''
-        break
-      case 'disabled':
-        this._disabled = newValue !== null
-        break
-      case 'readonly':
-        this._readonly = newValue !== null
-        break
-      case 'required':
-        this._required = newValue !== null
-        break
-      case 'searchable':
-        this._searchable = this.parseSearchable(newValue)
-        break
-      case 'not-searchable':
-        if (newValue !== null) {
-          this._searchable = false
-        }
-        break
-      case 'clearable':
-        this._clearable = this.parseClearable(newValue)
-        break
-      case 'not-clearable':
-        if (newValue !== null) {
-          this._clearable = false
-        }
-        break
-      case 'size':
-        this._size = (newValue as Size) || 'md'
-        break
-      case 'flavor':
-        this._flavor = this.validateFlavor(newValue)
-        break
-      case 'delay':
-        this._delay = this.parseDelay(newValue)
-        break
+        case 'name':
+          this._name = newValue || ''
+          break
+
+        case 'placeholder':
+          this._placeholder = newValue || 'Select an option...'
+          this.updatePlaceholderInDOM()
+          break
+
+        case 'label':
+          this._label = newValue || ''
+          break
+
+        case 'disabled':
+          this._disabled = newValue
+          break
+
+        case 'readonly':
+          this._readonly = newValue
+          break
+
+        case 'required':
+          this._required = newValue
+          break
+
+        case 'searchable':
+          this._searchable = newValue
+          break
+
+        case 'clearable':
+          this._clearable = newValue
+          this.updateClearButton()
+          break
+
+        case 'size':
+          this._size = newValue
+          break
+
+        case 'flavor':
+          this._flavor = newValue
+          break
+
+        case 'delay':
+          this._delay = newValue
+          break
+      }
     }
-
-    this.render()
   }
 
   /**
-   * Parse and validate delay value (0-5000ms)
+   * Get the form value for this component
+   * TyComponent calls this automatically when formValue property changes
    */
-  private parseDelay(value: string | null): number {
-    if (!value) return 0
-    const parsed = parseInt(value, 10)
-    if (isNaN(parsed)) return 0
-    // Clamp between 0 and 5000ms
-    return Math.max(0, Math.min(5000, parsed))
-  }
-
-  /**
-   * Parse searchable attribute logic
-   * - If 'searchable' is explicitly set to false, return false
-   * - If 'not-searchable' attribute exists, return false
-   * - Otherwise default to true
-   */
-  private parseSearchable(value: string | null): boolean {
-    if (value === 'false') return false
-    if (this.hasAttribute('not-searchable')) return false
-    return true
-  }
-
-  /**
-   * Parse clearable attribute logic
-   * - If 'clearable' is explicitly set to false, return false
-   * - If 'not-clearable' attribute exists, return false
-   * - If attribute doesn't exist, default to true (clearable by default)
-   * - Otherwise return true
-   */
-  private parseClearable(value: string | null): boolean {
-    if (value === 'false') return false
-    if (this.hasAttribute('not-clearable')) return false
-    if (value === null) return true  // Default: clearable
-    return true
+  protected getFormValue(): FormDataEntryValue | null {
+    return this._state.currentValue || null
   }
 
   /**
@@ -423,7 +439,7 @@ export class TyDropdown extends HTMLElement {
       // Defer sync to next frame to ensure options are available
       requestAnimationFrame(() => {
         this.syncSelectedOption()
-        this.updateFormValue()
+        // updateFormValue() called automatically by TyComponent
       })
     }
 
@@ -436,7 +452,7 @@ export class TyDropdown extends HTMLElement {
       this._state.currentValue = null
       this.updateComponentValue()
       this.updateSelectionDisplay()
-      this.updateFormValue()
+      // updateFormValue() called automatically by TyComponent
 
       // Dispatch change event
       this.dispatchEvent(new CustomEvent('change', {
@@ -465,19 +481,19 @@ export class TyDropdown extends HTMLElement {
    */
   private updatePlaceholderInDOM(): void {
     const shadow = this.shadowRoot!
-    
+
     // Update stub placeholder
     const stubPlaceholder = shadow.querySelector('.dropdown-placeholder')
     if (stubPlaceholder) {
       stubPlaceholder.textContent = this._placeholder
     }
-    
+
     // Update search input placeholder (desktop)
     const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
     if (searchInput) {
       searchInput.placeholder = this._placeholder
     }
-    
+
     // Update mobile search input placeholder
     const mobileSearchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
     if (mobileSearchInput) {
@@ -526,11 +542,6 @@ export class TyDropdown extends HTMLElement {
   /**
    * Update form value via ElementInternals
    */
-  private updateFormValue(): void {
-    this._internals.setFormValue(
-      this._state.currentValue || null
-    )
-  }
 
   /**
    * Get all option elements from slot
@@ -633,7 +644,7 @@ export class TyDropdown extends HTMLElement {
     }
     this.updateComponentValue()
     this.updateSelectionDisplay()
-    this.updateFormValue()
+    // updateFormValue() called automatically by TyComponent
 
     // Dispatch change event
     this.dispatchChangeEvent(option, originalEvent)
@@ -952,7 +963,7 @@ export class TyDropdown extends HTMLElement {
     this._state.currentValue = null
     this.updateComponentValue()
     this.updateSelectionDisplay()
-    this.updateFormValue()
+    // updateFormValue() called automatically by TyComponent
 
     // Dispatch change event with null value
     this.dispatchEvent(new CustomEvent('change', {
@@ -1506,6 +1517,7 @@ export class TyDropdown extends HTMLElement {
   /**
    * Render mobile mode with full-screen modal
    */
+
   private renderMobile(): void {
     const shadow = this.shadowRoot!
 
@@ -1744,180 +1756,45 @@ export class TyDropdown extends HTMLElement {
   // PUBLIC API - Getters/Setters
   // ============================================================================
 
-  get value(): string {
-    return this._state.currentValue || ''
-  }
+  // ============================================================================
+  // PROPERTY ACCESSORS - Simplified with TyComponent
+  // ============================================================================
 
-  set value(val: string) {
-    if (this._value !== val) {
-      this._value = val
-      this._state.currentValue = this.parseValue(val)
-      this.setAttribute('value', val)
-      this.syncSelectedOption()
-      this.updateFormValue()
-    }
-  }
+  get value(): string { return this.getProperty('value') }
+  set value(v: string) { this.setProperty('value', v) }
 
-  get name(): string {
-    return this._name
-  }
+  get name(): string { return this.getProperty('name') }
+  set name(v: string) { this.setProperty('name', v) }
 
-  set name(val: string) {
-    if (this._name !== val) {
-      this._name = val
-      this.setAttribute('name', val)
-    }
-  }
+  get placeholder(): string { return this.getProperty('placeholder') }
+  set placeholder(v: string) { this.setProperty('placeholder', v) }
 
-  get placeholder(): string {
-    return this._placeholder
-  }
+  get label(): string { return this.getProperty('label') }
+  set label(v: string) { this.setProperty('label', v) }
 
-  set placeholder(val: string) {
-    if (this._placeholder !== val) {
-      this._placeholder = val
-      this.updatePlaceholderInDOM()
-      this.setAttribute('placeholder', val)
-      this.render()
-    }
-  }
+  get disabled(): boolean { return this.getProperty('disabled') }
+  set disabled(v: boolean) { this.setProperty('disabled', v) }
 
-  get label(): string {
-    return this._label
-  }
+  get readonly(): boolean { return this.getProperty('readonly') }
+  set readonly(v: boolean) { this.setProperty('readonly', v) }
 
-  set label(val: string) {
-    if (this._label !== val) {
-      this._label = val
-      this.setAttribute('label', val)
-      this.render()
-    }
-  }
+  get required(): boolean { return this.getProperty('required') }
+  set required(v: boolean) { this.setProperty('required', v) }
 
-  get disabled(): boolean {
-    return this._disabled
-  }
+  get searchable(): boolean { return this.getProperty('searchable') }
+  set searchable(v: boolean) { this.setProperty('searchable', v) }
 
-  set disabled(value: boolean) {
-    if (this._disabled !== value) {
-      this._disabled = value
-      if (value) {
-        this.setAttribute('disabled', '')
-      } else {
-        this.removeAttribute('disabled')
-      }
-      this.render()
-    }
-  }
+  get clearable(): boolean { return this.getProperty('clearable') }
+  set clearable(v: boolean) { this.setProperty('clearable', v) }
 
-  get readonly(): boolean {
-    return this._readonly
-  }
+  get size(): Size { return this.getProperty('size') as Size }
+  set size(v: Size) { this.setProperty('size', v) }
 
-  set readonly(value: boolean) {
-    if (this._readonly !== value) {
-      this._readonly = value
-      if (value) {
-        this.setAttribute('readonly', '')
-      } else {
-        this.removeAttribute('readonly')
-      }
-      this.render()
-    }
-  }
+  get flavor(): Flavor { return this.getProperty('flavor') as Flavor }
+  set flavor(v: Flavor) { this.setProperty('flavor', v) }
 
-  get required(): boolean {
-    return this._required
-  }
-
-  set required(value: boolean) {
-    if (this._required !== value) {
-      this._required = value
-      if (value) {
-        this.setAttribute('required', '')
-      } else {
-        this.removeAttribute('required')
-      }
-      this.render()
-    }
-  }
-
-  get searchable(): boolean {
-    return this._searchable
-  }
-
-  set searchable(value: boolean) {
-    if (this._searchable !== value) {
-      this._searchable = value
-      if (value) {
-        this.setAttribute('searchable', '')
-        this.removeAttribute('not-searchable')
-      } else {
-        this.removeAttribute('searchable')
-        this.setAttribute('not-searchable', '')
-      }
-      this.render()
-    }
-  }
-
-  get clearable(): boolean {
-    return this._clearable
-  }
-
-  set clearable(value: boolean) {
-    console.log('[ty-dropdown] clearable setter called:', { value, current: this._clearable })
-    if (this._clearable !== value) {
-      console.log('[ty-dropdown] clearable setter - updating from', this._clearable, 'to', value)
-      this._clearable = value
-      if (value) {
-        this.setAttribute('clearable', '')
-      } else {
-        this.removeAttribute('clearable')
-      }
-      this.updateClearButton()
-    }
-  }
-
-  get delay(): number {
-    return this._delay
-  }
-
-  set delay(value: number | string) {
-    const numValue = typeof value === 'string' ? parseInt(value, 10) : value
-    const clamped = this.parseDelay(String(numValue))
-    if (this._delay !== clamped) {
-      this._delay = clamped
-      if (clamped > 0) {
-        this.setAttribute('delay', String(clamped))
-      } else {
-        this.removeAttribute('delay')
-      }
-    }
-  }
-
-  get size(): Size {
-    return this._size
-  }
-
-  set size(value: Size) {
-    if (this._size !== value) {
-      this._size = value
-      this.setAttribute('size', value)
-      this.render()
-    }
-  }
-
-  get flavor(): Flavor {
-    return this._flavor
-  }
-
-  set flavor(value: Flavor) {
-    if (this._flavor !== value) {
-      this._flavor = this.validateFlavor(value)
-      this.setAttribute('flavor', value)
-      this.render()
-    }
-  }
+  get delay(): number { return this.getProperty('delay') }
+  set delay(v: number) { this.setProperty('delay', v) }
 
   get form(): HTMLFormElement | null {
     return this._internals.form

@@ -19,6 +19,10 @@ export const dropdownStyles = `
   min-width: 200px;
 }
 
+:host {
+  --mobile-border-color: #5858587d; 
+}
+
 .dropdown-container {
   display: flex;
   flex-direction: column;
@@ -684,8 +688,8 @@ export const dropdownStyles = `
 /* Close button - circular with border */
 .dropdown-mode-mobile .mobile-close-button {
   flex-shrink: 0;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -696,6 +700,8 @@ export const dropdownStyles = `
   cursor: pointer;
   transition: var(--ty-transition-all);
   padding: 0;
+  border: 3px solid;
+  border-color: var(--mobile-border-color);
 }
 
 .dropdown-mode-mobile .mobile-close-button:hover {
@@ -709,8 +715,8 @@ export const dropdownStyles = `
 }
 
 .dropdown-mode-mobile .mobile-close-button svg {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 /* Mobile search input */
@@ -730,11 +736,8 @@ export const dropdownStyles = `
   height: 40px;
   transition: var(--ty-transition-all);
   outline: none;
-}
-
-.dropdown-mode-mobile .mobile-search-input:focus {
-  border-color: var(--ty-border-primary);
-  box-shadow: 0 0 0 2px var(--ty-bg-primary-soft);
+  border: 3px solid;
+  border-color: var(--mobile-border-color);
 }
 
 .dropdown-mode-mobile .mobile-search-input::placeholder {
@@ -754,7 +757,8 @@ export const dropdownStyles = `
   box-shadow: 
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  padding: 8px 0;
+  border: 3px solid;
+  border-color: var(--mobile-border-color);
 }
 
 /* Hide scrollbar but keep functionality */

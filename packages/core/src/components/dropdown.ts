@@ -40,6 +40,7 @@ import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { dropdownStyles } from '../styles/dropdown.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
+import { getCapturedValues } from '../utils/property-capture.js'
 
 // ============================================================================
 // DEVICE DETECTION
@@ -186,9 +187,7 @@ export class TyDropdown extends HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: dropdownStyles, id: 'ty-dropdown' })
 
-    console.log('state mode', this._state.mode)
     // Render based on device type
-    this.render();
   }
 
   render(): void {
@@ -209,18 +208,59 @@ export class TyDropdown extends HTMLElement {
   }
 
   connectedCallback(): void {
-    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
-    if (instanceValue && instanceValue.value !== undefined) {
-      this._value = instanceValue.value
-      this._state.currentValue = this.parseValue(instanceValue.value)
-      // Clean up the instance property so our getter/setter works
-      delete this.value
+    // CRITICAL: React/Reagent set properties BEFORE connectedCallback
+    // Capture any pre-set properties and apply them properly
+    const preSetProps = getCapturedValues(this, [
+      'value',
+      'clearable',
+      'disabled',
+      'readonly',
+      'required',
+      'searchable',
+      'placeholder',
+      'label',
+      'size',
+      'flavor',
+      'delay'
+    ])
+
+    // Apply captured value with proper state sync
+    if (preSetProps.value !== undefined) {
+      this._value = preSetProps.value
+      this._state.currentValue = this.parseValue(preSetProps.value)
     }
 
-    const instanceClearable = Object.getOwnPropertyDescriptor(this, 'clearable')
-    if (instanceClearable && instanceClearable.value !== undefined) {
-      this._clearable = instanceClearable.value
-      delete this.clearable
+    // Apply other captured properties
+    if (preSetProps.clearable !== undefined) {
+      this._clearable = preSetProps.clearable
+    }
+    if (preSetProps.disabled !== undefined) {
+      this._disabled = preSetProps.disabled
+    }
+    if (preSetProps.readonly !== undefined) {
+      this._readonly = preSetProps.readonly
+    }
+    if (preSetProps.required !== undefined) {
+      this._required = preSetProps.required
+    }
+    if (preSetProps.searchable !== undefined) {
+      this._searchable = preSetProps.searchable
+    }
+    if (preSetProps.placeholder !== undefined) {
+      this._placeholder = preSetProps.placeholder
+      this.updatePlaceholderInDOM()
+    }
+    if (preSetProps.label !== undefined) {
+      this._label = preSetProps.label
+    }
+    if (preSetProps.size !== undefined) {
+      this._size = preSetProps.size as Size
+    }
+    if (preSetProps.flavor !== undefined) {
+      this._flavor = this.validateFlavor(preSetProps.flavor)
+    }
+    if (preSetProps.delay !== undefined) {
+      this._delay = this.parseDelay(String(preSetProps.delay))
     }
 
     this.initializeState()
@@ -263,6 +303,7 @@ export class TyDropdown extends HTMLElement {
         break
       case 'placeholder':
         this._placeholder = newValue || 'Select an option...'
+        this.updatePlaceholderInDOM()
         break
       case 'label':
         this._label = newValue || ''
@@ -414,6 +455,34 @@ export class TyDropdown extends HTMLElement {
         this.closeMobileModal()
       }
     })
+    // Render the component with current state
+    this.render()
+  }
+
+  /**
+   * Update placeholder text in existing rendered HTML
+   * Called when placeholder changes after initial render
+   */
+  private updatePlaceholderInDOM(): void {
+    const shadow = this.shadowRoot!
+    
+    // Update stub placeholder
+    const stubPlaceholder = shadow.querySelector('.dropdown-placeholder')
+    if (stubPlaceholder) {
+      stubPlaceholder.textContent = this._placeholder
+    }
+    
+    // Update search input placeholder (desktop)
+    const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
+    if (searchInput) {
+      searchInput.placeholder = this._placeholder
+    }
+    
+    // Update mobile search input placeholder
+    const mobileSearchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
+    if (mobileSearchInput) {
+      mobileSearchInput.placeholder = this._placeholder
+    }
   }
 
 
@@ -1338,10 +1407,9 @@ export class TyDropdown extends HTMLElement {
         </label>
       ` : ''
 
-      const searchPlaceholder = this._searchable ? 'Search...' : this._placeholder
 
       shadow.innerHTML = `
-        <div class="dropdown-container">
+        <div class="dropdown-container dropdown-mode-desktop">
           ${labelHtml}
           <div class="dropdown-wrapper">
             <div class="dropdown-stub ${stubClasses}" 
@@ -1361,7 +1429,7 @@ export class TyDropdown extends HTMLElement {
                   <input 
                     class="dropdown-search-input ${this._size}" 
                     type="text"
-                    placeholder="${searchPlaceholder}"
+                    placeholder="${this._placeholder}"
                     ${this._disabled ? 'disabled' : ''}
                   />
                   <div class="dropdown-search-chevron">
@@ -1465,7 +1533,7 @@ export class TyDropdown extends HTMLElement {
             <input 
               class="mobile-search-input ${this._size}" 
               type="text"
-              placeholder="Search..."
+              placeholder="${this._placeholder}"
               ${this._disabled ? 'disabled' : ''}
             />
             <button class="mobile-close-button" type="button" aria-label="Close">
@@ -1482,7 +1550,7 @@ export class TyDropdown extends HTMLElement {
       `
 
       shadow.innerHTML = `
-        <div class="dropdown-container">
+        <div class="dropdown-container dropdown-mode-mobile">
           ${labelHtml}
           <div class="dropdown-wrapper">
             <div class="dropdown-stub ${stubClasses}" 
@@ -1708,6 +1776,7 @@ export class TyDropdown extends HTMLElement {
   set placeholder(val: string) {
     if (this._placeholder !== val) {
       this._placeholder = val
+      this.updatePlaceholderInDOM()
       this.setAttribute('placeholder', val)
       this.render()
     }

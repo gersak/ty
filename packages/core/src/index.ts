@@ -50,6 +50,15 @@ export type { CalendarChangeDetail, CalendarNavigateDetail } from './components/
 export type { DatePickerChangeDetail } from './components/date-picker.js'
 export type { DayContext } from './utils/calendar-utils.js'
 
+// Property capture utilities for React/Reagent compatibility
+export {
+  capturePreSetProperties,
+  getCapturedValues,
+  applyPreSetProperties,
+  captureAndApplyProperties
+} from './utils/property-capture.js'
+export type { CapturedProperty, PropertyCaptureOptions, PropertyMap } from './utils/property-capture.js'
+
 // Utilities
 export {
   lockScroll,

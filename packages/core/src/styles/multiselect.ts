@@ -186,6 +186,11 @@ export const multiselectStyles = `
   pointer-events: none;
 }
 
+/* Hide stub chips when mobile dialog is open (let modal show them) */
+.dropdown-mode-mobile .dropdown-wrapper:has(.mobile-dialog[open]) .multiselect-chips {
+  display: none;
+}
+
 /* When tags are present, reduce padding to make room */
 .multiselect-stub.has-tags {
   padding: 0.25rem 2.5rem 0.25rem 0.5rem;
@@ -516,13 +521,13 @@ export const multiselectStyles = `
    MOBILE BODY & SECTIONS - UPDATED STRUCTURE
    ============================================================================ */
 
-/* Mobile body - contains both sections (matches dropdown mobile-options-container) */
+/* Mobile body - contains both sections */
 .dropdown-mode-mobile .mobile-body {
   position: relative;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
+  height: var(--body-height, 350px);
+  max-height: 350px;
   overflow: hidden;
   background: var(--ty-surface-floating);
   border-radius: var(--ty-radius-lg);
@@ -533,13 +538,15 @@ export const multiselectStyles = `
   border-color: var(--mobile-border-color);
 }
 
-/* ===== SECTION HEADERS ===== */
+/* ===== SECTION HEADERS - Fixed 48px height ===== */
 
 .dropdown-mode-mobile .section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 16px;
+  height: 48px;
+  flex-shrink: 0;
+  padding: 0 16px;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -547,12 +554,9 @@ export const multiselectStyles = `
   color: var(--ty-text-);
   background: var(--ty-bg-neutral-);
   border-bottom: 1px solid var(--ty-border--);
-  position: sticky;
-  top: 0;
-  z-index: 10;
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .dropdown-mode-mobile .section-header:hover {
@@ -565,6 +569,12 @@ export const multiselectStyles = `
 
 .dropdown-mode-mobile .section-header .section-title {
   flex: 1;
+}
+
+.dropdown-mode-mobile .section-header .section-count {
+  font-weight: 400;
+  opacity: 0.7;
+  margin-left: 0.25rem;
 }
 
 /* Chevron indicator (only for selected section) */
@@ -597,31 +607,31 @@ export const multiselectStyles = `
   background: var(--ty-bg-neutral-);
 }
 
-/* ===== SELECTED SECTION (Collapsible) ===== */
+/* ===== SELECTED SECTION - Expandable with smooth transition ===== */
 
 .dropdown-mode-mobile .mobile-selected-section {
-  flex-shrink: 0;
-  max-height: 40%;
   display: flex;
   flex-direction: column;
   background: var(--ty-surface-elevated);
   border-bottom: 2px solid var(--ty-border);
   overflow: hidden;
-  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: max-height 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Collapsed state - limit height to show preview + more badge */
+/* Collapsed state - just header (48px) */
 .dropdown-mode-mobile .mobile-selected-section[data-expanded="false"] {
-  max-height: 120px;
+  max-height: 48px;
+  flex: 0 0 48px;
 }
 
-/* Expanded state - allow more height */
+/* Expanded state - takes remaining space */
 .dropdown-mode-mobile .mobile-selected-section[data-expanded="true"] {
-  max-height: 70%;
+  max-height: 1000px; /* Large enough for content */
+  flex: 1;
 }
 
 .dropdown-mode-mobile .mobile-selected-section .section-content {
-  position: relative;
+  flex: 1;
   overflow-y: auto;
   padding: 0.75rem 1rem;
   display: flex;
@@ -630,52 +640,30 @@ export const multiselectStyles = `
   align-content: flex-start;
 }
 
-/* ===== COLLAPSED VIEW - First N tags + "more" badge ===== */
-
-.dropdown-mode-mobile .collapsed-more {
-  display: none;
-  background: var(--ty-bg-primary-);
-  color: var(--ty-text-primary++);
-  padding: 0.25rem 0.75rem;
-  border-radius: var(--ty-radius-md);
-  font-size: 0.75rem;
-  font-weight: 600;
-  white-space: nowrap;
-  align-self: center;
-}
-
-/* Show "more" badge when collapsed and has overflow */
-.dropdown-mode-mobile .mobile-selected-section[data-expanded="false"][data-has-overflow="true"] .collapsed-more {
-  display: block;
-}
-
-/* Hide tags beyond preview count when collapsed */
-.dropdown-mode-mobile .mobile-selected-section[data-expanded="false"] .section-content ::slotted(ty-tag:nth-child(n+6)) {
-  display: none;
-}
-
-/* Show all when expanded */
-.dropdown-mode-mobile .mobile-selected-section[data-expanded="true"] .section-content ::slotted(ty-tag) {
-  display: flex !important;
-}
-
 /* ===== AVAILABLE SECTION ===== */
 
 .dropdown-mode-mobile .mobile-available-section {
-  flex: 1;
   display: flex;
   flex-direction: column;
   background: var(--ty-surface-floating);
   overflow: hidden;
-  transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: max-height 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Shrink to single row when selected is expanded */
-.dropdown-mode-mobile .mobile-body:has(.mobile-selected-section[data-expanded="true"]) .mobile-available-section {
-  flex: 0 0 80px;
+/* Collapsed state - just header (48px) */
+.dropdown-mode-mobile .mobile-available-section[data-expanded="false"] {
+  max-height: 48px;
+  flex: 0 0 48px;
+}
+
+/* Expanded state - takes remaining space */
+.dropdown-mode-mobile .mobile-available-section[data-expanded="true"] {
+  max-height: 1000px; /* Large enough for content */
+  flex: 1;
 }
 
 .dropdown-mode-mobile .mobile-available-section .section-content {
+  flex: 1;
   overflow-y: auto;
   padding: 0.75rem 1rem;
   display: flex;

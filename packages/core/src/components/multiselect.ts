@@ -130,7 +130,7 @@ interface MultiselectState {
   filteredTags: TagData[]
   selectedValues: string[]
   mode: 'desktop' | 'mobile'
-  selectedExpanded: boolean  // Track if selected section is expanded (mobile only)
+  expandedSection: 'selected' | 'available'  // Which section is expanded (mobile only)
 }
 
 /**
@@ -265,17 +265,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       type: 'string' as const,
       visual: true,
       default: 'No options available'
-    },
-    'collapsed-preview-count': {
-      type: 'number' as const,
-      visual: true,
-      default: 5,
-      validate: (v: any) => v >= 1 && v <= 20,
-      coerce: (v: any) => {
-        const num = Number(v)
-        if (isNaN(num)) return 5
-        return Math.max(1, Math.min(20, num))
-      }
     }
   }
 
@@ -296,7 +285,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private _availableLabel: string = 'Available'
   private _noSelectionMessage: string = 'No items selected'
   private _noOptionsMessage: string = 'No options available'
-  private _collapsedPreviewCount: number = 5
 
   // Component state
   private _state: MultiselectState = {
@@ -306,7 +294,17 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     filteredTags: [],
     selectedValues: [],
     mode: isMobileDevice() ? 'mobile' : 'desktop',
-    selectedExpanded: false  // Start collapsed
+    expandedSection: 'selected'  // Will be corrected by toggleSection call
+  }
+  
+  // Debug: Log when expandedSection changes
+  set expandedSection(value: 'selected' | 'available') {
+    console.log('🔧 expandedSection changed from', this._state.expandedSection, 'to', value)
+    this._state.expandedSection = value
+  }
+  
+  get expandedSection(): 'selected' | 'available' {
+    return this._state.expandedSection
   }
 
   // Event handler references for cleanup
@@ -853,8 +851,10 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       }
     }
 
-    // Initialize mobile state
-    this._state.selectedExpanded = false
+    // Initialize sections (available expanded by default)
+    console.log('🚀 Initializing sections, want available expanded')
+    this._state.expandedSection = 'available'
+    this.syncSectionStates()
 
     // Update state after slots are ready
     requestAnimationFrame(() => {
@@ -1397,7 +1397,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
             <div class="dropdown-stub multiselect-stub ${stubClasses}" 
                  ${this._disabled ? 'disabled' : ''}>
               <div class="multiselect-chips">
-                <slot name="selected"></slot>
+                <slot name="selected-stub"></slot>
               </div>
               <span class="dropdown-placeholder">${this._placeholder}</span>
               <div class="dropdown-chevron">
@@ -1414,21 +1414,20 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
                 <!-- BODY (two sections for multiselect) -->
                 <div class="mobile-body">
                   
-                  <!-- SELECTED SECTION -->
+                  <!-- SELECTED SECTION (collapsed by default) -->
                   <div class="mobile-selected-section" data-expanded="false" data-empty="true">
                     <div class="section-header">
-                      <span class="section-title">${this._selectedLabel}</span>
+                      <span class="section-title">${this._selectedLabel} <span class="section-count">(0)</span></span>
                       <span class="section-chevron">${CHEVRON_DOWN_SVG}</span>
                     </div>
                     <div class="section-content">
-                      <slot name="selected-list"></slot>
+                      <slot name="selected"></slot>
                       <div class="empty-state">${this._noSelectionMessage}</div>
-                      <div class="collapsed-more">+<span class="more-count">0</span> more</div>
                     </div>
                   </div>
                   
-                  <!-- AVAILABLE SECTION -->
-                  <div class="mobile-available-section" data-empty="false">
+                  <!-- AVAILABLE SECTION (expanded by default) -->
+                  <div class="mobile-available-section" data-expanded="true" data-empty="false">
                     <div class="section-header">
                       <span class="section-title">${this._availableLabel}</span>
                     </div>
@@ -1463,8 +1462,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const optionsSlot = shadow.querySelector('#options-slot')
     const searchInput = shadow.querySelector('.mobile-search-input')
     const closeButton = shadow.querySelector('.mobile-close-button')
-    const selectedHeader = shadow.querySelector('.section-header') // First section-header is selected section
     const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
+
+    // Get both section headers
+    const selectedHeader = shadow.querySelector('.mobile-selected-section .section-header')
+    const availableHeader = shadow.querySelector('.mobile-available-section .section-header')
 
     if (stub) {
       stub.addEventListener('click', (e) => this.handleMobileStubClick(e))
@@ -1480,9 +1482,13 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       searchInput.addEventListener('input', (e) => this.handleSearchInput(e))
     }
 
-    // Toggle selected section expand/collapse
+    // Toggle section expansion on header click
     if (selectedHeader) {
-      selectedHeader.addEventListener('click', () => this.toggleSelectedExpansion())
+      selectedHeader.addEventListener('click', () => this.toggleSection('selected'))
+    }
+
+    if (availableHeader) {
+      availableHeader.addEventListener('click', () => this.toggleSection('available'))
     }
 
     // Close button click
@@ -1537,19 +1543,49 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   }
 
   /**
-   * Toggle selected section expansion (mobile only)
+   * Toggle section expansion (mobile only)
+   * Clicking expanded section collapses it and expands the other
+   * Clicking collapsed section expands it and collapses the other
    */
-  private toggleSelectedExpansion(): void {
+  private toggleSection(section: 'selected' | 'available'): void {
     const shadow = this.shadowRoot!
     const selectedSection = shadow.querySelector('.mobile-selected-section')
+    const availableSection = shadow.querySelector('.mobile-available-section')
 
-    if (!selectedSection) return
+    if (!selectedSection || !availableSection) return
 
-    this._state.selectedExpanded = !this._state.selectedExpanded
-    selectedSection.setAttribute('data-expanded', String(this._state.selectedExpanded))
-
-    console.log('Selected section ' + (this._state.selectedExpanded ? 'expanded' : 'collapsed'))
+    // If clicking already expanded section, collapse it and expand the other
+    if (this._state.expandedSection === section) {
+      const otherSection = section === 'selected' ? 'available' : 'selected'
+      this._state.expandedSection = otherSection
+      console.log(`Collapsing ${section}, expanding ${otherSection}`)
+    } else {
+      // Expand clicked section
+      this._state.expandedSection = section
+    console.log(`${section.toUpperCase()} section expanded`)
   }
+
+  // Update DOM attributes
+  selectedSection.setAttribute('data-expanded', String(this._state.expandedSection === 'selected'))
+  availableSection.setAttribute('data-expanded', String(this._state.expandedSection === 'available'))
+}
+
+/**
+ * Sync section states to DOM without toggle logic
+ */
+private syncSectionStates(): void {
+  const shadow = this.shadowRoot!
+  const selectedSection = shadow.querySelector('.mobile-selected-section')
+  const availableSection = shadow.querySelector('.mobile-available-section')
+
+  if (!selectedSection || !availableSection) return
+
+  // Update DOM attributes to match current state
+  selectedSection.setAttribute('data-expanded', String(this._state.expandedSection === 'selected'))
+  availableSection.setAttribute('data-expanded', String(this._state.expandedSection === 'available'))
+  
+  console.log('🔄 Synced sections, expandedSection:', this._state.expandedSection)
+}
 
   /**
    * Update mobile selected section state (collapsed view, empty states, etc.)
@@ -1562,20 +1598,17 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const shadow = this.shadowRoot!
     const selectedSection = shadow.querySelector('.mobile-selected-section')
     const availableSection = shadow.querySelector('.mobile-available-section')
-    const moreCountSpan = shadow.querySelector('.collapsed-more .more-count')
+    const sectionCountSpan = shadow.querySelector('.section-count')
 
     if (selectedSection) {
       const selectedCount = this._state.selectedValues.length
       const hasSelected = selectedCount > 0
-      const previewCount = this._collapsedPreviewCount
-      const hasOverflow = selectedCount > previewCount
 
       selectedSection.setAttribute('data-empty', String(!hasSelected))
-      selectedSection.setAttribute('data-has-overflow', String(hasOverflow))
 
-      if (moreCountSpan && hasOverflow) {
-        const hiddenCount = selectedCount - previewCount
-        moreCountSpan.textContent = String(hiddenCount)
+      // Update header count
+      if (sectionCountSpan) {
+        sectionCountSpan.textContent = `(${selectedCount})`
       }
     }
 
@@ -1585,6 +1618,12 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       const hasAvailable = availableCount > 0
 
       availableSection.setAttribute('data-empty', String(!hasAvailable))
+      
+      // Update available header count
+      const availableTitleSpan = shadow.querySelector('.mobile-available-section .section-title')
+      if (availableTitleSpan) {
+        availableTitleSpan.textContent = `${this._availableLabel} (${availableCount})`
+      }
     }
   }
 

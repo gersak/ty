@@ -25,54 +25,54 @@
   [:div.ty-elevated.rounded-lg.p-6.mb-8
    [:h2#attributes.text-2xl.font-bold.ty-text++.mb-4 "API Reference"]
    (attribute-table
-     [{:name "value"
-       :type "string"
-       :default "null"
-       :description "Comma-separated selected values (e.g., \"red,blue,green\")"}
-      {:name "placeholder"
-       :type "string"
-       :default "null"
-       :description "Placeholder text when no options are selected"}
-      {:name "label"
-       :type "string"
-       :default "null"
-       :description "Label displayed above the multiselect"}
-      {:name "name"
-       :type "string"
-       :default "null"
-       :description "Name for form submission (creates multiple entries in FormData)"}
-      {:name "disabled"
-       :type "boolean"
-       :default "false"
-       :description "Whether the multiselect is disabled"}
-      {:name "required"
-       :type "boolean"
-       :default "false"
-       :description "Whether the multiselect is required (shows asterisk)"}
-      {:name "flavor"
-       :type "string"
-       :default "'neutral'"
-       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-      {:name "clearable"
-       :type "boolean"
-       :default "false"
-       :description "Show clear all button when items are selected"}
-      {:name "class"
-       :type "string"
-       :default "null"
-       :description "Additional CSS classes"}])
+    [{:name "value"
+      :type "string"
+      :default "null"
+      :description "Comma-separated selected values (e.g., \"red,blue,green\")"}
+     {:name "placeholder"
+      :type "string"
+      :default "null"
+      :description "Placeholder text when no options are selected"}
+     {:name "label"
+      :type "string"
+      :default "null"
+      :description "Label displayed above the multiselect"}
+     {:name "name"
+      :type "string"
+      :default "null"
+      :description "Name for form submission (creates multiple entries in FormData)"}
+     {:name "disabled"
+      :type "boolean"
+      :default "false"
+      :description "Whether the multiselect is disabled"}
+     {:name "required"
+      :type "boolean"
+      :default "false"
+      :description "Whether the multiselect is required (shows asterisk)"}
+     {:name "flavor"
+      :type "string"
+      :default "'neutral'"
+      :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+     {:name "clearable"
+      :type "boolean"
+      :default "false"
+      :description "Show clear all button when items are selected"}
+     {:name "class"
+      :type "string"
+      :default "null"
+      :description "Additional CSS classes"}])
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
     (event-table
-      [{:name "change"
-        :when-fired "Fired when selections change"
-        :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
-       {:name "focus"
-        :when-fired "Fired when multiselect gains focus"
-        :payload "Standard FocusEvent"}
-       {:name "blur"
-        :when-fired "Fired when multiselect loses focus"
-        :payload "Standard FocusEvent"}])]
+     [{:name "change"
+       :when-fired "Fired when selections change"
+       :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
+      {:name "focus"
+       :when-fired "Fired when multiselect gains focus"
+       :payload "Standard FocusEvent"}
+      {:name "blur"
+       :when-fired "Fired when multiselect loses focus"
+       :payload "Standard FocusEvent"}])]
    [:div.mt-4
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "Slots"]
     [:div.ty-bg-neutral-.rounded.p-4
@@ -115,8 +115,9 @@
 </ty-multiselect>")]
    [:div.mb-6
     [:h3.text-lg.font-semibold.ty-text+.mb-2 "With Initial Values"]
+    [:p.ty-text-.mb-2 "Use the " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "value"] " attribute with comma-separated values to pre-select options:"]
     [:div.mb-4
-     [:ty-multiselect {:value ["javascript" "python"]
+     [:ty-multiselect {:value #js ["javascript" "python"]
                        :label "Programming Languages"
                        :placeholder "Select languages..."
                        :style {:min-width "320px"}
@@ -176,36 +177,6 @@
   <ty-tag value=\"clojure\" pill size=\"sm\">Clojure</ty-tag>
   <ty-tag value=\"rust\" pill size=\"sm\">Rust</ty-tag>
   <ty-tag value=\"go\" pill size=\"sm\">Go</ty-tag>
-</ty-multiselect>")]
-   [:div.mb-6
-    [:h3.text-lg.font-semibold.ty-text+.mb-2 "Pre-selected Tags (Alternative)"]
-    [:p.ty-text-.mb-2 "You can also use the " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "selected"] " attribute on tags directly:"]
-    [:div.mb-4
-     [:ty-multiselect {:label "Skills"
-                       :placeholder "Select your skills..."
-                       :style {:min-width "300px"}
-                       :on {:change multiselect-event-handler}}
-      [:ty-tag {:value "react"
-                :size "sm"
-                :selected true} "React"]
-      [:ty-tag {:value "vue"
-                :size "sm"
-                :selected true} "Vue.js"]
-      [:ty-tag {:value "angular"
-                :size "sm"} "Angular"]
-      [:ty-tag {:value "node"
-                :size "sm"} "Node.js"]
-      [:ty-tag {:value "django"
-                :size "sm"} "Django"]
-      [:ty-tag {:value "rails"
-                :size "sm"} "Rails"]]]
-    (code-block "<ty-multiselect label=\"Skills\" placeholder=\"Select your skills...\">
-  <ty-tag value=\"react\" pill size=\"sm\" selected>React</ty-tag>
-  <ty-tag value=\"vue\" pill size=\"sm\" selected>Vue.js</ty-tag>
-  <ty-tag value=\"angular\" pill size=\"sm\">Angular</ty-tag>
-  <ty-tag value=\"node\" pill size=\"sm\">Node.js</ty-tag>
-  <ty-tag value=\"django\" pill size=\"sm\">Django</ty-tag>
-  <ty-tag value=\"rails\" pill size=\"sm\">Rails</ty-tag>
 </ty-multiselect>")]])
 
 (defn- render-semantic-flavor-examples []
@@ -655,7 +626,7 @@ document.getElementById('my-multiselect')
      [:li "• Selected tags become dismissible automatically (X button appears)"]
      [:li "• Component automatically closes dropdown when all options are selected"]
      [:li "• FormData integration works seamlessly with HTMX and standard forms"]
-     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "value"] " attribute for initial state or " [:code.ty-bg-neutral-.px-1.rounded "selected"] " on tags"]
+     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "value"] " attribute to set initial selected values"]
      [:li "• The component handles keyboard navigation and accessibility automatically"]]]])
 
 (defn- render-related-components-section []

@@ -130,6 +130,7 @@ interface MultiselectState {
   filteredTags: TagData[]
   selectedValues: string[]
   mode: 'desktop' | 'mobile'
+  selectedExpanded: boolean  // Track if selected section is expanded (mobile only)
 }
 
 /**
@@ -159,7 +160,19 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       visual: true,
       formValue: true,
       emitChange: false,
-      default: ''
+      default: '',
+      coerce: (v: any) => {
+        // Handle array input (from React, Reagent, etc.)
+        if (Array.isArray(v)) {
+          return v.join(',')
+        }
+        // Handle null/undefined
+        if (v === null || v === undefined) {
+          return ''
+        }
+        // String already
+        return String(v)
+      }
     },
     name: {
       type: 'string' as const,
@@ -232,6 +245,37 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         if (isNaN(num)) return 0
         return Math.max(0, Math.min(5000, num))
       }
+    },
+    'selected-label': {
+      type: 'string' as const,
+      visual: true,
+      default: 'Selected'
+    },
+    'available-label': {
+      type: 'string' as const,
+      visual: true,
+      default: 'Available'
+    },
+    'no-selection-message': {
+      type: 'string' as const,
+      visual: true,
+      default: 'No items selected'
+    },
+    'no-options-message': {
+      type: 'string' as const,
+      visual: true,
+      default: 'No options available'
+    },
+    'collapsed-preview-count': {
+      type: 'number' as const,
+      visual: true,
+      default: 5,
+      validate: (v: any) => v >= 1 && v <= 20,
+      coerce: (v: any) => {
+        const num = Number(v)
+        if (isNaN(num)) return 5
+        return Math.max(1, Math.min(20, num))
+      }
     }
   }
 
@@ -248,6 +292,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private _searchable = true
   private _size: Size = 'md'
   private _flavor: Flavor = 'neutral'
+  private _selectedLabel: string = 'Selected'
+  private _availableLabel: string = 'Available'
+  private _noSelectionMessage: string = 'No items selected'
+  private _noOptionsMessage: string = 'No options available'
+  private _collapsedPreviewCount: number = 5
 
   // Component state
   private _state: MultiselectState = {
@@ -256,11 +305,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     highlightedIndex: -1,
     filteredTags: [],
     selectedValues: [],
-    mode: isMobileDevice() ? 'mobile' : 'desktop'
+    mode: isMobileDevice() ? 'mobile' : 'desktop',
+    selectedExpanded: false  // Start collapsed
   }
-
-  // Scroll lock ID (consistent across open/close cycles)
-  private _scrollLockId: string | null = null
 
   // Event handler references for cleanup
   private _stubClickHandler: ((e: Event) => void) | null = null
@@ -287,6 +334,17 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     } else {
       this.renderDesktop()
     }
+
+    // CRITICAL: Ensure dialogs are closed on initialization
+    // This prevents scroll locking if dialogs are in invalid state
+    requestAnimationFrame(() => {
+      const dialogs = shadow.querySelectorAll('dialog')
+      dialogs.forEach(dialog => {
+        if (dialog.open) {
+          dialog.close()
+        }
+      })
+    })
   }
 
   /**
@@ -295,7 +353,17 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    */
   protected onConnect(): void {
     console.log('🔌 onConnect')
-    
+
+    // SAFETY: Close any open dialogs to prevent scroll locking
+    const shadow = this.shadowRoot!
+    const dialogs = shadow.querySelectorAll('dialog')
+    dialogs.forEach(dialog => {
+      if (dialog.open) {
+        console.warn('⚠️ Found open dialog on connect, closing it')
+        dialog.close()
+      }
+    })
+
     // Initialize after element is connected and children are available
     requestAnimationFrame(() => {
       console.log('⏰ requestAnimationFrame callback')
@@ -308,6 +376,15 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * Clean up event listeners and timers
    */
   protected onDisconnect(): void {
+    // CRITICAL: Close all dialogs to prevent scroll locking
+    const shadow = this.shadowRoot!
+    const dialogs = shadow.querySelectorAll('dialog')
+    dialogs.forEach(dialog => {
+      if (dialog.open) {
+        dialog.close()
+      }
+    })
+
     // Clean up document-level listeners
     const outsideClickHandler = (this as any).tyOutsideClickHandler
     const keyboardHandler = (this as any).tyKeyboardHandler
@@ -327,12 +404,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       clearTimeout(this._searchDebounceTimer)
       this._searchDebounceTimer = null
     }
-
-    // Unlock scroll if still locked
-    if (this._scrollLockId) {
-      unlockScroll(this._scrollLockId)
-      this._scrollLockId = null
-    }
   }
 
   /**
@@ -347,14 +418,15 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
           const selectedValues = this.parseValue(newValue)
           this._state.selectedValues = selectedValues
           this.syncSelectedTags(selectedValues)
-          this.updatePlaceholderVisibility()
+          this.updateSelectionDisplay()
+          this.updateMobileSelectedState()
           break
         case 'name':
           this._name = newValue || ''
           break
         case 'placeholder':
           this._placeholder = newValue || 'Select options...'
-          this.updatePlaceholderVisibility()
+          // No need to update display - placeholder text change doesn't affect visibility
           break
         case 'label':
           this._label = newValue || ''
@@ -380,6 +452,21 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         case 'delay':
           this._delay = newValue
           break
+        case 'selected-label':
+          this._selectedLabel = newValue || 'Selected'
+          break
+        case 'available-label':
+          this._availableLabel = newValue || 'Available'
+          break
+        case 'no-selection-message':
+          this._noSelectionMessage = newValue || 'No items selected'
+          break
+        case 'no-options-message':
+          this._noOptionsMessage = newValue || 'No options available'
+          break
+        case 'collapsed-preview-count':
+          this._collapsedPreviewCount = newValue
+          break
       }
     }
   }
@@ -398,7 +485,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       })
       return formData
     }
-    
+
     return null
   }
 
@@ -418,16 +505,30 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private initializeState(): void {
     console.log('🚀 initializeState')
     console.log('  value from props:', this.getProperty('value'))
-    
+
     const initialValue = this.getProperty('value') || ''
     console.log('  initialValue:', initialValue)
-    
+
     if (initialValue) {
+      // Explicit value provided - use it
       const selectedValues = this.parseValue(initialValue)
       console.log('  parsed selectedValues:', selectedValues)
       this.updateComponentValue(selectedValues, false)
     } else {
-      console.log('  ⚠️  No initial value!')
+      // No explicit value - check for pre-selected tags
+      console.log('  ⚠️  No initial value, checking for pre-selected tags...')
+      const preSelectedTags = this.getTagElements()
+        .filter(tag => tag.hasAttribute('selected'))
+        .map(tag => this.getTagData(tag).value)
+
+      console.log('  preSelectedTags found:', preSelectedTags)
+
+      if (preSelectedTags.length > 0) {
+        console.log('  ✅ Using pre-selected tags as initial value')
+        this.updateComponentValue(preSelectedTags, false)
+      } else {
+        console.log('  ℹ️  No pre-selected tags found')
+      }
     }
   }
 
@@ -523,7 +624,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private syncSelectedTags(selectedValues: string[]): void {
     const selectedSet = new Set(selectedValues)
     const tags = this.getTagElements()
-    
+
     console.log('🔄 syncSelectedTags')
     console.log('  selectedValues:', selectedValues)
     console.log('  tags found:', tags.length)
@@ -532,7 +633,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       const tagValue = this.getTagData(tag).value
       const shouldBeSelected = selectedSet.has(tagValue)
       const isSelected = tag.hasAttribute('selected')
-      
+
       console.log(`  tag ${tagValue}: should=${shouldBeSelected}, is=${isSelected}`)
 
       if (shouldBeSelected && !isSelected) {
@@ -552,23 +653,23 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private updateComponentValue(newValues: string[], dispatchChange: boolean = false, action: ChangeAction = 'set', item: string | null = null): void {
     const oldValues = this.getSelectedValues()
     const valueStr = newValues.join(',')
-    
+
     console.log('🔄 updateComponentValue called')
     console.log('  oldValues:', oldValues)
     console.log('  newValues:', newValues)
     console.log('  dispatchChange:', dispatchChange)
-    
+
     // Only update if changed
     if (JSON.stringify(newValues.sort()) !== JSON.stringify(oldValues.sort())) {
       console.log('  ✅ Values changed, updating...')
-      
+
       // Use TyComponent's property system - this will trigger:
       // 1. onPropertiesChanged() → syncs tags via syncSelectedTags()
-      // 2. onPropertiesChanged() → updates placeholder via updatePlaceholderVisibility()
+      // 2. onPropertiesChanged() → updates placeholder via updateSelectionDisplay()
       // 3. updateFormValue() → automatic (formValue: true in config)
       // 4. render() → automatic if visual properties changed
       this.setProperty('value', valueStr)
-      
+
       // Dispatch custom multiselect change event (with action/item details)
       if (dispatchChange) {
         this.dispatchChangeEvent({
@@ -649,20 +750,14 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
 
   /**
    * Open dropdown dialog (desktop mode)
+   * Using <dialog> element - scroll locking handled natively
    */
   private openDropdown(): void {
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
     if (!dialog) return
 
-    // Generate consistent unique ID for scroll locking
-    const dropdownId = `multiselect-${this.id || 'anon'}-${getElementHash(this)}`
-    this._scrollLockId = dropdownId
-
-    // Lock scroll
-    lockScroll(dropdownId)
-
-    // Show modal first so browser can calculate dimensions
+    // Show modal (browser handles scroll locking automatically)
     dialog.showModal()
     dialog.classList.add('open')
 
@@ -695,19 +790,14 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
 
   /**
    * Close dropdown dialog (desktop mode)
+   * Using <dialog> element - scroll unlocking handled natively
    */
   private closeDropdown(): void {
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
     if (!dialog) return
 
-    // Unlock scroll using stored consistent ID
-    if (this._scrollLockId) {
-      unlockScroll(this._scrollLockId)
-      this._scrollLockId = null
-    }
-
-    // Close dialog
+    // Close dialog (browser handles scroll unlocking automatically)
     dialog.classList.remove('open')
     dialog.classList.remove('position-above')
     dialog.classList.remove('position-below')
@@ -736,24 +826,16 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
 
   /**
    * Open mobile modal (mobile mode)
+   * Now using <dialog> element for native z-index management
    */
   private openMobileModal(): void {
     const shadow = this.shadowRoot!
-    const modal = shadow.querySelector('.mobile-modal') as HTMLElement
-    if (!modal) return
+    const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
+    if (!dialog) return
 
-    // Generate consistent unique ID for scroll locking
-    const dropdownId = `multiselect-${this.id || 'anon'}-${getElementHash(this)}`
-    this._scrollLockId = dropdownId
-
-    // Lock scroll
-    lockScroll(dropdownId)
-
-    // Show modal with animation
-    modal.style.display = 'flex'
-    requestAnimationFrame(() => {
-      modal.classList.add('open')
-    })
+    // Show dialog using native API (handles z-index automatically)
+    dialog.showModal()
+    dialog.classList.add('open')
 
     // Update component state
     this._state.open = true
@@ -766,31 +848,32 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (this._searchable) {
       const searchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
       if (searchInput) {
-        // Small delay to ensure modal is visible and keyboard doesn't glitch
-        setTimeout(() => searchInput.focus(), 300)
+        // Small delay to ensure dialog is ready
+        setTimeout(() => searchInput.focus(), 100)
       }
     }
+
+    // Initialize mobile state
+    this._state.selectedExpanded = false
+
+    // Update state after slots are ready
+    requestAnimationFrame(() => {
+      this.updateMobileSelectedState()
+    })
   }
 
   /**
    * Close mobile modal (mobile mode)
+   * Now using <dialog> element for native management
    */
   private closeMobileModal(): void {
     const shadow = this.shadowRoot!
-    const modal = shadow.querySelector('.mobile-modal') as HTMLElement
-    if (!modal) return
+    const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
+    if (!dialog) return
 
-    // Unlock scroll using stored consistent ID
-    if (this._scrollLockId) {
-      unlockScroll(this._scrollLockId)
-      this._scrollLockId = null
-    }
-
-    // Hide modal with animation
-    modal.classList.remove('open')
-    setTimeout(() => {
-      modal.style.display = 'none'
-    }, 300) // Match CSS transition duration
+    // Close dialog using native API
+    dialog.classList.remove('open')
+    dialog.close()
 
     // Update state
     this._state.open = false
@@ -1120,36 +1203,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   // ============================================================================
 
   /**
-   * Determine what type of change occurred
-   */
-  private determineChangeAction(oldValues: string[], newValues: string[]): { action: ChangeAction; item: string | null } {
-    const oldSet = new Set(oldValues)
-    const newSet = new Set(newValues)
-
-    // Find differences
-    const added = [...newSet].filter(v => !oldSet.has(v))
-    const removed = [...oldSet].filter(v => !newSet.has(v))
-
-    // Single addition
-    if (added.length === 1 && removed.length === 0) {
-      return { action: 'add', item: added[0] }
-    }
-
-    // Single removal
-    if (removed.length === 1 && added.length === 0) {
-      return { action: 'remove', item: removed[0] }
-    }
-
-    // Clear all
-    if (oldValues.length > 0 && newValues.length === 0) {
-      return { action: 'clear', item: null }
-    }
-
-    // Multiple changes or complete replacement
-    return { action: 'set', item: null }
-  }
-
-  /**
    * Dispatch custom change event
    */
   private dispatchChangeEvent(detail: ChangeEventDetail): void {
@@ -1246,7 +1299,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       const searchPlaceholder = this._searchable ? 'Search...' : this._placeholder
 
       shadow.innerHTML = `
-        <div class="multiselect-container">
+        <div class="multiselect-container dropdown-mode-mobile">
           ${labelHtml}
           <div class="dropdown-wrapper">
             <div class="dropdown-stub multiselect-stub ${stubClasses}" 
@@ -1287,11 +1340,12 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     }
 
     // Always update placeholder visibility on re-render
-    this.updatePlaceholderVisibility()
+    this.updateSelectionDisplay()
   }
 
   /**
    * Render mobile mode with full-screen modal
+   * Following dropdown.ts mobile structure
    */
   private renderMobile(): void {
     const shadow = this.shadowRoot!
@@ -1313,7 +1367,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>`
 
-      // Conditional search header - only show when searchable
+      // Conditional search header - match dropdown.ts pattern
       const searchHeaderHtml = this._searchable ? `
         <div class="mobile-search-header">
           <div class="mobile-header-content">
@@ -1337,7 +1391,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       `
 
       shadow.innerHTML = `
-        <div class="multiselect-container">
+        <div class="multiselect-container dropdown-mode-mobile">
           ${labelHtml}
           <div class="dropdown-wrapper">
             <div class="dropdown-stub multiselect-stub ${stubClasses}" 
@@ -1350,15 +1404,43 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
                 ${CHEVRON_DOWN_SVG}
               </div>
             </div>
-            <div class="mobile-modal" style="display: none;">
-              <div class="mobile-modal-backdrop"></div>
-              <div class="mobile-modal-content">
+            
+            <dialog class="mobile-dialog">
+              <div class="mobile-dialog-content">
+                
+                <!-- HEADER (matches dropdown.ts) -->
                 ${searchHeaderHtml}
-                <div class="mobile-options-container">
-                  <slot id="options-slot"></slot>
+                
+                <!-- BODY (two sections for multiselect) -->
+                <div class="mobile-body">
+                  
+                  <!-- SELECTED SECTION -->
+                  <div class="mobile-selected-section" data-expanded="false" data-empty="true">
+                    <div class="section-header">
+                      <span class="section-title">${this._selectedLabel}</span>
+                      <span class="section-chevron">${CHEVRON_DOWN_SVG}</span>
+                    </div>
+                    <div class="section-content">
+                      <slot name="selected-list"></slot>
+                      <div class="empty-state">${this._noSelectionMessage}</div>
+                      <div class="collapsed-more">+<span class="more-count">0</span> more</div>
+                    </div>
+                  </div>
+                  
+                  <!-- AVAILABLE SECTION -->
+                  <div class="mobile-available-section" data-empty="false">
+                    <div class="section-header">
+                      <span class="section-title">${this._availableLabel}</span>
+                    </div>
+                    <div class="section-content">
+                      <slot id="options-slot"></slot>
+                      <div class="empty-state">${this._noOptionsMessage}</div>
+                    </div>
+                  </div>
+                  
                 </div>
               </div>
-            </div>
+            </dialog>
           </div>
         </div>
       `
@@ -1368,19 +1450,21 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     }
 
     // Always update placeholder visibility
-    this.updatePlaceholderVisibility()
+    this.updateSelectionDisplay()
   }
 
   /**
    * Setup event listeners for mobile mode
+   * Using <dialog> element - backdrop clicks handled natively
    */
   private setupMobileEventListeners(): void {
     const shadow = this.shadowRoot!
     const stub = shadow.querySelector('.multiselect-stub')
     const optionsSlot = shadow.querySelector('#options-slot')
     const searchInput = shadow.querySelector('.mobile-search-input')
-    const backdrop = shadow.querySelector('.mobile-modal-backdrop')
     const closeButton = shadow.querySelector('.mobile-close-button')
+    const selectedHeader = shadow.querySelector('.section-header') // First section-header is selected section
+    const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
 
     if (stub) {
       stub.addEventListener('click', (e) => this.handleMobileStubClick(e))
@@ -1396,20 +1480,32 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       searchInput.addEventListener('input', (e) => this.handleSearchInput(e))
     }
 
+    // Toggle selected section expand/collapse
+    if (selectedHeader) {
+      selectedHeader.addEventListener('click', () => this.toggleSelectedExpansion())
+    }
+
     // Close button click
     if (closeButton) {
       closeButton.addEventListener('click', () => this.closeMobileModal())
     }
 
-    // Backdrop click to close
-    if (backdrop) {
-      backdrop.addEventListener('click', () => this.closeMobileModal())
-    }
+    // Backdrop click to close (native dialog behavior)
+    if (dialog) {
+      dialog.addEventListener('click', (e) => {
+        // Only close if clicking directly on the dialog element (backdrop)
+        // Not if clicking on its children (dialog-content)
+        if (e.target === dialog) {
+          this.closeMobileModal()
+        }
+      })
 
-    // Document keyboard handler for Escape key
-    const keyboardHandler = (e: KeyboardEvent) => this.handleMobileKeyboard(e)
-    document.addEventListener('keydown', keyboardHandler)
-      ; (this as any).tyKeyboardHandler = keyboardHandler
+      // Also handle Escape key via cancel event
+      dialog.addEventListener('cancel', (e) => {
+        e.preventDefault() // Prevent default to handle it our way
+        this.closeMobileModal()
+      })
+    }
   }
 
   /**
@@ -1441,37 +1537,73 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   }
 
   /**
-   * Handle mobile keyboard navigation
+   * Toggle selected section expansion (mobile only)
    */
-  private handleMobileKeyboard(e: KeyboardEvent): void {
-    if (!this._state.open) return
+  private toggleSelectedExpansion(): void {
+    const shadow = this.shadowRoot!
+    const selectedSection = shadow.querySelector('.mobile-selected-section')
 
-    // Only handle Escape key on mobile (no arrow navigation needed for touch)
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      e.stopPropagation()
-      this.closeMobileModal()
+    if (!selectedSection) return
+
+    this._state.selectedExpanded = !this._state.selectedExpanded
+    selectedSection.setAttribute('data-expanded', String(this._state.selectedExpanded))
+
+    console.log('Selected section ' + (this._state.selectedExpanded ? 'expanded' : 'collapsed'))
+  }
+
+  /**
+   * Update mobile selected section state (collapsed view, empty states, etc.)
+   */
+  private updateMobileSelectedState(): void {
+    if (this._state.mode !== 'mobile') return
+
+    console.log('🔄 updateMobileSelectedState called')
+
+    const shadow = this.shadowRoot!
+    const selectedSection = shadow.querySelector('.mobile-selected-section')
+    const availableSection = shadow.querySelector('.mobile-available-section')
+    const moreCountSpan = shadow.querySelector('.collapsed-more .more-count')
+
+    if (selectedSection) {
+      const selectedCount = this._state.selectedValues.length
+      const hasSelected = selectedCount > 0
+      const previewCount = this._collapsedPreviewCount
+      const hasOverflow = selectedCount > previewCount
+
+      selectedSection.setAttribute('data-empty', String(!hasSelected))
+      selectedSection.setAttribute('data-has-overflow', String(hasOverflow))
+
+      if (moreCountSpan && hasOverflow) {
+        const hiddenCount = selectedCount - previewCount
+        moreCountSpan.textContent = String(hiddenCount)
+      }
+    }
+
+    if (availableSection) {
+      const allTags = this.getTagElements()
+      const availableCount = allTags.filter(tag => !tag.hasAttribute('selected')).length
+      const hasAvailable = availableCount > 0
+
+      availableSection.setAttribute('data-empty', String(!hasAvailable))
     }
   }
 
   /**
-   * Update placeholder visibility based on selection
+   * Update selection display (show/hide placeholder)
+   * Matches dropdown.ts pattern - uses CSS via has-selection class
    */
-  private updatePlaceholderVisibility(): void {
+  private updateSelectionDisplay(): void {
     const shadow = this.shadowRoot!
-    const placeholder = shadow.querySelector('.dropdown-placeholder')
     const stub = shadow.querySelector('.multiselect-stub')
+    if (!stub) return
 
-    if (placeholder && stub) {
-      const hasSelection = this._state.selectedValues.length > 0
+    const tags = this.getTagElements()
+    const hasSelected = tags.some(tag => tag.hasAttribute('selected'))
 
-      if (hasSelection) {
-        placeholder.classList.add('hidden')
-        stub.classList.add('has-selection')
-      } else {
-        placeholder.classList.remove('hidden')
-        stub.classList.remove('has-selection')
-      }
+    if (hasSelected) {
+      stub.classList.add('has-selection')
+    } else {
+      stub.classList.remove('has-selection')
     }
   }
 

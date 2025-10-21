@@ -262,7 +262,7 @@ export abstract class TyComponent<T = any> extends HTMLElement {
    * Default: return 'value' property
    * Override for custom behavior
    */
-  protected getFormValue(): FormDataEntryValue | null {
+  protected getFormValue(): File | string | FormData | null {
     return this.props.get('value') ?? null
   }
   

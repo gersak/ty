@@ -6,11 +6,14 @@
 export const multiselectStyles = `
 /* Multiselect-specific styles extending dropdown base styles */
 
+:host {
+  --mobile-border-color: #5858587d;
+}
+
 /* ===== DIALOG POSITIONING SUPPORT ===== */
 
 .dropdown-dialog {
   position: fixed;
-  flex-direction: column;
   width: var(--dropdown-width, 200px);
   max-width: 100vw;
   margin: 0;
@@ -28,6 +31,12 @@ export const multiselectStyles = `
   transform: translate(var(--dropdown-offset-x, 0px), var(--dropdown-offset-y, 0px));
   top: -1000px;
   left: -1000px;
+}
+
+/* When opened via showModal(), apply flex layout and direction */
+.dropdown-dialog[open] {
+  display: flex;
+  flex-direction: column;
 }
 
 /* Direction-based positioning with CSS classes */
@@ -56,8 +65,8 @@ export const multiselectStyles = `
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1), var(--ty-shadow-md);
 }
 
+/* Animate when .open class is added */
 .dropdown-dialog.open {
-  display: flex;
   opacity: 1;
 }
 
@@ -343,5 +352,401 @@ export const multiselectStyles = `
 
 :host([disabled]) .multiselect-container {
   pointer-events: none;
+}
+
+/* ============================================================================
+   MOBILE MODAL STYLES
+   ============================================================================ */
+
+.dropdown-mode-mobile .mobile-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  padding-top: 10vh; /* Position content from top */
+  border: none;
+  background: transparent; /* Backdrop handles background */
+  /* Note: Don't set display - browser controls <dialog> visibility */
+  align-items: flex-start;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+
+/* When opened via showModal(), add flex layout */
+.dropdown-mode-mobile .mobile-dialog[open] {
+  display: flex;
+}
+
+.dropdown-mode-mobile .mobile-dialog.open {
+  opacity: 1;
+}
+
+/* Native dialog backdrop with blur */
+.dropdown-mode-mobile .mobile-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.dropdown-mode-mobile .mobile-dialog-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 32px); /* Side margins */
+  max-width: 400px; /* Constrained width like dropdown */
+  min-height: 200px;
+  max-height: calc(90vh - 10vh);
+  opacity: 0;
+  transform: scale(0.95);
+  transition: 
+    opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dropdown-mode-mobile .mobile-dialog.open .mobile-dialog-content {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dropdown-mode-mobile .mobile-search-input:focus {
+  border-color: var(--ty-border);
+}
+
+/* Mobile search header - floating row with search and close */
+.dropdown-mode-mobile .mobile-search-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 0;
+  background: transparent;
+  position: relative;
+}
+
+.dropdown-mode-mobile .mobile-header-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Header for non-searchable (close button only) */
+.dropdown-mode-mobile .mobile-header-nosearch {
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+  padding: 0;
+  background: transparent;
+  position: relative;
+  min-height: 40px;
+}
+
+/* Close button - circular with border (matches dropdown.ts) */
+.dropdown-mode-mobile .mobile-close-button {
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--ty-surface-floating);
+  border: 3px solid;
+  border-color: var(--mobile-border-color);
+  border-radius: 50%;
+  color: var(--ty-text-);
+  cursor: pointer;
+  transition: var(--ty-transition-all);
+  padding: 0;
+}
+
+.dropdown-mode-mobile .mobile-close-button:hover {
+  background: var(--ty-bg-neutral);
+  border-color: var(--ty-border);
+  color: var(--ty-text);
+}
+
+.dropdown-mode-mobile .mobile-close-button:active {
+  transform: scale(0.9);
+}
+
+.dropdown-mode-mobile .mobile-close-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Mobile search input (matches dropdown.ts) */
+.dropdown-mode-mobile .mobile-search-input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  background: var(--ty-surface-floating);
+  color: var(--ty-text);
+  border: 3px solid;
+  border-color: var(--mobile-border-color);
+  border-radius: var(--ty-radius-md);
+  font-family: var(--ty-font-sans);
+  font-size: var(--ty-font-sm);
+  font-weight: var(--ty-font-normal);
+  line-height: var(--ty-line-height-tight);
+  padding: var(--ty-spacing-2) var(--ty-spacing-3);
+  height: 40px;
+  transition: var(--ty-transition-all);
+  outline: none;
+}
+
+.dropdown-mode-mobile .mobile-search-input::placeholder {
+  color: var(--ty-text--);
+}
+
+.dropdown-mode-mobile .mobile-search-input:focus {
+  border-color: var(--ty-border);
+}
+
+/* ============================================================================
+   MOBILE BODY & SECTIONS - UPDATED STRUCTURE
+   ============================================================================ */
+
+/* Mobile body - contains both sections (matches dropdown mobile-options-container) */
+.dropdown-mode-mobile .mobile-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ty-surface-floating);
+  border-radius: var(--ty-radius-lg);
+  box-shadow: 
+    0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 3px solid;
+  border-color: var(--mobile-border-color);
+}
+
+/* ===== SECTION HEADERS ===== */
+
+.dropdown-mode-mobile .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ty-text-);
+  background: var(--ty-bg-neutral-);
+  border-bottom: 1px solid var(--ty-border--);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-mode-mobile .section-header:hover {
+  background: var(--ty-bg-neutral);
+}
+
+.dropdown-mode-mobile .section-header:active {
+  background: var(--ty-bg-neutral+);
+}
+
+.dropdown-mode-mobile .section-header .section-title {
+  flex: 1;
+}
+
+/* Chevron indicator (only for selected section) */
+.dropdown-mode-mobile .section-header .section-chevron {
+  width: 16px;
+  height: 16px;
+  color: var(--ty-text--);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-mode-mobile .section-header .section-chevron svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Rotate chevron when expanded */
+.dropdown-mode-mobile .mobile-selected-section[data-expanded="true"] .section-chevron {
+  transform: rotate(180deg);
+}
+
+/* Available section header - not clickable */
+.dropdown-mode-mobile .mobile-available-section .section-header {
+  cursor: default;
+}
+
+.dropdown-mode-mobile .mobile-available-section .section-header:hover {
+  background: var(--ty-bg-neutral-);
+}
+
+/* ===== SELECTED SECTION (Collapsible) ===== */
+
+.dropdown-mode-mobile .mobile-selected-section {
+  flex-shrink: 0;
+  max-height: 40%;
+  display: flex;
+  flex-direction: column;
+  background: var(--ty-surface-elevated);
+  border-bottom: 2px solid var(--ty-border);
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Collapsed state - limit height to show preview + more badge */
+.dropdown-mode-mobile .mobile-selected-section[data-expanded="false"] {
+  max-height: 120px;
+}
+
+/* Expanded state - allow more height */
+.dropdown-mode-mobile .mobile-selected-section[data-expanded="true"] {
+  max-height: 70%;
+}
+
+.dropdown-mode-mobile .mobile-selected-section .section-content {
+  position: relative;
+  overflow-y: auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-content: flex-start;
+}
+
+/* ===== COLLAPSED VIEW - First N tags + "more" badge ===== */
+
+.dropdown-mode-mobile .collapsed-more {
+  display: none;
+  background: var(--ty-bg-primary-);
+  color: var(--ty-text-primary++);
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--ty-radius-md);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  align-self: center;
+}
+
+/* Show "more" badge when collapsed and has overflow */
+.dropdown-mode-mobile .mobile-selected-section[data-expanded="false"][data-has-overflow="true"] .collapsed-more {
+  display: block;
+}
+
+/* Hide tags beyond preview count when collapsed */
+.dropdown-mode-mobile .mobile-selected-section[data-expanded="false"] .section-content ::slotted(ty-tag:nth-child(n+6)) {
+  display: none;
+}
+
+/* Show all when expanded */
+.dropdown-mode-mobile .mobile-selected-section[data-expanded="true"] .section-content ::slotted(ty-tag) {
+  display: flex !important;
+}
+
+/* ===== AVAILABLE SECTION ===== */
+
+.dropdown-mode-mobile .mobile-available-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--ty-surface-floating);
+  overflow: hidden;
+  transition: flex 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Shrink to single row when selected is expanded */
+.dropdown-mode-mobile .mobile-body:has(.mobile-selected-section[data-expanded="true"]) .mobile-available-section {
+  flex: 0 0 80px;
+}
+
+.dropdown-mode-mobile .mobile-available-section .section-content {
+  overflow-y: auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-content: flex-start;
+}
+
+/* ===== EMPTY STATES ===== */
+
+.dropdown-mode-mobile .empty-state {
+  display: none;
+  width: 100%;
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--ty-text--);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* Show empty state when no tags present */
+.dropdown-mode-mobile .mobile-selected-section[data-empty="true"] .empty-state,
+.dropdown-mode-mobile .mobile-available-section[data-empty="true"] .empty-state {
+  display: block;
+}
+
+/* Hide slot content when empty */
+.dropdown-mode-mobile .mobile-selected-section[data-empty="true"] slot,
+.dropdown-mode-mobile .mobile-available-section[data-empty="true"] slot {
+  display: none;
+}
+
+/* ===== TAG STYLING IN MOBILE ===== */
+
+.dropdown-mode-mobile .section-content ::slotted(ty-tag) {
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.1s ease;
+  margin: 2px 0; /* Vertical spacing like dropdown options */
+}
+
+.dropdown-mode-mobile .section-content ::slotted(ty-tag:hover) {
+  transform: scale(1.02);
+}
+
+.dropdown-mode-mobile .section-content ::slotted(ty-tag:active) {
+  transform: scale(0.98);
+}
+
+/* Dimmed appearance for hidden filtered tags */
+.dropdown-mode-mobile .section-content ::slotted(ty-tag[hidden]) {
+  display: none !important;
+}
+
+/* ===== SCROLLBAR STYLING ===== */
+
+.dropdown-mode-mobile .section-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-mode-mobile .section-content::-webkit-scrollbar-track {
+  background: var(--ty-bg-neutral-);
+  border-radius: 3px;
+}
+
+.dropdown-mode-mobile .section-content::-webkit-scrollbar-thumb {
+  background: var(--ty-border);
+  border-radius: 3px;
+}
+
+.dropdown-mode-mobile .section-content::-webkit-scrollbar-thumb:hover {
+  background: var(--ty-border+);
 }
 `

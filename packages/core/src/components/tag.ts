@@ -57,7 +57,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
       // Clean up the instance property so our getter/setter works
       delete this.value
     }
-    
+
     this.render()
     this.setupEventListeners()
   }

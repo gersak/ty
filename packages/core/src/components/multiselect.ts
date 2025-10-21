@@ -296,13 +296,12 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     mode: isMobileDevice() ? 'mobile' : 'desktop',
     expandedSection: 'selected'  // Will be corrected by toggleSection call
   }
-  
+
   // Debug: Log when expandedSection changes
   set expandedSection(value: 'selected' | 'available') {
-    console.log('🔧 expandedSection changed from', this._state.expandedSection, 'to', value)
     this._state.expandedSection = value
   }
-  
+
   get expandedSection(): 'selected' | 'available' {
     return this._state.expandedSection
   }
@@ -350,7 +349,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * TyComponent handles property capture automatically
    */
   protected onConnect(): void {
-    console.log('🔌 onConnect')
 
     // SAFETY: Close any open dialogs to prevent scroll locking
     const shadow = this.shadowRoot!
@@ -364,7 +362,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
 
     // Initialize after element is connected and children are available
     requestAnimationFrame(() => {
-      console.log('⏰ requestAnimationFrame callback')
       this.initializeState()
     })
   }
@@ -501,31 +498,23 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * Reads from both property and attribute (like ClojureScript version)
    */
   private initializeState(): void {
-    console.log('🚀 initializeState')
-    console.log('  value from props:', this.getProperty('value'))
 
     const initialValue = this.getProperty('value') || ''
-    console.log('  initialValue:', initialValue)
 
     if (initialValue) {
       // Explicit value provided - use it
       const selectedValues = this.parseValue(initialValue)
-      console.log('  parsed selectedValues:', selectedValues)
       this.updateComponentValue(selectedValues, false)
     } else {
       // No explicit value - check for pre-selected tags
-      console.log('  ⚠️  No initial value, checking for pre-selected tags...')
       const preSelectedTags = this.getTagElements()
         .filter(tag => tag.hasAttribute('selected'))
         .map(tag => this.getTagData(tag).value)
 
-      console.log('  preSelectedTags found:', preSelectedTags)
 
       if (preSelectedTags.length > 0) {
-        console.log('  ✅ Using pre-selected tags as initial value')
         this.updateComponentValue(preSelectedTags, false)
       } else {
-        console.log('  ℹ️  No pre-selected tags found')
       }
     }
   }
@@ -623,22 +612,15 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const selectedSet = new Set(selectedValues)
     const tags = this.getTagElements()
 
-    console.log('🔄 syncSelectedTags')
-    console.log('  selectedValues:', selectedValues)
-    console.log('  tags found:', tags.length)
 
     tags.forEach(tag => {
       const tagValue = this.getTagData(tag).value
       const shouldBeSelected = selectedSet.has(tagValue)
       const isSelected = tag.hasAttribute('selected')
 
-      console.log(`  tag ${tagValue}: should=${shouldBeSelected}, is=${isSelected}`)
-
       if (shouldBeSelected && !isSelected) {
-        console.log(`    ✅ selecting ${tagValue}`)
         this.selectTag(tag)
       } else if (!shouldBeSelected && isSelected) {
-        console.log(`    ❌ deselecting ${tagValue}`)
         this.deselectTag(tag)
       }
     })
@@ -652,14 +634,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const oldValues = this.getSelectedValues()
     const valueStr = newValues.join(',')
 
-    console.log('🔄 updateComponentValue called')
-    console.log('  oldValues:', oldValues)
-    console.log('  newValues:', newValues)
-    console.log('  dispatchChange:', dispatchChange)
 
     // Only update if changed
     if (JSON.stringify(newValues.sort()) !== JSON.stringify(oldValues.sort())) {
-      console.log('  ✅ Values changed, updating...')
 
       // Use TyComponent's property system - this will trigger:
       // 1. onPropertiesChanged() → syncs tags via syncSelectedTags()
@@ -677,7 +654,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         })
       }
     } else {
-      console.log('  ⏭️  Values unchanged, skipping')
     }
   }
 
@@ -759,6 +735,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     dialog.showModal()
     dialog.classList.add('open')
 
+
     // Position dropdown AFTER showing modal
     this.calculatePosition()
 
@@ -793,7 +770,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private closeDropdown(): void {
     const shadow = this.shadowRoot!
     const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
+
     if (!dialog) return
+
 
     // Close dialog (browser handles scroll unlocking automatically)
     dialog.classList.remove('open')
@@ -835,6 +814,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     dialog.showModal()
     dialog.classList.add('open')
 
+    const stub_slot = shadow.querySelector('#stub-slot') as HTMLSlotElement
+    const mobile_slot = shadow.querySelector('#mobile-slot') as HTMLSlotElement
+    stub_slot.name = "selected-blocked";
+    mobile_slot.name = "selected";
+
     // Update component state
     this._state.open = true
 
@@ -852,7 +836,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     }
 
     // Initialize sections (available expanded by default)
-    console.log('🚀 Initializing sections, want available expanded')
     this._state.expandedSection = 'available'
     this.syncSectionStates()
 
@@ -874,6 +857,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     // Close dialog using native API
     dialog.classList.remove('open')
     dialog.close()
+
+    const stub_slot = shadow.querySelector('#stub-slot') as HTMLSlotElement
+    const mobile_slot = shadow.querySelector('#mobile-slot') as HTMLSlotElement
+    stub_slot.name = "selected";
+    mobile_slot.name = "selected-blocked";
 
     // Update state
     this._state.open = false
@@ -1397,7 +1385,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
             <div class="dropdown-stub multiselect-stub ${stubClasses}" 
                  ${this._disabled ? 'disabled' : ''}>
               <div class="multiselect-chips">
-                <slot name="selected-stub"></slot>
+                <slot id="stub-slot" name="selected"></slot>
               </div>
               <span class="dropdown-placeholder">${this._placeholder}</span>
               <div class="dropdown-chevron">
@@ -1421,7 +1409,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
                       <span class="section-chevron">${CHEVRON_DOWN_SVG}</span>
                     </div>
                     <div class="section-content">
-                      <slot name="selected"></slot>
+                      <slot id="mobile-slot" name="selected"></slot>
                       <div class="empty-state">${this._noSelectionMessage}</div>
                     </div>
                   </div>
@@ -1496,6 +1484,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       closeButton.addEventListener('click', () => this.closeMobileModal())
     }
 
+    this._tagDismissHandler = this.handleTagDismiss.bind(this)
+    this.addEventListener('ty-tag-dismiss', this._tagDismissHandler)
+
     // Backdrop click to close (native dialog behavior)
     if (dialog) {
       dialog.addEventListener('click', (e) => {
@@ -1558,34 +1549,31 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (this._state.expandedSection === section) {
       const otherSection = section === 'selected' ? 'available' : 'selected'
       this._state.expandedSection = otherSection
-      console.log(`Collapsing ${section}, expanding ${otherSection}`)
     } else {
       // Expand clicked section
       this._state.expandedSection = section
-    console.log(`${section.toUpperCase()} section expanded`)
+    }
+
+    // Update DOM attributes
+    selectedSection.setAttribute('data-expanded', String(this._state.expandedSection === 'selected'))
+    availableSection.setAttribute('data-expanded', String(this._state.expandedSection === 'available'))
   }
 
-  // Update DOM attributes
-  selectedSection.setAttribute('data-expanded', String(this._state.expandedSection === 'selected'))
-  availableSection.setAttribute('data-expanded', String(this._state.expandedSection === 'available'))
-}
+  /**
+   * Sync section states to DOM without toggle logic
+   */
+  private syncSectionStates(): void {
+    const shadow = this.shadowRoot!
+    const selectedSection = shadow.querySelector('.mobile-selected-section')
+    const availableSection = shadow.querySelector('.mobile-available-section')
 
-/**
- * Sync section states to DOM without toggle logic
- */
-private syncSectionStates(): void {
-  const shadow = this.shadowRoot!
-  const selectedSection = shadow.querySelector('.mobile-selected-section')
-  const availableSection = shadow.querySelector('.mobile-available-section')
+    if (!selectedSection || !availableSection) return
 
-  if (!selectedSection || !availableSection) return
+    // Update DOM attributes to match current state
+    selectedSection.setAttribute('data-expanded', String(this._state.expandedSection === 'selected'))
+    availableSection.setAttribute('data-expanded', String(this._state.expandedSection === 'available'))
 
-  // Update DOM attributes to match current state
-  selectedSection.setAttribute('data-expanded', String(this._state.expandedSection === 'selected'))
-  availableSection.setAttribute('data-expanded', String(this._state.expandedSection === 'available'))
-  
-  console.log('🔄 Synced sections, expandedSection:', this._state.expandedSection)
-}
+  }
 
   /**
    * Update mobile selected section state (collapsed view, empty states, etc.)
@@ -1593,7 +1581,6 @@ private syncSectionStates(): void {
   private updateMobileSelectedState(): void {
     if (this._state.mode !== 'mobile') return
 
-    console.log('🔄 updateMobileSelectedState called')
 
     const shadow = this.shadowRoot!
     const selectedSection = shadow.querySelector('.mobile-selected-section')
@@ -1618,7 +1605,7 @@ private syncSectionStates(): void {
       const hasAvailable = availableCount > 0
 
       availableSection.setAttribute('data-empty', String(!hasAvailable))
-      
+
       // Update available header count
       const availableTitleSpan = shadow.querySelector('.mobile-available-section .section-title')
       if (availableTitleSpan) {

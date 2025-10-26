@@ -433,7 +433,7 @@ function render(el: TyModal): void {
       }
       
       // Dispatch open event
-      dispatchModalEvent(el, 'ty-modal-open', {});
+      dispatchModalEvent(el, 'open', {});
     }
   } else {
     if (dialog.open) {
@@ -444,7 +444,7 @@ function render(el: TyModal): void {
       dialog.close();
       
       // Dispatch close event
-      dispatchModalEvent(el, 'ty-modal-close', { 
+      dispatchModalEvent(el, 'close', { 
         reason: 'programmatic' 
       } as ModalCloseDetail);
     }
@@ -458,7 +458,7 @@ function render(el: TyModal): void {
     // Sync the open attribute
     if (el.hasAttribute('open')) {
       el.removeAttribute('open');
-      dispatchModalEvent(el, 'ty-modal-close', {
+      dispatchModalEvent(el, 'close', {
         reason: 'native',
         returnValue: dialog.returnValue || undefined
       } as ModalCloseDetail);

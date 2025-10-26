@@ -163,7 +163,7 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
       this._value = instanceValue.value
       this._state.value = instanceValue.value
       // Clean up the instance property so our getter/setter works
-      delete this.value
+      Reflect.deleteProperty(this, 'value')
     }
     
     // Initialize value from attribute if present

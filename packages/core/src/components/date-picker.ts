@@ -762,9 +762,12 @@ export class TyDatePicker extends HTMLElement {
     // Check if value was set directly on the instance before our getter/setter was available
     const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
     if (instanceValue && instanceValue.value !== undefined) {
-      this._value = instanceValue.value
+      // Restore the value by setting it through the proper setter
+      const tempValue = instanceValue.value
       // Clean up the instance property so our getter/setter works
-      delete this.value
+      Reflect.deleteProperty(this, 'value')
+      // Now set it properly through the setter
+      this.value = tempValue
     }
     
     this.initializeState();

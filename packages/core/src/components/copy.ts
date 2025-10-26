@@ -106,7 +106,7 @@ export class TyCopy extends HTMLElement implements TyCopyElement {
       console.log('[ty-copy] Found pre-construction value:', instanceValue.value)
       this._value = instanceValue.value
       // Clean up the instance property so our getter/setter works
-      delete this.value
+      ;(this as any).value = undefined
     }
     
     // Read initial attribute values if they exist
@@ -280,7 +280,8 @@ export class TyCopy extends HTMLElement implements TyCopyElement {
 
     // Make entire field clickable for copying
     if (inputWrapper && !this._disabled) {
-      inputWrapper.addEventListener('click', (e) => {
+      const wrapperEl = inputWrapper as HTMLElement
+      wrapperEl.addEventListener('click', (e) => {
         // Prevent double-triggering if button was clicked
         if (e.target === copyButton || (e.target as HTMLElement).closest('.copy-button')) {
           return
@@ -289,7 +290,7 @@ export class TyCopy extends HTMLElement implements TyCopyElement {
       })
       
       // Add visual feedback - make it look clickable
-      inputWrapper.style.cursor = 'pointer'
+      wrapperEl.style.cursor = 'pointer'
     }
 
     // Button click handler (redundant but kept for explicitness)

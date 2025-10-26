@@ -164,7 +164,7 @@ function closePopup(el: TyPopup, force = false): void {
   }, 150);
 
   // Dispatch close event
-  el.dispatchEvent(new CustomEvent('ty:popup-close', { bubbles: true }));
+  el.dispatchEvent(new CustomEvent('close', { bubbles: true }));
 }
 
 /**
@@ -197,7 +197,7 @@ function openPopup(el: TyPopup): void {
       dialog.classList.add('open');
 
       // Dispatch open event
-      el.dispatchEvent(new CustomEvent('ty:popup-open', { bubbles: true }));
+      el.dispatchEvent(new CustomEvent('open', { bubbles: true }));
     });
   });
 }
@@ -343,7 +343,7 @@ function render(el: TyPopup): void {
       unlockScroll(popupId);
       dialog.classList.remove('open');
       dialog.classList.remove('preparing-animation');
-      el.dispatchEvent(new CustomEvent('ty:popup-close', { bubbles: true }));
+      el.dispatchEvent(new CustomEvent('close', { bubbles: true }));
     });
   }
 

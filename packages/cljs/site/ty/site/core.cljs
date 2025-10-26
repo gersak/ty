@@ -135,9 +135,8 @@
                         (js/setTimeout scroll-main-to-top! 100))
                       ;; Close mobile menu
                       (swap! state assoc :mobile-menu-open false)))}}
-     (when icon
-       [:ty-icon.mr-2 {:name icon
-                       :size "sm"}])
+     [:ty-icon.mr-2 {:name icon
+                     :size "sm"}]
      [:div.flex.items-center.gap-2
       [:span.text-sm label]]]))
 
@@ -208,16 +207,19 @@
    ;; Components Section (route navigation to component docs)
    (nav-section
      {:title "Components"
-      :items (for [route component-routes]
-               {:route-id (:id route)
-                :label (:name route)
-                :icon (:icon route)
-                :children (when-let [children (:children route)]
-                            (map (fn [child]
-                                   {:route-id (:id child)
-                                    :label (:name child)
-                                    :icon (:icon child)})
-                                 children))})})])
+      :items (map
+               (fn [route]
+                 (when-not (= (:id route) :ty.site/docs)
+                   {:route-id (:id route)
+                    :label (:name route)
+                    :icon (:icon route)
+                    :children (when-let [children (:children route)]
+                                (map (fn [child]
+                                       {:route-id (:id child)
+                                        :label (:name child)
+                                        :icon (:icon child)})
+                                     children))}))
+               component-routes)})])
 
 (defn flatten-routes
   "Recursively flatten routes including children"
@@ -247,7 +249,7 @@
   (when (:mobile-menu-open @state)
     [:div.lg:hidden
      [:ty-modal {:open true
-                 :on {:ty-modal-close close-mobile-menu!}}
+                 :on {:close close-mobile-menu!}}
       [:div.p-6.mx-auto.rounded-lg.ty-floating.box-border.flex.flex-col
        {:style {:width "320px"
                 :max-height "90vh"}}
@@ -315,6 +317,9 @@
   (binding [context/*roles* (:user/roles @state)]
     (rdom/render (.getElementById js/document "app") (app))))
 
+
+(ty.site.icons/register-icons!)
+
 (defn ^:dev/after-load init []
   ;; Initialize theme from localStorage or system preference
   (let [stored-theme (.getItem js/localStorage "theme")
@@ -327,7 +332,6 @@
       (.add (.-classList js/document.documentElement) "dark")
       (.remove (.-classList js/document.documentElement) "dark")))
 
-  (ty.site.icons/register-icons!)
 
   ;; Initialize router with base path for GitHub Pages
   (router/init! (when-not (str/blank? ROUTER_BASE) ROUTER_BASE))

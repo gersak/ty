@@ -35,6 +35,10 @@
       "types": "./lib/components/textarea.d.ts",
       "import": "./lib/components/textarea.js"
     },
+    "./copy": {
+      "types": "./lib/components/copy.d.ts",
+      "import": "./lib/components/copy.js"
+    },
     "./popup": {
       "types": "./lib/components/popup.d.ts",
       "import": "./lib/components/popup.js"
@@ -88,62 +92,11 @@
       "types": "./lib/utils/icon-registry.d.ts",
       "import": "./lib/utils/icon-registry.js"
     },
-    "./icons/lucide": {
-      "types": "./lib/icons/lucide.d.ts",
-      "import": "./lib/icons/lucide.js"
-    },
-    "./icons/heroicons/outline": {
-      "types": "./lib/icons/heroicons/outline.d.ts",
-      "import": "./lib/icons/heroicons/outline.js"
-    },
-    "./icons/heroicons/solid": {
-      "types": "./lib/icons/heroicons/solid.d.ts",
-      "import": "./lib/icons/heroicons/solid.js"
-    },
-    "./icons/heroicons/mini": {
-      "types": "./lib/icons/heroicons/mini.d.ts",
-      "import": "./lib/icons/heroicons/mini.js"
-    },
-    "./icons/heroicons/micro": {
-      "types": "./lib/icons/heroicons/micro.d.ts",
-      "import": "./lib/icons/heroicons/micro.js"
-    },
-    "./icons/material/filled": {
-      "types": "./lib/icons/material/filled.d.ts",
-      "import": "./lib/icons/material/filled.js"
-    },
-    "./icons/material/outlined": {
-      "types": "./lib/icons/material/outlined.d.ts",
-      "import": "./lib/icons/material/outlined.js"
-    },
-    "./icons/material/round": {
-      "types": "./lib/icons/material/round.d.ts",
-      "import": "./lib/icons/material/round.js"
-    },
-    "./icons/material/sharp": {
-      "types": "./lib/icons/material/sharp.d.ts",
-      "import": "./lib/icons/material/sharp.js"
-    },
-    "./icons/material/two-tone": {
-      "types": "./lib/icons/material/two-tone.d.ts",
-      "import": "./lib/icons/material/two-tone.js"
-    },
-    "./icons/fontawesome/solid": {
-      "types": "./lib/icons/fontawesome/solid.d.ts",
-      "import": "./lib/icons/fontawesome/solid.js"
-    },
-    "./icons/fontawesome/regular": {
-      "types": "./lib/icons/fontawesome/regular.d.ts",
-      "import": "./lib/icons/fontawesome/regular.js"
-    },
-    "./icons/fontawesome/brands": {
-      "types": "./lib/icons/fontawesome/brands.d.ts",
-      "import": "./lib/icons/fontawesome/brands.js"
-    },
     "./cdn": "./dist/ty.js"
   },
   "files": [
     "lib/**/*",
+    "!lib/icons/**",
     "css/**/*",
     "dist/**/*",
     "README.md",

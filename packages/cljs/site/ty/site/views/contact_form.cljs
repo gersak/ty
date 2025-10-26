@@ -142,7 +142,7 @@
 
 (defn success-modal-content [submitted-data close-success-modal reset-form]
   [:ty-modal {:open true
-              :on {:ty-modal-close close-success-modal}}
+              :on {:close close-success-modal}}
    [:div.p-6.ty-content.rounded-lg
     [:div.flex.items-center.gap-4.mb-6
      [:ty-icon {:name "check-circle"

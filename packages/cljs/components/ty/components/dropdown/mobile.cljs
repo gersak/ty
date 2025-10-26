@@ -157,7 +157,7 @@
 
     ;; Modal close events
     (when modal
-      (.addEventListener modal "ty-modal-close" (partial handle-modal-close! el)))
+      (.addEventListener modal "close" (partial handle-modal-close! el)))
 
     ;; Search input
     (when search-input
@@ -174,7 +174,7 @@
             (when stub
               (.removeEventListener stub "click" (partial handle-stub-click! el root)))
             (when modal
-              (.removeEventListener modal "ty-modal-close" (partial handle-modal-close! el)))
+              (.removeEventListener modal "close" (partial handle-modal-close! el)))
             (when search-input
               (.removeEventListener search-input "input" (partial handle-search! el)))
             (when options-container

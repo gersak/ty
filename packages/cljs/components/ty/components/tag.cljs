@@ -94,7 +94,7 @@
     (when (and clickable (not disabled))
       (.preventDefault event)
       (.stopPropagation event)
-      (dispatch-tag-event! el "ty-tag-click" #js {:target el})
+      (dispatch-tag-event! el "click" #js {:target el})
       (dispatch-tag-event! el "click" #js {:target el})
       (dispatch-tag-event! el "pointerdown" #js {:target el}))))
 
@@ -105,7 +105,7 @@
     (when (and dismissible (not disabled))
       (.preventDefault event)
       (.stopPropagation event)
-      (dispatch-tag-event! el "ty-tag-dismiss" #js {:target el}))))
+      (dispatch-tag-event! el "dismiss" #js {:target el}))))
 
 (defn handle-keydown!
   "Handle keyboard interactions"
@@ -117,11 +117,11 @@
         ;; ENTER or SPACE - trigger click if clickable
         (13 32) (when clickable
                   (.preventDefault event)
-                  (dispatch-tag-event! el "ty-tag-click" #js {:target el}))
+                  (dispatch-tag-event! el "click" #js {:target el}))
         ;; DELETE or BACKSPACE - trigger dismiss if dismissible
         (8 46) (when dismissible
                  (.preventDefault event)
-                 (dispatch-tag-event! el "ty-tag-dismiss" #js {:target el}))
+                 (dispatch-tag-event! el "dismiss" #js {:target el}))
         nil))))
 
 (defn cleanup-event-listeners!

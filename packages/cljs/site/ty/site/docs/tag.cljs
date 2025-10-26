@@ -63,10 +63,10 @@
        [{:name "pointerdown"
          :payload "{target: HTMLElement}"
          :when-fired "Fired when a clickable tag is clicked"}
-        {:name "ty-tag-click"
+        {:name "click"
          :payload "{target: HTMLElement}"
          :when-fired "Fired when a clickable tag is clicked"}
-        {:name "ty-tag-dismiss"
+        {:name "dismiss"
          :payload "{target: HTMLElement}"
          :when-fired "Fired when the dismiss button is clicked"}])]
 
@@ -173,7 +173,7 @@
        [:ty-tag#dismiss-demo
         {:flavor "danger"
          :dismissible "true"
-         :on {:ty-tag-dismiss (fn [^js e]
+         :on {:dismiss (fn [^js e]
                                 (.remove (.-target e)))}}
         "Dismiss me"]
        [:ty-tag {:flavor "success"
@@ -196,7 +196,7 @@
 </ty-tag>
 <script>
   document.getElementById('dismiss-tag')
-    .addEventListener('ty-tag-dismiss', function(e) {
+    .addEventListener('dismiss', function(e) {
       e.target.remove();
     });
 </script>
@@ -395,11 +395,11 @@ tag.value = 'my-value';           // Get/set value
 tag.selected = true;              // Get/set selected state
 
 // Listen for events (Custom Events, not attributes!)
-tag.addEventListener('ty-tag-click', (e) => {
+tag.addEventListener('click', (e) => {
   console.log('Tag clicked:', e.detail.target);
 });
 
-tag.addEventListener('ty-tag-dismiss', (e) => {
+tag.addEventListener('dismiss', (e) => {
   console.log('Tag dismissed:', e.detail.target);
   e.target.remove(); // Remove the tag
 });
@@ -412,7 +412,7 @@ newTag.textContent = 'New Tag';
 document.body.appendChild(newTag);
 
 // Add dismiss handler to dynamically created tag
-newTag.addEventListener('ty-tag-dismiss', (e) => {
+newTag.addEventListener('dismiss', (e) => {
   e.target.remove();
 });
 

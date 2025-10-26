@@ -81,7 +81,7 @@
              150))
 
          ;; Dispatch close event
-         (.dispatchEvent el (js/CustomEvent. "ty:popup-close" #js {:bubbles true})))))))
+         (.dispatchEvent el (js/CustomEvent. "close" #js {:bubbles true})))))))
 
 (defn open-popup!
   "Open popup with dialog open but hidden → position → animate sequence"
@@ -113,7 +113,7 @@
                 (.add (.-classList dialog) "open")
 
                 ;; Dispatch open event
-                (.dispatchEvent el (js/CustomEvent. "ty:popup-open" #js {:bubbles true}))))))))))
+                (.dispatchEvent el (js/CustomEvent. "open" #js {:bubbles true}))))))))))
 
 (defn toggle-popup!
   "Toggle popup visibility"
@@ -224,7 +224,7 @@
                                (scroll-lock/unlock-scroll! popup-id)
                                (.remove (.-classList dialog) "open")
                                (.remove (.-classList dialog) "preparing-animation"))
-                             (.dispatchEvent el (js/CustomEvent. "ty:popup-close" #js {:bubbles true}))))))
+                             (.dispatchEvent el (js/CustomEvent. "close" #js {:bubbles true}))))))
 
     ;; Add close method to element for programmatic access
     (set! (.-closePopup el) #(close-popup! el true))

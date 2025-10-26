@@ -48,10 +48,10 @@
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text+.mb-3 "Events"]
     (event-table
-     [{:name "ty:popup-open"
+     [{:name "open"
        :when-fired "Fired when popup opens"
        :payload "None (bubbles: true)"}
-      {:name "ty:popup-close"
+      {:name "close"
        :when-fired "Fired when popup closes"
        :payload "None (bubbles: true)"}
       {:name "ty:close-popup"
@@ -104,11 +104,11 @@ popup.closePopup();
 popup.togglePopup();
 
 // Listen for events
-popup.addEventListener('ty:popup-open', () => {
+popup.addEventListener('open', () => {
   console.log('Popup opened!');
 });
 
-popup.addEventListener('ty:popup-close', () => {
+popup.addEventListener('close', () => {
   console.log('Popup closed!');
 });
 </script>")]])

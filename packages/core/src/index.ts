@@ -79,20 +79,8 @@ export type {
 } from './utils/positioning.js'
 
 // Icons
-// Export icon sets for tree-shakeable imports
-export * as lucideIcons from './icons/lucide.js'
-export * as heroiconsOutline from './icons/heroicons/outline.js'
-export * as heroiconsSolid from './icons/heroicons/solid.js'
-export * as heroiconsMini from './icons/heroicons/mini.js'
-export * as heroiconsMicro from './icons/heroicons/micro.js'
-export * as materialFilled from './icons/material/filled.js'
-export * as materialOutlined from './icons/material/outlined.js'
-export * as materialRound from './icons/material/round.js'
-export * as materialSharp from './icons/material/sharp.js'
-export * as materialTwoTone from './icons/material/two-tone.js'
-export * as fontawesomeSolid from './icons/fontawesome/solid.js'
-export * as fontawesomeRegular from './icons/fontawesome/regular.js'
-export * as fontawesomeBrands from './icons/fontawesome/brands.js'
+// Note: Icon libraries moved to separate @gersak/ty-icons package
+// Icon registry utility remains in core for registering custom icons
 
 // Version
 export const VERSION = '0.2.0'
@@ -103,6 +91,7 @@ import { registerIcons, getIcon, hasIcon, getIconNames } from './utils/icon-regi
 
 declare global {
   interface Window {
+    tyVersion: string
     tyIcons: {
       register: (icons: Record<string, string>) => void
       get: (name: string) => string | undefined
@@ -113,10 +102,16 @@ declare global {
 }
 
 if (typeof window !== 'undefined') {
+  window.tyVersion = VERSION
   window.tyIcons = {
     register: (icons: Record<string, string>) => {
+      const count = Object.keys(icons).length
       registerIcons(icons)
-      console.log(`✅ Registered ${Object.keys(icons).length} icons`)
+      
+      // Defer logging to not block registration
+      setTimeout(() => {
+        console.log(`✅ Registered ${count} icons`)
+      }, 0)
     },
     get: (name: string) => getIcon(name),
     has: (name: string) => hasIcon(name),

@@ -144,11 +144,14 @@ export class TyDropdown extends TyComponent<DropdownState> {
   // PROPERTY CONFIGURATION - Declarative property lifecycle
   // ============================================================================
   protected static properties = {
+    // Value: Emits BOTH 'prop:change' (all changes) and 'change' (user interactions)
+    // - prop:change: Fired by TyComponent when value property changes (useful for reactive frameworks)
+    // - change: Fired by dispatchChangeEvent() on user selection (useful for business logic)
     value: {
       type: 'string' as const,
       visual: true,
       formValue: true,
-      emitChange: true,
+      emitChange: true,  // Enables 'prop:change' event
       default: ''
     },
     name: {
@@ -232,9 +235,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   // ============================================================================
-  // PRIVATE FIELDS (will be removed in Phase 3)
+  // PRIVATE FIELDS (legacy - these should be removed as components migrate to TyComponent)
   // ============================================================================
-  private _value: string = ''
+  // NOTE: _value removed - now using TyComponent property system
   private _name: string = ''
   private _placeholder: string = 'Select an option...'
   private _label: string = ''
@@ -338,7 +341,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
     for (const { name, newValue } of changes) {
       switch (name) {
         case 'value':
-          this._value = newValue || ''
+          // Sync state from property system
           this._state.currentValue = newValue || null
           this.syncSelectedOption()
           break
@@ -431,9 +434,11 @@ export class TyDropdown extends TyComponent<DropdownState> {
    * Initialize component state from attributes
    */
   private initializeState(): void {
-
-    if (this._value) {
-      this._state.currentValue = this.parseValue(this._value)
+    // Get value from TyComponent property system
+    const currentValue = this.value
+    
+    if (currentValue) {
+      this._state.currentValue = this.parseValue(currentValue)
 
       // CRITICAL: Options may not be slotted yet when connectedCallback runs
       // Defer sync to next frame to ensure options are available
@@ -674,17 +679,14 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   /**
-   * Update component value attribute for consistency
+   * Update component value using TyComponent property system
+   * This triggers: prop:change event (if emitChange: true), form value sync, and re-render
    */
   private updateComponentValue(): void {
     const currentValue = this._state.currentValue
-    if (currentValue !== null) {
-      this.setAttribute('value', currentValue)
-    } else {
-      this.removeAttribute('value')
-    }
-    // Also set property
-    this._value = currentValue || ''
+    // Use TyComponent's property system instead of setAttribute
+    // This properly triggers the unified lifecycle: onPropertiesChanged → updateFormValue → render → prop:change
+    this.setProperty('value', currentValue || '')
   }
 
   /**
@@ -731,7 +733,10 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   /**
-   * Dispatch change event
+   * Dispatch user interaction 'change' event
+   * Note: This is separate from 'prop:change' which is emitted by TyComponent
+   * - 'change': User clicked/selected an option (this event)
+   * - 'prop:change': Value property changed (automatic from TyComponent)
    */
   private dispatchChangeEvent(option: HTMLElement, originalEvent?: Event): void {
     const optionData = this.getOptionData(option)

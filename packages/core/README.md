@@ -1,11 +1,11 @@
-# @gersak/ty-core
+# @gersak/ty
 
 TypeScript web components for universal UI development.
 
 ## Installation
 
 ```bash
-npm install @gersak/ty-core
+npm install @gersak/ty
 ```
 
 ## Usage
@@ -13,18 +13,18 @@ npm install @gersak/ty-core
 ### Import All Components
 
 ```javascript
-import '@gersak/ty-core'
+import '@gersak/ty'
 
 // Or with React
-import { TyButton, TyModal, TyInput } from '@gersak/ty-core'
+import { TyButton, TyModal, TyInput } from '@gersak/ty'
 ```
 
 ### Import Individual Components (Tree-Shaking)
 
 ```javascript
-import '@gersak/ty-core/button'
-import '@gersak/ty-core/modal'
-import '@gersak/ty-core/input'
+import '@gersak/ty/button'
+import '@gersak/ty/modal'
+import '@gersak/ty/input'
 ```
 
 ### Use in HTML
@@ -48,7 +48,7 @@ import '@gersak/ty-core/input'
   </ty-modal>
 
   <script type="module">
-    import '@gersak/ty-core'
+    import '@gersak/ty'
     
     const modal = document.getElementById('my-modal')
     modal.show()
@@ -70,6 +70,12 @@ import '@gersak/ty-core/input'
 - **ty-tag** - Tag with removable state
 - **ty-option** - Option for dropdown/multiselect
 - **ty-icon** - Icon with registry system
+- **ty-copy** - Copy-to-clipboard field for API keys, tokens, URLs
+- **ty-calendar** - Full calendar with navigation and date selection
+- **ty-calendar-month** - Month view component
+- **ty-calendar-navigation** - Calendar navigation controls
+- **ty-date-picker** - Date picker with calendar popup
+- **ty-multiselect** - Multi-select dropdown with tags
 
 ## Development
 
@@ -132,7 +138,18 @@ packages/core/
 Full TypeScript support with type declarations:
 
 ```typescript
-import { TyButton, TyModal, type TyButtonElement } from '@gersak/ty-core'
+import { TyButton, TyModal, type TyButtonElement } from '@gersak/ty'
+import { registerIcons } from '@gersak/ty/icons/registry'
+
+// Icons are in separate @gersak/ty-icons package (optional)
+// npm install @gersak/ty-icons
+// import { check, heart } from '@gersak/ty-icons/lucide'
+// registerIcons({ check, heart })
+
+// Or register your own SVG icons:
+registerIcons({
+  'my-icon': '<svg>...</svg>'
+})
 
 const button: TyButtonElement = document.querySelector('ty-button')!
 button.flavor = 'primary'
@@ -140,6 +157,52 @@ button.addEventListener('ty-click', (e) => {
   console.log('Clicked:', e.detail)
 })
 ```
+
+### Icon System
+
+The core package includes the icon registry utility but **not the icon libraries** themselves (to keep package size small).
+
+**Option 1: Use the separate icon package** (coming soon):
+```bash
+npm install @gersak/ty-icons
+```
+
+```typescript
+import { check, heart, star } from '@gersak/ty-icons/lucide'
+import { registerIcons } from '@gersak/ty/icons/registry'
+
+registerIcons({ check, heart, star })
+```
+
+**Option 2: Bring your own SVG icons**:
+```typescript
+import { registerIcons } from '@gersak/ty/icons/registry'
+
+registerIcons({
+  'check': '<svg xmlns="http://www.w3.org/2000/svg">...</svg>',
+  'custom-logo': '<svg>...</svg>'
+})
+```
+
+**Option 3: Use the global API**:
+```html
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
+<script>
+  window.tyIcons.register({
+    'check': '<svg>...</svg>',
+    'heart': '<svg>...</svg>'
+  })
+  
+  console.log(window.tyVersion)              // '0.2.0'
+  console.log(window.tyIcons.has('check'))   // true
+  console.log(window.tyIcons.list())         // ['check', 'heart']
+</script>
+```
+
+**Why separate packages?**
+- Core package stays lightweight (~2.6MB)
+- Install icons only if you need them
+- Or use your own custom SVG icons
 
 ## Browser Support
 

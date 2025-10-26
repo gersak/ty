@@ -56,7 +56,7 @@
      {:name "searchable"
       :type "boolean"
       :default "true"
-      :description "Enable built-in search filtering. Use 'not-searchable' attribute to disable. When disabled, fires 'ty-search' events for external search."}
+      :description "Enable built-in search filtering. Use 'not-searchable' attribute to disable. When disabled, fires 'search' events for external search."}
      {:name "size"
       :type "string"
       :default "'md'"
@@ -68,7 +68,7 @@
      {:name "delay"
       :type "number"
       :default "0"
-      :description "Debounce delay in milliseconds for ty-search events (0-5000ms). Only applies when searchable=false."}
+      :description "Debounce delay in milliseconds for search events (0-5000ms). Only applies when searchable=false."}
      {:name "clearable"
       :type "boolean"
       :default "false"
@@ -99,7 +99,7 @@
      [{:name "change"
        :when-fired "Fired when selections change"
        :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
-      {:name "ty-search"
+      {:name "search"
        :when-fired "Fired when user types in search (only when searchable=false for external search)"
        :payload "{query: string, element: HTMLElement}"}
       {:name "focus"

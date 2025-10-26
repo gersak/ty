@@ -601,7 +601,7 @@
 
 (defn avatar-upload-modal [{:keys [open on-close]}]
   [:ty-modal {:open open
-              :on {:ty-modal-close on-close}}
+              :on {:close on-close}}
    [:div.p-8.max-w-lg.ty-elevated.rounded-lg.shadow-xl
     [:h3.text-xl.font-semibold.ty-text.mb-6 "Upload Profile Photo"]
     [:p.ty-text-.text-sm.mb-6 "Choose a new profile photo. For best results, upload an image that's at least 400x400 pixels."]
@@ -648,7 +648,7 @@
 
 (defn success-modal [{:keys [open on-close saved-data]}]
   [:ty-modal {:open open
-              :on {:ty-modal-close on-close}}
+              :on {:close on-close}}
    [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
     [:div.flex.items-center.gap-4.mb-6
      [:div.w-16.h-16.ty-bg-success.rounded-full.flex.items-center.justify-center
@@ -688,7 +688,7 @@
 
 (defn export-modal [{:keys [open on-close exported-data]}]
   [:ty-modal {:open open
-              :on {:ty-modal-close on-close}}
+              :on {:close on-close}}
    [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
     [:div.flex.items-center.gap-4.mb-6
      [:div.w-16.h-16.ty-bg-info.rounded-full.flex.items-center.justify-center

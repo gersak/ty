@@ -315,7 +315,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private _searchBlurHandler: ((e: Event) => void) | null = null
   private _keyboardHandler: ((e: KeyboardEvent) => void) | null = null
 
-  // Delay/debounce properties for ty-search event
+  // Delay/debounce properties for search event
   private _delay: number = 0
   private _searchDebounceTimer: number | null = null
 
@@ -458,9 +458,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
           break
         case 'no-options-message':
           this._noOptionsMessage = newValue || 'No options available'
-          break
-        case 'collapsed-preview-count':
-          this._collapsedPreviewCount = newValue
           break
       }
     }
@@ -1173,10 +1170,10 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   }
 
   /**
-   * Fire the actual ty-search event
+   * Fire the actual search event
    */
   private fireSearchEvent(query: string): void {
-    this.dispatchEvent(new CustomEvent('ty-search', {
+    this.dispatchEvent(new CustomEvent('search', {
       detail: {
         query,
         element: this
@@ -1253,9 +1250,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     document.addEventListener('click', this._outsideClickHandler)
     document.addEventListener('keydown', this._keyboardHandler)
 
-    // Listen for ty-tag-dismiss events from selected tags
+    // Listen for dismiss events from selected tags
     this._tagDismissHandler = this.handleTagDismiss.bind(this)
-    this.addEventListener('ty-tag-dismiss', this._tagDismissHandler)
+    this.addEventListener('dismiss', this._tagDismissHandler)
   }
 
   /**
@@ -1485,7 +1482,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     }
 
     this._tagDismissHandler = this.handleTagDismiss.bind(this)
-    this.addEventListener('ty-tag-dismiss', this._tagDismissHandler)
+    this.addEventListener('dismiss', this._tagDismissHandler)
 
     // Backdrop click to close (native dialog behavior)
     if (dialog) {

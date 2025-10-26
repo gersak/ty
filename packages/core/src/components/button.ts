@@ -43,7 +43,9 @@ export class TyButton extends HTMLElement implements TyButtonElement {
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: buttonStyles, id: 'ty-button' })
 
-    this.render()
+    // Create button structure immediately in constructor to prevent layout shifts
+    // This ensures slots exist before any slotted content (like ty-icon) tries to render
+    this.initializeButtonStructure()
   }
 
   static get observedAttributes(): string[] {
@@ -335,57 +337,61 @@ export class TyButton extends HTMLElement implements TyButtonElement {
     }
   }
 
+  /** Initialize button structure once in constructor */
+  private initializeButtonStructure(): void {
+    const shadow = this.shadowRoot!
+    const classes = this.buildClasses()
+
+    // Create button structure (matches ClojureScript structure)
+    const button = document.createElement('button')
+    button.disabled = this._disabled
+    button.className = classes
+
+    const startSlot = document.createElement('slot')
+    startSlot.name = 'start'
+    startSlot.className = 'start'
+
+    const defaultSlot = document.createElement('slot')
+
+    const endSlot = document.createElement('slot')
+    endSlot.name = 'end'
+    endSlot.className = 'end'
+
+    button.appendChild(startSlot)
+    button.appendChild(defaultSlot)
+    button.appendChild(endSlot)
+
+    // Attach click handler to inner button (matches ClojureScript pattern)
+    button.addEventListener('click', (e: Event) => {
+      if (this._disabled) return
+
+      // CRITICAL: Stop propagation on inner button click (matches ClojureScript)
+      e.stopPropagation()
+
+      // Handle form action (submit/reset) first
+      this.handleFormAction()
+
+      // Dispatch NEW 'click' event on host element (not 'ty-click'!)
+      // This matches ClojureScript exactly
+      this.dispatchEvent(new CustomEvent('click', {
+        bubbles: true,
+        composed: true,
+        detail: { originalEvent: e }
+      }))
+    })
+
+    shadow.appendChild(button)
+  }
+
   private render(): void {
     const classes = this.buildClasses()
     const shadow = this.shadowRoot!
 
-    // Check if button already exists
-    let button = shadow.querySelector('button')
-
+    // Button structure already exists from constructor, just update it
+    const button = shadow.querySelector('button')
     if (button) {
-      // Update existing button
       button.disabled = this._disabled
       button.className = classes
-    } else {
-      // Create new button structure (matches ClojureScript structure)
-      button = document.createElement('button')
-      button.disabled = this._disabled
-      button.className = classes
-
-      const startSlot = document.createElement('slot')
-      startSlot.name = 'start'
-      startSlot.className = 'start'
-
-      const defaultSlot = document.createElement('slot')
-
-      const endSlot = document.createElement('slot')
-      endSlot.name = 'end'
-      endSlot.className = 'end'
-
-      button.appendChild(startSlot)
-      button.appendChild(defaultSlot)
-      button.appendChild(endSlot)
-
-      // Attach click handler to inner button (matches ClojureScript pattern)
-      button.addEventListener('click', (e: Event) => {
-        if (this._disabled) return
-
-        // CRITICAL: Stop propagation on inner button click (matches ClojureScript)
-        e.stopPropagation()
-
-        // Handle form action (submit/reset) first
-        this.handleFormAction()
-
-        // Dispatch NEW 'click' event on host element (not 'ty-click'!)
-        // This matches ClojureScript exactly
-        this.dispatchEvent(new CustomEvent('click', {
-          bubbles: true,
-          composed: true,
-          detail: { originalEvent: e }
-        }))
-      })
-
-      shadow.appendChild(button)
     }
   }
 }

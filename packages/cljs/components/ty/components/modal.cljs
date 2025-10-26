@@ -202,12 +202,12 @@
         (if backdrop
           (.showModal ^js dialog)
           (.show ^js dialog))
-        (dispatch-modal-event! el "ty-modal-open" #js {}))
+        (dispatch-modal-event! el "open" #js {}))
       (when (.-open dialog)
         ;; Unlock scroll using new unified system
         (scroll-lock/unlock-scroll! modal-id)
         (.close dialog)
-        (dispatch-modal-event! el "ty-modal-close" #js {:reason "programmatic"})))
+        (dispatch-modal-event! el "close" #js {:reason "programmatic"})))
 
     ;; Handle dialog's native close event
     (set! (.-onclose dialog)
@@ -217,7 +217,7 @@
             ;; Sync the open attribute when dialog closes
             (when (wcs/parse-bool-attr el "open")
               (wcs/rm-attr! el "open")
-              (dispatch-modal-event! el "ty-modal-close" #js {:reason "native"
+              (dispatch-modal-event! el "close" #js {:reason "native"
                                                               :returnValue (.-returnValue dialog)}))))
 
     el))

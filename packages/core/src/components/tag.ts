@@ -278,7 +278,6 @@ export class TyTag extends HTMLElement implements TyTagElement {
     if (this._clickable && !this._disabled) {
       event.preventDefault()
       event.stopPropagation()
-      this.dispatchTagEvent('ty-tag-click', { target: this })
       this.dispatchTagEvent('click', { target: this })
       this.dispatchTagEvent('pointerdown', { target: this })
     }
@@ -291,7 +290,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
     if (this._dismissible && !this._disabled) {
       event.preventDefault()
       event.stopPropagation()
-      this.dispatchTagEvent('ty-tag-dismiss', { target: this })
+      this.dispatchTagEvent('dismiss', { target: this })
     }
   }
 
@@ -310,7 +309,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
       case 32: // Space
         if (this._clickable) {
           keyboardEvent.preventDefault()
-          this.dispatchTagEvent('ty-tag-click', { target: this })
+          this.dispatchTagEvent('click', { target: this })
         }
         break
 
@@ -319,7 +318,7 @@ export class TyTag extends HTMLElement implements TyTagElement {
       case 46: // Delete
         if (this._dismissible) {
           keyboardEvent.preventDefault()
-          this.dispatchTagEvent('ty-tag-dismiss', { target: this })
+          this.dispatchTagEvent('dismiss', { target: this })
         }
         break
     }

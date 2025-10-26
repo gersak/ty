@@ -349,7 +349,7 @@
   ;; Remove any existing listeners first
   (when-let [listeners (.-tyTagListeners el)]
     (doseq [[tag handler] listeners]
-      (.removeEventListener tag "ty-tag-dismiss" handler))
+      (.removeEventListener tag "dismiss" handler))
     (set! (.-tyTagListeners el) nil))
 
   ;; Add new listeners
@@ -357,7 +357,7 @@
         listeners (atom [])]
     (doseq [tag tags]
       (let [handler (partial handle-tag-dismiss! el shadow-root)]
-        (.addEventListener tag "ty-tag-dismiss" handler)
+        (.addEventListener tag "dismiss" handler)
         (swap! listeners conj [tag handler])))
     (set! (.-tyTagListeners el) @listeners)))
 
@@ -481,7 +481,7 @@
   ;; Clean up tag listeners
   (when-let [listeners (.-tyTagListeners el)]
     (doseq [[tag handler] listeners]
-      (.removeEventListener tag "ty-tag-dismiss" handler))
+      (.removeEventListener tag "dismiss" handler))
     (set! (.-tyTagListeners el) nil))
 
   ;; Clean up dropdown listeners

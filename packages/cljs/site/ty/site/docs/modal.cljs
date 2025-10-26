@@ -71,10 +71,10 @@
    [:div.mb-6
     [:h3.text-lg.font-medium.ty-text.mb-3 "Events"]
     (event-table
-     [{:name "ty-modal-open"
+     [{:name "open"
        :payload "{}"
        :when-fired "Fired when the modal opens"}
-      {:name "ty-modal-close"
+      {:name "close"
        :payload "{reason: 'programmatic'|'native', returnValue?: string}"
        :when-fired "Fired when the modal closes, includes reason and optional return value"}])]
 
@@ -121,7 +121,7 @@
 
     [:ty-modal {:id "docs-modal-basic"
                 :open (get @state/state :docs-modal-basic false)
-                :on {:ty-modal-close #(swap! state/state assoc :docs-modal-basic false)}}
+                :on {:close #(swap! state/state assoc :docs-modal-basic false)}}
      [:div.p-6.max-w-md.ty-elevated.rounded-lg
       [:h3.text-lg.font-semibold.mb-4 "Modal Title"]
       [:p.ty-text-.mb-4 "This is your modal content."]
@@ -152,7 +152,7 @@
     [:label {:for "modal-declarative-toggle"} "Toggle Modal"]
 
     [:ty-modal {:open (get @state/state :docs-modal-declarative false)
-                :on {:ty-modal-close #(swap! state/state assoc :docs-modal-declarative false)}}
+                :on {:close #(swap! state/state assoc :docs-modal-declarative false)}}
      [:div.p-6.ty-elevated.rounded-lg
       [:p.ty-text "Modal controlled by checkbox"]
       [:ty-button.mt-3 {:on {:click #(swap! state/state assoc :docs-modal-declarative false)}}
@@ -183,7 +183,7 @@
 
     [:ty-modal {:open (get @state/state :docs-modal-protected false)
                 :protected true
-                :on {:ty-modal-close #(swap! state/state assoc :docs-modal-protected false)}}
+                :on {:close #(swap! state/state assoc :docs-modal-protected false)}}
      [:div.p-6.max-w-md.ty-elevated.rounded-lg
       [:h3.text-lg.font-semibold.mb-4 "Unsaved Changes"]
       [:form
@@ -211,7 +211,7 @@
     [:ty-modal {:open (get @state/state :docs-modal-no-backdrop false)
                 :backdrop false
                 :close-on-outside-click false
-                :on {:ty-modal-close #(swap! state/state assoc :docs-modal-no-backdrop false)}}
+                :on {:close #(swap! state/state assoc :docs-modal-no-backdrop false)}}
      [:div.p-6.ty-floating.rounded-lg.shadow-xl
       [:p.ty-text.mb-3 "Modal without backdrop - page content remains visible"]
       [:ty-button {:on {:click #(swap! state/state assoc :docs-modal-no-backdrop false)}}
@@ -266,7 +266,7 @@
      "Open Form Modal"]
 
     [:ty-modal {:open (get @state/state :docs-modal-form false)
-                :on {:ty-modal-close #(swap! state/state assoc :docs-modal-form false)}}
+                :on {:close #(swap! state/state assoc :docs-modal-form false)}}
      [:div.p-6.max-w-lg.ty-elevated.rounded-lg
       [:h3.text-xl.font-semibold.mb-4 "Create New Item"]
 
@@ -315,11 +315,11 @@ modal.show();
 modal.hide();
 
 // Listen for events
-modal.addEventListener('ty-modal-open', (e) => {
+modal.addEventListener('open', (e) => {
   console.log('Modal opened');
 });
 
-modal.addEventListener('ty-modal-close', (e) => {
+modal.addEventListener('close', (e) => {
   console.log('Modal closed:', e.detail.reason);
   // e.detail.reason can be 'programmatic' or 'native'
 });
@@ -338,8 +338,8 @@ modal.backdrop = false;"
       "Close with .hide()"]]
 
     [:ty-modal {:id "docs-modal-programmatic"
-                :on {:ty-modal-open #(js/console.log "Modal opened via event")
-                     :ty-modal-close #(js/console.log "Modal closed:" (.-detail %))}}
+                :on {:open #(js/console.log "Modal opened via event")
+                     :close #(js/console.log "Modal closed:" (.-detail %))}}
      [:div.p-6.ty-elevated.rounded-lg.max-w-sm
       [:p.ty-text "This modal is controlled programmatically."]
       [:p.ty-text-.text-sm.mt-2 "Check console for event logs."]]]]])
@@ -352,7 +352,7 @@ modal.backdrop = false;"
    (code-block
     "const modal = document.getElementById('analytics-modal');
 
-modal.addEventListener('ty-modal-open', () => {
+modal.addEventListener('open', () => {
   // Track modal open
   analytics.track('Modal Opened', {
     modalId: 'user-profile',
@@ -363,7 +363,7 @@ modal.addEventListener('ty-modal-open', () => {
   modal.openTime = Date.now();
 });
 
-modal.addEventListener('ty-modal-close', (e) => {
+modal.addEventListener('close', (e) => {
   // Calculate time spent
   const timeSpent = Date.now() - modal.openTime;
   
@@ -412,7 +412,7 @@ ty-modal {
                 :style {:--ty-modal-backdrop "linear-gradient(to bottom, rgba(59, 130, 246, 0.8), rgba(147, 51, 234, 0.8))"
                         :--ty-modal-backdrop-blur "blur(12px)"
                         :--ty-modal-duration "400ms"}
-                :on {:ty-modal-close #(swap! state/state assoc :docs-modal-custom-css false)}}
+                :on {:close #(swap! state/state assoc :docs-modal-custom-css false)}}
      [:div.p-8.max-w-md.ty-floating.rounded-xl.shadow-2xl
       [:h3.text-xl.font-semibold.mb-4.ty-text "Custom Backdrop"]
       [:p.ty-text- "This modal has a gradient backdrop with increased blur."]
@@ -477,7 +477,7 @@ class ModalManager {
       this.activeModals.add(modalId);
       
       // Track modal state
-      modal.addEventListener('ty-modal-close', () => {
+      modal.addEventListener('close', () => {
         this.activeModals.delete(modalId);
       }, { once: true });
     }

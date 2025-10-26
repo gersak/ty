@@ -6,6 +6,7 @@
  * - Declarative property configuration
  * - Predictable rendering behavior
  * - Form association support
+ * - Property change events via 'prop:change' (separate from user 'change' events)
  */
 
 import { PropertyManager, PropertyConfig, PropertyChange } from '../utils/property-manager.js'
@@ -230,12 +231,13 @@ export abstract class TyComponent<T = any> extends HTMLElement {
   }
   
   /**
-   * Emit change events for properties that require it
+   * Emit property change events for properties that require it
+   * Uses 'prop:change' event to avoid conflicts with user interaction 'change' events
    */
   private _emitChangeEvents(changes: PropertyChange[]): void {
     for (const change of changes) {
       if (this.props.shouldEmitChange(change.name)) {
-        this.dispatchEvent(new CustomEvent('change', {
+        this.dispatchEvent(new CustomEvent('prop:change', {
           detail: {
             property: change.name,
             oldValue: change.oldValue,

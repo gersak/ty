@@ -207,8 +207,9 @@
           [:label.block.text-sm.font-medium.ty-text.mb-2 "Duration"]
           [:ty-dropdown {:value (:duration booking-data)
                          :placeholder "Select duration"
-                         :on {:change #(swap! state assoc-in [:event-booking :booking-data :duration]
-                                              (.. ^js % -detail -option -value))}}
+                         :on {:change (fn [e]
+                                        (let [value (.. ^js e -detail -option -value)]
+                                          (swap! state assoc-in [:event-booking :booking-data :duration] value)))}}
            [:ty-option {:value "30"}
             [:div.flex.items-center.justify-between.w-full
              [:span "30 minutes"]
@@ -528,7 +529,7 @@
 
      ;; Booking Confirmation Modal
      [:ty-modal {:open (get-in @state [:event-booking :confirmation-modal-open] false)
-                 :on {:ty-modal-close #(swap! state assoc-in [:event-booking :confirmation-modal-open] false)}}
+                 :on {:close #(swap! state assoc-in [:event-booking :confirmation-modal-open] false)}}
       [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
        ;; Success header
        [:div.text-center.mb-8

@@ -38,10 +38,6 @@ export class TyIcon extends HTMLElement implements TyIconElement {
   constructor() {
     super()
 
-    // Apply default dimensions BEFORE shadow DOM attachment
-    // This prevents layout shift when icon loads
-    this.applyDefaultDimensions()
-
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: iconStyles, id: 'ty-icon' })
 
@@ -104,8 +100,6 @@ export class TyIcon extends HTMLElement implements TyIconElement {
         break
       case 'size':
         this._size = (newValue as IconSize) || null
-        // Update dimensions when size changes
-        this.applyDefaultDimensions()
         break
       case 'spin':
         this._spin = newValue !== null
@@ -149,7 +143,6 @@ export class TyIcon extends HTMLElement implements TyIconElement {
       } else {
         this.removeAttribute('size')
       }
-      this.applyDefaultDimensions()
       this.updateClasses()
     }
   }
@@ -202,59 +195,7 @@ export class TyIcon extends HTMLElement implements TyIconElement {
     }
   }
 
-  /**
-   * Map size attribute to actual dimensions
-   * Returns [width, height] in the appropriate CSS unit
-   */
-  private getDimensionsForSize(): [string, string] {
-    // Size mapping from icon.ts styles
-    const sizeMap: Record<string, [string, string]> = {
-      'xs': ['0.75em', '0.75em'],
-      'sm': ['0.875em', '0.875em'],
-      'md': ['1em', '1em'],
-      'lg': ['1.25em', '1.25em'],
-      'xl': ['1.5em', '1.5em'],
-      '2xl': ['2em', '2em'],
-      '12': ['12px', '12px'],
-      '14': ['14px', '14px'],
-      '16': ['16px', '16px'],
-      '18': ['18px', '18px'],
-      '20': ['20px', '20px'],
-      '24': ['24px', '24px'],
-      '32': ['32px', '32px'],
-      '48': ['48px', '48px'],
-      '64': ['64px', '64px'],
-      '80': ['80px', '80px'],
-      '96': ['96px', '96px']
-    }
 
-    // Get size from attribute or default to 'md'
-    const size = this._size || 'md'
-    return sizeMap[size] || ['1em', '1em']
-  }
-
-  /**
-   * Apply default dimensions as inline styles
-   * This prevents layout shift by setting dimensions BEFORE shadow DOM renders
-   * User inline styles will override these (higher specificity)
-   */
-  private applyDefaultDimensions(): void {
-    // Only apply if user hasn't set their own inline width/height
-    const hasInlineWidth = this.style.getPropertyValue('width')
-    const hasInlineHeight = this.style.getPropertyValue('height')
-
-    if (!hasInlineWidth || !hasInlineHeight) {
-      const [width, height] = this.getDimensionsForSize()
-      
-      // Only set if not already set by user
-      if (!hasInlineWidth) {
-        this.style.width = width
-      }
-      if (!hasInlineHeight) {
-        this.style.height = height
-      }
-    }
-  }
 
   /** Build CSS classes for the host element */
   private buildClasses(): string[] {
@@ -311,7 +252,7 @@ export class TyIcon extends HTMLElement implements TyIconElement {
     // Only update if content actually changed to prevent unnecessary reflows
     const currentContent = shadow.innerHTML.trim()
     const newContent = iconSvg.trim()
-    
+
     if (currentContent !== newContent) {
       shadow.innerHTML = iconSvg
     }

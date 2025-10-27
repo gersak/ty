@@ -24,7 +24,7 @@ export interface TyCheckboxProps extends Omit<React.HTMLAttributes<HTMLElement>,
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   
   /** Semantic styling variant */
-  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   
   /** Change event handler */
   onChange?: (event: CustomEvent<TyCheckboxEventDetail>) => void;

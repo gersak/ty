@@ -24,13 +24,25 @@ export interface TyMultiselectProps extends Omit<React.HTMLAttributes<HTMLElemen
   readonly?: boolean;
   
   /** Semantic styling variant */
-  flavor?: 'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   
   /** Label text for the multiselect */
   label?: string;
   
   /** Mark the field as required */
   required?: boolean;
+  
+  /** Enable search functionality */
+  searchable?: boolean;
+  
+  /** Disable search (alias for searchable={false}) */
+  notSearchable?: boolean;
+  
+  /** Debounce delay in milliseconds (0-5000) */
+  delay?: number;
+  
+  /** Mobile section label for selected items */
+  selectedLabel?: string;
   
   /** Form field name for form submission */
   name?: string;
@@ -52,10 +64,14 @@ export const TyMultiselect = React.forwardRef<HTMLElement, TyMultiselectProps>(
     flavor,
     label,
     required,
+    searchable,
+    notSearchable,
+    delay,
+    selectedLabel,
     name,
     onChange,
     children,
-    ...props 
+    ...props
   }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
@@ -128,6 +144,29 @@ export const TyMultiselect = React.forwardRef<HTMLElement, TyMultiselectProps>(
 
     if (name) {
       webComponentProps.name = name;
+    }
+    
+    // Handle searchable functionality
+    if (searchable !== undefined) {
+      if (searchable) {
+        webComponentProps.searchable = '';
+      } else {
+        webComponentProps['not-searchable'] = '';
+      }
+    }
+    
+    if (notSearchable) {
+      webComponentProps['not-searchable'] = '';
+    }
+    
+    // Add delay attribute
+    if (delay !== undefined) {
+      webComponentProps.delay = delay;
+    }
+    
+    // Add selectedLabel attribute
+    if (selectedLabel) {
+      webComponentProps['selected-label'] = selectedLabel;
     }
 
     return React.createElement(

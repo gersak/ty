@@ -8,6 +8,7 @@ export interface TyTagProps extends React.HTMLAttributes<HTMLElement> {
   clickable?: boolean;
   dismissible?: boolean;
   disabled?: boolean;
+  selected?: boolean;
   value?: string;
   onTagClick?: (event: CustomEvent) => void;
   onTagDismiss?: (event: CustomEvent) => void;
@@ -16,7 +17,7 @@ export interface TyTagProps extends React.HTMLAttributes<HTMLElement> {
 
 // React wrapper for ty-tag web component
 export const TyTag = React.forwardRef<HTMLElement, TyTagProps>(
-  ({ children, onTagClick, onTagDismiss, notPill, clickable, dismissible, disabled, ...props }, ref) => {
+  ({ children, onTagClick, onTagDismiss, notPill, clickable, dismissible, disabled, selected, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleTagClick = useCallback((event: CustomEvent) => {
@@ -73,6 +74,7 @@ export const TyTag = React.forwardRef<HTMLElement, TyTagProps>(
         ...(clickable && { clickable: "" }),
         ...(dismissible && { dismissible: "" }),
         ...(disabled && { disabled: "" }),
+        ...(selected && { selected: "" }),
         ref: elementRef,
       },
       children

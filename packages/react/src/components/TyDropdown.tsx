@@ -15,7 +15,7 @@ export interface TyDropdownEventDetail {
 // Type definitions for Ty Dropdown component
 export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
   /** Semantic styling variant */
-  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   
   /** Dropdown size */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -40,6 +40,15 @@ export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>,
   
   /** Enable search functionality */
   searchable?: boolean;
+  
+  /** Show clear button */
+  clearable?: boolean;
+  
+  /** Disable clear button (alias for clearable={false}) */
+  notClearable?: boolean;
+  
+  /** Debounce delay in milliseconds (0-5000) */
+  delay?: number;
   
   /** Disable search functionality (ClojureScript: not-searchable) */
   notSearchable?: boolean;
@@ -71,8 +80,11 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
     disabled, 
     notSearchable,
     externalSearch,
+    clearable,
+    notClearable,
+    delay,
     name,
-    ...props 
+    ...props
   }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
@@ -158,6 +170,24 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
     } else if (externalSearch) {
       // Support deprecated externalSearch for backward compatibility
       webComponentProps['not-searchable'] = '';
+    }
+    
+    // Handle clearable functionality
+    if (clearable !== undefined) {
+      if (clearable) {
+        webComponentProps.clearable = '';
+      } else {
+        webComponentProps['not-clearable'] = '';
+      }
+    }
+    
+    if (notClearable) {
+      webComponentProps['not-clearable'] = '';
+    }
+    
+    // Add delay attribute
+    if (delay !== undefined) {
+      webComponentProps.delay = delay;
     }
     
     // Add string attributes

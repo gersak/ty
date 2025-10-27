@@ -18,8 +18,8 @@
 All UI components are written in **modern TypeScript** with:
 - **18 production-ready components**: Button, Input, Calendar, Modal, Dropdown, etc.
 - **Full type definitions**: Complete `.d.ts` files for TypeScript projects
-- **3000+ tree-shakeable icons**: Lucide (1,636), Heroicons, Material, FontAwesome
-- **Global window.ty API**: Easy script tag integration without build tools
+- **Icon registry system**: Register your own SVG icons or use optional @gersak/ty-icons package
+- **Global window.tyIcons API**: Easy script tag integration without build tools
 - **Vite build system**: Optimized bundles with Terser minification
 - **Published to NPM**: `@gersak/ty` package ready for production use
 
@@ -87,47 +87,67 @@ Complete calendar system, not just a date picker:
 
 ### 4. **Icon System - 3000+ Icons with Smart Loading** 🎨
 
-Ty includes a **comprehensive icon registry** with perfect tree-shaking:
+Ty provides a **powerful icon registry** that works with any SVG icons:
 
-#### **Included Libraries**
-- **Lucide**: 1,636+ modern icons (primary set)
-- **Heroicons**: 4 variants (outline, solid, mini, micro)
-- **Material Design**: 5 variants (filled, outlined, round, sharp, two-tone)
-- **FontAwesome**: 3 variants (solid, regular, brands)
+#### **Two Packages, Maximum Flexibility**
 
-#### **Smart Loading Strategies**
+**@gersak/ty** (Core - ~2.6MB):
+- Icon registry utility included
+- Register your own custom SVG icons  
+- No icon bloat in core package
 
-**Tree-Shakeable Imports** (Recommended):
+**@gersak/ty-icons** (Optional - separate package):
+- 3000+ professional icons when you need them
+- Lucide (1,636), Heroicons, Material Design, FontAwesome
+- Tree-shakeable imports
+- Install only if needed
+
+#### **Usage Patterns**
+
+**Option 1: Use separate icon package** (coming soon):
+```bash
+npm install @gersak/ty-icons
+```
 ```typescript
-// Import only what you need - perfect tree-shaking
-import { check, heart, star } from '@gersak/ty/icons/lucide'
+import { check, heart, star } from '@gersak/ty-icons/lucide'
 import { registerIcons } from '@gersak/ty/icons/registry'
 
 registerIcons({ check, heart, star })
 ```
 
-**Global window.ty API** (Script Tags):
+**Option 2: Bring your own SVG icons**:
+```typescript
+import { registerIcons } from '@gersak/ty/icons/registry'
+
+registerIcons({
+  'check': '<svg xmlns="http://www.w3.org/2000/svg">...</svg>',
+  'custom-logo': '<svg>...</svg>'
+})
+```
+
+**Global window.tyIcons API** (Script Tags):
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
 <script>
   // Convenient global API
-  window.ty.icons.register({
+  window.tyIcons.register({
     'check': '<svg>...</svg>',
     'heart': '<svg>...</svg>'
   })
   
   // Query API
-  console.log(window.ty.icons.has('check'))  // true
-  console.log(window.ty.icons.list())        // ['check', 'heart']
-  console.log(window.ty.version)             // '0.2.0'
+  console.log(window.tyIcons.has('check'))  // true
+  console.log(window.tyIcons.list())        // ['check', 'heart']
+  console.log(window.tyVersion)             // '0.2.0'
 </script>
 ```
 
-**Bulk Registration**:
+**Option 3: Global API (script tags)**:
 ```typescript
-// Load entire icon sets (watch bundle size!)
-import * as lucide from '@gersak/ty/icons/lucide'
-registerIcons(lucide)  // All 1,636 Lucide icons
+// Already loaded in CDN bundle
+window.tyIcons.register({
+  'custom': '<svg>...</svg>'
+})
 ```
 
 #### **Usage**
@@ -163,7 +183,7 @@ registerIcons(lucide)  // All 1,636 Lucide icons
     import { save } from 'https://cdn.jsdelivr.net/npm/@gersak/ty/dist/icons/lucide.js'
     
     // Simple global registration
-    window.ty.icons.register({ save })
+    window.tyIcons.register({ save })
   </script>
 </body>
 </html>
@@ -283,10 +303,10 @@ registerIcons({ check, heart })
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/css/ty.css">
 <script type="module">
-  import { TyButton } from 'https://cdn.jsdelivr.net/npm/@gersak/ty/dist/index.js'
+  import { TyButton } from 'https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js'
   import { check } from 'https://cdn.jsdelivr.net/npm/@gersak/ty/dist/icons/lucide.js'
   
-  window.ty.icons.register({ check })
+  window.tyIcons.register({ check })
 </script>
 ```
 
@@ -353,7 +373,7 @@ registerIcons({ check, heart })
 │   │   │   ├── positioning.ts      # Popup positioning
 │   │   │   └── calendar-utils.ts   # Date helpers
 │   │   ├── styles/             # Component CSS
-│   │   └── index.ts            # Main entry + window.ty API
+│   │   └── index.ts            # Main entry + window.tyIcons API
 │   ├── dist/                   # Built files (NPM publish)
 │   ├── dev/                    # Development test files
 │   ├── package.json            # @gersak/ty package
@@ -500,7 +520,7 @@ npm run build
 
 > "3000+ icons with tree-shaking = exactly what I need, zero bloat." - Performance Engineer
 
-> "window.ty API makes prototyping elegant. No build tools needed!" - Designer Who Codes
+> "window.tyIcons API makes prototyping elegant. No build tools needed!" - Designer Who Codes
 
 > "~50KB for ClojureScript projects because of shared runtime. Brilliant." - ClojureScript Developer
 
@@ -532,16 +552,14 @@ export function hasIcon(name: string): boolean
 export function getIconNames(): string[]
 ```
 
-**Global window.ty API**:
+**Global window.tyIcons API**:
 ```typescript
-window.ty = {
-  icons: {
-    register: (icons) => { /* registers + logs count */ },
-    get: (name) => { /* retrieves SVG string */ },
-    has: (name) => { /* checks existence */ },
-    list: () => { /* returns all names */ }
-  },
-  version: '0.2.0'
+window.tyVersion = '0.2.0'
+window.tyIcons = {
+  register: (icons) => { /* registers + logs count */ },
+  get: (name) => { /* retrieves SVG string */ },
+  has: (name) => { /* checks existence */ },
+  list: () => { /* returns all names */ }
 }
 ```
 
@@ -594,8 +612,8 @@ See [Contributing Guidelines](./CONTRIBUTING.md) for:
 ### v0.2.0 (Current - TypeScript Complete) ✅
 - ✅ Complete TypeScript port of all components
 - ✅ 18 production-ready web components
-- ✅ Icon registry with 3000+ icons (tree-shakeable)
-- ✅ window.ty global API for script tags
+- ✅ Icon registry utility (icons in separate @gersak/ty-icons package)
+- ✅ window.tyIcons global API for script tags
 - ✅ Full `.d.ts` type definitions
 - ✅ Vite build system with Terser
 - ✅ Comprehensive NPM package with subpath exports

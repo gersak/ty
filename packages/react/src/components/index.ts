@@ -53,6 +53,9 @@ export type { TyPopupProps, TyPopupElement, TyPopupOpenEvent, TyPopupCloseEvent 
 export { TyCheckbox } from './TyCheckbox';
 export type { TyCheckboxProps, TyCheckboxEventDetail } from './TyCheckbox';
 
+export { TyCopy } from './TyCopy';
+export type { TyCopyProps } from './TyCopy';
+
 export { TyTabs } from './TyTabs';
 export type { TyTabsProps, TabChangeDetail } from './TyTabs';
 
@@ -83,6 +86,7 @@ export { TyCalendar as Calendar } from './TyCalendar';
 export { TyDatePicker as DatePicker } from './TyDatePicker';
 export { TyPopup as Popup } from './TyPopup';
 export { TyCheckbox as Checkbox } from './TyCheckbox';
+export { TyCopy as Copy } from './TyCopy';
 export { TyTabs as Tabs } from './TyTabs';
 export { TyTab as Tab } from './TyTab';
 export { TyCalendarMonth as CalendarMonth } from './TyCalendarMonth';
@@ -133,6 +137,9 @@ export type { TyPopupProps as PopupProps, TyPopupElement as PopupElement, TyPopu
 
 // Checkbox types
 export type { TyCheckboxProps as CheckboxProps, TyCheckboxEventDetail as CheckboxEventDetail } from './TyCheckbox';
+
+// Copy types
+export type { TyCopyProps as CopyProps } from './TyCopy';
 
 // Tabs types
 export type { TyTabsProps as TabsProps } from './TyTabs';

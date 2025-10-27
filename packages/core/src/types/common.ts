@@ -3,31 +3,31 @@
  */
 
 /** Semantic color flavors used throughout Ty components */
-export type Flavor = 
-  | 'primary' 
-  | 'secondary' 
-  | 'success' 
-  | 'danger' 
-  | 'warning' 
+export type Flavor =
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'danger'
+  | 'warning'
   | 'neutral'
 
 /** Component size variants */
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 
 /** Input types supported by ty-input */
-export type InputType = 
-  | 'text' 
-  | 'password' 
-  | 'email' 
-  | 'url' 
+export type InputType =
+  | 'text'
+  | 'password'
+  | 'email'
+  | 'url'
   | 'tel'
-  | 'date' 
-  | 'time' 
+  | 'date'
+  | 'time'
   | 'datetime-local'
-  | 'number'          // NEW: Basic number with optional precision
-  | 'currency'        // NEW: Currency formatting
-  | 'percent'         // NEW: Percentage formatting
-  | 'compact'         // NEW: Compact notation (1.2K, 3.4M)
+  | 'number'
+  | 'currency'
+  | 'percent'
+  | 'compact'
   | 'checkbox'
 
 /** Base properties shared by all Ty components */
@@ -58,7 +58,7 @@ export interface TyButtonElement extends TyBaseElement {
 
 /** CSS style content */
 /** Icon size variants */
-export type IconSize = 
+export type IconSize =
   | 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl'  // Relative sizes
   | '12' | '14' | '16' | '18' | '20' | '24' | '32' | '48' | '64' | '80' | '96'  // Fixed pixel sizes
 
@@ -139,7 +139,7 @@ export interface TyInputElement extends TyBaseElement {
   size?: Size
   /** Associated form */
   readonly form?: HTMLFormElement | null
-  
+
   // Numeric formatting properties (NEW)
   /** Currency code for currency type (e.g., 'USD', 'EUR', 'HRK') */
   currency?: string
@@ -147,7 +147,7 @@ export interface TyInputElement extends TyBaseElement {
   locale?: string
   /** Number of decimal places */
   precision?: number | string
-  
+
   // Debounce/delay property (Phase D)
   /** Delay in milliseconds before firing input/change events (0-5000ms) */
   delay?: number | string

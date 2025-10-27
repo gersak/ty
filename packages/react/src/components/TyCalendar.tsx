@@ -40,6 +40,12 @@ export interface TyCalendarProps extends Omit<React.HTMLAttributes<HTMLElement>,
   /** Show navigation controls */
   showNavigation?: boolean;
   
+  /** Stateless mode - no internal state management */
+  stateless?: boolean;
+  
+  /** Calendar size */
+  size?: 'sm' | 'md' | 'lg';
+  
   /** Locale for date formatting */
   locale?: string;
   
@@ -81,6 +87,8 @@ export const TyCalendar = React.forwardRef<HTMLElement, TyCalendarProps>(
     month,
     day,
     showNavigation,
+    stateless,
+    size,
     locale,
     width,
     minWidth,
@@ -195,6 +203,14 @@ export const TyCalendar = React.forwardRef<HTMLElement, TyCalendarProps>(
 
     if (showNavigation) {
       webComponentProps['show-navigation'] = '';  // Boolean attributes as empty string
+    }
+
+    if (stateless) {
+      webComponentProps.stateless = '';  // Boolean attributes as empty string
+    }
+
+    if (size) {
+      webComponentProps.size = size;
     }
 
     if (locale) {

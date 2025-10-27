@@ -19,8 +19,8 @@ export interface TyDatePickerProps extends Omit<React.HTMLAttributes<HTMLElement
   /** Input size: "sm" | "md" | "lg" */
   size?: 'sm' | 'md' | 'lg';
   
-  /** Visual flavor: "primary" | "secondary" | "success" | "danger" | "warning" | "info" | "neutral" */
-  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  /** Visual flavor: "default" | "success" | "danger" | "warning" */
+  flavor?: 'default' | 'success' | 'danger' | 'warning';
   
   /** Label text displayed above the input */
   label?: string;

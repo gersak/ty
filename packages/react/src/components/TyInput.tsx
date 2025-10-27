@@ -11,7 +11,8 @@ export interface TyInputEventDetail {
 // Type definitions for Ty Input component
 export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput' | 'onFocus' | 'onBlur'> {
   /** Input type */
-  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search';
+  type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search'
+       | 'currency' | 'percent' | 'compact';
   
   /** Semantic styling variant */
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
@@ -48,6 +49,9 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
   locale?: string;
   precision?: string | number;
   
+  /** Debounce delay in milliseconds (0-5000) */
+  delay?: number;
+  
   // React event handlers - override with our custom types
   onInput?: (event: CustomEvent<TyInputEventDetail>) => void;
   onChange?: (event: CustomEvent<TyInputEventDetail>) => void;
@@ -57,7 +61,7 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
 
 // React wrapper for ty-input web component
 export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
-  ({ onInput, onChange, onFocus, onBlur, disabled, name, checked, ...props }, ref) => {
+  ({ onInput, onChange, onFocus, onBlur, disabled, name, checked, delay, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     const handleInput = useCallback((event: CustomEvent<TyInputEventDetail>) => {
@@ -145,6 +149,9 @@ export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
     
     // Add string attributes
     if (name) webComponentProps.name = name;
+    
+    // Add delay attribute
+    if (delay !== undefined) webComponentProps.delay = delay;
 
     return React.createElement(
       'ty-input',

@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useCallback } from 'react';
 // Type definitions for Ty Button component
 export interface TyButtonProps extends React.HTMLAttributes<HTMLElement> {
   /** Semantic styling variant */
-  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'info' | 'neutral';
+  flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   
   /** Button size */
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
@@ -41,6 +41,9 @@ export interface TyButtonProps extends React.HTMLAttributes<HTMLElement> {
   /** Form field value for form submission */
   value?: string;
   
+  /** Full-width button */
+  wide?: boolean;
+  
   /** Button content */
   children?: React.ReactNode;
 }
@@ -58,10 +61,11 @@ export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
     pill,
     action,
     plain,
+    wide,
     label,
     name,
     value,
-    ...props 
+    ...props
   }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
@@ -137,6 +141,7 @@ export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
     if (pill) webComponentProps.pill = '';
     if (action) webComponentProps.action = '';
     if (plain) webComponentProps.plain = '';
+    if (wide) webComponentProps.wide = '';
     
     // Add string attributes
     if (type) webComponentProps.type = type;

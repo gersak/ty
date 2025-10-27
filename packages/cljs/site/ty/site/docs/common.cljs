@@ -1,7 +1,7 @@
 (ns ty.site.docs.common
   "Common utilities for component documentation"
   (:require
-    [goog.object]))
+   [goog.object]))
 
 (defn add-code-enhancements!
   "Add copy button and language label to a highlighted code element"
@@ -73,28 +73,29 @@
    [:div.ty-bg-neutral-.rounded-md.p-4.overflow-x-auto.my-4
     [:pre
      [:code.text-xs
-      {;:class (str "language-" lang)
-       :replicant/on-render (fn [{^js el :replicant/node}]
+      {:replicant/on-render (fn [{^js el :replicant/node}]
                               (when (and el
                                          js/window.hljs
                                          (.-highlightElement js/window.hljs))
-                                   ;; Always restore original text and clear highlight state
-                                (when (.-dataset el)
-                                  (js-delete (.-dataset el) "highlighted")
-                                  (set! (.-innerHTML el) "")
-                                  (set! (.-textContent el) "")
-                                  (set! (.-innerHTML el) code)
-                                  (set! (.-textContent el) code))
-                                (js/setTimeout
-                                  (fn []
-                                    (try
-                                     ;; Highlight the clean element
-                                      (js/window.hljs.highlightElement el)
-                                     ;; Add copy button and language label
-                                      (add-code-enhancements! el lang)
-                                      (catch js/Error e
-                                        (js/console.warn "Failed to highlight code block:" e))))
-                                  50)))}]]]))
+                                ;; Check if already highlighted by hljs
+                                (let [already-highlighted? (and (.-dataset el)
+                                                                (.-highlighted (.-dataset el)))]
+                                  (when-not already-highlighted?
+                                    ;; Set the code content
+                                    (set! (.-textContent el) code)
+                                    (js/setTimeout
+                                     (fn []
+                                       (try
+                                         ;; Double-check not highlighted (race condition protection)
+                                         (when-not (and (.-dataset el)
+                                                        (.-highlighted (.-dataset el)))
+                                           ;; Highlight the element
+                                           (js/window.hljs.highlightElement el)
+                                           ;; Add copy button and language label
+                                           (add-code-enhancements! el lang))
+                                         (catch js/Error e
+                                           (js/console.warn "Failed to highlight code block:" e))))
+                                     50)))))}]]]))
 
 (defn attribute-table
   "Display component attributes in a table format"

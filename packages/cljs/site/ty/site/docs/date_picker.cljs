@@ -280,11 +280,13 @@ const currentValue = picker.value;  // Get current value"
     [:h3.text-lg.font-medium.ty-text+.mb-4 "Form Integration"]
     [:div.mb-4
      [:form {:id "date-form"
-             :onsubmit "event.preventDefault(); 
-                        const formData = new FormData(event.target);
-                        document.getElementById('date-result').textContent = 
-                        'Selected: ' + formData.get('event-date');
-                        return false;"}
+             :on {:submit (fn [e]
+                            (.preventDefault e)
+                            (let [form-data (js/FormData. (.-target e))
+                                  event-date (.get form-data "event-date")
+                                  result-el (.getElementById js/document "date-result")]
+                              (when result-el
+                                (set! (.-textContent result-el) (str "Selected: " event-date)))))}}
       [:div.space-y-4
        [:ty-date-picker {:label "Event Date"
                          :name "event-date"

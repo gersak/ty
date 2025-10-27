@@ -132,7 +132,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
       // Clean up the instance property so our getter/setter works
       Reflect.deleteProperty(this, 'value')
     }
-    
+
     // Initialize shadow value from initial value
     this.initializeShadowValue()
     this.render()
@@ -347,7 +347,6 @@ export class TyInput extends HTMLElement implements TyInputElement {
   }
 
   set value(val: string) {
-    console.log('Setting input value: ', val)
     if (this._value !== val) {
       this._value = val
       this._shadowValue = this.parseShadowValue(val)
@@ -814,7 +813,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
         if (existingLabel) {
           // Label exists, just update it
           existingLabel.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
-          ;(existingLabel as HTMLElement).style.display = 'flex'
+            ; (existingLabel as HTMLElement).style.display = 'flex'
         } else {
           // Label doesn't exist but we need one - CREATE IT!
           const labelEl = document.createElement('label')
@@ -829,7 +828,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
         }
       } else if (existingLabel) {
         // No label text, hide existing label
-        ;(existingLabel as HTMLElement).style.display = 'none'
+        ; (existingLabel as HTMLElement).style.display = 'none'
       }
 
       // Update error message

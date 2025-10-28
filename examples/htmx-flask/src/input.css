@@ -152,44 +152,44 @@
   }
 
   .status-pending {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-warning-soft);
     color: var(--ty-color-warning-strong);
   }
 
   .status-completed {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-success-soft);
     color: var(--ty-color-success-strong);
   }
 
   .status-in-progress {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-info-soft);
     color: var(--ty-color-info-strong);
   }
 
   /* Priority badges */
   .priority-critical {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-danger-soft);
     color: var(--ty-color-danger-strong);
   }
 
   .priority-high {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-danger-soft);
     color: var(--ty-color-danger-mild);
   }
 
   .priority-medium {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-warning-soft);
     color: var(--ty-color-warning-strong);
   }
 
   .priority-low {
-    @apply status-badge;
+    @apply px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide;
     background-color: var(--ty-bg-neutral-soft);
     color: var(--ty-color-neutral-strong);
   }

@@ -63,8 +63,8 @@ export default function Home() {
           Ty Components + React + Next.js Examples
         </h1>
         <p className="text-base leading-relaxed ty-text-">
-          Explore comprehensive examples demonstrating Ty Components working seamlessly with React, 
-          Next.js, and Tailwind CSS. Each example showcases real-world patterns, proper integration 
+          Explore comprehensive examples demonstrating Ty Components working seamlessly with React,
+          Next.js, and Tailwind CSS. Each example showcases real-world patterns, proper integration
           techniques, and the power of modern web component architecture.
         </p>
       </div>
@@ -340,7 +340,7 @@ export default function Home() {
 
         <div className="p-5 rounded-lg my-4 surface-elevated border ty-border-">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
+
             {/* Contact Form Example */}
             <div className="p-6 rounded-lg ty-bg-primary- border ty-border-primary hover:shadow-lg transition-all duration-200">
               <div className="flex items-center mb-4">
@@ -351,7 +351,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-sm ty-text-primary mb-4 leading-relaxed">
-                Complete contact form with real-time validation, multiple input types, 
+                Complete contact form with real-time validation, multiple input types,
                 dropdown selections, form state management, and success/error handling.
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -360,9 +360,9 @@ export default function Home() {
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyButton</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
               </div>
-              <TyButton 
-                onClick={() => window.location.href = '/examples/contact-form'} 
-                flavor="primary" 
+              <TyButton
+                onClick={() => window.location.href = '/examples/contact-form'}
+                flavor="primary"
                 size="sm"
                 className="flex items-center gap-2"
               >
@@ -381,7 +381,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-sm ty-text-info mb-4 leading-relaxed">
-                Interactive dashboard with TyCalendar custom day content rendering, data visualization, 
+                Interactive dashboard with TyCalendar custom day content rendering, data visualization,
                 filtering controls, and responsive analytics with real-time updates.
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -392,9 +392,9 @@ export default function Home() {
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTag</span>
               </div>
-              <TyButton 
-                onClick={() => window.location.href = '/examples/dashboard'} 
-                flavor="info" 
+              <TyButton
+                onClick={() => window.location.href = '/examples/dashboard'}
+                flavor="info"
                 size="sm"
                 className="flex items-center gap-2"
               >
@@ -413,7 +413,7 @@ export default function Home() {
                 </div>
               </div>
               <p className="text-sm ty-text-success mb-4 leading-relaxed">
-                Complete user profile interface with avatar upload, form tabs, 
+                Complete user profile interface with avatar upload, form tabs,
                 settings management, and account preferences with live preview.
               </p>
               <div className="flex flex-wrap gap-2 mb-4">
@@ -422,9 +422,9 @@ export default function Home() {
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTooltip</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
               </div>
-              <TyButton 
+              <TyButton
                 disabled
-                flavor="neutral" 
+                flavor="neutral"
                 size="sm"
                 className="flex items-center gap-2"
               >
@@ -454,9 +454,9 @@ export default function Home() {
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyModal</span>
                 <span className="text-xs ty-bg-neutral- ty-text-neutral+ px-2 py-1 rounded">TyTag</span>
               </div>
-              <TyButton 
-                onClick={() => window.location.href = '/examples/settings'} 
-                flavor="secondary" 
+              <TyButton
+                onClick={() => window.location.href = '/examples/settings'}
+                flavor="secondary"
                 size="sm"
                 className="flex items-center gap-2"
               >

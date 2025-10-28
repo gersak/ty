@@ -17,7 +17,7 @@ export default function IconsExample() {
   return (
     <div className="ty-content max-w-4xl mx-auto p-8">
       <h1 className="ty-text++ text-3xl font-bold mb-6">Ty Icons Example</h1>
-      
+
       <div className="ty-elevated rounded-lg p-6 mb-6">
         <h2 className="ty-text++ text-xl font-semibold mb-4">Basic Icons</h2>
         <div className="flex gap-4 flex-wrap">
@@ -96,17 +96,16 @@ export default function IconsExample() {
           <p>
             Icons are registered once at app startup in <code className="ty-bg-neutral- px-2 py-1 rounded">lib/icons.ts</code>:
           </p>
-          
+
           <pre className="ty-bg-neutral- ty-text- p-4 rounded text-sm overflow-x-auto">
-{`// lib/icons.ts
-import { registerIcons } from '@gersak/ty/utils/icon-registry'
+            {`// lib/icons.ts
 import { check, heart, star } from '@gersak/ty/icons/lucide'
 
 export function initializeIcons() {
-  registerIcons({
-    'check': check,
-    'heart': heart,
-    'star': star,
+  window.tyIcons.register({
+    check,
+    heart,
+    star,
     // Only icons you import are bundled!
   })
 }`}
@@ -117,7 +116,7 @@ export function initializeIcons() {
           </p>
 
           <pre className="ty-bg-neutral- ty-text- p-4 rounded text-sm overflow-x-auto">
-{`import { TyIcon } from '@gersak/ty-react'
+            {`import { TyIcon } from '@gersak/ty-react'
 
 <TyIcon name="check" />
 <TyIcon name="heart" pulse />

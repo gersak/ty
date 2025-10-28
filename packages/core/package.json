@@ -1,8 +1,9 @@
 {
   "name": "@gersak/ty",
-  "version": "0.1.904",
+  "version": "0.1.907",
   "description": "Ty Web Components - Framework-agnostic UI components with semantic design system",
   "type": "module",
+  "sideEffects": false,
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",

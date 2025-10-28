@@ -26,8 +26,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Initialize icons once at startup
+    // Initialize icons once at startup (async)
     initializeIcons()
+      .then(() => console.log('✅ Icons initialized successfully'))
+      .catch((err) => console.error('❌ Icon initialization failed:', err))
     
     // Get theme from localStorage or system preference
     const stored = localStorage.getItem('ty-theme') as Theme

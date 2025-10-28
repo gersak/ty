@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { ThemeProvider } from '../lib/theme-provider'
 
+
 export const metadata: Metadata = {
   title: 'Ty Components + React + Next.js Showcase',
   description: 'Comprehensive showcase of @gersak/ty and @gersak/ty-react packages with theme toggling, routing, and component examples',

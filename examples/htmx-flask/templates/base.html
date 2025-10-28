@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}HTMX + Ty Components Demo{% endblock %}</title>
     
-    <!-- Ty Component CSS System - Local Build -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/ty.css') }}">
+    <!-- Ty Component CSS System - CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.css">
     
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
@@ -159,19 +159,20 @@
         </footer>
     </div>
 
-    <!-- Ty Components JavaScript - Local Build -->
-    <script type="module" src="{{ url_for('static', filename='js/ty.js') }}"></script>
+    <!-- Ty Components JavaScript - CDN (TypeScript Build) -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
     
-    <!-- Local Build Verification -->
+    <!-- CDN Build Verification -->
     <script>
         window.addEventListener('load', function() {
-            console.log('✅ Ty components loaded from local build!');
-            console.log('📦 Location: static/js/ty.js (symlinked to packages/core/dist/ty.js)');
+            console.log('✅ Ty components loaded from CDN!');
+            console.log('📦 Package: @gersak/ty (TypeScript build)');
+            console.log('🎯 Version: latest');
         });
     </script>
     
     <!-- Ty Icons Registration -->
-    <script src="{{ url_for('static', filename='js/icons.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/icons-bundle.js') }}"></script>
     
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

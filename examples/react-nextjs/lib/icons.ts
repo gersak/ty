@@ -3,7 +3,7 @@
  * 
  * This demonstrates the recommended pattern for using Ty icons:
  * 1. Import only the icons you need from @gersak/ty (tree-shaking!)
- * 2. Register them using the global window.ty.icons.register API
+ * 2. Register them using window.tyIcons.register() global API
  * 3. Use them throughout your app with <ty-icon name="..." />
  * 
  * Benefits:
@@ -86,16 +86,43 @@ import {
 
 /**
  * Register icons at app startup
- * Uses the global window.ty.icons.register API from the loaded script
+ * Uses the global window.tyIcons.register API from @gersak/ty
+ * 
+ * Returns a promise that resolves when registration is complete,
+ * or rejects if window.tyIcons is not available after timeout.
  */
-export function initializeIcons() {
-  if (typeof window === 'undefined' || !window.ty) {
-    console.warn('⚠️ window.ty not found. Make sure <script src="/ty/index.js"> is loaded first.')
-    return
-  }
+export function initializeIcons(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // Check if already loaded
+    if (typeof window !== 'undefined' && window.tyIcons) {
+      registerIconsNow()
+      resolve()
+      return
+    }
 
+    // Wait for script to load with timeout
+    let attempts = 0
+    const maxAttempts = 50 // 5 seconds max (50 * 100ms)
+    
+    const checkInterval = setInterval(() => {
+      attempts++
+      
+      if (window.tyIcons) {
+        clearInterval(checkInterval)
+        registerIconsNow()
+        resolve()
+      } else if (attempts >= maxAttempts) {
+        clearInterval(checkInterval)
+        console.error('❌ Failed to load window.tyIcons after 5 seconds')
+        reject(new Error('window.tyIcons not available'))
+      }
+    }, 100)
+  })
+}
+
+function registerIconsNow() {
   // Register all icons used in the example app
-  window.ty.icons.register({
+  window.tyIcons.register({
     // Basic icons
     check,
     heart,
@@ -164,9 +191,6 @@ export function initializeIcons() {
     'trending-up': trendingUp,
     zap,
   })
-
-  // Verify registration
-  console.log('📊 Total icons registered:', window.ty.icons.list().length)
 }
 
 /**
@@ -175,14 +199,12 @@ export function initializeIcons() {
  */
 declare global {
   interface Window {
-    ty: {
-      icons: {
-        register: (icons: Record<string, string>) => void
-        get: (name: string) => string | undefined
-        has: (name: string) => boolean
-        list: () => string[]
-      }
-      version: string
+    tyVersion: string
+    tyIcons: {
+      register: (icons: Record<string, string>) => void
+      get: (name: string) => string | undefined
+      has: (name: string) => boolean
+      list: () => string[]
     }
   }
 }

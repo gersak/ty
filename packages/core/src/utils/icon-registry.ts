@@ -118,11 +118,14 @@ function scheduleNotification(changedIcons: Set<string>): void {
     : (cb: IdleRequestCallback) => setTimeout(cb, 0)
   
   notificationTimer = scheduleCallback(() => {
-    const toNotify = pendingNotifications!
+    const toNotify = pendingNotifications
     pendingNotifications = null
     notificationTimer = null
     
-    notifyWatchers(toNotify)
+    // Only notify if we have icons to notify about
+    if (toNotify && toNotify.size > 0) {
+      notifyWatchers(toNotify)
+    }
   }) as number
 }
 

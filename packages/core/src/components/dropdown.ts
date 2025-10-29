@@ -144,14 +144,11 @@ export class TyDropdown extends TyComponent<DropdownState> {
   // PROPERTY CONFIGURATION - Declarative property lifecycle
   // ============================================================================
   protected static properties = {
-    // Value: Emits BOTH 'prop:change' (all changes) and 'change' (user interactions)
-    // - prop:change: Fired by TyComponent when value property changes (useful for reactive frameworks)
-    // - change: Fired by dispatchChangeEvent() on user selection (useful for business logic)
     value: {
       type: 'string' as const,
       visual: true,
       formValue: true,
-      emitChange: true,  // Enables 'prop:change' event
+      emitChange: true,
       default: ''
     },
     name: {
@@ -235,9 +232,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   // ============================================================================
-  // PRIVATE FIELDS (legacy - these should be removed as components migrate to TyComponent)
+  // PRIVATE FIELDS (will be removed in Phase 3)
   // ============================================================================
-  // NOTE: _value removed - now using TyComponent property system
+  private _value: string = ''
   private _name: string = ''
   private _placeholder: string = 'Select an option...'
   private _label: string = ''
@@ -268,6 +265,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
   private _optionClickHandler: ((e: Event) => void) | null = null
   private _searchInputHandler: ((e: Event) => void) | null = null
   private _searchBlurHandler: ((e: Event) => void) | null = null
+  private _blockSearchClick: ((e: Event) => void) | null = null
   private _keyboardHandler: ((e: KeyboardEvent) => void) | null = null
   private _clearClickHandler: ((e: Event) => void) | null = null
 
@@ -341,7 +339,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
     for (const { name, newValue } of changes) {
       switch (name) {
         case 'value':
-          // Sync state from property system
+          this._value = newValue || ''
           this._state.currentValue = newValue || null
           this.syncSelectedOption()
           break
@@ -434,11 +432,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
    * Initialize component state from attributes
    */
   private initializeState(): void {
-    // Get value from TyComponent property system
-    const currentValue = this.value
-    
-    if (currentValue) {
-      this._state.currentValue = this.parseValue(currentValue)
+
+    if (this._value) {
+      this._state.currentValue = this.parseValue(this._value)
 
       // CRITICAL: Options may not be slotted yet when connectedCallback runs
       // Defer sync to next frame to ensure options are available
@@ -679,14 +675,17 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   /**
-   * Update component value using TyComponent property system
-   * This triggers: prop:change event (if emitChange: true), form value sync, and re-render
+   * Update component value attribute for consistency
    */
   private updateComponentValue(): void {
     const currentValue = this._state.currentValue
-    // Use TyComponent's property system instead of setAttribute
-    // This properly triggers the unified lifecycle: onPropertiesChanged → updateFormValue → render → prop:change
-    this.setProperty('value', currentValue || '')
+    if (currentValue !== null) {
+      this.setAttribute('value', currentValue)
+    } else {
+      this.removeAttribute('value')
+    }
+    // Also set property
+    this._value = currentValue || ''
   }
 
   /**
@@ -733,10 +732,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   /**
-   * Dispatch user interaction 'change' event
-   * Note: This is separate from 'prop:change' which is emitted by TyComponent
-   * - 'change': User clicked/selected an option (this event)
-   * - 'prop:change': Value property changed (automatic from TyComponent)
+   * Dispatch change event
    */
   private dispatchChangeEvent(option: HTMLElement, originalEvent?: Event): void {
     const optionData = this.getOptionData(option)
@@ -839,10 +835,11 @@ export class TyDropdown extends TyComponent<DropdownState> {
     // Add search input handlers
     if (searchInput) {
       this._searchInputHandler = this.handleSearchInput.bind(this)
-      this._searchBlurHandler = this.handleSearchBlur.bind(this)
+      this._blockSearchClick = this.blockSearchClick.bind(this)
 
       searchInput.addEventListener('input', this._searchInputHandler)
-      searchInput.addEventListener('blur', this._searchBlurHandler)
+      searchInput.addEventListener('click', this._blockSearchClick)
+      // searchInput.addEventListener('blur', this._searchBlurHandler)
     }
 
     // Add clear button handler
@@ -1212,25 +1209,22 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   /**
-   * Handle search blur - reset search if searchable
+   * Handle search blur - DISABLED
+   * Previously caused race conditions with option clicks.
+   * Search reset now handled in closeDesktopDropdown() instead.
    */
   private handleSearchBlur(_e: Event): void {
-    if (!this._searchable) return
+    // Blur handler disabled - search reset happens in closeDesktopDropdown
+    // This prevents race conditions where blur timer fires before click completes
+  }
 
-    // Reset search
-    this._state.search = ''
-
-    const shadow = this.shadowRoot!
-    const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
-    if (searchInput) {
-      searchInput.value = ''
-    }
-
-    // Show all options
-    const allOptions = this.getOptions().map(el => this.getOptionData(el))
-    this._state.filteredOptions = allOptions
-    this.updateOptionVisibility(allOptions, allOptions)
-    this.clearHighlights(allOptions)
+  /**
+   * Block search input click from bubbling
+   * Prevents search input clicks from triggering outside click handler
+   */
+  private blockSearchClick(e: Event): void {
+    e.stopPropagation()
+    e.preventDefault()
   }
 
   /**
@@ -1440,21 +1434,19 @@ export class TyDropdown extends TyComponent<DropdownState> {
               </div>
             </div>
             <dialog class="dropdown-dialog">
-              <div class="dropdown-panel">
-                <div class="dropdown-header">
-                  <input 
-                    class="dropdown-search-input ${this._size}" 
-                    type="text"
-                    placeholder="${this._placeholder}"
-                    ${this._disabled ? 'disabled' : ''}
-                  />
-                  <div class="dropdown-search-chevron">
-                    ${CHEVRON_DOWN_SVG}
-                  </div>
+              <div class="dropdown-header">
+                <input 
+                  class="dropdown-search-input ${this._size}" 
+                  type="text"
+                  placeholder="${this._placeholder}"
+                  ${this._disabled ? 'disabled' : ''}
+                />
+                <div class="dropdown-search-chevron">
+                  ${CHEVRON_DOWN_SVG}
                 </div>
-                <div class="dropdown-options">
-                  <slot id="options-slot"></slot>
-                </div>
+              </div>
+              <div class="dropdown-options">
+                <slot id="options-slot"></slot>
               </div>
             </dialog>
           </div>

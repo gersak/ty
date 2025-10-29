@@ -1,5 +1,11 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import { readFileSync } from 'fs'
+
+// Read version from package.json (single source of truth)
+const pkg = JSON.parse(
+  readFileSync(resolve(__dirname, 'package.json'), 'utf-8')
+)
 
 /**
  * Development Build Configuration
@@ -26,6 +32,11 @@ import { resolve } from 'path'
  */
 
 export default defineConfig({
+  // Inject version at build time
+  define: {
+    '__VERSION__': JSON.stringify(pkg.version)
+  },
+
   plugins: [],
   
   build: {

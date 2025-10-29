@@ -822,6 +822,11 @@ export class TyCalendar extends HTMLElement {
    */
   refresh(): void {
     this.syncChildComponents();
+    
+    // Force month display to re-render (for async data updates)
+    if (this._monthDisplay && typeof (this._monthDisplay as any).refresh === 'function') {
+      (this._monthDisplay as any).refresh();
+    }
   }
 
   // ==========================================================================

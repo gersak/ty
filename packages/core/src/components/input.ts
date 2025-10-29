@@ -16,9 +16,10 @@
  */
 
 import type { Flavor, Size, InputType, TyInputElement } from '../types/common.js'
+import { TyComponent } from '../base/ty-component.js'
+import type { PropertyChange } from '../utils/property-manager.js'
 import { ensureStyles } from '../utils/styles.js'
 import { inputStyles } from '../styles/input.js'
-import { parseBoolean } from '../utils/parse-boolean.js'
 import {
   formatNumber,
   parseNumericValue,
@@ -70,20 +71,185 @@ const REQUIRED_ICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="24" he
  * </ty-input>
  * ```
  */
-export class TyInput extends HTMLElement implements TyInputElement {
+
+/**
+ * Internal state interface for TyInput component
+ */
+interface InputState {
+  // Shadow value - parsed numeric value for formatting
+  shadowValue: number | string | null
+
+  // Focus state - toggles format/raw display
+  isFocused: boolean
+
+  // Listener setup tracking
+  listenersSetup: boolean
+
+  // Event handler references (for cleanup)
+  inputHandler: ((e: Event) => void) | null
+  changeHandler: ((e: Event) => void) | null
+  focusHandler: ((e: Event) => void) | null
+  blurHandler: ((e: Event) => void) | null
+
+  // Debounce timers
+  inputDebounceTimer: number | null
+  changeDebounceTimer: number | null
+
+  // Locale observer cleanup
+  localeObserver?: () => void
+}
+
+export class TyInput extends TyComponent<InputState> implements TyInputElement {
   static formAssociated = true
 
-  private _internals: ElementInternals
-  private _type: InputType = 'text'
-  private _value: string = ''
-  private _name: string = ''
-  private _placeholder: string = ''
-  private _label: string = ''
-  private _disabled = false
-  private _required = false
-  private _error: string = ''
-  private _size: Size = 'md'
-  private _flavor: Flavor = 'neutral'
+  // ============================================================================
+  // PROPERTY CONFIGURATION - Declarative property lifecycle
+  // ============================================================================
+  protected static properties = {
+    // Core properties
+    type: {
+      type: 'string' as const,
+      visual: true,
+      default: 'text',
+      validate: (v: any) => {
+        const validTypes: InputType[] = [
+          'text', 'email', 'password', 'number', 'tel', 'url',
+          'currency', 'percent', 'compact'
+        ]
+        return validTypes.includes(v)
+      },
+      coerce: (v: any) => {
+        const validTypes: InputType[] = [
+          'text', 'email', 'password', 'number', 'tel', 'url',
+          'currency', 'percent', 'compact'
+        ]
+        if (!validTypes.includes(v)) {
+          console.warn(`[ty-input] Invalid type '${v}'. Using 'text'.`)
+          return 'text'
+        }
+        return v
+      }
+    },
+    value: {
+      type: 'string' as const,
+      visual: true,
+      formValue: true,
+      emitChange: true,
+      default: ''
+    },
+    name: {
+      type: 'string' as const,
+      default: ''
+    },
+    placeholder: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    label: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    disabled: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    required: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    error: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    size: {
+      type: 'string' as const,
+      visual: true,
+      default: 'md',
+      validate: (v: any) => ['xs', 'sm', 'md', 'lg', 'xl'].includes(v),
+      coerce: (v: any) => {
+        if (!['xs', 'sm', 'md', 'lg', 'xl'].includes(v)) {
+          console.warn(`[ty-input] Invalid size '${v}'. Using 'md'.`)
+          return 'md'
+        }
+        return v
+      }
+    },
+    flavor: {
+      type: 'string' as const,
+      visual: true,
+      default: 'neutral',
+      validate: (v: any) => {
+        const valid: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
+        return valid.includes(v)
+      },
+      coerce: (v: any) => {
+        const valid: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
+        if (!valid.includes(v)) {
+          console.warn(`[ty-input] Invalid flavor '${v}'. Using 'neutral'.`)
+          return 'neutral'
+        }
+        return v
+      }
+    },
+    // Numeric formatting properties
+    currency: {
+      type: 'string' as const,
+      visual: true,
+      default: 'USD'
+    },
+    locale: {
+      type: 'string' as const,
+      visual: true,
+      default: 'en-US'
+    },
+    precision: {
+      type: 'number' as const,
+      visual: true,
+      default: undefined,
+      validate: (v: any) => {
+        if (v === undefined || v === null) return true
+        return typeof v === 'number' && v >= 0 && v <= 10
+      },
+      coerce: (v: any) => {
+        if (v === undefined || v === null) return undefined
+        const num = Number(v)
+        if (isNaN(num)) return undefined
+        return Math.max(0, Math.min(10, Math.floor(num)))
+      }
+    },
+    // Debounce property
+    delay: {
+      type: 'number' as const,
+      default: 0,
+      validate: (v: any) => {
+        const num = Number(v)
+        return !isNaN(num) && num >= 0 && num <= 5000
+      },
+      coerce: (v: any) => {
+        const num = Number(v)
+        if (isNaN(num)) return 0
+        return Math.max(0, Math.min(5000, Math.floor(num)))
+      }
+    }
+  }
+
+  // ============================================================================
+  // INTERNAL STATE - Not managed by PropertyManager
+  // NOTE: _internals provided by TyComponent base class
+  // ============================================================================
+
+  // Shadow value - parsed numeric value for formatting
+  private _shadowValue: number | string | null = null
+
+  // Focus state - toggles format/raw display
+  private _isFocused = false
+
+  // Listener setup tracking
   private _listenersSetup = false
 
   // Store references to handlers for cleanup
@@ -92,50 +258,30 @@ export class TyInput extends HTMLElement implements TyInputElement {
   private _focusHandler: ((e: Event) => void) | null = null
   private _blurHandler: ((e: Event) => void) | null = null
 
-  // Numeric formatting properties (Phase C)
-  private _shadowValue: number | string | null = null
-  private _isFocused = false
-  private _currency: string = 'USD'
-  private _locale: string = 'en-US'
-  private _precision: number | undefined = undefined
-
-  // Delay/debounce properties (Phase D)
-  private _delay: number = 0
+  // Debounce timers
   private _inputDebounceTimer: number | null = null
   private _changeDebounceTimer: number | null = null
-  private _localeObserver?: () => void // Cleanup function for locale observer
+
+  // Locale observer cleanup function
+  private _localeObserver?: () => void
 
   constructor() {
-    super()
-    this._internals = this.attachInternals()
+    super()  // TyComponent handles attachInternals() and attachShadow()
 
-    const shadow = this.attachShadow({ mode: 'open' })
+    // Apply styles to shadow root
+    const shadow = this.shadowRoot!
     ensureStyles(shadow, { css: inputStyles, id: 'ty-input' })
-
   }
 
-  static get observedAttributes(): string[] {
-    return [
-      'type', 'value', 'name', 'placeholder', 'label',
-      'disabled', 'required', 'error', 'size', 'flavor',
-      'currency', 'locale', 'precision',  // Phase C
-      'delay'  // Phase D
-    ]
-  }
-
-  connectedCallback(): void {
-    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
-    // Check if value was set directly on the instance before our getter/setter was available
-    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
-    if (instanceValue && instanceValue.value !== undefined) {
-      this._value = instanceValue.value
-      // Clean up the instance property so our getter/setter works
-      Reflect.deleteProperty(this, 'value')
-    }
-
-    // Initialize shadow value from initial value
+  /**
+   * Called when component connects to DOM
+   * TyComponent already handled pre-connection property capture
+   */
+  protected onConnect(): void {
+    // Initialize shadow value from current value property
     this.initializeShadowValue()
-    this.render()
+
+    // Setup event listeners
     this.setupEventListeners()
 
     // Setup locale observer to watch for ancestor lang changes
@@ -144,7 +290,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
     })
   }
 
-  disconnectedCallback(): void {
+  /**
+   * Called when component disconnects from DOM
+   */
+  protected onDisconnect(): void {
     // Clean up event listeners
     this.removeEventListeners()
 
@@ -165,82 +314,88 @@ export class TyInput extends HTMLElement implements TyInputElement {
     }
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    if (oldValue === newValue) return
+  // ============================================================================
+  // TYCOMPONENT LIFECYCLE HOOKS
+  // ============================================================================
 
-    switch (name) {
-      case 'type':
-        this._type = (newValue as InputType) || 'text'
-        break
-      case 'value':
-        this._value = newValue || ''
-        // Re-parse shadow value when value attribute changes
-        this._shadowValue = this.parseShadowValue(this._value)
-        break
-      case 'name':
-        this._name = newValue || ''
-        break
-      case 'placeholder':
-        this._placeholder = newValue || ''
-        break
-      case 'label':
-        this._label = newValue || ''
-        break
-      case 'disabled':
-        this._disabled = parseBoolean(newValue)
-        break
-      case 'required':
-        this._required = parseBoolean(newValue)
-        break
-      case 'error':
-        this._error = newValue || ''
-        // Auto-set flavor to danger when error present
-        if (newValue && this._flavor === 'neutral') {
-          this._flavor = 'danger'
-        }
-        break
-      case 'size':
-        this._size = (newValue as Size) || 'md'
-        break
-      case 'flavor':
-        this._flavor = this.validateFlavor(newValue)
-        break
-      // Phase C attributes
-      case 'currency':
-        this._currency = newValue || 'USD'
-        break
-      case 'locale':
-        this._locale = newValue || 'en-US'
-        break
-      case 'precision':
-        this._precision = newValue ? parseInt(newValue, 10) : undefined
-        break
-      // Phase D attribute
-      case 'delay':
-        this._delay = this.parseDelay(newValue)
-        break
+  /**
+   * Handle property changes - called BEFORE render
+   * This replaces the old attributeChangedCallback logic
+   */
+  protected onPropertiesChanged(changes: PropertyChange[]): void {
+    for (const { name, newValue } of changes) {
+      switch (name) {
+        case 'value':
+          // Parse to shadow value for numeric types
+          this._shadowValue = this.parseShadowValue(newValue || '')
+          console.log(`[TyInput.onPropertiesChanged] value changed:`, {
+            newValue,
+            shadowValue: this._shadowValue,
+            type: this.type
+          })
+          break
+
+        case 'type':
+          // Re-parse shadow value when type changes
+          const currentValue = this.getProperty('value') || ''
+          this._shadowValue = this.parseShadowValue(currentValue)
+          break
+
+        case 'error':
+          // Auto-set flavor to danger when error is present and flavor is neutral
+          if (newValue && this.getProperty('flavor') === 'neutral') {
+            // Use setProperty to trigger proper lifecycle
+            this.setProperty('flavor', 'danger')
+          }
+          break
+      }
     }
+  }
 
+  /**
+   * Hook: Called when form is reset
+   * Clear shadow value and focus state
+   */
+  protected onFormReset(): void {
+    // Reset shadow value to default (empty)
+    this._shadowValue = null
+
+    // Reset focus state
+    this._isFocused = false
+
+    // Clear any pending debounce timers
+    if (this._inputDebounceTimer !== null) {
+      clearTimeout(this._inputDebounceTimer)
+      this._inputDebounceTimer = null
+    }
+    if (this._changeDebounceTimer !== null) {
+      clearTimeout(this._changeDebounceTimer)
+      this._changeDebounceTimer = null
+    }
     this.render()
   }
 
   /**
-   * Parse and validate delay value (0-5000ms)
+   * Override form value to return shadow value
+   * This ensures numeric types submit their parsed values
    */
-  private parseDelay(value: string | null): number {
-    if (!value) return 0
-    const parsed = parseInt(value, 10)
-    if (isNaN(parsed)) return 0
-    // Clamp between 0 and 5000ms
-    return Math.max(0, Math.min(5000, parsed))
+  protected getFormValue(): FormDataEntryValue | null {
+    const formValue = this._shadowValue !== null ? String(this._shadowValue) : null
+    console.log(`[TyInput.getFormValue] Returning form value:`, {
+      shadowValue: this._shadowValue,
+      formValue,
+      name: this.name
+    })
+    return formValue
   }
 
   /**
- * Initialize shadow value from the initial value attribute
- */
+   * Initialize shadow value from the initial value attribute
+   */
   private initializeShadowValue(): void {
-    if (this._value) {
-      this._shadowValue = this.parseShadowValue(this._value)
+    const currentValue = this.getProperty('value')
+    if (currentValue) {
+      this._shadowValue = this.parseShadowValue(currentValue)
       // Update form value
       this._internals.setFormValue(
         this._shadowValue !== null ? String(this._shadowValue) : null
@@ -256,7 +411,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
     if (!value || typeof value !== 'string' || value.trim() === '') return null
 
     // For numeric types, parse to number
-    if (shouldFormatType(this._type)) {
+    if (shouldFormatType(this.type)) {
       return parseNumericValue(value)
     }
 
@@ -268,7 +423,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
    * Check if current input should format numbers
    */
   private shouldFormat(): boolean {
-    return shouldFormatType(this._type) &&
+    return shouldFormatType(this.type) &&
       !this._isFocused &&
       this._shadowValue !== null &&
       typeof this._shadowValue === 'number'
@@ -279,10 +434,10 @@ export class TyInput extends HTMLElement implements TyInputElement {
    */
   private getFormatConfig(): FormatConfig {
     return {
-      type: this._type as 'number' | 'currency' | 'percent' | 'compact',
+      type: this.type as 'number' | 'currency' | 'percent' | 'compact',
       locale: this.locale,  // Use getter which calls getEffectiveLocale correctly
-      currency: this._currency,
-      precision: this._precision
+      currency: this.currency,
+      precision: this.precision
     }
   }
 
@@ -295,7 +450,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
       // For percent: divide by 100 (user enters 15, displays as 15%)
       // This matches ClojureScript behavior
-      if (this._type === 'percent') {
+      if (this.type === 'percent') {
         valueToFormat = valueToFormat / 100
       }
 
@@ -305,241 +460,76 @@ export class TyInput extends HTMLElement implements TyInputElement {
     return this._shadowValue !== null ? String(this._shadowValue) : ''
   }
 
-  /**
-   * Validate flavor (matches ClojureScript validation)
-   */
-  private validateFlavor(flavor: string | null): Flavor {
-    const validFlavors: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
-    const normalized = (flavor || 'neutral') as Flavor
+  // ============================================================================
+  // PROPERTY ACCESSORS - Simplified with TyComponent
+  // NOTE: validateFlavor removed - now handled by property configuration
+  // ============================================================================
 
-    if (!validFlavors.includes(normalized)) {
-      console.warn(
-        `[ty-input] Invalid flavor '${flavor}'. Using 'neutral'. ` +
-        `Valid flavors: ${validFlavors.join(', ')}`
-      )
-      return 'neutral'
-    }
+  // Core properties - simple getProperty/setProperty pattern
+  get type(): InputType { return this.getProperty('type') }
+  set type(v: InputType) { this.setProperty('type', v) }
 
-    return normalized
-  }
-
-  // Public API - Getters/Setters
-  // NOTE: All setters trigger re-render to support property changes from frameworks
-
-  get type(): InputType {
-    return this._type
-  }
-
-  set type(value: InputType) {
-    if (this._type !== value) {
-      this._type = value
-      this.setAttribute('type', value)
-      // Re-parse shadow value with new type
-      this._shadowValue = this.parseShadowValue(this._value)
-      this.render()
-    }
-  }
-
+  // Value - special getter returns shadow value
   get value(): string {
-    // Return shadow value as string
-    console.log('Getting input value: ');
     return this._shadowValue !== null ? String(this._shadowValue) : ''
   }
+  set value(v: string) { this.setProperty('value', v) }
 
-  set value(val: string) {
-    if (this._value !== val) {
-      this._value = val
-      this._shadowValue = this.parseShadowValue(val)
-      this.setAttribute('value', val)
-      this._internals.setFormValue(
-        this._shadowValue !== null ? String(this._shadowValue) : null
-      )
-      this.render()
-    }
+  get name(): string { return this.getProperty('name') }
+  set name(v: string) { this.setProperty('name', v) }
+
+  get placeholder(): string { return this.getProperty('placeholder') }
+  set placeholder(v: string) { this.setProperty('placeholder', v) }
+
+  get label(): string { return this.getProperty('label') }
+  set label(v: string) { this.setProperty('label', v) }
+
+  get disabled(): boolean { return this.getProperty('disabled') }
+  set disabled(v: boolean) { this.setProperty('disabled', v) }
+
+  get required(): boolean { return this.getProperty('required') }
+  set required(v: boolean) { this.setProperty('required', v) }
+
+  get error(): string { return this.getProperty('error') }
+  set error(v: string) { this.setProperty('error', v) }
+
+  get size(): Size { return this.getProperty('size') as Size }
+  set size(v: Size) { this.setProperty('size', v) }
+
+  get flavor(): Flavor { return this.getProperty('flavor') as Flavor }
+  set flavor(v: Flavor) { this.setProperty('flavor', v) }
+
+  // Numeric formatting properties
+  get currency(): string { return this.getProperty('currency') }
+  set currency(v: string) { this.setProperty('currency', v) }
+
+  // Locale - special getter uses getEffectiveLocale()
+  get locale(): string {
+    return getEffectiveLocale(this, this.getProperty('locale'))
   }
+  set locale(v: string) { this.setProperty('locale', v) }
 
-  get name(): string {
-    return this._name
-  }
+  get precision(): number | undefined { return this.getProperty('precision') }
+  set precision(v: number | string | undefined) { this.setProperty('precision', v) }
 
-  set name(val: string) {
-    if (this._name !== val) {
-      this._name = val
-      this.setAttribute('name', val)
-    }
-  }
+  // Debounce property
+  get delay(): number { return this.getProperty('delay') }
+  set delay(v: number | string) { this.setProperty('delay', v) }
 
-  get placeholder(): string {
-    return this._placeholder
-  }
-
-  set placeholder(val: string) {
-    if (this._placeholder !== val) {
-      this._placeholder = val
-      this.setAttribute('placeholder', val)
-      this.render()
-    }
-  }
-
-  get label(): string {
-    return this._label
-  }
-
-  set label(val: string) {
-    if (this._label !== val) {
-      this._label = val
-      this.setAttribute('label', val)
-      this.render()
-    }
-  }
-
-  get disabled(): boolean {
-    return this._disabled
-  }
-
-  set disabled(value: boolean) {
-    if (this._disabled !== value) {
-      this._disabled = value
-      if (value) {
-        this.setAttribute('disabled', '')
-      } else {
-        this.removeAttribute('disabled')
-      }
-      this.render()
-    }
-  }
-
-  get required(): boolean {
-    return this._required
-  }
-
-  set required(value: boolean) {
-    if (this._required !== value) {
-      this._required = value
-      if (value) {
-        this.setAttribute('required', '')
-      } else {
-        this.removeAttribute('required')
-      }
-      this.render()
-    }
-  }
-
-  get error(): string {
-    return this._error
-  }
-
-  set error(val: string) {
-    if (this._error !== val) {
-      this._error = val
-      this.setAttribute('error', val)
-      // Auto-set flavor to danger
-      if (val && this._flavor === 'neutral') {
-        this._flavor = 'danger'
-      }
-      this.render()
-    }
-  }
-
-  get size(): Size {
-    return this._size
-  }
-
-  set size(value: Size) {
-    if (this._size !== value) {
-      this._size = value
-      this.setAttribute('size', value)
-      this.render()
-    }
-  }
-
-  get flavor(): Flavor {
-    return this._flavor
-  }
-
-  set flavor(value: Flavor) {
-    if (this._flavor !== value) {
-      this._flavor = this.validateFlavor(value)
-      this.setAttribute('flavor', value)
-      this.render()
-    }
-  }
-
+  // Form property
   get form(): HTMLFormElement | null {
     return this._internals.form
-  }
-
-  // Phase C getters/setters
-
-  get currency(): string {
-    return this._currency
-  }
-
-  set currency(value: string) {
-    if (this._currency !== value) {
-      this._currency = value
-      this.setAttribute('currency', value)
-      this.render()
-    }
-  }
-
-  get locale(): string {
-    return getEffectiveLocale(this, this.getAttribute('locale'))
-  }
-
-  set locale(value: string) {
-    if (this._locale !== value) {
-      this._locale = value
-      this.setAttribute('locale', value)
-      this.render()
-    }
-  }
-
-  get precision(): number | undefined {
-    return this._precision
-  }
-
-  set precision(value: number | string | undefined) {
-    const numValue = typeof value === 'string' ? parseInt(value, 10) : value
-    if (this._precision !== numValue) {
-      this._precision = numValue
-      if (numValue !== undefined) {
-        this.setAttribute('precision', String(numValue))
-      } else {
-        this.removeAttribute('precision')
-      }
-      this.render()
-    }
-  }
-
-  // Phase D getter/setter
-
-  get delay(): number {
-    return this._delay
-  }
-
-  set delay(value: number | string) {
-    const numValue = typeof value === 'string' ? parseInt(value, 10) : value
-    const clamped = this.parseDelay(String(numValue))
-    if (this._delay !== clamped) {
-      this._delay = clamped
-      if (clamped > 0) {
-        this.setAttribute('delay', String(clamped))
-      } else {
-        this.removeAttribute('delay')
-      }
-    }
   }
 
   /**
    * Build CSS class list for input wrapper
    */
   private buildClassList(): string {
-    const classes: string[] = [this._size, this._flavor]
+    const classes: string[] = [this.size, this.flavor]
 
-    if (this._disabled) classes.push('disabled')
-    if (this._required) classes.push('required')
-    if (this._error) classes.push('error')
+    if (this.disabled) classes.push('disabled')
+    if (this.required) classes.push('required')
+    if (this.error) classes.push('error')
 
     return classes.join(' ')
   }
@@ -650,12 +640,12 @@ export class TyInput extends HTMLElement implements TyInputElement {
       }
 
       // If delay is set, debounce the event
-      if (this._delay > 0) {
+      if (this.delay > 0) {
         this._inputDebounceTimer = window.setTimeout(() => {
           // Use current value, not the captured rawValue
           this.dispatchInputEvent(inputEl.value, e)
           this._inputDebounceTimer = null
-        }, this._delay)
+        }, this.delay)
       } else {
         // Fire immediately if no delay
         this.dispatchInputEvent(rawValue, e)
@@ -685,12 +675,12 @@ export class TyInput extends HTMLElement implements TyInputElement {
       }
 
       // If delay is set, debounce the event
-      if (this._delay > 0) {
+      if (this.delay > 0) {
         this._changeDebounceTimer = window.setTimeout(() => {
           // Use current value, not the captured rawValue
           this.dispatchChangeEvent(inputEl.value, e)
           this._changeDebounceTimer = null
-        }, this._delay)
+        }, this.delay)
       } else {
         // Fire immediately if no delay
         this.dispatchChangeEvent(rawValue, e)
@@ -703,7 +693,7 @@ export class TyInput extends HTMLElement implements TyInputElement {
       wrapperEl.classList.add('focused')
 
       // For numeric types, show raw shadow value
-      if (shouldFormatType(this._type) && this._shadowValue !== null) {
+      if (shouldFormatType(this.type) && this._shadowValue !== null) {
         inputEl.value = String(this._shadowValue)
       }
 
@@ -761,9 +751,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
    * Render the input component with wrapper and slots
    * Phase C: Uses getDisplayValue() for formatted output
    * 
-   * BUG FIX: This method now properly handles dynamic label creation
    */
-  private render(): void {
+  render(): void {
 
     const shadow = this.shadowRoot!
     const existingInput = shadow.querySelector('input')
@@ -773,8 +762,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
     const classes = this.buildClassList()
 
     // Map input type (all numeric types use 'text' in DOM)
-    const inputType = ['password', 'date', 'time', 'datetime-local'].includes(this._type)
-      ? this._type
+    const inputType = ['password', 'date', 'time', 'datetime-local'].includes(this.type)
+      ? this.type
       : 'text'
 
     // Get display value (formatted or raw based on focus)
@@ -785,23 +774,23 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
       existingInput.type = inputType
       existingInput.value = displayValue
-      existingInput.placeholder = this._placeholder
-      existingInput.name = this._name
+      existingInput.placeholder = this.placeholder
+      existingInput.name = this.name
 
       // Update wrapper classes
       existingWrapper.className = `input-wrapper ${classes}`
 
       // Set disabled property AND manage attribute
-      existingInput.disabled = this._disabled
-      if (this._disabled) {
+      existingInput.disabled = this.disabled
+      if (this.disabled) {
         existingInput.setAttribute('disabled', '')
       } else {
         existingInput.removeAttribute('disabled')
       }
 
       // Set required property AND manage attribute
-      existingInput.required = this._required
-      if (this._required) {
+      existingInput.required = this.required
+      if (this.required) {
         existingInput.setAttribute('required', '')
       } else {
         existingInput.removeAttribute('required')
@@ -809,16 +798,16 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
       // ===== BUG FIX: Dynamic label creation =====
       // Update or CREATE label if needed
-      if (this._label) {
+      if (this.label) {
         if (existingLabel) {
           // Label exists, just update it
-          existingLabel.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
+          existingLabel.innerHTML = `${this.label}${this.required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
             ; (existingLabel as HTMLElement).style.display = 'flex'
         } else {
           // Label doesn't exist but we need one - CREATE IT!
           const labelEl = document.createElement('label')
           labelEl.className = 'input-label'
-          labelEl.innerHTML = `${this._label}${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
+          labelEl.innerHTML = `${this.label}${this.required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}`
 
           // Insert label BEFORE the input-wrapper
           const container = shadow.querySelector('.input-container')
@@ -832,13 +821,13 @@ export class TyInput extends HTMLElement implements TyInputElement {
       }
 
       // Update error message
-      if (this._error) {
+      if (this.error) {
         if (existingError) {
-          existingError.textContent = this._error
+          existingError.textContent = this.error
         } else {
           const errorEl = document.createElement('div')
           errorEl.className = 'error-message'
-          errorEl.textContent = this._error
+          errorEl.textContent = this.error
           shadow.querySelector('.input-container')?.appendChild(errorEl)
         }
       } else if (existingError) {
@@ -847,15 +836,15 @@ export class TyInput extends HTMLElement implements TyInputElement {
     } else {
 
       // Create initial structure with wrapper and slots
-      const labelHtml = this._label ? `
+      const labelHtml = this.label ? `
           <label class="input-label">
-            ${this._label}
-            ${this._required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}
+            ${this.label}
+            ${this.required ? `<span class="required-icon">${REQUIRED_ICON_SVG}</span>` : ''}
           </label>
         ` : ''
 
-      const errorHtml = this._error ? `
-          <div class="error-message">${this._error}</div>
+      const errorHtml = this.error ? `
+          <div class="error-message">${this.error}</div>
         ` : ''
 
       shadow.innerHTML = `
@@ -868,8 +857,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
               <input
                 type="${inputType}"
                 value="${displayValue}"
-                placeholder="${this._placeholder}"
-                name="${this._name}"
+                placeholder="${this.placeholder}"
+                name="${this.name}"
               />
               <div class="input-end">
                 <slot name="end"></slot>
@@ -881,8 +870,8 @@ export class TyInput extends HTMLElement implements TyInputElement {
 
       // Set boolean properties after creating element
       const inputEl = shadow.querySelector('input')!
-      inputEl.disabled = this._disabled
-      inputEl.required = this._required
+      inputEl.disabled = this.disabled
+      inputEl.required = this.required
 
       // Setup event listeners ONCE
       this.setupEventListeners()

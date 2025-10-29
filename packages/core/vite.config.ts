@@ -1,8 +1,19 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
+import { readFileSync } from 'fs'
 import dts from 'vite-plugin-dts'
 
+// Read version from package.json (single source of truth)
+const pkg = JSON.parse(
+  readFileSync(resolve(__dirname, 'package.json'), 'utf-8')
+)
+
 export default defineConfig(({ mode }) => ({
+  // Inject version at build time
+  define: {
+    '__VERSION__': JSON.stringify(pkg.version)
+  },
+
   plugins: [
     dts({
       include: ['src/**/*'],

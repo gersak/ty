@@ -5,22 +5,7 @@
 
 export const iconStyles = `
 :host {
-  /* CSS CONTAINMENT: Creates isolated rendering context */
-  /* This prevents internal layout changes from affecting external layout */
-  /* Applies: layout containment + paint containment + style containment */
-  contain: content;
-  
-  /* PERFORMANCE OPTIMIZATION: Skip rendering for off-screen icons */
-  /* This provides 5-7x performance boost for long lists */
-  /* Browser only renders icons in/near viewport */
-  content-visibility: auto;
-  
-  /* Reserve placeholder space for off-screen icons */
-  /* Prevents layout shift when scrolling */
-  /* Uses auto keyword to inherit natural size when on-screen */
-  contain-intrinsic-size: auto 1em 1em;
-  
-  /* Display & Layout */
+  /* Display & Layout - CRITICAL: No containment to prevent paint deferral */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,9 +29,16 @@ export const iconStyles = `
   /* Flex Behavior */
   flex-shrink: 0;
   
-  /* Visibility */
+  /* Visibility - Force immediate rendering */
   visibility: visible !important;
   opacity: 1;
+  
+  /* ANTI-FLICKER: Force browser to paint immediately */
+  will-change: contents;
+  
+  /* Prevent any sub-pixel rendering issues */
+  transform: translateZ(0);
+  -webkit-font-smoothing: antialiased;
 }
 
 /* The SVG element inside shadow DOM */
@@ -54,6 +46,10 @@ export const iconStyles = `
   width: 100%;
   height: 100%;
   display: block;
+  
+  /* Force immediate SVG rendering */
+  will-change: auto;
+  transform: translateZ(0);
 }
 
 /* When used in slots, ensure proper display */

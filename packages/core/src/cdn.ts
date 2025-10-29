@@ -23,8 +23,8 @@ export { TyCalendar } from './components/calendar.js'
 export { TyDatePicker } from './components/date-picker.js'
 
 // Types
-export type { 
-  Flavor, 
+export type {
+  Flavor,
   Size,
   InputType,
   IconSize,
@@ -52,9 +52,9 @@ export type { DatePickerChangeDetail } from './components/date-picker.js'
 export type { DayContext } from './utils/calendar-utils.js'
 
 // Utilities - Including Icon Registry
-export { 
-  lockScroll, 
-  unlockScroll, 
+export {
+  lockScroll,
+  unlockScroll,
   forceUnlockAll,
   isLocked,
   isLockedBy,
@@ -64,14 +64,14 @@ export {
   disableDebug as disableScrollLockDebug
 } from './utils/scroll-lock.js'
 
-export type { 
-  Placement, 
-  PositionResult, 
-  CleanupFn 
+export type {
+  Placement,
+  PositionResult,
+  CleanupFn
 } from './utils/positioning.js'
 
-// Version
-export const VERSION = '0.2.0'
+// Version (auto-generated from package.json)
+import { VERSION } from './version.js'
 
 // Global API
 // Expose window.tyIcons for script tag usage
@@ -79,6 +79,7 @@ import { registerIcons, getIcon, hasIcon, getIconNames } from './utils/icon-regi
 
 declare global {
   interface Window {
+    tyVersion: string
     tyIcons: {
       register: (icons: Record<string, string>) => void
       get: (name: string) => string | undefined
@@ -89,6 +90,7 @@ declare global {
 }
 
 if (typeof window !== 'undefined') {
+  window.tyVersion = VERSION
   window.tyIcons = {
     register: (icons: Record<string, string>) => {
       registerIcons(icons)

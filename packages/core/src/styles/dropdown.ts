@@ -252,7 +252,6 @@ export const dropdownStyles = `
 /* Dialog */
 .dropdown-mode-desktop .dropdown-dialog {
   position: fixed;
-  flex-direction: column;
   width: var(--dropdown-width, 200px);
   max-width: 100vw;
   margin: 0;
@@ -266,6 +265,12 @@ export const dropdownStyles = `
   transform: translate(var(--dropdown-offset-x, 0px), var(--dropdown-offset-y, 0px));
   top: -1000px;
   left: -1000px;
+}
+
+/* When opened via showModal(), apply flex layout and direction */
+.dropdown-mode-desktop .dropdown-dialog[open] {
+  display: flex;
+  flex-direction: column;
 }
 
 .dropdown-mode-desktop .dropdown-dialog.position-below {

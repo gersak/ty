@@ -82,12 +82,15 @@ export type {
 // Note: Icon libraries moved to separate @gersak/ty-icons package
 // Icon registry utility remains in core for registering custom icons
 
-// Version
-export const VERSION = '0.2.0'
+// Version (auto-generated from package.json)
+import { VERSION } from './version.js'
 
 // Global API
 // Expose window.tyIcons for script tag usage
-import { registerIcons, getIcon, hasIcon, getIconNames } from './utils/icon-registry.js'
+import { registerIcons, getIcon, hasIcon, getIconNames, getCacheInfo, clearIcons, getCachedIcon } from './utils/icon-registry.js'
+
+// Export icon registry functions for advanced use
+export { registerIcons, getIcon, hasIcon, getIconNames, getCacheInfo, clearIcons, getCachedIcon }
 
 declare global {
   interface Window {
@@ -97,6 +100,13 @@ declare global {
       get: (name: string) => string | undefined
       has: (name: string) => boolean
       list: () => string[]
+      cacheInfo: () => Promise<{
+        version: string
+        cacheName: string
+        available: boolean
+        iconCount?: number
+      }>
+      clearCache: () => Promise<void>
     }
   }
 }
@@ -107,14 +117,16 @@ if (typeof window !== 'undefined') {
     register: (icons: Record<string, string>) => {
       const count = Object.keys(icons).length
       registerIcons(icons)
-      
+
       // Defer logging to not block registration
       setTimeout(() => {
-        console.log(`✅ Registered ${count} icons`)
+        console.log(`✅ Registered ${count} icons (cached for instant reload)`)
       }, 0)
     },
     get: (name: string) => getIcon(name),
     has: (name: string) => hasIcon(name),
-    list: () => getIconNames()
+    list: () => getIconNames(),
+    cacheInfo: () => getCacheInfo(),
+    clearCache: () => clearIcons()
   }
 }

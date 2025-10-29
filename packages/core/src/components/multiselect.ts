@@ -312,7 +312,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private _tagClickHandler: ((e: Event) => void) | null = null
   private _tagDismissHandler: ((e: Event) => void) | null = null
   private _searchInputHandler: ((e: Event) => void) | null = null
-  private _searchBlurHandler: ((e: Event) => void) | null = null
+  private _blockSearchClick: ((e: Event) => void) | null = null
   private _keyboardHandler: ((e: KeyboardEvent) => void) | null = null
 
   // Delay/debounce properties for search event
@@ -792,6 +792,18 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (this._searchable) {
       this._state.search = ''
       const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
+      this._state.search = ''
+
+      if (searchInput) {
+        searchInput.value = ''
+      }
+
+      // Show all tags
+      const allTags = this.getTagElements().map(el => this.getTagData(el))
+      this._state.filteredTags = allTags
+      this.updateTagVisibility(allTags, allTags)
+      this.clearHighlights(allTags)
+
       if (searchInput) {
         searchInput.value = ''
       }
@@ -956,6 +968,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     this.updateComponentValue(newValues, true, 'remove', tagValue)
   }
 
+  private blockSearchClick(e: Event): void {
+    e.stopPropagation()
+    e.preventDefault()
+  }
+
   private handleSearchInput(e: Event): void {
     const target = e.target as HTMLInputElement
     const query = target.value
@@ -983,24 +1000,6 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     }
   }
 
-  private handleSearchBlur(e: Event): void {
-    if (!this._searchable) return
-
-    // Reset search
-    this._state.search = ''
-
-    const shadow = this.shadowRoot!
-    const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
-    if (searchInput) {
-      searchInput.value = ''
-    }
-
-    // Show all tags
-    const allTags = this.getTagElements().map(el => this.getTagData(el))
-    this._state.filteredTags = allTags
-    this.updateTagVisibility(allTags, allTags)
-    this.clearHighlights(allTags)
-  }
 
   private handleKeyboard(e: KeyboardEvent): void {
     if (!this._state.open) return
@@ -1237,10 +1236,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     // Add search input handlers
     if (searchInput) {
       this._searchInputHandler = this.handleSearchInput.bind(this)
-      this._searchBlurHandler = this.handleSearchBlur.bind(this)
+      this._blockSearchClick = this.blockSearchClick.bind(this)
 
       searchInput.addEventListener('input', this._searchInputHandler)
-      searchInput.addEventListener('blur', this._searchBlurHandler)
+      searchInput.addEventListener('click', this._blockSearchClick)
+      // searchInput.addEventListener('blur', this._searchBlurHandler)
     }
 
     // Setup document-level event listeners

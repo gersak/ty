@@ -390,6 +390,18 @@ export class TyCalendarMonth extends HTMLElement {
   }
 
   // ==========================================================================
+  // Public Methods
+  // ==========================================================================
+
+  /**
+   * Force re-render of the calendar month
+   * Useful when external data changes (e.g., async event loading)
+   */
+  refresh(): void {
+    this.render();
+  }
+
+  // ==========================================================================
   // Event Dispatching
   // ==========================================================================
 

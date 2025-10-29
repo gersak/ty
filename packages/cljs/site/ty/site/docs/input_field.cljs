@@ -478,8 +478,8 @@ document.querySelector('ty-input').addEventListener('input', (e) => {
     [:p.ty-text-.mb-4 "ty-input is a form-associated custom element that works seamlessly with native HTML forms. The error attribute is for display only - implement your own validation logic."]
 
     [:form.space-y-4 {:on {:submit (fn [^js event]
-                                     (.preventDefault event)
-                                     (.log js/console "Form submitted!")
+                                     ; (.preventDefault event)
+                                     (.log js/console "Form submitted!" event)
                                      false)}}
      [:ty-input {:name "fullname"
                  :label "Full Name"

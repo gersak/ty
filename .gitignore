@@ -21,6 +21,7 @@ cljs-runtime/
 # TypeScript/NPM build outputs
 packages/core/lib/
 packages/core/dist/
+packages/core/src/version.ts
 
 deploy.sh
 real_story.md

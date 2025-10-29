@@ -258,7 +258,14 @@ class CalendarEventManager {
         this.currentEvents.forEach(event => {
             const dateKey = event.date; // Already in YYYY-MM-DD format
             this.eventCountsByDate[dateKey] = (this.eventCountsByDate[dateKey] || 0) + 1;
+            
+            // 🔍 DEBUG: Log first few events to verify date format
+            if (Object.keys(this.eventCountsByDate).length <= 3) {
+                console.log(`🔍 Event date format: "${event.date}" for event: "${event.title}"`);
+            }
         });
+        
+        console.log(`🔍 Final eventCountsByDate keys:`, Object.keys(this.eventCountsByDate));
         
         console.log(`🔄 Shared state updated: ${this.currentEvents.length} events, ${Object.keys(this.eventCountsByDate).length} days with events`);
     }
@@ -424,8 +431,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     // 🎨 SETUP CALENDAR CUSTOMIZATION FIRST (before any data loading)
     console.log('🎨 Setting up event count badges using shared state');
     
-    // Custom CSS for day badges
-    calendar.customCSS = `
+    // ✅ FIX #1: Create CSSStyleSheet object (not a string)
+    // TypeScript implementation expects CSSStyleSheet for adoptedStyleSheets API
+    const customStyleSheet = new CSSStyleSheet();
+    customStyleSheet.replaceSync(`
         .simple-day {
             display: flex;
             flex-direction: column;
@@ -455,28 +464,34 @@ document.addEventListener('DOMContentLoaded', async function() {
             font-weight: 500;
             white-space: nowrap;
         }
-    `;
+    `);
+    calendar.customCSS = customStyleSheet;
     
-    // Day content function that uses shared state for event counts
-    calendar.dayContentFn = function(dayContext) {
+    // 🔧 NOTE: dayContentFn will be set AFTER loading initial data
+    // This prevents rendering before eventCountsByDate is populated
+    let dayContentFnDefined = function(dayContext) {
+        console.log('computin day', dayContext)
         const dayDiv = document.createElement('div');
         dayDiv.className = 'simple-day';
         
-        // Create day number
+        // Create day number - using camelCase
         const dayNumber = document.createElement('span');
         dayNumber.className = 'day-number';
-        dayNumber.textContent = dayContext['day-in-month'];
+        dayNumber.textContent = dayContext.dayInMonth; // ✅ Changed from dayContext['day-in-month']
         dayDiv.appendChild(dayNumber);
         
         // Create badge container
         const badgeContainer = document.createElement('div');
         badgeContainer.className = 'day-badge-container';
         
-        // 🎯 GET EVENT COUNT FROM SHARED STATE - now with safe access
-        const dateKey = `${dayContext['year']}-${dayContext['month'].toString().padStart(2, '0')}-${dayContext['day-in-month'].toString().padStart(2, '0')}`;
+        // 🎯 GET EVENT COUNT FROM SHARED STATE - using camelCase properties
+        const dateKey = `${dayContext.year}-${dayContext.month.toString().padStart(2, '0')}-${dayContext.dayInMonth.toString().padStart(2, '0')}`;
+        // ✅ Changed from dayContext['year'], dayContext['month'], dayContext['day-in-month']
         
         // Safe access to shared state through eventManager reference (closure)
-        const eventCount = eventManager.getEventCounts()[dateKey] || 0;
+        const allCounts = eventManager.getEventCounts();
+        const eventCount = allCounts[dateKey] || 0;
+        
         
         // Add badge if there are events
         if (eventCount > 0) {
@@ -490,20 +505,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         return dayDiv;
     };
     
-    console.log('✅ Event count badges configured to use shared state');
-    
-    // 📅 LOAD INITIAL DATA
+    // 📅 LOAD INITIAL DATA FIRST (before setting dayContentFn)
     const now = new Date();
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
     
     console.log(`📅 Loading initial month: ${currentYear}-${currentMonth}`);
     const initialData = await eventManager.loadEvents(currentYear, currentMonth);
-
-    // Simple re-render to show initial badges
-    if (initialData && initialData.events && initialData.events.length > 0) {
-        safeRefreshCalendar(calendar, 'initial load');
-    }
+    
+    // ✅ FIX #4: Set dayContentFn AFTER data is loaded
+    // Setting dayContentFn triggers render(), so we need data ready first
+    console.log('🎨 Setting dayContentFn now that eventCountsByDate is populated');
+    calendar.dayContentFn = dayContentFnDefined;
+    console.log('✅ Event count badges configured to use shared state');
+    // Note: Setting dayContentFn above already triggered render() automatically
     
     // 🎯 Listen for navigation events - instant UI updates, background data loading
     calendar.addEventListener('navigate', async function(event) {

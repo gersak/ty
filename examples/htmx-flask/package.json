@@ -14,7 +14,7 @@
     "start": "python app.py"
   },
   "devDependencies": {
-    "@gersak/ty": "^0.1.907",
+    "@gersak/ty": "^0.1.908",
     "@tailwindcss/cli": "^4.1.0",
     "autoprefixer": "^10.4.16",
     "chokidar-cli": "^3.0.0",

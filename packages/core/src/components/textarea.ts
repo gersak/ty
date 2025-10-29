@@ -38,6 +38,8 @@
  * @fires {CustomEvent<{value: string, originalEvent: Event}>} change - Emitted on change
  */
 
+import { TyComponent } from '../base/ty-component.js'
+import type { PropertyChange } from '../utils/property-manager.js'
 import { ensureStyles } from '../utils/styles.js'
 import { textareaStyles } from '../styles/textarea.js'
 
@@ -47,12 +49,14 @@ import { textareaStyles } from '../styles/textarea.js'
 const REQUIRED_ICON = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`
 
 /**
- * Component internal state
+ * Component internal state (for typing TyComponent)
+ * Actual state stored as private fields
  */
 interface TextareaState {
   value: string
   isFocused: boolean
-  dummyStyle: CSSStyleDeclaration | null
+  textareaEl: HTMLTextAreaElement | null
+  dummyEl: HTMLPreElement | null
 }
 
 /**
@@ -96,269 +100,215 @@ export interface TyTextareaElement extends HTMLElement {
   maxHeight?: string
 }
 
-export class TyTextarea extends HTMLElement implements TyTextareaElement {
+export class TyTextarea extends TyComponent<TextareaState> implements TyTextareaElement {
   static formAssociated = true
 
-  private _internals: ElementInternals
-  private _state: TextareaState
+  // ============================================================================
+  // PROPERTY CONFIGURATION - Declarative property lifecycle
+  // ============================================================================
+  protected static properties = {
+    // Core properties
+    value: {
+      type: 'string' as const,
+      visual: true,
+      formValue: true,
+      emitChange: true,
+      default: ''
+    },
+    name: {
+      type: 'string' as const,
+      default: ''
+    },
+    placeholder: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    label: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    disabled: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    required: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    error: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    size: {
+      type: 'string' as const,
+      visual: true,
+      default: 'md',
+      validate: (v: any) => ['xs', 'sm', 'md', 'lg', 'xl'].includes(v),
+      coerce: (v: any) => {
+        if (!['xs', 'sm', 'md', 'lg', 'xl'].includes(v)) {
+          console.warn(`[ty-textarea] Invalid size '${v}'. Using 'md'.`)
+          return 'md'
+        }
+        return v
+      }
+    },
+    // Layout properties
+    rows: {
+      type: 'string' as const,
+      visual: true,
+      default: '3',
+      coerce: (v: any) => String(v)
+    },
+    cols: {
+      type: 'string' as const,
+      visual: true,
+      default: '',
+      coerce: (v: any) => v ? String(v) : ''
+    },
+    resize: {
+      type: 'string' as const,
+      visual: true,
+      default: 'none',
+      validate: (v: any) => ['none', 'both', 'horizontal', 'vertical'].includes(v),
+      coerce: (v: any) => {
+        if (!['none', 'both', 'horizontal', 'vertical'].includes(v)) {
+          console.warn(`[ty-textarea] Invalid resize '${v}'. Using 'none'.`)
+          return 'none'
+        }
+        return v
+      }
+    },
+    minHeight: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    maxHeight: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    }
+  }
+
+  // ============================================================================
+  // INTERNAL STATE - Not managed by PropertyManager
+  // NOTE: _internals provided by TyComponent base class
+  // ============================================================================
+
+  // DOM element references
   private _textareaEl: HTMLTextAreaElement | null = null
   private _dummyEl: HTMLPreElement | null = null
-  private _isInitialized = false
 
-  // Property backing fields
-  private _value = ''
-  private _name = ''
-  private _placeholder = ''
-  private _label = ''
-  private _disabled = false
-  private _required = false
-  private _error = ''
-  private _size: 'xs' | 'sm' | 'md' | 'lg' | 'xl' = 'md'
-  private _rows = '3'
-  private _cols = ''
-  private _resize: 'none' | 'both' | 'horizontal' | 'vertical' = 'none'
-  private _minHeight = ''
-  private _maxHeight = ''
+  // Focus state
+  private _isFocused = false
 
   constructor() {
-    super()
-    const shadow = this.attachShadow({ mode: 'open' })
-    this._internals = this.attachInternals()
+    super()  // TyComponent handles attachInternals() and attachShadow()
+
+    // Apply styles to shadow root
+    const shadow = this.shadowRoot!
     ensureStyles(shadow, { css: textareaStyles, id: 'ty-textarea' })
-
-    // Initialize state
-    this._state = {
-      value: this._value,
-      isFocused: false,
-      dummyStyle: null
-    }
   }
 
-  static get observedAttributes(): string[] {
-    return [
-      'value',
-      'name',
-      'placeholder',
-      'label',
-      'disabled',
-      'required',
-      'error',
-      'size',
-      'class',
-      'rows',
-      'cols',
-      'resize',
-      'min-height',
-      'max-height'
-    ]
+  // observedAttributes auto-generated by TyComponent from properties config
+
+  // ============================================================================
+  // TYCOMPONENT LIFECYCLE HOOKS
+  // ============================================================================
+
+  /**
+   * Called when component connects to DOM
+   * TyComponent already handled pre-connection property capture
+   */
+  protected onConnect(): void {
+    // No special initialization needed - TyComponent handles everything
+    // Just render the component
   }
 
-  // ===== LIFECYCLE CALLBACKS =====
-
-  connectedCallback(): void {
-    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
-    // Check if value was set directly on the instance before our getter/setter was available
-    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
-    if (instanceValue && instanceValue.value !== undefined) {
-      this._value = instanceValue.value
-      this._state.value = instanceValue.value
-      // Clean up the instance property so our getter/setter works
-      Reflect.deleteProperty(this, 'value')
-    }
-    
-    // Initialize value from attribute if present
-    const attrValue = this.getAttribute('value')
-    if (attrValue !== null) {
-      this._value = attrValue
-      this._state.value = attrValue
-    }
-
-    this._isInitialized = true
-    this.render()
-
-    // Set up form value synchronization
-    this._internals.setFormValue(this._value || '')
-  }
-
-  disconnectedCallback(): void {
+  /**
+   * Called when component disconnects from DOM
+   */
+  protected onDisconnect(): void {
     // Cleanup event listeners if needed
     if (this._textareaEl) {
       const newTextarea = this._textareaEl.cloneNode(true)
       this._textareaEl.parentNode?.replaceChild(newTextarea, this._textareaEl)
       this._textareaEl = null
     }
+    this._dummyEl = null
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
-    if (oldValue === newValue) return
-
-    switch (name) {
-      case 'value':
-        this._value = newValue || ''
-        this._state.value = this._value
-        this._internals.setFormValue(this._value)
-        break
-      case 'name':
-        this._name = newValue || ''
-        break
-      case 'placeholder':
-        this._placeholder = newValue || ''
-        break
-      case 'label':
-        this._label = newValue || ''
-        break
-      case 'disabled':
-        this._disabled = newValue !== null
-        break
-      case 'required':
-        this._required = newValue !== null
-        break
-      case 'error':
-        this._error = newValue || ''
-        break
-      case 'size':
-        this._size = (newValue as any) || 'md'
-        break
-      case 'rows':
-        this._rows = newValue || '3'
-        break
-      case 'cols':
-        this._cols = newValue || ''
-        break
-      case 'resize':
-        this._resize = (newValue as any) || 'none'
-        break
-      case 'min-height':
-        this._minHeight = newValue || ''
-        break
-      case 'max-height':
-        this._maxHeight = newValue || ''
-        break
-    }
-
-    if (this._isInitialized) {
-      this.render()
-    }
+  /**
+   * Handle property changes - called BEFORE render
+   * This replaces the old attributeChangedCallback logic
+   */
+  protected onPropertiesChanged(changes: PropertyChange[]): void {
+    // No special handling needed for textarea
+    // All property changes will trigger render() automatically if marked as visual
   }
 
-  // ===== PUBLIC API (Properties) =====
-
-  get value(): string { return this._value }
-  set value(val: string) {
-    if (this._value !== val) {
-      this._value = val
-      this._state.value = val
-      this.setAttribute('value', val)
-      this._internals.setFormValue(val)
-      if (this._isInitialized) this.render()
-    }
+  /**
+   * Override form value to return current value
+   */
+  protected getFormValue(): FormDataEntryValue | null {
+    return this.getProperty('value') || null
   }
 
-  get name(): string { return this._name }
-  set name(val: string) {
-    if (this._name !== val) {
-      this._name = val
-      this.setAttribute('name', val)
-    }
+  // ============================================================================
+  // PROPERTY ACCESSORS - Simplified with TyComponent
+  // ============================================================================
+
+  get value(): string { return this.getProperty('value') }
+  set value(v: string) { this.setProperty('value', v) }
+
+  get name(): string { return this.getProperty('name') }
+  set name(v: string) { this.setProperty('name', v) }
+
+  get placeholder(): string { return this.getProperty('placeholder') }
+  set placeholder(v: string) { this.setProperty('placeholder', v) }
+
+  get label(): string { return this.getProperty('label') }
+  set label(v: string) { this.setProperty('label', v) }
+
+  get disabled(): boolean { return this.getProperty('disabled') }
+  set disabled(v: boolean) { this.setProperty('disabled', v) }
+
+  get required(): boolean { return this.getProperty('required') }
+  set required(v: boolean) { this.setProperty('required', v) }
+
+  get error(): string { return this.getProperty('error') }
+  set error(v: string) { this.setProperty('error', v) }
+
+  get size(): 'xs' | 'sm' | 'md' | 'lg' | 'xl' {
+    return this.getProperty('size') as 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  }
+  set size(v: 'xs' | 'sm' | 'md' | 'lg' | 'xl') {
+    this.setProperty('size', v)
   }
 
-  get placeholder(): string { return this._placeholder }
-  set placeholder(val: string) {
-    if (this._placeholder !== val) {
-      this._placeholder = val
-      this.setAttribute('placeholder', val)
-    }
+  get rows(): string { return this.getProperty('rows') }
+  set rows(v: string | number) { this.setProperty('rows', v) }
+
+  get cols(): string { return this.getProperty('cols') }
+  set cols(v: string | number) { this.setProperty('cols', v) }
+
+  get resize(): 'none' | 'both' | 'horizontal' | 'vertical' {
+    return this.getProperty('resize') as 'none' | 'both' | 'horizontal' | 'vertical'
+  }
+  set resize(v: 'none' | 'both' | 'horizontal' | 'vertical') {
+    this.setProperty('resize', v)
   }
 
-  get label(): string { return this._label }
-  set label(val: string) {
-    if (this._label !== val) {
-      this._label = val
-      this.setAttribute('label', val)
-    }
-  }
+  get minHeight(): string { return this.getProperty('minHeight') }
+  set minHeight(v: string) { this.setProperty('minHeight', v) }
 
-  get disabled(): boolean { return this._disabled }
-  set disabled(val: boolean) {
-    if (this._disabled !== val) {
-      this._disabled = val
-      if (val) {
-        this.setAttribute('disabled', '')
-      } else {
-        this.removeAttribute('disabled')
-      }
-    }
-  }
-
-  get required(): boolean { return this._required }
-  set required(val: boolean) {
-    if (this._required !== val) {
-      this._required = val
-      if (val) {
-        this.setAttribute('required', '')
-      } else {
-        this.removeAttribute('required')
-      }
-    }
-  }
-
-  get error(): string { return this._error }
-  set error(val: string) {
-    if (this._error !== val) {
-      this._error = val
-      this.setAttribute('error', val)
-    }
-  }
-
-  get size(): 'xs' | 'sm' | 'md' | 'lg' | 'xl' { return this._size }
-  set size(val: 'xs' | 'sm' | 'md' | 'lg' | 'xl') {
-    if (this._size !== val) {
-      this._size = val
-      this.setAttribute('size', val)
-    }
-  }
-
-  get rows(): string { return this._rows }
-  set rows(val: string | number) {
-    const strVal = String(val)
-    if (this._rows !== strVal) {
-      this._rows = strVal
-      this.setAttribute('rows', strVal)
-    }
-  }
-
-  get cols(): string { return this._cols }
-  set cols(val: string | number) {
-    const strVal = String(val)
-    if (this._cols !== strVal) {
-      this._cols = strVal
-      this.setAttribute('cols', strVal)
-    }
-  }
-
-  get resize(): 'none' | 'both' | 'horizontal' | 'vertical' { return this._resize }
-  set resize(val: 'none' | 'both' | 'horizontal' | 'vertical') {
-    if (this._resize !== val) {
-      this._resize = val
-      this.setAttribute('resize', val)
-    }
-  }
-
-  get minHeight(): string { return this._minHeight }
-  set minHeight(val: string) {
-    if (this._minHeight !== val) {
-      this._minHeight = val
-      this.setAttribute('min-height', val)
-    }
-  }
-
-  get maxHeight(): string { return this._maxHeight }
-  set maxHeight(val: string) {
-    if (this._maxHeight !== val) {
-      this._maxHeight = val
-      this.setAttribute('max-height', val)
-    }
-  }
+  get maxHeight(): string { return this.getProperty('maxHeight') }
+  set maxHeight(v: string) { this.setProperty('maxHeight', v) }
 
   // ===== HELPER METHODS =====
 
@@ -427,12 +377,12 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
 
     // Apply font styles
     Object.entries(fontStyle).forEach(([prop, value]) => {
-      ;(style as any)[prop] = value
+      ; (style as any)[prop] = value
     })
 
     // Apply spacing styles
     Object.entries(spacingStyle).forEach(([prop, value]) => {
-      ;(style as any)[prop] = value
+      ; (style as any)[prop] = value
     })
 
     // Append to shadow root
@@ -448,8 +398,8 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
   private resizeTextarea(textareaEl: HTMLTextAreaElement, dummyEl: HTMLPreElement): void {
     if (!textareaEl || !dummyEl) return
 
-    const { value } = this._state
-    const placeholder = this._placeholder
+    const value = this.value
+    const placeholder = this.placeholder
     const content = (value === '' && placeholder) ? placeholder : value + ' '
     const currentHeight = textareaEl.clientHeight
 
@@ -463,8 +413,8 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
     const measuredHeight = dummyEl.scrollHeight
 
     // Parse min/max heights
-    const minHeight = this._minHeight ? parseInt(this._minHeight.replace('px', ''), 10) : null
-    const maxHeight = this._maxHeight ? parseInt(this._maxHeight.replace('px', ''), 10) : null
+    const minHeight = this.minHeight ? parseInt(this.minHeight.replace('px', ''), 10) : null
+    const maxHeight = this.maxHeight ? parseInt(this.maxHeight.replace('px', ''), 10) : null
 
     // Apply constraints
     let constrainedHeight = measuredHeight
@@ -488,7 +438,7 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
    * Emit custom input and change events
    */
   private emitValueEvents(originalEvent: Event): void {
-    const { value } = this._state
+    const value = this.value
 
     // Update form internals
     this._internals.setFormValue(value || '')
@@ -517,8 +467,8 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
     const target = e.target as HTMLTextAreaElement
     const newValue = target.value
 
-    this._state.value = newValue
-    this._value = newValue
+    // Update value via property (triggers proper lifecycle)
+    this.value = newValue
 
     // Trigger resize after state update
     if (this._textareaEl && this._dummyEl) {
@@ -533,26 +483,26 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
    * Handle textarea focus event
    */
   private handleFocusEvent = (): void => {
-    this._state.isFocused = true
+    this._isFocused = true
   }
 
   /**
    * Handle textarea blur event
    */
   private handleBlurEvent = (): void => {
-    this._state.isFocused = false
+    this._isFocused = false
   }
 
   /**
    * Build class list for textarea element
    */
   private buildClassList(): string {
-    const classes: string[] = [this._size]
+    const classes: string[] = [this.size]
 
-    if (this._disabled) classes.push('disabled')
-    if (this._required) classes.push('required')
-    if (this._error) classes.push('error')
-    if (this._resize !== 'none') classes.push(`resize-${this._resize}`)
+    if (this.disabled) classes.push('disabled')
+    if (this.required) classes.push('required')
+    if (this.error) classes.push('error')
+    if (this.resize !== 'none') classes.push(`resize-${this.resize}`)
 
     const customClass = this.getAttribute('class')
     if (customClass) classes.push(customClass)
@@ -564,11 +514,11 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
    * Apply min/max height constraints to textarea element
    */
   private applyHeightConstraints(textareaEl: HTMLTextAreaElement): void {
-    if (this._minHeight) {
-      textareaEl.style.minHeight = this._minHeight
+    if (this.minHeight) {
+      textareaEl.style.minHeight = this.minHeight
     }
-    if (this._maxHeight) {
-      textareaEl.style.maxHeight = this._maxHeight
+    if (this.maxHeight) {
+      textareaEl.style.maxHeight = this.maxHeight
     }
   }
 
@@ -584,7 +534,7 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
 
   // ===== RENDER =====
 
-  private render(): void {
+  protected render(): void {
     const root = this.shadowRoot!
     const existingContainer = root.querySelector<HTMLDivElement>('.textarea-container')
     const existingLabel = root.querySelector<HTMLLabelElement>('label')
@@ -593,12 +543,12 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
 
     if (existingContainer && existingTextarea) {
       // Update existing elements
-      
+
       // Update label
-      if (this._label) {
+      if (this.label) {
         if (existingLabel) {
-          existingLabel.innerHTML = this._label + 
-            (this._required ? ` <span class="required-icon">${REQUIRED_ICON}</span>` : '')
+          existingLabel.innerHTML = this.label +
+            (this.required ? ` <span class="required-icon">${REQUIRED_ICON}</span>` : '')
           existingLabel.style.display = 'block'
         }
       } else if (existingLabel) {
@@ -606,35 +556,35 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
       }
 
       // Update textarea
-      existingTextarea.value = this._value || ''
-      existingTextarea.placeholder = this._placeholder || ''
-      existingTextarea.disabled = this._disabled
-      existingTextarea.required = this._required
+      existingTextarea.value = this.value || ''
+      existingTextarea.placeholder = this.placeholder || ''
+      existingTextarea.disabled = this.disabled
+      existingTextarea.required = this.required
       existingTextarea.className = this.buildClassList()
 
       // Set name for form association
-      if (this._name) {
-        existingTextarea.setAttribute('name', this._name)
+      if (this.name) {
+        existingTextarea.setAttribute('name', this.name)
       } else {
         existingTextarea.removeAttribute('name')
       }
 
       // Set rows/cols
-      if (this._rows) existingTextarea.setAttribute('rows', this._rows)
-      if (this._cols) existingTextarea.setAttribute('cols', this._cols)
+      if (this.rows) existingTextarea.setAttribute('rows', this.rows)
+      if (this.cols) existingTextarea.setAttribute('cols', this.cols)
 
       // Apply height constraints
       this.applyHeightConstraints(existingTextarea)
 
       // Update error message
-      if (this._error) {
+      if (this.error) {
         if (!existingError) {
           const errorEl = document.createElement('div')
           errorEl.className = 'error-message'
           existingContainer.appendChild(errorEl)
         }
         const errorEl = root.querySelector<HTMLDivElement>('.error-message')
-        if (errorEl) errorEl.textContent = this._error
+        if (errorEl) errorEl.textContent = this.error
       } else if (existingError) {
         existingError.remove()
       }
@@ -652,29 +602,29 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
 
       const labelEl = document.createElement('label')
       labelEl.className = 'textarea-label'
-      if (this._label) {
-        labelEl.innerHTML = this._label + 
-          (this._required ? ` <span class="required-icon">${REQUIRED_ICON}</span>` : '')
+      if (this.label) {
+        labelEl.innerHTML = this.label +
+          (this.required ? ` <span class="required-icon">${REQUIRED_ICON}</span>` : '')
         labelEl.style.display = 'block'
       } else {
         labelEl.style.display = 'none'
       }
 
       const textareaEl = document.createElement('textarea')
-      textareaEl.value = this._value || ''
-      textareaEl.placeholder = this._placeholder || ''
-      textareaEl.disabled = this._disabled
-      textareaEl.required = this._required
+      textareaEl.value = this.value || ''
+      textareaEl.placeholder = this.placeholder || ''
+      textareaEl.disabled = this.disabled
+      textareaEl.required = this.required
       textareaEl.className = this.buildClassList()
 
       // Set name for form association
-      if (this._name) {
-        textareaEl.setAttribute('name', this._name)
+      if (this.name) {
+        textareaEl.setAttribute('name', this.name)
       }
 
       // Set default or specified rows/cols
-      textareaEl.setAttribute('rows', this._rows || '3')
-      if (this._cols) textareaEl.setAttribute('cols', this._cols)
+      textareaEl.setAttribute('rows', this.rows || '3')
+      if (this.cols) textareaEl.setAttribute('cols', this.cols)
 
       // Apply height constraints
       this.applyHeightConstraints(textareaEl)
@@ -687,10 +637,10 @@ export class TyTextarea extends HTMLElement implements TyTextareaElement {
       container.appendChild(textareaEl)
 
       // Add error message if present
-      if (this._error) {
+      if (this.error) {
         const errorEl = document.createElement('div')
         errorEl.className = 'error-message'
-        errorEl.textContent = this._error
+        errorEl.textContent = this.error
         container.appendChild(errorEl)
       }
 

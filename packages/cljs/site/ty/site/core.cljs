@@ -119,7 +119,7 @@
   "Render a single navigation item (can be parent or child)"
   [{:keys [route-id label icon indented?]}]
   (let [active? (router/rendered? route-id true)]
-    [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center
+    [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center.gap-2
      {:class (concat
               (if active?
                 ["ty-bg-primary-" "ty-text-primary++"]
@@ -136,10 +136,8 @@
                       ;; Close mobile menu
                       (swap! state assoc :mobile-menu-open false)))}}
      [:ty-icon {:name icon
-                :size "sm"
-                :class "mr-2"}]
-     [:div.flex.items-center.gap-2
-      [:span.text-sm label]]]))
+                :size "sm"}]
+     [:span.text-sm label]]))
 
 (defn nav-section
   "Render a navigation section with optional children"

@@ -256,6 +256,10 @@ export abstract class TyComponent<T = any> extends HTMLElement {
    */
   protected updateFormValue(): void {
     const formValue = this.getFormValue()
+    console.log(`[TyComponent.updateFormValue] Setting form value:`, {
+      tagName: this.tagName,
+      formValue
+    })
     this._internals.setFormValue(formValue)
   }
   
@@ -307,5 +311,34 @@ export abstract class TyComponent<T = any> extends HTMLElement {
    */
   get form(): HTMLFormElement | null {
     return this._internals.form
+  }
+  
+  /**
+   * Form reset callback - called when form.reset() is invoked
+   * Resets component to its default value
+   */
+  formResetCallback(): void {
+    // Get the default value from property configuration
+    const ctor = this.constructor as typeof TyComponent
+    const valueConfig = ctor.properties['value']
+    
+    if (valueConfig) {
+      const defaultValue = valueConfig.default ?? ''
+      
+      // Reset the value property through setProperty to trigger lifecycle
+      this.setProperty('value', defaultValue)
+    }
+    
+    // Call subclass hook for custom reset behavior
+    this.onFormReset()
+  }
+  
+  /**
+   * Hook: Called when form is reset
+   * Subclasses can override to perform additional reset actions
+   */
+  protected onFormReset(): void {
+    // Default: no-op
+    // Subclasses can override to reset additional state
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@gersak/ty",
-  "version": "0.1.907",
+  "version": "0.1.914",
   "description": "Ty Web Components - Framework-agnostic UI components with semantic design system",
   "type": "module",
   "sideEffects": false,
@@ -125,9 +125,10 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build:lib": "tsc --project tsconfig.lib.json",
-    "build:cdn": "vite build --config vite.config.cdn.ts && cp css/ty.css dist/ty.css",
-    "build:dev": "vite build --config vite.config.dev.ts && cp css/ty.css dist/ty.css",
+    "generate:version": "node scripts/generate-version.js",
+    "build:lib": "npm run generate:version && tsc --project tsconfig.lib.json",
+    "build:cdn": "npm run generate:version && vite build --config vite.config.cdn.ts && cp css/ty.css dist/ty.css",
+    "build:dev": "npm run generate:version && vite build --config vite.config.dev.ts && cp css/ty.css dist/ty.css",
     "build:dev:watch": "vite build --config vite.config.dev.ts --watch",
     "build": "npm run build:lib && npm run build:cdn",
     "prepublishOnly": "npm run build",

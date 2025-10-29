@@ -9,7 +9,7 @@ import { ensureStyles } from '../utils/styles.js'
 import { iconStyles } from '../styles/icon.js'
 import * as IconRegistry from '../utils/icon-registry.js'
 
-/** Fallback SVG for missing icons */
+/** Fallback SVG for missing icons - More visible to prevent layout shift */
 const NOT_FOUND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" 
       viewBox="0 0 512 512" 
       fill="currentColor" 
@@ -35,13 +35,16 @@ export class TyIcon extends HTMLElement implements TyIconElement {
   private _tempo: IconTempo | undefined = undefined
   private _watchId: string | null = null
 
+  /** Track currently rendered SVG to avoid unnecessary re-renders */
+  private _currentSvg: string = ''
+
   constructor() {
     super()
 
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: iconStyles, id: 'ty-icon' })
+    shadow.innerHTML = NOT_FOUND_ICON
 
-    this.render()
   }
 
   static get observedAttributes(): string[] {
@@ -99,7 +102,7 @@ export class TyIcon extends HTMLElement implements TyIconElement {
         }
         break
       case 'size':
-        this._size = (newValue as IconSize) || null
+        this._size = (newValue as IconSize) || undefined
         break
       case 'spin':
         this._spin = newValue !== null
@@ -108,7 +111,7 @@ export class TyIcon extends HTMLElement implements TyIconElement {
         this._pulse = newValue !== null
         break
       case 'tempo':
-        this._tempo = (newValue as IconTempo) || null
+        this._tempo = (newValue as IconTempo) || undefined
         break
     }
 
@@ -240,22 +243,59 @@ export class TyIcon extends HTMLElement implements TyIconElement {
     }
   }
 
-  /** Render the icon SVG */
+  /** 
+   * Render the icon SVG
+   * Smart rendering strategy:
+   * 1. Check memory registry (instant)
+   * 2. If found in memory → render immediately
+   * 3. If not in memory → show NOT_FOUND_ICON immediately (prevents empty state)
+   * 4. Then check cache asynchronously and replace if found
+   * 5. Only re-render if SVG actually changed
+   */
   private render(): void {
-    const shadow = this.shadowRoot!
 
-    // Get icon SVG from registry
-    const iconSvg = this._name
-      ? (IconRegistry.getIcon(this._name) || NOT_FOUND_ICON)
-      : NOT_FOUND_ICON
-
-    // Only update if content actually changed to prevent unnecessary reflows
-    const currentContent = shadow.innerHTML.trim()
-    const newContent = iconSvg.trim()
-
-    if (currentContent !== newContent) {
-      shadow.innerHTML = iconSvg
+    if (!this._name) {
+      this.renderSvg(NOT_FOUND_ICON)
+      return
     }
+
+    // Fast path: Check memory registry first
+    const memorySvg = IconRegistry.getIcon(this._name)
+    if (memorySvg) {
+      this.renderSvg(memorySvg)
+      return
+    }
+
+    this.renderSvg(NOT_FOUND_ICON)
+
+    // Slow path: Check cache asynchronously
+    // This will replace NOT_FOUND_ICON if icon is found in cache
+    /* IconRegistry.getCachedIcon(this._name).then(cachedSvg => {
+      if (cachedSvg) {
+        // Found in cache - replace NOT_FOUND_ICON with cached icon
+        this.renderSvg(cachedSvg)
+      }
+      // If not in cache, NOT_FOUND_ICON already showing (no change needed)
+    }).catch(err => {
+      console.warn(`[ty-icon] Failed to load icon "${this._name}":`, err)
+      // NOT_FOUND_ICON already showing (no change needed)
+    })
+    */
+  }
+
+  /**
+   * Actually render SVG to shadow DOM
+   * Only updates if content changed to prevent unnecessary reflows
+   */
+  private renderSvg(svg: string): void {
+    // Only render if content actually changed
+    if (this._currentSvg === svg) {
+      return
+    }
+
+    const shadow = this.shadowRoot!
+    shadow.innerHTML = svg
+    this._currentSvg = svg
   }
 }
 

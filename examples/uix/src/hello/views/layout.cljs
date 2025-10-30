@@ -157,21 +157,32 @@
 ;; =============================================================================
 
 (defui resize-observer-basic-demo []
-  "Basic resize observer with UIx"
-  ($ :div.space-y-4
-     ($ :h3.ty-text++.text-lg.font-semibold
-        "Basic Resize Observer")
+  "Basic resize observer with UIx local state"
+  (let [[size set-size] (use-state nil)]
 
-     ($ :p.text-sm.ty-text-
-        "Drag the bottom-right corner to resize this panel.")
+    ;; Subscribe to resize changes on mount, cleanup on unmount
+    (use-effect
+      (fn []
+        (when js/window.tyResizeObserver
+          (let [unsubscribe (js/window.tyResizeObserver.onResize
+                              "uix-basic-demo"
+                              (fn [js-size]
+                                (set-size {:width (.-width js-size)
+                                           :height (.-height js-size)})))]
+            ;; Return cleanup function
+            unsubscribe)))
+      []) ;; Empty deps = run once on mount
 
-     ($ :ty-resize-observer {:id "uix-basic-demo"
-                             :class "ty-bg-primary- border-2 ty-border-primary rounded-lg p-4 resize overflow-auto"
-                             :style {:min-width "200px"
-                                     :min-height "150px"
-                                     :width "300px"
-                                     :height "200px"}}
-        (layout/with-resize-observer "uix-basic-demo"
+    ($ :div.space-y-4
+       ($ :h3.ty-text++.text-lg.font-semibold
+          "Basic Resize Observer")
+
+       ($ :ty-resize-observer {:id "uix-basic-demo"
+                               :class "ty-bg-primary- border-2 ty-border-primary rounded-lg p-4 resize overflow-auto"
+                               :style {:min-width "200px"
+                                       :min-height "150px"
+                                       :width "300px"
+                                       :height "200px"}}
           ($ :div.space-y-3
              ($ :div.text-center
                 ($ :h4.font-semibold.ty-text+
@@ -179,26 +190,43 @@
                 ($ :p.text-sm.ty-text-
                    "This content is aware of its container size"))
 
+             ($ :p.text-xs.ty-text--.text-center.italic
+                "💡 Drag the bottom-right corner to resize this panel")
+
              ($ :div.ty-elevated.rounded.p-3
-                ($ :div.text-sm.space-y-1
-                   ($ :div
-                      ($ :span.font-medium.ty-text+ "Width: ")
-                      ($ :span.font-mono.ty-text (or (layout/container-width) "nil") "px"))
+                (if size
+                  ($ :div.text-sm.space-y-1
+                     ($ :div
+                        ($ :span.font-medium.ty-text+ "Width: ")
+                        ($ :span.font-mono.ty-text (int (:width size)) "px"))
 
-                   ($ :div
-                      ($ :span.font-medium.ty-text+ "Height: ")
-                      ($ :span.font-mono.ty-text (or (layout/container-height) "nil") "px"))
+                     ($ :div
+                        ($ :span.font-medium.ty-text+ "Height: ")
+                        ($ :span.font-mono.ty-text (int (:height size)) "px"))
 
-                   ($ :div
-                      ($ :span.font-medium.ty-text+ "Breakpoint: ")
-                      ($ :span.font-mono.ty-text (name (or (layout/container-breakpoint) :unknown))))
+                     ($ :div
+                        ($ :span.font-medium.ty-text+ "Breakpoint: ")
+                        ($ :span.font-mono.ty-text
+                           (cond
+                             (>= (:width size) 1536) "2xl"
+                             (>= (:width size) 1280) "xl"
+                             (>= (:width size) 1024) "lg"
+                             (>= (:width size) 768) "md"
+                             (>= (:width size) 640) "sm"
+                             :else "xs")))
 
-                   ($ :div
-                      ($ :span.font-medium.ty-text+ "Orientation: ")
-                      ($ :span.font-mono.ty-text (name (or (layout/container-orientation) :unknown))))))
+                     ($ :div
+                        ($ :span.font-medium.ty-text+ "Orientation: ")
+                        ($ :span.font-mono.ty-text
+                           (let [ratio (/ (:width size) (:height size))]
+                             (cond
+                               (> ratio 1.1) "landscape"
+                               (< ratio 0.9) "portrait"
+                               :else "square")))))
+                  ($ :div.ty-text- "Initializing...")))
 
              ($ :div.text-center
-                (if (layout/breakpoint>= :md)
+                (if (and size (>= (:width size) 768))
                   ($ :div.ty-text-success "✓ Wide enough for desktop layout")
                   ($ :div.text-orange-600 "⚠ Using compact mobile layout"))))))))
 
@@ -208,94 +236,150 @@
 
 (defui container-aware-grid-demo []
   "Grid that adapts based on container size, not window size"
-  ($ :div.space-y-4
-     ($ :h3.ty-text++.text-lg.font-semibold
-        "Container-Aware Responsive Grid")
+  (let [[size set-size] (use-state nil)]
 
-     ($ :p.text-sm.ty-text-
-        "This grid adapts based on the container size, not window size.")
+    ;; Subscribe to resize changes
+    (use-effect
+      (fn []
+        (when js/window.tyResizeObserver
+          (let [unsubscribe (js/window.tyResizeObserver.onResize
+                              "uix-grid-demo"
+                              (fn [js-size]
+                                (set-size {:width (.-width js-size)
+                                           :height (.-height js-size)})))]
+            unsubscribe)))
+      [])
 
-     ($ :ty-resize-observer {:id "uix-grid-demo"
-                             :class "ty-content border-2 ty-border rounded-lg p-4 resize overflow-auto"
-                             :style {:min-width "200px"
-                                     :min-height "200px"
-                                     :width "400px"
-                                     :height "250px"}}
-        (layout/with-resize-observer "uix-grid-demo"
-          (let [columns (cond
-                          (layout/breakpoint>= :lg) 4
-                          (layout/breakpoint>= :md) 3
-                          (layout/breakpoint>= :sm) 2
-                          :else 1)]
-            ($ :div.space-y-3
-               ($ :div.text-center
-                  ($ :div.text-sm
-                     ($ :span.font-medium.ty-text+ "Grid columns: ")
-                     ($ :span.font-mono.ty-text columns))
-                  ($ :div.text-xs.ty-text--
-                     "Based on container breakpoint: " (name (or (layout/container-breakpoint) :unknown))))
+    ($ :div.space-y-4
+       ($ :h3.ty-text++.text-lg.font-semibold
+          "Container-Aware Responsive Grid")
 
-               ($ :div.grid.gap-2 {:style {:grid-template-columns (str "repeat(" columns ", minmax(0, 1fr))")}}
-                  (for [i (range 8)]
-                    ($ :div.ty-elevated.rounded.p-2.text-center.text-sm {:key i}
-                       (str "Item " (inc i)))))))))))
+       ($ :p.text-sm.ty-text-
+          "This grid adapts based on the container size, not window size.")
+
+       ($ :ty-resize-observer {:id "uix-grid-demo"
+                               :class "ty-content border-2 ty-border rounded-lg p-4 resize overflow-auto"
+                               :style {:min-width "200px"
+                                       :min-height "200px"
+                                       :width "400px"
+                                       :height "250px"}}
+          (if size
+            (let [width (:width size)
+                  breakpoint (cond
+                               (>= width 1024) :lg
+                               (>= width 768) :md
+                               (>= width 640) :sm
+                               :else :xs)
+                  columns (cond
+                            (>= width 1024) 4
+                            (>= width 768) 3
+                            (>= width 640) 2
+                            :else 1)]
+              ($ :div.space-y-3
+                 ($ :div.text-center
+                    ($ :div.text-sm
+                       ($ :span.font-medium.ty-text+ "Grid columns: ")
+                       ($ :span.font-mono.ty-text columns))
+                    ($ :div.text-xs.ty-text--
+                       "Based on container breakpoint: " (name breakpoint)))
+
+                 ($ :div.grid.gap-2 {:style {:grid-template-columns (str "repeat(" columns ", minmax(0, 1fr))")}}
+                    (for [i (range 8)]
+                      ($ :div.ty-elevated.rounded.p-2.text-center.text-sm {:key i}
+                         (str "Item " (inc i)))))))
+            ($ :div.ty-text-.text-center "Initializing...")))))
 
 ;; =============================================================================
 ;; Flexbox Demo with Dual Resize Observers
 ;; =============================================================================
 
-(defui flexbox-dual-observer-demo []
-  "Flexbox layout with two resize observers"
-  ($ :div.space-y-4
-     ($ :h3.ty-text++.text-lg.font-semibold
-        "Flexbox Layout with Resize Observers")
+  (defui flexbox-dual-observer-demo []
+    "Flexbox layout with two resize observers"
+    (let [[sidebar-size set-sidebar-size] (use-state nil)
+          [main-size set-main-size] (use-state nil)]
 
-     ($ :p.text-sm.ty-text-
-        "Both panels use resize observers for layout context.")
+    ;; Subscribe to sidebar resize
+      (use-effect
+        (fn []
+          (when js/window.tyResizeObserver
+            (let [unsubscribe (js/window.tyResizeObserver.onResize
+                                "uix-flex-sidebar"
+                                (fn [js-size]
+                                  (set-sidebar-size {:width (.-width js-size)
+                                                     :height (.-height js-size)})))]
+              unsubscribe)))
+        [])
 
-     ($ :div.flex.gap-4.h-80
-        ;; Sidebar with resize observer
-        ($ :ty-resize-observer {:id "uix-flex-sidebar"
-                                :class "ty-bg-secondary- border-2 ty-border-secondary rounded-lg p-4 resize overflow-auto"
-                                :style {:min-width "150px"
-                                        :width "200px"}}
-           (layout/with-resize-observer "uix-flex-sidebar"
-             ($ :div.space-y-3
-                ($ :h4.font-semibold.text-center.ty-text+
-                   "Sidebar")
+    ;; Subscribe to main content resize
+      (use-effect
+        (fn []
+          (when js/window.tyResizeObserver
+            (let [unsubscribe (js/window.tyResizeObserver.onResize
+                                "uix-flex-main"
+                                (fn [js-size]
+                                  (set-main-size {:width (.-width js-size)
+                                                  :height (.-height js-size)})))]
+              unsubscribe)))
+        [])
 
-                ($ :div.ty-elevated.rounded.p-2.text-xs.space-y-1
-                   ($ :div
-                      "Width: " ($ :span.font-mono.ty-text (or (layout/container-width) "nil") "px"))
-                   ($ :div
-                      "Height: " ($ :span.font-mono.ty-text (or (layout/container-height) "nil") "px")))
+      ($ :div.space-y-4
+         ($ :h3.ty-text++.text-lg.font-semibold
+            "Flexbox Layout with Resize Observers")
 
-                ($ :div.text-center.text-sm
-                   (if (> (or (layout/container-width) 0) 180)
-                     ($ :div.ty-text-success "🎯 Full content")
-                     ($ :div.ty-text-warning "📱 Compact"))))))
+         ($ :p.text-sm.ty-text-
+            "Both panels use resize observers for layout context.")
 
-        ;; Main content with resize observer
-        ($ :ty-resize-observer {:id "uix-flex-main"
-                                :class "ty-bg-success- border-2 ty-border-success rounded-lg p-4 flex-1"}
-           (layout/with-resize-observer "uix-flex-main"
-             ($ :div.space-y-3
-                ($ :h4.font-semibold.text-center.ty-text+
-                   "Main Content")
+         ($ :div.flex.gap-4.h-80
+          ;; Sidebar with resize observer
+            ($ :ty-resize-observer {:id "uix-flex-sidebar"
+                                    :class "ty-bg-secondary- border-2 ty-border-secondary rounded-lg p-4 resize overflow-auto"
+                                    :style {:min-width "150px"
+                                            :width "200px"}}
+               (if sidebar-size
+                 (let [width (:width sidebar-size)]
+                   ($ :div.space-y-3
+                      ($ :h4.font-semibold.text-center.ty-text+
+                         "Sidebar")
 
-                ($ :div.ty-elevated.rounded.p-3.space-y-1.text-sm
-                   ($ :div
-                      "Width: " ($ :span.font-mono.ty-text (or (layout/container-width) "nil") "px"))
-                   ($ :div
-                      "Height: " ($ :span.font-mono.ty-text (or (layout/container-height) "nil") "px"))
-                   ($ :div
-                      "Breakpoint: " ($ :span.font-mono.ty-text (name (or (layout/container-breakpoint) :unknown)))))
+                      ($ :div.ty-elevated.rounded.p-2.text-xs.space-y-1
+                         ($ :div
+                            "Width: " ($ :span.font-mono.ty-text (int width) "px"))
+                         ($ :div
+                            "Height: " ($ :span.font-mono.ty-text (int (:height sidebar-size)) "px")))
 
-                ($ :div.text-center
-                   (cond
-                     (layout/breakpoint>= :lg) ($ :div.ty-text-success "🖥️ Desktop Layout")
-                     (layout/breakpoint>= :md) ($ :div.ty-text-primary "💻 Tablet Layout")
-                     :else ($ :div.ty-text-secondary "📱 Mobile Layout")))))))))
+                      ($ :div.text-center.text-sm
+                         (if (> width 180)
+                           ($ :div.ty-text-success "🎯 Full content")
+                           ($ :div.ty-text-warning "📱 Compact")))))
+                 ($ :div.ty-text-.text-center "Loading...")))
+
+          ;; Main content with resize observer
+            ($ :ty-resize-observer {:id "uix-flex-main"
+                                    :class "ty-bg-success- border-2 ty-border-success rounded-lg p-4 flex-1"}
+               (if main-size
+                 (let [width (:width main-size)
+                       breakpoint (cond
+                                    (>= width 1024) :lg
+                                    (>= width 768) :md
+                                    :else :xs)]
+                   ($ :div.space-y-3
+                      ($ :h4.font-semibold.text-center.ty-text+
+                         "Main Content")
+
+                      ($ :div.ty-elevated.rounded.p-3.space-y-1.text-sm
+                         ($ :div
+                            "Width: " ($ :span.font-mono.ty-text (int width) "px"))
+                         ($ :div
+                            "Height: " ($ :span.font-mono.ty-text (int (:height main-size)) "px"))
+                         ($ :div
+                            "Breakpoint: " ($ :span.font-mono.ty-text (name breakpoint))))
+
+                      ($ :div.text-center
+                         (cond
+                           (>= width 1024) ($ :div.ty-text-success "🖥️ Desktop Layout")
+                           (>= width 768) ($ :div.ty-text-primary "💻 Tablet Layout")
+                           :else ($ :div.ty-text-secondary "📱 Mobile Layout")))))
+                 ($ :div.ty-text-.text-center "Loading..."))))))))
 
 ;; =============================================================================
 ;; UIx State Integration Demo

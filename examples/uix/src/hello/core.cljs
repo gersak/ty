@@ -1,22 +1,18 @@
 (ns hello.core
   (:require
    ;; Clean React wrappers
-   ["@gersak/ty-react" :as ty]
-   [hello.icons]
+    ["@gersak/ty-react" :as ty]
+    [hello.icons]
     ;; Views
-   [hello.views.forms :as forms]
-   [hello.views.layout :as layout-views]
-   [hello.views.modals :as modals-views]
+    [hello.views.forms :as forms]
+    [hello.views.layout :as layout-views]
+    [hello.views.modals :as modals-views]
     ;; All component configurations
-   ty.context
-    ;; ClojureScript ty utilities
-   [ty.icons :as icons]
-
    ;; TY Router
-   [ty.router :as router]
+    [ty.router :as router]
    ;; UIx for React-like development
-   [uix.core :as uix :refer [defui $]]
-   [uix.dom]))
+    [uix.core :as uix :refer [defui $]]
+    [uix.dom]))
 
 ;; Define routes
 (router/link ::router/root
@@ -155,17 +151,17 @@
 
     ;; Subscribe to router changes
     (uix/use-effect
-     (fn []
-       (let [watch-key (gensym "uix-router-watch")]
+      (fn []
+        (let [watch-key (gensym "uix-router-watch")]
          ;; Add watch to router atom
-         (add-watch router/*router* watch-key
-                    (fn [_key _ref _old-state new-state]
-                      (set-router-state new-state)))
+          (add-watch router/*router* watch-key
+                     (fn [_key _ref _old-state new-state]
+                       (set-router-state new-state)))
 
          ;; Cleanup function
-         (fn []
-           (remove-watch router/*router* watch-key))))
-     []) ; Empty dependency array - only run once
+          (fn []
+            (remove-watch router/*router* watch-key))))
+      []) ; Empty dependency array - only run once
 
     router-state))
 
@@ -179,12 +175,12 @@
 
     ;; Apply theme to html element
     (uix/use-effect
-     (fn []
-       (let [html-el (.-documentElement js/document)]
-         (if (= theme "dark")
-           (.add (.-classList html-el) "dark")
-           (.remove (.-classList html-el) "dark"))))
-     [theme])
+      (fn []
+        (let [html-el (.-documentElement js/document)]
+          (if (= theme "dark")
+            (.add (.-classList html-el) "dark")
+            (.remove (.-classList html-el) "dark"))))
+      [theme])
 
     ;; Fixed layout structure - using flexbox instead of CSS Grid
     ($ :div.min-h-screen.flex.flex-col.ty-canvas
@@ -285,10 +281,10 @@
 
        ;; Close sidebar on navigation (mobile)
        (uix/use-effect
-        (fn []
-          (when sidebar-open
-            (set-sidebar-open false)))
-        [sidebar-open (:current router-state)]))))
+         (fn []
+           (when sidebar-open
+             (set-sidebar-open false)))
+         [sidebar-open (:current router-state)]))))
 
 (defonce root-ref (atom nil))
 
@@ -310,10 +306,6 @@
   ;; Watch for router changes to trigger re-renders  
   ;; This ensures the app re-renders when the route changes via browser back/forward
   (add-watch router/*router* ::uix-render
-             (fn [_ _ _ _]
-               (render-app)))
-
-  (add-watch ty.context/*element-sizes* ::uix-render
              (fn [_ _ _ _]
                (render-app)))
 

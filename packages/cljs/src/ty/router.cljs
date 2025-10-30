@@ -5,8 +5,13 @@
     [cljs.reader :refer [read-string]]
     [clojure.set :as set]
     [clojure.string :as str]
-    [clojure.zip :as zip]
-    [ty.context :as context]))
+    [clojure.zip :as zip]))
+
+
+
+(defonce ^:dynamic *roles* nil)
+(defonce ^:dynamic *user* (atom nil))
+(defonce ^:dynamic *permissions* nil)
 
 ;; Core router state
 (defonce ^:dynamic *router*
@@ -271,8 +276,8 @@
     (if-let [loc (component->location tree component-id)]
       (let [{:keys [roles permissions]} (zip/node loc)]
         (or (and (empty? roles) (empty? permissions))
-            (not-empty (set/intersection roles context/*roles*))
-            (not-empty (set/intersection permissions context/*permissions*))))
+            (not-empty (set/intersection roles *roles*))
+            (not-empty (set/intersection permissions *permissions*))))
       true))) ; If component not found, allow access
 
 (defn navigate!

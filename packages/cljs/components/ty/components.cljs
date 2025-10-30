@@ -1,37 +1,36 @@
 (ns ty.components
   "Development entry point - direct component loading for fast dev cycles"
   (:require
-   [ty.components.button :as button]
-   [ty.components.calendar :as calendar]
-   [ty.components.calendar-month :as calendar-month]
-   [ty.components.calendar-navigation :as calendar-navigation]
+    [ty.components.button :as button]
+    [ty.components.calendar :as calendar]
+    [ty.components.calendar-month :as calendar-month]
+    [ty.components.calendar-navigation :as calendar-navigation]
     ;; All component configurations
-   [ty.components.core]
-   [ty.components.date-picker :as date-picker]
-   [ty.components.dropdown :as dropdown]
-   [ty.components.icon :as icon]
-   [ty.components.input :as input]
-   [ty.components.modal :as modal]
-   [ty.components.multiselect :as multiselect]
-   [ty.components.option :as option]
-   [ty.components.popup :as popup]
-   [ty.components.resize-observer :as resize-observer]
-   [ty.components.tag :as tag]
-   [ty.components.textarea :as textarea]
-   [ty.components.tooltip :as tooltip]
+    [ty.components.core]
+    [ty.components.date-picker :as date-picker]
+    [ty.components.dropdown :as dropdown]
+    [ty.components.icon :as icon]
+    [ty.components.input :as input]
+    [ty.components.modal :as modal]
+    [ty.components.multiselect :as multiselect]
+    [ty.components.option :as option]
+    [ty.components.popup :as popup]
+    [ty.components.tag :as tag]
+    [ty.components.textarea :as textarea]
+    [ty.components.tooltip :as tooltip]
 
    ;; Include i18n namespaces
-   [ty.i18n :as i18n]
-   [ty.i18n.keyword]
-   [ty.i18n.number]
-   [ty.i18n.string]
-   [ty.i18n.time]
+    [ty.i18n :as i18n]
+    [ty.i18n.keyword]
+    [ty.i18n.number]
+    [ty.i18n.string]
+    [ty.i18n.time]
 
    ;; Include registry system
-   [ty.icons.registry :as registry]
+    [ty.icons.registry :as registry]
 
    ;; Web component shim
-   [ty.shim :as wcs]))
+    [ty.shim :as wcs]))
 
 ;; =============================================================================
 ;; Direct Component Registration (Development Mode)
@@ -52,4 +51,3 @@
 (wcs/define! "ty-date-picker" date-picker/configuration)
 (wcs/define! "ty-dropdown" dropdown/configuration)
 (wcs/define! "ty-multiselect" multiselect/configuration)
-(wcs/define! "ty-resize-observer" resize-observer/configuration)

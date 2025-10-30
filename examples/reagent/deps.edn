@@ -1,7 +1,7 @@
 {:paths ["src"]
  :deps {org.clojure/clojure {:mvn/version "1.11.1"}
         org.clojure/clojurescript {:mvn/version "1.11.121"}
-        dev.gersak/ty {:mvn/version "0.1.0-SNAPSHOT"}
-        dev.gersak/ty-icons {:mvn/version "0.1.0-SNAPSHOT"}
+        dev.gersak/ty {:mvn/version "0.2.0-SNAPSHOT"}
+        dev.gersak/ty-icons {:mvn/version "0.1.0"}
         reagent/reagent {:mvn/version "2.0.0-alpha2"}}
  :aliases {:dev {:extra-deps {thheller/shadow-cljs {:mvn/version "2.28.10"}}}}}

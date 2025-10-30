@@ -7,13 +7,14 @@
     <title>Ty Components - Professional Web Components Showcase</title>
     <meta name="description"
         content="Explore professional, framework-agnostic web components through real-world scenarios. Ty Components provides a semantic design system with comprehensive theming and accessibility.">
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Ty Complete CSS System (Variables + Utilities) -->
     <link rel="stylesheet" href="/css/ty.css">
+    <link rel="preloadmodule" href="/css/ty.css">
 
     <!-- Ty Web Components (TypeScript) -->
     <script type="module" src="/ty/ty.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Highlight.js for code syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
@@ -219,7 +220,7 @@
     <div id="app"></div>
 
     <!-- Load site app after DOM is ready -->
-    <script src="/js/site.js"></script>
+    <script defer src="/js/site.js"></script>
 </body>
 
 </html>

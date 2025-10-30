@@ -149,3 +149,6 @@
     (do
       (.warn js/console "⚠️ window.tyIcons not available yet, retrying in 50ms...")
       (js/setTimeout register-icons! 10))))
+
+
+(register-icons!)

@@ -1,22 +1,24 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reagent + Ty + Tailwind</title>
-    
+    <title>Reagent + ty Web Components</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.916/dist/ty.css">
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.916/dist/ty.js"></script>
+
     <!-- Tailwind CSS Play CDN (JIT compilation, no build needed) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Ty Web Components & CSS from local dist (symlinked) -->
-    <script src="@gersak/ty/ty.js"></script>
-    <link rel="stylesheet" href="@gersak/ty/ty.css" />
 </head>
 
 <body class="ty-canvas">
-    <div id="app">Loading...</div>
-    <script src="js/main.js"></script>
+    <div id="app"></div>
+
+    <!-- Reagent will mount here -->
+    <script defer src="js/main.js"></script>
 </body>
 
 </html>

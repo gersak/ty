@@ -21,6 +21,7 @@ export { TyCalendarMonth } from './components/calendar-month.js'
 export { TyCalendarNavigation } from './components/calendar-navigation.js'
 export { TyCalendar } from './components/calendar.js'
 export { TyDatePicker } from './components/date-picker.js'
+export { TyResizeObserver } from './components/resize-observer.js'
 
 // Types
 export type {
@@ -64,6 +65,18 @@ export {
   disableDebug as disableScrollLockDebug
 } from './utils/scroll-lock.js'
 
+// Resize Observer utilities
+export {
+  getSize,
+  onResize,
+  getAllSizes
+} from './utils/resize-observer.js'
+
+export type {
+  Size as ResizeSize,
+  ResizeCallback
+} from './utils/resize-observer.js'
+
 export type {
   Placement,
   PositionResult,
@@ -76,6 +89,8 @@ import { VERSION } from './version.js'
 // Global API
 // Expose window.tyIcons for script tag usage
 import { registerIcons, getIcon, hasIcon, getIconNames } from './utils/icon-registry.js'
+import { getSize as getResizeSize, onResize as subscribeResize, getAllSizes } from './utils/resize-observer.js'
+import type { Size as ResizeSize, ResizeCallback } from './utils/resize-observer.js'
 
 declare global {
   interface Window {
@@ -85,6 +100,11 @@ declare global {
       get: (name: string) => string | undefined
       has: (name: string) => boolean
       list: () => string[]
+    }
+    tyResizeObserver: {
+      getSize: (id: string) => ResizeSize | undefined
+      onResize: (id: string, callback: ResizeCallback) => () => void
+      sizes: Record<string, ResizeSize>
     }
   }
 }
@@ -99,5 +119,12 @@ if (typeof window !== 'undefined') {
     get: (name: string) => getIcon(name),
     has: (name: string) => hasIcon(name),
     list: () => getIconNames()
+  }
+  
+  // Resize Observer API
+  window.tyResizeObserver = {
+    getSize: (id: string) => getResizeSize(id),
+    onResize: (id: string, callback: ResizeCallback) => subscribeResize(id, callback),
+    get sizes() { return getAllSizes() }
   }
 }

@@ -216,10 +216,13 @@
           "Technical Skills"]
          [:> ty/TyMultiselect {:className "w-full"
                                :placeholder "Select your skills"
-                               :onChange (fn [event]
-                                           (.log js/console "EVENT: " event))
-                               ; :onChange #(swap! state/app-state assoc-in [:form :skills] (.. ^js % -detail -values))
-                               }
+                               :value (when (seq (:skills form-data))
+                                        (clojure.string/join "," (:skills form-data)))
+                               :onChange #(let [values (.. ^js % -detail -values)
+                                                values-vec (if (array? values)
+                                                             (vec values)
+                                                             [])]
+                                            (swap! state/app-state assoc-in [:form :skills] values-vec))}
           [:> ty/TyTag {:value "javascript"
                         :flavor "primary"} "JavaScript"]
           [:> ty/TyTag {:value "typescript"
@@ -247,7 +250,12 @@
           [:> ty/TyTag {:value "docker"
                         :flavor "neutral"} "Docker"]
           [:> ty/TyTag {:value "aws"
-                        :flavor "danger"} "AWS"]]]
+                        :flavor "danger"} "AWS"]]
+         (when (seq (:skills form-data))
+           [:p.text-xs.ty-text+.mt-2.flex.items-center.gap-1
+            [:> ty/TyIcon {:name "check"
+                           :size "xs"}]
+            (str (count (:skills form-data)) " skill" (when (> (count (:skills form-data)) 1) "s") " selected")])]
 
         ;; Bio textarea - NOW USING TyTextarea!
         [:div

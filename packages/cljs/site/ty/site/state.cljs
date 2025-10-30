@@ -4,6 +4,9 @@
   (atom {:theme "light"
          :mobile-menu-open false
 
+         ;; Resize observer - element sizes by ID
+         :element-sizes {}
+
          ;; User profile state
          :user-profile {:avatar-modal-open false
                         :form-data {:first-name "John"

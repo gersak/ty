@@ -39,14 +39,21 @@
          ~@body))))
 
 (defmacro with-resize-observer
-  "Bind container context from resize observer registry.
-   Gets dimensions from ty-resize-observer component with given id.
+  "Bind container context from TypeScript resize observer registry.
+   Gets dimensions from ty-resize-observer component with given id via window.tyResizeObserver API.
+   
    Usage:
      (with-resize-observer \"my-panel\"
-       (my-component))"
+       (my-component))
+   
+   Note: Requires TypeScript ty-resize-observer web component to be registered.
+   If no size is available (e.g., element not yet mounted), executes body without container binding."
   [id & body]
-  `(if-let [{:keys [~'width ~'height]} (ty.components.resize-observer/get-size ~id)]
-     (ty.layout/with-container {:width ~'width :height ~'height}
-       ~@body)
+  `(if-let [size# (when (and js/window (.-tyResizeObserver js/window))
+                    (.getSize (.-tyResizeObserver js/window) ~id))]
+     (let [width# (.-width size#)
+           height# (.-height size#)]
+       (ty.layout/with-container {:width width# :height height#}
+         ~@body))
      ;; If no size available, execute body without container binding
      (do ~@body)))

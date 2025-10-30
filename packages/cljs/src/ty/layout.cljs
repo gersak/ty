@@ -1,7 +1,6 @@
 (ns ty.layout
   "Dynamic layout context system using Clojure's dynamic vars.
   Provides thread-local container dimensions and responsive utilities."
-  (:require [ty.components.resize-observer :as resize-observer])
   (:require-macros [ty.layout :refer [with-container with-window with-resize-observer]]))
 
 ;; Core dynamic var for container dimensions
@@ -268,11 +267,11 @@
   [element on-resize]
   (when element
     (let [observer (js/ResizeObserver.
-                    (fn [entries]
-                      (let [entry (first entries)
-                            rect (.-contentRect entry)]
-                        (on-resize {:width (.-width rect)
-                                    :height (.-height rect)}))))]
+                     (fn [entries]
+                       (let [entry (first entries)
+                             rect (.-contentRect entry)]
+                         (on-resize {:width (.-width rect)
+                                     :height (.-height rect)}))))]
       (.observe observer element)
       #(.disconnect observer))))
 
@@ -307,10 +306,54 @@
   (let [{:keys [width height breakpoint orientation density]} *container*]
     (str width "x" height " " (name breakpoint) " " (name orientation))))
 
-;; ===== RESIZE OBSERVER INTEGRATION =====
+;; ===== RESIZE OBSERVER INTEGRATION (TypeScript API) =====
 
-(defn get-element-size
-  "Get dimensions for a resize observer element by id.
-   Returns {:width number :height number} or nil."
+(defn get-observer-size
+  "Get dimensions from TypeScript resize observer by id.
+   Returns {:width number :height number} or nil if not found.
+   
+   Example:
+     (get-observer-size \"my-container\")
+     ;; => {:width 400 :height 300}"
   [id]
-  (resize-observer/get-size id))
+  (when-let [size (and js/window
+                       (.-tyResizeObserver js/window)
+                       (.getSize (.-tyResizeObserver js/window) id))]
+    {:width (.-width size)
+     :height (.-height size)}))
+
+(defn observe-size-changes!
+  "Subscribe to resize events from TypeScript resize observer.
+   Callback receives {:width number :height number}.
+   Returns unsubscribe function.
+   
+   Example:
+     (def unsub (observe-size-changes! 
+                  \"my-container\"
+                  (fn [size]
+                    (println \"Resized to\" size))))
+     ;; Later: (unsub)"
+  [id callback]
+  (if (and js/window (.-tyResizeObserver js/window))
+    (throw (js/Error. "tyResizeObserver not available! Check if ty.js is loaded properly"))
+    (let [js-callback (fn [size]
+                        (callback {:width (.-width size)
+                                   :height (.-height size)}))]
+      (.onResize (.-tyResizeObserver js/window) id js-callback))))
+
+(defn get-all-observer-sizes
+  "Get all registered resize observer sizes.
+   Returns map of id -> {:width number :height number}.
+   
+   Example:
+     (get-all-observer-sizes)
+     ;; => {\"container-1\" {:width 400 :height 300}
+     ;;     \"container-2\" {:width 800 :height 600}}"
+  []
+  (when-let [sizes (and js/window
+                        (.-tyResizeObserver js/window)
+                        (.-sizes (.-tyResizeObserver js/window)))]
+    (into {} (map (fn [[k v]]
+                    [k {:width (.-width v)
+                        :height (.-height v)}])
+                  (js/Object.entries sizes)))))

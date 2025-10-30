@@ -20,6 +20,7 @@ export { TyCalendarMonth } from './components/calendar-month.js'
 export { TyCalendarNavigation } from './components/calendar-navigation.js'
 export { TyCalendar } from './components/calendar.js'
 export { TyDatePicker } from './components/date-picker.js'
+export { TyResizeObserver } from './components/resize-observer.js'
 
 // Types
 export type {
@@ -49,6 +50,10 @@ export type { NavigationChangeDetail } from './components/calendar-navigation.js
 export type { CalendarChangeDetail, CalendarNavigateDetail } from './components/calendar.js'
 export type { DatePickerChangeDetail } from './components/date-picker.js'
 export type { DayContext } from './utils/calendar-utils.js'
+
+// Resize Observer
+export { getSize, onResize, getAllSizes } from './utils/resize-observer.js'
+export type { ElementSize, ResizeCallback } from './utils/resize-observer.js'
 
 // Property capture utilities for React/Reagent compatibility
 export {
@@ -92,6 +97,10 @@ import { registerIcons, getIcon, hasIcon, getIconNames, getCacheInfo, clearIcons
 // Export icon registry functions for advanced use
 export { registerIcons, getIcon, hasIcon, getIconNames, getCacheInfo, clearIcons, getCachedIcon }
 
+// Import resize observer utilities for window API
+import { getSize as getResizeSize, onResize as subscribeResize, getAllSizes } from './utils/resize-observer.js'
+import type { ElementSize as ResizeSize, ResizeCallback } from './utils/resize-observer.js'
+
 declare global {
   interface Window {
     tyVersion: string
@@ -107,6 +116,11 @@ declare global {
         iconCount?: number
       }>
       clearCache: () => Promise<void>
+    }
+    tyResizeObserver: {
+      getSize: (id: string) => ResizeSize | undefined
+      onResize: (id: string, callback: ResizeCallback) => () => void
+      sizes: Record<string, ResizeSize>
     }
   }
 }
@@ -128,5 +142,12 @@ if (typeof window !== 'undefined') {
     list: () => getIconNames(),
     cacheInfo: () => getCacheInfo(),
     clearCache: () => clearIcons()
+  }
+  
+  // Resize Observer API
+  window.tyResizeObserver = {
+    getSize: (id: string) => getResizeSize(id),
+    onResize: (id: string, callback: ResizeCallback) => subscribeResize(id, callback),
+    get sizes() { return getAllSizes() }
   }
 }

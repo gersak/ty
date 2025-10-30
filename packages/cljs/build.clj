@@ -6,7 +6,7 @@
             [deps-deploy.deps-deploy :as deploy]
             [ty.template :as template]))
 
-(def version "0.1.1-SNAPSHOT")
+(def version "0.2.0-SNAPSHOT")
 (def class-dir "target/classes")
 
 ;; Library configurations
@@ -15,7 +15,7 @@
    :artifact-id "ty"
    :version version
    :basis-alias :ty-lib
-   :src-dirs ["lib"]
+   :src-dirs ["src"]
    :resource-dirs ["resources/ty"]
    :jar-file (format "target/ty-%s.jar" version)})
 

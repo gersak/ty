@@ -14,40 +14,41 @@
 ;; Web components are already registered via ty.js loaded in index.html
 ;; No need for wcs/define! anymore
 
-;; Register icons using the new window.ty.icons.register approach
+;; Register icons using window.tyIcons.register approach
 ;; with ClojureScript icons (dead code eliminated)
 (defn register-icons! []
-  (js/window.ty.icons.register
-   (clj->js
-    {;; Navigation icons
-     "home" mat-filled/home
-     "edit" lucide/edit
-     "menu" mat-filled/menu
-     "x" lucide/x
-     "grid" lucide/grid-3x3
+  (if-some [icons js/window.tyIcons]
+    (.register icons
+               #js {;; Navigation icons
+                    "home" mat-filled/home
+                    "edit" lucide/edit
+                    "menu" mat-filled/menu
+                    "x" lucide/x
+                    "grid" lucide/grid-3x3
 
-       ;; Theme icons
-     "sun" lucide/sun
-     "moon" lucide/moon
+                    ;; Theme icons
+                    "sun" lucide/sun
+                    "moon" lucide/moon
 
-       ;; Button icons
-     "save" lucide/save
-     "trash" lucide/trash-2
-     "download" lucide/download
-     "click" lucide/mouse-pointer-click
+                    ;; Button icons
+                    "save" lucide/save
+                    "trash" lucide/trash-2
+                    "download" lucide/download
+                    "click" lucide/mouse-pointer-click
 
-       ;; Form icons
-     "user" lucide/user
-     "settings" lucide/settings
-     "code" lucide/code-2
-     "palette" lucide/palette
-     "users" lucide/users
-     "bar-chart" lucide/bar-chart-3
-     "briefcase" lucide/briefcase
-     "alert-circle" lucide/alert-circle
-     "refresh-cw" lucide/refresh-cw
-     "send" lucide/send
-     "loader" lucide/loader-2})))
+                    ;; Form icons
+                    "user" lucide/user
+                    "settings" lucide/settings
+                    "code" lucide/code-2
+                    "palette" lucide/palette
+                    "users" lucide/users
+                    "bar-chart" lucide/bar-chart-3
+                    "briefcase" lucide/briefcase
+                    "alert-circle" lucide/alert-circle
+                    "refresh-cw" lucide/refresh-cw
+                    "send" lucide/send
+                    "loader" lucide/loader-2})
+    (js/setTimeout #(register-icons!) 10)))
 
 ;; Main layout with responsive sidebar
 (defn main-layout []
@@ -67,7 +68,7 @@
          [views/home-view])]]]))
 
 (defn init []
-  ;; Register icons using new window.ty approach with ClojureScript icons
+  ;; Register icons using window.tyIcons approach with ClojureScript icons
   (register-icons!)
 
   ;; Apply initial theme

@@ -10,16 +10,11 @@
     "server": "shadow-cljs server"
   },
   "devDependencies": {
-    "@tailwindcss/cli": "^4.1.0",
-    "autoprefixer": "^10.4.16",
-    "concurrently": "^8.2.2",
-    "postcss": "^8.4.31",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "shadow-cljs": "^2.28.10",
-    "tailwindcss": "4.1"
+    "shadow-cljs": "^2.28.10"
   },
   "dependencies": {
-    "@gersak/ty-react": "^0.1.903"
+    "@gersak/ty-react": "^0.1.905"
   }
 }

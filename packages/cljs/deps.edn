@@ -23,7 +23,7 @@
                  :replace-paths ["gen" "icons" "resources/ty-icons"]
                  :exec-fn clojure.tools.build.api/create-basis}
 
-  :build {:extra-paths ["."]
+  :build {:extra-paths ["." "src"]
           :deps {io.github.clojure/tools.build {:mvn/version "0.10.5"}
                  slipset/deps-deploy {:mvn/version "0.2.2"}}
           :ns-default build}

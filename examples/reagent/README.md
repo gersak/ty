@@ -58,36 +58,52 @@ src/hello/
 
 ## Icon Usage
 
-Instead of manually defining SVG strings, icons are imported from Ty's icon libraries:
+Icons are registered using the new `window.tyIcons` API with ClojureScript icon libraries:
 
 ```clojure
 ;; Import icon libraries
-[ty.icons :as icons]
 [ty.lucide :as lucide]
 [ty.material.filled :as mat-filled]
 
-;; Register icons properly
-(icons/add! {"home" mat-filled/home
-             "save" lucide/save
-             "user" lucide/user})
+;; Register icons using window.tyIcons API
+(defn register-icons! []
+  (if-some [icons js/window.tyIcons]
+    (.register icons
+               #js {"home" mat-filled/home
+                    "save" lucide/save
+                    "user" lucide/user})
+    (js/setTimeout #(register-icons!) 10)))
 ```
 
 Available icon libraries:
-- `ty.lucide` - Modern, consistent Lucide icons
+- `ty.lucide` - Modern, consistent Lucide icons (1,636 icons)
 - `ty.material.filled` - Material Design filled icons
 - `ty.material.outlined` - Material Design outlined icons
 - `ty.heroicons.outline` - Heroicons outlined
 - `ty.heroicons.solid` - Heroicons solid
-- `ty.fav6.*` - Font Awesome 6 icons
 
 ## Setup & Run
 
 ```bash
+# Install dependencies
 npm install
+
+# Start development server
 npm run dev
 ```
 
 Open: http://localhost:3000
+
+### Available Scripts
+
+- `npm run dev` - Start Shadow-cljs development server
+- `npm run build` - Production build
+- `npm run clean` - Clean build artifacts
+- `npm run server` - Start Shadow-cljs server
+
+### Styling
+
+This example uses **Tailwind CSS from CDN** (no build step required) combined with Ty's semantic color system. See the CSS Guide for the pattern: **Ty for colors, Tailwind for everything else.**
 
 Navigate between routes using the sidebar or try URLs like:
 - `#home` - Home page

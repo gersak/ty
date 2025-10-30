@@ -118,10 +118,10 @@ function updatePosition(el: TyPopup): void {
   // Calculate preferred placements based on placement attribute (like tooltip)
   const preferences: Placement[] =
     placement === 'top' ? ['top', 'bottom', 'left', 'right'] :
-    placement === 'bottom' ? ['bottom', 'top', 'left', 'right'] :
-    placement === 'left' ? ['left', 'right', 'top', 'bottom'] :
-    placement === 'right' ? ['right', 'left', 'top', 'bottom'] :
-    ['bottom', 'top', 'right', 'left']; // Default popup placement
+      placement === 'bottom' ? ['bottom', 'top', 'left', 'right'] :
+        placement === 'left' ? ['left', 'right', 'top', 'bottom'] :
+          placement === 'right' ? ['right', 'left', 'top', 'bottom'] :
+            ['bottom', 'top', 'right', 'left']; // Default popup placement
 
   // Use positioning engine to find best position
   const positionData = findBestPosition({
@@ -233,7 +233,7 @@ function handleOutsideClick(el: TyPopup, event: Event): void {
   event.stopPropagation();
   const shadowRoot = el.shadowRoot;
   const dialog = shadowRoot ? getPopupDialog(shadowRoot) : null;
-  
+
   // Close if clicking on dialog backdrop (not popup content)
   if (dialog && event.target === dialog) {
     event.preventDefault();
@@ -270,7 +270,7 @@ function handleCloseRequest(el: TyPopup, event: CustomEvent): void {
 function setupAnchorEvents(el: TyPopup): void {
   const { manual } = getPopupAttributes(el);
   const anchor = getAnchorElement(el);
-  
+
   if (!anchor || manual) return;
 
   // Remove any existing listener first
@@ -291,7 +291,7 @@ function setupAnchorEvents(el: TyPopup): void {
 function cleanupAnchorEvents(el: TyPopup): void {
   const anchor = getAnchorElement(el);
   const handler = anchorClickHandlers.get(el);
-  
+
   if (anchor && handler) {
     anchor.removeEventListener('pointerdown', handler);
     anchorClickHandlers.delete(el);
@@ -378,7 +378,7 @@ function cleanup(el: TyPopup): void {
   // Cleanup dialog events
   const shadowRoot = el.shadowRoot;
   const dialog = shadowRoot ? getPopupDialog(shadowRoot) : null;
-  
+
   if (dialog) {
     const outsideHandler = outsideClickHandlers.get(el);
     if (outsideHandler) {

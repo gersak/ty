@@ -1,17 +1,10 @@
 {
   "name": "@gersak/ty-react",
-  "version": "0.1.904",
+  "version": "0.1.905",
   "description": "React wrappers for Ty Web Components",
   "type": "module",
   "main": "./dist/components/index.js",
   "types": "./dist/components/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/components/index.d.ts",
-      "import": "./dist/components/index.js",
-      "default": "./dist/components/index.js"
-    }
-  },
   "files": [
     "dist/**/*",
     "src/**/*",

@@ -1,6 +1,6 @@
 {
   "name": "@gersak/ty",
-  "version": "0.1.914",
+  "version": "0.1.915",
   "description": "Ty Web Components - Framework-agnostic UI components with semantic design system",
   "type": "module",
   "sideEffects": false,

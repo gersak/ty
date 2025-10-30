@@ -2,39 +2,20 @@
   (:require
    ;; Clean React wrappers
    ["@gersak/ty-react" :as ty]
-   ;; Views
+   [hello.icons]
+    ;; Views
    [hello.views.forms :as forms]
    [hello.views.layout :as layout-views]
    [hello.views.modals :as modals-views]
-   [ty.components.button :as button]
-
-   [ty.components.calendar :as calendar]
-   [ty.components.calendar-month :as calendar-month]
-
-   [ty.components.calendar-navigation :as calendar-navigation]
     ;; All component configurations
-   [ty.components.core]
-   [ty.components.date-picker :as date-picker]
-   [ty.components.dropdown :as dropdown]
-   [ty.components.icon :as icon]
-   [ty.components.input :as input]
-   [ty.components.modal :as modal]
-   [ty.components.multiselect :as multiselect]
-   [ty.components.option :as option]
-   [ty.components.popup :as popup]
-   [ty.components.resize-observer :as resize-observer]
-   [ty.components.tag :as tag]
-   [ty.components.tooltip :as tooltip]
    ty.context
     ;; ClojureScript ty utilities
    [ty.icons :as icons]
-   [ty.lucide :as lucide]
+
    ;; TY Router
    [ty.router :as router]
-   [ty.shim :as wcs]
    ;; UIx for React-like development
    [uix.core :as uix :refer [defui $]]
-
    [uix.dom]))
 
 ;; Define routes
@@ -56,73 +37,8 @@
                :segment "modals"
                :name "Modals & Overlays"}])
 
-(wcs/define! "ty-button" button/configuration)
-(wcs/define! "ty-option" option/configuration)
-(wcs/define! "ty-tag" tag/configuration)
-(wcs/define! "ty-tooltip" tooltip/configuration)
-(wcs/define! "ty-popup" popup/configuration)
-(wcs/define! "ty-icon" icon/configuration)
-(wcs/define! "ty-modal" modal/configuration)
-(wcs/define! "ty-input" input/configuration)
-(wcs/define! "ty-calendar" calendar/configuration)
-(wcs/define! "ty-calendar-month" calendar-month/configuration)
-(wcs/define! "ty-calendar-navigation" calendar-navigation/configuration)
-(wcs/define! "ty-date-picker" date-picker/configuration)
-(wcs/define! "ty-dropdown" dropdown/configuration)
-(wcs/define! "ty-multiselect" multiselect/configuration)
-(wcs/define! "ty-resize-observer" resize-observer/configuration)
-
 (defn register-icons! []
-  "Register icons used in the application"
-  (icons/add! {;; Form icons
-               "user" lucide/user
-               "mail" lucide/mail
-               "phone" lucide/phone
-               "message-circle" lucide/message-circle
-               "send" lucide/send
-               "check" lucide/check
-               "x" lucide/x
-               "alert-circle" lucide/alert-circle
-
-               ;; Navigation icons  
-               "home" lucide/home
-               "forms" lucide/file-text
-               "settings" lucide/settings
-
-               ;; Layout and UI icons
-               "menu" lucide/menu
-               "sun" lucide/sun
-               "moon" lucide/moon
-               "edit" lucide/edit
-               "square" lucide/square
-               "grid" lucide/grid-3x3
-               "layers" lucide/layers
-               "play" lucide/play
-               "code" lucide/code-2
-               "zap" lucide/zap
-               "palette" lucide/palette
-
-               ;; Modal and popup icons
-               "modal" lucide/square
-               "popup" lucide/layers
-               "eye" lucide/eye
-               "eye-off" lucide/eye-off
-               "save" lucide/save
-               "download" lucide/download
-               "upload" lucide/upload
-               "trash-2" lucide/trash-2
-               "info" lucide/info
-               "info-circle" lucide/info
-               "warning" lucide/alert-triangle
-               "shield" lucide/shield
-               "bell" lucide/bell
-               "star" lucide/star
-               "heart" lucide/heart
-               "bookmark" lucide/bookmark
-               "plus" lucide/plus
-               "minus" lucide/minus
-               "more-horizontal" lucide/more-horizontal
-               "external-link" lucide/external-link}))
+  "Register icons using the new TypeScript icon registry API")
 
 (defui nav-link [{:keys [route-id icon label]}]
   (let [is-active (router/rendered? route-id true)]
@@ -374,25 +290,36 @@
             (set-sidebar-open false)))
         [sidebar-open (:current router-state)]))))
 
+(defonce root-ref (atom nil))
+
+(defn render-app []
+  "Render the app using the stored root"
+  (when-let [root @root-ref]
+    (.render root ($ app))))
+
 (defn ^:after-load init []
   "Initialize the application"
-  (register-icons!)
 
   ;; Initialize ty router with base path and landing URL
-  (router/init! "" "/")
+  (router/init! "")
+
+  ;; Create root only once (React 18 API)
+  (when-not @root-ref
+    (reset! root-ref (uix.dom/create-root (.getElementById js/document "app"))))
 
   ;; Watch for router changes to trigger re-renders  
   ;; This ensures the app re-renders when the route changes via browser back/forward
   (add-watch router/*router* ::uix-render
              (fn [_ _ _ _]
-               (uix.dom/render ($ app) (.getElementById js/document "app"))))
+               (render-app)))
 
   (add-watch ty.context/*element-sizes* ::uix-render
              (fn [_ _ _ _]
-               (uix.dom/render ($ app) (.getElementById js/document "app"))))
+               (render-app)))
+
   (add-watch ty.layout/window-size ::window-resize
              (fn [_ _ _ _]
-               (uix.dom/render ($ app) (.getElementById js/document "app"))))
+               (render-app)))
 
   ;; Initial render
-  (uix.dom/render ($ app) (.getElementById js/document "app")))
+  (render-app))

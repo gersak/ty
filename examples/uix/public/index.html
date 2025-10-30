@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UIx + ty-react Hybrid Example</title>
-    
-    <!-- TY CSS - Option 1: Copy from main project -->
-    <link rel="stylesheet" href="css/ty.css">
-    
-    <!-- TY CSS - Option 2: JSDelivr CDN (comment out option 1 to use this) -->
-    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.css"> -->
-    
+
+    <link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.915/dist/ty.js">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.915/dist/ty.css">
+
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.915/dist/ty.js"></script>
+
     <!-- Generated Tailwind CSS -->
     <link rel="stylesheet" href="css/app.css">
 </head>
+
 <body class="ty-canvas">
     <div id="app"></div>
-    
+
     <!-- React and UIx will mount here -->
     <script src="js/main.js"></script>
 </body>
+
 </html>

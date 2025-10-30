@@ -2,7 +2,7 @@
   "name": "ty-uix-example",
   "version": "1.0.0",
   "dependencies": {
-    "@gersak/ty-react": "^0.0.5",
+    "@gersak/ty-react": "^0.1.905",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

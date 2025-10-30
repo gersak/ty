@@ -817,11 +817,19 @@ export class TyDatePicker extends HTMLElement {
     
     const components = parseValue(valueAttr, withTime);
     
-    this._state = {
-      ...components,
-      withTime,
-      open: false,
-    };
+    // If components is null, initialize with empty state
+    if (components === null) {
+      this._state = {
+        withTime,
+        open: false,
+      };
+    } else {
+      this._state = {
+        ...components,
+        withTime,
+        open: false,
+      };
+    }
 
     // Convert to UTC and sync to form
     this.syncFormValue();
@@ -876,6 +884,25 @@ export class TyDatePicker extends HTMLElement {
    */
   private handleValueChange(newValue: string | null): void {
     const newComponents = parseValue(newValue, this._state.withTime);
+    
+    // If newComponents is null, we need to CLEAR the state completely
+    if (newComponents === null) {
+      // Check if we actually have a date to clear
+      const hasDate = this._state.year !== undefined || 
+                      this._state.month !== undefined || 
+                      this._state.day !== undefined;
+      
+      if (hasDate) {
+        // Clear all date components, keeping only withTime and open flags
+        this._state = {
+          withTime: this._state.withTime,
+          open: this._state.open,
+          // year, month, day, hour, minute are now undefined
+        };
+        this.render();
+      }
+      return;
+    }
     
     // Check if components actually changed
     const currentComponents: DateComponents = {

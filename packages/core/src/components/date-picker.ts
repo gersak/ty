@@ -51,6 +51,8 @@ import { ensureStyles } from '../utils/styles.js';
 import { datePickerStyles } from '../styles/date-picker.js';
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js';
 import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
+import { TyComponent } from '../base/ty-component.js';
+import type { PropertyChange } from '../utils/property-manager.js';
 
 // ============================================================================
 // Types
@@ -186,7 +188,7 @@ function parseValue(value: string | number | null | undefined, withTime: boolean
  */
 function componentsToDateObject(components: DateComponents): Date | null {
   const { year, month, day, hour, minute } = components;
-  
+
   if (!year || !month || !day) return null;
 
   // Create local date
@@ -418,11 +420,11 @@ class TimeInput {
   constructor(element: HTMLInputElement, datePickerElement: TyDatePicker, hour: number = 0, minute: number = 0) {
     this.element = element;
     this.datePickerElement = datePickerElement;
-    
+
     // Initialize state
     const display = formatTimeDisplay(hour, minute);
     const rawDigits = hour.toString().padStart(2, '0') + minute.toString().padStart(2, '0');
-    
+
     this.state = {
       hour,
       minute,
@@ -538,7 +540,7 @@ class TimeInput {
    */
   private handleDigitInput(event: KeyboardEvent, digit: number): void {
     event.preventDefault();
-    
+
     const currentPos = this.state.caretPosition;
 
     // Only process if at editable position and digit is valid
@@ -564,7 +566,7 @@ class TimeInput {
    */
   private handleBackspace(event: KeyboardEvent): void {
     event.preventDefault();
-    
+
     const currentPos = this.state.caretPosition;
 
     // Can't go back from position 0
@@ -572,9 +574,9 @@ class TimeInput {
 
     // Find target position to zero
     const targetPos = currentPos === 1 ? 0 :
-                      currentPos === 3 ? 1 :
-                      currentPos === 4 ? 3 :
-                      currentPos === 5 ? 4 : 0;
+      currentPos === 3 ? 1 :
+        currentPos === 4 ? 3 :
+          currentPos === 5 ? 4 : 0;
 
     const newState = this.zeroDigitAtPosition(targetPos);
     if (!newState) return;
@@ -590,7 +592,7 @@ class TimeInput {
    */
   private handleDelete(event: KeyboardEvent): void {
     event.preventDefault();
-    
+
     const currentPos = this.state.caretPosition;
 
     // Only at editable positions
@@ -641,18 +643,18 @@ class TimeInput {
    */
   private updateState(updates: Partial<TimeInputState>): void {
     this.state = { ...this.state, ...updates };
-    
+
     // Update display value
     this.element.value = this.state.displayValue;
 
     // Set cursor position, mapping internal positions to DOM positions
     const caretPos = this.state.caretPosition;
     const actualPos = caretPos === 0 ? 0 :
-                      caretPos === 1 ? 1 :
-                      caretPos === 2 ? 3 :
-                      caretPos === 3 ? 3 :
-                      caretPos === 4 ? 4 :
-                      caretPos === 5 ? 5 : caretPos;
+      caretPos === 1 ? 1 :
+        caretPos === 2 ? 3 :
+          caretPos === 3 ? 3 :
+            caretPos === 4 ? 4 :
+              caretPos === 5 ? 5 : caretPos;
 
     this.element.setSelectionRange(actualPos, actualPos);
   }
@@ -680,7 +682,7 @@ class TimeInput {
   setTime(hour: number, minute: number): void {
     const display = formatTimeDisplay(hour, minute);
     const rawDigits = hour.toString().padStart(2, '0') + minute.toString().padStart(2, '0');
-    
+
     this.state = {
       ...this.state,
       hour,
@@ -697,7 +699,110 @@ class TimeInput {
 // TyDatePicker Custom Element
 // ============================================================================
 
-export class TyDatePicker extends HTMLElement {
+export class TyDatePicker extends TyComponent<DatePickerState> {
+  // ============================================================================
+  // PROPERTY CONFIGURATION - Single source of truth
+  // ============================================================================
+  protected static properties = {
+    // String properties
+    size: {
+      type: 'string' as const,
+      visual: true,
+      default: 'md',
+      validate: (v: any) => ['sm', 'md', 'lg'].includes(v),
+      coerce: (v: any) => {
+        if (!['sm', 'md', 'lg'].includes(v)) {
+          console.warn(`[ty-date-picker] Invalid size '${v}'. Using 'md'.`);
+          return 'md';
+        }
+        return v;
+      }
+    },
+    flavor: {
+      type: 'string' as const,
+      visual: true,
+      default: 'default'
+    },
+    label: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+    placeholder: {
+      type: 'string' as const,
+      visual: true,
+      default: 'Select date...'
+    },
+    name: {
+      type: 'string' as const,
+      visual: false, // Non-visual, just for form field name
+      default: ''
+    },
+
+    // Boolean properties
+    required: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    disabled: {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    },
+    clearable: {
+      type: 'boolean' as const,
+      visual: true,
+      default: true,
+      aliases: {
+        'not-clearable': false
+      }
+    },
+
+    // Format property (medium complexity)
+    format: {
+      type: 'string' as const,
+      visual: true,
+      default: 'long',
+      validate: (v: any) => ['short', 'medium', 'long', 'full'].includes(v),
+      coerce: (v: any) => {
+        const validFormats = ['short', 'medium', 'long', 'full'];
+        if (!validFormats.includes(v)) {
+          console.warn(`[ty-date-picker] Invalid format '${v}'. Using 'long'.`);
+          return 'long';
+        }
+        return v;
+      }
+    },
+
+    // Locale property (medium complexity - has observer)
+    locale: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    },
+
+    // Value property (high complexity - UTC parsing, date components)
+    // Note: Custom getter/setter will handle the complex logic
+    value: {
+      type: 'string' as const,
+      visual: true,
+      formValue: true,  // Syncs to form
+      emitChange: false, // We emit custom 'change' events manually with full detail
+      default: null  // null when no date selected
+    },
+
+    // With-time property (high complexity - affects parsing and rendering)
+    'with-time': {
+      type: 'boolean' as const,
+      visual: true,
+      default: false
+    }
+  };
+
+  // ============================================================================
+  // INTERNAL STATE
+  // ============================================================================
   // Internal state
   private _state: DatePickerState = {
     withTime: false,
@@ -714,7 +819,7 @@ export class TyDatePicker extends HTMLElement {
 
   // Time input element reference
   private _timeInput?: TimeInput;
-  
+
   // Locale observer cleanup
   private _localeObserver?: () => void;
 
@@ -723,83 +828,161 @@ export class TyDatePicker extends HTMLElement {
    */
   static formAssociated = true;
 
-  /**
-   * Observed attributes
-   */
-  static get observedAttributes(): string[] {
-    return [
-      'value',
-      'size',
-      'flavor',
-      'label',
-      'placeholder',
-      'required',
-      'disabled',
-      'name',
-      'clearable',
-      'format',
-      'locale',
-      'with-time',
-    ];
-  }
+  // observedAttributes is auto-generated by TyComponent from properties config
 
   constructor() {
-    super();
-    this.attachShadow({ mode: 'open' });
+    super(); // TyComponent handles attachShadow and attachInternals
 
-    // Attach ElementInternals for form participation
-    if ('attachInternals' in this) {
-      this._internals = this.attachInternals();
-    }
+    // Initialize styles in shadow root
+    const shadow = this.shadowRoot!;
+    ensureStyles(shadow, { css: datePickerStyles, id: 'ty-date-picker' });
   }
 
   // ==========================================================================
-  // Lifecycle Methods
+  // Lifecycle Hooks (TyComponent)
   // ==========================================================================
 
-  connectedCallback() {
-    // CRITICAL: Reagent/React may set properties BEFORE the element is constructed
-    // Check if value was set directly on the instance before our getter/setter was available
-    const instanceValue = Object.getOwnPropertyDescriptor(this, 'value')
-    if (instanceValue && instanceValue.value !== undefined) {
-      // Restore the value by setting it through the proper setter
-      const tempValue = instanceValue.value
-      // Clean up the instance property so our getter/setter works
-      Reflect.deleteProperty(this, 'value')
-      // Now set it properly through the setter
-      this.value = tempValue
-    }
-    
+  /**
+   * Called when component connects to DOM
+   * TyComponent handles property capture automatically
+   */
+  protected onConnect(): void {
+    // Initialize component state
     this.initializeState();
+
+    // Initial render
     this.render();
-    
+
     // Setup locale observer to watch for ancestor lang changes
     this._localeObserver = observeLocaleChanges(this, () => {
       this.render();
     });
   }
 
-  disconnectedCallback() {
+  /**
+   * Called when component disconnects from DOM
+   */
+  protected onDisconnect(): void {
     // Cleanup locale observer
     if (this._localeObserver) {
       this._localeObserver();
       this._localeObserver = undefined;
     }
-    
+
+    // Cleanup event listeners and state
     this.cleanup();
   }
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null) {
-    if (oldValue === newValue) return;
+  /**
+   * Called when properties change
+   * Handle state updates BEFORE render
+   */
+  protected onPropertiesChanged(changes: PropertyChange[]): void {
+    for (const { name, newValue } of changes) {
+      switch (name) {
+        // Simple visual properties - just trigger re-render (handled by TyComponent)
+        case 'size':
+        case 'flavor':
+        case 'label':
+        case 'placeholder':
+        case 'required':
+        case 'disabled':
+        case 'clearable':
+        case 'format':
+        case 'locale':
+          // These properties just affect rendering, no internal state to update
+          // TyComponent will call render() automatically for visual properties
+          break;
 
-    // Parse value changes specially
-    if (name === 'value') {
-      this.handleValueChange(newValue);
-      return;
+        // Complex properties
+        case 'value': {
+          // Parse the new value using current withTime setting
+          const newComponents = parseValue(newValue as string, this._state.withTime);
+
+          // If newComponents is null, CLEAR the state completely
+          if (newComponents === null) {
+            // Check if we actually have a date to clear
+            const hasDate = this._state.year !== undefined ||
+              this._state.month !== undefined ||
+              this._state.day !== undefined;
+
+            if (hasDate) {
+              // Clear all date components, keeping only withTime and open flags
+              this._state = {
+                withTime: this._state.withTime,
+                open: this._state.open,
+                // year, month, day, hour, minute are now undefined
+              };
+            }
+            break;
+          }
+
+          // Check if components actually changed
+          const currentComponents: DateComponents = {
+            year: this._state.year,
+            month: this._state.month,
+            day: this._state.day,
+            hour: this._state.hour,
+            minute: this._state.minute,
+          };
+
+          const changed =
+            newComponents?.year !== currentComponents.year ||
+            newComponents?.month !== currentComponents.month ||
+            newComponents?.day !== currentComponents.day ||
+            newComponents?.hour !== currentComponents.hour ||
+            newComponents?.minute !== currentComponents.minute;
+
+          if (changed) {
+            // Update state with new date components
+            this._state = {
+              ...this._state,
+              ...newComponents,
+            };
+          }
+          break;
+        }
+
+        case 'with-time': {
+          // Update internal withTime flag
+          const newWithTime = newValue as boolean;
+          const oldWithTime = this._state.withTime;
+
+          if (newWithTime !== oldWithTime) {
+            this._state.withTime = newWithTime;
+
+            // If we have an existing date, re-sync form value
+            // (format changes based on withTime flag)
+            const hasDate = this._state.year !== undefined &&
+              this._state.month !== undefined &&
+              this._state.day !== undefined;
+
+            if (hasDate) {
+              this.syncFormValue();
+            }
+          }
+          break;
+        }
+      }
     }
+  }
 
-    // For other attributes, just re-render
-    this.render();
+  // attributeChangedCallback removed - TyComponent handles all attribute changes via onPropertiesChanged
+
+  /**
+   * Get form value - returns UTC string from current state
+   * TyComponent calls this automatically when value property changes
+   */
+  protected getFormValue(): FormDataEntryValue | null {
+    const components: DateComponents = {
+      year: this._state.year,
+      month: this._state.month,
+      day: this._state.day,
+      hour: this._state.hour,
+      minute: this._state.minute,
+    };
+
+    return componentsToOutputValue(components, this._state.withTime);
   }
 
   // ==========================================================================
@@ -812,11 +995,11 @@ export class TyDatePicker extends HTMLElement {
    * PORTED FROM: init-component-state! in date_picker.cljs
    */
   private initializeState(): void {
-    const valueAttr = this.getAttribute('value');
-    const withTime = this.getAttribute('with-time') === 'true';
-    
+    const valueAttr = this.getProperty('value');
+    const withTime = this.getProperty('with-time');
+
     const components = parseValue(valueAttr, withTime);
-    
+
     // If components is null, initialize with empty state
     if (components === null) {
       this._state = {
@@ -854,80 +1037,30 @@ export class TyDatePicker extends HTMLElement {
 
   /**
    * Sync form value with current state
+   * Compares before setting to prevent circular triggers
    */
   private syncFormValue(): void {
-    const components: DateComponents = {
-      year: this._state.year,
-      month: this._state.month,
-      day: this._state.day,
-      hour: this._state.hour,
-      minute: this._state.minute,
-    };
+    const utcValue = this.getFormValue() as string | null;
+    const currentValue = this.getProperty('value');
 
-    const utcValue = componentsToOutputValue(components, this._state.withTime);
+    // Only update property if value actually changed (prevents circular triggers)
+    if (utcValue !== currentValue) {
+      // Use property setter to maintain TyComponent lifecycle
+      // This will automatically handle attribute sync and form value update
+      if (utcValue) {
+        this.setProperty('value', utcValue);
+      } else {
+        this.setProperty('value', null);
+      }
+    }
 
-    if (utcValue) {
-      this.setAttribute('value', utcValue);
-      if (this._internals) {
-        this._internals.setFormValue(utcValue);
-      }
-    } else {
-      this.removeAttribute('value');
-      if (this._internals) {
-        this._internals.setFormValue(null);
-      }
+    // Always sync to form (form value might be out of sync even if property matches)
+    if (this._internals) {
+      this._internals.setFormValue(utcValue);
     }
   }
 
-  /**
-   * Handle value attribute changes from external sources
-   */
-  private handleValueChange(newValue: string | null): void {
-    const newComponents = parseValue(newValue, this._state.withTime);
-    
-    // If newComponents is null, we need to CLEAR the state completely
-    if (newComponents === null) {
-      // Check if we actually have a date to clear
-      const hasDate = this._state.year !== undefined || 
-                      this._state.month !== undefined || 
-                      this._state.day !== undefined;
-      
-      if (hasDate) {
-        // Clear all date components, keeping only withTime and open flags
-        this._state = {
-          withTime: this._state.withTime,
-          open: this._state.open,
-          // year, month, day, hour, minute are now undefined
-        };
-        this.render();
-      }
-      return;
-    }
-    
-    // Check if components actually changed
-    const currentComponents: DateComponents = {
-      year: this._state.year,
-      month: this._state.month,
-      day: this._state.day,
-      hour: this._state.hour,
-      minute: this._state.minute,
-    };
-
-    const changed = 
-      newComponents?.year !== currentComponents.year ||
-      newComponents?.month !== currentComponents.month ||
-      newComponents?.day !== currentComponents.day ||
-      newComponents?.hour !== currentComponents.hour ||
-      newComponents?.minute !== currentComponents.minute;
-
-    if (changed) {
-      this._state = {
-        ...this._state,
-        ...newComponents,
-      };
-      this.render();
-    }
-  }
+  // handleValueChange removed - logic moved to onPropertiesChanged hook
 
   // ==========================================================================
   // Time Input Handling
@@ -951,7 +1084,7 @@ export class TyDatePicker extends HTMLElement {
     if (this._state.year && this._state.month && this._state.day) {
       // Force sync when time changes - user is actively editing
       this.updateState(components, true);
-      
+
       // Emit change event
       this.emitChangeEvent(components, 'time-change');
     }
@@ -991,22 +1124,66 @@ export class TyDatePicker extends HTMLElement {
   }
 
   // ==========================================================================
-  // Public API (Properties)
+  // Public API (Properties) - Simple Accessors
   // ==========================================================================
 
+  // String properties
+  get size(): DatePickerSize { return this.getProperty('size') as DatePickerSize; }
+  set size(v: DatePickerSize) { this.setProperty('size', v); }
+
+  get flavor(): DatePickerFlavor { return this.getProperty('flavor') as DatePickerFlavor; }
+  set flavor(v: DatePickerFlavor) { this.setProperty('flavor', v); }
+
+  get label(): string { return this.getProperty('label'); }
+  set label(v: string) { this.setProperty('label', v); }
+
+  get placeholder(): string { return this.getProperty('placeholder'); }
+  set placeholder(v: string) { this.setProperty('placeholder', v); }
+
+  get name(): string { return this.getProperty('name'); }
+  set name(v: string) { this.setProperty('name', v); }
+
+  get format(): DateFormatType { return this.getProperty('format') as DateFormatType; }
+  set format(v: DateFormatType) { this.setProperty('format', v); }
+
+  get locale(): string { return this.getProperty('locale'); }
+  set locale(v: string) { this.setProperty('locale', v); }
+
+  // Boolean properties
+  get required(): boolean { return this.getProperty('required'); }
+  set required(v: boolean) { this.setProperty('required', v); }
+
+  get disabled(): boolean { return this.getProperty('disabled'); }
+  set disabled(v: boolean) { this.setProperty('disabled', v); }
+
+  get clearable(): boolean { return this.getProperty('clearable'); }
+  set clearable(v: boolean) { this.setProperty('clearable', v); }
+
+  // With-time property
+  get withTime(): boolean { return this.getProperty('with-time'); }
+  set withTime(v: boolean) { this.setProperty('with-time', v); }
+
+  // Value property - Keep custom getter/setter for now (complex UTC parsing logic)
   /**
    * Get current value (UTC ISO string)
    */
-  get value(): string {
-    return this.getAttribute('value') || '';
+  get value(): string | null {
+    return this.getProperty('value') || null;
   }
 
   /**
-   * Set value (UTC ISO string or Date object)
+   * Set value (UTC ISO string, Date object, or null)
+   * 
+   * When set to null/undefined/empty string, the attribute is removed.
+   * When set to a valid date, the attribute is set to ISO UTC string.
    */
-  set value(val: string | Date) {
-    const strValue = val instanceof Date ? val.toISOString() : val;
-    this.setAttribute('value', strValue);
+  set value(val: string | Date | null) {
+    if (val === null || val === undefined || val === '') {
+      this.setProperty('value', null);  // TyComponent will remove attribute
+    } else {
+      const strValue = val instanceof Date ? val.toISOString() : val;
+      this.setProperty('value', strValue);
+    }
   }
 
   // ==========================================================================
@@ -1020,19 +1197,19 @@ export class TyDatePicker extends HTMLElement {
    */
   private buildStubClasses(): string {
     const classes = ['date-picker-stub'];
-    
+
     const size = this.getAttribute('size') || 'md';
     const flavor = this.getAttribute('flavor');
     const disabled = this.getAttribute('disabled') === 'true';
     const required = this.getAttribute('required') === 'true';
-    
+
     classes.push(size);
-    
+
     if (flavor) classes.push(flavor);
     if (disabled) classes.push('disabled');
     if (required) classes.push('required');
     if (this._state.open) classes.push('open');
-    
+
     return classes.join(' ');
   }
 
@@ -1044,7 +1221,7 @@ export class TyDatePicker extends HTMLElement {
   private renderStub(): HTMLElement {
     const stub = document.createElement('div');
     stub.className = this.buildStubClasses();
-    
+
     const disabled = this.getAttribute('disabled') === 'true';
     if (disabled) {
       stub.setAttribute('disabled', 'true');
@@ -1053,7 +1230,7 @@ export class TyDatePicker extends HTMLElement {
     // Display text
     const displayText = document.createElement('span');
     displayText.className = 'stub-text';
-    
+
     const components: DateComponents = {
       year: this._state.year,
       month: this._state.month,
@@ -1061,19 +1238,19 @@ export class TyDatePicker extends HTMLElement {
       hour: this._state.hour,
       minute: this._state.minute,
     };
-    
+
     const formattedValue = this._state.year && this._state.month && this._state.day
       ? formatDisplayValue(
-          components,
-          (this.getAttribute('format') as DateFormatType) || 'long',
-          getEffectiveLocale(this, this.getAttribute('locale')),
-          this._state.withTime
-        )
+        components,
+        (this.getAttribute('format') as DateFormatType) || 'long',
+        getEffectiveLocale(this, this.getAttribute('locale')),
+        this._state.withTime
+      )
       : null;
-    
+
     const placeholder = this.getAttribute('placeholder') || 'Select date...';
     displayText.textContent = formattedValue || placeholder;
-    
+
     if (!formattedValue) {
       displayText.classList.add('placeholder');
     }
@@ -1136,7 +1313,7 @@ export class TyDatePicker extends HTMLElement {
     timeLabel.textContent = 'Time:';
 
     const timeInputElement = this.createTimeInputElement();
-    
+
     // Create TimeInput instance
     const hour = this._state.hour || 0;
     const minute = this._state.minute || 0;
@@ -1167,7 +1344,7 @@ export class TyDatePicker extends HTMLElement {
 
     // Create ty-calendar
     const calendar = document.createElement('ty-calendar') as any;
-    
+
     // Set current date if available
     if (this._state.year && this._state.month && this._state.day) {
       calendar.setAttribute('year', this._state.year.toString());
@@ -1240,8 +1417,8 @@ export class TyDatePicker extends HTMLElement {
     const y = positionBelow
       ? stubRect.bottom
       : spaceAbove >= estimatedHeight + padding
-      ? viewportHeight - stubRect.top
-      : Math.max(padding, Math.min(stubRect.bottom, viewportHeight - estimatedHeight - padding));
+        ? viewportHeight - stubRect.top
+        : Math.max(padding, Math.min(stubRect.bottom, viewportHeight - estimatedHeight - padding));
 
     // Set CSS variables for positioning
     this.style.setProperty('--calendar-x', `${x}px`);
@@ -1342,11 +1519,11 @@ export class TyDatePicker extends HTMLElement {
 
       const formattedValue = this._state.year && this._state.month && this._state.day
         ? formatDisplayValue(
-            components,
-            (this.getAttribute('format') as DateFormatType) || 'long',
-            getEffectiveLocale(this, this.getAttribute('locale')),
-            this._state.withTime
-          )
+          components,
+          (this.getAttribute('format') as DateFormatType) || 'long',
+          getEffectiveLocale(this, this.getAttribute('locale')),
+          this._state.withTime
+        )
         : null;
 
       const placeholder = this.getAttribute('placeholder') || 'Select date...';
@@ -1429,7 +1606,7 @@ export class TyDatePicker extends HTMLElement {
   private handleClearClick(event: Event): void {
     event.preventDefault();
     event.stopPropagation();
-    
+
     // Clear state
     this.updateState({
       year: undefined,
@@ -1439,15 +1616,12 @@ export class TyDatePicker extends HTMLElement {
       minute: undefined,
     }, true);
 
-    // Clear value
-    this.removeAttribute('value');
-    if (this._internals) {
-      this._internals.setFormValue(null);
-    }
+    // Clear value using property setter (will remove attribute and update form)
+    this.value = null;
 
     // Emit change event
     this.emitChangeEvent(null, 'clear');
-    
+
     this.render();
   }
 
@@ -1537,7 +1711,7 @@ export class TyDatePicker extends HTMLElement {
    */
   private handleEscapeKey(event: Event): void {
     const keyboardEvent = event as KeyboardEvent;
-    
+
     if (keyboardEvent.key === 'Escape' && this._state.open) {
       keyboardEvent.preventDefault();
       this.closeDropdown();
@@ -1553,13 +1727,13 @@ export class TyDatePicker extends HTMLElement {
     if (this._state.open) return;
 
     this.updateState({ open: true });
-    
+
     // Dispatch open event
     this.dispatchEvent(new CustomEvent('open', {
       bubbles: true,
       composed: true
     }));
-    
+
     this.render();
 
     requestAnimationFrame(() => {
@@ -1569,11 +1743,11 @@ export class TyDatePicker extends HTMLElement {
       if (dialog) {
         const pickerId = `date-picker-${this.id || this.toString()}`;
         lockScroll(pickerId);
-        
+
         dialog.showModal();
         this.calculateCalendarPosition();
         dialog.classList.add('open');
-        
+
         // Remove focus from any focused elements to prevent the blue outline
         const focusedElement = this.shadowRoot.activeElement as HTMLElement;
         if (focusedElement) {
@@ -1592,10 +1766,10 @@ export class TyDatePicker extends HTMLElement {
     if (!this._state.open) return;
 
     const pickerId = `date-picker-${this.id || this.toString()}`;
-    
+
     // Force sync any staged updates when closing
     this.updateState({ open: false }, true);
-    
+
     unlockScroll(pickerId);
 
     if (this.shadowRoot) {

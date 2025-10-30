@@ -37,6 +37,8 @@ import { ensureStyles } from '../utils/styles.js';
 import { calendarNavigationStyles } from '../styles/calendar-navigation.js';
 import { getMonthName } from '../utils/calendar-utils.js';
 import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
+import { TyComponent } from '../base/ty-component.js';
+import type { PropertyChange } from '../utils/property-manager.js';
 
 // ============================================================================
 // Types
@@ -48,6 +50,14 @@ import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
 export interface NavigationChangeDetail {
   month: number;  // 1-12
   year: number;   // e.g., 2025
+}
+
+/**
+ * Internal navigation state (minimal - just for current display)
+ */
+interface NavigationState {
+  displayMonth: number;
+  displayYear: number;
 }
 
 // ============================================================================
@@ -99,58 +109,123 @@ const CHEVRONS_RIGHT_SVG = `<?xml version='1.0' encoding='UTF-8'?>
 /**
  * TyCalendarNavigation Web Component
  */
-export class TyCalendarNavigation extends HTMLElement {
-  // Private properties
-  private _displayMonth: number;
-  private _displayYear: number;
-  private _locale: string = 'en-US';
-  private _size: 'sm' | 'md' | 'lg' = 'md';
-  private _width?: string;
+export class TyCalendarNavigation extends TyComponent<NavigationState> {
+  // ============================================================================
+  // PROPERTY CONFIGURATION - Single source of truth
+  // ============================================================================
+  protected static properties = {
+    // Display properties
+    'display-month': {
+      type: 'number' as const,
+      visual: true,
+      default: () => new Date().getMonth() + 1, // 1-based
+      validate: (v: any) => {
+        const num = Number(v);
+        return Number.isInteger(num) && num >= 1 && num <= 12;
+      },
+      coerce: (v: any) => {
+        const num = Number(v);
+        if (isNaN(num) || num < 1 || num > 12) {
+          console.warn(`[ty-calendar-navigation] Invalid month '${v}'. Using current month.`);
+          return new Date().getMonth() + 1;
+        }
+        return num;
+      }
+    },
+    'display-year': {
+      type: 'number' as const,
+      visual: true,
+      default: () => new Date().getFullYear(),
+      validate: (v: any) => {
+        const num = Number(v);
+        return Number.isInteger(num) && num >= 1 && num <= 9999;
+      },
+      coerce: (v: any) => {
+        const num = Number(v);
+        if (isNaN(num) || num < 1 || num > 9999) {
+          console.warn(`[ty-calendar-navigation] Invalid year '${v}'. Using current year.`);
+          return new Date().getFullYear();
+        }
+        return num;
+      }
+    },
+    
+    // Locale property
+    locale: {
+      type: 'string' as const,
+      visual: true,
+      default: 'en-US'
+    },
+    
+    // Size property
+    size: {
+      type: 'string' as const,
+      visual: true,
+      default: 'md',
+      validate: (v: any) => ['sm', 'md', 'lg'].includes(v),
+      coerce: (v: any) => {
+        if (!['sm', 'md', 'lg'].includes(v)) {
+          console.warn(`[ty-calendar-navigation] Invalid size '${v}'. Using 'md'.`);
+          return 'md';
+        }
+        return v;
+      }
+    },
+    
+    // Width property
+    width: {
+      type: 'string' as const,
+      visual: true,
+      default: ''
+    }
+  };
+  
+  // ============================================================================
+  // INTERNAL STATE
+  // ============================================================================
+  private _state: NavigationState;
   private _localeObserver?: () => void; // Cleanup function for locale observer
   
-  /**
-   * Observed attributes (minimal - properties are primary API)
-   */
-  static get observedAttributes(): string[] {
-    return ['locale'];
-  }
-  
   constructor() {
-    super();
+    super(); // TyComponent handles attachShadow
     
-    // Initialize with current date
+    // Initialize state with current date
     const today = new Date();
-    this._displayMonth = today.getMonth() + 1; // 1-based
-    this._displayYear = today.getFullYear();
+    this._state = {
+      displayMonth: today.getMonth() + 1,
+      displayYear: today.getFullYear()
+    };
     
-    this.attachShadow({ mode: 'open' });
+    // Initialize styles in shadow root
+    const shadow = this.shadowRoot!;
+    ensureStyles(shadow, { css: calendarNavigationStyles, id: 'ty-calendar-navigation' });
   }
   
   // ==========================================================================
-  // Lifecycle Methods
+  // Lifecycle Hooks (TyComponent)
   // ==========================================================================
   
-  connectedCallback() {
-    // Set defaults if not already set
-    if (!this._displayMonth) {
-      this._displayMonth = new Date().getMonth() + 1;
-    }
-    if (!this._displayYear) {
-      this._displayYear = new Date().getFullYear();
-    }
-    if (!this._locale) {
-      this._locale = this.getAttribute('locale') || 'en-US';
-    }
+  /**
+   * Called when component connects to DOM
+   */
+  protected onConnect(): void {
+    // Sync state from properties
+    this._state.displayMonth = this.displayMonth;
+    this._state.displayYear = this.displayYear;
     
     // Setup locale observer to watch for ancestor lang changes
     this._localeObserver = observeLocaleChanges(this, () => {
       this.render();
     });
     
+    // Initial render
     this.render();
   }
   
-  disconnectedCallback() {
+  /**
+   * Called when component disconnects from DOM
+   */
+  protected onDisconnect(): void {
     // Cleanup locale observer
     if (this._localeObserver) {
       this._localeObserver();
@@ -158,92 +233,72 @@ export class TyCalendarNavigation extends HTMLElement {
     }
   }
   
-  attributeChangedCallback(name: string, _oldValue: string | null, newValue: string | null) {
-    if (name === 'locale') {
-      this._locale = newValue || 'en-US';
-      this.render();
+  /**
+   * Called when properties change
+   * Update internal state BEFORE render
+   */
+  protected onPropertiesChanged(changes: PropertyChange[]): void {
+    for (const { name, newValue } of changes) {
+      switch (name) {
+        case 'display-month':
+          this._state.displayMonth = newValue as number;
+          break;
+        case 'display-year':
+          this._state.displayYear = newValue as number;
+          break;
+        case 'locale':
+        case 'size':
+        case 'width':
+          // These properties just affect rendering
+          // TyComponent will call render() automatically for visual properties
+          break;
+      }
     }
   }
   
   // ==========================================================================
-  // Property Getters/Setters
+  // Property Accessors - Simple wrappers using TyComponent
   // ==========================================================================
   
   get displayMonth(): number {
-    return this._displayMonth;
+    return this.getProperty('display-month');
   }
   
   set displayMonth(value: number) {
-    if (this._displayMonth !== value) {
-      this._displayMonth = value;
-      this.render();
-    }
+    this.setProperty('display-month', value);
   }
   
   get displayYear(): number {
-    return this._displayYear;
+    return this.getProperty('display-year');
   }
   
   set displayYear(value: number) {
-    if (this._displayYear !== value) {
-      this._displayYear = value;
-      this.render();
-    }
+    this.setProperty('display-year', value);
   }
   
   get locale(): string {
-    return getEffectiveLocale(this, this.getAttribute('locale'));
+    // Use getEffectiveLocale to check ancestor lang attributes
+    return getEffectiveLocale(this, this.getProperty('locale'));
   }
   
   set locale(value: string) {
-    if (this._locale !== value) {
-      this._locale = value;
-      this.render();
-    }
+    this.setProperty('locale', value);
   }
   
   get size(): 'sm' | 'md' | 'lg' {
-    return this._size;
+    return this.getProperty('size') as 'sm' | 'md' | 'lg';
   }
   
   set size(value: 'sm' | 'md' | 'lg') {
-    if (this._size !== value) {
-      this._size = value;
-      this.applySizeAttribute();
-    }
+    this.setProperty('size', value);
   }
   
-  get width(): string | undefined {
-    return this._width;
+  get width(): string {
+    return this.getProperty('width');
   }
   
-  set width(value: string | undefined) {
-    if (this._width !== value) {
-      this._width = value;
-      this.applyWidthProperty();
-    }
-  }
-  
-  // ==========================================================================
-  // Size & Width Property System
-  // ==========================================================================
-  
-  /**
-   * Apply size as data attribute for CSS targeting
-   */
-  private applySizeAttribute(): void {
-    this.setAttribute('data-size', this._size);
-  }
-  
-  /**
-   * Apply width property as CSS custom property
-   */
-  private applyWidthProperty(): void {
-    if (this._width) {
-      this.style.setProperty('--nav-width', this._width);
-    } else {
-      this.style.removeProperty('--nav-width');
-    }
+  set width(value: string) {
+    this.setProperty('width', value);
   }
   
   // ==========================================================================
@@ -277,7 +332,7 @@ export class TyCalendarNavigation extends HTMLElement {
    * Handles year boundary crossing
    */
   private navigateMonth(direction: -1 | 1): void {
-    const rawMonth = this._displayMonth + direction;
+    const rawMonth = this._state.displayMonth + direction;
     
     let newMonth: number;
     let newYear: number;
@@ -285,14 +340,14 @@ export class TyCalendarNavigation extends HTMLElement {
     if (rawMonth < 1) {
       // Rolled back to previous year
       newMonth = 12;
-      newYear = this._displayYear - 1;
+      newYear = this._state.displayYear - 1;
     } else if (rawMonth > 12) {
       // Rolled forward to next year
       newMonth = 1;
-      newYear = this._displayYear + 1;
+      newYear = this._state.displayYear + 1;
     } else {
       newMonth = rawMonth;
-      newYear = this._displayYear;
+      newYear = this._state.displayYear;
     }
     
     this.emitChangeEvent(newMonth, newYear);
@@ -302,8 +357,8 @@ export class TyCalendarNavigation extends HTMLElement {
    * Navigate to previous/next year
    */
   private navigateYear(direction: -1 | 1): void {
-    const newYear = this._displayYear + direction;
-    this.emitChangeEvent(this._displayMonth, newYear);
+    const newYear = this._state.displayYear + direction;
+    this.emitChangeEvent(this._state.displayMonth, newYear);
   }
   
   // ==========================================================================
@@ -330,19 +385,27 @@ export class TyCalendarNavigation extends HTMLElement {
   /**
    * Main render function
    */
-  private render(): void {
+  protected render(): void {
     const root = this.shadowRoot;
     if (!root) return;
     
     // Ensure styles are loaded
     ensureStyles(root, { css: calendarNavigationStyles, id: 'ty-calendar-navigation' });
     
-    // Apply size and width properties
-    this.applySizeAttribute();
-    this.applyWidthProperty();
+    // Apply size as data attribute for CSS targeting
+    const size = this.size;
+    this.setAttribute('data-size', size);
     
-    // Get localized month name
-    const monthName = getMonthName(this._displayMonth, this.locale, 'long');
+    // Apply width property as CSS custom property
+    const width = this.width;
+    if (width) {
+      this.style.setProperty('--nav-width', width);
+    } else {
+      this.style.removeProperty('--nav-width');
+    }
+    
+    // Get localized month name using current state
+    const monthName = getMonthName(this._state.displayMonth, this.locale, 'long');
     
     // Clear and rebuild
     root.innerHTML = '';
@@ -379,7 +442,7 @@ export class TyCalendarNavigation extends HTMLElement {
     
     const monthYearDisplay = document.createElement('div');
     monthYearDisplay.className = 'month-year-display';
-    monthYearDisplay.textContent = `${monthName} ${this._displayYear}`;
+    monthYearDisplay.textContent = `${monthName} ${this._state.displayYear}`;
     centerGroup.appendChild(monthYearDisplay);
     
     // Right group: [› ⟫]

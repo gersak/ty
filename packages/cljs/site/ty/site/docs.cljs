@@ -11,8 +11,10 @@
    [ty.site.docs.copy-field :as copy-field-docs]
    [ty.site.docs.date-picker :as date-picker-docs]
    [ty.site.docs.dropdown :as dropdown-docs]
+   [ty.site.docs.htmx :as htmx-docs]
    [ty.site.docs.icon :as icon-docs]
    [ty.site.docs.input-field :as input-field-docs]
+   [ty.site.docs.js-react :as js-react-docs]
    [ty.site.docs.modal :as modal-docs]
    [ty.site.docs.multiselect :as multiselect-docs]
    [ty.site.docs.popup :as popup-docs]
@@ -138,22 +140,18 @@
    {:id :ty.site.docs/clojurescript
     :segment "clojurescript"
     :name "CLJS React"
-    :icon "lambda"
+    :icon "clojure"
     :view react-docs/view}
    {:id :ty.site.docs/react
     :segment "react"
     :name "JS React"
     :icon "react"
-    :view #(common/guide-placeholder-view
-            "JavaScript React Integration"
-            "Learn how to integrate Ty web components with JavaScript React applications.")}
+    :view js-react-docs/view}
    {:id :ty.site.docs/htmx
     :segment "htmx"
     :name "HTMX"
     :icon "server"
-    :view #(common/guide-placeholder-view
-            "HTMX Integration"
-            "Discover how to use Ty components with HTMX for dynamic server-side applications.")}])
+    :view htmx-docs/view}])
 
 ;; Define routes with views from separate namespaces
 

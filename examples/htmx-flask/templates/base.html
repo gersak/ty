@@ -7,6 +7,8 @@
     
     <!-- Ty Component CSS System - CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.912/dist/ty.css">
+    <!-- Ty Components JavaScript - CDN (TypeScript Build) -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.916/dist/ty.js"></script>
     
     <!-- Custom Styles -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
@@ -160,8 +162,6 @@
         </footer>
     </div>
 
-    <!-- Ty Components JavaScript - CDN (TypeScript Build) -->
-    <script type="module" defer src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.916/dist/ty.js"></script>
     
     <!-- CDN Build Verification -->
     <script>
@@ -173,7 +173,7 @@
     </script>
     
     <!-- Ty Icons Registration -->
-    <script src="{{ url_for('static', filename='js/icons-bundle.js') }}"></script>
+    <script defer src="{{ url_for('static', filename='js/icons-bundle.js') }}"></script>
     
     <!-- Custom JavaScript -->
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

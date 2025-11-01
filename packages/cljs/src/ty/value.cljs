@@ -49,9 +49,9 @@
   "Get current attribute value (the string in HTML)."
   [^js el attr-name]
   (or
-    (aget el attr-name)
-    (when (.hasAttribute el attr-name)
-      (.getAttribute el attr-name))))
+   (aget el attr-name)
+   (when (.hasAttribute el attr-name)
+     (.getAttribute el attr-name))))
 
 (defn external-value-changed?
   "Check if value changed externally by comparing PARSED values.
@@ -115,6 +115,24 @@
 ;; =====================================================
 ;; Common Parsers (for reuse via delegate)
 ;; =====================================================
+;; 
+;; Boolean Parsing Standard (matches TypeScript PropertyManager):
+;; | Input          | Result  | Reason                              |
+;; |----------------|---------|-------------------------------------|
+;; | nil            | false   | Attribute absent                    |
+;; | ""             | true    | HTML boolean (<input checked>)      |
+;; | "true"/"TRUE"  | true    | Explicit true                       |
+;; | "false"/"FALSE"| false   | Explicit false                      |
+;; | "0"            | false   | Numeric false                       |
+;; | "1"            | true    | Numeric true                        |
+;; | "anything"     | true    | Truthy by default                   |
+;; | true           | true    | Already boolean                     |
+;; | false          | false   | Already boolean                     |
+;; | 0              | false   | Numeric zero                        |
+;; | 42             | true    | Non-zero number                     |
+;;
+;; This ensures consistency between TypeScript and ClojureScript implementations.
+;;
 
 (defn parse-string
   "Parse string values, nil for empty."
@@ -134,15 +152,50 @@
     :else nil))
 
 (defn parse-boolean
-  "Parse boolean values."
+  "Parse boolean values following HTML standard.
+   
+   HTML Standard Behavior:
+   - null/absent attribute → false
+   - empty string \"\" → true (attribute present but empty: <input checked>)
+   - \"false\" or \"0\" → false (explicit false values)
+   - everything else → true
+   
+   Examples:
+   (parse-boolean nil)       => false  (attribute absent)
+   (parse-boolean \"\")        => true   (HTML boolean: <input checked>)
+   (parse-boolean \"true\")    => true
+   (parse-boolean \"false\")   => false
+   (parse-boolean \"TRUE\")    => true
+   (parse-boolean \"0\")       => false
+   (parse-boolean \"1\")       => true
+   (parse-boolean \"anything\") => true
+   (parse-boolean true)      => true
+   (parse-boolean false)     => false"
   [value]
   (cond
+    ;; Absent attribute
+    (nil? value) false
+
+    ;; Already a boolean
     (boolean? value) value
-    (string? value) (case value
-                      ("true" "TRUE" "1" "yes" "YES") true
-                      ("false" "FALSE" "0" "no" "NO" "") false
-                      nil)
-    :else nil))
+
+    ;; String handling
+    (string? value)
+    (cond
+      ;; Empty string = true (HTML boolean attribute standard)
+      (= value "") true
+
+      ;; Explicit false values
+      (contains? #{"false" "FALSE" "0" "no" "NO"} value) false
+
+      ;; Everything else is truthy
+      :else true)
+
+    ;; Numbers: 0 = false, everything else = true
+    (number? value) (not (zero? value))
+
+    ;; Default: truthy
+    :else (boolean value)))
 
 (defn parse-integer
   "Safely parse integer from string or number, returns nil for invalid input.

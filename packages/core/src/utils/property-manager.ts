@@ -99,6 +99,11 @@ export class PropertyManager<T = any> {
       return null
     }
     
+    // Debug log for boolean properties
+    if (config.type === 'boolean') {
+      console.log(`[PropertyManager] ${name}: ${JSON.stringify(oldValue)} → ${JSON.stringify(coercedValue)} (input: ${JSON.stringify(value)})`)
+    }
+    
     // Update internal map
     this._props.set(name, coercedValue)
     
@@ -130,11 +135,18 @@ export class PropertyManager<T = any> {
     // Type coercion
     switch (config.type) {
       case 'boolean':
-        // Attribute presence = true, absence = false
-        // Property: truthy/falsy coercion
+        // HTML Standard: attribute present (even empty) = true, absent = false
+        // String handling:
         if (typeof value === 'string') {
-          return value !== 'false' && value !== ''
+          // Empty string = true (HTML boolean attribute: <input checked>)
+          if (value === '') return true
+          // Explicit false values
+          const normalized = value.toLowerCase().trim()
+          if (normalized === 'false' || normalized === '0') return false
+          // Everything else is truthy
+          return true
         }
+        // Non-string: standard truthy/falsy
         return Boolean(value)
         
       case 'number':

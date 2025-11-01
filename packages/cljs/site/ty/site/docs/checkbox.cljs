@@ -9,52 +9,52 @@
    [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-checkbox Attributes"]
 
    (attribute-table
-    [{:name "checked"
-      :type "boolean"
-      :default "false"
-      :description "Initial checked state"}
-     {:name "value"
-      :type "string"
-      :default "'on'"
-      :description "Form value when checked (default: 'on')"}
-     {:name "name"
-      :type "string"
-      :default "null"
-      :description "Name for form submission"}
-     {:name "disabled"
-      :type "boolean"
-      :default "false"
-      :description "Whether the checkbox is disabled"}
-     {:name "required"
-      :type "boolean"
-      :default "false"
-      :description "Whether the checkbox is required (shows asterisk)"}
-     {:name "error"
-      :type "string"
-      :default "null"
-      :description "Error message to display"}
-     {:name "size"
-      :type "string"
-      :default "'md'"
-      :description "Size variant: xs, sm, md, lg, xl"}
-     {:name "flavor"
-      :type "string"
-      :default "'neutral'"
-      :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-     {:name "class"
-      :type "string"
-      :default "null"
-      :description "Additional CSS classes"}])
+     [{:name "checked"
+       :type "boolean"
+       :default "false"
+       :description "Initial checked state"}
+      {:name "value"
+       :type "string"
+       :default "'on'"
+       :description "Form value when checked (default: 'on')"}
+      {:name "name"
+       :type "string"
+       :default "null"
+       :description "Name for form submission"}
+      {:name "disabled"
+       :type "boolean"
+       :default "false"
+       :description "Whether the checkbox is disabled"}
+      {:name "required"
+       :type "boolean"
+       :default "false"
+       :description "Whether the checkbox is required (shows asterisk)"}
+      {:name "error"
+       :type "string"
+       :default "null"
+       :description "Error message to display"}
+      {:name "size"
+       :type "string"
+       :default "'md'"
+       :description "Size variant: xs, sm, md, lg, xl"}
+      {:name "flavor"
+       :type "string"
+       :default "'neutral'"
+       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+      {:name "class"
+       :type "string"
+       :default "null"
+       :description "Additional CSS classes"}])
 
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-checkbox Events"]
     (event-table
-     [{:name "input"
-       :when-fired "Fired when checkbox state changes"
-       :payload "{value, checked, formValue, originalEvent}"}
-      {:name "change"
-       :when-fired "Fired when checkbox state changes"
-       :payload "{value, checked, formValue, originalEvent}"}])]
+      [{:name "input"
+        :when-fired "Fired when checkbox state changes"
+        :payload "{value, checked, formValue, originalEvent}"}
+       {:name "change"
+        :when-fired "Fired when checkbox state changes"
+        :payload "{value, checked, formValue, originalEvent}"}])]
 
    [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
     [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 How Checkbox Values Work"]
@@ -457,12 +457,6 @@ checkboxes.forEach(cb => {
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
-   [:div.mb-8
-    [:h1.text-3xl.font-bold.ty-text++.mb-2 "ty-checkbox"]
-    [:p.text-lg.ty-text-
-     "Form-associated checkbox component with semantic styling and full keyboard support. "
-     "Perfect for task lists, settings panels, and multi-select options."]]
-
    (api-reference)
    (basic-usage-section)
    (sizes-section)

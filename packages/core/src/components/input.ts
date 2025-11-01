@@ -851,18 +851,14 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
           <div class="input-container">
             ${labelHtml}
             <div class="input-wrapper ${classes}">
-              <div class="input-start">
-                <slot name="start"></slot>
-              </div>
+              <slot name="start"></slot>
               <input
                 type="${inputType}"
                 value="${displayValue}"
                 placeholder="${this.placeholder}"
                 name="${this.name}"
               />
-              <div class="input-end">
-                <slot name="end"></slot>
-              </div>
+              <slot name="end"></slot>
             </div>
             ${errorHtml}
           </div>

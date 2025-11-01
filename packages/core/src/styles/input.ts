@@ -70,7 +70,7 @@ export const inputStyles = `
 .input-wrapper {
   display: flex;
   align-items: center;
-  gap: 0.5rem; /* 8px - normal gap for icon spacing */
+  gap: 0.5rem; /* No gap by default */
   width: 100%;
   box-sizing: border-box;
   border: 1px solid var(--ty-input-border);
@@ -102,8 +102,9 @@ export const inputStyles = `
 
 /* ===== SLOT STYLING ===== */
 
-.input-start,
-.input-end {
+/* Style slotted content directly (no wrappers needed) */
+::slotted([slot="start"]),
+::slotted([slot="end"]) {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,16 +112,8 @@ export const inputStyles = `
   color: var(--ty-color-text-soft);
 }
 
-.input-start ::slotted(*),
-.input-end ::slotted(*) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Icon sizing for slotted icons */
-.input-start ::slotted(ty-icon),
-.input-end ::slotted(ty-icon) {
+::slotted(ty-icon) {
   width: 1em;
   height: 1em;
   flex-shrink: 0;

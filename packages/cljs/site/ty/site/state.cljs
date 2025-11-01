@@ -4,6 +4,10 @@
   (atom {:theme "light"
          :mobile-menu-open false
 
+         ;; Navigation collapsible sections
+         ;; Can be nil, :quickstart, or :components
+         :navigation.section/open nil
+
          ;; Resize observer - element sizes by ID
          :element-sizes {}
 

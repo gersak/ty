@@ -73,16 +73,16 @@
              (concat
               ;; Extract route configs from site-routes  
                site-routes
-              ;; Add component routes - docs-components already have correct structure
+              ;; Add component routes - change to /components/ prefix
                (map (fn [route]
                       (-> route
-                          (update :segment (fn [segment] (str "docs/" segment)))))
+                          (update :segment (fn [segment] (str "components/" segment)))))
                     component-routes)
-              ;; Add guide routes - docs/guide-components  
+              ;; Add guide routes - change to /guides/ prefix
                (map (fn [route]
                       (-> route
                           (select-keys [:id :segment :name])
-                          (update :segment (fn [segment] (str "docs/" segment))))) guide-routes)))
+                          (update :segment (fn [segment] (str "guides/" segment))))) guide-routes)))
 
 (defn toggle-theme! []
   (swap! state update :theme #(if (= % "light") "dark" "light"))
@@ -92,11 +92,34 @@
       (.remove (.-classList js/document.documentElement) "dark"))
     (.setItem js/localStorage "theme" theme)))
 
-(defn toggle-mobile-menu!
-  ([] (swap! state update :mobile-menu-open not)))
+;; ============================================================================
+;; Navigation Section Management
+;; ============================================================================
 
-(defn close-mobile-menu!
-  ([] (swap! state assoc :mobile-menu-open false)))
+(defn get-open-section-from-storage
+  "Read the open navigation section from localStorage"
+  []
+  (when-let [stored (.getItem js/localStorage "ty-nav-open-section")]
+    (keyword stored)))
+
+(defn set-open-section-in-storage!
+  "Write the open navigation section to localStorage"
+  [section]
+  (if section
+    (.setItem js/localStorage "ty-nav-open-section" (name section))
+    (.removeItem js/localStorage "ty-nav-open-section")))
+
+(defn get-last-visited-route
+  "Get the last visited route for a section from localStorage"
+  [section-key]
+  (when-let [stored (.getItem js/localStorage (str "ty-nav-last-" (name section-key)))]
+    (keyword stored)))
+
+(defn set-last-visited-route!
+  "Save the last visited route for a section to localStorage"
+  [section-key route-id]
+  (when (and section-key route-id)
+    (.setItem js/localStorage (str "ty-nav-last-" (name section-key)) (name route-id))))
 
 (defn scroll-main-to-top!
   "Smoothly scrolls the main content area to the top"
@@ -104,6 +127,79 @@
   (when-let [main-element (.querySelector js/document "main.overflow-auto")]
     (.scrollTo main-element #js {:top 0
                                  :behavior "smooth"})))
+
+(defn toggle-nav-section!
+  "Toggle a navigation section open/closed and navigate to first/last item"
+  [section-key items]
+  (let [current (get @state :navigation.section/open)
+        is-opening? (not= current section-key)]
+    ;; Toggle section state
+    (swap! state assoc :navigation.section/open (if is-opening? section-key nil))
+    (set-open-section-in-storage! (if is-opening? section-key nil))
+
+    ;; Navigate when opening
+    (when (and is-opening? (seq items))
+      (let [last-visited (get-last-visited-route section-key)
+            target-route (if last-visited
+                           ;; Navigate to last visited if exists
+                           (some #(when (= (:route-id %) last-visited) (:route-id %)) items)
+                           ;; Otherwise navigate to first item
+                           (:route-id (first items)))]
+        (when target-route
+          (router/navigate! target-route)
+          (js/setTimeout scroll-main-to-top! 100))))))
+
+(defn route-in-list?
+  "Check if a route-id exists in a flat list of routes"
+  [route-id routes]
+  (some #(= (:id %) route-id) routes))
+
+(defn route-in-tree?
+  "Check if a route-id exists in a tree of routes (including children)"
+  [route-id routes]
+  (some (fn [route]
+          (or (= (:id route) route-id)
+              (when-let [children (:children route)]
+                (route-in-list? route-id children))))
+        routes))
+
+(defn route->section
+  "Determine which section owns a route"
+  [route-id]
+  (cond
+    ;; Check if route is in guide-routes (QUICKSTART section)
+    (route-in-list? route-id guide-routes) :quickstart
+
+    ;; Check if route is in component-routes (COMPONENTS section)
+    (route-in-tree? route-id component-routes) :components
+
+    ;; Otherwise nil (Welcome, Landing, Live Examples = collapse all)
+    :else nil))
+
+(defn flatten-routes
+  "Recursively flatten routes including children"
+  [routes]
+  (mapcat (fn [route]
+            (if-let [children (:children route)]
+              (cons (dissoc route :children) (flatten-routes children))
+              [route]))
+          routes))
+
+(defn auto-expand-section!
+  "Automatically expand section based on current route"
+  []
+  (let [all-routes (flatten-routes (concat site-routes component-routes guide-routes))
+        current-route (some #(when (router/rendered? (:id %) true) %) all-routes)
+        section (when current-route (route->section (:id current-route)))]
+    ;; Set section state (nil will collapse all)
+    (swap! state assoc :navigation.section/open section)
+    (set-open-section-in-storage! section)))
+
+(defn toggle-mobile-menu!
+  ([] (swap! state update :mobile-menu-open not)))
+
+(defn close-mobile-menu!
+  ([] (swap! state assoc :mobile-menu-open false)))
 
 (defn should-scroll-for-route?
   "Determine if navigation to target route should trigger scroll to top"
@@ -116,7 +212,7 @@
 
 (defn nav-item
   "Render a single navigation item (can be parent or child)"
-  [{:keys [route-id label icon indented?]}]
+  [{:keys [route-id label icon indented? section-key]}]
   (let [active? (router/rendered? route-id true)]
     [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center.gap-2
      {:class (concat
@@ -125,6 +221,9 @@
                  ["hover:ty-bg-neutral" "ty-text"])
                (when indented? ["pl-8"])) ; Indent child items
       :on {:click (fn []
+                    ;; Save last visited route for section
+                    (when section-key
+                      (set-last-visited-route! section-key route-id))
                     ;; Check if target route has hash before navigation
                     (let [should-scroll-top? (should-scroll-for-route? route-id)]
                       ;; Navigate
@@ -139,25 +238,61 @@
      [:span.text-sm label]]))
 
 (defn nav-section
-  "Render a navigation section with optional children"
-  [{:keys [title items]}]
-  [:div.mb-4
-   (when title
-     [:div.px-4.py-2
-      [:h3.text-xs.font-medium.ty-text-.uppercase.tracking-wider.mb-2 title]])
-   [:div.space-y-0.5
-    (for [item items]
-      (let [has-children? (seq (:children item))]
-        ^{:key (:label item)}
-        [:div
-         ;; Parent item
-         (nav-item (assoc item :indented? false))
-         ;; Children items (indented)
-         (when has-children?
-           [:div.space-y-0.5
-            (for [child (:children item)]
-              ^{:key (:label child)}
-              (nav-item (assoc child :indented? true)))])]))]])
+  "Render a navigation section with optional children and collapsible behavior"
+  [{:keys [title items collapsible? section-key]}]
+  (let [is-open? (= (get @state :navigation.section/open) section-key)
+        icon (if is-open? "chevron-down" "arrow-right")]
+    [:div.mb-4
+     (when title
+       (if collapsible?
+         ;; Collapsible section header (clickable)
+         [:div.px-4.py-2.cursor-pointer.rounded.transition-colors
+          {:on {:click #(toggle-nav-section! section-key items)}}
+          [:div.flex.items-center.gap-2
+           [:ty-icon {:name icon
+                      :size "sm"
+                      :class (if is-open? "ty-text-primary" "ty-text-")}]
+           [:h3.text-xs.font-medium.uppercase.tracking-wider
+            {:class (if is-open? "ty-text-primary font-semibold" "ty-text-")}
+            title]]]
+         ;; Non-collapsible section header (static)
+         [:div.px-4.py-2
+          [:h3.text-xs.font-medium.ty-text-.uppercase.tracking-wider.mb-2 title]]))
+
+     ;; Children container with collapse animation
+     (if collapsible?
+       ;; Collapsible children
+       [:div.overflow-hidden.transition-all.duration-300
+        {:class (if is-open? "opacity-100" "opacity-0")
+         :style {:max-height (if is-open? "1000px" "0")
+                 :width (if is-open? "100%" "0")}}
+        [:div.space-y-0.5.mt-2
+         (for [item items]
+           (let [has-children? (seq (:children item))]
+             ^{:key (:label item)}
+             [:div
+              ;; Parent item
+              (nav-item (assoc item :indented? false :section-key section-key))
+              ;; Children items (indented)
+              (when has-children?
+                [:div.space-y-0.5
+                 (for [child (:children item)]
+                   ^{:key (:label child)}
+                   (nav-item (assoc child :indented? true :section-key section-key)))])]))]]
+       ;; Non-collapsible children (always visible)
+       [:div.space-y-0.5
+        (for [item items]
+          (let [has-children? (seq (:children item))]
+            ^{:key (:label item)}
+            [:div
+             ;; Parent item
+             (nav-item (assoc item :indented? false))
+             ;; Children items (indented)
+             (when has-children?
+               [:div.space-y-0.5
+                (for [child (:children item)]
+                  ^{:key (:label child)}
+                  (nav-item (assoc child :indented? true)))])]))])]))
 
 (defn nav-items []
   [:div.space-y-6
@@ -168,12 +303,6 @@
                  :label (:name route)
                  :icon (:icon route)})]})
 
-   ;; Why ty Section
-   (nav-section
-     {:items [{:route-id ::why
-               :label "Why ty exists"
-               :icon "lightbulb"}]})
-
    ;; Tabs Test Section
    #_(nav-section
        {:title "Development"
@@ -181,7 +310,7 @@
                  :label "Tabs Test"
                  :icon "layout"}]})
 
-   ;; Examples Section (unified router navigation)
+   ;; Examples Section (unified router navigation) - Always visible
    (nav-section
      {:title "Live Examples"
       :items [{:route-id ::landing-user-profile
@@ -194,17 +323,21 @@
                :label "Contact Form"
                :icon "mail"}]})
 
-   ;; Quickstart (route navigation)
+   ;; Quickstart (route navigation) - Collapsible
    (nav-section
      {:title "Quickstart"
+      :collapsible? true
+      :section-key :quickstart
       :items (for [route guide-routes]
                {:route-id (:id route)
                 :label (:name route)
                 :icon (:icon route)})})
 
-   ;; Components Section (route navigation to component docs)
+   ;; Components Section (route navigation to component docs) - Collapsible
    (nav-section
      {:title "Components"
+      :collapsible? true
+      :section-key :components
       :items (keep
                (fn [route]
                  (when-not (= (:id route) :ty.site/docs)
@@ -219,14 +352,7 @@
                                      children))}))
                component-routes)})])
 
-(defn flatten-routes
-  "Recursively flatten routes including children"
-  [routes]
-  (mapcat (fn [route]
-            (if-let [children (:children route)]
-              (cons (dissoc route :children) (flatten-routes children))
-              [route]))
-          routes))
+
 
 (defn render
   "Render the appropriate view based on current route (like docs/render)"
@@ -327,12 +453,16 @@
       (.add (.-classList js/document.documentElement) "dark")
       (.remove (.-classList js/document.documentElement) "dark")))
 
-;; Initialize router with base path for GitHub Pages
+  ;; Initialize router with base path for GitHub Pages
   (router/init! (when-not (str/blank? ROUTER_BASE) ROUTER_BASE))
 
-  ;; Watch router changes and re-render
+  ;; Auto-expand navigation section based on current route (initial load)
+  (auto-expand-section!)
+
+  ;; Watch router changes for auto-expand and re-render
   (add-watch router/*router* ::render
              (fn [_ _ _ _]
+               (auto-expand-section!) ; Auto-expand on route change
                (render-app!)
                ;; No global highlighting needed - individual code blocks handle it via :replicant/on-mount
                ))

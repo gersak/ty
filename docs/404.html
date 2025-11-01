@@ -3,30 +3,27 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ty - Modern Web Components Library</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Ty Components - Professional Web Components Showcase</title>
+    <meta name="description"
+        content="Explore professional, framework-agnostic web components through real-world scenarios. Ty Components provides a semantic design system with comprehensive theming and accessibility.">
+    <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Ty CSS -->
-    <link rel="stylesheet" href="/ty/css/ty.pBYac.css">
+    <!-- Ty Complete CSS System (Variables + Utilities) from CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.917/css/ty.css">
 
-    <!-- Site-specific CSS -->
-    <link rel="stylesheet" href="/ty/css/site.pBYac.css">
+    <!-- Ty Web Components (TypeScript) from CDN -->
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.1.917/dist/ty.js"></script>
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
-
-    <!-- Code highlighting -->
+    <!-- Highlight.js for code syntax highlighting -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
         id="hljs-light">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css"
         id="hljs-dark" disabled>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/clojure.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
 
-    <!-- Custom Highlight.js integration with Ty theme system -->
+    <!-- Mobile-specific CSS fixes -->
     <style>
         /* Prevent horizontal scroll on mobile */
         html,
@@ -82,7 +79,6 @@
         .hljs-function,
         .hljs-title {
             color: var(--ty-color-secondary) !important;
-            font-weight: 600;
         }
 
         .hljs-variable,
@@ -170,47 +166,60 @@
         }
     </style>
 
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="/ty/favicon.ico">
+    <!-- Prevent FOUC -->
+    <script>
+        // Set initial theme based on localStorage or system preference
+        const storedTheme = localStorage.getItem('theme');
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const theme = storedTheme || systemTheme || 'light';
 
-    <!-- SEO Meta Tags -->
-    <meta name="description"
-        content="Ty - A modern web components library built with ClojureScript. Framework-agnostic UI components with semantic design system.">
-    <meta name="keywords"
-        content="web components, clojurescript, ui library, custom elements, shadow dom, semantic design">
-    <meta name="author" content="Gersak">
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        }
 
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://gersak.github.io/ty/">
-    <meta property="og:title" content="Ty - Modern Web Components Library">
-    <meta property="og:description"
-        content="Framework-agnostic UI components with semantic design system built on web standards.">
+        // Initialize theme only - let components handle highlighting
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set initial highlight.js theme
+            updateHighlightTheme(theme);
+        });
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://gersak.github.io/ty/">
-    <meta property="twitter:title" content="Ty - Modern Web Components Library">
-    <meta property="twitter:description"
-        content="Framework-agnostic UI components with semantic design system built on web standards.">
+        // Function to update highlight.js theme
+        function updateHighlightTheme(theme) {
+            const lightTheme = document.getElementById('hljs-light');
+            const darkTheme = document.getElementById('hljs-dark');
+
+            if (theme === 'dark') {
+                lightTheme.disabled = true;
+                darkTheme.disabled = false;
+            } else {
+                lightTheme.disabled = false;
+                darkTheme.disabled = true;
+            }
+        }
+
+        // Listen for theme changes and update highlight.js accordingly
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.attributeName === 'class') {
+                    const isDark = document.documentElement.classList.contains('dark');
+                    updateHighlightTheme(isDark ? 'dark' : 'light');
+                }
+            });
+        });
+
+        observer.observe(document.documentElement, {
+            attributes: true,
+            attributeFilter: ['class']
+        });
+    </script>
 </head>
 
-<body class="ty-canvas">
-    <div id="app">
-        <!-- Loading state -->
-        <div style="display: flex; align-items: center; justify-content: center; height: 100vh;">
-            <div style="text-align: center;">
-                <div style="font-size: 3rem; margin-bottom: 1rem;">⚡</div>
-                <div style="font-family: Inter, sans-serif; font-size: 1.2rem; color: var(--ty-color-text-soft);">
-                    Loading Ty Components...
-                </div>
-            </div>
-        </div>
-    </div>
+<body>
+    <!-- App will be mounted here -->
+    <div id="app"></div>
 
-    <!-- Main application bundle -->
-    <script src="/ty/js/site.pBYac.js"></script>
-
+    <!-- Load site app after DOM is ready -->
+    <script defer src="/ty/js/site.lgs20.js"></script>
 </body>
 
 </html>

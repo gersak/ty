@@ -51,9 +51,12 @@ export abstract class TyComponent<T = any> extends HTMLElement {
   /**
    * Define which attributes to observe
    * Auto-generated from property configuration
+   * Returns kebab-case attribute names (e.g., 'minHeight' -> 'min-height')
    */
   static get observedAttributes(): string[] {
-    return Object.keys(this.properties)
+    return Object.keys(this.properties).map(name => 
+      name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+    )
   }
   
   /**

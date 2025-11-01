@@ -809,9 +809,6 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
     open: false,
   };
 
-  // Form integration
-  private _internals?: ElementInternals;
-
   // Event listeners (stored for cleanup)
   private _clickListener?: (e: Event) => void;
   private _keydownListener?: (e: Event) => void;
@@ -1054,10 +1051,7 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
       }
     }
 
-    // Always sync to form (form value might be out of sync even if property matches)
-    if (this._internals) {
-      this._internals.setFormValue(utcValue);
-    }
+    // Form value sync handled automatically by TyComponent (formValue: true)
   }
 
   // handleValueChange removed - logic moved to onPropertiesChanged hook
@@ -1463,7 +1457,7 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
    * 
    * PORTED FROM: render! in date_picker.cljs
    */
-  private render(): void {
+  protected render(): void {
     if (!this.shadowRoot) return;
 
     ensureStyles(this.shadowRoot, { css: datePickerStyles, id: 'ty-date-picker' });

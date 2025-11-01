@@ -1,5 +1,6 @@
 (ns build
-  (:require [clojure.edn :as edn]
+  (:require [clojure.data.json :as json]
+            [clojure.edn :as edn]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.tools.build.api :as b]
@@ -72,45 +73,37 @@
 ;; GitHub Pages Build Functions
 ;; ============================================================================
 
+(defn read-ty-version
+  "Read the current @gersak/ty version from packages/core/package.json"
+  []
+  (let [pkg-json-path "../core/package.json"
+        pkg-json-file (io/file pkg-json-path)]
+    (if (.exists pkg-json-file)
+      (let [pkg-data (json/read-str (slurp pkg-json-file) :key-fn keyword)
+            version (:version pkg-data)]
+        (if version
+          version
+          (throw (ex-info "No version found in package.json"
+                          {:path (.getAbsolutePath pkg-json-file)}))))
+      (throw (ex-info "package.json not found"
+                      {:path (.getAbsolutePath pkg-json-file)})))))
+
 (defn github-pages
   "Build and deploy the documentation site to GitHub Pages.
-   This creates a production build in the 'docs' folder that can be served by GitHub Pages."
+   Uses CDN with pinned version from @gersak/ty NPM package."
   [_]
   (let [salt (template/random-string)
+        ty-version (read-ty-version)
         github-root "/ty"] ; GitHub Pages will serve from gersak.github.io/ty
 
     ;; 1. Clean the docs directory
     (println "\n📦 Building Ty Documentation for GitHub Pages")
     (println "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
+    (println (format "📦 Using Ty version: %s from NPM CDN" ty-version))
     (println "→ Cleaning docs directory...")
-    (b/delete {:path "docs"})
+    (b/delete {:path "../../docs"})
 
-    ;; 2. Build CSS
-    (println "→ Building CSS...")
-    ;; Copy the main ty.css from resources or site/public
-    (io/make-parents "docs/css/ty.css")
-    (cond
-      (.exists (io/file "resources/ty.css"))
-      (io/copy (io/file "resources/ty.css")
-               (io/file (format "docs/css/ty.%s.css" salt)))
-
-      (.exists (io/file "site/public/css/ty.css"))
-      (io/copy (io/file "site/public/css/ty.css")
-               (io/file (format "docs/css/ty.%s.css" salt)))
-
-      :else
-      (println "  ⚠️  Warning: ty.css not found in resources/ or site/public/css/"))
-
-    (println "RUNNING: npm run release:css")
-    (println (:out (b/process {:command-args ["npm" "run" "release:css"]
-                               :out :capture
-                               :err :capture})))
-    ;; Build site-specific CSS with Tailwind (if needed)
-    (when (.exists (io/file "site/public/css/site.css"))
-      (io/copy (io/file "site/public/css/site.css")
-               (io/file (format "docs/css/site.%s.css" salt))))
-
-    ;; 3. Build JavaScript with Shadow-cljs
+    ;; 2. Build JavaScript with Shadow-cljs
     (println "→ Building JavaScript with shadow-cljs...")
     (let [;; Read the original site build config
           shadow-config (edn/read-string (slurp "shadow-cljs.edn"))
@@ -141,51 +134,65 @@
           (throw (ex-info "Shadow-cljs build failed" {:exit exit})))
         (println "  ✓ JavaScript build completed")))
 
-    ;; 4. Process HTML templates
+    ;; 3. Process HTML templates
     (println "→ Generating HTML files...")
 
     ;; Main index.html
     (template/process "resources/index.html.template"
-                      "docs/index.html"
+                      "../../docs/index.html"
                       {:salt salt
+                       :version ty-version
                        :root github-root})
 
     ;; 404.html for GitHub Pages SPA support
     (template/process "resources/index.html.template"
-                      "docs/404.html"
+                      "../../docs/404.html"
                       {:salt salt
+                       :version ty-version
                        :root github-root})
 
-    ;; 5. Copy static assets
+    ;; 4. Copy static assets
     (println "→ Copying static assets...")
-    (when (.exists (io/file "site/public/favicon.ico"))
-      (io/copy (io/file "site/public/favicon.ico")
-               (io/file "docs/favicon.ico")))
+    ;; Copy favicon if it exists in public directory
+    (when (.exists (io/file "public/favicon.ico"))
+      (io/copy (io/file "public/favicon.ico")
+               (io/file "../../docs/favicon.ico"))
+      (println "  ✓ Copied favicon.ico"))
 
-    ;; Copy any images or other assets
-    (when (.exists (io/file "site/public/images"))
-      (b/copy-dir {:src-dirs ["site/public/images"]
-                   :target-dir "docs/images"}))
+    ;; Copy images directory if it exists
+    (when (.exists (io/file "public/images"))
+      (b/copy-dir {:src-dirs ["public/images"]
+                   :target-dir "../../docs/images"})
+      (println "  ✓ Copied images directory"))
 
-    ;; 6. Create .nojekyll file (tells GitHub not to process with Jekyll)
-    (spit "docs/.nojekyll" "")
+    ;; 5. Create .nojekyll file (tells GitHub not to process with Jekyll)
+    (spit "../../docs/.nojekyll" "")
+    (println "  ✓ Created .nojekyll file")
 
-    ;; 7. Summary
+    ;; 6. Summary
     (println "\n✅ GitHub Pages build complete!")
     (println "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    (println (format "📁 Output directory: docs/"))
+    (println (format "📁 Output directory: ../../docs/"))
     (println (format "🔑 Cache-busting salt: %s" salt))
+    (println (format "📦 Ty Components: @gersak/ty@%s (CDN)" ty-version))
     (println (format "🌐 Will be served at: https://gersak.github.io/ty/"))
+    (println "\nGenerated files:")
+    (println "  - docs/index.html (main page)")
+    (println "  - docs/404.html (SPA fallback)")
+    (println (format "  - docs/js/site.%s.js (ClojureScript app)" salt))
+    (println "\nCDN Resources:")
+    (println (format "  - https://cdn.jsdelivr.net/npm/@gersak/ty@%s/css/ty.css" ty-version))
+    (println (format "  - https://cdn.jsdelivr.net/npm/@gersak/ty@%s/dist/ty.js" ty-version))
     (println "\nNext steps:")
-    (println "  1. Review the generated files in 'docs/'")
-    (println "  2. Commit and push to GitHub:")
+    (println "  1. Ensure @gersak/ty is published to NPM:")
+    (println (format "     npm publish (current version: %s)" ty-version))
+    (println "  2. Wait ~2 minutes for CDN propagation")
+    (println "  3. Review the generated files in 'docs/'")
+    (println "  4. Commit and push to GitHub:")
     (println "     git add docs/")
     (println "     git commit -m 'Update GitHub Pages documentation'")
-    (println "     git push origin master")
-    (println "  3. Enable GitHub Pages in repository settings (if not already done)")
-    (println "     - Source: Deploy from branch")
-    (println "     - Branch: master")
-    (println "     - Folder: /docs")
+    (println "     git push origin docs")
+    (println "  5. GitHub Actions will deploy automatically")
     (println "")))
 
 (defn build-ty [_]

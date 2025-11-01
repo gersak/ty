@@ -66,7 +66,6 @@
   {:target :browser
    :output-dir "../../docs/js"
    :asset-path "js"
-   :modules {:site {:init-fn ty.site.core/init}}
    :closure-defines {ty.site.core/ROUTER_BASE "ty"
                      ty.site.core/PRODUCTION true}
    :compiler-options {:optimizations :advanced

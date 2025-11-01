@@ -263,13 +263,14 @@
 
          ;; Special requests
          [:div
-          [:ty-input {:type "textarea"
-                      :label "Special Requests"
-                      :value (:special-requests booking-data)
-                      :placeholder "Any special requirements or requests for your booking..."
-                      :rows "3"
-                      :on {:change #(swap! state assoc-in [:event-booking :booking-data :special-requests]
-                                           (.. ^js % -detail -value))}}]]]]
+          [:ty-textarea {:type "textarea"
+                         :min-height "300px"
+                         :label "Special Requests"
+                         :value (:special-requests booking-data)
+                         :placeholder "Any special requirements or requests for your booking..."
+                         :rows "3"
+                         :on {:change #(swap! state assoc-in [:event-booking :booking-data :special-requests]
+                                              (.. ^js % -detail -value))}}]]]]
 
        ;; Booking Summary
        [:div.ty-elevated.p-6.rounded-xl

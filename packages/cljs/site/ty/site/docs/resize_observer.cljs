@@ -23,14 +23,14 @@
    [:div.mb-6
     [:h3.text-lg.font-semibold.ty-text+.mb-3 "Attributes"]
     (attribute-table
-     [{:name "id"
-       :type "string"
-       :default "null"
-       :description "Required. Unique identifier used to query the element's size"}
-      {:name "debounce"
-       :type "number"
-       :default "0"
-       :description "Debounce delay in milliseconds. When > 0, only updates after the specified time of no resize activity"}])]
+      [{:name "id"
+        :type "string"
+        :default "null"
+        :description "Required. Unique identifier used to query the element's size"}
+       {:name "debounce"
+        :type "number"
+        :default "0"
+        :description "Debounce delay in milliseconds. When > 0, only updates after the specified time of no resize activity"}])]
 
    ;; JavaScript API
    [:div
@@ -64,7 +64,7 @@
    [:p.ty-text-.mb-4 "The simplest way to query container size:"]
 
    (code-block
-    "<ty-resize-observer id=\"container\">
+     "<ty-resize-observer id=\"container\">
   <div class=\"child\">
     Content here
   </div>
@@ -85,25 +85,23 @@
    [:h3.text-xl.font-semibold.ty-text+.mb-4 "🎯 Interactive Demo"]
    [:p.ty-text-.mb-4 "Resize the container below and watch the dimensions update in real-time:"]
 
-   [:ty-resize-observer#interactive-demo
+   [:ty-resize-observer#interactive-demo.ty-border-primary.rounded-lg.border-2
     {:style {:resize "both"
              :overflow "auto"
-             :border "2px solid"
              :padding "1.5rem"
              :min-width "300px"
              :min-height "200px"}
-     :class "ty-border-primary rounded-lg"
      :replicant/on-mount
      (fn [{^js el :replicant/node}]
        ;; Subscribe to resize changes and update global state
        (when (and js/window.tyResizeObserver el)
          (let [unsubscribe (js/window.tyResizeObserver.onResize
-                            "interactive-demo"
-                            (fn [size]
+                             "interactive-demo"
+                             (fn [size]
                               ;; Update state with new size (js->clj conversion)
-                              (swap! state/state assoc-in [:element-sizes "interactive-demo"]
-                                     {:width (.-width size)
-                                      :height (.-height size)})))]
+                               (swap! state/state assoc-in [:element-sizes "interactive-demo"]
+                                      {:width (.-width size)
+                                       :height (.-height size)})))]
            ;; Store unsubscribe function on element for cleanup
            (set! (.-_resizeUnsub el) unsubscribe))))
 
@@ -139,23 +137,21 @@
    [:h3.text-xl.font-semibold.ty-text+.mb-4 "📱 Responsive Layout"]
    [:p.ty-text-.mb-4 "Automatically switch between mobile/desktop layouts based on container width (not window width):"]
 
-   [:ty-resize-observer#responsive-layout
+   [:ty-resize-observer#responsive-layout.border-2.ty-border-primary.rounded-lg
     {:style {:resize "horizontal"
              :overflow "auto"
-             :border "2px solid"
              :padding "1rem"
              :min-width "200px"
              :max-width "100%"}
-     :class "ty-border-primary rounded-lg"
      :replicant/on-mount
      (fn [{^js el :replicant/node}]
        (when js/window.tyResizeObserver
          (let [unsubscribe (js/window.tyResizeObserver.onResize
-                            "responsive-layout"
-                            (fn [size]
-                              (swap! state/state assoc-in [:element-sizes "responsive-layout"]
-                                     {:width (.-width size)
-                                      :height (.-height size)})))]
+                             "responsive-layout"
+                             (fn [size]
+                               (swap! state/state assoc-in [:element-sizes "responsive-layout"]
+                                      {:width (.-width size)
+                                       :height (.-height size)})))]
            (set! (.-_resizeUnsub el) unsubscribe))))
 
      :replicant/on-unmount
@@ -217,27 +213,25 @@
     ;; No debounce
     [:div
      [:h4.font-semibold.ty-text.mb-2 "Without Debounce"]
-     [:ty-resize-observer#no-debounce
+     [:ty-resize-observer#no-debounce.ty-border-danger.border-2.rounded-lg
       {:style {:resize "both"
                :overflow "auto"
-               :border "2px solid"
                :padding "1rem"
                :min-width "150px"
                :min-height "100px"}
-       :class "ty-border-danger rounded-lg"
        :replicant/on-mount
        (fn [{^js el :replicant/node}]
          (when js/window.tyResizeObserver
            (let [unsubscribe (js/window.tyResizeObserver.onResize
-                              "no-debounce"
-                              (fn [size]
-                                (swap! state/state
-                                       (fn [s]
-                                         (-> s
-                                             (assoc-in [:element-sizes "no-debounce"]
-                                                       {:width (.-width size)
-                                                        :height (.-height size)})
-                                             (update-in [:update-counts "no-debounce"] (fnil inc 0)))))))]
+                               "no-debounce"
+                               (fn [size]
+                                 (swap! state/state
+                                        (fn [s]
+                                          (-> s
+                                              (assoc-in [:element-sizes "no-debounce"]
+                                                        {:width (.-width size)
+                                                         :height (.-height size)})
+                                              (update-in [:update-counts "no-debounce"] (fnil inc 0)))))))]
              (set! (.-_resizeUnsub el) unsubscribe))))
 
        :replicant/on-unmount
@@ -256,28 +250,26 @@
     ;; With debounce
     [:div
      [:h4.font-semibold.ty-text.mb-2 "With 300ms Debounce"]
-     [:ty-resize-observer#with-debounce
+     [:ty-resize-observer#with-debounce.ty-border-success.rounded-lg.border-2
       {:debounce 300
        :style {:resize "both"
                :overflow "auto"
-               :border "2px solid"
                :padding "1rem"
                :min-width "150px"
                :min-height "100px"}
-       :class "ty-border-success rounded-lg"
        :replicant/on-mount
        (fn [{^js el :replicant/node}]
          (when js/window.tyResizeObserver
            (let [unsubscribe (js/window.tyResizeObserver.onResize
-                              "with-debounce"
-                              (fn [size]
-                                (swap! state/state
-                                       (fn [s]
-                                         (-> s
-                                             (assoc-in [:element-sizes "with-debounce"]
-                                                       {:width (.-width size)
-                                                        :height (.-height size)})
-                                             (update-in [:update-counts "with-debounce"] (fnil inc 0)))))))]
+                               "with-debounce"
+                               (fn [size]
+                                 (swap! state/state
+                                        (fn [s]
+                                          (-> s
+                                              (assoc-in [:element-sizes "with-debounce"]
+                                                        {:width (.-width size)
+                                                         :height (.-height size)})
+                                              (update-in [:update-counts "with-debounce"] (fnil inc 0)))))))]
              (set! (.-_resizeUnsub el) unsubscribe))))
 
        :replicant/on-unmount
@@ -299,7 +291,7 @@
 
    [:div.mt-4
     (code-block
-     "<!-- Perfect for expensive operations -->
+      "<!-- Perfect for expensive operations -->
 <ty-resize-observer id=\"chart\" debounce=\"300\">
   <canvas id=\"my-chart\"></canvas>
 </ty-resize-observer>
@@ -318,23 +310,21 @@
    [:h3.text-xl.font-semibold.ty-text+.mb-4 "🔗 Nested Observers"]
    [:p.ty-text-.mb-4 "Track multiple container sizes independently - useful for complex layouts:"]
 
-   [:ty-resize-observer#outer-container
+   [:ty-resize-observer#outer-container.ty-border-primary.border-2.rounded-lg
     {:style {:resize "both"
              :overflow "auto"
-             :border "2px solid"
              :padding "1rem"
              :min-width "300px"
              :min-height "200px"}
-     :class "ty-border-primary rounded-lg"
      :replicant/on-mount
      (fn [{^js el :replicant/node}]
        (when js/window.tyResizeObserver
          (let [unsubscribe (js/window.tyResizeObserver.onResize
-                            "outer-container"
-                            (fn [size]
-                              (swap! state/state assoc-in [:element-sizes "outer-container"]
-                                     {:width (.-width size)
-                                      :height (.-height size)})))]
+                             "outer-container"
+                             (fn [size]
+                               (swap! state/state assoc-in [:element-sizes "outer-container"]
+                                      {:width (.-width size)
+                                       :height (.-height size)})))]
            (set! (.-_resizeUnsub el) unsubscribe))))
 
      :replicant/on-unmount
@@ -351,24 +341,22 @@
         (when outer-size
           [:span.ty-text-primary (str (int (:width outer-size)) " × " (int (:height outer-size)) "px")])]
 
-       [:ty-resize-observer#inner-container
+       [:ty-resize-observer#inner-container.border-2.ty-border-success.rounded.border-dashed
         {:style {:resize "both"
                  :overflow "auto"
-                 :border "2px dashed"
                  :padding "0.75rem"
                  :min-width "150px"
                  :min-height "100px"
                  :margin-top "0.5rem"}
-         :class "ty-border-success rounded"
          :replicant/on-mount
          (fn [{^js el :replicant/node}]
            (when js/window.tyResizeObserver
              (let [unsubscribe (js/window.tyResizeObserver.onResize
-                                "inner-container"
-                                (fn [size]
-                                  (swap! state/state assoc-in [:element-sizes "inner-container"]
-                                         {:width (.-width size)
-                                          :height (.-height size)})))]
+                                 "inner-container"
+                                 (fn [size]
+                                   (swap! state/state assoc-in [:element-sizes "inner-container"]
+                                          {:width (.-width size)
+                                           :height (.-height size)})))]
                (set! (.-_resizeUnsub el) unsubscribe))))
 
          :replicant/on-unmount
@@ -398,7 +386,7 @@
 
    [:div.mt-4
     (code-block
-     "<ty-resize-observer id=\"sidebar\">
+      "<ty-resize-observer id=\"sidebar\">
   <aside>
     <ty-resize-observer id=\"sidebar-section\">
       <!-- Each section tracks its own size -->
@@ -421,23 +409,21 @@
 
    [:div.flex.gap-4 {:style {:height "320px"}}
     ;; Sidebar with resize observer
-    [:ty-resize-observer#flex-sidebar
+    [:ty-resize-observer#flex-sidebar.border-2.ty-bg-secondary-.ty-border-secondary.rounded-lg
      {:style {:resize "horizontal"
               :overflow "auto"
-              :border "2px solid"
               :padding "1rem"
               :min-width "150px"
               :width "200px"}
-      :class "ty-bg-secondary- ty-border-secondary rounded-lg"
       :replicant/on-mount
       (fn [{^js el :replicant/node}]
         (when js/window.tyResizeObserver
           (let [unsubscribe (js/window.tyResizeObserver.onResize
-                             "flex-sidebar"
-                             (fn [size]
-                               (swap! state/state assoc-in [:element-sizes "flex-sidebar"]
-                                      {:width (.-width size)
-                                       :height (.-height size)})))]
+                              "flex-sidebar"
+                              (fn [size]
+                                (swap! state/state assoc-in [:element-sizes "flex-sidebar"]
+                                       {:width (.-width size)
+                                        :height (.-height size)})))]
             (set! (.-_resizeUnsub el) unsubscribe))))
 
       :replicant/on-unmount
@@ -474,11 +460,11 @@
       (fn [{^js el :replicant/node}]
         (when js/window.tyResizeObserver
           (let [unsubscribe (js/window.tyResizeObserver.onResize
-                             "flex-main"
-                             (fn [size]
-                               (swap! state/state assoc-in [:element-sizes "flex-main"]
-                                      {:width (.-width size)
-                                       :height (.-height size)})))]
+                              "flex-main"
+                              (fn [size]
+                                (swap! state/state assoc-in [:element-sizes "flex-main"]
+                                       {:width (.-width size)
+                                        :height (.-height size)})))]
             (set! (.-_resizeUnsub el) unsubscribe))))
 
       :replicant/on-unmount
@@ -521,7 +507,7 @@
 
    [:div.mt-4
     (code-block
-     "<div class=\"flex gap-4\">
+      "<div class=\"flex gap-4\">
   <!-- Sidebar with its own observer -->
   <ty-resize-observer id=\"sidebar\">
     <aside>Sidebar content</aside>
@@ -585,7 +571,7 @@
      [:p.ty-text-.mb-4 "Subscribe to size changes with callbacks:"]
 
      (code-block
-      "<ty-resize-observer id=\"reactive-container\">
+       "<ty-resize-observer id=\"reactive-container\">
   <div id=\"display\"></div>
 </ty-resize-observer>
 
@@ -606,7 +592,7 @@
      [:p.ty-text-.mb-4 "Use the global window API for script tag integration:"]
 
      (code-block
-      "<ty-resize-observer id=\"container\">
+       "<ty-resize-observer id=\"container\">
   <div>Content</div>
 </ty-resize-observer>
 
@@ -631,7 +617,7 @@
     [:div.ty-content.rounded-lg.p-6
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "React"]
      (code-block
-      "import { useEffect, useState } from 'react';
+       "import { useEffect, useState } from 'react';
 import { getSize, onResize } from '@gersak/ty';
 
 function ChildComponent() {
@@ -647,14 +633,14 @@ function ChildComponent() {
   
   return <div>Parent: {parentSize?.width}px wide</div>;
 }"
-      "javascript")]
+       "javascript")]
 
     ;; ClojureScript
     [:div.ty-content.rounded-lg.p-6
      [:h3.text-lg.font-semibold.ty-text+.mb-3 "ClojureScript / Replicant"]
      [:p.ty-text-.mb-3 "Using Replicant lifecycle hooks with global state:"]
      (code-block
-      "(ns my-app.docs
+       "(ns my-app.docs
   (:require [ty.site.state :as state]))
 
 (defn interactive-demo []
@@ -687,7 +673,7 @@ function ChildComponent() {
    (let [size (get-in @state/state [:element-sizes \"my-container\"])]
      [:div 
       (str \"Size: \" (:width size) \"px × \" (:height size) \"px\")])])"
-      "clojure")]]
+       "clojure")]]
 
    ;; Best Practices
    [:div.ty-elevated.rounded-lg.p-6.my-8

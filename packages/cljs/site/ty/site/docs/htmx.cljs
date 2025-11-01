@@ -127,33 +127,6 @@ window.tyIcons.register({
 console.log('✓ Icons registered:', Object.keys(window.tyIcons.registry))"
                   "javascript")
 
-                [:div.ty-bg-neutral-.border.ty-border.rounded.p-4.mt-4.mb-4
-                 [:p.ty-text.text-sm.mb-2
-                  "💡 " [:strong "Build-time bundling for production"]]
-                 [:p.ty-text-.text-sm.mb-3
-                  "For production Flask/HTMX apps, bundle icons at build time instead of loading from CDN:"]
-
-                 (code-block
-                   "# 1. Install build dependencies
-npm init -y
-npm install --save-dev esbuild @gersak/ty
-
-# 2. Add to package.json scripts:
-{
-  \"scripts\": {
-    \"build:icons\": \"esbuild static/js/icons.js --bundle --minify --format=iife --tree-shaking=true --outfile=static/dist/icons.js\"
-  }
-}
-
-# 3. Build:
-npm run build:icons
-
-# 4. Load in template:
-<script defer src=\"{{ url_for('static', filename='dist/icons.js') }}\"></script>
-
-# Result: ~1-2KB bundle instead of 897KB full library"
-                   "bash")]
-
                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mt-4
                  [:p.ty-text-success.text-sm.mb-2
                   "✅ " [:strong "Tree-shaking saves bandwidth"]]
@@ -174,6 +147,7 @@ window.tyIcons.register(lucide)
 import { check, heart } from '@gersak/ty/icons/lucide'
 window.tyIcons.register({ check, heart })"
                    "javascript")]]))
+
 
 ;; =============================================================================
 ;; BASIC USAGE
@@ -236,37 +210,49 @@ def search_users():
     query = request.args.get('q', '').lower()
     users = [u for u in USERS if query in u['name'].lower()]
     return render_template('partials/user_results.html', users=users)"
-                  "python")
+                  "python")]))
 
-                [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Styling with CSS Guide"]
+;; =============================================================================
+;; ICON BUNDLING (PRODUCTION)
+;; =============================================================================
 
+(defn icon-bundling-section
+  "Production icon bundling with esbuild"
+  []
+  (doc-section "Icon Bundling (Production)"
+               [:div
                 [:p.ty-text-.mb-4
-                 "Follow the Ty CSS system principles:"]
+                 "For production Flask/HTMX apps, bundle icons at build time instead of loading from CDN:"]
 
-                [:div.ty-bg-neutral-.border.ty-border.rounded.p-4
-                 [:p.ty-text.text-sm.font-semibold.mb-3
-                  "🎯 Core Rule: TY for Colors, Tailwind for Everything Else"]
+                (code-block
+                  "# 1. Install build dependencies
+npm init -y
+npm install --save-dev esbuild @gersak/ty
 
-                 (code-block
-                   "<!-- ✅ GOOD: Card with proper styling -->
-<div class=\"ty-elevated p-6 rounded-lg\">
-  <h2 class=\"ty-text++ text-xl font-bold mb-4\">Card Title</h2>
-  <p class=\"ty-text- text-sm\">Card description</p>
-  <button class=\"ty-bg-primary ty-text++ px-4 py-2 rounded flex items-center gap-2\">
-    <ty-icon name=\"save\"></ty-icon>
-    Save
-  </button>
-</div>
+# 2. Add to package.json scripts:
+{
+  \"scripts\": {
+    \"build:icons\": \"esbuild static/js/icons.js --bundle --minify --format=iife --tree-shaking=true --outfile=static/dist/icons.js\"
+  }
+}
 
-<!-- ✅ GOOD: Alert with semantic colors -->
-<div class=\"ty-bg-success- ty-border-success border rounded-lg p-4\">
-  <h3 class=\"ty-text-success++ font-semibold\">Success!</h3>
-  <p class=\"ty-text-success text-sm\">Operation completed.</p>
-</div>"
-                   "html")
+# 3. Build:
+npm run build:icons
 
-                 [:p.ty-text-.text-sm.mt-3
-                  "See the full " [:strong "CSS System Guide"] " for comprehensive styling patterns."]]]))
+# 4. Load in template:
+<script defer src=\"{{ url_for('static', filename='dist/icons.js') }}\"></script>
+
+# Result: ~1-2KB bundle instead of 897KB full library"
+                  "bash")
+
+                [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mt-4
+                 [:p.ty-text-success.text-sm.mb-2
+                  "✅ " [:strong "Benefits of build-time bundling"]]
+                 [:ul.ty-text-success.text-sm.space-y-1.ml-4
+                  [:li "• Much smaller bundle (~1-2KB vs loading from CDN)"]
+                  [:li "• Single HTTP request instead of separate icon imports"]
+                  [:li "• Better for production caching and performance"]
+                  [:li "• Tree-shaking removes unused icons automatically"]]]]))
 
 ;; =============================================================================
 ;; MAIN VIEW

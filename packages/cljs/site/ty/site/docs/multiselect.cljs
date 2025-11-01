@@ -25,89 +25,89 @@
   [:div.ty-elevated.rounded-lg.p-6.mb-8
    [:h2#attributes.text-2xl.font-bold.ty-text++.mb-4 "API Reference"]
    (attribute-table
-    [{:name "value"
-      :type "string"
-      :default "null"
-      :description "Comma-separated selected values (e.g., \"red,blue,green\")"}
-     {:name "placeholder"
-      :type "string"
-      :default "null"
-      :description "Placeholder text when no options are selected"}
-     {:name "label"
-      :type "string"
-      :default "null"
-      :description "Label displayed above the multiselect"}
-     {:name "name"
-      :type "string"
-      :default "null"
-      :description "Name for form submission (creates multiple entries in FormData)"}
-     {:name "disabled"
-      :type "boolean"
-      :default "false"
-      :description "Whether the multiselect is disabled"}
-     {:name "readonly"
-      :type "boolean"
-      :default "false"
-      :description "Whether the multiselect is read-only (can view but not change selections)"}
-     {:name "required"
-      :type "boolean"
-      :default "false"
-      :description "Whether the multiselect is required (shows asterisk)"}
-     {:name "searchable"
-      :type "boolean"
-      :default "true"
-      :description "Enable built-in search filtering. Use 'not-searchable' attribute to disable. When disabled, fires 'search' events for external search."}
-     {:name "size"
-      :type "string"
-      :default "'md'"
-      :description "Component size: 'sm', 'md', 'lg'"}
-     {:name "flavor"
-      :type "string"
-      :default "'neutral'"
-      :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-     {:name "delay"
-      :type "number"
-      :default "0"
-      :description "Debounce delay in milliseconds for search events (0-5000ms). Only applies when searchable=false."}
-     {:name "clearable"
-      :type "boolean"
-      :default "false"
-      :description "Show clear all button when items are selected"}
-     {:name "selected-label"
-      :type "string"
-      :default "'Selected'"
-      :description "Label for selected section in mobile mode"}
-     {:name "available-label"
-      :type "string"
-      :default "'Available'"
-      :description "Label for available options section in mobile mode"}
-     {:name "no-selection-message"
-      :type "string"
-      :default "'No items selected'"
-      :description "Message shown when no items are selected (mobile mode)"}
-     {:name "no-options-message"
-      :type "string"
-      :default "'No options available'"
-      :description "Message shown when no options are available (mobile mode)"}
-     {:name "class"
-      :type "string"
-      :default "null"
-      :description "Additional CSS classes"}])
+     [{:name "value"
+       :type "string"
+       :default "null"
+       :description "Comma-separated selected values (e.g., \"red,blue,green\")"}
+      {:name "placeholder"
+       :type "string"
+       :default "null"
+       :description "Placeholder text when no options are selected"}
+      {:name "label"
+       :type "string"
+       :default "null"
+       :description "Label displayed above the multiselect"}
+      {:name "name"
+       :type "string"
+       :default "null"
+       :description "Name for form submission (creates multiple entries in FormData)"}
+      {:name "disabled"
+       :type "boolean"
+       :default "false"
+       :description "Whether the multiselect is disabled"}
+      {:name "readonly"
+       :type "boolean"
+       :default "false"
+       :description "Whether the multiselect is read-only (can view but not change selections)"}
+      {:name "required"
+       :type "boolean"
+       :default "false"
+       :description "Whether the multiselect is required (shows asterisk)"}
+      {:name "searchable"
+       :type "boolean"
+       :default "true"
+       :description "Enable built-in search filtering. Use 'not-searchable' attribute to disable. When disabled, fires 'search' events for external search."}
+      {:name "size"
+       :type "string"
+       :default "'md'"
+       :description "Component size: 'sm', 'md', 'lg'"}
+      {:name "flavor"
+       :type "string"
+       :default "'neutral'"
+       :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
+      {:name "delay"
+       :type "number"
+       :default "0"
+       :description "Debounce delay in milliseconds for search events (0-5000ms). Only applies when searchable=false."}
+      {:name "clearable"
+       :type "boolean"
+       :default "false"
+       :description "Show clear all button when items are selected"}
+      {:name "selected-label"
+       :type "string"
+       :default "'Selected'"
+       :description "Label for selected section in mobile mode"}
+      {:name "available-label"
+       :type "string"
+       :default "'Available'"
+       :description "Label for available options section in mobile mode"}
+      {:name "no-selection-message"
+       :type "string"
+       :default "'No items selected'"
+       :description "Message shown when no items are selected (mobile mode)"}
+      {:name "no-options-message"
+       :type "string"
+       :default "'No options available'"
+       :description "Message shown when no options are available (mobile mode)"}
+      {:name "class"
+       :type "string"
+       :default "null"
+       :description "Additional CSS classes"}])
    [:div.mt-6
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "Events"]
     (event-table
-     [{:name "change"
-       :when-fired "Fired when selections change"
-       :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
-      {:name "search"
-       :when-fired "Fired when user types in search (only when searchable=false for external search)"
-       :payload "{query: string, element: HTMLElement}"}
-      {:name "focus"
-       :when-fired "Fired when multiselect gains focus"
-       :payload "Standard FocusEvent"}
-      {:name "blur"
-       :when-fired "Fired when multiselect loses focus"
-       :payload "Standard FocusEvent"}])]
+      [{:name "change"
+        :when-fired "Fired when selections change"
+        :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
+       {:name "search"
+        :when-fired "Fired when user types in search (only when searchable=false for external search)"
+        :payload "{query: string, element: HTMLElement}"}
+       {:name "focus"
+        :when-fired "Fired when multiselect gains focus"
+        :payload "Standard FocusEvent"}
+       {:name "blur"
+        :when-fired "Fired when multiselect loses focus"
+        :payload "Standard FocusEvent"}])]
    [:div.mt-4
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "Slots"]
     [:div.ty-bg-neutral-.rounded.p-4
@@ -132,104 +132,300 @@
                        :clearable true
                        :style {:min-width "320px"}
                        :on {:change multiselect-event-handler}}
-      [:ty-tag {:value "usa" :pill true :size "sm"} "🇺🇸 United States"]
-      [:ty-tag {:value "canada" :pill true :size "sm"} "🇨🇦 Canada"]
-      [:ty-tag {:value "mexico" :pill true :size "sm"} "🇲🇽 Mexico"]
-      [:ty-tag {:value "brazil" :pill true :size "sm"} "🇧🇷 Brazil"]
-      [:ty-tag {:value "argentina" :pill true :size "sm"} "🇦🇷 Argentina"]
-      [:ty-tag {:value "chile" :pill true :size "sm"} "🇨🇱 Chile"]
-      [:ty-tag {:value "colombia" :pill true :size "sm"} "🇨🇴 Colombia"]
-      [:ty-tag {:value "peru" :pill true :size "sm"} "🇵🇪 Peru"]
-      [:ty-tag {:value "venezuela" :pill true :size "sm"} "🇻🇪 Venezuela"]
-      [:ty-tag {:value "ecuador" :pill true :size "sm"} "🇪🇨 Ecuador"]
-      [:ty-tag {:value "uk" :pill true :size "sm"} "🇬🇧 United Kingdom"]
-      [:ty-tag {:value "france" :pill true :size "sm"} "🇫🇷 France"]
-      [:ty-tag {:value "germany" :pill true :size "sm"} "🇩🇪 Germany"]
-      [:ty-tag {:value "italy" :pill true :size "sm"} "🇮🇹 Italy"]
-      [:ty-tag {:value "spain" :pill true :size "sm"} "🇪🇸 Spain"]
-      [:ty-tag {:value "portugal" :pill true :size "sm"} "🇵🇹 Portugal"]
-      [:ty-tag {:value "netherlands" :pill true :size "sm"} "🇳🇱 Netherlands"]
-      [:ty-tag {:value "belgium" :pill true :size "sm"} "🇧🇪 Belgium"]
-      [:ty-tag {:value "switzerland" :pill true :size "sm"} "🇨🇭 Switzerland"]
-      [:ty-tag {:value "austria" :pill true :size "sm"} "🇦🇹 Austria"]
-      [:ty-tag {:value "sweden" :pill true :size "sm"} "🇸🇪 Sweden"]
-      [:ty-tag {:value "norway" :pill true :size "sm"} "🇳🇴 Norway"]
-      [:ty-tag {:value "denmark" :pill true :size "sm"} "🇩🇰 Denmark"]
-      [:ty-tag {:value "finland" :pill true :size "sm"} "🇫🇮 Finland"]
-      [:ty-tag {:value "poland" :pill true :size "sm"} "🇵🇱 Poland"]
-      [:ty-tag {:value "czech" :pill true :size "sm"} "🇨🇿 Czech Republic"]
-      [:ty-tag {:value "hungary" :pill true :size "sm"} "🇭🇺 Hungary"]
-      [:ty-tag {:value "greece" :pill true :size "sm"} "🇬🇷 Greece"]
-      [:ty-tag {:value "turkey" :pill true :size "sm"} "🇹🇷 Turkey"]
-      [:ty-tag {:value "russia" :pill true :size "sm"} "🇷🇺 Russia"]
-      [:ty-tag {:value "japan" :pill true :size "sm"} "🇯🇵 Japan"]
-      [:ty-tag {:value "china" :pill true :size "sm"} "🇨🇳 China"]
-      [:ty-tag {:value "korea" :pill true :size "sm"} "🇰🇷 South Korea"]
-      [:ty-tag {:value "india" :pill true :size "sm"} "🇮🇳 India"]
-      [:ty-tag {:value "indonesia" :pill true :size "sm"} "🇮🇩 Indonesia"]
-      [:ty-tag {:value "thailand" :pill true :size "sm"} "🇹🇭 Thailand"]
-      [:ty-tag {:value "vietnam" :pill true :size "sm"} "🇻🇳 Vietnam"]
-      [:ty-tag {:value "philippines" :pill true :size "sm"} "🇵🇭 Philippines"]
-      [:ty-tag {:value "malaysia" :pill true :size "sm"} "🇲🇾 Malaysia"]
-      [:ty-tag {:value "singapore" :pill true :size "sm"} "🇸🇬 Singapore"]
-      [:ty-tag {:value "australia" :pill true :size "sm"} "🇦🇺 Australia"]
-      [:ty-tag {:value "newzealand" :pill true :size "sm"} "🇳🇿 New Zealand"]
-      [:ty-tag {:value "southafrica" :pill true :size "sm"} "🇿🇦 South Africa"]
-      [:ty-tag {:value "egypt" :pill true :size "sm"} "🇪🇬 Egypt"]
-      [:ty-tag {:value "nigeria" :pill true :size "sm"} "🇳🇬 Nigeria"]
-      [:ty-tag {:value "kenya" :pill true :size "sm"} "🇰🇪 Kenya"]
-      [:ty-tag {:value "morocco" :pill true :size "sm"} "🇲🇦 Morocco"]
-      [:ty-tag {:value "algeria" :pill true :size "sm"} "🇩🇿 Algeria"]
-      [:ty-tag {:value "tunisia" :pill true :size "sm"} "🇹🇳 Tunisia"]
-      [:ty-tag {:value "israel" :pill true :size "sm"} "🇮🇱 Israel"]
-      [:ty-tag {:value "uae" :pill true :size "sm"} "🇦🇪 UAE"]
-      [:ty-tag {:value "saudi" :pill true :size "sm"} "🇸🇦 Saudi Arabia"]
-      [:ty-tag {:value "qatar" :pill true :size "sm"} "🇶🇦 Qatar"]
-      [:ty-tag {:value "kuwait" :pill true :size "sm"} "🇰🇼 Kuwait"]
-      [:ty-tag {:value "iraq" :pill true :size "sm"} "🇮🇶 Iraq"]
-      [:ty-tag {:value "iran" :pill true :size "sm"} "🇮🇷 Iran"]
-      [:ty-tag {:value "pakistan" :pill true :size "sm"} "🇵🇰 Pakistan"]
-      [:ty-tag {:value "bangladesh" :pill true :size "sm"} "🇧🇩 Bangladesh"]
-      [:ty-tag {:value "srilanka" :pill true :size "sm"} "🇱🇰 Sri Lanka"]
-      [:ty-tag {:value "myanmar" :pill true :size "sm"} "🇲🇲 Myanmar"]
-      [:ty-tag {:value "cambodia" :pill true :size "sm"} "🇰🇭 Cambodia"]
-      [:ty-tag {:value "laos" :pill true :size "sm"} "🇱🇦 Laos"]
-      [:ty-tag {:value "mongolia" :pill true :size "sm"} "🇲🇳 Mongolia"]
-      [:ty-tag {:value "nepal" :pill true :size "sm"} "🇳🇵 Nepal"]
-      [:ty-tag {:value "bhutan" :pill true :size "sm"} "🇧🇹 Bhutan"]
-      [:ty-tag {:value "taiwan" :pill true :size "sm"} "🇹🇼 Taiwan"]
-      [:ty-tag {:value "hongkong" :pill true :size "sm"} "🇭🇰 Hong Kong"]
-      [:ty-tag {:value "macao" :pill true :size "sm"} "🇲🇴 Macao"]
-      [:ty-tag {:value "afghanistan" :pill true :size "sm"} "🇦🇫 Afghanistan"]
-      [:ty-tag {:value "kazakhstan" :pill true :size "sm"} "🇰🇿 Kazakhstan"]
-      [:ty-tag {:value "uzbekistan" :pill true :size "sm"} "🇺🇿 Uzbekistan"]
-      [:ty-tag {:value "turkmenistan" :pill true :size "sm"} "🇹🇲 Turkmenistan"]
-      [:ty-tag {:value "kyrgyzstan" :pill true :size "sm"} "🇰🇬 Kyrgyzstan"]
-      [:ty-tag {:value "tajikistan" :pill true :size "sm"} "🇹🇯 Tajikistan"]
-      [:ty-tag {:value "azerbaijan" :pill true :size "sm"} "🇦🇿 Azerbaijan"]
-      [:ty-tag {:value "georgia" :pill true :size "sm"} "🇬🇪 Georgia"]
-      [:ty-tag {:value "armenia" :pill true :size "sm"} "🇦🇲 Armenia"]
-      [:ty-tag {:value "ukraine" :pill true :size "sm"} "🇺🇦 Ukraine"]
-      [:ty-tag {:value "belarus" :pill true :size "sm"} "🇧🇾 Belarus"]
-      [:ty-tag {:value "moldova" :pill true :size "sm"} "🇲🇩 Moldova"]
-      [:ty-tag {:value "romania" :pill true :size "sm"} "🇷🇴 Romania"]
-      [:ty-tag {:value "bulgaria" :pill true :size "sm"} "🇧🇬 Bulgaria"]
-      [:ty-tag {:value "serbia" :pill true :size "sm"} "🇷🇸 Serbia"]
-      [:ty-tag {:value "croatia" :pill true :size "sm"} "🇭🇷 Croatia"]
-      [:ty-tag {:value "slovenia" :pill true :size "sm"} "🇸🇮 Slovenia"]
-      [:ty-tag {:value "bosnia" :pill true :size "sm"} "🇧🇦 Bosnia"]
-      [:ty-tag {:value "macedonia" :pill true :size "sm"} "🇲🇰 Macedonia"]
-      [:ty-tag {:value "albania" :pill true :size "sm"} "🇦🇱 Albania"]
-      [:ty-tag {:value "montenegro" :pill true :size "sm"} "🇲🇪 Montenegro"]
-      [:ty-tag {:value "kosovo" :pill true :size "sm"} "🇽🇰 Kosovo"]
-      [:ty-tag {:value "lithuania" :pill true :size "sm"} "🇱🇹 Lithuania"]
-      [:ty-tag {:value "latvia" :pill true :size "sm"} "🇱🇻 Latvia"]
-      [:ty-tag {:value "estonia" :pill true :size "sm"} "🇪🇪 Estonia"]
-      [:ty-tag {:value "iceland" :pill true :size "sm"} "🇮🇸 Iceland"]
-      [:ty-tag {:value "ireland" :pill true :size "sm"} "🇮🇪 Ireland"]
-      [:ty-tag {:value "luxembourg" :pill true :size "sm"} "🇱🇺 Luxembourg"]
-      [:ty-tag {:value "malta" :pill true :size "sm"} "🇲🇹 Malta"]
-      [:ty-tag {:value "cyprus" :pill true :size "sm"} "🇨🇾 Cyprus"]]]
+      [:ty-tag {:value "usa"
+                :pill true
+                :size "sm"} "🇺🇸 United States"]
+      [:ty-tag {:value "canada"
+                :pill true
+                :size "sm"} "🇨🇦 Canada"]
+      [:ty-tag {:value "mexico"
+                :pill true
+                :size "sm"} "🇲🇽 Mexico"]
+      [:ty-tag {:value "brazil"
+                :pill true
+                :size "sm"} "🇧🇷 Brazil"]
+      [:ty-tag {:value "argentina"
+                :pill true
+                :size "sm"} "🇦🇷 Argentina"]
+      [:ty-tag {:value "chile"
+                :pill true
+                :size "sm"} "🇨🇱 Chile"]
+      [:ty-tag {:value "colombia"
+                :pill true
+                :size "sm"} "🇨🇴 Colombia"]
+      [:ty-tag {:value "peru"
+                :pill true
+                :size "sm"} "🇵🇪 Peru"]
+      [:ty-tag {:value "venezuela"
+                :pill true
+                :size "sm"} "🇻🇪 Venezuela"]
+      [:ty-tag {:value "ecuador"
+                :pill true
+                :size "sm"} "🇪🇨 Ecuador"]
+      [:ty-tag {:value "uk"
+                :pill true
+                :size "sm"} "🇬🇧 United Kingdom"]
+      [:ty-tag {:value "france"
+                :pill true
+                :size "sm"} "🇫🇷 France"]
+      [:ty-tag {:value "germany"
+                :pill true
+                :size "sm"} "🇩🇪 Germany"]
+      [:ty-tag {:value "italy"
+                :pill true
+                :size "sm"} "🇮🇹 Italy"]
+      [:ty-tag {:value "spain"
+                :pill true
+                :size "sm"} "🇪🇸 Spain"]
+      [:ty-tag {:value "portugal"
+                :pill true
+                :size "sm"} "🇵🇹 Portugal"]
+      [:ty-tag {:value "netherlands"
+                :pill true
+                :size "sm"} "🇳🇱 Netherlands"]
+      [:ty-tag {:value "belgium"
+                :pill true
+                :size "sm"} "🇧🇪 Belgium"]
+      [:ty-tag {:value "switzerland"
+                :pill true
+                :size "sm"} "🇨🇭 Switzerland"]
+      [:ty-tag {:value "austria"
+                :pill true
+                :size "sm"} "🇦🇹 Austria"]
+      [:ty-tag {:value "sweden"
+                :pill true
+                :size "sm"} "🇸🇪 Sweden"]
+      [:ty-tag {:value "norway"
+                :pill true
+                :size "sm"} "🇳🇴 Norway"]
+      [:ty-tag {:value "denmark"
+                :pill true
+                :size "sm"} "🇩🇰 Denmark"]
+      [:ty-tag {:value "finland"
+                :pill true
+                :size "sm"} "🇫🇮 Finland"]
+      [:ty-tag {:value "poland"
+                :pill true
+                :size "sm"} "🇵🇱 Poland"]
+      [:ty-tag {:value "czech"
+                :pill true
+                :size "sm"} "🇨🇿 Czech Republic"]
+      [:ty-tag {:value "hungary"
+                :pill true
+                :size "sm"} "🇭🇺 Hungary"]
+      [:ty-tag {:value "greece"
+                :pill true
+                :size "sm"} "🇬🇷 Greece"]
+      [:ty-tag {:value "turkey"
+                :pill true
+                :size "sm"} "🇹🇷 Turkey"]
+      [:ty-tag {:value "russia"
+                :pill true
+                :size "sm"} "🇷🇺 Russia"]
+      [:ty-tag {:value "japan"
+                :pill true
+                :size "sm"} "🇯🇵 Japan"]
+      [:ty-tag {:value "china"
+                :pill true
+                :size "sm"} "🇨🇳 China"]
+      [:ty-tag {:value "korea"
+                :pill true
+                :size "sm"} "🇰🇷 South Korea"]
+      [:ty-tag {:value "india"
+                :pill true
+                :size "sm"} "🇮🇳 India"]
+      [:ty-tag {:value "indonesia"
+                :pill true
+                :size "sm"} "🇮🇩 Indonesia"]
+      [:ty-tag {:value "thailand"
+                :pill true
+                :size "sm"} "🇹🇭 Thailand"]
+      [:ty-tag {:value "vietnam"
+                :pill true
+                :size "sm"} "🇻🇳 Vietnam"]
+      [:ty-tag {:value "philippines"
+                :pill true
+                :size "sm"} "🇵🇭 Philippines"]
+      [:ty-tag {:value "malaysia"
+                :pill true
+                :size "sm"} "🇲🇾 Malaysia"]
+      [:ty-tag {:value "singapore"
+                :pill true
+                :size "sm"} "🇸🇬 Singapore"]
+      [:ty-tag {:value "australia"
+                :pill true
+                :size "sm"} "🇦🇺 Australia"]
+      [:ty-tag {:value "newzealand"
+                :pill true
+                :size "sm"} "🇳🇿 New Zealand"]
+      [:ty-tag {:value "southafrica"
+                :pill true
+                :size "sm"} "🇿🇦 South Africa"]
+      [:ty-tag {:value "egypt"
+                :pill true
+                :size "sm"} "🇪🇬 Egypt"]
+      [:ty-tag {:value "nigeria"
+                :pill true
+                :size "sm"} "🇳🇬 Nigeria"]
+      [:ty-tag {:value "kenya"
+                :pill true
+                :size "sm"} "🇰🇪 Kenya"]
+      [:ty-tag {:value "morocco"
+                :pill true
+                :size "sm"} "🇲🇦 Morocco"]
+      [:ty-tag {:value "algeria"
+                :pill true
+                :size "sm"} "🇩🇿 Algeria"]
+      [:ty-tag {:value "tunisia"
+                :pill true
+                :size "sm"} "🇹🇳 Tunisia"]
+      [:ty-tag {:value "israel"
+                :pill true
+                :size "sm"} "🇮🇱 Israel"]
+      [:ty-tag {:value "uae"
+                :pill true
+                :size "sm"} "🇦🇪 UAE"]
+      [:ty-tag {:value "saudi"
+                :pill true
+                :size "sm"} "🇸🇦 Saudi Arabia"]
+      [:ty-tag {:value "qatar"
+                :pill true
+                :size "sm"} "🇶🇦 Qatar"]
+      [:ty-tag {:value "kuwait"
+                :pill true
+                :size "sm"} "🇰🇼 Kuwait"]
+      [:ty-tag {:value "iraq"
+                :pill true
+                :size "sm"} "🇮🇶 Iraq"]
+      [:ty-tag {:value "iran"
+                :pill true
+                :size "sm"} "🇮🇷 Iran"]
+      [:ty-tag {:value "pakistan"
+                :pill true
+                :size "sm"} "🇵🇰 Pakistan"]
+      [:ty-tag {:value "bangladesh"
+                :pill true
+                :size "sm"} "🇧🇩 Bangladesh"]
+      [:ty-tag {:value "srilanka"
+                :pill true
+                :size "sm"} "🇱🇰 Sri Lanka"]
+      [:ty-tag {:value "myanmar"
+                :pill true
+                :size "sm"} "🇲🇲 Myanmar"]
+      [:ty-tag {:value "cambodia"
+                :pill true
+                :size "sm"} "🇰🇭 Cambodia"]
+      [:ty-tag {:value "laos"
+                :pill true
+                :size "sm"} "🇱🇦 Laos"]
+      [:ty-tag {:value "mongolia"
+                :pill true
+                :size "sm"} "🇲🇳 Mongolia"]
+      [:ty-tag {:value "nepal"
+                :pill true
+                :size "sm"} "🇳🇵 Nepal"]
+      [:ty-tag {:value "bhutan"
+                :pill true
+                :size "sm"} "🇧🇹 Bhutan"]
+      [:ty-tag {:value "taiwan"
+                :pill true
+                :size "sm"} "🇹🇼 Taiwan"]
+      [:ty-tag {:value "hongkong"
+                :pill true
+                :size "sm"} "🇭🇰 Hong Kong"]
+      [:ty-tag {:value "macao"
+                :pill true
+                :size "sm"} "🇲🇴 Macao"]
+      [:ty-tag {:value "afghanistan"
+                :pill true
+                :size "sm"} "🇦🇫 Afghanistan"]
+      [:ty-tag {:value "kazakhstan"
+                :pill true
+                :size "sm"} "🇰🇿 Kazakhstan"]
+      [:ty-tag {:value "uzbekistan"
+                :pill true
+                :size "sm"} "🇺🇿 Uzbekistan"]
+      [:ty-tag {:value "turkmenistan"
+                :pill true
+                :size "sm"} "🇹🇲 Turkmenistan"]
+      [:ty-tag {:value "kyrgyzstan"
+                :pill true
+                :size "sm"} "🇰🇬 Kyrgyzstan"]
+      [:ty-tag {:value "tajikistan"
+                :pill true
+                :size "sm"} "🇹🇯 Tajikistan"]
+      [:ty-tag {:value "azerbaijan"
+                :pill true
+                :size "sm"} "🇦🇿 Azerbaijan"]
+      [:ty-tag {:value "georgia"
+                :pill true
+                :size "sm"} "🇬🇪 Georgia"]
+      [:ty-tag {:value "armenia"
+                :pill true
+                :size "sm"} "🇦🇲 Armenia"]
+      [:ty-tag {:value "ukraine"
+                :pill true
+                :size "sm"} "🇺🇦 Ukraine"]
+      [:ty-tag {:value "belarus"
+                :pill true
+                :size "sm"} "🇧🇾 Belarus"]
+      [:ty-tag {:value "moldova"
+                :pill true
+                :size "sm"} "🇲🇩 Moldova"]
+      [:ty-tag {:value "romania"
+                :pill true
+                :size "sm"} "🇷🇴 Romania"]
+      [:ty-tag {:value "bulgaria"
+                :pill true
+                :size "sm"} "🇧🇬 Bulgaria"]
+      [:ty-tag {:value "serbia"
+                :pill true
+                :size "sm"} "🇷🇸 Serbia"]
+      [:ty-tag {:value "croatia"
+                :pill true
+                :size "sm"} "🇭🇷 Croatia"]
+      [:ty-tag {:value "slovenia"
+                :pill true
+                :size "sm"} "🇸🇮 Slovenia"]
+      [:ty-tag {:value "bosnia"
+                :pill true
+                :size "sm"} "🇧🇦 Bosnia"]
+      [:ty-tag {:value "macedonia"
+                :pill true
+                :size "sm"} "🇲🇰 Macedonia"]
+      [:ty-tag {:value "albania"
+                :pill true
+                :size "sm"} "🇦🇱 Albania"]
+      [:ty-tag {:value "montenegro"
+                :pill true
+                :size "sm"} "🇲🇪 Montenegro"]
+      [:ty-tag {:value "kosovo"
+                :pill true
+                :size "sm"} "🇽🇰 Kosovo"]
+      [:ty-tag {:value "lithuania"
+                :pill true
+                :size "sm"} "🇱🇹 Lithuania"]
+      [:ty-tag {:value "latvia"
+                :pill true
+                :size "sm"} "🇱🇻 Latvia"]
+      [:ty-tag {:value "estonia"
+                :pill true
+                :size "sm"} "🇪🇪 Estonia"]
+      [:ty-tag {:value "iceland"
+                :pill true
+                :size "sm"} "🇮🇸 Iceland"]
+      [:ty-tag {:value "ireland"
+                :pill true
+                :size "sm"} "🇮🇪 Ireland"]
+      [:ty-tag {:value "luxembourg"
+                :pill true
+                :size "sm"} "🇱🇺 Luxembourg"]
+      [:ty-tag {:value "malta"
+                :pill true
+                :size "sm"} "🇲🇹 Malta"]
+      [:ty-tag {:value "cyprus"
+                :pill true
+                :size "sm"} "🇨🇾 Cyprus"]]]
     (code-block "<!-- Large dataset: 100 options, 10 pre-selected -->
 <ty-multiselect 
   value=\"usa,canada,mexico,brazil,argentina,uk,france,germany,japan,australia\"
@@ -773,6 +969,104 @@ document.getElementById('my-multiselect')
     [:a.ty-text-primary.hover:underline {:href "/docs/dropdown"} "ty-dropdown →"]
     [:a.ty-text-primary.hover:underline {:href "/docs/tag"} "ty-tag →"]
     [:a.ty-text-primary.hover:underline {:href "/docs/input"} "ty-input →"]]])
+
+(defn- test-multiselect []
+  [:div.space-y-8
+   [:div.ty-content.rounded-lg.p-6
+    [:h2.text-2xl.font-bold.ty-text++.mb-4 "🧪 Test Cases"]
+
+    ;; Test 1: Simple case with 3 options, 2 pre-selected
+    [:div.mb-6
+     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Test 1: Basic Pre-selection (2 of 3)"]
+     [:p.ty-text-.mb-2 "Expected: red and blue tags should show as selected"]
+     [:ty-multiselect {:value "red,blue"
+                       :label "Colors"
+                       :placeholder "Select colors..."
+                       :style {:min-width "320px"}
+                       :on {:change multiselect-event-handler}}
+      [:ty-tag {:value "red"
+                :pill true
+                :size "sm"
+                :flavor "danger"} "🔴 Red"]
+      [:ty-tag {:value "blue"
+                :pill true
+                :size "sm"
+                :flavor "primary"} "🔵 Blue"]
+      [:ty-tag {:value "green"
+                :pill true
+                :size "sm"
+                :flavor "success"} "🟢 Green"]]]
+
+    ;; Test 2: All options selected
+    [:div.mb-6
+     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Test 2: All Selected (3 of 3)"]
+     [:p.ty-text-.mb-2 "Expected: All three tags should show as selected"]
+     [:ty-multiselect {:value "apple,banana,cherry"
+                       :label "Fruits"
+                       :placeholder "Select fruits..."
+                       :style {:min-width "320px"}
+                       :on {:change multiselect-event-handler}}
+      [:ty-tag {:value "apple"
+                :pill true
+                :size "sm"} "🍎 Apple"]
+      [:ty-tag {:value "banana"
+                :pill true
+                :size "sm"} "🍌 Banana"]
+      [:ty-tag {:value "cherry"
+                :pill true
+                :size "sm"} "🍒 Cherry"]]]
+
+    ;; Test 3: No pre-selection
+    [:div.mb-6
+     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Test 3: No Pre-selection"]
+     [:p.ty-text-.mb-2 "Expected: No tags selected, all in dropdown"]
+     [:ty-multiselect {:label "Animals"
+                       :placeholder "Select animals..."
+                       :style {:min-width "320px"}
+                       :on {:change multiselect-event-handler}}
+      [:ty-tag {:value "cat"
+                :pill true
+                :size "sm"} "🐱 Cat"]
+      [:ty-tag {:value "dog"
+                :pill true
+                :size "sm"} "🐶 Dog"]
+      [:ty-tag {:value "bird"
+                :pill true
+                :size "sm"} "🐦 Bird"]]]
+
+    ;; Test 4: Single selection
+    [:div.mb-6
+     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Test 4: Single Pre-selection (1 of 4)"]
+     [:p.ty-text-.mb-2 "Expected: Only JavaScript should show as selected"]
+     [:ty-multiselect {:value "javascript"
+                       :label "Language"
+                       :placeholder "Select language..."
+                       :style {:min-width "320px"}
+                       :on {:change multiselect-event-handler}}
+      [:ty-tag {:value "javascript"
+                :pill true
+                :size "sm"
+                :flavor "warning"} "🟡 JavaScript"]
+      [:ty-tag {:value "python"
+                :pill true
+                :size "sm"
+                :flavor "primary"} "🐍 Python"]
+      [:ty-tag {:value "clojure"
+                :pill true
+                :size "sm"
+                :flavor "success"} "λ Clojure"]
+      [:ty-tag {:value "rust"
+                :pill true
+                :size "sm"
+                :flavor "danger"} "🦀 Rust"]]]
+
+    [:div.mt-6.p-4.ty-bg-info-.rounded
+     [:p.ty-text-info++.text-sm
+      "💡 Open browser console to see detailed initialization logs. Check if tags are properly marked as selected in the DOM."]]]])
+
+#_(defn view []
+    [:div.max-w-4xl.mx-auto.p-6
+     (test-multiselect)])
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6

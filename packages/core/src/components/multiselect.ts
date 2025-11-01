@@ -325,23 +325,8 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const shadow = this.shadowRoot!
     ensureStyles(shadow, { css: multiselectStyles, id: 'ty-multiselect' })
 
-    // Render based on device type
-    if (this._state.mode === 'mobile') {
-      this.renderMobile()
-    } else {
-      this.renderDesktop()
-    }
-
-    // CRITICAL: Ensure dialogs are closed on initialization
-    // This prevents scroll locking if dialogs are in invalid state
-    requestAnimationFrame(() => {
-      const dialogs = shadow.querySelectorAll('dialog')
-      dialogs.forEach(dialog => {
-        if (dialog.open) {
-          dialog.close()
-        }
-      })
-    })
+    // DON'T render here - wait for onConnect() to initialize values first
+    // This matches dropdown.ts pattern and prevents showing empty state
   }
 
   /**
@@ -360,9 +345,13 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       }
     })
 
-    // Initialize after element is connected and children are available
+    // Render FIRST to create DOM structure
+    this.render()
+
+    // THEN initialize and sync tags (after DOM exists)
     requestAnimationFrame(() => {
       this.initializeState()
+      // Visual updates happen automatically via onPropertiesChanged
     })
   }
 
@@ -412,9 +401,16 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
           this._value = newValue || ''
           const selectedValues = this.parseValue(newValue)
           this._state.selectedValues = selectedValues
-          this.syncSelectedTags(selectedValues)
-          this.updateSelectionDisplay()
-          this.updateMobileSelectedState()
+
+          // CRITICAL: Only sync tags if we're connected and tags exist
+          // During initial property setup (before onConnect), tags don't exist yet
+          if (this.isConnected && this.shadowRoot) {
+            this.syncSelectedTags(selectedValues)
+            this.updateSelectionDisplay()
+            this.updateMobileSelectedState()
+          } else {
+            console.warn('💜 [multiselect] onPropertiesChanged - NOT connected yet, skipping sync (will happen in initializeState)')
+          }
           break
         case 'name':
           this._name = newValue || ''
@@ -499,19 +495,31 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const initialValue = this.getProperty('value') || ''
 
     if (initialValue) {
-      // Explicit value provided - use it
+      // Explicit value provided - sync tags directly
+      // DON'T use updateComponentValue() because the property is already set!
       const selectedValues = this.parseValue(initialValue)
-      this.updateComponentValue(selectedValues, false)
+
+      // Update internal state
+      this._state.selectedValues = selectedValues
+
+      // Sync the tags to match the property value
+      this.syncSelectedTags(selectedValues)
+
+      // Update the visual display
+      this.updateSelectionDisplay()
+      this.updateMobileSelectedState()
     } else {
       // No explicit value - check for pre-selected tags
-      const preSelectedTags = this.getTagElements()
+      const allTags = this.getTagElements()
+
+      const preSelectedTags = allTags
         .filter(tag => tag.hasAttribute('selected'))
         .map(tag => this.getTagData(tag).value)
 
 
       if (preSelectedTags.length > 0) {
+        // Set the property value and sync (updateComponentValue handles everything)
         this.updateComponentValue(preSelectedTags, false)
-      } else {
       }
     }
   }
@@ -525,7 +533,8 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    */
   private getTagElements(): HTMLElement[] {
     // Get ALL ty-tag children, regardless of slot assignment
-    return Array.from(this.querySelectorAll('ty-tag')) as HTMLElement[]
+    const tags = Array.from(this.querySelectorAll('ty-tag')) as HTMLElement[]
+    return tags
   }
 
   /**
@@ -543,6 +552,8 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * Select a tag - set selected state, move to selected slot, make dismissible
    */
   private selectTag(tag: HTMLElement): void {
+    const tagValue = this.getTagData(tag).value
+
     // Set selected attribute
     tag.setAttribute('selected', '')
 
@@ -557,6 +568,8 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (parent) {
       parent.removeChild(tag)
       parent.appendChild(tag)
+    } else {
+      console.warn(`⚠️ [multiselect] - No parent for "${tagValue}"!`)
     }
   }
 
@@ -606,14 +619,15 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * Sync tag selection states with desired values
    */
   private syncSelectedTags(selectedValues: string[]): void {
+
     const selectedSet = new Set(selectedValues)
     const tags = this.getTagElements()
-
 
     tags.forEach(tag => {
       const tagValue = this.getTagData(tag).value
       const shouldBeSelected = selectedSet.has(tagValue)
       const isSelected = tag.hasAttribute('selected')
+
 
       if (shouldBeSelected && !isSelected) {
         this.selectTag(tag)
@@ -621,6 +635,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         this.deselectTag(tag)
       }
     })
+
   }
 
   /**
@@ -628,12 +643,15 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * Uses TyComponent's property system for proper lifecycle
    */
   private updateComponentValue(newValues: string[], dispatchChange: boolean = false, action: ChangeAction = 'set', item: string | null = null): void {
+
     const oldValues = this.getSelectedValues()
+
     const valueStr = newValues.join(',')
 
 
     // Only update if changed
     if (JSON.stringify(newValues.sort()) !== JSON.stringify(oldValues.sort())) {
+      const currentPropertyValue = this.getProperty('value')
 
       // Use TyComponent's property system - this will trigger:
       // 1. onPropertiesChanged() → syncs tags via syncSelectedTags()
@@ -1621,7 +1639,8 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (!stub) return
 
     const tags = this.getTagElements()
-    const hasSelected = tags.some(tag => tag.hasAttribute('selected'))
+    const selectedTags = tags.filter(tag => tag.hasAttribute('selected'))
+    const hasSelected = selectedTags.length > 0
 
     if (hasSelected) {
       stub.classList.add('has-selection')

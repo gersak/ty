@@ -19,7 +19,7 @@
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty.svg)](https://clojars.org/dev.gersak/ty)
 
 **Framework-agnostic web components with a unique dual architecture:**
-- **TypeScript Components** - Modern, type-safe UI components (~40KB core)
+- **TypeScript Components** - Modern, type-safe UI components
 - **ClojureScript Infrastructure** - Advanced routing, i18n, and documentation site
 - **Zero Dependencies** - Built on web standards that won't break
 
@@ -47,7 +47,7 @@ Works with React, Vue, HTMX—or no framework at all.
 - ✅ **Popup** - Positioned popovers
 - ✅ **Tooltip** - Smart tooltips with positioning
 - ✅ **Tag** - Chip/tag component with removable option
-- ✅ **Icon** - Icon registry with 3000+ icons available (tree-shakeable)
+- ✅ **Icon** - Icon component with registry system
 - ✅ **Copy** - Copy-to-clipboard for API keys, tokens, URLs
 - ✅ **Tabs** - Tab navigation with content panels
 - ✅ **Tab** - Individual tab component
@@ -60,34 +60,6 @@ Works with React, Vue, HTMX—or no framework at all.
 - **7 Semantic Colors** - primary, secondary, success, danger, warning, info, neutral
 - **5 Surface Levels** - canvas, content, elevated, floating, input
 
-### 🎯 Icon System (3000+ Icons Available)
-
-**Core package includes the registry utility only (~2.6MB)**
-
-```typescript
-// Tree-shakeable imports (Recommended)
-import { check, heart, star } from '@gersak/ty/icons/lucide'
-import { registerIcons } from '@gersak/ty/icons/registry'
-
-registerIcons({ check, heart, star })  // Only ~0.5-1KB per icon
-```
-
-**Or use the global API:**
-```javascript
-// After loading ty.js from CDN
-window.tyIcons.register({
-  'check': '<svg>...</svg>',
-  'heart': '<svg>...</svg>'
-})
-```
-
-**Available Icon Libraries:**
-- **Lucide**: 1,636 icons (tree-shakeable)
-- **Heroicons**: 4 variants
-- **Material Design**: 5 variants
-- **FontAwesome**: 3 variants
-- **Custom SVG**: Bring your own icons
-
 **[See it in action →](https://gersak.github.io/ty)**
 
 ---
@@ -97,25 +69,21 @@ window.tyIcons.register({
 ### CDN (Fastest)
 
 ```html
-<!-- Ty CSS (Required) -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
-
-<!-- Ty Components -->
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
-
-<!-- Optional: Add icons -->
-<script type="module">
-  import { check, heart } from 'https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/icons/lucide.js'
-  window.tyIcons.register({ check, heart })
-</script>
-```
-
-Then use anywhere:
-
-```html
-<ty-button flavor="primary">Hello World</ty-button>
-<ty-calendar value="2024-12-25"></ty-calendar>
-<ty-icon name="check"></ty-icon>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My App</title>
+  
+  <!-- Ty CSS and JS from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css">
+  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
+</head>
+<body>
+  <ty-button flavor="primary">Hello World</ty-button>
+  <ty-calendar value="2024-12-25"></ty-calendar>
+</body>
+</html>
 ```
 
 ### NPM
@@ -127,86 +95,159 @@ npm install @gersak/ty
 ```typescript
 import '@gersak/ty/css/ty.css'
 import { TyButton, TyCalendar } from '@gersak/ty'
-import { check, heart } from '@gersak/ty/icons/lucide'
-import { registerIcons } from '@gersak/ty/icons/registry'
-
-registerIcons({ check, heart })
 ```
 
 **[See full documentation →](https://gersak.github.io/ty)**
 
 ---
 
-## 📊 Bundle Sizes
+## 🎯 Icon System (Optional)
 
-**TypeScript Implementation (Current):**
-- **Core Bundle**: ~40KB minified (all 18 components)
-- **Icon Registry**: ~5KB + icons as needed (0.5-1KB each)
-- **Full Suite**: ~150KB for everything
-- **Tree-Shakeable**: Import only what you use
+Icons are **optional** and loaded separately:
 
-**With ClojureScript Infrastructure (Optional):**
-- **Additional**: ~50KB for router, i18n, context management
-- **Shared Runtime**: If already using ClojureScript
+```javascript
+// Import specific icons (tree-shakeable)
+import { check, heart, save } from '@gersak/ty/icons/lucide'
 
-*10x smaller than the original ClojureScript-only implementation!*
+// Register with global API
+window.tyIcons.register({ check, heart, save })
+```
+
+Then use:
+
+```html
+<ty-icon name="check"></ty-icon>
+```
+
+**Available Icon Libraries:**
+- **Lucide**: 1,636 icons (tree-shakeable)
+- **Heroicons**: 4 variants
+- **Material Design**: 5 variants
+- **FontAwesome**: 3 variants
+
+⚠️ **Import only what you need** - importing all icons would load ~900KB!
 
 ---
 
 ## 🌐 Framework Integration
 
 ### React
-```tsx
-import { TyButton, TyCalendar } from '@gersak/ty'
-import '@gersak/ty/css/ty.css'
+
+**For React projects, use the React wrapper package:**
+
+```bash
+npm install @gersak/ty-react
+```
+
+```jsx
+import React, { useState } from 'react'
+import { TyButton, TyInput, TyIcon } from '@gersak/ty-react'
+import { check, heart, save } from '@gersak/ty/icons/lucide'
+
+// Register icons
+window.tyIcons.register({ check, heart, save })
 
 function App() {
+  const [name, setName] = useState('')
+
   return (
-    <div>
-      <ty-button flavor="primary" onClick={() => alert('Clicked!')}>
-        Click Me
-      </ty-button>
-      <ty-calendar onChange={(e) => console.log(e.detail.date)} />
+    <div className="ty-elevated p-6 rounded-lg">
+      <h2 className="ty-text++ text-xl mb-4">Hello Ty!</h2>
+      
+      <TyInput
+        value={name}
+        placeholder="Enter name"
+        onChange={(e) => setName(e.target.value)}
+      />
+      
+      <TyButton 
+        flavor="primary"
+        onClick={() => alert('Hello ' + name)}
+      >
+        <TyIcon name="check" />
+        Submit
+      </TyButton>
     </div>
   )
 }
 ```
 
-**Note**: React wrapper package `@gersak/ty-react` coming soon for better TypeScript integration!
+**Setup HTML (include Ty CSS and JS):**
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My React App</title>
+  
+  <!-- Ty CSS and JS from CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css">
+  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+</body>
+</html>
+```
 
 ### HTMX + Flask/Django
+
 ```html
 <ty-input 
   hx-post="/api/search" 
   hx-trigger="input changed delay:300ms"
   hx-target="#results"
+  placeholder="Search..."
 />
 ```
 
 Just works. Server-side rendering with dynamic interactions.
 
-### Vue/Angular
-```vue
-<template>
-  <ty-button flavor="primary" @click="handleClick">
-    Click Me
-  </ty-button>
-</template>
-
-<script>
-import '@gersak/ty'
-export default { /* ... */ }
-</script>
-```
-
 Import the components, use them. Web Components are web standards.
 
 ### ClojureScript (Reagent/UIx)
+
+For ClojureScript projects, use the React wrapper with tree-shakeable icon imports:
+
+**Add dependencies to `deps.edn`:**
+
 ```clojure
-[:ty-button {:flavor "primary"
-             :on-click #(js/alert "Clicked!")}
- "Click Me"]
+{:deps {com.pitch/uix.core {:mvn/version "1.1.0"}
+        com.pitch/uix.dom {:mvn/version "1.1.0"}
+        dev.gersak/ty-icons {:mvn/version "LATEST"}  ; Tree-shakeable icons
+        dev.gersak/ty {:mvn/version "LATEST"}}}     ; Optional: Router, i18n, layout
 ```
+
+**Import icons from ClojureScript (not JavaScript):**
+
+```clojure
+(ns my-app.core
+  (:require ["@gersak/ty-react" :as ty]
+            [ty.lucide :as lucide]))  ; ← ClojureScript import, not JavaScript!
+
+;; Register only the icons you need (Google Closure Compiler tree-shakes unused icons)
+(js/window.tyIcons.register
+  #js {"check" lucide/check
+       "heart" lucide/heart
+       "save" lucide/save})
+
+(defn app []
+  [:div.ty-elevated.p-6.rounded-lg
+   [:h2.ty-text++.text-xl.mb-4 "Hello Ty!"]
+   
+   [:> ty/Button {:flavor "primary"
+                  :on-click #(js/alert "Clicked!")}
+    [:> ty/Icon {:name "check"}]
+    "Submit"]])
+```
+
+**⚠️ Important: Use ClojureScript imports for tree-shaking!**
+
+- ✅ **Correct:** `[ty.lucide :as lucide]` - Google Closure Compiler eliminates unused icons
+- ❌ **Wrong:** `["@gersak/ty/icons/lucide" :refer [check]]` - Bundles ALL 1,636 icons (~897KB)
+
+By importing from the ClojureScript artifact (`dev.gersak/ty-icons`), only the icons you reference are included in your production bundle.
 
 **Bonus**: Built-in router, i18n, and responsive layout system via `dev.gersak/ty` Clojars package.
 
@@ -228,7 +269,7 @@ Import the components, use them. Web Components are web standards.
 **TypeScript Components** (`packages/core/`)
 - All 18 UI components written in modern TypeScript
 - Published to NPM as `@gersak/ty`
-- ~40KB core, zero runtime dependencies
+- Zero runtime dependencies
 - Full `.d.ts` type definitions
 - Vite build with Terser minification
 
@@ -241,7 +282,7 @@ Import the components, use them. Web Components are web standards.
 
 **Why This Matters:**
 - **TypeScript devs**: Get modern components with type safety, no ClojureScript needed
-- **ClojureScript devs**: Get ~50KB bundle increase + powerful infrastructure
+- **ClojureScript devs**: Get powerful infrastructure + TypeScript components
 - **Everyone**: Components work everywhere, regardless of tech stack
 
 ---
@@ -269,45 +310,16 @@ This project grows with community input. Every issue, PR, and discussion helps s
 - 📖 **Docs & Examples**: [gersak.github.io/ty](https://gersak.github.io/ty)
 - 💻 **GitHub**: [github.com/gersak/ty](https://github.com/gersak/ty)
 - 📦 **NPM (TypeScript)**: [@gersak/ty](https://www.npmjs.com/package/@gersak/ty)
+- ⚛️ **NPM (React)**: [@gersak/ty-react](https://www.npmjs.com/package/@gersak/ty-react)
 - 📦 **Clojars (ClojureScript)**: [dev.gersak/ty](https://clojars.org/dev.gersak/ty)
 - 🌐 **CDN**: [jsdelivr.net/npm/@gersak/ty](https://www.jsdelivr.net/npm/@gersak/ty)
-
----
-
-## 🛠️ Development
-
-### TypeScript Components (Port 3000)
-```bash
-npm run dev:ts
-# Opens: http://localhost:3000/
-# Features: HMR, source maps, console.log preserved
-```
-
-### ClojureScript Site (Port 8000)
-```bash
-npm run dev
-# Opens: http://localhost:8000/
-# Features: Live reload, documentation site
-```
-
-### Build Everything
-```bash
-npm run build:ts      # TypeScript components
-npm run build         # ClojureScript site
-```
-
-**See [TYPESCRIPT_DEV_GUIDE.md](./TYPESCRIPT_DEV_GUIDE.md) for detailed development instructions.**
 
 ---
 
 ## 🎯 Coming Soon
 
 - 🚧 Better mobile adaptations
-- 🚧 More layout components
 - 🚧 Enhanced accessibility features
-- 🚧 `@gersak/ty-react` - React wrapper package with full TypeScript support
-- 🚧 Storybook integration
-- 🚧 Comprehensive test suite
 
 ---
 

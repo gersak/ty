@@ -26,11 +26,17 @@ export interface TyCheckboxProps extends Omit<React.HTMLAttributes<HTMLElement>,
   /** Semantic styling variant */
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   
-  /** Change event handler */
+  /**
+   * Fires when checkbox state changes (React convention)
+   * Maps to native 'input' event from ty-checkbox
+   */
   onChange?: (event: CustomEvent<TyCheckboxEventDetail>) => void;
   
-  /** Input event handler */
-  onInput?: (event: CustomEvent<TyCheckboxEventDetail>) => void;
+  /**
+   * Fires on blur if value changed (native DOM behavior)
+   * Maps to native 'change' event from ty-checkbox
+   */
+  onChangeCommit?: (event: CustomEvent<TyCheckboxEventDetail>) => void;
   
   /** Checkbox label content */
   children?: React.ReactNode;
@@ -56,7 +62,7 @@ export const TyCheckbox = React.forwardRef<HTMLElement, TyCheckboxProps>(
     size,
     flavor,
     onChange,
-    onInput,
+    onChangeCommit,
     ...props 
   }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
@@ -66,26 +72,31 @@ export const TyCheckbox = React.forwardRef<HTMLElement, TyCheckboxProps>(
       const element = elementRef.current;
       if (!element) return;
 
-      const handleChange = (event: Event) => {
+      // Map onChange to input event (React convention)
+      const handleInput = (event: Event) => {
         if (onChange) {
           onChange(event as CustomEvent<TyCheckboxEventDetail>);
         }
       };
 
-      const handleInput = (event: Event) => {
-        if (onInput) {
-          onInput(event as CustomEvent<TyCheckboxEventDetail>);
+      // Map onChangeCommit to change event (blur behavior)
+      const handleChangeCommit = (event: Event) => {
+        if (onChangeCommit) {
+          onChangeCommit(event as CustomEvent<TyCheckboxEventDetail>);
         }
       };
 
-      element.addEventListener('change', handleChange);
+      // Map onChange → input event (React convention)
       element.addEventListener('input', handleInput);
+      
+      // Map onChangeCommit → change event (blur behavior)
+      element.addEventListener('change', handleChangeCommit);
 
       return () => {
-        element.removeEventListener('change', handleChange);
         element.removeEventListener('input', handleInput);
+        element.removeEventListener('change', handleChangeCommit);
       };
-    }, [onChange, onInput]);
+    }, [onChange, onChangeCommit]);
 
     // Combine refs if needed
     useEffect(() => {

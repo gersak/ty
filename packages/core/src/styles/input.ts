@@ -378,7 +378,13 @@ input:focus-visible {
 }
 
 .checkbox-container[aria-checked="true"] {
-  color: var(--ty-text-mild);
+  color: var(--ty-text);
+}
+
+/* Ensure slotted label content inherits the color from container */
+.checkbox-container ::slotted(*) {
+  color: inherit;
+  transition: color 0.15s ease-in-out;
 }
 
 .checkbox-container label {
@@ -434,6 +440,7 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
+  color: inherit;
   transition: color 0.15s ease-in-out;
   pointer-events: none;
   /* Let the container handle the click */
@@ -509,7 +516,7 @@ input:focus-visible {
 
 
 .checkbox-container.primary[aria-checked="true"] {
-  color: var(--ty-color-primary-mild);
+  color: var(--ty-color-primary);
 }
 
 .checkbox-container.secondary {
@@ -518,7 +525,7 @@ input:focus-visible {
 
 
 .checkbox-container.secondary[aria-checked="true"] {
-  color: var(--ty-color-secondary-mild);
+  color: var(--ty-color-secondary);
 }
 
 .checkbox-container.success {
@@ -527,7 +534,7 @@ input:focus-visible {
 
 
 .checkbox-container.success[aria-checked="true"] {
-  color: var(--ty-color-success-mild);
+  color: var(--ty-color-success);
 }
 
 .checkbox-container.danger {
@@ -535,7 +542,7 @@ input:focus-visible {
 }
 
 .checkbox-container.danger[aria-checked="true"] {
-  color: var(--ty-color-danger-mild);
+  color: var(--ty-color-danger);
 }
 
 .checkbox-container.warning {
@@ -543,7 +550,7 @@ input:focus-visible {
 }
 
 .checkbox-container.warning[aria-checked="true"] {
-  color: var(--ty-color-warning-mild);
+  color: var(--ty-color-warning);
 }
 
 
@@ -553,7 +560,7 @@ input:focus-visible {
 }
 
 .checkbox-container.neutral[aria-checked="true"] {
-  color: var(--ty-color-neutral-mild);
+  color: var(--ty-color-neutral);
 }
 
 /* Disabled state */

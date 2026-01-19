@@ -57,7 +57,7 @@ function App() {
       <TyInput 
         placeholder="Enter text..."
         value={value}
-        onInput={(e) => setValue(e.detail.value)}
+        onChange={(e) => setValue(e.detail.value)}  // Fires on every keystroke
       />
     </div>
   );
@@ -88,6 +88,56 @@ All 18 components wrapped:
 | `TyDatePicker` | Date picker with calendar |
 | `TyTabs` | Tab container |
 | `TyTab` | Individual tab |
+
+## ⚡ Event Handling (React Convention)
+
+Ty React wrappers follow React conventions for event handling:
+
+### Input Components (Input, Textarea, Checkbox)
+
+```tsx
+import { TyInput } from '@gersak/ty-react';
+
+function SearchBox() {
+  const [query, setQuery] = useState('');
+  
+  return (
+    <TyInput
+      value={query}
+      // ✅ onChange fires on every keystroke (React convention)
+      onChange={(e) => setQuery(e.detail.value)}
+      
+      // ✅ onChangeCommit fires on blur (optional - for validation)
+      onChangeCommit={(e) => console.log('Final value:', e.detail.value)}
+    />
+  );
+}
+```
+
+**Key Points:**
+- `onChange` → Fires on **every keystroke** (matches React's `<input onChange>`)
+- `onChangeCommit` → Fires on **blur** if value changed (optional)
+- This differs from native DOM where `onchange` fires on blur
+
+### Selection Components (Dropdown, Calendar, etc.)
+
+```tsx
+import { TyDropdown, TyOption } from '@gersak/ty-react';
+
+function CountrySelector() {
+  return (
+    <TyDropdown 
+      // onChange fires when selection changes
+      onChange={(e) => console.log('Selected:', e.detail.value)}
+    >
+      <TyOption value="us">United States</TyOption>
+      <TyOption value="ca">Canada</TyOption>
+    </TyDropdown>
+  );
+}
+```
+
+For selection components, `onChange` fires when the selection changes (as expected).
 
 ## 💡 Usage Examples
 

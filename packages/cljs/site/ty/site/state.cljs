@@ -44,6 +44,11 @@
                                         :contact-email "alex.martinez@techconference.org"
                                         :special-requests "We'll need extra power outlets for laptops and a presentation setup with dual screens. Please ensure the room has good natural lighting for our video recording. Also, we'd appreciate having a coffee station set up for the afternoon break.\n\nThis is a technical workshop on modern web development, so reliable high-speed internet is crucial. If possible, we'd like the room arranged in a U-shape to facilitate group discussions and hands-on exercises."}}
 
+         ;; Wizard prototype state
+         :wizard-prototype {:active-step "welcome"
+                            :completed-steps #{}}
+         :wizard-linear false
+
          ;; Contact form state
          :contact-form {:form-data {:full-name "Sarah Chen"
                                     :email "sarah.chen@designstudio.com"

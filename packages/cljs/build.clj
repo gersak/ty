@@ -7,27 +7,28 @@
             [deps-deploy.deps-deploy :as deploy]
             [ty.template :as template]))
 
-(def version "0.2.0-SNAPSHOT")
+(def ty-version "0.2.0")
+(def ty-icons-version "0.1.0")
 (def class-dir "target/classes")
 
 ;; Library configurations
 (def ty-lib
   {:group-id "dev.gersak"
    :artifact-id "ty"
-   :version version
+   :version ty-version
    :basis-alias :ty-lib
    :src-dirs ["src"]
    :resource-dirs ["resources/ty"]
-   :jar-file (format "target/ty-%s.jar" version)})
+   :jar-file (format "target/ty-%s.jar" ty-version)})
 
 (def ty-icons-lib
   {:group-id "dev.gersak"
    :artifact-id "ty-icons"
-   :version version
+   :version ty-icons-version
    :basis-alias :ty-icons-lib
    :src-dirs ["icons"]
    :resource-dirs ["resources/ty-icons"]
-   :jar-file (format "target/ty-icons-%s.jar" version)})
+   :jar-file (format "target/ty-icons-%s.jar" ty-icons-version)})
 
 (defn clean [_]
   (b/delete {:path "target"}))

@@ -3,7 +3,6 @@
     [cljs-bean.core :refer [->clj]]
     [clojure.set :as set]
     [clojure.string :as str]
-    [timing.core :as timing]
     [ty.i18n :as i18n]
     [ty.i18n.time]
     [ty.site.state :refer [state]])
@@ -16,6 +15,28 @@
                             "pk_test_51234567890abcdef")}
    :api {:booking-endpoint "/api/bookings/create"
          :timeout 30000}})
+
+;; Date helper functions
+(defn date->context
+  "Extract year/month/day from a JavaScript Date object.
+  Returns a map with :year, :month (1-indexed), and :day."
+  [^js date]
+  {:year (.getFullYear date)
+   :month (inc (.getMonth date)) ; JavaScript months are 0-indexed
+   :day (.getDate date)})
+
+(defn context->date
+  "Create a JavaScript Date from year/month/day context.
+  Month should be 1-indexed (1 = January)."
+  [year month day]
+  (js/Date. year (dec month) day))
+
+(defn add-days
+  "Add specified number of days to a date and return new Date object."
+  [^js date days]
+  (let [ms-per-day (* 24 60 60 1000)
+        new-ms (+ (.getTime date) (* days ms-per-day))]
+    (js/Date. new-ms)))
 
 (defn get-stripe-key []
   (get-in service-config [:stripe :public-key]))
@@ -107,35 +128,29 @@
           {:flavor "primary"
            :outlined true
            :filled true
-           :on {:click #(let [today (timing.core/date)
-                              value (-> today timing/date->value timing/day-context
-                                        (select-keys [:year :month :day-in-month])
-                                        (set/rename-keys {:day-in-month :day}))]
+           :on {:click #(let [today (js/Date.)
+                              value (date->context today)]
                           (swap! state assoc-in [:event-booking :selected-date] value))}}
           "Today"]
          [:ty-button
           {:flavor "success"
            :outlined true
            :filled true
-           :on {:click #(let [today (timing.core/date)
-                              tomorrow (timing/after today timing/day)
-                              value (-> tomorrow timing/date->value timing/day-context
-                                        (select-keys [:year :month :day-in-month])
-                                        (set/rename-keys {:day-in-month :day}))]
+           :on {:click #(let [today (js/Date.)
+                              tomorrow (add-days today 1)
+                              value (date->context tomorrow)]
                           (swap! state assoc-in [:event-booking :selected-date] value))}}
           "Tomorrow"]
          [:ty-button
-          {:on {:click #(let [today (timing.core/date)
-                              tomorrow (timing/after today timing/week)
-                              value (-> tomorrow timing/date->value timing/day-context
-                                        (select-keys [:year :month :day-in-month])
-                                        (set/rename-keys {:day-in-month :day}))]
+          {:on {:click #(let [today (js/Date.)
+                              next-week (add-days today 7)
+                              value (date->context next-week)]
                           (swap! state assoc-in [:event-booking :selected-date] value))}}
           "Next Week"]]
 
         ;; Selected date display
         (when-let [{:keys [year month day]} (:selected-date booking-state)]
-          (let [js-date (timing/date year month day)]
+          (let [js-date (context->date year month day)]
             [:div.mt-4.p-3.ty-bg-primary-.rounded-lg
              [:div.flex.items-center.gap-2
               [:ty-icon.ty-text-primary

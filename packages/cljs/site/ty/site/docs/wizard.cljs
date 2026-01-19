@@ -56,13 +56,13 @@
      [:ty-step {:id "welcome"
                 :label "Welcome"
                 :description "Get started"}
-      [:div.flex.flex-col.h-full.ty-elevated
+      [:div.flex.flex-col.h-full
        [:div.flex-1.flex.flex-col.items-center.justify-center.text-center.p-6
         [:h1.ty-text++.text-3xl.font-bold.mb-3 "Welcome to Ty Components!"]
         [:p.ty-text-.mb-6.max-w-md
          "Let's get you set up in just a few steps. This will only take a couple of minutes."]]
-       ;; Navigation footer
-       [:div.flex.justify-end.gap-2.p-4.border-t.border-ty-border-.bg-ty-surface
+       ;; Navigation footer - uses ty-content to match header background
+       [:div.flex.justify-end.gap-2.p-4.border-t.ty-border.ty-content
         [:ty-button
          {:flavor "primary"
           :on {:click #(next-step "welcome" "account")}}
@@ -72,7 +72,7 @@
      [:ty-step {:id "account"
                 :label "Account"
                 :description "Email & password"}
-      [:div.flex.flex-col.h-full.ty-elevated
+      [:div.flex.flex-col.h-full
        [:div.flex-1.p-6.space-y-4
         [:div
          [:h2.ty-text++.text-2xl.font-bold.mb-2 "Create Your Account"]
@@ -93,8 +93,8 @@
            :type "password"
            :placeholder "Re-enter your password"
            :required true}]]]
-       ;; Navigation footer
-       [:div.flex.justify-end.gap-2.p-4.border-t.border-ty-border-.bg-ty-surface
+       ;; Navigation footer - uses ty-content to match header background
+       [:div.flex.justify-end.gap-2.p-4.border-t.ty-border.ty-content
         [:ty-button
          {:flavor "neutral"
           :on {:click #(go-to-step "welcome")}}
@@ -109,7 +109,7 @@
      [:ty-step {:id "profile"
                 :label "Profile"
                 :description "Personal info"}
-      [:div.flex.flex-col.h-full.ty-elevated
+      [:div.flex.flex-col.h-full
        [:div.flex-1.p-6.space-y-4
         [:div
          [:h2.ty-text++.text-2xl.font-bold.mb-2 "Tell Us About Yourself"]
@@ -129,8 +129,8 @@
           [:ty-dropdown-option {:value "designer"} "Designer"]
           [:ty-dropdown-option {:value "manager"} "Manager"]
           [:ty-dropdown-option {:value "other"} "Other"]]]]
-       ;; Navigation footer
-       [:div.flex.justify-end.gap-2.p-4.border-t.border-ty-border-.bg-ty-surface
+       ;; Navigation footer - uses ty-content to match header background
+       [:div.flex.justify-end.gap-2.p-4.border-t.ty-border.ty-content
         [:ty-button
          {:flavor "neutral"
           :on {:click #(go-to-step "account")}}
@@ -145,23 +145,24 @@
      [:ty-step {:id "preferences"
                 :label "Preferences"
                 :description "Customize settings"}
-      [:div.flex.flex-col.h-full.ty-elevated
+      [:div.flex.flex-col.h-full
        [:div.flex-1.p-6.space-y-4
         [:div
          [:h2.ty-text++.text-2xl.font-bold.mb-2 "Customize Your Experience"]
          [:p.ty-text-.mb-4 "Configure your preferences."]]
         [:div.space-y-3.max-w-xl
-         [:div.ty-elevated.p-4.rounded-lg.space-y-3
+         ;; Card sections use ty-floating for elevation above content background
+         [:div.ty-floating.p-4.rounded-lg.space-y-3
           [:h3.ty-text+.font-semibold "Notifications"]
           [:ty-checkbox "Email notifications"]
           [:ty-checkbox "Push notifications"]
           [:ty-checkbox "Weekly summary email"]]
-         [:div.ty-elevated.p-4.rounded-lg.space-y-3
+         [:div.ty-floating.p-4.rounded-lg.space-y-3
           [:h3.ty-text+.font-semibold "Privacy"]
           [:ty-checkbox {:checked true} "Make profile public"]
           [:ty-checkbox "Allow others to message me"]]]]
-       ;; Navigation footer
-       [:div.flex.justify-end.gap-2.p-4.border-t.border-ty-border-.bg-ty-surface
+       ;; Navigation footer - uses ty-content to match header background
+       [:div.flex.justify-end.gap-2.p-4.border-t.ty-border.ty-content
         [:ty-button
          {:flavor "neutral"
           :on {:click #(go-to-step "profile")}}
@@ -360,6 +361,83 @@
       "Configuration Wizards"]
      [:p.ty-text-.text-sm "Guided setup for complex systems or integrations"]]]])
 
+(defn css-parts-section []
+  [:div.mb-12
+   [:h2.text-2xl.font-semibold.ty-text.mb-6 "CSS Parts Customization"]
+   [:p.ty-text-.mb-4
+    "The wizard exposes CSS Parts for deep customization. Use the " [:code "::part()"] " selector to style internal elements."]
+
+   [:div.mb-6
+    [:h3.text-xl.font-medium.ty-text+.mb-4 "Available Parts"]
+    [:div.grid.grid-cols-1.md:grid-cols-2.gap-3
+     [:div.ty-elevated.p-3.rounded-lg
+      [:code.ty-text-primary "indicators-wrapper"]
+      [:p.ty-text-.text-sm.mt-1 "The header containing step indicators"]]
+     [:div.ty-elevated.p-3.rounded-lg
+      [:code.ty-text-primary "progress-line"]
+      [:p.ty-text-.text-sm.mt-1 "The background progress track"]]
+     [:div.ty-elevated.p-3.rounded-lg
+      [:code.ty-text-primary "step-circle"]
+      [:p.ty-text-.text-sm.mt-1 "Individual step indicator circles"]]
+     [:div.ty-elevated.p-3.rounded-lg
+      [:code.ty-text-primary "panels-container"]
+      [:p.ty-text-.text-sm.mt-1 "The content viewport area"]]]]
+
+   [:div.mb-6
+    [:h3.text-xl.font-medium.ty-text+.mb-4 "Example Usage"]
+    (code-block
+     "/* Customize the header background */
+ty-wizard::part(indicators-wrapper) {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Make step circles larger - set on ty-wizard element for progress line alignment */
+ty-wizard {
+  --step-circle-size: 48px;
+}
+
+/* Change progress line color */
+ty-wizard::part(progress-line) {
+  background: #e0e0e0;
+}
+
+/* Style the content area */
+ty-wizard::part(panels-container) {
+  background: #fafafa;
+}")]
+
+   ;; Live customized demo
+   [:div.mb-6
+    [:h3.text-xl.font-medium.ty-text+.mb-4 "Live Demo with Custom Styling"]
+    [:p.ty-text-.mb-4 "This wizard has custom styles applied via CSS Parts:"]
+
+    ;; Inject custom styles for this demo
+    [:style "
+      .customized-wizard ty-wizard::part(indicators-wrapper) {
+        background: linear-gradient(135deg, var(--ty-color-primary-faint) 0%, var(--ty-color-secondary-faint) 100%);
+      }
+      .customized-wizard ty-wizard {
+        --step-circle-size: 40px;
+      }
+    "]
+
+    [:div.customized-wizard.flex.justify-center
+     [:ty-wizard
+      {:width "600px"
+       :height "300px"
+       :active "step1"
+       :style {:--step-circle-size "40px"}}
+      [:ty-step {:id "step1" :label "First" :description "Start here"}
+       [:div.p-6.text-center
+        [:h3.ty-text++.text-xl.font-bold "Custom Styled Wizard"]
+        [:p.ty-text-.mt-2 "Notice the gradient header and larger step circles"]]]
+      [:ty-step {:id "step2" :label "Second" :description "Continue"}
+       [:div.p-6.text-center
+        [:p.ty-text "Step 2 content"]]]
+      [:ty-step {:id "step3" :label "Third" :description "Finish"}
+       [:div.p-6.text-center
+        [:p.ty-text "Step 3 content"]]]]]]])
+
 ;; =====================================================
 ;; Main View
 ;; =====================================================
@@ -370,4 +448,5 @@
    (prototype-section)
    (features)
    (api-spec)
+   (css-parts-section)
    (use-cases)])

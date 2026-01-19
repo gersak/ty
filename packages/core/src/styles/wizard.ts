@@ -8,6 +8,18 @@
  * - Carousel viewport with transform animations
  * - Responsive design with prefers-reduced-motion support
  * - Fully customizable via CSS Parts (::part)
+ *
+ * Uses global design system tokens (no component-specific variables):
+ * - Surfaces: --ty-surface-floating, --ty-surface-content, --ty-surface-elevated
+ * - Colors: --ty-color-success, --ty-color-primary, --ty-color-danger
+ * - Borders: --ty-border, --ty-border-soft
+ * - Text: --ty-text, --ty-text-soft
+ *
+ * CSS Parts (for styling via ::part):
+ * - indicators-wrapper: The header containing step indicators
+ * - progress-line: The background progress track
+ * - step-circle: Individual step circle indicators
+ * - panels-container: The content viewport
  */
 
 export const wizardStyles = `
@@ -16,6 +28,8 @@ export const wizardStyles = `
   width: var(--wizard-width, 100%);
   height: var(--wizard-height, 700px);
   box-sizing: border-box;
+  /* Note: --step-circle-size is NOT set here to allow inheritance from light DOM.
+     Use fallbacks in var() calls instead. Set on ty-wizard element to customize. */
 }
 
 .wizard-container {
@@ -27,7 +41,7 @@ export const wizardStyles = `
   box-sizing: border-box;
   border-radius: 12px;
   border: 1px solid var(--ty-border);
-  background: var(--ty-surface);
+  background: var(--ty-surface-floating);
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
@@ -42,9 +56,9 @@ export const wizardStyles = `
   flex-direction: column;
   flex-shrink: 0;
   position: relative;
-  padding: 24px 64px 16px;
+  padding: 24px 24px 16px;
   border-bottom: 1px solid var(--ty-border-soft, var(--ty-border));
-  background: transparent;
+  background: var(--ty-surface-content);
 }
 
 /* ===================================== */
@@ -54,9 +68,16 @@ export const wizardStyles = `
 
 .progress-line {
   position: absolute;
-  left: 64px;
-  right: 64px;
-  top: 38px;
+  /*
+   * With equal-width indicators (flex: 1), each takes 100%/N of the width.
+   * Circle centers are at: 50%/N, 150%/N, 250%/N, ... from left.
+   * Line spans from first center (50%/N) to last center (100% - 50%/N).
+   * Inset = 50% / step-count from each side.
+   */
+  left: calc(50% / var(--step-count, 4));
+  right: calc(50% / var(--step-count, 4));
+  /* Vertically center with step circles - uses circle size variable */
+  top: calc(var(--step-circle-size, 32px) / 2 - 1px);
   height: 2px;
   background: var(--ty-border);
   z-index: 0;
@@ -80,11 +101,9 @@ export const wizardStyles = `
 
 .step-indicators {
   display: flex;
-  justify-content: space-between;
   align-items: flex-start;
   position: relative;
-  z-index: 10;
-  /* Above progress line */
+  /* No padding - let equal-width indicators fill the space */
 }
 
 /* ===================================== */
@@ -103,6 +122,9 @@ export const wizardStyles = `
   padding: 0;
   font: inherit;
   transition: opacity 200ms;
+  /* Equal width for all indicators - makes progress line alignment predictable */
+  flex: 1;
+  min-width: 0;
 }
 
 .step-indicator[aria-disabled="true"] {
@@ -123,8 +145,9 @@ export const wizardStyles = `
 /* ===================================== */
 
 .step-circle {
-  width: 32px;
-  height: 32px;
+  /* Circle size - set --step-circle-size on ty-wizard element to customize */
+  width: var(--step-circle-size, 32px);
+  height: var(--step-circle-size, 32px);
   border-radius: 50%;
   border: 2px solid;
   display: flex;
@@ -240,6 +263,7 @@ export const wizardStyles = `
   /* Critical: hides off-screen panels */
   min-height: 0;
   /* Allows flex child to shrink */
+  background: var(--ty-surface-elevated);
 }
 
 /* ===================================== */

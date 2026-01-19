@@ -25,28 +25,43 @@ export interface TyTextareaProps extends Omit<React.HTMLAttributes<HTMLElement>,
   maxHeight?: string; // e.g., '500px' - converts to max-height
   
   // React event handlers - override with our custom types
-  onInput?: (event: CustomEvent<TyTextareaEventDetail>) => void;
+  /**
+   * Fires on every keystroke (React convention)
+   * Maps to native 'input' event from ty-textarea
+   */
   onChange?: (event: CustomEvent<TyTextareaEventDetail>) => void;
+  
+  /**
+   * Fires on blur if value changed (native DOM behavior)
+   * Maps to native 'change' event from ty-textarea
+   */
+  onChangeCommit?: (event: CustomEvent<TyTextareaEventDetail>) => void;
+  
+  /** Standard focus event */
   onFocus?: (event: FocusEvent) => void;
+  
+  /** Standard blur event */
   onBlur?: (event: FocusEvent) => void;
 }
 
 // React wrapper for ty-textarea web component
 export const TyTextarea = React.forwardRef<HTMLElement, TyTextareaProps>(
-  ({ onInput, onChange, onFocus, onBlur, disabled, required, minHeight, maxHeight, ...props }, ref) => {
+  ({ onChange, onChangeCommit, onFocus, onBlur, disabled, required, minHeight, maxHeight, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
+    // Map onChange to input event (React convention)
     const handleInput = useCallback((event: CustomEvent<TyTextareaEventDetail>) => {
-      if (onInput) {
-        onInput(event);
-      }
-    }, [onInput]);
-
-    const handleChange = useCallback((event: CustomEvent<TyTextareaEventDetail>) => {
       if (onChange) {
         onChange(event);
       }
     }, [onChange]);
+
+    // Map onChangeCommit to change event (blur behavior)
+    const handleChangeCommit = useCallback((event: CustomEvent<TyTextareaEventDetail>) => {
+      if (onChangeCommit) {
+        onChangeCommit(event);
+      }
+    }, [onChangeCommit]);
 
     const handleFocus = useCallback((event: FocusEvent) => {
       if (onFocus) {
@@ -65,12 +80,14 @@ export const TyTextarea = React.forwardRef<HTMLElement, TyTextareaProps>(
       if (!element) return;
 
       // Listen for custom input/change events from ty-textarea
-      if (onInput) {
+      // Map onChange → input event (React convention)
+      if (onChange) {
         element.addEventListener('input', handleInput as EventListener);
       }
       
-      if (onChange) {
-        element.addEventListener('change', handleChange as EventListener);
+      // Map onChangeCommit → change event (blur behavior)
+      if (onChangeCommit) {
+        element.addEventListener('change', handleChangeCommit as EventListener);
       }
 
       // Listen for standard focus/blur events
@@ -83,11 +100,11 @@ export const TyTextarea = React.forwardRef<HTMLElement, TyTextareaProps>(
       }
 
       return () => {
-        if (onInput) {
+        if (onChange) {
           element.removeEventListener('input', handleInput as EventListener);
         }
-        if (onChange) {
-          element.removeEventListener('change', handleChange as EventListener);
+        if (onChangeCommit) {
+          element.removeEventListener('change', handleChangeCommit as EventListener);
         }
         if (onFocus) {
           element.removeEventListener('focus', handleFocus as EventListener);
@@ -96,7 +113,7 @@ export const TyTextarea = React.forwardRef<HTMLElement, TyTextareaProps>(
           element.removeEventListener('blur', handleBlur as EventListener);
         }
       };
-    }, [handleInput, handleChange, handleFocus, handleBlur, onInput, onChange, onFocus, onBlur]);
+    }, [handleInput, handleChangeCommit, handleFocus, handleBlur, onChange, onChangeCommit, onFocus, onBlur]);
 
     // Handle ref forwarding
     useEffect(() => {

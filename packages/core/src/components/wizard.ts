@@ -245,7 +245,7 @@ function handleStepClick(el: TyWizard, stepId: string, event: Event): void {
   if (targetIndex < 0) return;
 
   const currentActive = getActiveStepId(el, steps);
-  const currentIndex = currentActive ? findStepIndex(steps, currentActive) : null;
+  const currentIndex = currentActive ? findStepIndex(steps, currentActive) ?? null : null;
 
   // Just dispatch event - user handles the actual navigation
   const direction = currentIndex === null ? 'none'
@@ -596,12 +596,14 @@ function renderStepIndicators(wizardEl: TyWizard, steps: HTMLElement[], activeId
 
   const progressPercent = calculateProgressPercent(steps, activeId, completedIds);
 
+  const stepCount = steps.length;
+
   return `
     <div class="step-indicators-wrapper" part="indicators-wrapper">
-      <div class="progress-line" part="progress-line" role="progressbar" aria-valuenow="${Math.round(progressPercent)}" aria-valuemin="0" aria-valuemax="100">
-        <div class="progress-overlay" style="width: ${progressPercent}%"></div>
-      </div>
-      <div class="step-indicators">
+      <div class="step-indicators" style="--step-count: ${stepCount}">
+        <div class="progress-line" part="progress-line" role="progressbar" aria-valuenow="${Math.round(progressPercent)}" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-overlay" style="width: ${progressPercent}%"></div>
+        </div>
         ${indicators}
       </div>
     </div>
@@ -630,10 +632,11 @@ function render(el: TyWizard): void {
   // Ensure styles are loaded
   ensureStyles(shadowRoot, { css: wizardStyles, id: 'ty-wizard' });
 
-  // Set CSS variables for dimensions
+  // Set CSS variables for dimensions and step count
   el.style.setProperty('--wizard-width', width.includes('%') ? '100%' : width);
   el.style.setProperty('--wizard-height', height);
   el.style.setProperty('--active-index', String(activeIndex));
+  el.style.setProperty('--step-count', String(steps.length));
 
   if (existingContainer && existingIndicators && existingViewport) {
     // === SMART UPDATE: Structure exists, only update what changed ===

@@ -170,11 +170,11 @@ Simplified from 7 variants to 5 practical variants:
   --ty-color-warning-faint: #fcd34d;
 
   /* Neutral */
-  --ty-color-neutral-strong: #374151;
-  --ty-color-neutral-mild: #4b5563;
-  --ty-color-neutral: #6b7280;
-  --ty-color-neutral-soft: #9ca3af;
-  --ty-color-neutral-faint: #d1d5db;
+  --ty-color-neutral-strong: #000000;
+  --ty-color-neutral-mild: #000000;
+  --ty-color-neutral: #111827;
+  --ty-color-neutral-soft: #374151;
+  --ty-color-neutral-faint: #9ca3af;
 
   /* =================================================================
 BACKGROUND COLORS
@@ -255,15 +255,10 @@ TEXT HIERARCHY
 
   /* Text hierarchy - emphasis based, not semantic */
   --ty-text: #111827;
-  /* Primary text - highest emphasis */
   --ty-text-mild: #000000;
-  /* Maximum emphasis - true black */
   --ty-text-strong: #000000;
-  /* Maximum emphasis - true black */
   --ty-text-soft: #374151;
-  /* Less emphasis - medium gray */
   --ty-text-faint: #9ca3af;
-  /* Minimum emphasis - very light gray */
 
   /* =================================================================
 COMPONENT TOKENS
@@ -277,8 +272,7 @@ COMPONENT TOKENS
   --ty-modal-backdrop-blur: blur(2px);
   --ty-modal-border-radius: 16px;
   --ty-modal-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   --ty-modal-duration: 200ms;
 
   /* Modal sizing */
@@ -352,14 +346,19 @@ DESIGN SYSTEM TOKENS
   /* Shadows */
   --ty-shadow-none: none;
   --ty-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --ty-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
-  --ty-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --ty-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
-  --ty-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --ty-shadow-base:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --ty-shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --ty-shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --ty-shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   --ty-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 
   /* Typography */
-  --ty-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ty-font-sans:
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --ty-font-mono: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
 
   --ty-font-xxs: 0.625rem;
@@ -391,7 +390,9 @@ DESIGN SYSTEM TOKENS
   /* Transitions */
   --ty-transition-none: none;
   --ty-transition-all: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
-  --ty-transition-colors: bg-color, border-color, color, fill, stroke 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --ty-transition-colors:
+    bg-color, border-color, color, fill,
+    stroke 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --ty-transition-shadow: box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --ty-transition-transform: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -471,11 +472,11 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-color-warning-faint: #a06726;
 
   /* Neutral */
-  --ty-color-neutral-strong: #f3f4f6;
-  --ty-color-neutral-mild: #d6d6d6;
-  --ty-color-neutral: #b3b3b3;
-  --ty-color-neutral-soft: #777777;
-  --ty-color-neutral-faint: #5b5b5b;
+  --ty-color-neutral-strong: #ffffff;
+  --ty-color-neutral-mild: #f9fafb;
+  --ty-color-neutral: #d6d6d6;
+  --ty-color-neutral-soft: #7f8590;
+  --ty-color-neutral-faint: #555a63;
 
   /* Backgrounds for dark mode */
   --ty-bg-faint: #0f1419;
@@ -530,10 +531,14 @@ Emphasis logic inverts: lighter = more emphasis
 
   /* Shadows need to be darker/more prominent in dark mode */
   --ty-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-  --ty-shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
-  --ty-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --ty-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
-  --ty-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --ty-shadow-base:
+    0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px -1px rgba(0, 0, 0, 0.3);
+  --ty-shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --ty-shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+  --ty-shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
   --ty-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 
   /* Accent colors for dark mode */
@@ -563,8 +568,7 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-modal-border: var(--ty-border);
   --ty-modal-backdrop: rgba(0, 0, 0, 0.7);
   --ty-modal-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.4),
-    0 10px 10px -5px rgba(0, 0, 0, 0.2);
+    0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 /* =================================================================
@@ -582,7 +586,6 @@ Global and semantic text selection colors
   background-color: var(--ty-selection-bg, var(--ty-color-primary));
   color: var(--ty-selection-color, var(--ty-text-strong));
 }
-
 
 /* Code block selection - special handling for better readability */
 pre ::selection,
@@ -703,13 +706,17 @@ SURFACE UTILITIES
 /* Elevated surfaces - cards, panels, components */
 .ty-elevated {
   background-color: var(--ty-surface-elevated) !important;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.1),
+    0 1px 2px -1px rgb(0 0 0 / 0.1) !important;
 }
 
 /* Floating surfaces - modals, dropdowns, tooltips */
 .ty-floating {
   background-color: var(--ty-surface-floating) !important;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
 }
 
 /* App and page backgrounds - the canvas for content */
@@ -730,17 +737,23 @@ SURFACE UTILITIES
 /* Dark theme adjustments for shadows */
 html.dark .ty-elevated {
   background-color: var(--ty-surface-elevated) !important;
-  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.2), 0 1px 2px -1px rgb(0 0 0 / 0.2) !important;
+  box-shadow:
+    0 1px 3px 0 rgb(0 0 0 / 0.2),
+    0 1px 2px -1px rgb(0 0 0 / 0.2) !important;
 }
 
 html.dark .ty-floating {
   background-color: var(--ty-surface-floating) !important;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3) !important;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.3),
+    0 2px 4px -2px rgb(0 0 0 / 0.3) !important;
 }
 
 html.dark .ty-high-elevation {
   background-color: var(--ty-surface-floating) !important;
-  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4) !important;
+  box-shadow:
+    0 10px 15px -3px rgb(0 0 0 / 0.4),
+    0 4px 6px -4px rgb(0 0 0 / 0.4) !important;
 }
 
 html.dark .ty-sunken {
@@ -1080,11 +1093,9 @@ COMPONENT UTILITIES
   background-color: var(--ty-modal-backdrop);
 }
 
-
 /* =================================================================
 INTERACTIVE STATES
 ================================================================= */
-
 
 .hover\:ty-bg-neutral--:hover {
   background-color: var(--ty-bg-neutral-faint);
@@ -1093,7 +1104,6 @@ INTERACTIVE STATES
 .hover\:ty-bg-neutral-:hover {
   background-color: var(--ty-bg-neutral-soft);
 }
-
 
 .hover\:ty-bg-neutral:hover {
   background-color: var(--ty-bg-neutral);
@@ -1106,7 +1116,6 @@ INTERACTIVE STATES
 .hover\:ty-bg-neutral\+\+:hover {
   background-color: var(--ty-bg-neutral-strong);
 }
-
 
 .hover\:ty-bg-primary:hover {
   background-color: var(--ty-bg-primary);
@@ -1276,7 +1285,7 @@ INTERACTIVE STATES
   color: var(--ty-color-neutral-strong) !important;
 }
 
-.hover\:ty-text-neutral+:hover {
+.hover\:ty-text-neutral + :hover {
   color: var(--ty-color-neutral-mild) !important;
 }
 
@@ -1343,7 +1352,7 @@ INTERACTIVE STATES
   border-color: var(--ty-border-strong) !important;
 }
 
-.focus\:ty-border+:focus {
+.focus\:ty-border + :focus {
   border-color: var(--ty-border-mild) !important;
 }
 

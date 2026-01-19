@@ -1,40 +1,6 @@
 (ns ty.site.docs.input
-  "Documentation for ty-input component"
-  (:require [ty.router :as router]
-            [ty.site.docs.checkbox :as checkbox-docs]
-            [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]
-            [ty.site.docs.copy-field :as copy-field-docs]
-            [ty.site.docs.input-field :as input-field-docs]))
-
-;; ===== SUB-ROUTES =====
-;; Define sub-routes for the input documentation page
-;; These all point to the same page (/docs/input) but with different hash fragments
-
-(def input-routes
-  [{:id :ty.site.docs.input/input-field
-    :hash "input-field"
-    :segment "input-field"
-    :name "Input Field"
-    :icon "edit-3"
-    :view input-field-docs/view}
-   {:id :ty.site.docs.input/checkbox
-    :hash "checkbox"
-    :segment "checkbox"
-    :name "Checkbox"
-    :icon "check-square"
-    :view checkbox-docs/view}
-   {:id :ty.site.docs.input/copy-field
-    :hash "copy-field"
-    :segment "copy-field"
-    :name "Copy Field"
-    :icon "copy"
-    :view copy-field-docs/view}])
-
-;; Link sub-routes to parent input documentation route
-;; This enables hierarchical navigation: Inputs > Input Field / Checkbox / Copy Field
-(router/link :ty.site.docs/input input-routes)
-
-;; ===== API REFERENCE =====
+  "Documentation for ty-input component (text, number, currency inputs)"
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
 
 (defn api-reference []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -134,128 +100,7 @@
         :payload "Standard FocusEvent"}
        {:name "blur"
         :when-fired "Fired when input loses focus (fires pending debounced events immediately)"
-        :payload "Standard FocusEvent"}])]
-
-   ;; ty-copy API
-   [:div.mt-8.pt-8.border-t.ty-border
-    [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-copy Attributes"]
-    (attribute-table
-      [{:name "value"
-        :type "string"
-        :default "''"
-        :description "The text value to display and copy to clipboard"}
-       {:name "label"
-        :type "string"
-        :default "null"
-        :description "Label displayed above the copy field"}
-       {:name "format"
-        :type "string"
-        :default "'text'"
-        :description "Display format: 'text' (default) or 'code' (monospace font)"}
-       {:name "multiline"
-        :type "boolean"
-        :default "false"
-        :description "Allow text to wrap across multiple lines (useful for long content like SSH keys)"}
-       {:name "size"
-        :type "string"
-        :default "'md'"
-        :description "Size variant: xs, sm, md, lg, xl"}
-       {:name "flavor"
-        :type "string"
-        :default "'neutral'"
-        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-       {:name "class"
-        :type "string"
-        :default "null"
-        :description "Additional CSS classes"}])]
-
-   [:div.mt-4
-    [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-copy Events"]
-    (event-table
-      [{:name "copy-success"
-        :when-fired "Fired when text is successfully copied to clipboard"
-        :payload "{value: string} - The copied text"}
-       {:name "copy-error"
-        :when-fired "Fired when copy operation fails"
-        :payload "{error: Error} - The error that occurred"}])
-    [:p.text-sm.ty-text-.mt-2
-     "Note: ty-copy is a read-only field with automatic copy-to-clipboard. "
-     "Click anywhere on the field to copy (not just the icon). "
-     "The copy icon animates (copy → check → copy) and the value is copied. "
-     "Text selection is disabled since it's read-only. "
-     "Use " [:code.ty-bg-neutral-.px-1.rounded "format=\"code\""] " for code snippets, and "
-     [:code.ty-bg-neutral-.px-1.rounded "multiline"] " for long text that should wrap."]]
-
-   [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
-    [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 Copy Field Usage"]
-    [:ul.space-y-1.ty-text.text-sm
-     [:li "• Perfect for API keys, tokens, URLs, and install commands"]
-     [:li "• Read-only display prevents accidental editing"]
-     [:li "• Automatic icon animation provides visual feedback"]
-     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "copy-success"] " event to show notifications"]
-     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "format=\"code\""] " for technical content"]]]
-
-   ;; ty-checkbox API
-   [:div.mt-8.pt-8.border-t.ty-border
-    [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-checkbox Attributes"]
-    (attribute-table
-      [{:name "checked"
-        :type "boolean"
-        :default "false"
-        :description "Initial checked state"}
-       {:name "value"
-        :type "string"
-        :default "'on'"
-        :description "Form value when checked (default: 'on')"}
-       {:name "name"
-        :type "string"
-        :default "null"
-        :description "Name for form submission"}
-       {:name "disabled"
-        :type "boolean"
-        :default "false"
-        :description "Whether the checkbox is disabled"}
-       {:name "required"
-        :type "boolean"
-        :default "false"
-        :description "Whether the checkbox is required (shows asterisk)"}
-       {:name "error"
-        :type "string"
-        :default "null"
-        :description "Error message to display"}
-       {:name "size"
-        :type "string"
-        :default "'md'"
-        :description "Size variant: xs, sm, md, lg, xl"}
-       {:name "flavor"
-        :type "string"
-        :default "'neutral'"
-        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}])]
-
-   [:div.mt-4
-    [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-checkbox Events"]
-    (event-table
-      [{:name "input"
-        :when-fired "Fired when checkbox state changes"
-        :payload "{value, checked, formValue, originalEvent}"}
-       {:name "change"
-        :when-fired "Fired when checkbox state changes"
-        :payload "{value, checked, formValue, originalEvent}"}])
-    [:p.text-sm.ty-text-.mt-2
-     "Note: ty-checkbox content is placed in the default slot (appears after the checkbox icon). "
-     "When checked, submits the " [:code.ty-bg-neutral-.px-1.rounded "value"] " attribute. "
-     "When unchecked, submits nothing (null in FormData)."]]
-
-   [:div.ty-elevated.rounded.p-4.mt-4.ty-bg-info-
-    [:h4.text-sm.font-semibold.ty-text++.mb-2 "💡 Checkbox vs Input vs Copy"]
-    [:ul.space-y-1.ty-text.text-sm
-     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "ty-checkbox"] " for boolean states (agree/disagree, on/off)"]
-     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "ty-input"] " for text, numbers, dates, and other data entry"]
-     [:li "• Use " [:code.ty-bg-neutral-.px-1.rounded "ty-copy"] " for read-only values that need copying (API keys, tokens, URLs)"]
-     [:li "• All are fully form-associated and work with native form submission"]
-     [:li "• All support keyboard navigation and semantic styling"]]]])
-
-;; ===== BASIC USAGE =====
+        :payload "Standard FocusEvent"}])]])
 
 (defn basic-usage-section []
   [:div.ty-content.rounded-lg.p-6.mb-8
@@ -296,8 +141,6 @@
   error=\"Username is already taken\"
   value=\"admin\">
 </ty-input>")]])
-
-;; ===== ICON SLOTS =====
 
 (defn icon-slots-section []
   [:div.mb-8
@@ -372,8 +215,6 @@
   <ty-icon slot=\"end\" name=\"external-link\" size=\"sm\"></ty-icon>
 </ty-input>")]])
 
-;; ===== DELAY/DEBOUNCE =====
-
 (defn delay-section []
   [:div.mb-8
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Debounce with Delay"]
@@ -413,7 +254,6 @@
       [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#delay-1000-count "0"]]]]
 
     [:script "
-// Track event counts
 let instantCount = 0;
 let delay300Count = 0;
 let delay1000Count = 0;
@@ -463,10 +303,8 @@ document.querySelector('ty-input').addEventListener('input', (e) => {
       [:li "• Use 1000-2000ms for very expensive operations"]
       [:li "• Events fire immediately on blur (cancels pending debounce)"]]]]])
 
-;; ===== INPUT TYPES =====
-
 (defn text-types-section []
-  [:div#input-field.ty-content.rounded-lg.p-6.mb-6
+  [:div.ty-content.rounded-lg.p-6.mb-6
    [:h3.text-xl.font-semibold.ty-text++.mb-4 "Text Input Types"]
    [:div.grid.gap-4
     [:div
@@ -542,142 +380,11 @@ document.querySelector('ty-input').addEventListener('input', (e) => {
 <!-- Note: Numeric inputs maintain a 'shadow value' for accurate calculations -->
 <!-- The display value is formatted when not focused, raw value when focused -->")])
 
-(defn checkbox-section []
-  [:div#checkbox.ty-content.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text++.mb-4 "Checkboxes (ty-checkbox)"]
-   [:p.ty-text-.mb-4 "Use the separate ty-checkbox component for boolean inputs. Fully form-associated and keyboard accessible."]
-
-   [:div.grid.gap-4
-    [:div
-     [:ty-checkbox {:name "terms"}
-      "I agree to terms"]]
-
-    [:div
-     [:ty-checkbox {:checked "true"
-                    :name "subscribe"}
-      "Subscribe to newsletter"]]
-
-    [:div
-     [:ty-checkbox {:required "true"
-                    :name "required"}
-      "Required checkbox"]]
-
-    [:div
-     [:ty-checkbox {:disabled "true"
-                    :checked "true"}
-      "Disabled checkbox"]]
-
-    [:div
-     [:ty-checkbox {:flavor "primary"
-                    :checked "true"}
-      "Primary checkbox"]]
-
-    [:div
-     [:ty-checkbox {:flavor "success"
-                    :checked "true"
-                    :size "lg"}
-      "Large success checkbox"]]]
-
-   (code-block "<!-- Checkbox examples -->
-<ty-checkbox name=\"terms\">I agree to terms</ty-checkbox>
-<ty-checkbox checked=\"true\" name=\"subscribe\">Subscribe to newsletter</ty-checkbox>
-<ty-checkbox required=\"true\" name=\"required\">Required checkbox</ty-checkbox>
-<ty-checkbox disabled=\"true\" checked=\"true\">Disabled checkbox</ty-checkbox>
-<ty-checkbox flavor=\"primary\" checked=\"true\">Primary checkbox</ty-checkbox>
-<ty-checkbox flavor=\"success\" checked=\"true\" size=\"lg\">Large success</ty-checkbox>
-
-<!-- Checkbox values: -->
-<!-- - When checked: submits value attribute (default: 'on') -->
-<!-- - When unchecked: doesn't submit (null in FormData) -->
-<!-- - Content goes in default slot (after the icon) -->")])
-
-(defn copy-section []
-  [:div#copy-field.ty-content.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text++.mb-4 "Copy Field (ty-copy)"]
-   [:p.ty-text-.mb-4 "Read-only field with copy-to-clipboard functionality. Perfect for API keys, tokens, URLs, and code snippets."]
-
-   [:div.grid.gap-4
-    [:div
-     [:ty-copy {:label "API Key"
-                :value "sk_live_1234567890abcdef"}]]
-
-    [:div
-     [:ty-copy {:label "Access Token"
-                :value "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"}]]
-
-    [:div
-     [:ty-copy {:label "Install Command"
-                :value "npm install @gersak/ty"
-                :format "code"}]]
-
-    [:div
-     [:ty-copy {:label "Website URL"
-                :value "https://ty.gersak.dev"}]]
-
-    [:div
-     [:ty-copy {:label "Primary Copy Field"
-                :value "primary-value-1234"
-                :flavor "primary"}]]
-
-    [:div
-     [:ty-copy {:label "Success Copy Field"
-                :value "success-value-1234"
-                :flavor "success"}]]
-
-    [:div
-     [:ty-copy {:label "SSH Public Key (Multiline)"
-                :value "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC...\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQE...\nAaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVv..."
-                :format "code"
-                :multiline true}]]]
-
-   (code-block "<!-- Copy field examples -->
-<ty-copy label=\"API Key\" value=\"sk_live_1234567890abcdef\"></ty-copy>
-<ty-copy label=\"Access Token\" value=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"></ty-copy>
-
-<!-- Code format with monospace font -->
-<ty-copy label=\"Install Command\" value=\"npm install @gersak/ty\" format=\"code\"></ty-copy>
-
-<!-- Multiline copy field -->
-<ty-copy 
-  label=\"SSH Public Key\" 
-  value=\"ssh-rsa AAAAB3NzaC1yc2EA...\\nlong key content...\" 
-  format=\"code\"
-  multiline>
-</ty-copy>
-
-<!-- Different sizes -->
-<ty-copy size=\"sm\" label=\"Small\" value=\"small-value\"></ty-copy>
-<ty-copy size=\"lg\" label=\"Large\" value=\"large-value\"></ty-copy>
-
-<!-- Semantic flavors -->
-<ty-copy flavor=\"primary\" label=\"Primary\" value=\"primary-value\"></ty-copy>
-<ty-copy flavor=\"success\" label=\"Success\" value=\"success-value\"></ty-copy>
-
-<!-- Copy events -->
-<script>
-document.querySelector('ty-copy').addEventListener('copy-success', (e) => {
-  console.log('Copied:', e.detail.value);
-  // Show success notification
-});
-</script>
-
-<!-- Copy field features: -->
-<!-- - Click anywhere on the field to copy (not just the icon) -->
-<!-- - Text selection disabled (read-only display) -->
-<!-- - Icon animates: copy → check → copy (2 seconds) -->
-<!-- - Emits 'copy-success' and 'copy-error' events -->
-<!-- - Use multiline attribute for long text that wraps -->
-<!-- - format='code' for monospace font -->")])
-
 (defn input-types-section []
   [:div.mb-8
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Input Types"]
    (text-types-section)
-   (numeric-types-section)
-   (checkbox-section)
-   (copy-section)])
-
-;; ===== SIZES & FLAVORS =====
+   (numeric-types-section)])
 
 (defn sizes-section []
   [:div.mb-8
@@ -763,18 +470,16 @@ document.querySelector('ty-copy').addEventListener('copy-success', (e) => {
 
 <!-- Note: Setting 'error' attribute automatically applies danger flavor -->")]])
 
-;; ===== FORM INTEGRATION =====
-
 (defn form-integration-section []
   [:div.mb-8
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Form Integration"]
    [:div.ty-content.rounded-lg.p-6
     [:h3.text-xl.font-semibold.ty-text++.mb-4 "Native Form Support"]
-    [:p.ty-text-.mb-4 "Both ty-input and ty-checkbox are form-associated custom elements that work seamlessly with native HTML forms. The error attribute is for display only - implement your own validation logic."]
+    [:p.ty-text-.mb-4 "ty-input is a form-associated custom element that works seamlessly with native HTML forms. The error attribute is for display only - implement your own validation logic."]
 
     [:form.space-y-4 {:on {:submit (fn [^js event]
-                                     (.preventDefault event)
-                                     (.log js/console "Form submitted!")
+                                     ; (.preventDefault event)
+                                     (.log js/console "Form submitted!" event)
                                      false)}}
      [:ty-input {:name "fullname"
                  :label "Full Name"
@@ -792,9 +497,6 @@ document.querySelector('ty-copy').addEventListener('copy-success', (e) => {
                  :type "currency"
                  :label "Expected Salary"
                  :currency "USD"}]
-     [:ty-checkbox {:name "terms"
-                    :required "true"}
-      "I agree to the terms"]
      [:div.flex.gap-2
       [:ty-button {:type "submit"
                    :flavor "primary"} "Submit"]
@@ -807,22 +509,19 @@ document.querySelector('ty-copy').addEventListener('copy-success', (e) => {
   <ty-input name=\"email\" type=\"email\" label=\"Email\" required=\"true\"></ty-input>
   <ty-input name=\"age\" type=\"number\" label=\"Age\" min=\"18\" max=\"120\"></ty-input>
   <ty-input name=\"salary\" type=\"currency\" label=\"Expected Salary\" currency=\"USD\"></ty-input>
-  <ty-checkbox name=\"terms\" required=\"true\">I agree to the terms</ty-checkbox>
   
   <ty-button type=\"submit\" flavor=\"primary\">Submit</ty-button>
   <ty-button type=\"reset\" flavor=\"secondary\">Reset</ty-button>
 </form>
 
 <script>
-// Form data is automatically collected from both ty-input and ty-checkbox elements
+// Form data is automatically collected from ty-input elements
 document.querySelector('form').addEventListener('submit', (e) => {
   e.preventDefault();
   const formData = new FormData(e.target);
   console.log(Object.fromEntries(formData));
 });
 </script>")]])
-
-;; ===== ADVANCED EXAMPLES =====
 
 (defn validation-example []
   [:div.ty-content.rounded-lg.p-6.mb-8
@@ -924,14 +623,11 @@ usdInput.addEventListener('input', (e) => {
    (validation-example)
    (currency-converter-example)])
 
-;; ===== BEST PRACTICES =====
-
 (defn best-practices-section []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Best Practices"]
 
    [:div.grid.md:grid-cols-2.gap-6
-    ;; Do's
     [:div
      [:h3.text-lg.font-semibold.ty-text-success++.mb-3.flex.items-center.gap-2
       [:ty-icon {:name "check-circle"
@@ -940,14 +636,12 @@ usdInput.addEventListener('input', (e) => {
      [:ul.space-y-2.ty-text-
       [:li "• Always provide labels for accessibility"]
       [:li "• Use semantic input types (text, email, password, date, etc.)"]
-      [:li "• Use ty-checkbox for boolean states"]
       [:li "• Implement validation in your application"]
       [:li "• Use the error attribute to display validation feedback"]
       [:li "• Access numeric shadow values from event.detail.value"]
       [:li "• Set proper currency and locale for international apps"]
       [:li "• Use name attribute for form submission"]]]
 
-    ;; Don'ts
     [:div
      [:h3.text-lg.font-semibold.ty-text-danger++.mb-3.flex.items-center.gap-2
       [:ty-icon {:name "x-circle"
@@ -959,10 +653,7 @@ usdInput.addEventListener('input', (e) => {
       [:li "• Don't use placeholder as a label replacement"]
       [:li "• Don't mix error attribute with non-danger flavors"]
       [:li "• Don't ignore event.detail.value for numeric types"]
-      [:li "• Don't use <ty-input type=\"checkbox\"> (use ty-checkbox instead)"]
       [:li "• Don't forget validation is your responsibility - ty-input only displays errors"]]]]])
-
-;; ===== TIPS & TRICKS =====
 
 (defn tips-section []
   [:div.ty-content.rounded-lg.p-6.mb-8
@@ -984,46 +675,35 @@ usdInput.addEventListener('input', (e) => {
 
     [:div
      [:h3.font-semibold.ty-text+ "Form Association"]
-     [:p.ty-text- "Both ty-input and ty-checkbox are fully form-associated. They work with FormData, form submission, and form reset just like native inputs."]]
+     [:p.ty-text- "ty-input is fully form-associated. It works with FormData, form submission, and form reset just like native inputs."]]
 
     [:div
      [:h3.font-semibold.ty-text+ "Error Display"]
-     [:p.ty-text- "The error attribute displays a message and applies danger styling. When error is set, the flavor automatically becomes 'danger'."]]
-
-    [:div
-     [:h3.font-semibold.ty-text+ "Checkbox Behavior"]
-     [:p.ty-text- "ty-checkbox submits its 'value' attribute when checked (default: 'on'), and nothing when unchecked. Control state with the "
-      [:code.ty-bg-neutral-.px-1.rounded "checked"] " attribute."]]]])
-
-;; ===== RELATED COMPONENTS =====
+     [:p.ty-text- "The error attribute displays a message and applies danger styling. When error is set, the flavor automatically becomes 'danger'."]]]])
 
 (defn related-components-section []
   [:div.p-4.ty-border.border.rounded-lg
    [:h3.font-semibold.ty-text+.mb-2 "Related Components"]
    [:div.flex.gap-4.text-sm
+    [:a.ty-text-primary.hover:underline {:href "/docs/input#checkbox"} "ty-checkbox →"]
+    [:a.ty-text-primary.hover:underline {:href "/docs/input#copy-field"} "ty-copy →"]
     [:a.ty-text-primary.hover:underline {:href "/docs/textarea"} "ty-textarea →"]
     [:a.ty-text-primary.hover:underline {:href "/docs/dropdown"} "ty-dropdown →"]
     [:a.ty-text-primary.hover:underline {:href "/docs/multiselect"} "ty-multiselect →"]]])
 
 (defn view []
   [:div.max-w-4xl.mx-auto.p-6
-   ;; Title and Description
    [:div.mb-8
-    [:h1.text-3xl.font-bold.ty-text++.mb-2 "ty-input, ty-checkbox & ty-copy"]
+    [:h1.text-3xl.font-bold.ty-text++.mb-2 "ty-input"]
     [:p.text-lg.ty-text-
-     "Powerful, form-associated input components with automatic formatting "
-     "and semantic styling. ty-input supports text, numeric, currency, and password types. "
-     "ty-checkbox provides boolean state management. "
-     "ty-copy offers read-only fields with one-click clipboard copying. "
+     "Powerful, form-associated input component with automatic formatting "
+     "and semantic styling. Supports text, numeric, currency, and password types. "
      "Validation is controlled by the user through the error attribute."]]
 
-   ;; Compose all sections
    (api-reference)
    (basic-usage-section)
    (icon-slots-section)
    (delay-section)
-   (checkbox-section)
-   (copy-section)
    (input-types-section)
    (sizes-section)
    (flavors-section)

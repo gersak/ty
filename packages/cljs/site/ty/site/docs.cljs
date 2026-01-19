@@ -13,7 +13,7 @@
    [ty.site.docs.dropdown :as dropdown-docs]
    [ty.site.docs.htmx :as htmx-docs]
    [ty.site.docs.icon :as icon-docs]
-   [ty.site.docs.input-field :as input-field-docs]
+   [ty.site.docs.input :as input-docs]
    [ty.site.docs.js-react :as js-react-docs]
    [ty.site.docs.modal :as modal-docs]
    [ty.site.docs.multiselect :as multiselect-docs]
@@ -25,6 +25,7 @@
    [ty.site.docs.tag :as tag-docs]
    [ty.site.docs.textarea :as textarea-docs]
    [ty.site.docs.tooltip :as tooltip-docs]
+   [ty.site.docs.wizard :as wizard-docs]
     ;; Import component doc namespaces
    [ty.site.views.getting-started :as getting-started]
    [ty.site.views.ty-styles :as ty-styles]))
@@ -68,7 +69,7 @@
     :children [{:id :ty.site.docs/input-field
                 :segment "input-field"
                 :icon "edit-3"
-                :view input-field-docs/view
+                :view input-docs/view
                 :name "Input Field"}
                {:id :ty.site.docs/checkbox
                 :segment "checkbox"
@@ -110,6 +111,11 @@
     :icon "layout"
     :view tabs-docs/view
     :name "Tabs"}
+   {:id :ty.site.docs/wizard
+    :segment "wizard"
+    :icon "list-ordered"
+    :view wizard-docs/view
+    :name "Wizard"}
    {:id :ty.site.docs/tag
     :segment "tag"
     :icon "tag"

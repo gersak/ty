@@ -281,8 +281,8 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
     // Initialize shadow value from current value property
     this.initializeShadowValue()
 
-    // Setup event listeners
-    this.setupEventListeners()
+    // NOTE: Event listeners are set up in render() after input element is created
+    // setupEventListeners() will be called after initial render
 
     // Setup locale observer to watch for ancestor lang changes
     this._localeObserver = observeLocaleChanges(this, () => {
@@ -328,11 +328,6 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
         case 'value':
           // Parse to shadow value for numeric types
           this._shadowValue = this.parseShadowValue(newValue || '')
-          console.log(`[TyInput.onPropertiesChanged] value changed:`, {
-            newValue,
-            shadowValue: this._shadowValue,
-            type: this.type
-          })
           break
 
         case 'type':
@@ -381,11 +376,6 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
    */
   protected getFormValue(): FormDataEntryValue | null {
     const formValue = this._shadowValue !== null ? String(this._shadowValue) : null
-    console.log(`[TyInput.getFormValue] Returning form value:`, {
-      shadowValue: this._shadowValue,
-      formValue,
-      name: this.name
-    })
     return formValue
   }
 
@@ -607,18 +597,25 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
  * IMPORTANT: Only called ONCE, not on every render (like ClojureScript)
  */
   private setupEventListeners(): void {
-    if (this._listenersSetup) return // Already setup
+    if (this._listenersSetup) {
+      return // Already setup
+    }
 
     const shadow = this.shadowRoot!
     const inputEl = shadow.querySelector('input')
     const wrapperEl = shadow.querySelector('.input-wrapper')
 
-    if (!inputEl || !wrapperEl) return
+    if (!inputEl || !wrapperEl) {
+      console.warn('[TyInput.setupEventListeners] ⚠️ Input element not found!')
+      return
+    }
+
 
     // Create and store handler references for cleanup
 
     // Input event - update shadow value and form (with debounce support)
     this._inputHandler = (e: Event) => {
+
       // Stop native event from propagating - only our custom event should bubble
       e.stopPropagation()
       e.stopImmediatePropagation()

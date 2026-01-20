@@ -195,7 +195,7 @@
 
                ;; Selectable slot
                [:div.ty-content.p-3.rounded-lg.text-center.cursor-pointer.transition-colors.border.ty-border.hover:ty-elevated.hover:ty-border-primary
-                {:class (when (= selected-time time) " ty-bg-primary- ty-border-primary")
+                {:class (when (= selected-time time) ["ty-bg-primary-" "ty-border-primary"])
                  :on {:click #(swap! state assoc-in [:event-booking :selected-time] time)}}
                 [:div.text-sm.font-medium
                  {:class (if (= selected-time time) "ty-text-primary" "ty-text")}

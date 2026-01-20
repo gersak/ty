@@ -681,8 +681,7 @@ dropdown.addEventListener('search', async (e) => {
      " attribute. Supports both " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "<option>"]
      " and " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "<ty-option>"] " elements."]
 
-    [:form {:id "native-form-demo"
-            :class "p-4 ty-bg-neutral- rounded"
+    [:form.p-4.ty-bg-neutral-.rounded {:id "native-form-demo"
             :on-submit (fn [e]
                          (.preventDefault e)
                          (let [form-data (js/FormData. (.-target e))

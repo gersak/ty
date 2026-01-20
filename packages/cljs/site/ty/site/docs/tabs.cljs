@@ -347,8 +347,7 @@
                :height "500px"}
 
      ;; Rich labels as direct children
-     [:span {:slot "label-profile"
-             :class "flex items-center gap-2"}
+     [:span.flex.items-center.gap-2 {:slot "label-profile"}
       [:ty-icon {:name "user"
                  :size "sm"}]
       "Profile"]
@@ -359,8 +358,7 @@
       "Notifications"
       [:span.ty-bg-danger.ty-text-danger++.px-2.py-0.5.rounded-full.text-xs.font-bold "5"]]
 
-     [:span {:slot "label-settings"
-             :class "flex items-center gap-2"}
+     [:span.flex.items-center.gap-2 {:slot "label-settings"}
       [:ty-icon {:name "settings"
                  :size "sm"}]
       "Settings"]
@@ -494,8 +492,7 @@
      [:ty-tabs {:width "100%"
                 :height "300px"}
       ;; Primary color underline
-      [:div {:slot "marker"
-             :class "absolute bottom-0 left-0 h-0.5 ty-bg-primary"}]
+      [:div.absolute.bottom-0.left-0.h-0.5.ty-bg-primary {:slot "marker"}]
 
       [:ty-tab {:id "dashboard"
                 :label "Dashboard"}

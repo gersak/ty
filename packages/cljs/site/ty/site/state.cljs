@@ -11,6 +11,16 @@
          ;; Resize observer - element sizes by ID
          :element-sizes {}
 
+         ;; Command palette search state
+         :search {:open false
+                  :query ""
+                  :results []
+                  :selected-index 0}
+
+         ;; Table of Contents state
+         :toc {:headings []      ;; [{:id "api" :text "API Reference" :level 2}]
+               :active-id nil}   ;; Currently visible heading
+
          ;; User profile state
          :user-profile {:avatar-modal-open false
                         :form-data {:first-name "John"

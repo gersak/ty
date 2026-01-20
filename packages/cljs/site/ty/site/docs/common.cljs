@@ -1,6 +1,7 @@
 (ns ty.site.docs.common
   "Common utilities for component documentation"
   (:require
+   [clojure.string :as str]
    [goog.object]))
 
 (defn add-code-enhancements!
@@ -145,16 +146,27 @@
     [:div.mb-4 demo]
     (code-block code language)]))
 
+(defn slugify
+  "Convert text to URL-friendly slug"
+  [text]
+  (-> text
+      str
+      str/lower-case
+      (str/replace #"[^\w\s-]" "")
+      (str/replace #"\s+" "-")
+      (str/replace #"-+" "-")
+      str/trim))
+
 (defn doc-section
-  "Create a documentation section with title and content"
+  "Create a documentation section with title and content.
+   Auto-generates ID from title if not provided."
   ([title content]
-   [:section.mb-12
-    [:h2.text-2xl.font-semibold.ty-text.mb-4 title]
-    content])
+   (doc-section title nil content))
   ([title id content]
-   [:section.mb-12 {:id id}
-    [:h2.text-2xl.font-semibold.ty-text.mb-4 title]
-    content]))
+   (let [section-id (or id (slugify title))]
+     [:section.mb-12 {:id section-id}
+      [:h2.text-2xl.font-semibold.ty-text.mb-4.scroll-mt-6 title]
+      content])))
 
 (defn placeholder-view
   "Placeholder view for components not yet documented"
@@ -178,8 +190,7 @@
    [:p.text-lg.ty-text-.mb-8 guide-description]
    [:div.ty-elevated.rounded-lg.p-6.text-center
     [:div.mb-6
-     [:ty-icon.mx-auto.mb-4 {:name "clock"
-                             :class "w-12 h-12 ty-text-"}]
+     [:ty-icon.mx-auto.mb-4.w-12.h-12.ty-text- {:name "clock"}]
      [:h2.text-xl.font-semibold.ty-text.mb-2 "Coming Soon"]
      [:p.ty-text-.mb-6 "This guide is currently under development. We're working hard to bring you comprehensive documentation for integrating Ty components with this technology."]]
 

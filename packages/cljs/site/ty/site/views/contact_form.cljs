@@ -521,7 +521,7 @@
            {:type "submit"
             :flavor "primary"
             :disabled is-submitting
-            :class (when is-submitting "opacity-75 cursor-not-allowed")}
+            :class (when is-submitting ["opacity-75" "cursor-not-allowed"])}
            (if is-submitting
              [:div.flex.items-center.gap-2
               {:slot "start"}

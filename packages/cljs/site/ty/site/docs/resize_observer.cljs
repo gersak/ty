@@ -454,9 +454,8 @@
            [:div.ty-text-success "🎯 Full content"])]])]
 
     ;; Main content with resize observer
-    [:ty-resize-observer#flex-main
-     {:class "ty-bg-success- ty-border-success rounded-lg border-2 p-4 flex-1"
-      :replicant/on-mount
+    [:ty-resize-observer#flex-main.ty-bg-success-.ty-border-success.rounded-lg.border-2.p-4.flex-1
+     {:replicant/on-mount
       (fn [{^js el :replicant/node}]
         (when js/window.tyResizeObserver
           (let [unsubscribe (js/window.tyResizeObserver.onResize

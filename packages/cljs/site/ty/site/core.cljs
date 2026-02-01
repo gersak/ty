@@ -264,6 +264,34 @@
                      80)]
     (max available 150)))
 
+(defn scroll-shadow-hooks
+  "Create on-mount/on-unmount hooks for scroll shadow tracking"
+  [section-key]
+  (let [update-shadows (fn [^js event]
+                         (when-let [el (.-target event)]
+                           (let [scroll-top (.-scrollTop el)
+                                 scroll-height (.-scrollHeight el)
+                                 client-height (.-clientHeight el)
+                                 can-scroll-up (> scroll-top 0)
+                                 can-scroll-down (< (+ scroll-top client-height)
+                                                    (- scroll-height 1))
+                                 final {:up can-scroll-up
+                                        :down can-scroll-down}]
+                             (when-not (= final (:scroll-shadows @state))
+                               (swap! state assoc-in [:scroll-shadows section-key] final)))))]
+    {:replicant/on-mount
+     (fn [{^js el :replicant/node}]
+       (update-shadows el)
+       (.addEventListener el "scroll" update-shadows)
+       (set! (.-_scrollHandler el) update-shadows))
+
+     :replicant/on-unmount
+     (fn [{^js el :replicant/node}]
+       (when-let [handler (.-_scrollHandler el)]
+         (.removeEventListener el "scroll" handler)
+         (set! (.-_scrollHandler el) nil))
+       (swap! state update :scroll-shadows dissoc section-key))}))
+
 (defn nav-section
   "Render a navigation section with optional children and collapsible behavior"
   [{:keys [title items collapsible? section-key]}]
@@ -290,26 +318,47 @@
      ;; Children container with collapse animation
      (if collapsible?
        ;; Collapsible children with calculated height
-       (let [available-height (calculate-collapsible-height)]
+       (let [available-height (calculate-collapsible-height)
+             shadows (get-in @state [:scroll-shadows section-key])
+             show-top (:up shadows)
+             show-bottom (:down shadows)]
          [:div.overflow-hidden.transition-all.duration-300
           {:class (if is-open? "opacity-100" "opacity-0")
            :style {:max-height (if is-open? (str available-height "px") "0")
                    :width (if is-open? "100%" "0")}}
-          [:div.space-y-0.5.mt-2.overflow-y-auto
-           {:style {:max-height (str (- available-height 8) "px")
-                    :scrollbar-width "none"}}
-           (for [item items]
-             (let [has-children? (seq (:children item))]
-               ^{:key (:label item)}
-               [:div
-                ;; Parent item
-                (nav-item (assoc item :indented? false :section-key section-key))
-                ;; Children items (indented)
-                (when has-children?
-                  [:div.space-y-0.5
-                   (for [child (:children item)]
-                     ^{:key (:label child)}
-                     (nav-item (assoc child :indented? true :section-key section-key)))])]))]])
+          ;; Wrapper for shadows
+          [:div.relative.mt-2
+           ;; Top shadow (ellipsis glow effect)
+           [:div.absolute.left-0.right-0.pointer-events-none.z-10.transition-opacity.duration-300
+            {:style {:top "-40px"
+                     :height "80px"
+                     :background "radial-gradient(ellipse 100% 30% at center, rgba(128, 128, 128, 0.15), rgba(0, 0, 0, 0), transparent)"
+                     :clip-path "inset(50% 0 0 0)"
+                     :opacity (if show-top 1 0)}}]
+           ;; Scrollable content
+           [:div.space-y-0.5.overflow-y-auto
+            (merge {:style {:max-height (str (- available-height 8) "px")
+                            :scrollbar-width "none"}}
+                   (scroll-shadow-hooks section-key))
+            (for [item items]
+              (let [has-children? (seq (:children item))]
+                ^{:key (:label item)}
+                [:div
+                 ;; Parent item
+                 (nav-item (assoc item :indented? false :section-key section-key))
+                 ;; Children items (indented)
+                 (when has-children?
+                   [:div.space-y-0.5
+                    (for [child (:children item)]
+                      ^{:key (:label child)}
+                      (nav-item (assoc child :indented? true :section-key section-key)))])]))]
+           ;; Bottom shadow (ellipsis glow effect)
+           [:div.absolute.left-0.right-0.pointer-events-none.z-10.transition-opacity.duration-300
+            {:style {:bottom "-30px"
+                     :height "60px"
+                     :background "radial-gradient(ellipse 100% 20% at center, rgba(128, 128, 128, 0.2), rgba(0, 0, 0, 0), transparent)"
+                     :clip-path "inset(0 0 50% 0)"
+                     :opacity (if show-bottom 1 0)}}]]])
        ;; Non-collapsible children (always visible)
        [:div.space-y-0.5
         (for [item items]

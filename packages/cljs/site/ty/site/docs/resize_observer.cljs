@@ -1,7 +1,7 @@
 (ns ty.site.docs.resize-observer
   "Documentation for the ty-resize-observer component"
   (:require [replicant.dom :as d]
-            [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]
+            [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section docs-page]]
             [ty.site.state :as state]))
 
 (defn header-section
@@ -535,7 +535,7 @@
 </script>")]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Title and Description
    (header-section)
 
@@ -725,4 +725,5 @@ function ChildComponent() {
        [:li.flex.items-start
         [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
                                               :size "16"}]
-        [:span "Don't use for simple responsive design - prefer CSS media queries"]]]]]]])
+        [:span "Don't use for simple responsive design - prefer CSS media queries"]]]]]]))
+

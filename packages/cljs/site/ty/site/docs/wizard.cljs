@@ -1,7 +1,7 @@
 (ns ty.site.docs.wizard
   "Documentation for ty-wizard component"
   (:require [clojure.string :as str]
-            [ty.site.docs.common :refer [code-block attribute-table event-table]]
+            [ty.site.docs.common :refer [code-block attribute-table event-table docs-page]]
             [ty.site.state :refer [state]]))
 
 ;; =====================================================
@@ -443,10 +443,10 @@ ty-wizard::part(panels-container) {
 ;; =====================================================
 
 (defn view []
-  [:div.max-w-7xl.mx-auto.p-6
+  (docs-page
    (intro)
    (prototype-section)
    (features)
    (api-spec)
    (css-parts-section)
-   (use-cases)])
+   (use-cases)))

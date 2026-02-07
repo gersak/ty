@@ -1,9 +1,9 @@
 (ns ty.site.docs.tag
   "Documentation for the ty-tag component"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section docs-page]]))
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Title and Description
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-tag"]
@@ -492,4 +492,4 @@ newTag.addEventListener('dismiss', (e) => {
      [:li "ARIA attributes for disabled state"]
      [:li "Proper focus management for interactive tags"]
      [:li "Screen reader friendly dismiss button labels"]
-     [:li "High contrast mode support via semantic colors"]]]])
+     [:li "High contrast mode support via semantic colors"]]]))

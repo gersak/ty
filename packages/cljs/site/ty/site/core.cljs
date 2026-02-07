@@ -1,13 +1,14 @@
 (ns ty.site.core
-  (:require [clojure.string :as str]
-            [replicant.dom :as rdom]
-            [ty.layout :as layout]
-            [ty.router :as router]
-            [ty.site.docs :as docs]
-            [ty.site.icons]
-            [ty.site.state :refer [state]]
-            [ty.site.views.landing :as landing]
-            [ty.site.views.why :as why]))
+  (:require
+    [clojure.string :as str]
+    [replicant.dom :as rdom]
+    [ty.layout :as layout]
+    [ty.router :as router]
+    [ty.site.docs :as docs]
+    [ty.site.icons :as icons]
+    [ty.site.state :refer [state]]
+    [ty.site.views.landing :as landing]
+    [ty.site.views.why :as why]))
 
 ;; Configuration for GitHub Pages deployment
 ;; These are replaced at build time via closure-defines
@@ -206,27 +207,34 @@
   "Render a single navigation item (can be parent or child)"
   [{:keys [route-id label icon indented? section-key]}]
   (let [active? (router/rendered? route-id true)]
-    [:button.w-full.text-left.px-4.py-2.rounded.transition-colors.cursor-pointer.flex.items-center.gap-2
+    [:button.w-full.text-left.px-3.py-2.transition-all.duration-150.cursor-pointer.flex.items-center.gap-2.5
      {:class (concat
                (if active?
-                 ["ty-bg-primary-" "ty-text-primary++"]
-                 ["hover:ty-bg-neutral" "ty-text"])
-               (when indented? ["pl-8"])) ; Indent child items
-      :on {:click (fn []
-                    ;; Save last visited route for section
+                 ["ty-text++" "font-semibold"]
+                 ["ty-text-" "hover:ty-text"])
+               (when indented? ["pl-7" "text-sm"]))
+      :style (cond->
+               {:border-bottom "2px solid"
+                :border-color "transparent"
+                :transition "border-bottom-color 250ms ease"}
+               active? (assoc :border-color "var(--ty-border-accent)"))
+      :on {;; :mouseenter (fn [e]
+           ;;               #_(when-not active?
+           ;;                   (set! (.. e -currentTarget -style -borderBottomColor) theme/accent-subtle)))
+           ;; :mouseleave (fn [e]
+           ;;               #_(when-not active?
+           ;;                   (set! (.. e -currentTarget -style -borderBottomColor) "transparent")))
+           :click (fn []
                     (when section-key
                       (set-last-visited-route! section-key route-id))
-                    ;; Check if target route has hash before navigation
                     (let [should-scroll-top? (should-scroll-for-route? route-id)]
-                      ;; Navigate
                       (router/navigate! route-id)
-                      ;; Scroll to top only for non-fragment routes
                       (when should-scroll-top?
                         (js/setTimeout scroll-main-to-top! 100))
-                      ;; Close mobile menu
                       (swap! state assoc :mobile-menu-open false)))}}
      [:ty-icon {:name icon
-                :size "sm"}]
+                :size "sm"
+                :class (when active? "ty-text-accent")}]
      [:span.text-sm label]]))
 
 (defn calculate-collapsible-height
@@ -239,9 +247,8 @@
 
         ;; Get heights from state (stored by resize observer events)
         sizes (:sidebar-sizes @state)
-        header-h (or (:header sizes) 64)
-        sidebar-title-h (or (:title sizes) (:height (layout/get-observer-size "ty.sidebar.title")))
-        fixed-nav-h (or (:fixed-content-height sizes) 200)
+        header-h (or (:header sizes) 60)
+        fixed-nav-h (or (:fixed-content-height sizes) 180)
         quickstart-h (or (:quickstart sizes) 40)
         components-h (or (:components sizes) 40)
 
@@ -258,10 +265,9 @@
         ;; Calculate available height for expanded section
         available (- window-h
                      header-h
-                     sidebar-title-h
                      fixed-nav-h
                      other-section-h
-                     80)]
+                     100)]
     (max available 150)))
 
 (defn scroll-shadow-hooks
@@ -296,69 +302,54 @@
   "Render a navigation section with optional children and collapsible behavior"
   [{:keys [title items collapsible? section-key]}]
   (let [is-open? (= (get @state :navigation.section/open) section-key)
-        icon (if is-open? "chevron-down" "arrow-right")
+        icon (if is-open? "chevron-down" "chevron-right")
         observer-id (when section-key (str "ty.sidebar." (name section-key)))]
-    [:div.mb-4
+    [:div.mb-2
      (when title
        (if collapsible?
-         ;; Collapsible section header (clickable) - wrapped in resize observer
-         [:div.px-4.py-2.cursor-pointer.rounded.transition-colors
+         ;; Collapsible section header (clickable)
+         [:button.w-full.px-3.py-2.cursor-pointer.rounded-md.transition-all.duration-150.hover:ty-bg-accent-
           {:on {:click #(toggle-nav-section! section-key items)}}
           [:div.flex.items-center.gap-2
            [:ty-icon {:name icon
-                      :size "sm"
-                      :class (if is-open? "ty-text-primary" "ty-text-")}]
-           [:h3.text-xs.font-medium.uppercase.tracking-wider
-            {:class (if is-open? ["ty-text-primary" "font-semibold"] "ty-text-")}
+                      :size "xs"
+                      :class ["transition-transform" "duration-150"
+                              (if is-open? "ty-text-accent" "ty-text--")]}]
+           [:h3.text-xs.font-medium.uppercase.tracking-wide
+            {:class (if is-open? "ty-text" "ty-text-")}
             title]]]
          ;; Non-collapsible section header (static)
-         [:div.px-4.py-2
-          [:h3.text-xs.font-medium.ty-text-.uppercase.tracking-wider.mb-2 title]]))
+         [:div.px-3.py-2
+          [:h3.text-xs.font-medium.ty-text-.uppercase.tracking-wide title]]))
 
      ;; Children container with collapse animation
      (if collapsible?
-       ;; Collapsible children with calculated height
-       (let [available-height (calculate-collapsible-height)
-             shadows (get-in @state [:scroll-shadows section-key])
-             show-top (:up shadows)
-             show-bottom (:down shadows)]
-         [:div.overflow-hidden.transition-all.duration-300
-          {:class (if is-open? "opacity-100" "opacity-0")
-           :style {:max-height (if is-open? (str available-height "px") "0")
-                   :width (if is-open? "100%" "0")}}
-          ;; Wrapper for shadows
-          [:div.relative.mt-2
-           ;; Top shadow (ellipsis glow effect)
-           [:div.absolute.left-0.right-0.pointer-events-none.z-10.transition-opacity.duration-300
-            {:style {:top "-40px"
-                     :height "80px"
-                     :background "radial-gradient(ellipse 100% 30% at center, rgba(128, 128, 128, 0.15), rgba(0, 0, 0, 0), transparent)"
-                     :clip-path "inset(50% 0 0 0)"
-                     :opacity (if show-top 1 0)}}]
-           ;; Scrollable content
-           [:div.space-y-0.5.overflow-y-auto
-            (merge {:style {:max-height (str (- available-height 8) "px")
-                            :scrollbar-width "none"}}
-                   (scroll-shadow-hooks section-key))
-            (for [item items]
-              (let [has-children? (seq (:children item))]
-                ^{:key (:label item)}
-                [:div
-                 ;; Parent item
-                 (nav-item (assoc item :indented? false :section-key section-key))
-                 ;; Children items (indented)
-                 (when has-children?
-                   [:div.space-y-0.5
-                    (for [child (:children item)]
-                      ^{:key (:label child)}
-                      (nav-item (assoc child :indented? true :section-key section-key)))])]))]
-           ;; Bottom shadow (ellipsis glow effect)
-           [:div.absolute.left-0.right-0.pointer-events-none.z-10.transition-opacity.duration-300
-            {:style {:bottom "-30px"
-                     :height "60px"
-                     :background "radial-gradient(ellipse 100% 20% at center, rgba(128, 128, 128, 0.2), rgba(0, 0, 0, 0), transparent)"
-                     :clip-path "inset(0 0 50% 0)"
-                     :opacity (if show-bottom 1 0)}}]]])
+       ;; Collapsible children with CSS Grid for smooth height animation
+       (let [available-height (calculate-collapsible-height)]
+         ;; Grid wrapper - animates grid-template-rows from 0fr to 1fr
+         [:div.transition-all.duration-300
+          {:style {:display "grid"
+                   :grid-template-rows (if is-open? "1fr" "0fr")}}
+          ;; Inner wrapper with min-height:0 allows collapse, overflow:hidden clips content
+          [:div.overflow-hidden.transition-opacity.duration-300
+           {:class (if is-open? "opacity-100" "opacity-0")
+            :style {:min-height 0}}
+           ;; Scrollable content with scroll shadows
+           [:ty-scroll-container.mt-2 {:max-height (str (- available-height 8) "px")
+                                       :hide-scrollbar true}
+            [:div.space-y-0.5
+             (for [item items]
+               (let [has-children? (seq (:children item))]
+                 ^{:key (:label item)}
+                 [:div
+                  ;; Parent item
+                  (nav-item (assoc item :indented? false :section-key section-key))
+                  ;; Children items (indented)
+                  (when has-children?
+                    [:div.space-y-0.5
+                     (for [child (:children item)]
+                       ^{:key (:label child)}
+                       (nav-item (assoc child :indented? true :section-key section-key)))])]))]]]])
        ;; Non-collapsible children (always visible)
        [:div.space-y-0.5
         (for [item items]
@@ -396,7 +387,8 @@
   [:div.space-y-6
    ;; Fixed content (always visible) - track height
    [:ty-resize-observer
-    (merge {:id "ty.sidebar.nav-items"}
+    (merge {:id "ty.sidebar.nav-items"
+            :debounce 150}
            (resize-observer-hooks "ty.sidebar.nav-items" [:sidebar-sizes :fixed-content-height]))
     [:div.space-y-6
      ;; Main Navigation
@@ -421,7 +413,8 @@
 
    ;; Quickstart (route navigation) - Collapsible
    [:ty-resize-observer
-    (merge {:id "ty.sidebar.quickstart"}
+    (merge {:id "ty.sidebar.quickstart"
+            :debounce 150}
            (resize-observer-hooks "ty.sidebar.quickstart" [:sidebar-sizes :quickstart]))
     (nav-section
       {:title "Quickstart"
@@ -434,7 +427,8 @@
 
    ;; Components Section (route navigation to component docs) - Collapsible
    [:ty-resize-observer
-    (merge {:id "ty.sidebar.components"}
+    (merge {:id "ty.sidebar.components"
+            :debounce 150}
            (resize-observer-hooks "ty.sidebar.components" [:sidebar-sizes :components]))
     (nav-section
       {:title "Components"
@@ -466,17 +460,12 @@
   "Sidebar navigation content (used in both desktop sidebar and mobile menu)"
   []
   [:aside.h-full.flex.flex-col
-   [:ty-resize-observer
-    (merge {:id "ty.sidebar.title"}
-           (resize-observer-hooks "ty.sidebar.title" [:sidebar-sizes :title]))
-    [:div.p-4.lg:p-6.flex-shrink-0
-     [:h1.text-lg.lg:text-2xl.font-bold.ty-text.mb-1.lg:mb-2 "ty components"]]]
-   ;; Scrollable nav with hidden scrollbar (overflow wrapper technique)
-   [:div.flex-1.overflow-hidden
-    [:nav.px-2.lg:px-4.pb-4.lg:pb-6.h-full.overflow-y-scroll
-     {:style {:scrollbar-width "none"      ;; Firefox
-              :margin-right "-20px"        ;; Push scrollbar outside
-              :padding-right "20px"}}      ;; Compensate for margin
+   ;; Scrollable nav with hidden scrollbar
+   [:div.flex-1.overflow-hidden.pt-2
+    [:nav.px-2.lg:px-3.pb-4.h-full.overflow-y-scroll
+     {:style {:scrollbar-width "none"
+              :margin-right "-20px"
+              :padding-right "20px"}}
      (nav-items)]]])
 
 (defn slugify
@@ -489,33 +478,6 @@
       (str/replace #"-+" "-")
       (str/trim)))
 
-(defn toc-sidebar
-  "Table of Contents sidebar with scroll-spy"
-  []
-  (let [headings (get-in @state [:toc :headings])
-        active-id (get-in @state [:toc :active-id])]
-    [:aside.sticky.top-6.self-start
-     {:style {:width "200px"}}
-     (when (seq headings)
-       [:nav.text-sm
-        [:h4.text-xs.font-medium.ty-text-.uppercase.tracking-wider.mb-3
-         "On this page"]
-        [:ul.space-y-0.5.border-l.ty-border-
-         (for [{:keys [id text level]} headings]
-           ^{:key id}
-           [:li
-            [:a.block.py-1.5.pl-3.-ml-px.border-l-2.transition-all.duration-150
-             {:href (str "#" id)
-              :class [(if (= active-id id)
-                        "ty-border-primary ty-text-primary font-medium"
-                        "border-transparent ty-text- hover:ty-text hover:ty-border-neutral")
-                      (when (= level 3) "pl-5 text-xs")]
-              :on {:click (fn [e]
-                            (.preventDefault e)
-                            (when-let [el (.getElementById js/document id)]
-                              (.scrollIntoView el #js {:behavior "smooth"
-                                                       :block "start"})))}}
-             text]])]])]))
 
 ;; ============================================================================
 ;; Command Palette Search
@@ -607,11 +569,11 @@
     (when open
       [:ty-modal {:open true
                   :on {:close close-search!}}
-       [:div.ty-floating.rounded-lg.shadow-xl.overflow-hidden
-        {:style {:width "min(560px, 90vw)"
+       [:div.ty-floating.rounded-xl.shadow-lg.overflow-hidden
+        {:style {:width "min(520px, 90vw)"
                  :max-height "80vh"}}
         ;; Search input
-        [:div.p-4.border-b.ty-border
+        [:div.p-4.border-b.ty-border-
          [:div.flex.items-center.gap-3
           [:ty-icon {:name "search"
                      :size "sm"
@@ -653,16 +615,16 @@
               [:li
                [:button.w-full.text-left.px-4.py-3.flex.items-center.gap-3.transition-colors
                 {:class (if (= idx selected-index)
-                          "ty-bg-primary- ty-text-primary++"
-                          "hover:ty-bg-neutral-")
+                          ["ty-bg-accent-" "ty-text-accent+"]
+                          ["hover:ty-bg-accent-"])
                  :on {:click #(select-search-result! result)
                       :mouseenter #(swap! state assoc-in [:search :selected-index] idx)}}
                 ;; Icon
-                [:div.w-8.h-8.rounded.flex.items-center.justify-center
+                [:div.w-8.h-8.pl-4.rounded-md.flex.items-center.justify-center
                  {:class (case (:type result)
-                           :guide "ty-bg-success- ty-text-success"
-                           :component "ty-bg-primary- ty-text-primary"
-                           "ty-bg-neutral-")}
+                           :guide ["ty-bg-success-" "ty-text-success"]
+                           :component ["ty-bg-primary-" "ty-text-primary"]
+                           ["ty-bg-neutral-"])}
                  [:ty-icon {:name (:icon result)
                             :size "sm"}]]
                 ;; Name and type
@@ -684,7 +646,7 @@
             [:p "No results found"]])]
 
         ;; Footer with keyboard hints
-        [:div.px-4.py-3.border-t.ty-border.flex.items-center.gap-4.text-xs.ty-text-
+        [:div.px-4.py-3.border-t.ty-border-.flex.items-center.gap-4.text-xs.ty-text--
          [:span.flex.items-center.gap-1
           [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↑"]
           [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↓"]
@@ -719,136 +681,125 @@
                                (close-search!)
                                (open-search!))))))))
 
-;; ============================================================================
-;; Table of Contents Scroll Spy
-;; ============================================================================
-
-(defonce toc-observer (atom nil))
-
-(defn extract-headings!
-  "Extract h2 and h3 headings from main content and update state"
-  []
-  (js/setTimeout
-    (fn []
-      (when-let [main-el (.querySelector js/document "main")]
-        (let [heading-els (.querySelectorAll main-el "h2[id], h3[id]")
-              headings (vec (for [el (array-seq heading-els)]
-                              {:id (.-id el)
-                               :text (.-textContent el)
-                               :level (if (= (.-tagName el) "H2") 2 3)}))]
-          (swap! state assoc-in [:toc :headings] headings))))
-    100))
-
-(defn setup-toc-observer!
-  "Setup IntersectionObserver for scroll-spy on headings"
-  []
-  ;; Disconnect existing observer
-  (when @toc-observer
-    (.disconnect @toc-observer))
-
-  (js/setTimeout
-    (fn []
-      (when-let [scroll-container (.getElementById js/document "main-scroll-container")]
-        (let [observer (js/IntersectionObserver.
-                         (fn [entries]
-                         ;; Find the first intersecting entry (topmost visible heading)
-                           (let [intersecting (->> entries
-                                                   (filter #(.-isIntersecting %))
-                                                   (sort-by #(-> ^js % .-boundingClientRect .-top))
-                                                   first)]
-                             (when intersecting
-                               (let [id (.. intersecting -target -id)]
-                                 (swap! state assoc-in [:toc :active-id] id)))))
-                         #js {:root scroll-container
-                              :rootMargin "-10% 0px -80% 0px"
-                              :threshold 0})]
-         ;; Observe all headings with IDs
-          (when-let [main-el (.querySelector js/document "main")]
-            (doseq [el (array-seq (.querySelectorAll main-el "h2[id], h3[id]"))]
-              (.observe observer el)))
-          (reset! toc-observer observer))))
-    200))
-
-(defn update-toc!
-  "Extract headings and setup scroll observer"
-  []
-  (extract-headings!)
-  (setup-toc-observer!))
-
 (defn mobile-menu []
   (when (:mobile-menu-open @state)
     [:div.lg:hidden
      [:ty-modal {:open true
                  :on {:close close-mobile-menu!}}
-      [:div.p-6.mx-auto.rounded-lg.ty-floating.box-border.flex.flex-col
-       {:style {:width "320px"
-                :max-height "90vh"}}
-     ;; Header section (fixed)
-       [:div.text-center.space-y-2.flex-shrink-0
-        [:h2.text-xl.font-bold.ty-text
-         (if (docs/in-docs?) "Documentation" "Navigation")]
-        [:p.text-sm.ty-text-
-         (if (docs/in-docs?) "Component Reference" "Choose your destination")]]
+      [:div.p-5.mx-auto.rounded-xl.ty-floating.box-border.flex.flex-col
+       {:style {:width "300px"
+                :max-height "85vh"}}
+       ;; Logo header
+       [:div.flex.items-center.gap-3.pb-4.border-b.ty-border-.flex-shrink-0
+        [:ty-icon {:name "ty-logo"
+                   :style {:width 40
+                           :height 20
+                           :margin-top 3}
+                   :class "ty-text-accent"}]
+        [:span.text-xs.ty-text-- "web components"]]
 
-     ;; Navigation content (scrollable)
-       [:div.flex-1.overflow-y-auto.mt-6.min-h-0
-        [:div.space-y-4
+       ;; Navigation content (scrollable)
+       [:div.flex-1.overflow-y-auto.pt-4.min-h-0
+        [:div.space-y-2
          (nav-items)]]]]]))
 
 (defn header []
-  [:ty-resize-observer
-   (merge {:id "ty.header"}
-          (resize-observer-hooks "ty.header" [:sidebar-sizes :header]))
-   [:header.ty-elevated.border-b.ty-border+.px-3.py-3.lg:px-6.lg:py-4
-    [:div.flex.justify-between.items-center
-     [:div.flex.items-center.gap-3.lg:gap-4.min-w-0.flex-1
-     ;; Mobile menu button
-      [:button.lg:hidden.p-1.5.rounded-md.hover:ty-content.flex-shrink-0
-       {:on {:click toggle-mobile-menu!}}
-       [:ty-icon {:name "menu"
-                  :size "sm"}]]
-      [:h2.text-base.lg:text-xl.font-semibold.ty-text.truncate
-       (cond
-         (router/rendered? ::user-profile true) "User Profile Scenario"
-         (router/rendered? ::event-booking true) "Event Booking Scenario"
-         (router/rendered? ::contact-form true) "Contact Form Scenario"
-         (router/rendered? ::landing) "Welcome"
-         (router/rendered? ::why true) "Why ty exists"
-         (router/rendered? ::ty-styles true) "ty Design System"
-         (router/rendered? ::getting-started true) "Getting Started Guide"
-         :else "Documentation")]]
+  (let [show-sidebar? (layout/breakpoint>= :lg)]
+    [:ty-resize-observer
+     (merge {:id "ty.header"}
+            (resize-observer-hooks "ty.header" [:sidebar-sizes :header]))
+     [:header.border-b.ty-border+.ty-canvas
+      (if show-sidebar?
+        ;; Desktop: Grid layout matching content columns
+        [:div.mx-auto.px-5.lg:px-8
+         {:style {:max-width "1200px"
+                  :display "grid"
+                  :grid-template-columns "220px minmax(0, 1fr)"
+                  :gap "40px"
+                  :align-items "center"}}
+         ;; Logo area (aligns with sidebar)
+         [:a.flex.items-center.gap-3.py-4
+          {:href "#/welcome"}
+          [:div.flex.justify-center.align-center.h-8.pl-4
+           [:ty-icon {:name "ty-logo"
+                      :class "ty-text-accent"
+                      :style {:height "40px"
+                              :width "80px"}}]]]
+         ;; Content header area (aligns with main content)
+         [:div.flex.items-center.justify-between.py-4
+          ;; Page title
+          [:h2.text-sm.font-medium.ty-text-.truncate
+           (cond
+             (router/rendered? ::user-profile true) "User Profile"
+             (router/rendered? ::event-booking true) "Event Booking"
+             (router/rendered? ::contact-form true) "Contact Form"
+             (router/rendered? ::landing) "Welcome"
+             (router/rendered? ::why true) "Why ty exists"
+             (router/rendered? ::ty-styles true) "Design System"
+             (router/rendered? ::getting-started true) "Getting Started"
+             :else "Documentation")]
+          ;; Actions
+          [:div.flex.items-center.gap-2
+           ;; Search button
+           [:button.flex.items-center.gap-2.px-3.py-1.5.rounded-md.border.ty-border+.hover:ty-border-accent.transition-all.duration-150
+            {:on {:click open-search!}}
+            [:ty-icon {:name "search"
+                       :size "sm"
+                       :class "ty-text--"}]
+            [:span.text-sm.ty-text- "Search"]
+            [:kbd.text-xs.ty-text--.ml-3
+             (if (.-userAgent js/navigator)
+               (if (str/includes? (.-userAgent js/navigator) "Mac") "⌘K" "Ctrl+K")
+               "⌘K")]]
+           ;; Theme toggle
+           [:button.p-2.rounded-md.ty-text-.hover:ty-text-accent.transition-colors
+            {:on {:click toggle-theme!}}
+            [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
+                       :size "sm"}]]]]]
 
-    ;; Actions section with Search, Docs/Examples toggle and Theme toggle
-     [:div.flex.items-center.gap-2.lg:gap-3.flex-shrink-0
-     ;; Search button
-      [:button.hidden.sm:flex.items-center.gap-2.px-3.py-1.5.rounded-md.ty-bg-neutral-.hover:ty-bg-neutral.transition-colors
-       {:on {:click open-search!}}
-       [:ty-icon {:name "search"
-                  :size "sm"
-                  :class "ty-text-"}]
-       [:span.text-sm.ty-text- "Search..."]
-       [:kbd.text-xs.ty-text-.ty-bg-neutral.px-1.5.py-0.5.rounded.ml-2
-        (if (.-userAgent js/navigator)
-          (if (str/includes? (.-userAgent js/navigator) "Mac") "⌘K" "Ctrl+K")
-          "⌘K")]]
-     ;; Mobile search button
-      [:button.sm:hidden.p-1.5.rounded-md.hover:ty-bg-neutral.transition-colors
-       {:on {:click open-search!}}
-       [:ty-icon {:name "search"
-                  :size "sm"}]]
-     ;; Theme toggle button
-      [:ty-button
-       {:on {:click toggle-theme!}
-        :action true}
-       [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
-                  :size "sm"}]]]]]])
-
+        ;; Mobile: Single row flex layout
+        [:div.mx-auto.px-4.py-3.flex.items-center.gap-3
+         {:style {:max-width "1200px"}}
+         ;; Hamburger menu
+         [:button.p-2.rounded-md.hover:ty-bg-accent-.transition-colors.flex-shrink-0
+          {:on {:click toggle-mobile-menu!}}
+          [:ty-icon {:name "menu"
+                     :size "sm"
+                     :class "ty-text-"}]]
+         ;; Logo
+         [:a.flex.items-center.flex-shrink-0 {:href "#/welcome"
+                                              :style {:margin-top "0.18rem"}}
+          [:ty-icon {:name "ty-logo"
+                     :class "ty-text-accent"
+                     :style {:height "20px"
+                             :width "36px"}}]]
+         ;; Page title (grows to fill, truncates)
+         [:h2.flex-1.text-sm.font-medium.ty-text-.truncate.min-w-0
+          (cond
+            (router/rendered? ::user-profile true) "User Profile"
+            (router/rendered? ::event-booking true) "Event Booking"
+            (router/rendered? ::contact-form true) "Contact Form"
+            (router/rendered? ::landing) "Welcome"
+            (router/rendered? ::why true) "Why ty exists"
+            (router/rendered? ::ty-styles true) "Design System"
+            (router/rendered? ::getting-started true) "Getting Started"
+            :else "Documentation")]
+         ;; Search button (icon only)
+         [:button.p-2.rounded-md.hover:ty-bg-accent-.transition-colors.flex-shrink-0
+          {:on {:click open-search!}}
+          [:ty-icon {:name "search"
+                     :size "sm"
+                     :class "ty-text-"}]]
+         ;; Theme toggle
+         [:button.p-2.rounded-md.ty-text-.hover:ty-text-accent.transition-colors.flex-shrink-0
+          {:on {:click toggle-theme!}}
+          [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
+                     :size "sm"}]]])]]))
 (defn app []
   (layout/with-window
-    (let [show-sidebar? (layout/breakpoint>= :lg) ; Show sidebar on large screens and up
-          show-toc? (layout/breakpoint>= :xl)     ; Show TOC on extra large screens
-          header-height (if (layout/breakpoint>= :lg) 64 56)
-          content-padding (if (layout/breakpoint>= :lg) 48 32)]
+    (let [show-sidebar? (layout/breakpoint>= :lg)
+          header-height (if (layout/breakpoint>= :lg) 60 52)
+          content-padding (if (layout/breakpoint>= :lg) 48 24)]
       [:div.h-screen.flex.flex-col.ty-canvas.ty-text
        (mobile-menu)
        (search-modal)
@@ -856,31 +807,29 @@
        ;; Main scrollable area
        [:div.flex-1.overflow-auto {:id "main-scroll-container"}
         ;; Centered container with CSS Grid
-        [:div.mx-auto.px-4.lg:px-6.py-6
+        [:div.mx-auto
          {:style {:display "grid"
-                  :grid-template-columns (cond
-                                           show-toc? "240px minmax(0, 768px) 200px"
-                                           show-sidebar? "240px minmax(0, 1fr)"
-                                           :else "1fr")
-                  :max-width "1300px"
-                  :gap "24px"}}
+                  :grid-template-columns (if show-sidebar?
+                                           "220px minmax(0, 1fr)"
+                                           "1fr")
+                  :max-width "1200px"
+                  :gap (if show-sidebar? "40px" "0px")
+                  :padding (if show-sidebar?
+                             "32px 32px"
+                             "16px 12px")}}
          ;; Left sidebar (navigation)
          (when show-sidebar?
            [:div.sticky.top-0.self-start.h-fit
-            {:style {:max-height "calc(100vh - 120px)"}}
+            {:style {:max-height "calc(100vh - 100px)"}}
             (sidebar-content)])
          ;; Main content
          [:main.min-w-0
           (layout/with-container
-            {:width (cond
-                      show-toc? 768
-                      show-sidebar? (- (layout/container-width) 240 200 content-padding)
-                      :else (- (layout/container-width) content-padding))
+            {:width (if show-sidebar?
+                      (- (layout/container-width) 220 content-padding)
+                      (- (layout/container-width) content-padding))
              :height (- (layout/container-height) header-height content-padding)}
-            (render))]
-         ;; Right TOC sidebar
-         (when show-toc?
-           (toc-sidebar))]]])))
+            (render))]]]])))
 
 (defn render-app! []
   (binding [router/*roles* (:user/roles @state)]
@@ -910,10 +859,8 @@
   ;; Watch router changes for auto-expand and re-render
   (add-watch router/*router* ::render
              (fn [_ _ _ _]
-               (auto-expand-section!) ; Auto-expand on route change
-               (render-app!)
-               ;; Update TOC headings for new page
-               (update-toc!)))
+               (auto-expand-section!)
+               (render-app!)))
 
   ;; Watch state changes and re-render
   (add-watch state ::render
@@ -924,7 +871,4 @@
              (fn [_ _ _ _] (render-app!)))
 
   ;; Initial render
-  (render-app!)
-
-  ;; Initial TOC extraction
-  (update-toc!))
+  (render-app!))

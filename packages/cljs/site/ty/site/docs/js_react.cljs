@@ -1,7 +1,7 @@
 (ns ty.site.docs.js-react
   "Documentation for using Ty with JavaScript/TypeScript React"
   (:require
-    [ty.site.docs.common :refer [code-block doc-section example-section]]))
+    [ty.site.docs.common :refer [code-block doc-section example-section docs-page]]))
 
 ;; =============================================================================
 ;; INSTALLATION
@@ -198,7 +198,7 @@ function UserForm() {
 (defn view
   "Main view for JavaScript React documentation"
   []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    [:h1.text-4xl.font-bold.ty-text.mb-4 "JavaScript / TypeScript with React"]
    [:p.text-xl.ty-text-.mb-6
     "Use Ty components with React, Next.js, Vite, or any React framework."]
@@ -214,4 +214,4 @@ function UserForm() {
     [:ul.space-y-2.ty-text-.text-sm
      [:li "• Review the " [:strong "CSS Guide"] " for styling"]
      [:li "• Browse " [:strong "component docs"] " for APIs"]
-     [:li "• Check " [:strong "/examples"] " for complete projects"]]]])
+     [:li "• Check " [:strong "/examples"] " for complete projects"]]]))

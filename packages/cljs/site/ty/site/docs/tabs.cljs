@@ -1,6 +1,6 @@
 (ns ty.site.docs.tabs
   "Documentation for ty-tabs and ty-tab components"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table docs-page]]))
 
 ;; =====================================================
 ;; Section Components - Split for Maintainability
@@ -870,7 +870,7 @@
    [:h2.text-2xl.font-semibold.ty-text.mb-6 "Examples"]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Title and Description
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-tabs"]
@@ -889,4 +889,4 @@
    (key-features)
    (best-practices)
    (warning-banner)
-   (limitations-section)])
+   (limitations-section)))

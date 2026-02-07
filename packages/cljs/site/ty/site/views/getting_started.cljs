@@ -285,10 +285,10 @@ window.tyIcons.register({ check, heart, save, x, menu })
 ;; =============================================================================
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.space-y-8
+  (common/docs-page
    (header)
    (quick-setup)
    (choose-your-path)
    ;; (clojurescript-advantages)
    (icon-system)
-   (next-steps)])
+   (next-steps)))

@@ -1,7 +1,7 @@
 (ns ty.site.docs.htmx
   "Documentation for using Ty with HTMX and Flask"
   (:require
-    [ty.site.docs.common :refer [code-block doc-section example-section]]))
+    [ty.site.docs.common :refer [code-block doc-section example-section docs-page]]))
 
 ;; =============================================================================
 ;; INSTALLATION
@@ -261,7 +261,7 @@ npm run build:icons
 (defn view
   "Main view for HTMX documentation"
   []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    [:h1.text-4xl.font-bold.ty-text.mb-4 "HTMX Integration"]
    [:p.text-xl.ty-text-.mb-6
     "Discover how to use Ty components with HTMX for dynamic server-side applications."]
@@ -296,4 +296,4 @@ npm run build:icons
      [:li "• Review the " [:strong "CSS System Guide"] " for styling best practices"]
      [:li "• Browse " [:strong "component documentation"] " for complete APIs"]
      [:li "• Explore the " [:strong "htmx-flask example"] " for working code"]
-     [:li "• Check " [:a.ty-text-primary.hover:underline {:href "https://htmx.org/docs/"} "HTMX documentation"] " for advanced patterns"]]]])
+     [:li "• Check " [:a.ty-text-primary.hover:underline {:href "https://htmx.org/docs/"} "HTMX documentation"] " for advanced patterns"]]]))

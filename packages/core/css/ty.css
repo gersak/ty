@@ -176,6 +176,11 @@ Simplified from 7 variants to 5 practical variants:
   --ty-color-neutral-soft: #374151;
   --ty-color-neutral-faint: #9ca3af;
 
+  /* Accent - brand highlights, focus rings, selection states */
+  --ty-color-accent-mild: #cc6d00; /* darker - hover/active */
+  --ty-color-accent: #e67b00; /* base */
+  --ty-color-accent-soft: #f59e42; /* lighter - subtle */
+
   /* =================================================================
 BACKGROUND COLORS
 ================================================================= */
@@ -221,6 +226,11 @@ BACKGROUND COLORS
   --ty-bg-neutral-mild: #e9e9e9;
   --ty-bg-neutral-soft: #f9fafb;
 
+  /* Accent backgrounds */
+  --ty-bg-accent: #ffedd5; /* light orange tint */
+  --ty-bg-accent-mild: #fed7aa; /* slightly stronger */
+  --ty-bg-accent-soft: #fff7ed; /* very subtle */
+
   /* =================================================================
 BORDER COLORS
 ================================================================= */
@@ -238,6 +248,9 @@ BORDER COLORS
   --ty-border-danger: var(--ty-color-danger);
   --ty-border-warning: var(--ty-color-warning);
   --ty-border-neutral: var(--ty-color-neutral);
+  --ty-border-accent-mild: var(--ty-color-accent-mild);
+  --ty-border-accent: var(--ty-color-accent);
+  --ty-border-accent-soft: var(--ty-color-accent-soft);
 
   /* =================================================================
 SURFACE SYSTEM
@@ -308,6 +321,7 @@ COMPONENT TOKENS
   --ty-accent-danger: #df5b5b;
   --ty-accent-warning: #e1a644;
   --ty-accent-neutral: #414141;
+  --ty-accent-accent: #cc6d00; /* for filled buttons */
 
   /* =================================================================
 DESIGN SYSTEM TOKENS
@@ -423,6 +437,24 @@ DESIGN SYSTEM TOKENS
   --ty-z-popover: 1060;
   --ty-z-tooltip: 1070;
   --ty-z-dropdown: 1080;
+
+  /* =================================================================
+  SCROLL SHADOW SYSTEM
+  Uses clip-path technique for smooth corner fade
+  ================================================================= */
+  --ty-scroll-shadow-top: radial-gradient(
+    ellipse 100% 30% at center,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0),
+    transparent
+  );
+  --ty-scroll-shadow-bottom: radial-gradient(
+    ellipse 100% 20% at center,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0),
+    transparent
+  );
+  --ty-scroll-shadow-transition: opacity 0.2s ease-out;
 }
 
 /* =================================================================
@@ -478,6 +510,11 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-color-neutral-soft: #7f8590;
   --ty-color-neutral-faint: #555a63;
 
+  /* Accent - dark mode (emphasis inverted) */
+  --ty-color-accent-mild: #ffb366; /* lighter = more emphasis */
+  --ty-color-accent: #e67b00; /* base */
+  --ty-color-accent-soft: #8b4d00; /* darker = less emphasis */
+
   /* Backgrounds for dark mode */
   --ty-bg-faint: #0f1419;
   --ty-bg-soft: #111827;
@@ -509,6 +546,11 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-bg-neutral-mild: #414141;
   --ty-bg-neutral: #323232;
   --ty-bg-neutral-soft: #242424;
+
+  /* Accent backgrounds - dark mode */
+  --ty-bg-accent: #7c4a1a;
+  --ty-bg-accent-mild: #92400e;
+  --ty-bg-accent-soft: #5c3d1a;
 
   /* Borders for dark mode */
   --ty-border-strong: #8c8c8c;
@@ -548,6 +590,7 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-accent-danger: #ab5050;
   --ty-accent-warning: #d0852f;
   --ty-accent-neutral: #4d4d4d;
+  --ty-accent-accent: #cc6d00;
 
   /* Input component tokens - dark mode */
   --ty-input-bg: #1b1b1b;
@@ -569,6 +612,20 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-modal-backdrop: rgba(0, 0, 0, 0.7);
   --ty-modal-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+
+  /* Scroll shadows - lighter tint for dark mode */
+  --ty-scroll-shadow-top: radial-gradient(
+    ellipse 100% 30% at center,
+    rgba(172, 172, 172, 0.2),
+    rgba(0, 0, 0, 0),
+    transparent
+  );
+  --ty-scroll-shadow-bottom: radial-gradient(
+    ellipse 100% 20% at center,
+    rgba(172, 172, 172, 0.3),
+    rgba(0, 0, 0, 0),
+    transparent
+  );
 }
 
 /* =================================================================
@@ -838,6 +895,19 @@ SEMANTIC BACKGROUND UTILITIES
   background-color: var(--ty-bg-neutral-soft);
 }
 
+/* Accent backgrounds */
+.ty-bg-accent {
+  background-color: var(--ty-bg-accent);
+}
+
+.ty-bg-accent\+ {
+  background-color: var(--ty-bg-accent-mild);
+}
+
+.ty-bg-accent- {
+  background-color: var(--ty-bg-accent-soft);
+}
+
 /* Legacy background utilities */
 .ty-bg {
   background-color: var(--ty-bg);
@@ -1006,6 +1076,19 @@ SEMANTIC TEXT COLORS - 5-VARIANT SYSTEM
   color: var(--ty-color-neutral-faint) !important;
 }
 
+/* Accent text colors */
+.ty-text-accent\+ {
+  color: var(--ty-color-accent-mild) !important;
+}
+
+.ty-text-accent {
+  color: var(--ty-color-accent) !important;
+}
+
+.ty-text-accent- {
+  color: var(--ty-color-accent-soft) !important;
+}
+
 /* =================================================================
 BORDER UTILITIES
 ================================================================= */
@@ -1054,6 +1137,18 @@ BORDER UTILITIES
 
 .ty-border-neutral {
   border-color: var(--ty-border-neutral);
+}
+
+.ty-border-accent\+ {
+  border-color: var(--ty-border-accent-mild);
+}
+
+.ty-border-accent {
+  border-color: var(--ty-border-accent);
+}
+
+.ty-border-accent- {
+  border-color: var(--ty-border-accent-soft);
 }
 
 /* =================================================================
@@ -1151,6 +1246,18 @@ INTERACTIVE STATES
 
 .hover\:ty-bg-danger-:hover {
   background-color: var(--ty-bg-danger-soft);
+}
+
+.hover\:ty-bg-accent:hover {
+  background-color: var(--ty-bg-accent);
+}
+
+.hover\:ty-bg-accent\+:hover {
+  background-color: var(--ty-bg-accent-mild);
+}
+
+.hover\:ty-bg-accent-:hover {
+  background-color: var(--ty-bg-accent-soft);
 }
 
 /* Hover states for text colors */
@@ -1301,6 +1408,19 @@ INTERACTIVE STATES
   color: var(--ty-color-neutral-faint) !important;
 }
 
+/* Accent text hover states */
+.hover\:ty-text-accent\+:hover {
+  color: var(--ty-color-accent-mild) !important;
+}
+
+.hover\:ty-text-accent:hover {
+  color: var(--ty-color-accent) !important;
+}
+
+.hover\:ty-text-accent-:hover {
+  color: var(--ty-color-accent-soft) !important;
+}
+
 /* Hover states for borders */
 /* Base border hover states */
 .hover\:ty-border\+\+:hover {
@@ -1348,6 +1468,18 @@ INTERACTIVE STATES
   border-color: var(--ty-border-neutral) !important;
 }
 
+.hover\:ty-border-accent\+:hover {
+  border-color: var(--ty-border-accent-mild) !important;
+}
+
+.hover\:ty-border-accent:hover {
+  border-color: var(--ty-border-accent) !important;
+}
+
+.hover\:ty-border-accent-:hover {
+  border-color: var(--ty-border-accent-soft) !important;
+}
+
 .focus\:ty-border\+\+:focus {
   border-color: var(--ty-border-strong) !important;
 }
@@ -1391,6 +1523,18 @@ INTERACTIVE STATES
 
 .focus\:ty-border-neutral:focus {
   border-color: var(--ty-border-neutral) !important;
+}
+
+.focus\:ty-border-accent\+:focus {
+  border-color: var(--ty-border-accent-mild) !important;
+}
+
+.focus\:ty-border-accent:focus {
+  border-color: var(--ty-border-accent) !important;
+}
+
+.focus\:ty-border-accent-:focus {
+  border-color: var(--ty-border-accent-soft) !important;
 }
 
 /* =================================================================

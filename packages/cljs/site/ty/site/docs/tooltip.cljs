@@ -1,6 +1,6 @@
 (ns ty.site.docs.tooltip
   "ty-tooltip component documentation"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section docs-page]]))
 
 (defn api-reference-section []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -271,7 +271,7 @@
     [:li "Ensure sufficient color contrast for all flavors"]]])
 
 (defn view []
-  [:div
+  (docs-page
    [:h1.text-3xl.font-bold.ty-text++.mb-6 "Tooltip"]
    [:p.ty-text.text-lg.mb-8
     "Contextual information that appears on hover or focus. "
@@ -286,4 +286,4 @@
    (delay-section)
    (disabled-section)
    (best-practices-section)
-   (accessibility-section)])
+   (accessibility-section)))

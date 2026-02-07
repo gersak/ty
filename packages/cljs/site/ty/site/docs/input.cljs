@@ -1,6 +1,6 @@
 (ns ty.site.docs.input
   "Documentation for ty-input component (text, number, currency inputs)"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section docs-page]]))
 
 (defn api-reference []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -692,7 +692,7 @@ usdInput.addEventListener('input', (e) => {
     [:a.ty-text-primary.hover:underline {:href "/docs/multiselect"} "ty-multiselect →"]]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text++.mb-2 "ty-input"]
     [:p.text-lg.ty-text-
@@ -711,4 +711,4 @@ usdInput.addEventListener('input', (e) => {
    (advanced-examples-section)
    (best-practices-section)
    (tips-section)
-   (related-components-section)])
+   (related-components-section)))

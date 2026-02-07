@@ -1,7 +1,7 @@
 (ns ty.site.views.ty-styles
   "Site view showcasing ty CSS classes and design system"
   (:require
-    [ty.site.docs.common :as common]))
+    [ty.site.docs.common :as common :refer [docs-page]]))
 
 (defn theme-toggle []
   "Simple theme toggle section"
@@ -417,8 +417,7 @@ button {
       "html")]])
 
 (defn view []
-  [:div.mx-auto.px-6.space-y-8
-   {:style {:max-width "1000px"}}
+  (docs-page
    ;; Header
    [:div.text-center.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-4 "ty Design System"]
@@ -435,9 +434,6 @@ button {
    ;; Theme toggle
    (theme-toggle)
 
-   ;; CSS Architecture Explanation (CRITICAL - explains why ty.css is required)
-
-
    ;; Main content sections
    (text-variants-demo)
    (background-variants-demo)
@@ -453,6 +449,4 @@ button {
     [:p.ty-text-
      "The ty design system provides a complete set of semantic CSS classes for building consistent, "
      "accessible, and beautiful user interfaces. All classes automatically adapt between light and dark themes "
-     "while maintaining proper contrast ratios."]]])
-
-[:span.px-3.py-1.ty-bg-neutral-.ty-text-neutral.rounded-full.text-sm.font-medium "Accessible"]
+     "while maintaining proper contrast ratios."]]))

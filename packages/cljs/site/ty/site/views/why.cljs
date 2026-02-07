@@ -1,8 +1,10 @@
 (ns ty.site.views.why
-  "The story behind ty - why it was created and what it stands for")
+  "The story behind ty - why it was created and what it stands for"
+  (:require [ty.site.docs.common :refer [docs-page]]))
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.space-y-16
+  (docs-page
+   [:div.space-y-16
 
    ;; Header - More dramatic
    [:div.text-center.space-y-6.py-12
@@ -104,4 +106,4 @@
       {:on {:click #(js/window.location.href "https://github.com/gersak/ty")}}
       [:ty-icon.mr-2 {:name "github"
                       :size "sm"}]
-      "View on GitHub"]]]])
+      "View on GitHub"]]]]))

@@ -5,7 +5,8 @@
                      event-table
                      doc-section
                      example-section
-                     placeholder-view]]
+                     placeholder-view
+                     docs-page]]
             [ty.site.state :as state]))
 
 (defn key-characteristics-section []
@@ -650,7 +651,7 @@ async function deleteItem(itemId) {
       [:li "• Don't ignore mobile responsiveness"]]]]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Title and Description
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-modal"]
@@ -664,4 +665,4 @@ async function deleteItem(itemId) {
    (examples-section)
    (common-use-cases-section)
    (advanced-patterns-section)
-   (best-practices-section)])
+   (best-practices-section)))

@@ -6,10 +6,11 @@
              attribute-table
              event-table
              doc-section
-             example-section]]))
+             example-section
+             docs-page]]))
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Title and Description
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-date-picker"]
@@ -529,4 +530,4 @@ picker.addEventListener('open', () => {
      [:li "Time values are in 24-hour format when 'with-time' is enabled"]
      [:li "The component handles timezone conversion internally"]
      [:li "Form submission uses the 'name' attribute for field identification"]
-     [:li "The calendar dropdown automatically positions itself to avoid viewport edges"]]]])
+     [:li "The calendar dropdown automatically positions itself to avoid viewport edges"]]]))

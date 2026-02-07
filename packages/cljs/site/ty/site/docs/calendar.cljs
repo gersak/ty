@@ -5,7 +5,8 @@
    [ty.site.docs.common
     :refer [code-block
             attribute-table
-            event-table]])
+            event-table
+            docs-page]])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Custom styles for hotel pricing example
@@ -506,7 +507,7 @@ calendar.dayContentFn = (ctx) => {
 ;; =============================================================================
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    (header-section)
    (api-reference-section)
    (stateful-vs-stateless-section)
@@ -528,4 +529,4 @@ calendar.dayContentFn = (ctx) => {
    (advanced-customization-divider)
    [:div.space-y-8
     (hotel-pricing-example)
-    (localization-example)]])
+    (localization-example)]))

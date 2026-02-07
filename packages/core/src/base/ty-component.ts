@@ -259,10 +259,6 @@ export abstract class TyComponent<T = any> extends HTMLElement {
    */
   protected updateFormValue(): void {
     const formValue = this.getFormValue()
-    console.log(`[TyComponent.updateFormValue] Setting form value:`, {
-      tagName: this.tagName,
-      formValue
-    })
     this._internals.setFormValue(formValue)
   }
   

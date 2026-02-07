@@ -1,6 +1,6 @@
 (ns ty.site.docs.multiselect
   "Documentation for ty-multiselect component"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section docs-page]]
             [ty.site.state :as state]))
 
 (defn multiselect-event-handler [event]
@@ -1069,7 +1069,7 @@ document.getElementById('my-multiselect')
      (test-multiselect)])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    (render-hero-section)
    (render-api-reference)
    (render-basic-usage-examples)
@@ -1079,4 +1079,4 @@ document.getElementById('my-multiselect')
    (render-tag-behavior-section)
    (render-event-handling-section)
    (render-best-practices-section)
-   (render-related-components-section)])
+   (render-related-components-section)))

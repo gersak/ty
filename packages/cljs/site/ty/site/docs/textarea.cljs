@@ -6,10 +6,11 @@
             attribute-table
             event-table
             doc-section
-            example-section]]))
+            example-section
+            docs-page]]))
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Header
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text++.mb-2 "ty-textarea"]
@@ -447,4 +448,5 @@ textarea.addEventListener('change', (e) => {
       [:ty-icon.ty-text-warning.flex-shrink-0 {:name "alert-triangle"}]
       [:div
        [:strong.ty-text+ "Consider performance with huge content"]
-       [:p.ty-text-.text-sm "For 10,000+ character documents, set a reasonable max-height."]]]]]])
+       [:p.ty-text-.text-sm "For 10,000+ character documents, set a reasonable max-height."]]]]]))
+

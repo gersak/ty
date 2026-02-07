@@ -3,7 +3,7 @@
   (:require
    [ty.site.docs.common
     :refer [code-block attribute-table event-table
-            doc-section example-section]]
+            doc-section example-section docs-page]]
    [ty.site.state :as state]))
 
 (defn header-section
@@ -999,7 +999,7 @@ const handleSubmit = (e) => {
       " with server-side filtering"]]]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    (header-section)
    (api-reference-section)
    (basic-usage-section)
@@ -1011,4 +1011,4 @@ const handleSubmit = (e) => {
    (states-section)
    (form-integration-section)
    (best-practices-section)
-   (related-components-section)])
+   (related-components-section)))

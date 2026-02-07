@@ -64,9 +64,9 @@
        [:span.px-3.py-1.ty-bg-info-.ty-text.rounded-full.text-sm.font-medium "Confirmation Flow"]]]
 
      ;; Main Booking Interface
-     [:div.grid.grid-cols-1.lg:grid-cols-3.gap-8
+     [:div.grid.grid-cols-1.lg:grid-cols-2.gap-8
       ;; Left Column - Calendar and Date Selection
-      [:div.lg:col-span-2.space-y-6
+      [:div.space-y-6
        [:div.ty-elevated.p-6.rounded-xl
         [:h2.text-xl.font-semibold.ty-text.mb-4 "📅 Select Your Date"]
         [:p.ty-text-.text-sm.mb-6 "Choose from available dates. Dates in green have full availability, yellow have limited slots, and unavailable dates are disabled."]

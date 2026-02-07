@@ -1,7 +1,7 @@
 (ns ty.site.docs.replicant
   "Documentation for using Ty with Replicant"
   (:require
-   [ty.site.docs.common :refer [code-block doc-section example-section]]))
+   [ty.site.docs.common :refer [code-block doc-section example-section docs-page]]))
 
 ;; =============================================================================
 ;; BASIC SETUP SECTIONS
@@ -844,7 +844,7 @@
 (defn view
   "Main view for Replicant getting started documentation"
   []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    [:h1.text-4xl.font-bold.ty-text.mb-4 "Getting Started with Replicant"]
    [:p.text-xl.ty-text-.mb-6
     "Learn how to use Ty web components with Replicant for reactive ClojureScript applications."]
@@ -866,4 +866,4 @@
    (routing-section)
    (i18n-section)
    (formatting-section)
-   (layout-section)])
+   (layout-section)))

@@ -99,11 +99,6 @@ export class PropertyManager<T = any> {
       return null
     }
     
-    // Debug log for boolean properties
-    if (config.type === 'boolean') {
-      console.log(`[PropertyManager] ${name}: ${JSON.stringify(oldValue)} → ${JSON.stringify(coercedValue)} (input: ${JSON.stringify(value)})`)
-    }
-    
     // Update internal map
     this._props.set(name, coercedValue)
     

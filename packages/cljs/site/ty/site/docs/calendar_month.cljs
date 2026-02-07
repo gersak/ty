@@ -7,7 +7,8 @@
     [ty.site.docs.common
      :refer [code-block
              attribute-table
-             event-table]])
+             event-table
+             docs-page]])
   (:require-macros [ty.css :refer [defstyles]]))
 
 ;; Custom styles for documentation examples  
@@ -310,12 +311,12 @@
 (defn view
   "Main documentation view for ty-calendar-month component."
   []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    (header-section)
    (api-reference-section)
    [:div.space-y-8
     (basic-examples-section)
     (localization-section)
-    (advanced-customization-section)]])
+    (advanced-customization-section)]))
 
 

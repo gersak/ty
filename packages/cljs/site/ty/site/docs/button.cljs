@@ -1,9 +1,9 @@
 (ns ty.site.docs.button
   "Documentation for ty-button component"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table docs-page]]))
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    ;; Title and Description
    [:div.mb-8
     [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-button"]
@@ -556,4 +556,4 @@
       [:p.ty-text- "Avoid using more than one primary button per section"]]
      [:div.flex.items-start.gap-2
       [:ty-icon.ty-text-danger.mt-0.5 {:name "x" :size "sm"}]
-      [:p.ty-text- "Don't use action buttons for text-heavy actions"]]]]])
+      [:p.ty-text- "Don't use action buttons for text-heavy actions"]]]]))

@@ -1,6 +1,6 @@
 (ns ty.site.docs.checkbox
   "Documentation for ty-checkbox component"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section]]))
+  (:require [ty.site.docs.common :refer [code-block attribute-table event-table doc-section example-section docs-page]]))
 
 (defn api-reference []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -456,7 +456,7 @@ checkboxes.forEach(cb => {
     [:a.ty-text-primary.hover:underline {:href "/docs/multiselect"} "ty-multiselect →"]]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    (api-reference)
    (basic-usage-section)
    (sizes-section)
@@ -465,4 +465,4 @@ checkboxes.forEach(cb => {
    (advanced-examples-section)
    (best-practices-section)
    (tips-section)
-   (related-components-section)])
+   (related-components-section)))

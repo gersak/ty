@@ -1,8 +1,9 @@
 (ns ty.site.docs.common
   "Common utilities for component documentation"
   (:require
-   [clojure.string :as str]
-   [goog.object]))
+    [clojure.string :as str]
+    [goog.object]
+    [ty.layout :as layout]))
 
 (defn add-code-enhancements!
   "Add copy button and language label to a highlighted code element"
@@ -85,18 +86,18 @@
                                     ;; Set the code content
                                     (set! (.-textContent el) code)
                                     (js/setTimeout
-                                     (fn []
-                                       (try
+                                      (fn []
+                                        (try
                                          ;; Double-check not highlighted (race condition protection)
-                                         (when-not (and (.-dataset el)
-                                                        (.-highlighted (.-dataset el)))
+                                          (when-not (and (.-dataset el)
+                                                         (.-highlighted (.-dataset el)))
                                            ;; Highlight the element
-                                           (js/window.hljs.highlightElement el)
+                                            (js/window.hljs.highlightElement el)
                                            ;; Add copy button and language label
-                                           (add-code-enhancements! el lang))
-                                         (catch js/Error e
-                                           (js/console.warn "Failed to highlight code block:" e))))
-                                     50)))))}]]]))
+                                            (add-code-enhancements! el lang))
+                                          (catch js/Error e
+                                            (js/console.warn "Failed to highlight code block:" e))))
+                                      50)))))}]]]))
 
 (defn attribute-table
   "Display component attributes in a table format"
@@ -168,44 +169,53 @@
       [:h2.text-2xl.font-semibold.ty-text.mb-4.scroll-mt-6 title]
       content])))
 
+(defn docs-page
+  "Wrapper for documentation pages with responsive padding.
+   Uses layout breakpoints to adjust padding for mobile vs desktop."
+  [& children]
+  (let [is-desktop? (layout/breakpoint>= :lg)]
+    (into [:div.max-w-4xl.mx-auto
+           {:style {:padding (if is-desktop? "24px" "8px 12px")}}]
+          children)))
+
 (defn placeholder-view
   "Placeholder view for components not yet documented"
   [component-name]
-  [:div.max-w-4xl.mx-auto.p-6
-   [:h1.text-3xl.font-bold.ty-text.mb-4 (str "ty-" component-name)]
-   [:p.text-lg.ty-text-.mb-8 "Documentation coming soon..."]
-   [:div.ty-elevated.rounded-lg.p-6
-    [:p.ty-text- "This component documentation is under construction. Check back soon for:"]
-    [:ul.mt-4.space-y-2.ml-4
-     [:li.ty-text- "• Complete API reference"]
-     [:li.ty-text- "• Live examples"]
-     [:li.ty-text- "• Best practices"]
-     [:li.ty-text- "• Framework integration guides"]]]])
+  (docs-page
+    [:h1.text-3xl.font-bold.ty-text.mb-4 (str "ty-" component-name)]
+    [:p.text-lg.ty-text-.mb-8 "Documentation coming soon..."]
+    [:div.ty-elevated.rounded-lg.p-6
+     [:p.ty-text- "This component documentation is under construction. Check back soon for:"]
+     [:ul.mt-4.space-y-2.ml-4
+      [:li.ty-text- "• Complete API reference"]
+      [:li.ty-text- "• Live examples"]
+      [:li.ty-text- "• Best practices"]
+      [:li.ty-text- "• Framework integration guides"]]]))
 
 (defn guide-placeholder-view
   "Placeholder view for guide pages not yet documented"
   [guide-name guide-description]
-  [:div.max-w-4xl.mx-auto.p-6
-   [:h1.text-3xl.font-bold.ty-text.mb-4 guide-name]
-   [:p.text-lg.ty-text-.mb-8 guide-description]
-   [:div.ty-elevated.rounded-lg.p-6.text-center
-    [:div.mb-6
-     [:ty-icon.mx-auto.mb-4.w-12.h-12.ty-text- {:name "clock"}]
-     [:h2.text-xl.font-semibold.ty-text.mb-2 "Coming Soon"]
-     [:p.ty-text-.mb-6 "This guide is currently under development. We're working hard to bring you comprehensive documentation for integrating Ty components with this technology."]]
+  (docs-page
+    [:h1.text-3xl.font-bold.ty-text.mb-4 guide-name]
+    [:p.text-lg.ty-text-.mb-8 guide-description]
+    [:div.ty-elevated.rounded-lg.p-6.text-center
+     [:div.mb-6
+      [:ty-icon.mx-auto.mb-4.w-12.h-12.ty-text- {:name "clock"}]
+      [:h2.text-xl.font-semibold.ty-text.mb-2 "Coming Soon"]
+      [:p.ty-text-.mb-6 "This guide is currently under development. We're working hard to bring you comprehensive documentation for integrating Ty components with this technology."]]
 
-    [:div.ty-bg-neutral-.rounded-lg.p-4.mb-6
-     [:p.ty-text-.mb-4 "In the meantime, you can:"]
-     [:ul.text-left.space-y-2.ml-4
-      [:li.ty-text- "• Explore the component documentation to understand available features"]
-      [:li.ty-text- "• Check out the CSS System guide for styling best practices"]
-      [:li.ty-text- "• Review existing examples in the repository"]
-      [:li.ty-text- "• Join our community discussions for early access to guides"]]]
+     [:div.ty-bg-neutral-.rounded-lg.p-4.mb-6
+      [:p.ty-text-.mb-4 "In the meantime, you can:"]
+      [:ul.text-left.space-y-2.ml-4
+       [:li.ty-text- "• Explore the component documentation to understand available features"]
+       [:li.ty-text- "• Check out the CSS System guide for styling best practices"]
+       [:li.ty-text- "• Review existing examples in the repository"]
+       [:li.ty-text- "• Join our community discussions for early access to guides"]]]
 
-    [:div.flex.gap-4.justify-center
-     [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded.hover:opacity-90
-      {:on {:click #(js/window.open "https://github.com/gersak/ty" "_blank")}}
-      "View Repository"]
-     [:button.ty-bg-secondary.ty-text++.px-4.py-2.rounded.hover:opacity-90
-      {:on {:click #(-> js/window .-location .-href (set! "/docs/css"))}}
-      "CSS System Guide"]]]])
+     [:div.flex.gap-4.justify-center
+      [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded.hover:opacity-90
+       {:on {:click #(js/window.open "https://github.com/gersak/ty" "_blank")}}
+       "View Repository"]
+      [:button.ty-bg-secondary.ty-text++.px-4.py-2.rounded.hover:opacity-90
+       {:on {:click #(-> js/window .-location .-href (set! "/docs/css"))}}
+       "CSS System Guide"]]]))

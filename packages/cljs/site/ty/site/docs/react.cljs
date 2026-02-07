@@ -1,7 +1,7 @@
 (ns ty.site.docs.react
   "Documentation for using Ty with ClojureScript React libraries (UIx, Reagent, etc.)"
   (:require
-    [ty.site.docs.common :refer [code-block doc-section example-section]]))
+    [ty.site.docs.common :refer [code-block doc-section example-section docs-page]]))
 
 ;; =============================================================================
 ;; DEPENDENCIES & SETUP
@@ -886,7 +886,7 @@
 (defn view
   "Main view for React/UIx getting started documentation"
   []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    [:h1.text-4xl.font-bold.ty-text.mb-4 "Getting Started with ClojureScript React"]
    [:p.text-xl.ty-text-.mb-6
     "Learn how to use Ty web components with UIx, Reagent, and other React-based ClojureScript libraries."]
@@ -909,4 +909,4 @@
    (routing-section)
    (i18n-section)
    (formatting-section)
-   (layout-section)])
+   (layout-section)))

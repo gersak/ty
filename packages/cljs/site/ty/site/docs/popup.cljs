@@ -5,7 +5,8 @@
                      attribute-table
                      event-table
                      doc-section
-                     example-section]]))
+                     example-section
+                     docs-page]]))
 
 (defn header-section []
   [:div.mb-8
@@ -336,9 +337,9 @@ popup.addEventListener('close', () => {
 </ty-button>")]])
 
 (defn view []
-  [:div.max-w-4xl.mx-auto.p-6
+  (docs-page
    (header-section)
    (api-reference-section)
    (basic-usage-section)
    (examples-section)
-   (current-best-practices-section)])
+   (current-best-practices-section)))

@@ -24,6 +24,7 @@ export { TyCalendarNavigation } from './components/calendar-navigation.js'
 export { TyCalendar } from './components/calendar.js'
 export { TyDatePicker } from './components/date-picker.js'
 export { TyResizeObserver } from './components/resize-observer.js'
+export { TyScrollContainer } from './components/scroll-container.js'
 
 // Types
 export type {

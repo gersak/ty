@@ -195,13 +195,13 @@
   ([] (swap! state assoc :mobile-menu-open false)))
 
 (defn should-scroll-for-route?
-  "Determine if navigation to target route should trigger scroll to top"
+  "Determine if navigation to target route should trigger scroll to top.
+   Returns false for routes with hash fragments (like landing page examples)."
   [target-route-id]
-  (let [target-url (router/component-path (:tree @router/*router*) target-route-id)
-        target-components (router/url->components (:tree @router/*router*) target-url)
-        target-component (last target-components)]
-    ;; Only scroll to top if target component doesn't have hash
-    (nil? (:hash target-component))))
+  ;; Check if the route has a :hash key in its definition
+  (let [all-routes (concat site-routes component-routes guide-routes)
+        route (some #(when (= (:id %) target-route-id) %) all-routes)]
+    (nil? (:hash route))))
 
 (defn nav-item
   "Render a single navigation item (can be parent or child)"
@@ -227,11 +227,10 @@
            :click (fn []
                     (when section-key
                       (set-last-visited-route! section-key route-id))
-                    (let [should-scroll-top? (should-scroll-for-route? route-id)]
-                      (router/navigate! route-id)
-                      (when should-scroll-top?
-                        (js/setTimeout scroll-main-to-top! 100))
-                      (swap! state assoc :mobile-menu-open false)))}}
+                    (router/navigate! route-id)
+                    (when (should-scroll-for-route? route-id)
+                      (js/setTimeout scroll-main-to-top! 100))
+                    (swap! state assoc :mobile-menu-open false))}}
      [:ty-icon {:name icon
                 :size "sm"
                 :class (when active? "ty-text-accent")}]
@@ -508,7 +507,9 @@
        :name (:name route)
        :type :guide
        :icon (:icon route)
-       :segment (:segment route)})
+       :segment (:segment route)
+       :description (:description route)
+       :tags (or (:tags route) [])})
    ;; Docs components (flatten children)
     (mapcat
       (fn [route]
@@ -516,7 +517,9 @@
                       :name (:name route)
                       :type :component
                       :icon (:icon route)
-                      :segment (:segment route)}
+                      :segment (:segment route)
+                      :description (:description route)
+                      :tags (or (:tags route) [])}
               children (when-let [ch (:children route)]
                          (for [child ch]
                            {:id (:id child)
@@ -524,21 +527,99 @@
                             :type :component
                             :icon (:icon child)
                             :segment (:segment child)
+                            :description (:description child)
+                            :tags (or (:tags child) [])
                             :parent-name (:name route)}))]
           (if children
             (cons parent children)
             [parent])))
       component-routes)))
 
+(defn search-score
+  "Calculate search relevance score for an item. Higher = better match."
+  [query item]
+  (if (str/blank? query)
+    50 ; Default score for empty query
+    (let [q (str/lower-case (str/trim query))
+          name-lower (str/lower-case (:name item))
+          desc-lower (str/lower-case (or (:description item) ""))
+          tags (:tags item [])]
+      (cond
+        ;; Exact name match
+        (= q name-lower) 100
+        ;; Name starts with query
+        (str/starts-with? name-lower q) 85
+        ;; Name contains query as word
+        (str/includes? name-lower q) 70
+        ;; Tag exact match
+        (some #(= q (str/lower-case %)) tags) 60
+        ;; Tag starts with query
+        (some #(str/starts-with? (str/lower-case %) q) tags) 50
+        ;; Description contains query
+        (str/includes? desc-lower q) 40
+        ;; Fuzzy match on name
+        (fuzzy-match? q name-lower) 25
+        ;; No match
+        :else 0))))
+
+(defn highlight-matches
+  "Return hiccup fragments with matched characters highlighted"
+  [query text]
+  (if (or (str/blank? query) (str/blank? text))
+    [[:span text]]
+    (let [q (str/lower-case query)
+          t-lower (str/lower-case text)
+          ;; Find match positions for highlighting
+          positions (cond
+                      ;; Substring match - highlight the substring
+                      (str/includes? t-lower q)
+                      (let [start (str/index-of t-lower q)]
+                        (set (range start (+ start (count q)))))
+                      ;; Fuzzy match - highlight matched chars
+                      (fuzzy-match? q text)
+                      (loop [qi 0 ti 0 pos #{}]
+                        (cond
+                          (>= qi (count q)) pos
+                          (>= ti (count text)) pos
+                          (= (nth q qi) (nth t-lower ti))
+                          (recur (inc qi) (inc ti) (conj pos ti))
+                          :else (recur qi (inc ti) pos)))
+                      :else #{})]
+      ;; Build hiccup spans
+      (if (empty? positions)
+        [[:span text]]
+        (loop [i 0 result [] in-match? false current ""]
+          (if (>= i (count text))
+            (if (seq current)
+              (conj result (if in-match?
+                             [:span.ty-text-accent.font-semibold current]
+                             [:span current]))
+              result)
+            (let [char (nth text i)
+                  is-match? (contains? positions i)]
+              (if (= is-match? in-match?)
+                (recur (inc i) result in-match? (str current char))
+                (recur (inc i)
+                       (if (seq current)
+                         (conj result (if in-match?
+                                        [:span.ty-text-accent.font-semibold current]
+                                        [:span current]))
+                         result)
+                       is-match?
+                       (str char))))))))))
+
 (defn search-items
-  "Filter search index by query"
+  "Filter and score search index by query, returning grouped results"
   [query]
-  (let [index (build-search-index)]
-    (if (str/blank? query)
-      (take 8 index) ; Show first 8 items when no query
-      (->> index
-           (filter #(fuzzy-match? query (:name %)))
-           (take 10)))))
+  (let [index (build-search-index)
+        scored (->> index
+                    (map #(assoc % :score (search-score query %)))
+                    (filter #(pos? (:score %)))
+                    (sort-by :score >)
+                    (take 12))]
+    ;; Group by type
+    {:guides (filter #(= :guide (:type %)) scored)
+     :components (filter #(= :component (:type %)) scored)}))
 
 (defn open-search! []
   (swap! state assoc-in [:search :open] true)
@@ -560,12 +641,42 @@
   (router/navigate! (:id result))
   (js/setTimeout scroll-main-to-top! 100))
 
+(defn search-result-item
+  "Render a single search result item"
+  [result idx selected-index query]
+  [:li
+   [:button.w-full.text-left.px-4.py-2.5.flex.items-center.gap-3.transition-colors
+    {:class (if (= idx selected-index)
+              ["ty-bg-accent-"]
+              ["hover:ty-bg-accent-"])
+     :on {:click #(select-search-result! result)
+          :mouseenter #(swap! state assoc-in [:search :selected-index] idx)}}
+    ;; Icon
+    [:div.w-8.h-8.rounded-md.flex.items-center.justify-center.flex-shrink-0
+     {:class (case (:type result)
+               :guide ["ty-bg-success-" "ty-text-success"]
+               :component ["ty-bg-primary-" "ty-text-primary"]
+               ["ty-bg-neutral-"])}
+     [:ty-icon {:name (:icon result)
+                :size "sm"}]]
+    ;; Name, description
+    [:div.flex-1.min-w-0
+     [:div.font-medium.ty-text.truncate
+      (into [:span] (highlight-matches query (:name result)))]
+     (when-let [desc (:description result)]
+       [:div.text-xs.ty-text-.truncate desc])]
+    ;; Enter hint for selected
+    (when (= idx selected-index)
+      [:kbd.text-xs.ty-text-.ty-bg-neutral.px-2.py-1.rounded.flex-shrink-0 "↵"])]])
+
 (defn search-modal
   "Command palette search modal"
   []
   (let [{:keys [open query selected-index]} (:search @state)
-        results (search-items query)
-        result-count (count results)]
+        {:keys [guides components]} (search-items query)
+        ;; Flatten for keyboard navigation (guides first, then components)
+        all-results (concat guides components)
+        result-count (count all-results)]
     (when open
       [:ty-modal {:open true
                   :on {:close close-search!}}
@@ -599,7 +710,7 @@
                                            #(max (dec %) 0)))
 
                                 (= key "Enter")
-                                (when-let [result (nth results selected-index nil)]
+                                (when-let [result (nth all-results selected-index nil)]
                                   (select-search-result! result))
 
                                 (= key "Escape")
@@ -608,38 +719,27 @@
 
         ;; Results list (fixed height to prevent twitching)
         [:div.overflow-y-auto {:style {:height "400px"}}
-         (if (seq results)
-           [:ul.py-2
-            (for [[idx result] (map-indexed vector results)]
-              ^{:key (:id result)}
-              [:li
-               [:button.w-full.text-left.px-4.py-3.flex.items-center.gap-3.transition-colors
-                {:class (if (= idx selected-index)
-                          ["ty-bg-accent-" "ty-text-accent+"]
-                          ["hover:ty-bg-accent-"])
-                 :on {:click #(select-search-result! result)
-                      :mouseenter #(swap! state assoc-in [:search :selected-index] idx)}}
-                ;; Icon
-                [:div.w-8.h-8.pl-4.rounded-md.flex.items-center.justify-center
-                 {:class (case (:type result)
-                           :guide ["ty-bg-success-" "ty-text-success"]
-                           :component ["ty-bg-primary-" "ty-text-primary"]
-                           ["ty-bg-neutral-"])}
-                 [:ty-icon {:name (:icon result)
-                            :size "sm"}]]
-                ;; Name and type
-                [:div.flex-1.min-w-0
-                 [:div.font-medium.ty-text.truncate (:name result)]
-                 [:div.text-xs.ty-text-
-                  (str (case (:type result)
-                         :guide "Guide"
-                         :component "Component"
-                         "Page")
-                       (when-let [parent (:parent-name result)]
-                         (str " · " parent)))]]
-                ;; Enter hint for selected
-                (when (= idx selected-index)
-                  [:kbd.text-xs.ty-text-.ty-bg-neutral.px-2.py-1.rounded "↵"])]])]
+         (if (seq all-results)
+           [:div.py-2
+            ;; Guides section
+            (when (seq guides)
+              [:div
+               [:div.px-4.py-2.text-xs.font-medium.ty-text-.uppercase.tracking-wide
+                "Guides"]
+               [:ul
+                (for [[idx result] (map-indexed vector guides)]
+                  ^{:key (:id result)}
+                  (search-result-item result idx selected-index query))]])
+            ;; Components section
+            (when (seq components)
+              [:div {:class (when (seq guides) "mt-2")}
+               [:div.px-4.py-2.text-xs.font-medium.ty-text-.uppercase.tracking-wide
+                "Components"]
+               [:ul
+                (let [offset (count guides)]
+                  (for [[idx result] (map-indexed vector components)]
+                    ^{:key (:id result)}
+                    (search-result-item result (+ offset idx) selected-index query)))]])]
            [:div.py-8.text-center.ty-text-
             [:ty-icon.mb-2.opacity-50 {:name "search"
                                        :size "lg"}]
@@ -800,19 +900,23 @@
     (let [show-sidebar? (layout/breakpoint>= :lg)
           header-height (if (layout/breakpoint>= :lg) 60 52)
           content-padding (if (layout/breakpoint>= :lg) 48 24)]
-      [:div.h-screen.flex.flex-col.ty-canvas.ty-text
+      [:div.flex.flex-col.ty-canvas.ty-text
+       {:style {:height "100%"}}  ; Height from fixed parent (#app)
        (mobile-menu)
        (search-modal)
        (header)
-       ;; Main scrollable area
-       [:div.flex-1.overflow-auto {:id "main-scroll-container"}
-        ;; Centered container with CSS Grid
+       ;; Main scrollable area (CSS handles iOS Safari fixes in index.html)
+       [:div.flex-1.overflow-y-auto.overflow-x-hidden.ty-canvas
+        {:id "main-scroll-container"
+         :style {:-webkit-overflow-scrolling "touch"}}
+        ;; Centered container with CSS Grid - min-height ensures no whitespace
         [:div.mx-auto
          {:style {:display "grid"
                   :grid-template-columns (if show-sidebar?
                                            "220px minmax(0, 1fr)"
                                            "1fr")
                   :max-width "1200px"
+                  :min-height "100%"
                   :gap (if show-sidebar? "40px" "0px")
                   :padding (if show-sidebar?
                              "32px 32px"

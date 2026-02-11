@@ -26,12 +26,20 @@
 
     <!-- Mobile-specific CSS fixes -->
     <style>
-        /* Prevent horizontal scroll on mobile */
+        /* iOS fix - prevents scroll bounce and keyboard layout breaking */
         html,
         body {
-            overflow-x: hidden;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
             width: 100%;
-            max-width: 100vw;
+        }
+
+        /* App container fills the fixed viewport */
+        #app {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
         }
 
         /* Fix for code blocks that might overflow */

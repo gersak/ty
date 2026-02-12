@@ -7,8 +7,8 @@
             [deps-deploy.deps-deploy :as deploy]
             [ty.template :as template]))
 
-(def ty-version "0.2.0")
-(def ty-icons-version "0.1.0")
+(def ty-version "0.3.0-SNAPSHOT")
+(def ty-icons-version "0.1.1-SNAPSHOT")
 (def class-dir "target/classes")
 
 ;; Library configurations
@@ -60,8 +60,8 @@
                                [:url "https://opensource.org/licenses/MIT"]]]
                              [:developers
                               [:developer
-                               [:name "Gersak"]
-                               [:email "contact@gersak.dev"]]]]})))
+                               [:name "Robert Gersak"]
+                               [:email "r.gersak@gmail.com"]]]]})))
 
 (defn- create-jar [lib-config]
   (let [{:keys [src-dirs resource-dirs jar-file]} lib-config]

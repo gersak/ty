@@ -177,10 +177,10 @@
 
     <!-- Prevent FOUC -->
     <script>
-        // Set initial theme based on localStorage or system preference
+        // Set initial theme based on localStorage or system preference (default: dark)
         const storedTheme = localStorage.getItem('theme');
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        const theme = storedTheme || systemTheme || 'light';
+        const theme = storedTheme || systemTheme || 'dark';
 
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');

@@ -5,6 +5,8 @@ ts/icons/
 .shadow-cljs/
 dev/js/cljs-runtime/
 node_modules/
+CLAUDE.md
+.claude/
 
 
 examples/htmx-flask/static/

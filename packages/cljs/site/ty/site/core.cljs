@@ -677,9 +677,9 @@
         ;; Flatten for keyboard navigation (guides first, then components)
         all-results (concat guides components)
         result-count (count all-results)]
-    (when open
-      [:ty-modal {:open true
-                  :on {:close close-search!}}
+    ;; Always render modal (must be in DOM), control visibility via :open attribute
+    [:ty-modal {:open open
+                :on {:close close-search!}}
        [:div.ty-floating.rounded-xl.shadow-lg.overflow-hidden
         {:style {:width "min(520px, 90vw)"
                  :max-height "80vh"}}
@@ -756,7 +756,7 @@
           " Select"]
          [:span.flex.items-center.gap-1
           [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "esc"]
-          " Close"]]]])))
+          " Close"]]]]))
 
 (defonce keyboard-shortcuts-initialized (atom false))
 
@@ -851,6 +851,14 @@
              (if (.-userAgent js/navigator)
                (if (str/includes? (.-userAgent js/navigator) "Mac") "⌘K" "Ctrl+K")
                "⌘K")]]
+           ;; GitHub link
+           [:a.p-2.rounded-md.ty-text-.hover:ty-text-accent.transition-colors
+            {:href "https://github.com/gersak/ty"
+             :target "_blank"
+             :rel "noopener noreferrer"
+             :title "View on GitHub"}
+            [:ty-icon {:name "github"
+                       :size "sm"}]]
            ;; Theme toggle
            [:button.p-2.rounded-md.ty-text-.hover:ty-text-accent.transition-colors
             {:on {:click toggle-theme!}}
@@ -890,11 +898,21 @@
           [:ty-icon {:name "search"
                      :size "sm"
                      :class "ty-text-"}]]
+         ;; GitHub link
+         [:a.p-2.rounded-md.hover:ty-bg-accent-.transition-colors.flex-shrink-0
+          {:href "https://github.com/gersak/ty"
+           :target "_blank"
+           :rel "noopener noreferrer"
+           :title "View on GitHub"}
+          [:ty-icon {:name "github"
+                     :size "sm"
+                     :class "ty-text-"}]]
          ;; Theme toggle
          [:button.p-2.rounded-md.ty-text-.hover:ty-text-accent.transition-colors.flex-shrink-0
           {:on {:click toggle-theme!}}
           [:ty-icon {:name (if (= (:theme @state) "light") "moon" "sun")
                      :size "sm"}]]])]]))
+
 (defn app []
   (layout/with-window
     (let [show-sidebar? (layout/breakpoint>= :lg)

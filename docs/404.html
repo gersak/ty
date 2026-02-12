@@ -25,12 +25,20 @@
 
     <!-- Mobile-specific CSS fixes -->
     <style>
-        /* Prevent horizontal scroll on mobile */
+        /* iOS fix - prevents scroll bounce and keyboard layout breaking */
         html,
         body {
-            overflow-x: hidden;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
             width: 100%;
-            max-width: 100vw;
+        }
+
+        /* App container fills the fixed viewport */
+        #app {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
         }
 
         /* Fix for code blocks that might overflow */
@@ -168,10 +176,10 @@
 
     <!-- Prevent FOUC -->
     <script>
-        // Set initial theme based on localStorage or system preference
+        // Set initial theme based on localStorage or system preference (default: dark)
         const storedTheme = localStorage.getItem('theme');
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        const theme = storedTheme || systemTheme || 'light';
+        const theme = storedTheme || systemTheme || 'dark';
 
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
@@ -219,7 +227,7 @@
     <div id="app"></div>
 
     <!-- Load site app after DOM is ready -->
-    <script defer src="/ty/js/site.bJddZ.js"></script>
+    <script defer src="/ty/js/site.vfNcS.js"></script>
 </body>
 
 </html>

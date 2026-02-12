@@ -1,7 +1,7 @@
 (ns ty.site.state)
 
 (defonce state
-  (atom {:theme "light"
+  (atom {:theme "dark"
          :mobile-menu-open false
 
          ;; Navigation collapsible sections

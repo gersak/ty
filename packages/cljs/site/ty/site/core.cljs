@@ -940,12 +940,12 @@
     (rdom/render (.getElementById js/document "app") (app))))
 
 (defn ^:dev/after-load init []
-  ;; Initialize theme from localStorage or system preference
+  ;; Initialize theme from localStorage or system preference (default: dark)
   (let [stored-theme (.getItem js/localStorage "theme")
         system-theme (if (and (.-matchMedia js/window)
                               (.-matches (.matchMedia js/window "(prefers-color-scheme: dark)")))
                        "dark" "light")
-        theme (or stored-theme system-theme "light")]
+        theme (or stored-theme system-theme "dark")]
     (swap! state assoc :theme theme)
     (if (= theme "dark")
       (.add (.-classList js/document.documentElement) "dark")

@@ -68,6 +68,18 @@ export type { TyCalendarMonthProps, DayClickDetail } from './TyCalendarMonth';
 export { TyCalendarNavigation } from './TyCalendarNavigation';
 export type { TyCalendarNavigationProps, NavigationChangeDetail } from './TyCalendarNavigation';
 
+export { TyWizard } from './TyWizard';
+export type { TyWizardProps, WizardStepChangeDetail } from './TyWizard';
+
+export { TyStep } from './TyStep';
+export type { TyStepProps } from './TyStep';
+
+export { TyResizeObserver } from './TyResizeObserver';
+export type { TyResizeObserverProps } from './TyResizeObserver';
+
+export { TyScrollContainer } from './TyScrollContainer';
+export type { TyScrollContainerProps, TyScrollContainerRef } from './TyScrollContainer';
+
 // ===================================================================
 // SHORT NAME EXPORTS (Clean Style - Developer Choice)
 // ===================================================================
@@ -91,6 +103,10 @@ export { TyTabs as Tabs } from './TyTabs';
 export { TyTab as Tab } from './TyTab';
 export { TyCalendarMonth as CalendarMonth } from './TyCalendarMonth';
 export { TyCalendarNavigation as CalendarNavigation } from './TyCalendarNavigation';
+export { TyWizard as Wizard } from './TyWizard';
+export { TyStep as Step } from './TyStep';
+export { TyResizeObserver as ResizeObserver } from './TyResizeObserver';
+export { TyScrollContainer as ScrollContainer } from './TyScrollContainer';
 
 // ===================================================================
 // TYPE ALIASES (Both Styles Supported)
@@ -152,6 +168,18 @@ export type { TyCalendarMonthProps as CalendarMonthProps } from './TyCalendarMon
 
 // CalendarNavigation types
 export type { TyCalendarNavigationProps as CalendarNavigationProps } from './TyCalendarNavigation';
+
+// Wizard types
+export type { TyWizardProps as WizardProps, WizardStepChangeDetail as StepChangeDetail } from './TyWizard';
+
+// Step types
+export type { TyStepProps as StepProps } from './TyStep';
+
+// ResizeObserver types
+export type { TyResizeObserverProps as ResizeObserverProps } from './TyResizeObserver';
+
+// ScrollContainer types
+export type { TyScrollContainerProps as ScrollContainerProps, TyScrollContainerRef as ScrollContainerRef } from './TyScrollContainer';
 
 // ===================================================================
 // USAGE EXAMPLES

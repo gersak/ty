@@ -41,11 +41,11 @@ export const tagStyles = `
   /* Transitions using centralized values */
   transition: var(--ty-transition-all);
 
-  /* Default styling using semantic variables */
-  background: var(--ty-bg-neutral-mild);
-  color: var(--ty-color-neutral-strong);
-  border: 1px solid;
-  border-color: var(--ty-color-neutral);
+  /* Default styling - transparent with visible border */
+  background: transparent;
+  color: var(--ty-text);
+  border: 1.5px solid;
+  border-color: var(--ty-text-);
 }
 
 /* Non-pill variant - rectangular with rounded corners */
@@ -65,9 +65,9 @@ export const tagStyles = `
 }
 
 .tag-container[tabindex]:not([aria-disabled="true"]):hover {
-  background: var(--ty-bg-neutral-mild);
+  background: var(--ty-bg-neutral-);
   transform: translateY(-1px);
-  box-shadow: var(--ty-shadow-md);
+  box-shadow: var(--ty-shadow-sm);
 }
 
 .tag-container[tabindex]:not([aria-disabled="true"]):active {
@@ -295,19 +295,19 @@ export const tagStyles = `
 
 /* Flavor variants using centralized semantic colors */
 
-/* Neutral (default) */
+/* Neutral (default) - transparent with visible border */
 :host([flavor="neutral"]) .tag-container {
-  background: var(--ty-bg-neutral-mild);
-  color: var(--ty-color-neutral-strong);
-  border-color: var(--ty-border-neutral);
+  background: transparent;
+  color: var(--ty-text);
+  border-color: var(--ty-text-);
 }
 
 :host([flavor="neutral"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-neutral-mild);
+  background: var(--ty-bg-neutral-);
 }
 
 :host([flavor="neutral"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-color-neutral-faint);
+  box-shadow: 0 0 0 3px var(--ty-border-);
 }
 
 /* Slotted content styling */

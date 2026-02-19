@@ -231,7 +231,7 @@ export const multiselectStyles = `
 .multiselect-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: 0.5rem;
   align-items: center;
   min-width: 0;
 }
@@ -278,7 +278,7 @@ export const multiselectStyles = `
   display: flex;
   flex-wrap: wrap;
   padding: 0.5rem;
-  gap: 0.25rem;
+  gap: 0.5rem;
 }
 
 /* Make ty-tags in dropdown clickable with pointer cursor */

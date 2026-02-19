@@ -83,6 +83,11 @@ export const tabsStyles = `
   pointer-events: none;
 }
 
+/* Hide default marker when custom marker is slotted */
+.marker-wrapper:has(::slotted([slot="marker"])) .default-marker {
+  display: none;
+}
+
 /* User's marker element fills the wrapper */
 ::slotted([slot="marker"]) {
   display: block;

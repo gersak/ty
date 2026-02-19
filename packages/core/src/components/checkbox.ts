@@ -215,10 +215,6 @@ export class TyCheckbox
    * TyComponent already handled pre-connection property capture
    */
   protected onConnect(): void {
-    console.log("🔷 [checkbox] onConnect() called");
-    console.log("🔷 [checkbox] checked:", this.checked);
-    console.log("🔷 [checkbox] isConnected:", this.isConnected);
-
     // TyComponent will call render() automatically after this hook
     // No need to call render() manually or use requestAnimationFrame
   }
@@ -234,14 +230,7 @@ export class TyCheckbox
   /**
    * Handle property changes - called BEFORE render
    */
-  protected onPropertiesChanged(changes: PropertyChange[]): void {
-    // Log property changes for debugging
-    changes.forEach((change) => {
-      console.log(
-        `💜 [checkbox] ${change.name}: ${change.oldValue} → ${change.newValue} (connected: ${this.isConnected})`,
-      );
-    });
-
+  protected onPropertiesChanged(_changes: PropertyChange[]): void {
     // No special handling needed - TyComponent handles rendering automatically
   }
 
@@ -395,9 +384,6 @@ export class TyCheckbox
    * Render the checkbox component
    */
   protected render(): void {
-    console.log(
-      `🎨 [checkbox] render(checked=${this.checked}, connected=${this.isConnected})`,
-    );
     const shadow = this.shadowRoot!;
     let container = shadow.querySelector(".input-container") as HTMLElement;
     const classes = this.buildClassList();
@@ -520,10 +506,6 @@ export class TyCheckbox
   }
 
   set checked(value: boolean) {
-    console.log(
-      `🔵 [checkbox] set checked(${value}) called, isConnected:`,
-      this.isConnected,
-    );
     this.setProperty("checked", value);
   }
 

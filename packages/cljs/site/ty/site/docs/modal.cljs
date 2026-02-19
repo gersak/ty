@@ -193,30 +193,6 @@
        [:p.ty-text-.mt-3.text-sm
         "Try closing this modal - you'll be asked to confirm."]]]]]])
 
-(defn no-backdrop-example []
-  [:div.ty-content.rounded-lg.p-6.mb-6
-   [:h3.text-lg.font-medium.ty-text.mb-3 "No Backdrop"]
-   [:p.ty-text-.mb-4 "Disable the backdrop for a more integrated feel."]
-
-   (code-block
-    "<ty-modal backdrop=\"false\" close-on-outside-click=\"false\">
-  <div class=\"p-6 ty-floating rounded-lg shadow-xl\">
-    <p>Modal without backdrop - page content remains visible</p>
-  </div>
-</ty-modal>")
-
-   [:div.mt-4
-    [:ty-button {:on {:click #(swap! state/state assoc :docs-modal-no-backdrop true)}}
-     "Open Modal (No Backdrop)"]
-
-    [:ty-modal {:open (get @state/state :docs-modal-no-backdrop false)
-                :backdrop false
-                :close-on-outside-click false
-                :on {:close #(swap! state/state assoc :docs-modal-no-backdrop false)}}
-     [:div.p-6.ty-floating.rounded-lg.shadow-xl
-      [:p.ty-text.mb-3 "Modal without backdrop - page content remains visible"]
-      [:ty-button {:on {:click #(swap! state/state assoc :docs-modal-no-backdrop false)}}
-       "Close"]]]]])
 
 (defn form-example []
   [:div.ty-content.rounded-lg.p-6.mb-6
@@ -331,19 +307,14 @@ modal.backdrop = false;"
     "javascript")
 
    [:div.mt-4.space-y-3
-    [:div.flex.gap-3
-     [:ty-button {:on {:click #(.show (.getElementById js/document "docs-modal-programmatic"))}}
-      "Open with .show()"]
-     [:ty-button {:flavor "danger"
-                  :on {:click #(.hide (.getElementById js/document "docs-modal-programmatic"))}}
-      "Close with .hide()"]]
+    [:ty-button {:on {:click #(.show (.getElementById js/document "docs-modal-programmatic"))}}
+     "Open with .show()"]
 
-    [:ty-modal {:id "docs-modal-programmatic"
-                :on {:open #(js/console.log "Modal opened via event")
-                     :close #(js/console.log "Modal closed:" (.-detail %))}}
+    [:ty-modal {:id "docs-modal-programmatic"}
      [:div.p-6.ty-elevated.rounded-lg.max-w-sm
       [:p.ty-text "This modal is controlled programmatically."]
-      [:p.ty-text-.text-sm.mt-2 "Check console for event logs."]]]]])
+      [:ty-button.mt-4 {:on {:click #(.hide (.getElementById js/document "docs-modal-programmatic"))}}
+       "Close with .hide()"]]]]])
 
 (defn event-handling-example []
   [:div.ty-content.rounded-lg.p-6.mb-6
@@ -426,7 +397,6 @@ ty-modal {
    [:h2.text-2xl.font-semibold.ty-text.mb-6 "Examples"]
    (declarative-example)
    (protected-example)
-   (no-backdrop-example)
    (form-example)
    (programmatic-control-example)
    (event-handling-example)

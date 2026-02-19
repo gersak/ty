@@ -5,7 +5,67 @@ All notable changes to the Ty web components library will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.2.0] - 2024-01-XX (Current Release)
+## [0.3.0] - 2025-02-XX (Current Release)
+
+### ✨ Added
+
+#### Documentation
+
+- **COMPONENT_GUIDE.md** - Comprehensive guide for building Web Components with `ty.shim`
+  - Replicant, UIx, and Reagent integration examples
+  - Shadow DOM styling with `defstyles` macro
+  - Form participation patterns
+  - Properties vs Attributes handling
+  - Hot reload support for development
+
+- **CODE_SPLITTING.md** - Guide for shadow-cljs code splitting
+  - Module configuration for lazy loading
+  - Lazy component wrapper patterns
+  - Preloading strategies
+  - Bundle analysis tips
+
+- **CLJS_GUIDE.cljs** - Interactive ClojureScript examples for REPL exploration
+
+#### ClojureScript Package
+
+- **`ty.context` namespace** - Restored for calendar component locale support
+  - `*locale*` dynamic var for locale binding
+
+### 🔄 Changed
+
+#### README Improvements
+
+- **Landing README** completely rewritten
+  - ClojureScript-focused with UIx and Replicant examples
+  - Accurate `ty.router` API documentation (using `link`, `navigate!`, `rendered?`)
+  - Accurate `ty.i18n` examples with `ty.i18n.number` and `ty.i18n.time` namespaces
+  - Added "Build Your Own Components" section showcasing `ty.shim`
+  - Added prominent link to live demo at https://gersak.github.io/ty
+  - Removed "Work in Progress" messaging
+  - Added links to Vanilla JS and React guides at top
+
+- **packages/cljs/README.md** updated
+  - Added component building examples with `ty.shim`
+  - Updated event handling syntax to use `(.. % -detail -value)`
+
+### 🐛 Fixed
+
+#### cljdoc Analysis
+
+- **Fixed cljdoc-analyzer failure** - `ty.components.core` namespace not found
+  - Moved `ty/core.cljs` from `src/ty/` to `components/ty/`
+  - This file required component namespaces not included in library JAR
+
+- **Fixed deps.edn paths**
+  - Corrected `:ty-lib` alias path from `"src/clj"` to `"src"`
+  - Added `"components"` to `:dev` alias extra-paths
+
+- **Added missing dependency**
+  - Added `dev.gersak/timing {:mvn/version "0.7.0"}` to `:dev` alias
+
+---
+
+## [0.2.0] - 2024-01-XX
 
 ### 🎉 Major Release - TypeScript Migration Complete
 

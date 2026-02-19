@@ -10,319 +10,279 @@
 <p><strong><em>Yes! Let's call it ty."</em></strong></p>
 </blockquote>
 
-# ty - Modern Web Components Built on Standards
+# ty
 
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gersak/ty/badge)](https://www.jsdelivr.com/package/npm/@gersak/ty)
 [![NPM Version](https://img.shields.io/npm/v/@gersak/ty.svg)](https://www.npmjs.com/package/@gersak/ty)
-[![Bundle Size](https://img.shields.io/bundlephobia/minzip/@gersak/ty)](https://bundlephobia.com/package/@gersak/ty)
-[![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty-icons.svg)](https://clojars.org/dev.gersak/ty-icons)
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty.svg)](https://clojars.org/dev.gersak/ty)
 
-**Framework-agnostic web components with a unique dual architecture:**
-- **TypeScript Components** - Modern, type-safe UI components
-- **ClojureScript Infrastructure** - Advanced routing, i18n, and documentation site
-- **Zero Dependencies** - Built on web standards that won't break
+**Web components that work everywhere.** React, Vue, HTMX, vanilla JS, ClojureScript — use what you like.
 
-Works with React, Vue, HTMX—or no framework at all.
-
-## ⚠️ Work in Progress - But Ready to Use
-
-**ty is actively being developed.** Components work in production, examples run smoothly, but expect rough edges. This is a real project with a real vision - web components that work everywhere, built on standards that won't break next year.
-
-## ✨ What's Included
-
-### 18 Production-Ready Components
-
-- ✅ **Button** - Semantic buttons with flavors and sizes
-- ✅ **Input** - Enhanced inputs with validation and formatting
-- ✅ **Textarea** - Auto-resizing textarea
-- ✅ **Checkbox** - Styled checkbox with form integration
-- ✅ **Calendar** - Full calendar system with navigation and custom rendering
-- ✅ **Calendar Month** - Standalone month view
-- ✅ **Calendar Navigation** - Calendar controls
-- ✅ **Date Picker** - Date selection with calendar popup
-- ✅ **Dropdown** - Rich dropdown with HTML content support
-- ✅ **Multiselect** - Multi-select with tags and search
-- ✅ **Modal** - Accessible modals with focus trapping
-- ✅ **Popup** - Positioned popovers
-- ✅ **Tooltip** - Smart tooltips with positioning
-- ✅ **Tag** - Chip/tag component with removable option
-- ✅ **Icon** - Icon component with registry system
-- ✅ **Copy** - Copy-to-clipboard for API keys, tokens, URLs
-- ✅ **Tabs** - Tab navigation with content panels
-- ✅ **Tab** - Individual tab component
-
-### 🎨 Semantic Design System
-
-- **5-Variant Color System** - From `ty-text--` (faint) to `ty-text++` (strong)
-- **Automatic Dark Mode** - Intelligent emphasis flipping
-- **130+ CSS Variables** - Complete customization
-- **7 Semantic Colors** - primary, secondary, success, danger, warning, info, neutral
-- **5 Surface Levels** - canvas, content, elevated, floating, input
-
-**[See it in action →](https://gersak.github.io/ty)**
+| [Vanilla JS Guide →](packages/core/src/README.md) | [React Guide →](packages/react/README.md) |
+|---|---|
 
 ---
 
-## 🚀 Quick Start
-
-### CDN (Fastest)
+## Load from CDN
 
 ```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My App</title>
-  
-  <!-- Ty CSS and JS from CDN -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css">
-  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
-</head>
-<body>
-  <ty-button flavor="primary">Hello World</ty-button>
-  <ty-calendar value="2024-12-25"></ty-calendar>
-</body>
-</html>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css">
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
 ```
 
-### NPM
+Then use components anywhere:
 
-```bash
-npm install @gersak/ty
+```html
+<ty-button flavor="primary">Click me</ty-button>
+<ty-dropdown label="Country" placeholder="Select...">
+  <option value="us">United States</option>
+  <option value="de">Germany</option>
+</ty-dropdown>
 ```
-
-```typescript
-import '@gersak/ty/css/ty.css'
-import { TyButton, TyCalendar } from '@gersak/ty'
-```
-
-**[See full documentation →](https://gersak.github.io/ty)**
 
 ---
 
-## 🎯 Icon System (Optional)
+## ClojureScript
 
-Icons are **optional** and loaded separately:
-
-```javascript
-// Import specific icons (tree-shakeable)
-import { check, heart, save } from '@gersak/ty/icons/lucide'
-
-// Register with global API
-window.tyIcons.register({ check, heart, save })
-```
-
-Then use:
-
-```html
-<ty-icon name="check"></ty-icon>
-```
-
-**Available Icon Libraries:**
-- **Lucide**: 1,636 icons (tree-shakeable)
-- **Heroicons**: 4 variants
-- **Material Design**: 5 variants
-- **FontAwesome**: 3 variants
-
-⚠️ **Import only what you need** - importing all icons would load ~900KB!
-
----
-
-## 🌐 Framework Integration
-
-### React
-
-**For React projects, use the React wrapper package:**
-
-```bash
-npm install @gersak/ty-react
-```
-
-```jsx
-import React, { useState } from 'react'
-import { TyButton, TyInput, TyIcon } from '@gersak/ty-react'
-import { check, heart, save } from '@gersak/ty/icons/lucide'
-
-// Register icons
-window.tyIcons.register({ check, heart, save })
-
-function App() {
-  const [name, setName] = useState('')
-
-  return (
-    <div className="ty-elevated p-6 rounded-lg">
-      <h2 className="ty-text++ text-xl mb-4">Hello Ty!</h2>
-      
-      <TyInput
-        value={name}
-        placeholder="Enter name"
-        onChange={(e) => setName(e.target.value)}
-      />
-      
-      <TyButton 
-        flavor="primary"
-        onClick={() => alert('Hello ' + name)}
-      >
-        <TyIcon name="check" />
-        Submit
-      </TyButton>
-    </div>
-  )
-}
-```
-
-**Setup HTML (include Ty CSS and JS):**
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>My React App</title>
-  
-  <!-- Ty CSS and JS from CDN -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css">
-  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
-</head>
-<body>
-  <div id="root"></div>
-</body>
-</html>
-```
-
-### HTMX + Flask/Django
-
-```html
-<ty-input 
-  hx-post="/api/search" 
-  hx-trigger="input changed delay:300ms"
-  hx-target="#results"
-  placeholder="Search..."
-/>
-```
-
-Just works. Server-side rendering with dynamic interactions.
-
-Import the components, use them. Web Components are web standards.
-
-### ClojureScript (Reagent/UIx)
-
-For ClojureScript projects, use the React wrapper with tree-shakeable icon imports:
-
-**Add dependencies to `deps.edn`:**
+Add to `deps.edn`:
 
 ```clojure
-{:deps {com.pitch/uix.core {:mvn/version "1.1.0"}
-        com.pitch/uix.dom {:mvn/version "1.1.0"}
-        dev.gersak/ty-icons {:mvn/version "LATEST"}  ; Tree-shakeable icons
-        dev.gersak/ty {:mvn/version "LATEST"}}}     ; Optional: Router, i18n, layout
+{:deps {dev.gersak/ty {:mvn/version "0.3.0"}        ;; Router, i18n, layout
+        dev.gersak/ty-icons {:mvn/version "0.1.1"}}} ;; Tree-shakeable icons
 ```
 
-**Import icons from ClojureScript (not JavaScript):**
+### UIx
 
 ```clojure
-(ns my-app.core
-  (:require ["@gersak/ty-react" :as ty]
-            [ty.lucide :as lucide]))  ; ← ClojureScript import, not JavaScript!
+(ns app.core
+  (:require [uix.core :refer [defui $]]
+            [ty.lucide :as lucide]))
 
-;; Register only the icons you need (Google Closure Compiler tree-shakes unused icons)
-(js/window.tyIcons.register
-  #js {"check" lucide/check
-       "heart" lucide/heart
-       "save" lucide/save})
+;; Register only icons you use - Closure Compiler removes the rest
+(defonce _ (js/window.tyIcons.register
+             #js {:check lucide/check
+                  :calendar lucide/calendar
+                  :globe lucide/globe}))
 
-(defn app []
-  [:div.ty-elevated.p-6.rounded-lg
-   [:h2.ty-text++.text-xl.mb-4 "Hello Ty!"]
-   
-   [:> ty/Button {:flavor "primary"
-                  :on-click #(js/alert "Clicked!")}
-    [:> ty/Icon {:name "check"}]
-    "Submit"]])
+(defui app []
+  (let [[selected set-selected] (uix.core/use-state nil)]
+    ($ :div.ty-canvas.min-h-screen.p-8
+      ($ :div.ty-elevated.p-6.rounded-lg.max-w-md.space-y-4
+
+        ($ :h1.ty-text++.text-2xl.font-bold "Book a Demo")
+
+        ($ :ty-date-picker
+          {:label "Select Date"
+           :placeholder "Pick a date..."
+           :value selected
+           :on-change #(set-selected (.. % -detail -value))})
+
+        ($ :ty-dropdown
+          {:label "Timezone"
+           :placeholder "Select timezone..."}
+          ($ :option {:value "utc"} "UTC")
+          ($ :option {:value "cet"} "Central European")
+          ($ :option {:value "pst"} "Pacific Standard"))
+
+        ($ :ty-button
+          {:flavor "primary"
+           :disabled (nil? selected)}
+          ($ :ty-icon {:name "check" :slot "start"})
+          "Confirm Booking")))))
 ```
 
-**⚠️ Important: Use ClojureScript imports for tree-shaking!**
+### Replicant
 
-- ✅ **Correct:** `[ty.lucide :as lucide]` - Google Closure Compiler eliminates unused icons
-- ❌ **Wrong:** `["@gersak/ty/icons/lucide" :refer [check]]` - Bundles ALL 1,636 icons (~897KB)
+```clojure
+(ns app.core
+  (:require [replicant.dom :as d]
+            [ty.lucide :as lucide]))
 
-By importing from the ClojureScript artifact (`dev.gersak/ty-icons`), only the icons you reference are included in your production bundle.
+(defonce _ (js/window.tyIcons.register
+             #js {:user lucide/user
+                  :mail lucide/mail
+                  :send lucide/send}))
 
-**Bonus**: Built-in router, i18n, and responsive layout system via `dev.gersak/ty` Clojars package.
+(defn contact-form [state]
+  [:div.ty-canvas.min-h-screen.p-8
+   [:div.ty-elevated.p-6.rounded-lg.max-w-md.space-y-4
+
+    [:h1.ty-text++.text-2xl.font-bold "Contact Us"]
+
+    [:ty-input
+     {:label "Name"
+      :placeholder "Your name"
+      :value (:name @state)
+      :on {:input #(swap! state assoc :name (.. % -target -value))}}
+     [:ty-icon {:name "user" :slot "start"}]]
+
+    [:ty-input
+     {:label "Email"
+      :type "email"
+      :placeholder "you@example.com"
+      :value (:email @state)
+      :on {:input #(swap! state assoc :email (.. % -target -value))}}
+     [:ty-icon {:name "mail" :slot "start"}]]
+
+    [:ty-textarea
+     {:label "Message"
+      :placeholder "How can we help?"
+      :rows 4
+      :value (:message @state)
+      :on {:input #(swap! state assoc :message (.. % -target -value))}}]
+
+    [:ty-button
+     {:flavor "primary"
+      :on {:click #(js/alert "Sent!")}}
+     [:ty-icon {:name "send" :slot "start"}]
+     "Send Message"]]])
+
+(defonce state (atom {:name "" :email "" :message ""}))
+
+(d/render (js/document.getElementById "app")
+  (contact-form state))
+```
+
+### Router
+
+Component-based routing with segments and authorization:
+
+```clojure
+(ns app.routes
+  (:require [ty.router :as router]))
+
+;; Initialize router with base path
+(router/init! "")  ;; or "my-app" for /my-app/... URLs
+
+;; Define routes by linking to parent
+(router/link ::router/root
+  [{:id :app/home
+    :segment "home"
+    :landing 100}  ;; Landing priority (highest wins)
+   {:id :app/users
+    :segment "users"}
+   {:id :app/admin
+    :segment "admin"
+    :roles #{:admin}}])  ;; Authorization
+
+;; Nested routes
+(router/link :app/users
+  [{:id :app/user-detail
+    :segment "detail"}])  ;; /users/detail
+
+;; Navigate
+(router/navigate! :app/home)
+(router/navigate! :app/user-detail {:tab "profile"})  ;; with query params
+
+;; Check if route is active
+(router/rendered? :app/users)        ;; true if on /users or /users/detail
+(router/rendered? :app/users true)   ;; true only if exactly on /users
+
+;; Query params
+(router/query-params)     ;; => {:tab "profile"}
+(router/set-query! {:page 2})
+```
+
+### i18n
+
+Protocol-based formatting with Intl API:
+
+```clojure
+(ns app.i18n
+  (:require [ty.i18n :as i18n]
+            [ty.i18n.number :as num]
+            [ty.i18n.time :as time]))
+
+;; Current locale (auto-detected from browser)
+i18n/*locale*  ;; => :en_US
+
+;; Number formatting
+(num/format-number 1234567.89)                    ;; "1,234,567.89"
+(num/format-currency 99.99 "EUR")                 ;; "€99.99"
+(num/format-percent 0.156)                        ;; "16%"
+(num/format-compact 1500000)                      ;; "1.5M"
+
+;; Date formatting
+(time/format-date (js/Date.))                     ;; "2/19/2026"
+(time/format-date-full (js/Date.))                ;; "Wednesday, February 19, 2026"
+(time/format-relative -3 "day")                   ;; "3 days ago"
+
+;; With explicit locale
+(num/format-currency 1234.50 "EUR" :de_DE)        ;; "1.234,50 €"
+(time/format-date-full (js/Date.) :hr)            ;; "srijeda, 19. veljače 2026."
+
+;; Protocol-based translation (i18n/t)
+;; Numbers are extended to support direct translation
+(i18n/t 1234.56)                                  ;; "1,234.56" (current locale)
+(i18n/t 1234.56 "EUR")                            ;; "€1,234.56" (as currency)
+(i18n/t 1234.56 :de_DE)                           ;; "1.234,56" (German locale)
+(i18n/t 1234.56 :de_DE {:style "currency" :currency "EUR"})  ;; "1.234,56 €"
+```
 
 ---
 
-## ⚠️ Important: CSS is Required
+## Components
 
-**Ty components require the `ty.css` stylesheet to display correctly.** The CSS file contains:
+| Component | Description |
+|-----------|-------------|
+| `ty-button` | Semantic buttons with flavors, sizes, and icon slots |
+| `ty-input` | Text input with labels, validation, numeric formatting, debounce |
+| `ty-textarea` | Multi-line text with auto-resize and character count |
+| `ty-checkbox` | Styled checkbox with indeterminate state |
+| `ty-dropdown` | Searchable select with keyboard nav and mobile modal |
+| `ty-multiselect` | Multi-select with tags and search |
+| `ty-calendar` | Full calendar with date selection and form integration |
+| `ty-date-picker` | Calendar dropdown for date input |
+| `ty-tabs` / `ty-tab` | Carousel tabs with smooth animations |
+| `ty-wizard` / `ty-step` | Step-by-step wizard with progress tracking |
+| `ty-modal` | Native dialog with backdrop and focus management |
+| `ty-popup` | Anchored popover with smart positioning |
+| `ty-tooltip` | Hover tooltips with placement options |
+| `ty-icon` | SVG icons from Lucide, Heroicons, Material, FontAwesome |
+| `ty-tag` | Removable tags for selections |
+| `ty-copy` | Click-to-copy with visual feedback |
+| `ty-scroll-container` | Scrollable area with fade indicators |
 
-- **CSS Variables** - Design tokens for all colors, surfaces, spacing, and typography
-- **Utility Classes** - Semantic classes like `.ty-bg-primary`, `.ty-text++`, `.ty-elevated`
-- **Theme System** - Light/dark mode definitions that swap automatically
-- **Component Styles** - Base styling that components depend on
-
----
-
-## 🏗️ Architecture: The Best of Both Worlds
-
-**TypeScript Components** (`packages/core/`)
-- All 18 UI components written in modern TypeScript
-- Published to NPM as `@gersak/ty`
-- Zero runtime dependencies
-- Full `.d.ts` type definitions
-- Vite build with Terser minification
-
-**ClojureScript Infrastructure** (`packages/cljs/`)
-- Tree-based routing with authorization
-- Protocol-based i18n with Intl API
-- Context management for responsive design
-- Documentation site and examples
-- Published to Clojars as `dev.gersak/ty`
-
-**Why This Matters:**
-- **TypeScript devs**: Get modern components with type safety, no ClojureScript needed
-- **ClojureScript devs**: Get powerful infrastructure + TypeScript components
-- **Everyone**: Components work everywhere, regardless of tech stack
+**[See all components in action →](https://gersak.github.io/ty)**
 
 ---
 
-## 🤝 Join the Effort
+## Design System
 
-This project grows with community input. Every issue, PR, and discussion helps shape the direction.
+Semantic CSS classes that flip correctly for dark mode:
 
-**Ways to contribute:**
-- 🐛 [**Report Issues**](https://github.com/gersak/ty/issues) - Found a bug? Let us know
-- 🌟 [**Star on GitHub**](https://github.com/gersak/ty) - Show support for the project
-- 🔧 [**Pull Requests**](https://github.com/gersak/ty/pulls) - Documentation, components, examples - all contributions matter
+```html
+<!-- Surfaces -->
+<div class="ty-canvas">...</div>      <!-- App background -->
+<div class="ty-content">...</div>     <!-- Main content -->
+<div class="ty-elevated">...</div>    <!-- Cards, panels -->
+<div class="ty-floating">...</div>    <!-- Modals, dropdowns -->
 
-**Especially interested in:**
-- Mobile interaction improvements
-- New components
-- Real-world usage feedback
-- Documentation improvements
-- Icon library expansions
+<!-- Text emphasis -->
+<h1 class="ty-text++">Maximum</h1>    <!-- Strongest -->
+<h2 class="ty-text+">High</h2>
+<p class="ty-text">Normal</p>
+<span class="ty-text-">Muted</span>
+<small class="ty-text--">Faint</small> <!-- Weakest -->
 
----
-
-## 📚 Links
-
-- 📖 **Docs & Examples**: [gersak.github.io/ty](https://gersak.github.io/ty)
-- 💻 **GitHub**: [github.com/gersak/ty](https://github.com/gersak/ty)
-- 📦 **NPM (TypeScript)**: [@gersak/ty](https://www.npmjs.com/package/@gersak/ty)
-- ⚛️ **NPM (React)**: [@gersak/ty-react](https://www.npmjs.com/package/@gersak/ty-react)
-- 📦 **Clojars (ClojureScript)**: [dev.gersak/ty](https://clojars.org/dev.gersak/ty)
-- 🌐 **CDN**: [jsdelivr.net/npm/@gersak/ty](https://www.jsdelivr.net/npm/@gersak/ty)
+<!-- Semantic colors -->
+<span class="ty-text-primary">Primary</span>
+<span class="ty-text-success">Success</span>
+<span class="ty-text-danger">Danger</span>
+<div class="ty-bg-warning- p-2">Warning background</div>
+```
 
 ---
 
-## 🎯 Coming Soon
+## Links
 
-- 🚧 Better mobile adaptations
-- 🚧 Enhanced accessibility features
+- [Documentation & Examples](https://gersak.github.io/ty)
+- [GitHub](https://github.com/gersak/ty)
+- [NPM @gersak/ty](https://www.npmjs.com/package/@gersak/ty)
+- [NPM @gersak/ty-react](https://www.npmjs.com/package/@gersak/ty-react)
+- [Clojars dev.gersak/ty](https://clojars.org/dev.gersak/ty)
+- [Clojars dev.gersak/ty-icons](https://clojars.org/dev.gersak/ty-icons)
 
 ---
 
-**Built with TypeScript for universal compatibility. Powered by ClojureScript for advanced features. Framework-agnostic by design.**
-
-**MIT Licensed. Work in progress. Getting better every day.**
+MIT License

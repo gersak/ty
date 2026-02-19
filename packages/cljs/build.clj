@@ -7,7 +7,7 @@
             [deps-deploy.deps-deploy :as deploy]
             [ty.template :as template]))
 
-(def ty-version "0.3.0")
+(def ty-version "0.3.1")
 (def ty-icons-version "0.1.1")
 (def class-dir "target/classes")
 

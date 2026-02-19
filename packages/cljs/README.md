@@ -447,6 +447,30 @@ Container-query responsive layouts.
 
 ---
 
+## Build Your Own Components
+
+Use `ty.shim` to create custom Web Components from ClojureScript with any rendering library.
+
+```clojure
+(ns app.components
+  (:require [replicant.dom :as d]
+            [ty.shim :as shim]))
+
+(defn render! [^js el]
+  (d/render (shim/ensure-shadow el)
+    [:div.ty-elevated.p-4
+     [:h2.ty-text+ "Hello, " (or (shim/attr el "name") "World") "!"]]))
+
+(shim/define! "my-greeting"
+  {:observed [:name]
+   :connected render!
+   :attr (fn [el _] (render! el))})
+```
+
+**[Component Building Guide →](COMPONENT_GUIDE.md)** | **[Code Splitting Guide →](CODE_SPLITTING.md)**
+
+---
+
 ## Resources
 
 - [Documentation](https://gersak.github.io/ty)

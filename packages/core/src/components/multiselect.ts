@@ -370,17 +370,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     })
 
     // Clean up document-level listeners
-    const outsideClickHandler = (this as any).tyOutsideClickHandler
-    const keyboardHandler = (this as any).tyKeyboardHandler
-
-    if (outsideClickHandler) {
-      document.removeEventListener('click', outsideClickHandler)
-        ; (this as any).tyOutsideClickHandler = null
-    }
-
-    if (keyboardHandler) {
-      document.removeEventListener('keydown', keyboardHandler)
-        ; (this as any).tyKeyboardHandler = null
+    if (this._keyboardHandler) {
+      document.removeEventListener('keydown', this._keyboardHandler)
+      this._keyboardHandler = null
     }
 
     // Clear any pending debounce timer
@@ -769,6 +761,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     this._state.filteredTags = tags
     this._state.highlightedIndex = -1
 
+    // Ensure options area is visible (may have been hidden from previous search)
+    this.updateOptionsVisibility(true)
+
     // Focus search input if searchable
     if (this._searchable) {
       const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
@@ -928,11 +923,11 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (!this._state.open) return
 
     const target = e.target as Node
-    const shadow = this.shadowRoot!
 
-    // Check if click is inside .dropdown-wrapper
-    const wrapper = shadow.querySelector('.dropdown-wrapper')
-    const clickedInside = wrapper && wrapper.contains(target)
+    // Check if click is inside this component (handles shadow DOM retargeting)
+    // Also check composedPath for clicks that originated inside shadow DOM
+    const path = e.composedPath()
+    const clickedInside = path.includes(this)
 
     if (!clickedInside) {
       this.closeDropdown()
@@ -1001,7 +996,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     if (this._searchable) {
       // Internal search: filter tags locally
       const allTags = this.getTagElements().map(el => this.getTagData(el))
-      const filtered = this.filterTags(allTags, query)
+      // Only filter from non-selected tags
+      const availableTags = allTags.filter(t => !t.element.hasAttribute('selected'))
+      const filtered = this.filterTags(availableTags, query)
 
       // Update state
       this._state.filteredTags = filtered
@@ -1009,6 +1006,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
 
       // Update visibility
       this.updateTagVisibility(filtered, allTags)
+
+      // Hide options area if no results
+      this.updateOptionsVisibility(filtered.length > 0)
 
       // Clear highlights
       this.clearHighlights(allTags)
@@ -1133,6 +1133,17 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         element.setAttribute('hidden', '')
       }
     })
+  }
+
+  /**
+   * Show/hide the dropdown options area
+   */
+  private updateOptionsVisibility(hasOptions: boolean): void {
+    const shadow = this.shadowRoot!
+    const options = shadow.querySelector('.dropdown-options') as HTMLElement
+    if (options) {
+      options.style.display = hasOptions ? '' : 'none'
+    }
   }
 
   /**
@@ -1261,11 +1272,19 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       // searchInput.addEventListener('blur', this._searchBlurHandler)
     }
 
-    // Setup document-level event listeners
-    this._outsideClickHandler = this.handleOutsideClick.bind(this)
-    this._keyboardHandler = this.handleKeyboard.bind(this)
+    // Setup dialog backdrop click handler
+    const dialog = shadow.querySelector('.dropdown-dialog') as HTMLDialogElement
+    if (dialog) {
+      dialog.addEventListener('click', (e) => {
+        // Only close if clicking directly on the dialog (backdrop), not its children
+        if (e.target === dialog) {
+          this.closeDropdown()
+        }
+      })
+    }
 
-    document.addEventListener('click', this._outsideClickHandler)
+    // Setup keyboard handler
+    this._keyboardHandler = this.handleKeyboard.bind(this)
     document.addEventListener('keydown', this._keyboardHandler)
 
     // Listen for dismiss events from selected tags

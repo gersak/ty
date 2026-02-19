@@ -13,12 +13,30 @@
     ;; WIP as the MAIN message
 
 ;; Simple, direct title
-    [:h1.text-3xl.lg:text-5xl.font-bold.ty-text.mb-4
-     "ty Web Components"]
+    [:div.flex.items-center.justify-center.gap-2.mb-4
+     [:ty-icon {:name "ty-logo"
+                :class "ty-text-accent"
+                :style {:height "5rem"
+                        :width "8rem"
+                        :margin-top "4px"}}]
+     [:h1.text-3xl.lg:text-5xl.font-bold.ty-text
+      "Web Components"]]
 
-    [:p.text-lg.ty-text-.max-w-2xl.mx-auto.mb-8
+    [:p.text-xl.ty-text-.max-w-2xl.mx-auto.mb-4
      "Native web components that work with any framework. "
      "Or no framework at all."]
+
+    ;; Hard numbers
+    [:div.flex.flex-wrap.justify-center.gap-6.mb-8
+     [:div.text-center
+      [:p.text-2xl.font-bold.ty-text "0"]
+      [:p.text-xs.ty-text-- "dependencies"]]
+     [:div.text-center
+      [:p.text-2xl.font-bold.ty-text "~60KB"]
+      [:p.text-xs.ty-text-- "total size"]]
+     [:div.text-center
+      [:p.text-2xl.font-bold.ty-text "1"]
+      [:p.text-xs.ty-text-- "script tag"]]]
 
     [:div.ty-content.border.ty-border--.rounded-xl.p-6.max-w-3xl.mx-auto.mb-8
      [:div.flex.items-start.gap-4
@@ -108,21 +126,14 @@
          [:p.text-left.ty-text.text-sm.font-medium "ClojureScript powered"]
          [:p.ty-text-.text-xs "Built with a language designed to last"]]]]]]
 
-    ;; The vision (brief)
-    [:div.text-center.mb-12
-     [:h3.text-lg.font-semibold.ty-text.mb-3
-      "The Goal"]
-     [:p.ty-text-.max-w-2xl.mx-auto
-      "Components you write once and use everywhere. "
-      "Not tied to React's lifecycle, Vue's reactivity, or Angular's modules. "
-      "Just HTML elements that happen to be powerful."]
-     [:button.text-sm.ty-text-primary.underline.hover:no-underline.mt-2.cursor-pointer.font-bold
-      {:on {:click #(do
-                      (router/navigate! :ty.site.core/why)
-                      (when-let [main-element (.querySelector js/document "main.overflow-auto")]
-                        (.scrollTo main-element #js {:top 0
-                                                     :behavior "smooth"})))}}
-      "Read why this matters →"]]
+    ;; The pragmatic pitch
+    [:div.text-center.mb-12.max-w-3xl.mx-auto
+     [:h3.text-2xl.font-bold.ty-text.mb-4
+      "Frameworks change. Components don't."]
+     [:p.ty-text-.mb-2
+      "React 19, Vue 4, the next big thing — your ty components keep working."]
+     [:p.ty-text--
+      "Not anti-framework. Framework-optional. React wrappers included."]]
 
     ;; Call to action
     [:div.flex.flex-col.gap-4.items-center

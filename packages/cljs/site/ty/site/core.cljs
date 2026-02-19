@@ -7,8 +7,7 @@
     [ty.site.docs :as docs]
     [ty.site.icons :as icons]
     [ty.site.state :refer [state]]
-    [ty.site.views.landing :as landing]
-    [ty.site.views.why :as why]))
+    [ty.site.views.landing :as landing]))
 
 ;; Configuration for GitHub Pages deployment
 ;; These are replaced at build time via closure-defines
@@ -27,14 +26,6 @@
     :icon "home"
     :landing 20
     :view landing/view}
-
-   ;; Why ty Exists - The story page
-   {:id ::why
-    :segment "why"
-    :name "Why ty exists"
-    :icon "lightbulb"
-    :landing 10
-    :view why/view}
 
    ;; Landing page fragments for examples
    {:id ::landing-user-profile
@@ -185,7 +176,7 @@
         current-route (some #(when (router/rendered? (:id %) true) %) all-routes)
         section (when current-route (route->section (:id current-route)))]
     ;; Set section state (nil will collapse all)
-    (swap! state assoc :navigation.section/open section)
+    (when section (swap! state assoc :navigation.section/open section))
     (set-open-section-in-storage! section)))
 
 (defn toggle-mobile-menu!
@@ -680,83 +671,83 @@
     ;; Always render modal (must be in DOM), control visibility via :open attribute
     [:ty-modal {:open open
                 :on {:close close-search!}}
-       [:div.ty-floating.rounded-xl.shadow-lg.overflow-hidden
-        {:style {:width "min(520px, 90vw)"
-                 :max-height "80vh"}}
+     [:div.ty-floating.rounded-xl.shadow-lg.overflow-hidden
+      {:style {:width "min(520px, 90vw)"
+               :max-height "80vh"}}
         ;; Search input
-        [:div.p-4.border-b.ty-border-
-         [:div.flex.items-center.gap-3
-          [:ty-icon {:name "search"
-                     :size "sm"
-                     :class "ty-text-"}]
-          [:input#search-input.flex-1.bg-transparent.outline-none.text-lg.ty-text
-           {:type "text"
-            :placeholder "Search components and guides..."
-            :value query
-            :on {:input (fn [e]
-                          (swap! state assoc-in [:search :query] (.. e -target -value))
-                          (swap! state assoc-in [:search :selected-index] 0))
-                 :keydown (fn [e]
-                            (let [key (.-key e)]
-                              (cond
-                                (= key "ArrowDown")
-                                (do (.preventDefault e)
-                                    (swap! state update-in [:search :selected-index]
-                                           #(min (inc %) (dec result-count))))
+      [:div.p-4.border-b.ty-border-
+       [:div.flex.items-center.gap-3
+        [:ty-icon {:name "search"
+                   :size "sm"
+                   :class "ty-text-"}]
+        [:input#search-input.flex-1.bg-transparent.outline-none.text-lg.ty-text
+         {:type "text"
+          :placeholder "Search components and guides..."
+          :value query
+          :on {:input (fn [e]
+                        (swap! state assoc-in [:search :query] (.. e -target -value))
+                        (swap! state assoc-in [:search :selected-index] 0))
+               :keydown (fn [e]
+                          (let [key (.-key e)]
+                            (cond
+                              (= key "ArrowDown")
+                              (do (.preventDefault e)
+                                  (swap! state update-in [:search :selected-index]
+                                         #(min (inc %) (dec result-count))))
 
-                                (= key "ArrowUp")
-                                (do (.preventDefault e)
-                                    (swap! state update-in [:search :selected-index]
-                                           #(max (dec %) 0)))
+                              (= key "ArrowUp")
+                              (do (.preventDefault e)
+                                  (swap! state update-in [:search :selected-index]
+                                         #(max (dec %) 0)))
 
-                                (= key "Enter")
-                                (when-let [result (nth all-results selected-index nil)]
-                                  (select-search-result! result))
+                              (= key "Enter")
+                              (when-let [result (nth all-results selected-index nil)]
+                                (select-search-result! result))
 
-                                (= key "Escape")
-                                (close-search!))))}}]
-          [:kbd.text-xs.ty-text-.ty-bg-neutral-.px-2.py-1.rounded "esc"]]]
+                              (= key "Escape")
+                              (close-search!))))}}]
+        [:kbd.text-xs.ty-text-.ty-bg-neutral-.px-2.py-1.rounded "esc"]]]
 
         ;; Results list (fixed height to prevent twitching)
-        [:div.overflow-y-auto {:style {:height "400px"}}
-         (if (seq all-results)
-           [:div.py-2
+      [:div.overflow-y-auto {:style {:height "400px"}}
+       (if (seq all-results)
+         [:div.py-2
             ;; Guides section
-            (when (seq guides)
-              [:div
-               [:div.px-4.py-2.text-xs.font-medium.ty-text-.uppercase.tracking-wide
-                "Guides"]
-               [:ul
-                (for [[idx result] (map-indexed vector guides)]
-                  ^{:key (:id result)}
-                  (search-result-item result idx selected-index query))]])
+          (when (seq guides)
+            [:div
+             [:div.px-4.py-2.text-xs.font-medium.ty-text-.uppercase.tracking-wide
+              "Guides"]
+             [:ul
+              (for [[idx result] (map-indexed vector guides)]
+                ^{:key (:id result)}
+                (search-result-item result idx selected-index query))]])
             ;; Components section
-            (when (seq components)
-              [:div {:class (when (seq guides) "mt-2")}
-               [:div.px-4.py-2.text-xs.font-medium.ty-text-.uppercase.tracking-wide
-                "Components"]
-               [:ul
-                (let [offset (count guides)]
-                  (for [[idx result] (map-indexed vector components)]
-                    ^{:key (:id result)}
-                    (search-result-item result (+ offset idx) selected-index query)))]])]
-           [:div.py-8.text-center.ty-text-
-            [:ty-icon.mb-2.opacity-50 {:name "search"
-                                       :size "lg"}]
-            [:p "No results found"]])]
+          (when (seq components)
+            [:div {:class (when (seq guides) "mt-2")}
+             [:div.px-4.py-2.text-xs.font-medium.ty-text-.uppercase.tracking-wide
+              "Components"]
+             [:ul
+              (let [offset (count guides)]
+                (for [[idx result] (map-indexed vector components)]
+                  ^{:key (:id result)}
+                  (search-result-item result (+ offset idx) selected-index query)))]])]
+         [:div.py-8.text-center.ty-text-
+          [:ty-icon.mb-2.opacity-50 {:name "search"
+                                     :size "lg"}]
+          [:p "No results found"]])]
 
         ;; Footer with keyboard hints
-        [:div.px-4.py-3.border-t.ty-border-.flex.items-center.gap-4.text-xs.ty-text--
-         [:span.flex.items-center.gap-1
-          [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↑"]
-          [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↓"]
-          " Navigate"]
-         [:span.flex.items-center.gap-1
-          [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↵"]
-          " Select"]
-         [:span.flex.items-center.gap-1
-          [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "esc"]
-          " Close"]]]]))
+      [:div.px-4.py-3.border-t.ty-border-.flex.items-center.gap-4.text-xs.ty-text--
+       [:span.flex.items-center.gap-1
+        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↑"]
+        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↓"]
+        " Navigate"]
+       [:span.flex.items-center.gap-1
+        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↵"]
+        " Select"]
+       [:span.flex.items-center.gap-1
+        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "esc"]
+        " Close"]]]]))
 
 (defonce keyboard-shortcuts-initialized (atom false))
 
@@ -834,7 +825,6 @@
              (router/rendered? ::event-booking true) "Event Booking"
              (router/rendered? ::contact-form true) "Contact Form"
              (router/rendered? ::landing) "Welcome"
-             (router/rendered? ::why true) "Why ty exists"
              (router/rendered? ::ty-styles true) "Design System"
              (router/rendered? ::getting-started true) "Getting Started"
              :else "Documentation")]
@@ -888,7 +878,6 @@
             (router/rendered? ::event-booking true) "Event Booking"
             (router/rendered? ::contact-form true) "Contact Form"
             (router/rendered? ::landing) "Welcome"
-            (router/rendered? ::why true) "Why ty exists"
             (router/rendered? ::ty-styles true) "Design System"
             (router/rendered? ::getting-started true) "Getting Started"
             :else "Documentation")]

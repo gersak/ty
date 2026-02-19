@@ -6,7 +6,7 @@
 
          ;; Navigation collapsible sections
          ;; Can be nil, :quickstart, or :components
-         :navigation.section/open nil
+         :navigation.section/open :quickstart
 
          ;; Resize observer - element sizes by ID
          :element-sizes {}
@@ -39,7 +39,9 @@
          ;; Event booking state with comprehensive demo data
          :event-booking {:confirmation-modal-open false
                          ;; Pre-select a date 5 days from now to show calendar highlighting
-                         :selected-date {:year 2024 :month 12 :day 28}
+                         :selected-date {:year 2024
+                                         :month 12
+                                         :day 28}
                          ;; Pre-select a popular time slot
                          :selected-time "10:00 AM"
                          ;; Pre-select some popular services to showcase multiselect

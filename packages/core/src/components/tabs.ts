@@ -716,16 +716,31 @@ function render(el: TyTabs): void {
     
     // Setup event listeners
     setupEventListeners(el, shadowRoot, tabs);
-    
+
     // Update ARIA and data-active attributes on initial render
     updateAriaAttributes(el, shadowRoot, activeId || '');
-    
+
     // Setup ResizeObserver for responsive width
     setupResizeObserver(el);
-    
+
     // Update tab panel states
     if (activeId) {
       updatePanelInteraction(el, activeId);
+    }
+
+    // Listen for marker slot changes to hide default marker
+    const markerSlot = shadowRoot.querySelector('slot[name="marker"]') as HTMLSlotElement;
+    if (markerSlot) {
+      const updateDefaultMarkerVisibility = () => {
+        const defaultMarker = shadowRoot.querySelector('.default-marker') as HTMLElement;
+        if (defaultMarker) {
+          const hasCustom = markerSlot.assignedElements().length > 0;
+          defaultMarker.style.display = hasCustom ? 'none' : '';
+        }
+      };
+      markerSlot.addEventListener('slotchange', updateDefaultMarkerVisibility);
+      // Check immediately in case content is already slotted
+      updateDefaultMarkerVisibility();
     }
   }
 }

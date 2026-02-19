@@ -1,321 +1,458 @@
 # dev.gersak/ty
 
-**ClojureScript infrastructure for Ty web components.**
+**Framework-agnostic web components for ClojureScript applications.**
 
-## 📦 What's in This Package
+Ty provides a complete set of UI components that work seamlessly with Reagent, UIx, Replicant, or any ClojureScript framework. Load via CDN and use as custom HTML elements.
 
-This package provides **ClojureScript-specific infrastructure** for building sophisticated web applications. All UI components are now in the TypeScript package (`@gersak/ty` on NPM).
-
-### ClojureScript Infrastructure (Core Features)
-
-- **Router** - Tree-based routing with dynamic vars, authorization, and query parameters
-- **i18n** - Protocol-based internationalization with Intl API integration
-- **Context** - Dynamic binding system for container-aware responsive layouts
-- **Icon Generation** - Build-time SVG processing and optimization tooling
-- **Documentation Site** - The live documentation site at [gersak.github.io/ty](https://gersak.github.io/ty)
-
-### UI Components
-
-**All UI components have been migrated to TypeScript** and are available via `@gersak/ty` NPM package:
+## Installation
 
 ```clojure
-;; Use TypeScript components from NPM\/CDN
-;; They work perfectly with Reagent\/UIx!
-[:ty-button {:flavor "primary"} "Click Me"]
-[:ty-calendar {:value 1735084800000}]  ;; 2024-12-25
-[:ty-dropdown {:placeholder "Select..."} 
-  [:ty-option {:value "1"} "Option 1"]]
-```
-
----
-
-## 🚀 Installation
-
-### For ClojureScript Projects
-
-```clojure
-;; deps.edn
+;; deps.edn - for router, i18n, layout infrastructure
 {:deps {dev.gersak/ty {:mvn/version "LATEST"}}}
 ```
 
-### For TypeScript/JavaScript Projects
-
-Use the NPM package instead:
-
-```bash
-npm install @gersak/ty
+```html
+<!-- Load components via CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
 ```
 
-See [@gersak/ty on NPM](https://www.npmjs.com/package/@gersak/ty) for TypeScript documentation.
+## Components
+
+### ty-button
+
+Semantic buttons with multiple flavors and styles.
+
+```html
+<ty-button flavor="primary">Primary Action</ty-button>
+<ty-button flavor="danger" outlined>Delete</ty-button>
+<ty-button flavor="success" pill>
+  <ty-icon name="check" slot="start"></ty-icon>
+  Confirm
+</ty-button>
+```
+
+**Attributes:** `flavor` (primary|secondary|success|danger|warning|info|neutral), `size` (sm|md|lg), `disabled`, `outlined`, `filled`, `pill`, `plain`, `action`, `wide`
 
 ---
 
-## 🎯 Usage
+### ty-input
+
+Enhanced input with labels, icons, validation, and numeric formatting.
+
+```html
+<ty-input label="Email" type="email" placeholder="you@example.com" required></ty-input>
+
+<ty-input label="Search" placeholder="Search...">
+  <ty-icon name="search" slot="start"></ty-icon>
+</ty-input>
+
+<ty-input label="Price" type="number" format="currency" currency="EUR" value="1234.50"></ty-input>
+
+<ty-input label="Live Search" delay="500" placeholder="Debounced input..."></ty-input>
+```
+
+**Attributes:** `label`, `type`, `placeholder`, `value`, `required`, `disabled`, `error`, `format` (currency|percent|compact), `currency`, `delay` (debounce ms), `locale`
+
+---
+
+### ty-textarea
+
+Multi-line text input with auto-resize and character limits.
+
+```html
+<ty-textarea label="Description" placeholder="Enter description..." rows="4"></ty-textarea>
+
+<ty-textarea label="Bio" maxlength="500" show-count></ty-textarea>
+```
+
+**Attributes:** `label`, `placeholder`, `value`, `rows`, `maxlength`, `show-count`, `required`, `disabled`, `error`
+
+---
+
+### ty-checkbox
+
+Styled checkbox with label and indeterminate state.
+
+```html
+<ty-checkbox label="I agree to the terms" name="terms" required></ty-checkbox>
+
+<ty-checkbox label="Select all" indeterminate></ty-checkbox>
+```
+
+**Attributes:** `label`, `checked`, `indeterminate`, `disabled`, `required`, `name`, `value`
+
+---
+
+### ty-dropdown
+
+Smart select with search, keyboard navigation, and mobile-optimized modal.
+
+```html
+<ty-dropdown label="Country" placeholder="Select country" required>
+  <option value="us">United States</option>
+  <option value="uk">United Kingdom</option>
+  <option value="de">Germany</option>
+</ty-dropdown>
+
+<ty-dropdown label="User" searchable placeholder="Search users...">
+  <ty-option value="1">
+    <div class="flex items-center gap-2">
+      <img src="avatar.jpg" class="w-6 h-6 rounded-full">
+      <span>John Doe</span>
+    </div>
+  </ty-option>
+</ty-dropdown>
+```
+
+**Attributes:** `label`, `placeholder`, `value`, `searchable`, `not-searchable`, `required`, `disabled`, `name`
+
+---
+
+### ty-multiselect
+
+Multiple selection with tags and search.
+
+```html
+<ty-multiselect label="Skills" placeholder="Add skills..." searchable>
+  <option value="clojure">Clojure</option>
+  <option value="javascript">JavaScript</option>
+  <option value="rust">Rust</option>
+</ty-multiselect>
+```
+
+**Attributes:** `label`, `placeholder`, `value` (comma-separated), `searchable`, `required`, `disabled`, `name`
+
+---
+
+### ty-calendar
+
+Full calendar with date selection and form integration.
+
+```html
+<ty-calendar year="2025" month="6" day="15"></ty-calendar>
+
+<form>
+  <ty-calendar name="booking-date" locale="de-DE"></ty-calendar>
+  <ty-button type="submit">Book</ty-button>
+</form>
+```
+
+**Attributes:** `year`, `month`, `day`, `value` (timestamp), `locale`, `name`, `min-date`, `max-date`
+
+---
+
+### ty-date-picker
+
+Dropdown calendar picker for date selection.
+
+```html
+<ty-date-picker label="Start Date" placeholder="Select date..." name="start"></ty-date-picker>
+
+<ty-date-picker label="Birthday" value="1990-05-15" locale="hr-HR"></ty-date-picker>
+```
+
+**Attributes:** `label`, `placeholder`, `value`, `locale`, `name`, `required`, `disabled`, `min-date`, `max-date`
+
+---
+
+### ty-tabs
+
+Carousel-based tabs with smooth animations.
+
+```html
+<ty-tabs width="100%" height="400px" active="general">
+  <ty-tab id="general" label="General">
+    <div class="p-4">General settings content...</div>
+  </ty-tab>
+  <ty-tab id="advanced" label="Advanced">
+    <div class="p-4">Advanced settings content...</div>
+  </ty-tab>
+</ty-tabs>
+
+<!-- With icons in labels -->
+<ty-tabs active="profile">
+  <span slot="label-profile" class="flex items-center gap-2">
+    <ty-icon name="user" size="sm"></ty-icon>
+    Profile
+  </span>
+  <ty-tab id="profile">...</ty-tab>
+</ty-tabs>
+```
+
+**Attributes:** `active`, `width`, `height`, `placement` (top|bottom)
+
+---
+
+### ty-wizard
+
+Step-by-step wizard with progress tracking.
+
+```html
+<ty-wizard width="100%" height="500px" active="welcome" completed="welcome">
+  <ty-step id="welcome" label="Welcome">
+    <div class="p-6">
+      <h2>Welcome!</h2>
+      <ty-button onclick="this.closest('ty-wizard').active = 'details'">
+        Next
+      </ty-button>
+    </div>
+  </ty-step>
+  <ty-step id="details" label="Details">
+    <div class="p-6">Form fields here...</div>
+  </ty-step>
+  <ty-step id="confirm" label="Confirm">
+    <div class="p-6">Review and submit...</div>
+  </ty-step>
+</ty-wizard>
+```
+
+**Attributes:** `active`, `completed` (comma-separated step ids), `width`, `height`
+
+---
+
+### ty-modal
+
+Native dialog wrapper with backdrop and focus management.
+
+```html
+<ty-modal id="confirm-modal">
+  <div class="ty-elevated p-6 rounded-lg max-w-md">
+    <h3 class="text-lg font-bold mb-4">Confirm Action</h3>
+    <p class="ty-text- mb-4">Are you sure you want to proceed?</p>
+    <div class="flex gap-2 justify-end">
+      <ty-button onclick="this.closest('ty-modal').hide()">Cancel</ty-button>
+      <ty-button flavor="primary" onclick="confirmAction()">Confirm</ty-button>
+    </div>
+  </div>
+</ty-modal>
+
+<ty-button onclick="document.getElementById('confirm-modal').show()">
+  Open Modal
+</ty-button>
+```
+
+**Attributes:** `open`, `backdrop`, `close-on-outside-click`, `close-on-escape`, `protected`
+
+---
+
+### ty-popup
+
+Interactive popup anchored to parent element.
+
+```html
+<ty-button>
+  Options
+  <ty-popup placement="bottom-start" offset="4">
+    <div class="ty-elevated p-2 rounded-lg min-w-48">
+      <div class="px-3 py-2 hover:ty-bg-neutral- rounded cursor-pointer">Edit</div>
+      <div class="px-3 py-2 hover:ty-bg-neutral- rounded cursor-pointer">Duplicate</div>
+      <div class="px-3 py-2 hover:ty-bg-danger- ty-text-danger rounded cursor-pointer">Delete</div>
+    </div>
+  </ty-popup>
+</ty-button>
+```
+
+**Attributes:** `placement`, `offset`, `manual`, `disable-close`
+
+---
+
+### ty-tooltip
+
+Hover tooltips with smart positioning.
+
+```html
+<ty-button>
+  Hover me
+  <ty-tooltip placement="top">Helpful information</ty-tooltip>
+</ty-button>
+
+<ty-icon name="info">
+  <ty-tooltip flavor="primary" delay="300">
+    This field is required for processing.
+  </ty-tooltip>
+</ty-icon>
+```
+
+**Attributes:** `placement`, `offset`, `delay`, `disabled`, `flavor`
+
+---
+
+### ty-icon
+
+SVG icon rendering with Lucide icons.
+
+```html
+<ty-icon name="check" size="sm"></ty-icon>
+<ty-icon name="alert-triangle" size="md" class="ty-text-warning"></ty-icon>
+<ty-icon name="heart" size="lg" class="ty-text-danger"></ty-icon>
+```
+
+**Attributes:** `name`, `size` (xs|sm|md|lg|xl)
+
+---
+
+### ty-tag
+
+Removable tags for selections and labels.
+
+```html
+<ty-tag>Default</ty-tag>
+<ty-tag flavor="primary" removable>Clojure</ty-tag>
+<ty-tag flavor="success">Active</ty-tag>
+```
+
+**Attributes:** `flavor`, `removable`, `disabled`
+
+---
+
+### ty-copy
+
+Click-to-copy with visual feedback.
+
+```html
+<ty-copy value="npm install @gersak/ty">
+  <code>npm install @gersak/ty</code>
+</ty-copy>
+```
+
+**Attributes:** `value`
+
+---
+
+### ty-scroll-container
+
+Scrollable container with fade indicators.
+
+```html
+<ty-scroll-container height="300px">
+  <div class="p-4">
+    <!-- Long scrollable content -->
+  </div>
+</ty-scroll-container>
+```
+
+**Attributes:** `height`, `fade-size`
+
+---
+
+### ty-resize-observer
+
+Observe element size changes.
+
+```html
+<ty-resize-observer onresize="handleResize(event.detail)">
+  <div class="resizable-content">...</div>
+</ty-resize-observer>
+```
+
+---
+
+## ClojureScript Infrastructure
 
 ### Router
 
-Tree-based routing with authorization and dynamic vars:
+Tree-based routing with authorization and path parameters.
 
 ```clojure
-(ns my-app.core
+(ns app.core
   (:require [ty.router :as router]))
 
 (def routes
   [:root
    [:home]
-   [:about]
    [:users
-    [:user-detail {:path-params [:id]}]]
-   [:admin 
-    {:auth :admin}  ;; Requires authorization
+    [:user {:path-params [:id]}]]
+   [:admin {:auth :admin}
     [:dashboard]]])
 
 (router/init! routes)
 
 ;; Navigate
-(router/navigate! [:user-detail {:id "123"}])
+(router/navigate! [:user {:id "123"}])
 
-;; Get current route
-@router/*route*  ;; => {:path [:user-detail] :params {:id "123"}}
+;; Current route
+@router/*route*  ;; => {:path [:user] :params {:id "123"}}
 ```
 
 ### i18n
 
-Protocol-based translations with Intl API integration:
+Protocol-based translations with Intl API.
 
 ```clojure
-(ns my-app.i18n
+(ns app.i18n
   (:require [ty.i18n :as i18n]))
 
-(defrecord Translations []
-  i18n/ITranslate
-  (translate [this k locale]
-    (get-in translations [locale k])))
-
-(def translations
-  {:en {:welcome "Welcome"
-        :goodbye "Goodbye"}
-   :hr {:welcome "Dobrodošli"
-        :goodbye "Doviđenja"}})
-
-;; Use translations
-(i18n/t :welcome)  ;; => "Welcome" (based on current locale)
-
-;; Format dates, numbers, etc. with Intl API
-(i18n/format-date (js/Date.) {:locale "hr"})
+(i18n/t :welcome)
+(i18n/format-number 1234.56 {:style "currency" :currency "EUR"})
+(i18n/format-date (js/Date.) {:dateStyle "long"})
 ```
 
-### Context
+### Layout
 
-Dynamic binding system for container-aware responsive design:
+Container-query responsive layouts.
 
 ```clojure
-(ns my-app.layout
-  (:require [ty.context :as ctx]))
+(ns app.layout
+  (:require [ty.layout :as layout]))
 
-;; Set context based on container size
-(ctx/with-layout {:breakpoint :mobile
-                  :container-width 375}
-  (render-component))
-
-;; Components can read context
-(defn responsive-component []
-  (let [bp @ctx/*breakpoint*]
-    (if (= bp :mobile)
-      [:div.mobile-view "Mobile"]
-      [:div.desktop-view "Desktop"])))
+(layout/container {:breakpoints {:sm 640 :md 768 :lg 1024}}
+  (fn [{:keys [width breakpoint]}]
+    [:div {:class (if (= breakpoint :sm) "flex-col" "flex-row")}
+     ...]))
 ```
 
 ---
 
-## 🏗️ Project Structure
-
-```
-packages/cljs/
-├── src/               # ClojureScript infrastructure source
-│   ├── ty/
-│   │   ├── router.cljs      # Routing system
-│   │   ├── i18n.cljs        # Internationalization
-│   │   ├── context.cljs     # Context management
-│   │   └── date.cljs        # Date utilities
-├── site/              # Documentation site source
-│   └── ty/site/
-├── icons/             # Icon generation scripts
-├── gen/               # Generated icon definitions
-├── build.clj          # Build script
-├── shadow-cljs.edn    # Shadow-cljs configuration
-├── deps.edn           # Clojure dependencies
-└── package.json       # NPM dependencies
-```
-
----
-
-## 🛠️ Development
-
-### Watch Mode (Documentation Site)
-
-```bash
-npm run dev
-# Opens: http://localhost:8000
-# Features: Live reload, full documentation site
-```
-
-### Build Documentation Site
-
-```bash
-cd packages/cljs
-bb github-pages
-# Builds to ../../docs/ for GitHub Pages
-```
-
-### Build ClojureScript Library
-
-```bash
-# Build JAR for Clojars
-bb build-ty
-
-# Install locally
-bb install-ty
-
-# Deploy to Clojars
-bb deploy-ty
-```
-
----
-
-## 🎨 Using TypeScript Components in ClojureScript
-
-The TypeScript components work seamlessly with Reagent and UIx:
+## Usage with ClojureScript Frameworks
 
 ### Reagent
 
 ```clojure
-(ns my-app.core
-  (:require [reagent.core :as r]))
-
-(defn calendar-component []
+(defn date-picker []
   (let [selected (r/atom nil)]
     (fn []
       [:div
-       [:ty-calendar 
-        {:value @selected
-         :on-change #(reset! selected (.-date (.-detail %)))}]
+       [:ty-date-picker
+        {:label "Select Date"
+         :value @selected
+         :on-change #(reset! selected (.. % -detail -value))}]
        [:p "Selected: " @selected]])))
 ```
 
 ### UIx
 
 ```clojure
-(ns my-app.core
-  (:require [uix.core :as uix]))
-
-(defn calendar-component []
+(defui date-picker []
   (let [[selected set-selected] (uix/use-state nil)]
     [:div
-     [:ty-calendar 
-      {:value selected
-       :on-change #(set-selected (.-date (.-detail %)))}]
+     [:ty-date-picker
+      {:label "Select Date"
+       :value selected
+       :on-change #(set-selected (.. % -detail -value))}]
      [:p "Selected: " selected]]))
 ```
 
-**Note**: Make sure to load `@gersak/ty` CSS and JS via CDN or NPM:
-
-```html
-<!-- In your HTML -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
-```
-
-Or in your build:
+### Replicant
 
 ```clojure
-;; shadow-cljs.edn
-{:builds
- {:app
-  {:target :browser
-   ;; ...
-   :js-options {:resolve {"@gersak/ty" {:target :npm
-                                        :require "@gersak/ty"}}}}}
+(defn date-picker [store]
+  [:div
+   [:ty-date-picker
+    {:label "Select Date"
+     :value (:selected-date @store)
+     :on {:change #(swap! store assoc :selected-date (.. % -detail -value))}}]
+   [:p "Selected: " (:selected-date @store)]])
 ```
 
 ---
 
-## 📊 Bundle Size Impact
+## Resources
 
-**For ClojureScript projects using Ty components:**
-- TypeScript components: ~40KB (loaded separately)
-- ClojureScript infrastructure: ~50KB additional
-- **Total overhead**: ~90KB for full stack
-- **Benefit**: Shared ClojureScript runtime means infrastructure has minimal impact
+- [Documentation](https://gersak.github.io/ty)
+- [GitHub](https://github.com/gersak/ty)
+- [NPM Package](https://www.npmjs.com/package/@gersak/ty)
 
-**For TypeScript/JavaScript projects:**
-- Just use `@gersak/ty` NPM package (~40KB)
-- No need for this package
-
----
-
-## 🔄 Migration from Old ClojureScript Components
-
-All UI components have been **fully migrated to TypeScript**. The ClojureScript component implementations are no longer maintained.
-
-**Before (Old ClojureScript):**
-```clojure
-(ns my-app.core
-  (:require [ty.components.button :refer [ty-button]]))
-
-[ty-button {:flavor "primary"} "Click"]
-```
-
-**After (TypeScript Components via Web Components):**
-```clojure
-(ns my-app.core)
-
-;; Just use the custom elements directly!
-[:ty-button {:flavor "primary"} "Click"]
-```
-
-**What Changed:**
-- ✅ UI components are now web components (TypeScript)
-- ✅ Load via CDN or NPM (`@gersak/ty`)
-- ✅ Use as custom elements in Reagent/UIx
-- ✅ Same API, better performance, smaller bundles
-
-**What Stayed in ClojureScript:**
-- ✅ Router (tree-based routing with authorization)
-- ✅ i18n (protocol-based translations)
-- ✅ Context (dynamic binding system)
-- ✅ Documentation site
-- ✅ Icon generation tooling
-
----
-
-## 🌟 Why This Architecture?
-
-**TypeScript Components:**
-- Universal compatibility (React, Vue, vanilla JS, HTMX)
-- Smaller bundles (~40KB vs ~300KB CLJS)
-- Better DX for most developers
-- Full type definitions
-
-**ClojureScript Infrastructure:**
-- Powerful abstractions (router, i18n, context)
-- Battle-tested code
-- Minimal overhead for CLJS projects
-- Advanced features for sophisticated applications
-
-**Best of both worlds!**
-
----
-
-## 📚 Resources
-
-- **TypeScript Components**: [@gersak/ty on NPM](https://www.npmjs.com/package/@gersak/ty)
-- **Documentation**: [gersak.github.io/ty](https://gersak.github.io/ty)
-- **GitHub**: [github.com/gersak/ty](https://github.com/gersak/ty)
-- **Examples**: See `/examples` directory in the repository
-
----
-
-## 📝 License
+## License
 
 MIT

@@ -18,7 +18,9 @@
 
 **Web components that work everywhere.** React, Vue, HTMX, vanilla JS, ClojureScript — use what you like.
 
-| [Vanilla JS Guide →](packages/core/src/README.md) | [React Guide →](packages/react/README.md) |
+**[Live Demo & Docs →](https://gersak.github.io/ty)**
+
+| [Vanilla JS Guide](packages/core/src/README.md) | [React Guide](packages/react/README.md) |
 |---|---|
 
 ---
@@ -218,6 +220,36 @@ i18n/*locale*  ;; => :en_US
 (i18n/t 1234.56 :de_DE)                           ;; "1.234,56" (German locale)
 (i18n/t 1234.56 :de_DE {:style "currency" :currency "EUR"})  ;; "1.234,56 €"
 ```
+
+### Build Your Own Components
+
+Use `ty.shim` to turn any ClojureScript render function into a Web Component:
+
+```clojure
+(ns app.components
+  (:require [replicant.dom :as d]
+            [ty.shim :as shim]))
+
+(defn greeting [name]
+  [:div.ty-elevated.p-4.rounded-lg
+   [:h2.ty-text+ "Hello, " name "!"]
+   [:ty-button {:flavor "primary"} "Wave"]])
+
+(defn render! [^js el]
+  (d/render (shim/ensure-shadow el)
+    (greeting (or (shim/attr el "name") "World"))))
+
+(shim/define! "my-greeting"
+  {:observed [:name]
+   :connected render!
+   :attr (fn [el _] (render! el))})
+```
+
+```html
+<my-greeting name="Clojure"></my-greeting>
+```
+
+**[Component Building Guide →](packages/cljs/COMPONENT_GUIDE.md)** | **[Code Splitting →](packages/cljs/CODE_SPLITTING.md)**
 
 ---
 

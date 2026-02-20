@@ -179,7 +179,7 @@
          [:ty-tag {:flavor "success"
                    :size "xs"} "Working"]
          [:a.text-sm.ty-text-primary.underline.hover:no-underline.flex.items-center.gap-1
-          {:href "https://github.com/gersak/ty/blob/master/site/ty/site/views/user_profile.cljs"
+          {:href "https://github.com/gersak/ty/blob/master/packages/cljs/site/ty/site/views/user_profile.cljs"
            :target "_blank"
            :rel "noopener noreferrer"}
           [:ty-icon {:name "external-link"
@@ -198,7 +198,7 @@
          [:ty-tag {:flavor "success"
                    :size "xs"} "Working"]
          [:a.text-sm.ty-text-primary.underline.hover:no-underline.flex.items-center.gap-1
-          {:href "https://github.com/gersak/ty/blob/master/site/ty/site/views/event_booking.cljs"
+          {:href "https://github.com/gersak/ty/blob/master/packages/cljs/site/ty/site/views/event_booking.cljs"
            :target "_blank"
            :rel "noopener noreferrer"}
           [:ty-icon {:name "external-link"
@@ -217,7 +217,7 @@
          [:ty-tag {:flavor "success"
                    :size "xs"} "Working"]
          [:a.text-sm.ty-text-primary.underline.hover:no-underline.flex.items-center.gap-1
-          {:href "https://github.com/gersak/ty/blob/master/site/ty/site/views/contact_form.cljs"
+          {:href "https://github.com/gersak/ty/blob/master/packages/cljs/site/ty/site/views/contact_form.cljs"
            :target "_blank"
            :rel "noopener noreferrer"}
           [:ty-icon {:name "external-link"

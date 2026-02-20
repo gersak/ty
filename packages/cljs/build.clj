@@ -106,34 +106,34 @@
 
     ;; 2. Build JavaScript with Shadow-cljs
     (println "→ Building JavaScript with shadow-cljs...")
-    (let [;; Read the original site build config
-          shadow-config (edn/read-string (slurp "shadow-cljs.edn"))
-          site-build (get-in shadow-config [:builds :github])
-          ;; Create production build config with salt
-          prod-build (-> site-build
-                         ;; Update module name with salt for cache-busting
-                         (assoc :modules {(keyword (str "site." salt))
-                                          {:init-fn 'ty.site.core/init}}))]
+    (println (format "  Using salt: %s" salt))
+    (println "  Starting shadow-cljs build...")
+    (let [command ["npx" "shadow-cljs" "-A:dev" "release" "github"]
+          _ (println (format "  Command: %s" (str/join " " command)))
+          {:keys [exit out err]} (b/process {:command-args command
+                                             :out :capture
+                                             :err :capture})]
+      (when (seq out)
+        (println out))
+      (when-not (zero? exit)
+        (println "Shadow-cljs build failed!")
+        (when (seq err)
+          (println "Error output:")
+          (println err))
+        (throw (ex-info "Shadow-cljs build failed" {:exit exit})))
+      (println "  ✓ JavaScript build completed")
 
-      (println (format "  Using salt: %s" salt))
-      (println "  Starting shadow-cljs build...")
-      (let [command ["npx" "shadow-cljs"
-                     "-A:dev"
-                     "--config-merge" (str prod-build)
-                     "release" "github"]
-            _ (println (format "  Command: %s" (str/join " " command)))
-            {:keys [exit out err]} (b/process {:command-args command
-                                               :out :capture
-                                               :err :capture})]
-        (when (seq out)
-          (println out))
-        (when-not (zero? exit)
-          (println "Shadow-cljs build failed!")
-          (when (seq err)
-            (println "Error output:")
-            (println err))
-          (throw (ex-info "Shadow-cljs build failed" {:exit exit})))
-        (println "  ✓ JavaScript build completed")))
+      ;; Rename the output file with salt for cache-busting
+      (let [original-js (io/file "../../docs/js/site.js")
+            original-map (io/file "../../docs/js/site.js.map")
+            salted-js (io/file (format "../../docs/js/site.%s.js" salt))
+            salted-map (io/file (format "../../docs/js/site.%s.js.map" salt))]
+        (when (.exists original-js)
+          (.renameTo original-js salted-js)
+          (println (format "  ✓ Renamed site.js to site.%s.js" salt)))
+        (when (.exists original-map)
+          (.renameTo original-map salted-map)
+          (println (format "  ✓ Renamed site.js.map to site.%s.js.map" salt)))))
 
     ;; 3. Process HTML templates
     (println "→ Generating HTML files...")

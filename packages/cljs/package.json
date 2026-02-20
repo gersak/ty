@@ -38,12 +38,12 @@
     "i18n"
   ],
   "scripts": {
-    "dev": "shadow-cljs -A:dev watch lib",
+    "dev": "shadow-cljs -A:dev watch site",
     "dev:site": "shadow-cljs -A:dev watch site",
-    "build": "shadow-cljs -A:dev release lib bundle",
+    "build": "shadow-cljs -A:dev release site",
     "build:site": "shadow-cljs -A:dev release site",
-    "build:github": "shadow-cljs -A:dev release github",
-    "clean": "rm -rf dist public/js .shadow-cljs"
+    "build:github": "clj -T:build github-pages",
+    "clean": "rm -rf public/js .shadow-cljs ../../docs"
   },
   "devDependencies": {
     "shadow-cljs": "^2.28.19"

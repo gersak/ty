@@ -33,8 +33,12 @@
                :segment "modals"
                :name "Modals & Overlays"}])
 
-(defn register-icons! []
-  "Register icons using the new TypeScript icon registry API")
+(def route-titles
+  {::home    "Getting Started"
+   ::buttons "Buttons & Icons"
+   ::forms   "Forms & Inputs"
+   ::layout  "Layout & Containers"
+   ::modals  "Modals & Overlays"})
 
 (defui nav-link [{:keys [route-id icon label]}]
   (let [is-active (router/rendered? route-id true)]
@@ -61,7 +65,8 @@
      ($ :div.ty-text-.text-sm label)))
 
 (defui home-view []
-  ($ :div.space-y-8
+  (when (router/rendered? ::home true)
+    ($ :div.space-y-8
      ;; Hero section
      ($ :div.text-center
         ($ :h1.ty-text++.text-4xl.font-bold.mb-4
@@ -102,10 +107,11 @@
            ($ stat-item {:label "Views"
                          :value "5"})
            ($ stat-item {:label "Themes"
-                         :value "2"})))))
+                         :value "2"}))))))
 
 (defui buttons-view []
-  ($ :div.space-y-8
+  (when (router/rendered? ::buttons true)
+    ($ :div.space-y-8
      ($ :div
         ($ :h1.ty-text++.text-3xl.font-bold.mb-2
            "Buttons & Icons")
@@ -134,15 +140,19 @@
                 {:key icon}
                 ($ ty/Icon {:name icon
                             :class "w-6 h-6"})
-                ($ :span.text-xs.ty-text- icon)))))))
+                ($ :span.text-xs.ty-text- icon))))))))
+
+(defui forms-view []
+  (when (router/rendered? ::forms true)
+    ($ forms/view)))
 
 (defui layout-view []
-  ;; Use the comprehensive layout demo from layout-views
-  ($ layout-views/view))
+  (when (router/rendered? ::layout true)
+    ($ layout-views/view)))
 
 (defui modals-view []
-  ;; Use the comprehensive modals demo from modals-views
-  ($ modals-views/view))
+  (when (router/rendered? ::modals true)
+    ($ modals-views/view)))
 
 ;; Router integration hook
 (defn use-router []
@@ -196,15 +206,9 @@
                  :class "lg:hidden"}
                 ($ ty/Icon {:name "menu"}))
 
-             ;; Logo/Title with router-based header
+             ;; Logo/Title derived from current route
              ($ :h1.ty-text++.text-xl.font-bold
-                (cond
-                  (router/rendered? ::home true) "Getting Started"
-                  (router/rendered? ::buttons true) "Buttons & Icons"
-                  (router/rendered? ::forms true) "Forms & Inputs"
-                  (router/rendered? ::layout true) "Layout & Containers"
-                  (router/rendered? ::modals true) "Modals & Overlays"
-                  :else "UIx + ty-react")))
+                (get route-titles (:current router-state) "UIx + ty-react")))
 
           ;; Header actions
           ($ :div.flex.items-center.gap-3
@@ -262,22 +266,14 @@
                                    :icon "layers"
                                    :label "Modals & Overlays"})))))
 
-          ;; Main content area
+          ;; Main content area - each view manages its own visibility
           ($ :main.flex-1.overflow-auto.p-6.min-w-0
              ($ :div.max-w-4xl.mx-auto
-                (cond
-                  (router/rendered? ::home true) ($ home-view)
-                  (router/rendered? ::buttons true) ($ buttons-view)
-                  (router/rendered? ::forms true) ($ forms/view)
-                  (router/rendered? ::layout true) ($ layout-view)
-                  (router/rendered? ::modals true) ($ modals-view)
-                  :else ($ :div.text-center.py-12
-                           ($ :h1.ty-text++.text-2xl.font-bold.mb-2
-                              "404 - Page Not Found")
-                           ($ :p.ty-text-.mb-4
-                              "The page you're looking for doesn't exist.")
-                           ($ ty/Button {:on-click #(router/navigate! ::home)}
-                              "Go Home"))))))
+                ($ home-view)
+                ($ buttons-view)
+                ($ forms-view)
+                ($ layout-view)
+                ($ modals-view))))
 
        ;; Close sidebar on navigation (mobile)
        (uix/use-effect

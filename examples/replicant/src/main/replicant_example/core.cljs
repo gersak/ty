@@ -1,185 +1,223 @@
 (ns replicant-example.core
-  "Main entry point for the Replicant + Ty components example"
-  (:require [replicant.core :as r]
-            [replicant.dom :as dom]
-            [ty.components]
+  "Replicant + Ty Components Example with Routing"
+  (:require [replicant.dom :as dom]
+            [ty.router :as router]
             [ty.icons :as icons]
             [ty.lucide :as lucide]))
 
-(defonce app-state
-  (atom {:selected-option nil
-         :selected-date nil
-         :selected-tags #{}
-         :form-data {}
-         :show-modal false}))
+;; =============================================================================
+;; State
+;; =============================================================================
 
-(defn icon-example []
-  [:div.example-card
-   [:h2.example-title "Icons"]
-   [:p.example-description
-    "Using Ty icons from the registry system."]
-   [:div.flex.items-center.gap-4.flex-wrap
-    [:ty-icon {:name "heart"
-               :class "ty-text-danger text-2xl"}]
-    [:ty-icon {:name "star"
-               :class "ty-text-warning text-2xl"}]
-    [:ty-icon {:name "check-circle"
-               :class "ty-text-success text-2xl"}]
-    [:ty-icon {:name "settings"
-               :class "ty-text- text-2xl"}]
-    [:ty-icon {:name "user"
-               :class "ty-text-primary text-2xl"}]]])
+(defonce state
+  (atom {:counter 0
+         :form {:name ""
+                :email ""}}))
 
-(defn dropdown-example []
-  (let [options [{:value "usa"
-                  :label "United States"
-                  :icon "flag"}
-                 {:value "uk"
-                  :label "United Kingdom"
-                  :icon "flag"}
-                 {:value "canada"
-                  :label "Canada"
-                  :icon "flag"}
-                 {:value "germany"
-                  :label "Germany"
-                  :icon "flag"}]]
-    [:div.example-card
-     [:h2.example-title "Dropdown"]
-     [:p.example-description
-      "Country selection with icons and rich content."]
-     [:div.space-y-4
-      [:label.ty-text+.block.text-sm.font-medium "Select Country"]
-      [:ty-dropdown
-       {:placeholder "Choose a country..."
-        :class "w-full"}
-       (for [option options]
-         [:ty-option {:key (:value option)
-                      :value (:value option)}
-          [:div.flex.items-center.gap-2
-           [:ty-icon {:name (:icon option)
-                      :class "ty-text-"}]
-           [:span (:label option)]]])]]]))
+;; =============================================================================
+;; Routes - define route tree
+;; =============================================================================
 
-(defn multiselect-example []
-  (let [skills [{:value "clojure"
-                 :label "Clojure"
-                 :color "primary"}
-                {:value "javascript"
-                 :label "JavaScript"
-                 :color "warning"}
-                {:value "react"
-                 :label "React"
-                 :color "info"}
-                {:value "css"
-                 :label "CSS"
-                 :color "success"}
-                {:value "design"
-                 :label "Design"
-                 :color "secondary"}]]
-    [:div.example-card
-     [:h2.example-title "Multiselect"]
-     [:p.example-description
-      "Skills selection with colorful tags."]
-     [:div.space-y-4
-      [:label.ty-text+.block.text-sm.font-medium "Select Skills"]
-      [:ty-multiselect
-       {:placeholder "Choose your skills..."
-        :class "w-full"}
-       (for [skill skills]
-         [:ty-tag {:flavor (:color skill)
-                   :value (:value skill)}
-          (:label skill)])]]]))
+(router/link ::router/root
+  [{:id ::home
+    :segment "home"
+    :landing 10}
+   {:id ::icons
+    :segment "icons"}
+   {:id ::forms
+    :segment "forms"}
+   {:id ::about
+    :segment "about"}])
 
-(defn calendar-example []
-  [:div.example-card
-   [:h2.example-title "Calendar"]
-   [:p.example-description
-    "Date selection with calendar component."]
-   [:div.space-y-4
-    [:label.ty-text+.block.text-sm.font-medium "Select Date"]
-    [:ty-date-picker
-     {:class "w-full"
-      :placeholder "Choose a date..."}]]])
+;; =============================================================================
+;; Components - each checks its own rendered? state
+;; =============================================================================
 
-(defn form-example []
-  [:div.example-card
-   [:h2.example-title "Complete Form"]
-   [:p.example-description
-    "A form combining all components with Tailwind styling."]
-   [:form.space-y-6
-    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
-     [:div
-      [:label.ty-text+.block.text-sm.font-medium.mb-2 "First Name"]
-      [:ty-input {:placeholder "Enter your first name"
-                  :class "w-full"}]]
-     [:div
-      [:label.ty-text+.block.text-sm.font-medium.mb-2 "Last Name"]
-      [:ty-input {:placeholder "Enter your last name"
-                  :class "w-full"}]]]
+(defn nav-button [route-id label icon-name]
+  (let [active? (router/rendered? route-id)]
+    [:button.px-4.py-2.rounded.flex.items-center.gap-2.transition-colors
+     {:class (if active?
+               ["ty-bg-primary" "ty-text++"]
+               ["ty-bg-neutral-" "ty-text" "hover:ty-bg-neutral"])
+      :on {:click #(router/navigate! route-id)}}
+     [:ty-icon {:name icon-name :size "sm"}]
+     label]))
 
-    [:div
-     [:label.ty-text+.block.text-sm.font-medium.mb-2 "Country"]
-     [:ty-dropdown
-      {:placeholder "Select your country..."
-       :class "w-full"}
-      [:ty-option {:value "usa"} "🇺🇸 United States"]
-      [:ty-option {:value "uk"} "🇬🇧 United Kingdom"]
-      [:ty-option {:value "canada"} "🇨🇦 Canada"]]]
+(defn nav []
+  [:nav.ty-elevated.p-4.rounded-lg.mb-6
+   [:div.flex.gap-2.flex-wrap
+    (nav-button ::home "Home" "home")
+    (nav-button ::icons "Icons" "star")
+    (nav-button ::forms "Forms" "edit")
+    (nav-button ::about "About" "info")]])
 
-    [:div
-     [:label.ty-text+.block.text-sm.font-medium.mb-2 "Skills"]
-     [:ty-multiselect
-      {:placeholder "Select your skills..."
-       :class "w-full"}
-      [:ty-tag {:flavor "primary"} "Clojure"]
-      [:ty-tag {:flavor "warning"} "JavaScript"]
-      [:ty-tag {:flavor "success"} "CSS"]]]
+;; -----------------------------------------------------------------------------
+;; Home View
+;; -----------------------------------------------------------------------------
 
-    [:div
-     [:label.ty-text+.block.text-sm.font-medium.mb-2 "Birth Date"]
-     [:ty-date-picker
-      {:class "w-full"
-       :placeholder "Select your birth date"}]]
+(defn home-view []
+  (when (router/rendered? ::home)
+    [:div.ty-elevated.p-6.rounded-lg
+     [:h2.ty-text++.text-2xl.font-bold.mb-4 "Welcome Home"]
+     [:p.ty-text.mb-4
+      "This is a Replicant + Ty example with routing. Each view component checks "
+      [:code.ty-bg-neutral-.px-1.rounded "router/rendered?"]
+      " to decide if it should render."]
 
-    [:div.flex.gap-4
-     [:ty-button {:type "submit"
-                  :flavor "primary"}
-      [:ty-icon {:name "check"}]
-      "Submit"]
-     [:ty-button {:type "button"
-                  :flavor "secondary"}
-      [:ty-icon {:name "x"}]
-      "Cancel"]]]])
+     [:div.ty-bg-primary-.p-4.rounded.mb-4
+      [:p.ty-text-primary "Counter: " [:strong (:counter @state)]]
+      [:div.flex.gap-2.mt-2
+       [:ty-button {:flavor "primary"
+                    :on {:click #(swap! state update :counter inc)}}
+        [:ty-icon {:name "plus" :size "sm"}]
+        "Increment"]
+       [:ty-button {:flavor "secondary"
+                    :on {:click #(swap! state update :counter dec)}}
+        [:ty-icon {:name "minus" :size "sm"}]
+        "Decrement"]]]
+
+     [:p.ty-text-.text-sm
+      "Navigate using the buttons above to see different views."]]))
+
+;; -----------------------------------------------------------------------------
+;; Icons View
+;; -----------------------------------------------------------------------------
+
+(defn icons-view []
+  (when (router/rendered? ::icons)
+    [:div.ty-elevated.p-6.rounded-lg
+     [:h2.ty-text++.text-2xl.font-bold.mb-4 "Icons"]
+     [:p.ty-text-.mb-4 "Ty icons registered via ty.icons namespace:"]
+
+     [:div.grid.grid-cols-4.gap-4
+      (for [icon-name ["heart" "star" "check" "x" "home" "user" "settings" "info"]]
+        [:div.ty-bg-neutral-.p-4.rounded.flex.flex-col.items-center.gap-2
+         {:key icon-name}
+         [:ty-icon {:name icon-name :size "lg" :class "ty-text-primary"}]
+         [:span.ty-text-.text-xs icon-name]])]]))
+
+;; -----------------------------------------------------------------------------
+;; Forms View
+;; -----------------------------------------------------------------------------
+
+(defn forms-view []
+  (when (router/rendered? ::forms)
+    (let [{:keys [name email]} (:form @state)]
+      [:div.ty-elevated.p-6.rounded-lg
+       [:h2.ty-text++.text-2xl.font-bold.mb-4 "Forms"]
+       [:p.ty-text-.mb-4 "Ty form components with Replicant event handling:"]
+
+       [:div.space-y-4
+        [:div
+         [:label.ty-text+.block.text-sm.font-medium.mb-1 "Name"]
+         [:ty-input
+          {:placeholder "Enter your name"
+           :value name
+           :on {:input #(swap! state assoc-in [:form :name]
+                               (-> % .-detail .-value))}}]]
+
+        [:div
+         [:label.ty-text+.block.text-sm.font-medium.mb-1 "Email"]
+         [:ty-input
+          {:type "email"
+           :placeholder "Enter your email"
+           :value email
+           :on {:input #(swap! state assoc-in [:form :email]
+                               (-> % .-detail .-value))}}]]
+
+        [:div.ty-bg-neutral-.p-4.rounded
+         [:p.ty-text-.text-sm "Current values:"]
+         [:p.ty-text "Name: " [:strong (if (seq name) name "(empty)")]]
+         [:p.ty-text "Email: " [:strong (if (seq email) email "(empty)")]]]
+
+        [:ty-button {:flavor "primary"
+                     :on {:click #(js/alert (str "Submitted: " name " / " email))}}
+         [:ty-icon {:name "check" :size "sm"}]
+         "Submit"]]])))
+
+;; -----------------------------------------------------------------------------
+;; About View
+;; -----------------------------------------------------------------------------
+
+(defn about-view []
+  (when (router/rendered? ::about)
+    [:div.ty-elevated.p-6.rounded-lg
+     [:h2.ty-text++.text-2xl.font-bold.mb-4 "About"]
+     [:p.ty-text.mb-4
+      "This example demonstrates:"]
+
+     [:ul.space-y-2.ty-text
+      [:li.flex.items-center.gap-2
+       [:ty-icon {:name "check" :size "sm" :class "ty-text-success"}]
+       "Replicant DOM rendering"]
+      [:li.flex.items-center.gap-2
+       [:ty-icon {:name "check" :size "sm" :class "ty-text-success"}]
+       "ty.router for navigation"]
+      [:li.flex.items-center.gap-2
+       [:ty-icon {:name "check" :size "sm" :class "ty-text-success"}]
+       "ty.icons for icon registration"]
+      [:li.flex.items-center.gap-2
+       [:ty-icon {:name "check" :size "sm" :class "ty-text-success"}]
+       "Ty web components (button, input, icon)"]
+      [:li.flex.items-center.gap-2
+       [:ty-icon {:name "check" :size "sm" :class "ty-text-success"}]
+       "Ty CSS system (ty-elevated, ty-text++, etc.)"]]
+
+     [:div.ty-bg-info-.p-4.rounded.mt-4
+      [:p.ty-text-info.text-sm
+       "Each view component uses "
+       [:code.ty-bg-info.px-1.rounded "(when (router/rendered? ::route-id) ...)"]
+       " to control its own visibility."]]]))
+
+;; =============================================================================
+;; App - composes all views, no cond needed
+;; =============================================================================
 
 (defn app []
-  [:div.space-y-8
-   (icon-example)
-   (dropdown-example)
-   (multiselect-example)
-   (calendar-example)
-   (form-example)])
+  [:div.ty-canvas.min-h-screen.p-6
+   [:div.max-w-2xl.mx-auto
+    [:h1.ty-text++.text-3xl.font-bold.mb-6 "Replicant + Ty"]
+    (nav)
+    ;; All views listed - each controls its own visibility
+    (home-view)
+    (icons-view)
+    (forms-view)
+    (about-view)]])
+
+;; =============================================================================
+;; Render & Init
+;; =============================================================================
 
 (defn render! []
   (dom/render (.getElementById js/document "app") (app)))
 
-(defn init []
-  (println "🚀 Initializing Replicant + Ty Components Example")
+(defn ^:dev/after-load init []
+  (println "🚀 Initializing Replicant + Ty Example")
 
-  ;; Register Lucide icons we need
-  (icons/register-icons!
-    {"heart" lucide/heart
-     "star" lucide/star
-     "check-circle" lucide/check-circle
-     "settings" lucide/settings
-     "user" lucide/user
-     "flag" lucide/flag
-     "check" lucide/check
-     "x" lucide/x})
+  ;; Register icons
+  (icons/register!
+    {:home     lucide/home
+     :star     lucide/star
+     :edit     lucide/edit
+     :info     lucide/info
+     :heart    lucide/heart
+     :check    lucide/check
+     :x        lucide/x
+     :user     lucide/user
+     :settings lucide/settings
+     :plus     lucide/plus
+     :minus    lucide/minus})
+
+  ;; Initialize router
+  (router/init! "")
+
+  ;; Watch router for re-renders
+  (add-watch router/*router* ::render
+    (fn [_ _ _ _] (render!)))
+
+  ;; Watch state for re-renders
+  (add-watch state ::render
+    (fn [_ _ _ _] (render!)))
 
   ;; Initial render
-  (render!)
-
-  ;; Set up state watching for re-renders
-  (add-watch app-state :render
-             (fn [_ _ _ _]
-               (render!))))
+  (render!))

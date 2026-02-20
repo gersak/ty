@@ -234,18 +234,26 @@ window.tyIcons.register({ check, heart, save, x, menu })
        :language "javascript"})
 
     (icon-example
-      {:title "ClojureScript (Generated namespaces)"
+      {:title "ClojureScript (Idiomatic API)"
        :code ";; Add dependencies
-{:deps {dev.gersak/ty-icons {:mvn/version \"LATEST\"}}}
+{:deps {dev.gersak/ty {:mvn/version \"LATEST\"}
+        dev.gersak/ty-icons {:mvn/version \"LATEST\"}}}
 
-;; Import and register
+;; Import and register with ty.icons helper
 (ns my-app.icons
-  (:require [ty.lucide :as lucide]))
+  (:require [ty.icons :as icons]
+            [ty.lucide :as lucide]))
 
-(window.tyIcons.register 
-  #js {\"check\" lucide/check
-       \"heart\" lucide/heart
-       \"star\" lucide/star})"
+;; Use keyword keys - converted automatically
+(icons/register!
+  {:check lucide/check
+   :heart lucide/heart
+   :star  lucide/star})
+
+;; Or use register-async! if icons.cljs loads before ty.js
+(icons/register-async!
+  {:check lucide/check}
+  {:on-success #(println \"Icons loaded!\")})"
        :language "clojure"})]])
 
 ;; =============================================================================

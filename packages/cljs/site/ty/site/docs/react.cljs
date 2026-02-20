@@ -102,21 +102,22 @@
   (doc-section "Icon Registration"
                [:div
                 [:p.ty-text-.mb-4
-                 "Import icons from the " [:code.ty-bg-neutral-.px-1.rounded "ty-icons"] " artifact and register them using the global API:"]
+                 "Import icons from the " [:code.ty-bg-neutral-.px-1.rounded "ty-icons"] " artifact and register with " [:code.ty-bg-neutral-.px-1.rounded "ty.icons"] ":"]
 
                 (code-block
                   "(ns my-app.core
   (:require [uix.core :as uix :refer [defui $]]
             [uix.dom]
             [\"@gersak/ty-react\" :as ty]
-            [ty.lucide :as lucide]))  ;; Tree-shakeable icon imports
+            [ty.icons :as icons]
+            [ty.lucide :as lucide]))
 
-;; Register only the icons you need
-(js/window.tyIcons.register 
-  #js {\"check\" lucide/check
-       \"heart\" lucide/heart
-       \"save\" lucide/save
-       \"trash\" lucide/trash})
+;; Register only the icons you need (keyword keys)
+(icons/register!
+  {:check lucide/check
+   :heart lucide/heart
+   :save  lucide/save
+   :trash lucide/trash})
 
 ;; Now use icons in your components
 (defui my-button []
@@ -131,8 +132,8 @@
                  [:ul.ty-text-info.text-sm.space-y-1.ml-4
                   [:li "• Only imported icons are included in your bundle"]
                   [:li "• Google Closure Compiler removes unused code"]
-                  [:li "• Works with any ClojureScript project"]
-                  [:li "• Uses the same " [:code.ty-bg-info.px-1.rounded "window.tyIcons.register"] " API as JavaScript"]]]]))
+                  [:li "• Keyword keys converted to strings automatically"]
+                  [:li "• Use " [:code.ty-bg-info.px-1.rounded "icons/register-async!"] " if icons load before ty.js"]]]]))
 
 (defn react-wrapper-section
   "Section explaining React wrapper benefits"
@@ -190,23 +191,28 @@
                [:div
                 [:h3.text-lg.font-semibold.ty-text.mb-3 "Using React Wrapper Components"]
                 [:p.ty-text-.mb-4
-                 "Here's a simple example using the React wrapper with icons:"]
+                 "Examples using the React wrapper with icons. UIx uses "
+                 [:code.ty-bg-neutral-.px-1.rounded "($ component ...)"]
+                 " syntax; Reagent uses "
+                 [:code.ty-bg-neutral-.px-1.rounded "[:> Component ...]"]
+                 " for React components."]
 
                 (code-block
                   "(ns my-app.core
   (:require [uix.core :as uix :refer [defui $]]
             [uix.dom]
             [\"@gersak/ty-react\" :as ty]
+            [ty.icons :as icons]
             [ty.lucide :as lucide]))
 
-;; Register icons
-(js/window.tyIcons.register
-  #js {\"check\" lucide/check
-       \"heart\" lucide/heart})
+;; Register icons (keyword keys)
+(icons/register!
+  {:check lucide/check
+   :heart lucide/heart})
 
-;; Create state
-(defonce app-state (uix/use-state {:message \"Hello from Ty!\"
-                                    :liked false}))
+;; State atom
+(defonce app-state (atom {:message \"Hello from Ty!\"
+                          :liked false}))
 
 ;; Component with icons
 (defui hello-view []
@@ -216,12 +222,12 @@
        
        ($ :div.flex.gap-2
           ($ ty/Button {:flavor \"primary\"
-                        :onClick #(set-state! assoc :message \"Button clicked!\")}
+                        :on-click #(set-state! assoc :message \"Button clicked!\")}
              ($ ty/Icon {:name \"check\"})
              \"Click me\")
-          
+
           ($ ty/Button {:flavor (if (:liked state) \"danger\" \"outline\")
-                        :onClick #(set-state! update :liked not)}
+                        :on-click #(set-state! update :liked not)}
              ($ ty/Icon {:name \"heart\"})
              (if (:liked state) \"Liked!\" \"Like\"))))))
 
@@ -231,6 +237,44 @@
 
                 [:p.ty-text-.mt-4
                  "This creates a reactive app with Ty's styling, components, and icons working together."]
+
+                [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Reagent Equivalent"]
+                [:p.ty-text-.mb-4 "The same app in Reagent using hiccup syntax and Reagent atoms:"]
+
+                (code-block
+                  "(ns my-app.core
+  (:require [reagent.core :as r]
+            [reagent.dom.client :as rdom]
+            [\"@gersak/ty-react\" :as ty]
+            [ty.icons :as icons]
+            [ty.lucide :as lucide]))
+
+(icons/register!
+  {:check lucide/check
+   :heart lucide/heart})
+
+(defonce state (r/atom {:message \"Hello from Ty!\" :liked false}))
+
+(defn hello-view []
+  [:div.ty-elevated.p-6.rounded-lg.max-w-md.mx-auto
+   [:h2.ty-text++.text-xl.mb-4 (:message @state)]
+
+   [:div.flex.gap-2
+    [:> ty/TyButton {:flavor \"primary\"
+                     :onClick #(swap! state assoc :message \"Button clicked!\")}
+     [:> ty/TyIcon {:name \"check\"}]
+     \"Click me\"]
+
+    [:> ty/TyButton {:flavor (if (:liked @state) \"danger\" \"outline\")
+                     :onClick #(swap! state update :liked not)}
+     [:> ty/TyIcon {:name \"heart\"}]
+     (if (:liked @state) \"Liked!\" \"Like\")]]])
+
+(defonce root (rdom/create-root (js/document.getElementById \"app\")))
+
+(defn init []
+  (rdom/render root [hello-view]))"
+                  "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-6 "Working with State"]
                 [:p.ty-text-.mb-4 "Complex state management with multiple Ty components:"]
@@ -249,15 +293,15 @@
           ($ :label.ty-text+.block.text-sm.font-medium.mb-2 \"Name\")
           ($ ty/Input {:value (:name form-data)
                        :placeholder \"Enter your name\"
-                       :onChange #(update-field! :name (.. % -target -value))}))
-       
-       ;; Email input  
+                       :on-change #(update-field! :name (.. % -detail -value))}))
+
+       ;; Email input
        ($ :div.mb-4
           ($ :label.ty-text+.block.text-sm.font-medium.mb-2 \"Email\")
           ($ ty/Input {:type \"email\"
                        :value (:email form-data)
                        :placeholder \"Enter your email\"
-                       :onChange #(update-field! :email (.. % -target -value))}))
+                       :on-change #(update-field! :email (.. % -detail -value))}))
        
        ;; Submit button
        ($ ty/Button {:flavor \"primary\" 
@@ -334,49 +378,56 @@
 (router/link :app/main
   [{:id :app/home
     :segment \"home\"
-    :view home-view}
+    :landing 10}
    {:id :app/dashboard
-    :segment \"dashboard\"
-    :view dashboard/view}
-   {:id :app/users  
-    :segment \"users\"
-    :view users/view}])
+    :segment \"dashboard\"}
+   {:id :app/users
+    :segment \"users\"}])
 
 (defui navigation []
   ($ :nav.ty-elevated.p-4.mb-6
      ($ :div.flex.gap-4
-        ($ ty/Button {:flavor (if (router/rendered? :app/home) \"primary\" \"secondary\")
-                     :onClick #(router/navigate! :app/home)}
+        ($ ty/Button {:flavor (if (router/rendered? :app/home true) \"primary\" \"secondary\")
+                     :on-click #(router/navigate! :app/home)}
            \"Home\")
-        ($ ty/Button {:flavor (if (router/rendered? :app/dashboard) \"primary\" \"secondary\")
-                     :onClick #(router/navigate! :app/dashboard)}
+        ($ ty/Button {:flavor (if (router/rendered? :app/dashboard true) \"primary\" \"secondary\")
+                     :on-click #(router/navigate! :app/dashboard)}
            \"Dashboard\")
-        ($ ty/Button {:flavor (if (router/rendered? :app/users) \"primary\" \"secondary\")
-                     :onClick #(router/navigate! :app/users)}
+        ($ ty/Button {:flavor (if (router/rendered? :app/users true) \"primary\" \"secondary\")
+                     :on-click #(router/navigate! :app/users)}
            \"Users\"))))
 
+;; Each view checks its own visibility - no cond dispatch needed
 (defui home-view []
-  ($ :div.ty-elevated.p-8.rounded-lg
-     ($ :h1.ty-text++.text-3xl.mb-4 \"Welcome to My App\")
-     ($ :p.ty-text \"Select a page from the navigation above.\")))
+  (when (router/rendered? :app/home true)
+    ($ :div.ty-elevated.p-8.rounded-lg
+       ($ :h1.ty-text++.text-3xl.mb-4 \"Welcome to My App\")
+       ($ :p.ty-text \"Select a page from the navigation above.\"))))
+
+(defui dashboard-view []
+  (when (router/rendered? :app/dashboard true)
+    ($ dashboard/view)))
+
+(defui users-view []
+  (when (router/rendered? :app/users true)
+    ($ users/view)))
 
 (defui main-app []
-  ;; Force re-render when route changes
-  (let [[_ set-tick!] (uix/use-state 0)]
-    (uix/use-effect 
-     (fn []
-       (let [handler #(set-tick! inc)]
-         (js/window.addEventListener \"popstate\" handler)
-         #(js/window.removeEventListener \"popstate\" handler)))
-     [])
-    
+  (let [[router-state set-router-state] (uix/use-state @router/*router*)]
+    (uix/use-effect
+      (fn []
+        (let [k (gensym)]
+          (add-watch router/*router* k
+                     (fn [_ _ _ s] (set-router-state s)))
+          #(remove-watch router/*router* k)))
+      [])
+
+    ;; All views listed - each controls its own visibility
     ($ :div
        ($ navigation)
-       (cond
-         (router/rendered? :app/home) ($ home-view)
-         (router/rendered? :app/dashboard) ($ dashboard/view)
-         (router/rendered? :app/users) ($ users/view)
-         :else ($ :div \"Not found\")))))"
+       ($ home-view)
+       ($ dashboard-view)
+       ($ users-view))))"
                   "clojure")
 
                 (example-section
@@ -410,15 +461,15 @@
      ($ :div.flex.gap-2
         ($ ty/Button {:flavor (if (router/rendered? :app.dashboard/overview) \"primary\" \"outline\")
                      :size \"sm\"
-                     :onClick #(router/navigate! :app.dashboard/overview)}
+                     :on-click #(router/navigate! :app.dashboard/overview)}
            \"Overview\")
         ($ ty/Button {:flavor (if (router/rendered? :app.dashboard/analytics) \"primary\" \"outline\")
                      :size \"sm\"
-                     :onClick #(router/navigate! :app.dashboard/analytics)}
+                     :on-click #(router/navigate! :app.dashboard/analytics)}
            \"Analytics\")
         ($ ty/Button {:flavor (if (router/rendered? :app.dashboard/settings) \"primary\" \"outline\")
                      :size \"sm\"
-                     :onClick #(router/navigate! :app.dashboard/settings)}
+                     :on-click #(router/navigate! :app.dashboard/settings)}
            \"Settings\"))))
 
 (defui overview-view []
@@ -455,6 +506,127 @@
            routes)))"
                   "clojure")
 
+                [:h3.text-lg.font-semibold.ty-text.mb-3.mt-8 "Reagent Router Integration"]
+                [:p.ty-text-.mb-4
+                 "The same self-managing view pattern works identically with Reagent. Define route IDs in a shared namespace so both navigation and views can reference them:"]
+
+                [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
+                 [:p.ty-text-warning.text-sm.mb-2
+                  "⚠️ " [:strong "Important: Reagent Reactivity"]]
+                 [:p.ty-text-warning.text-sm
+                  "Unlike UIx hooks which automatically track dependencies, Reagent requires explicit atom dereferencing with "
+                  [:code.ty-bg-warning.px-1.rounded "@"]
+                  ". Each view must deref "
+                  [:code.ty-bg-warning.px-1.rounded "@router/*router*"]
+                  " to re-render on route changes."]]
+
+                (example-section
+                  "Reagent App with ty.router"
+                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
+                   [:p.ty-text.text-sm "Routes defined in shared state namespace, views manage their own visibility"]]
+                  "(ns my-app.state
+  (:require [reagent.core :as r]
+            [ty.router :as router]))
+
+;; Define route IDs here so navigation and views can share them
+(def home-id   ::home)
+(def forms-id  ::forms)
+(def about-id  ::about)
+
+(def route-defs
+  [{:id home-id  :segment \"home\"  :name \"Home\"  :landing 10}
+   {:id forms-id :segment \"forms\" :name \"Forms\"}
+   {:id about-id :segment \"about\" :name \"About\"}])
+
+;; Register routes at load time
+(router/link ::router/root route-defs)"
+                  "clojure")
+
+                (example-section
+                  "Reagent Views and App"
+                  [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
+                   [:p.ty-text-success.text-sm "Each view checks its own visibility - no cond dispatch"]]
+                  "(ns my-app.views
+  (:require [my-app.state :as state]
+            [ty.router :as router]))
+
+;; Each view manages its own visibility
+;; CRITICAL: Deref @router/*router* to trigger Reagent reactivity
+(defn home-view []
+  (let [_ @router/*router*]  ; Deref triggers re-render on route change
+    (when (router/rendered? state/home-id)
+      [:div.ty-elevated.p-6.rounded-lg
+       [:h1.ty-text++.text-2xl \"Home\"]])))
+
+(defn forms-view []
+  (let [_ @router/*router*]  ; Deref triggers re-render on route change
+    (when (router/rendered? state/forms-id)
+      [:div.ty-elevated.p-6.rounded-lg
+       [:h1.ty-text++.text-2xl \"Forms\"]])))
+
+;; App renders all views - each controls its own visibility
+(ns my-app.core
+  (:require [my-app.navigation :as nav]
+            [my-app.views :as views]
+            [reagent.core :as r]
+            [reagent.dom.client :as rdom]
+            [ty.icons :as icons]
+            [ty.lucide :as lucide]
+            [ty.router :as router]))
+
+(defn register-icons! []
+  (icons/register!
+    {:home lucide/home
+     :edit lucide/edit}))
+
+(defn app []
+  [:div.ty-canvas.min-h-screen
+   [nav/navigation]
+   [:main.p-6
+    ;; All views listed - each controls its own visibility
+    [views/home-view]
+    [views/forms-view]]])
+
+(defonce root-ref (atom nil))
+
+(defn render! []
+  (when-let [root @root-ref]
+    (rdom/render root [app])))
+
+(defn init []
+  (register-icons!)
+  (router/init! \"\")
+
+  ;; Create root only once (React 18 API)
+  (when-not @root-ref
+    (reset! root-ref (rdom/create-root (.getElementById js/document \"app\"))))
+
+  ;; Watch router for re-renders
+  (add-watch router/*router* ::render
+             (fn [_ _ _ _] (render!)))
+
+  ;; Initial render
+  (render!))"
+                  "clojure")
+
+                [:div.ty-bg-neutral-.border.ty-border.rounded.p-4.mt-6.mb-6
+                 [:h4.font-medium.ty-text.mb-3 "📝 UIx vs Reagent: Reactivity Patterns"]
+                 [:div.grid.md:grid-cols-2.gap-4.text-sm
+                  [:div
+                   [:h5.font-medium.ty-text-.mb-2 "UIx"]
+                   [:ul.space-y-1.ty-text-.text-xs
+                    [:li "• Uses " [:code.ty-bg-neutral.px-1.rounded "use-state"] " hook for router state"]
+                    [:li "• Automatic dependency tracking"]
+                    [:li "• No explicit atom dereferencing needed"]
+                    [:li "• Hook manages reactivity internally"]]]
+                  [:div
+                   [:h5.font-medium.ty-text-.mb-2 "Reagent"]
+                   [:ul.space-y-1.ty-text-.text-xs
+                    [:li "• Must deref " [:code.ty-bg-neutral.px-1.rounded "@router/*router*"] " in views"]
+                    [:li "• Explicit atom tracking required"]
+                    [:li "• Views won't re-render without deref"]
+                    [:li "• Simple " [:code.ty-bg-neutral.px-1.rounded "(let [_ @router/*router*] ...)"] " pattern"]]]]]
+
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-8 "Key Router Functions"]
                 [:div.space-y-4
                  [:div
@@ -483,7 +655,7 @@
 
 ;; Use in conditional rendering
 ($ ty/Button {:flavor (if (router/rendered? :app/home) \"primary\" \"secondary\")
-             :onClick #(router/navigate! :app/home)}
+             :on-click #(router/navigate! :app/home)}
    \"Home\")"
                    "clojure")]]))
 
@@ -590,7 +762,7 @@
             ($ TyButton {:key (name (:code lang))
                          :flavor (if (= locale (:code lang)) \"primary\" \"outline\")
                          :size \"sm\"
-                         :onClick #(set-locale! (:code lang))}
+                         :on-click #(set-locale! (:code lang))}
                (:name lang)))))))"
                   "clojure")
 
@@ -615,8 +787,8 @@
                (i18n/t :profile/name))
             ($ TyInput {:value (:name user-data)
                         :placeholder (i18n/t :profile/name-placeholder)
-                        :onChange #(set-user-data! assoc :name (.. % -target -value))}))
-         
+                        :on-change #(set-user-data! assoc :name (.. % -detail -value))}))
+
          ;; Email field
          ($ :div.mb-4
             ($ :label.ty-text+.block.text-sm.font-medium.mb-2
@@ -624,8 +796,8 @@
             ($ TyInput {:type \"email\"
                         :value (:email user-data)
                         :placeholder (i18n/t :profile/email-placeholder)
-                        :onChange #(set-user-data! assoc :email (.. % -target -value))}))
-         
+                        :on-change #(set-user-data! assoc :email (.. % -detail -value))}))
+
          ;; Bio field
          ($ :div.mb-6
             ($ :label.ty-text+.block.text-sm.font-medium.mb-2
@@ -633,7 +805,7 @@
             ($ TyTextarea {:value (:bio user-data)
                            :placeholder (i18n/t :profile/bio-placeholder)
                            :rows 3
-                           :onChange #(set-user-data! assoc :bio (.. % -target -value))}))
+                           :on-change #(set-user-data! assoc :bio (.. % -detail -value))}))
          
          ;; Action buttons
          ($ :div.flex.gap-2

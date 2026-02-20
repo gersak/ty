@@ -884,24 +884,27 @@ const handleSubmit = (e) => {
 
      ;; ClojureScript
      [:div
-      [:h4.font-medium.ty-text.mb-2 "ClojureScript / Reagent"]
+      [:h4.font-medium.ty-text.mb-2 "ClojureScript / Replicant"]
       (code-block "(ns my-app.form
-  (:require [reagent.core :as r]))
+  (:require [replicant.dom :as d]))
 
+;; State as standard atom
+(defonce form-state (atom {:priority \"\"}))
+
+;; Pure view function (not Form-2)
 (defn priority-form []
-  (let [priority (r/atom \"\")]
-    (fn []
-      [:form {:on-submit (fn [e]
-                          (.preventDefault e)
-                          (js/console.log @priority))}
-       [:ty-dropdown {:name \"priority\"
-                      :value @priority
-                      :on-change #(reset! priority (.. % -detail -value))
-                      :required true}
-        [:ty-option {:value \"\"} \"Select\"]
-        [:ty-option {:value \"low\"} \"Low\"]
-        [:ty-option {:value \"high\"} \"High\"]]
-       [:button {:type \"submit\"} \"Submit\"]])))")]]]
+  [:form {:on {:submit (fn [e]
+                         (.preventDefault e)
+                         (js/console.log (:priority @form-state)))}}
+   [:ty-dropdown {:name \"priority\"
+                  :value (:priority @form-state)
+                  :on {:change #(swap! form-state assoc :priority
+                                       (.. % -detail -value))}
+                  :required true}
+    [:ty-option {:value \"\"} \"Select\"]
+    [:ty-option {:value \"low\"} \"Low\"]
+    [:ty-option {:value \"high\"} \"High\"]]
+   [:button {:type \"submit\"} \"Submit\"]])")]]]
 
    ;; Key Points
    [:div.p-4.ty-bg-primary-.rounded

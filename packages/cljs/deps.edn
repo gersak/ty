@@ -6,7 +6,7 @@
         cljs-bean/cljs-bean {:mvn/version "1.9.0"}}
 
  :aliases
- {:dev {:extra-paths ["components" "icons" "gen" "site"]
+ {:dev {:extra-paths ["icons" "gen" "site"]
         :extra-deps {thheller/shadow-cljs {:mvn/version "2.28.19"}
                      dev.gersak/timing {:mvn/version "0.7.0"}}}
 

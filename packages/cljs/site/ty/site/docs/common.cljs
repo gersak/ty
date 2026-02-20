@@ -174,7 +174,7 @@
    Uses layout breakpoints to adjust padding for mobile vs desktop."
   [& children]
   (let [is-desktop? (layout/breakpoint>= :lg)]
-    (into [:div.max-w-4xl.mx-auto
+    (into [:div.max-w-4xl.mx-auto.space-y-8
            {:style {:padding (if is-desktop? "24px" "8px 12px")}}]
           children)))
 

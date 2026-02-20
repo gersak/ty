@@ -73,25 +73,26 @@
   (doc-section "Icon Registration"
                [:div
                 [:p.ty-text-.mb-4
-                 "Import icons from the " [:code.ty-bg-neutral-.px-1.rounded "ty-icons"] " artifact and register them using the global API:"]
+                 "Import icons from " [:code.ty-bg-neutral-.px-1.rounded "ty-icons"] " and register with " [:code.ty-bg-neutral-.px-1.rounded "ty.icons"] ":"]
 
                 (code-block
                  "(ns my-app.core
-  (:require [replicant.dom :as d]
-            [replicant.core :as r]
-            [ty.lucide :as lucide]))  ;; Tree-shakeable icon imports
+  (:require [replicant.dom :as dom]
+            [ty.icons :as icons]
+            [ty.lucide :as lucide]))
 
-;; Register only the icons you need
-(js/window.tyIcons.register 
-  #js {\"check\" lucide/check
-       \"heart\" lucide/heart
-       \"save\" lucide/save
-       \"trash\" lucide/trash})
+;; Register only the icons you need (keyword keys)
+(icons/register!
+  {:check lucide/check
+   :heart lucide/heart
+   :save  lucide/save
+   :trash lucide/trash})
 
-;; Now use icons in your components
-[:ty-button {:variant \"primary\"}
- [:ty-icon {:name \"check\"}]
- \"Save\"]"
+;; Use icons in components
+(defn save-button []
+  [:ty-button {:flavor \"primary\"}
+   [:ty-icon {:name \"check\"}]
+   \"Save\"])"
                  "clojure")
 
                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-4.mt-4
@@ -100,8 +101,8 @@
                  [:ul.ty-text-info.text-sm.space-y-1.ml-4
                   [:li "• Only imported icons are included in your bundle"]
                   [:li "• Google Closure Compiler removes unused code"]
-                  [:li "• Works with any ClojureScript project"]
-                  [:li "• Uses the same " [:code.ty-bg-info.px-1.rounded "window.tyIcons.register"] " API as JavaScript"]]]]))
+                  [:li "• Keyword keys converted to strings automatically"]
+                  [:li "• Use " [:code.ty-bg-info.px-1.rounded "icons/register-async!"] " if icons load before ty.js"]]]]))
 
 (defn basic-usage-section
   "Basic usage example section with icons"
@@ -113,40 +114,46 @@
 
                 (code-block
                  "(ns my-app.core
-  (:require [replicant.dom :as d]
-            [replicant.core :as r]
+  (:require [replicant.dom :as dom]
+            [ty.icons :as icons]
             [ty.lucide :as lucide]))
 
-;; Register icons
-(js/window.tyIcons.register
-  #js {\"check\" lucide/check
-       \"heart\" lucide/heart})
+;; State - standard clojure.core/atom
+(defonce state (atom {:message \"Hello from Ty!\"
+                      :liked false}))
 
-;; Create state
-(defonce app-state (r/atom {:message \"Hello from Ty!\"
-                            :liked false}))
+;; Components are pure functions returning hiccup
+(defn like-button []
+  [:ty-button {:flavor (if (:liked @state) \"danger\" \"outline\")
+               :on {:click #(swap! state update :liked not)}}
+   [:ty-icon {:name \"heart\"}]
+   (if (:liked @state) \"Liked!\" \"Like\")])
 
-;; Component with icons
-(defn hello-view [state]
+(defn hello-view []
   [:div.ty-elevated.p-6.rounded-lg.max-w-md.mx-auto
    [:h2.ty-text++.text-xl.mb-4 (:message @state)]
-   
    [:div.flex.gap-2
-    [:ty-button {:variant \"primary\"
-                 :on {:click #(swap! state assoc :message \"Button clicked!\")}}
+    [:ty-button {:flavor \"primary\"
+                 :on {:click #(swap! state assoc :message \"Clicked!\")}}
      [:ty-icon {:name \"check\"}]
      \"Click me\"]
-    
-    [:ty-button {:variant (if (:liked @state) \"danger\" \"outline\")
-                 :on {:click #(swap! state update :liked not)}}
-     [:ty-icon {:name \"heart\"}]
-     (if (:liked @state) \"Liked!\" \"Like\")]]])
+    (like-button)]])  ;; <-- function call, not vector
 
-;; Mount to DOM
-(defn mount! []
-  (d/render
-    [hello-view app-state]
-    (js/document.getElementById \"app\")))"
+;; App composes views - call them as functions
+(defn app []
+  [:div.p-8
+   (hello-view)])  ;; <-- (hello-view) not [hello-view]
+
+;; Render: element first, then call app function
+(defn render! []
+  (dom/render (.getElementById js/document \"app\") (app)))
+
+;; Init: register icons, render, watch state
+(defn init []
+  (icons/register! {:check lucide/check
+                    :heart lucide/heart})
+  (render!)
+  (add-watch state ::render (fn [_ _ _ _] (render!))))"
                  "clojure")
 
                 [:p.ty-text-.mt-4
@@ -159,7 +166,7 @@
 (defn routing-section
   "Complete routing section with ty.router"
   []
-  (doc-section "🎯 Router - Tree-based Routing with Authorization"
+  (doc-section "🎯 Router - Tree-based Routing"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
                  [:p.ty-text-warning.text-sm
@@ -173,148 +180,128 @@
                  "clojure")
 
                 [:p.ty-text-.mb-4.mt-6
-                 "Ty includes a powerful routing system that works great with Replicant. Routes can be defined in any namespace and linked together hierarchically."]
+                 "Ty includes a powerful routing system that works great with Replicant. "
+                 "The key pattern: " [:strong "each component checks its own rendered? state"] " - no cond in parent."]
 
-                [:h3.text-lg.font-semibold.ty-text.mb-3 "Multi-namespace Route Example"]
+                [:h3.text-lg.font-semibold.ty-text.mb-3 "Basic Routing Pattern"]
                 [:p.ty-text-.mb-4
-                 "Here's how to organize routes across multiple namespaces:"]
+                 "Here's a complete working example with proper Replicant patterns:"]
 
-     ;; Main namespace
                 (example-section
-                 "Main Namespace (my-app.main)"
+                 "Complete Routing Example"
                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
-                  [:p.ty-text.text-sm "Main namespace that links to site-specific routes"]]
-                 "(ns my-app.main
-  (:require [replicant.dom :as d]
-            [replicant.core :as r]
+                  [:p.ty-text.text-sm "Each view component owns its visibility check - no cond in parent!"]]
+                 "(ns my-app.core
+  (:require [replicant.dom :as dom]
             [ty.router :as router]
-            [my-app.site-a :as site-a]
-            [my-app.site-b :as site-b]))
+            [ty.icons :as icons]
+            [ty.lucide :as lucide]))
 
-;; Define main routes and link to sub-routes
-(router/link :app/main
-  [{:id :app/home
+;; State - standard clojure.core/atom
+(defonce state (atom {:counter 0}))
+
+;; Define routes - link to router root
+(router/link ::router/root
+  [{:id ::home
     :segment \"home\"
-    :view home-view}
-   {:id :app/site-a
-    :segment \"site-a\"}  ; <- Link to siteA routes
-   {:id :app/site-b
-    :segment \"site-b\"}]) ; <- Link to siteB routes
+    :landing 10}    ;; landing priority - navigates here by default
+   {:id ::about
+    :segment \"about\"}
+   {:id ::settings
+    :segment \"settings\"}])
 
-(defn navigation []
-  [:nav.ty-elevated.p-4.mb-6
-   [:div.flex.gap-4
-    [:ty-button {:variant (if (router/rendered? :app/home) \"primary\" \"secondary\")
-                 :on {:click #(router/navigate! :app/home)}}
-     \"Home\"]
-    [:ty-button {:variant (if (router/rendered? :app/site-a) \"primary\" \"secondary\")
-                 :on {:click #(router/navigate! :app/site-a)}}
-     \"Site A\"]
-    [:ty-button {:variant (if (router/rendered? :app/site-b) \"primary\" \"secondary\")
-                 :on {:click #(router/navigate! :app/site-b)}}
-     \"Site B\"]]])
+;; =============================================================================
+;; Views - each checks its OWN rendered? state
+;; =============================================================================
 
-(defn main-view []
-  [:div
-   [navigation]
-   (cond
-     (router/rendered? :app/home) [home-view]
-     (router/rendered? :app/site-a) [site-a/view]
-     (router/rendered? :app/site-b) [site-b/view]
-     :else [:div \"Not found\"])])"
-                 "clojure")
+(defn home-view []
+  ;; Component decides if it should render
+  (when (router/rendered? ::home)
+    [:div.ty-elevated.p-6.rounded-lg
+     [:h2.ty-text++.text-2xl.font-bold.mb-4 \"Welcome Home\"]
+     [:p.ty-text.mb-4 \"Counter: \" [:strong (:counter @state)]]
+     [:div.flex.gap-2
+      [:ty-button {:flavor \"primary\"
+                   :on {:click #(swap! state update :counter inc)}}
+       [:ty-icon {:name \"plus\" :size \"sm\"}]
+       \"Increment\"]]]))
 
-     ;; Site A namespace
-                (example-section
-                 "Site A Namespace (my-app.site-a)"
-                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
-                  [:p.ty-text-success.text-sm "Site A defines its own routes and sub-navigation"]]
-                 "(ns my-app.site-a
-  (:require [ty.router :as router]))
+(defn about-view []
+  (when (router/rendered? ::about)
+    [:div.ty-elevated.p-6.rounded-lg
+     [:h2.ty-text++.text-2xl.font-bold.mb-4 \"About\"]
+     [:p.ty-text \"This is the about page.\"]]))
 
-;; Define routes for this namespace
-(def routes
-  [{:id :app.site-a/dashboard
-    :segment \"dashboard\"
-    :view dashboard-view}
-   {:id :app.site-a/users
-    :segment \"users\" 
-    :view users-view}
-   {:id :app.site-a/settings
-    :segment \"settings\"
-    :view settings-view}])
+(defn settings-view []
+  (when (router/rendered? ::settings)
+    [:div.ty-elevated.p-6.rounded-lg
+     [:h2.ty-text++.text-2xl.font-bold.mb-4 \"Settings\"]
+     [:p.ty-text \"Configure your preferences here.\"]]))
 
-;; Link the routes to make them active
-;; make sure that first argument is already existing route
-(router/link :app/site-a routes)
+;; =============================================================================
+;; Navigation - uses rendered? for active state
+;; =============================================================================
 
-(defn site-a-nav []
-  [:div.ty-elevated.p-4.mb-4
-   [:h3.ty-text++.mb-2 \"Site A Navigation\"]
-   [:div.flex.gap-2
-    [:ty-button {:variant (if (router/rendered? :app.site-a/dashboard) \"primary\" \"outline\")
-                 :size \"sm\"
-                 :on {:click #(router/navigate! :app.site-a/dashboard)}}
-     \"Dashboard\"]
-    [:ty-button {:variant (if (router/rendered? :app.site-a/users) \"primary\" \"outline\")
-                 :size \"sm\" 
-                 :on {:click #(router/navigate! :app.site-a/users)}}
-     \"Users\"]
-    [:ty-button {:variant (if (router/rendered? :app.site-a/settings) \"primary\" \"outline\")
-                 :size \"sm\"
-                 :on {:click #(router/navigate! :app.site-a/settings)}}
-     \"Settings\"]]])
+(defn nav-button [route-id label icon-name]
+  (let [active? (router/rendered? route-id)]
+    [:button.px-4.py-2.rounded.flex.items-center.gap-2.transition-colors
+     {:class (if active?
+               [\"ty-bg-primary\" \"ty-text++\"]
+               [\"ty-bg-neutral-\" \"ty-text\" \"hover:ty-bg-neutral\"])
+      :on {:click #(router/navigate! route-id)}}
+     [:ty-icon {:name icon-name :size \"sm\"}]
+     label]))
 
-(defn view []
-  [:div
-   [site-a-nav]
-   (map (fn [{:keys [id view]}] 
-          (when (router/rendered? id true) 
-            (view))) 
-        routes)])"
-                 "clojure")
+(defn nav []
+  [:nav.ty-elevated.p-4.rounded-lg.mb-6
+   [:div.flex.gap-2.flex-wrap
+    (nav-button ::home \"Home\" \"home\")
+    (nav-button ::about \"About\" \"info\")
+    (nav-button ::settings \"Settings\" \"settings\")]])
 
-     ;; Site B namespace  
-                (example-section
-                 "Site B Namespace (my-app.site-b)"
-                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                  [:p.ty-text-warning.text-sm "Site B has its own independent route structure"]]
-                 "(ns my-app.site-b 
-  (:require [ty.router :as router]))
+;; =============================================================================
+;; App - just lists all views, NO cond needed!
+;; =============================================================================
 
-;; Different route structure for Site B
-(def routes
-  [{:id :app.site-b/products
-    :segment \"products\"
-    :view products-view}
-   {:id :app.site-b/orders
-    :segment \"orders\"
-    :view orders-view}])
+(defn app []
+  [:div.ty-canvas.min-h-screen.p-6
+   [:div.max-w-2xl.mx-auto
+    [:h1.ty-text++.text-3xl.font-bold.mb-6 \"My App\"]
+    (nav)
+    ;; All views listed - each controls its own visibility
+    (home-view)
+    (about-view)
+    (settings-view)]])
 
-;; Link the routes to make them active
-;; make sure that first argument is already existing route
-(router/link :app/site-b routes)
+;; =============================================================================
+;; Render & Init
+;; =============================================================================
 
-(defn site-b-nav []
-  [:div.ty-elevated.p-4.mb-4
-   [:h3.ty-text++.mb-2 \"Site B Navigation\"]  
-   [:div.flex.gap-2
-    [:ty-button {:variant (if (router/rendered? :app.site-b/products) \"primary\" \"outline\")
-                 :size \"sm\"
-                 :on {:click #(router/navigate! :app.site-b/products)}}
-     \"Products\"]
-    [:ty-button {:variant (if (router/rendered? :app.site-b/orders) \"primary\" \"outline\")
-                 :size \"sm\"
-                 :on {:click #(router/navigate! :app.site-b/orders)}}
-     \"Orders\"]]])
+(defn render! []
+  ;; Replicant: element first, then hiccup from function call
+  (dom/render (.getElementById js/document \"app\") (app)))
 
-(defn view []
-  [:div
-   [site-b-nav]
-   (map (fn [{:keys [id view]}]
-          (when (router/rendered? id true)
-            (view)))
-        routes)])"
+(defn init []
+  ;; Register icons
+  (icons/register!
+    {:home     lucide/home
+     :info     lucide/info
+     :settings lucide/settings
+     :plus     lucide/plus})
+
+  ;; Initialize router
+  (router/init! \"\")
+
+  ;; Watch router for re-renders
+  (add-watch router/*router* ::render
+    (fn [_ _ _ _] (render!)))
+
+  ;; Watch state for re-renders
+  (add-watch state ::render
+    (fn [_ _ _ _] (render!)))
+
+  ;; Initial render
+  (render!))"
                  "clojure")
 
                 [:h3.text-lg.font-semibold.ty-text.mb-3.mt-8 "Key Router Functions"]
@@ -324,34 +311,56 @@
                   [:p.ty-text-.text-sm "Programmatically navigate to a route:"]]
 
                  (code-block
-                  ";; Navigate to specific routes
-(router/navigate! :app/home)
-(router/navigate! :app.site-a/users)
-(router/navigate! :app.site-b/products)
+                  ";; Navigate to routes (using auto-resolved keywords)
+(router/navigate! ::home)
+(router/navigate! ::about)
 
 ;; Navigate with URL query parameters
-(router/navigate! :app.site-a/user {:id 123})"
+(router/navigate! ::user {:id 123})"
                   "clojure")
 
                  [:div
                   [:h4.font-medium.ty-text.mb-2 [:code.ty-bg-neutral-.px-2.py-1.rounded "router/rendered?"]]
-                  [:p.ty-text-.text-sm "Check if a route is currently active for conditional rendering:"]]
+                  [:p.ty-text-.text-sm "Check if a route is active - use inside components for visibility:"]]
 
                  (code-block
-                  ";; Check exact route
-(router/rendered? :app/site-a true)
+                  ";; In components - check if should render
+(defn my-view []
+  (when (router/rendered? ::my-route)
+    [:div \"Content\"]))
 
-;; Check if :app/site-a is on URL path
-(router/rendered? :app/site-a)
+;; Check exact match vs path match
+(router/rendered? ::home true)  ;; exact match only
+(router/rendered? ::home)       ;; anywhere in path (default)
 
-;; Check with inheritance (default behavior)
-(router/rendered? :app.site-a/users)
+;; For navigation button active states
+(let [active? (router/rendered? ::home)]
+  [:button {:class (if active? \"ty-bg-primary\" \"ty-bg-neutral-\")}
+   \"Home\"])"
+                  "clojure")
 
-;; Use in conditional rendering
-[:ty-button {:variant (if (router/rendered? :app/home) \"primary\" \"secondary\")
-             :on {:click #(router/navigate! :app/home)}}
- \"Home\"]"
-                  "clojure")]]))
+                 [:div
+                  [:h4.font-medium.ty-text.mb-2 [:code.ty-bg-neutral-.px-2.py-1.rounded "router/link"]]
+                  [:p.ty-text-.text-sm "Define route hierarchy:"]]
+
+                 (code-block
+                  ";; Link routes to router root
+(router/link ::router/root
+  [{:id ::home
+    :segment \"home\"
+    :landing 10}])  ;; highest landing = default route
+
+;; Link child routes to a parent
+(router/link ::settings
+  [{:id ::settings-general :segment \"general\"}
+   {:id ::settings-account :segment \"account\"}])"
+                  "clojure")]
+
+                [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mt-6
+                 [:h4.ty-text-success.font-semibold.mb-2 "Remember: Self-Contained Views"]
+                 [:p.ty-text-success.text-sm
+                  "Each view checks " [:code.ty-bg-success.px-1.rounded "(router/rendered? ::route)"]
+                  " internally. Parent just lists all views - no cond needed."]]]))
 
 ;; =============================================================================
 ;; INTERNATIONALIZATION
@@ -417,7 +426,7 @@
                  "Using Translations in Replicant Views"
                  [:div.ty-bg-success-.border.ty-border-success.rounded.p-3.mb-4
                   [:p.ty-text-success.text-sm "Bind locale dynamically and translate keywords"]]
-                 "(defonce app-state (r/atom {:current-locale :hr}))
+                 "(defonce app-state (atom {:current-locale :hr}))
 
 (defn welcome-view [state]
   (let [locale (:current-locale @state)]
@@ -525,7 +534,7 @@
                  "Basic Number Formatting"
                  [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mb-4
                   [:p.ty-text.text-sm "Numbers are formatted using the current locale automatically"]]
-                 "(defonce app-state (r/atom {:locale :hr}))
+                 "(defonce app-state (atom {:locale :hr}))
 
 (defn price-display [state]
   (let [price 1234.56

@@ -1435,6 +1435,124 @@ document.getElementById('myForm').addEventListener('submit', (e) => {
 
 ---
 
+## Component Slots Reference
+
+Many Ty components support named slots for customization. Use these to add icons, rich content, or custom elements.
+
+### Slot Quick Reference
+
+```
+<ty-button>
+  ├── slot="start"     Left side (icons, badges)
+  └── slot="end"       Right side (icons, arrows)
+
+<ty-input>
+  ├── slot="start"     Inside input, left (search icons, prefixes)
+  └── slot="end"       Inside input, right (clear buttons, icons)
+
+<ty-tag>
+  ├── slot="start"     Before tag text (icons, avatars)
+  └── slot="end"       After tag text (badges, counts)
+
+<ty-dropdown>
+  └── slot="selected"  Custom selected value display
+
+<ty-multiselect>
+  └── slot="selected"  Custom selected values display
+
+<ty-tabs>
+  ├── slot="label-{id}"   Custom label for tab (use tab's id)
+  └── slot="marker"       Custom active tab indicator
+
+<ty-wizard>
+  └── slot="indicator-{id}"  Custom step indicator (use step's id)
+```
+
+### Slot Usage Examples
+
+**Button with icons:**
+```html
+<ty-button flavor="primary">
+  <ty-icon slot="start" name="save"></ty-icon>
+  Save Changes
+  <ty-icon slot="end" name="arrow-right"></ty-icon>
+</ty-button>
+```
+
+**Input with search icon and clear button:**
+```html
+<ty-input placeholder="Search...">
+  <ty-icon slot="start" name="search"></ty-icon>
+  <ty-icon slot="end" name="x"></ty-icon>
+</ty-input>
+```
+
+**Tag with icon and badge:**
+```html
+<ty-tag flavor="primary">
+  <ty-icon slot="start" name="user"></ty-icon>
+  John Doe
+  <span slot="end" class="ty-bg-primary px-1 rounded text-xs">Admin</span>
+</ty-tag>
+```
+
+**Tabs with custom labels:**
+```html
+<ty-tabs height="400px" active="profile">
+  <!-- Custom rich labels -->
+  <span slot="label-profile" class="flex items-center gap-2">
+    <ty-icon name="user" size="sm"></ty-icon>
+    Profile
+  </span>
+  <span slot="label-settings" class="flex items-center gap-2">
+    <ty-icon name="settings" size="sm"></ty-icon>
+    Settings
+  </span>
+
+  <!-- Optional custom marker -->
+  <div slot="marker" class="h-1 bg-blue-500 rounded-full"></div>
+
+  <!-- Tab panels -->
+  <ty-tab id="profile" label="Profile">Profile content</ty-tab>
+  <ty-tab id="settings" label="Settings">Settings content</ty-tab>
+</ty-tabs>
+```
+
+**Wizard with custom step indicators:**
+```html
+<ty-wizard height="500px" active="welcome">
+  <!-- Custom indicators -->
+  <div slot="indicator-welcome">
+    <ty-icon name="home" size="sm"></ty-icon>
+  </div>
+  <div slot="indicator-account">
+    <ty-icon name="user" size="sm"></ty-icon>
+  </div>
+  <div slot="indicator-complete">
+    <ty-icon name="check" size="sm"></ty-icon>
+  </div>
+
+  <!-- Step panels -->
+  <ty-step id="welcome" label="Welcome">Welcome content</ty-step>
+  <ty-step id="account" label="Account">Account content</ty-step>
+  <ty-step id="complete" label="Complete">Complete content</ty-step>
+</ty-wizard>
+```
+
+**Dropdown with custom selected display:**
+```html
+<ty-dropdown placeholder="Select user">
+  <div slot="selected" class="flex items-center gap-2">
+    <img src="avatar.jpg" class="w-6 h-6 rounded-full">
+    <span>John Doe</span>
+  </div>
+  <ty-option value="john">John Doe</ty-option>
+  <ty-option value="jane">Jane Smith</ty-option>
+</ty-dropdown>
+```
+
+---
+
 ## Best Practices
 
 1. **ALWAYS use Ty components** - Never improvise HTML when a Ty component exists (see Component Selection Guide above)

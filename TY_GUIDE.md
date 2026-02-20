@@ -994,10 +994,67 @@ registerIcons({
 });
 ```
 
+**ClojureScript (Recommended):**
+```clojure
+(ns my.app.icons
+  (:require [ty.icons :as icons]
+            [ty.lucide :as lucide]))
+
+;; Recommended: Automatic retry if ty.js hasn't loaded yet
+(icons/register-async!
+  {:check lucide/check
+   :heart lucide/heart
+   :star lucide/star})
+
+;; With options
+(icons/register-async!
+  {:check lucide/check}
+  {:max-retries 20
+   :delay-ms 100
+   :on-success #(println "Icons loaded!")})
+
+;; Synchronous (only if ty.js is already loaded)
+(icons/register! {:check lucide/check})
+
+;; Check if icon is registered
+(icons/registered? :check) ;; => true
+
+;; Advanced: Direct JavaScript interop
+(js/window.tyIcons.register
+  (clj->js {:check lucide/check}))
+```
+
 ### Icon Sets
 
+**ClojureScript (Tree-shakeable):**
+
+Add to `deps.edn`:
+```clojure
+{:deps {dev.gersak/ty-icons {:mvn/version "x.y.z"}}}
+```
+
+Available icon sets (only icons you use are included in the build):
+- **Lucide** - `ty.lucide`
+- **Heroicons** (outline/solid) - `ty.heroicons.outline` / `ty.heroicons.solid`
+- **Material Icons** - `ty.material.*`
+- **FontAwesome 6** (brands/regular/solid) - `ty.fav6.brands` / `ty.fav6.regular` / `ty.fav6.solid`
+
+```clojure
+(ns my.app
+  (:require [ty.lucide :as lucide]
+            [ty.heroicons.outline :as hero]
+            [ty.fav6.brands :as brands]))
+
+(icons/register-async!
+  {:check lucide/check
+   :arrow-left hero/arrow-left
+   :github brands/github})
+```
+
+**JavaScript/TypeScript:**
+
 Compatible with popular icon libraries:
-- **Lucide** (default) - `lucide-static`
+- **Lucide** - `lucide-static`
 - **FontAwesome** - `@fortawesome/free-solid-svg-icons`
 - **Heroicons** - `heroicons`
 - **Material Icons** - `@mdi/svg`

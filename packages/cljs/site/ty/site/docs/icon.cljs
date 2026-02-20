@@ -208,9 +208,9 @@
       [:p.ty-text-.text-sm.mb-2
        [:strong "ClojureScript users:"] " The ty.icons namespace provides helper functions with automatic retry logic."]
       [:p.ty-text-.text-sm.font-mono
-       "deps.edn: " [:span.ty-text-primary "dev.gersak/ty {:mvn/version \"0.3.3-SNAPSHOT\"}"]]
+       "deps.edn: " [:span.ty-text-primary "dev.gersak/ty {:mvn/version \"x.y.z\"}"]]
       [:p.ty-text-.text-sm.font-mono
-       "Icon sets: " [:span.ty-text-primary "dev.gersak/ty-icons {:mvn/version \"0.1.2\"}"]]]
+       "Icon sets: " [:span.ty-text-primary "dev.gersak/ty-icons {:mvn/version \"x.y.z\"}"]]]
 
      [:div.space-y-8
      ;; ClojureScript/Reagent

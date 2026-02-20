@@ -2,6 +2,8 @@
 
 TypeScript web components for universal UI development.
 
+**Framework-agnostic evolution of [Toddler](https://github.com/gersak/toddler)** — same components (calendar, dropdown, routing, icons), rebuilt with Web Components to work everywhere, not just React.
+
 ## Installation
 
 ```bash

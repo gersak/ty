@@ -23,6 +23,14 @@
 | [Vanilla JS Guide](packages/core/src/README.md) | [React Guide](packages/react/README.md) |
 |---|---|
 
+## Why Ty?
+
+Ty is a **framework-agnostic evolution of [Toddler](https://github.com/gersak/toddler)**, a ClojureScript UI library built on Helix (React).
+
+Toddler provided great components (calendar, dropdown, routing, icons) but was locked to React/Helix. Ty takes that component library and rebuilds it with **Web Components**, making the same functionality available everywhere — React, Vue, HTMX, vanilla JS, and all ClojureScript frameworks (Replicant, UIx, Reagent).
+
+Same components. Zero framework lock-in.
+
 ---
 
 ## Load from CDN

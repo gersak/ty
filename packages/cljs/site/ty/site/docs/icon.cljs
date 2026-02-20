@@ -201,8 +201,16 @@
    ;; Icon Registration Section
     [:div.ty-elevated.rounded-lg.p-6.mb-8
      [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Icon Registration"]
-     [:p.ty-text-.mb-6
+     [:p.ty-text-.mb-4
       "Icons must be registered before use. The system uses a unified window.tyIcons API across all technology stacks for consistency."]
+
+     [:div.ty-content.rounded-lg.p-4.mb-6
+      [:p.ty-text-.text-sm.mb-2
+       [:strong "ClojureScript users:"] " The ty.icons namespace provides helper functions with automatic retry logic."]
+      [:p.ty-text-.text-sm.font-mono
+       "deps.edn: " [:span.ty-text-primary "dev.gersak/ty {:mvn/version \"0.3.3-SNAPSHOT\"}"]]
+      [:p.ty-text-.text-sm.font-mono
+       "Icon sets: " [:span.ty-text-primary "dev.gersak/ty-icons {:mvn/version \"0.1.2\"}"]]]
 
      [:div.space-y-8
      ;; ClojureScript/Reagent
@@ -212,41 +220,55 @@
                    :size "sm"}]
         "ClojureScript / Reagent / Replicant / UIx"]
        [:p.ty-text-.text-sm.mb-4
-        "Import icon namespaces and register using the global window.tyIcons API for consistency with other platforms."]
+        "Use the ty.icons namespace for idiomatic ClojureScript icon registration with automatic retry logic."]
 
        (code-block
          "(ns my.app.icons
-  (:require [ty.lucide :as lucide]
+  (:require [ty.icons :as icons]
+            [ty.lucide :as lucide]
             [ty.heroicons.outline :as heroicons]
             [ty.fav6.brands :as brands]))
 
-;; Register icons using window.tyIcons (JavaScript interop)
-(js/window.tyIcons.register
-  #js {:home lucide/home
-       :user lucide/user
-       :check lucide/check
-       :plus lucide/plus
-       :settings lucide/settings
-       :arrow-left heroicons/arrow-left
-       :arrow-right heroicons/arrow-right
-       :react brands/react
-       :python brands/python})
+;; Recommended: Register icons with automatic retry
+;; Handles cases where ty.js hasn't loaded yet
+(icons/register-async!
+  {:home lucide/home
+   :user lucide/user
+   :check lucide/check
+   :plus lucide/plus
+   :settings lucide/settings
+   :arrow-left heroicons/arrow-left
+   :arrow-right heroicons/arrow-right
+   :react brands/react
+   :python brands/python})
 
-;; Or convert ClojureScript map to JS object
-(js/window.tyIcons.register
-  (clj->js {:home lucide/home
-            :user lucide/user
-            :check lucide/check}))
+;; Or with custom retry options
+(icons/register-async!
+  {:check lucide/check}
+  {:max-retries 20
+   :delay-ms 100
+   :on-success #(println \"Icons loaded!\")
+   :on-failure #(println \"Failed to load icons\")})
+
+;; Synchronous registration (only if ty.js is already loaded)
+(icons/register! {:home lucide/home
+                  :user lucide/user})
 
 ;; Check if icon is registered
-(js/window.tyIcons.has \"home\") ;; => true
-
-;; List all registered icons
-(js/window.tyIcons.list) ;; => #js [\"home\" \"user\" \"check\" ...]
+(icons/registered? :home) ;; => true
 
 ;; Usage in components
 [:ty-icon {:name \"home\"}]
-[:ty-icon {:name \"check\" :class \"ty-text-success\"}]"
+[:ty-icon {:name \"check\" :class \"ty-text-success\"}]
+
+;; Advanced: Direct JavaScript interop (if needed)
+(js/window.tyIcons.register
+  (clj->js {:home lucide/home
+            :user lucide/user}))
+
+;; Check via JavaScript API
+(js/window.tyIcons.has \"home\") ;; => true
+(js/window.tyIcons.list) ;; => #js [\"home\" \"user\" ...]"
          "clojure")]
 
      ;; React/Next.js
@@ -400,6 +422,13 @@ window.tyIcons.list() // ['home', 'user', 'check']"
     [:div.ty-elevated.rounded-lg.p-6
      [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Best Practices"]
      [:div.space-y-4
+      [:div.flex.gap-3
+       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+                                         :size "sm"}]
+       [:div
+        [:p.ty-text+.font-medium "Use ty.icons in ClojureScript"]
+        [:p.ty-text-.text-sm "Use register-async! for automatic retry logic and idiomatic ClojureScript"]]]
+
       [:div.flex.gap-3
        [:ty-icon.ty-text-success.mt-0.5 {:name "check"
                                          :size "sm"}]

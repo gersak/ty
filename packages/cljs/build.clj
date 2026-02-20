@@ -1,14 +1,14 @@
 (ns build
-  (:require [clojure.data.json :as json]
-            [clojure.edn :as edn]
-            [clojure.java.io :as io]
-            [clojure.string :as str]
-            [clojure.tools.build.api :as b]
-            [deps-deploy.deps-deploy :as deploy]
-            [ty.template :as template]))
+  (:require
+    [clojure.data.json :as json]
+    [clojure.java.io :as io]
+    [clojure.string :as str]
+    [clojure.tools.build.api :as b]
+    [deps-deploy.deps-deploy :as deploy]
+    [ty.template :as template]))
 
-(def ty-version "0.3.1")
-(def ty-icons-version "0.1.1")
+(def ty-version "0.3.3")
+(def ty-icons-version "0.1.2")
 (def class-dir "target/classes")
 
 ;; Library configurations
@@ -173,10 +173,10 @@
     ;; 6. Summary
     (println "\n✅ GitHub Pages build complete!")
     (println "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━")
-    (println (format "📁 Output directory: ../../docs/"))
+    (println "📁 Output directory: ../../docs/")
     (println (format "🔑 Cache-busting salt: %s" salt))
     (println (format "📦 Ty Components: @gersak/ty@%s (CDN)" ty-version))
-    (println (format "🌐 Will be served at: https://gersak.github.io/ty/"))
+    (println "🌐 Will be served at: https://gersak.github.io/ty/")
     (println "\nGenerated files:")
     (println "  - docs/index.html (main page)")
     (println "  - docs/404.html (SPA fallback)")

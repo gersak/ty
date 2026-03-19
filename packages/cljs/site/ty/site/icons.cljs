@@ -156,6 +156,7 @@
      ;; Additional icons
    :swords lucide/swords
    :inputs lucide/notebook-pen
+   :scroll-text lucide/scroll-text
 
      ;; Development and WIP icons
    :hammer lucide/hammer

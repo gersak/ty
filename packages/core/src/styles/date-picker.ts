@@ -197,6 +197,7 @@ export const datePickerStyles = `
   text-overflow: ellipsis;
   user-select: none;
   color: inherit;
+  pointer-events: none;
 }
 
 .stub-text.placeholder {
@@ -214,6 +215,7 @@ export const datePickerStyles = `
   transform: translateY(-50%);
   height: 1rem;
   pointer-events: none;
+  z-index: 2;
 }
 
 .stub-clear {
@@ -309,12 +311,29 @@ export const datePickerStyles = `
   align-items: center;
 }
 
-/* Responsive positioning */
-@media (max-width: 640px) {
-  .calendar-dialog {
-    min-width: 280px;
-    max-width: calc(100vw - 2rem);
-  }
+/* Native date input for mobile */
+/* Native input is invisible — used only to trigger the OS picker */
+.native-date-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.native-date-input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
 }
 
 /* Time input section */

@@ -68,6 +68,13 @@ export class PropertyManager<T = any> {
   }
   
   /**
+   * Check if a property name exists in the configuration
+   */
+  hasConfig(name: string): boolean {
+    return name in this._config
+  }
+
+  /**
    * Update a property value
    * Returns PropertyChange if value changed, null otherwise
    */

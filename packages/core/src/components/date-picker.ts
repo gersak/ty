@@ -92,7 +92,7 @@ interface TimeInputState {
 /**
  * Date picker sizes
  */
-type DatePickerSize = 'sm' | 'md' | 'lg';
+type DatePickerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
  * Date picker flavors (visual styles)
@@ -709,9 +709,9 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
       type: 'string' as const,
       visual: true,
       default: 'md',
-      validate: (v: any) => ['sm', 'md', 'lg'].includes(v),
+      validate: (v: any) => ['xs', 'sm', 'md', 'lg', 'xl'].includes(v),
       coerce: (v: any) => {
-        if (!['sm', 'md', 'lg'].includes(v)) {
+        if (!['xs', 'sm', 'md', 'lg', 'xl'].includes(v)) {
           console.warn(`[ty-date-picker] Invalid size '${v}'. Using 'md'.`);
           return 'md';
         }
@@ -813,6 +813,9 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private _clickListener?: (e: Event) => void;
   private _keydownListener?: (e: Event) => void;
   private _dialogClickListener?: (e: Event) => void;
+
+  // Reopen guard — prevents click event from reopening after pointerdown close
+  private _closeTimestamp = 0;
 
   // Time input element reference
   private _timeInput?: TimeInput;
@@ -1372,12 +1375,109 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   }
 
   /**
+   * Render native date input for mobile touch devices.
+   * Uses <input type="date"> or <input type="datetime-local"> when with-time.
+   * Reuses .date-picker-stub styling and existing event/state infrastructure.
+   */
+  private renderNativeInput(): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'dropdown-wrapper';
+
+    const stub = document.createElement('div');
+    stub.className = this.buildStubClasses();
+
+    const disabled = this.getAttribute('disabled') === 'true';
+    if (disabled) {
+      stub.setAttribute('disabled', 'true');
+    }
+
+    // Native input (hidden, activated programmatically)
+    const input = document.createElement('input');
+    input.className = 'native-date-input';
+    input.type = this._state.withTime ? 'datetime-local' : 'date';
+    if (disabled) input.disabled = true;
+    if (this.getAttribute('required') === 'true') input.required = true;
+
+    // Pre-fill value
+    const components: DateComponents = {
+      year: this._state.year,
+      month: this._state.month,
+      day: this._state.day,
+      hour: this._state.hour,
+      minute: this._state.minute,
+    };
+    const localValue = componentsToLocalValue(components, this._state.withTime);
+    if (localValue) {
+      input.value = localValue;
+    }
+
+    // Placeholder span (native date inputs ignore placeholder attr)
+    const placeholder = this.getAttribute('placeholder') || 'Select date...';
+    const placeholderEl = document.createElement('span');
+    placeholderEl.className = 'stub-text' + (localValue ? '' : ' placeholder');
+    placeholderEl.textContent = localValue
+      ? formatDisplayValue(components, (this.getAttribute('format') as DateFormatType) || 'long', getEffectiveLocale(this, this.getAttribute('locale')), this._state.withTime) || placeholder
+      : placeholder;
+
+    // Change listener
+    input.addEventListener('change', () => {
+      if (!input.value) {
+        this.handleClearClick(new Event('clear'));
+        return;
+      }
+      const parsed = parseValue(input.value, this._state.withTime);
+      if (parsed) {
+        this.updateState(parsed, true);
+        this.emitChangeEvent(parsed, 'selection');
+      }
+    });
+
+    stub.appendChild(input);
+    stub.appendChild(placeholderEl);
+
+    // Icons container (clear + calendar icon)
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'stub-icons';
+
+    const clearable = this.getAttribute('clearable') !== 'false';
+    if (clearable && localValue && !disabled) {
+      const clearButton = document.createElement('button');
+      clearButton.className = 'stub-clear';
+      clearButton.type = 'button';
+      clearButton.innerHTML = CLEAR_ICON_SVG;
+      clearButton.addEventListener('click', (e) => this.handleClearClick(e));
+      iconContainer.appendChild(clearButton);
+    }
+
+    const calendarIcon = document.createElement('span');
+    calendarIcon.className = 'stub-arrow';
+    calendarIcon.innerHTML = CALENDAR_ICON_SVG;
+    iconContainer.appendChild(calendarIcon);
+
+    stub.appendChild(iconContainer);
+
+    wrapper.appendChild(stub);
+
+    return wrapper;
+  }
+
+  /**
+   * Check if we're on a mobile touch device (matches CSS media query)
+   */
+  private isMobileTouch(): boolean {
+    return window.matchMedia('(pointer: coarse) and (max-width: 640px)').matches;
+  }
+
+  /**
    * Calculate calendar position
-   * 
+   *
    * PORTED FROM: calculate-calendar-position! in date_picker.cljs
    */
   private calculateCalendarPosition(): void {
     if (!this.shadowRoot) return;
+
+    // Skip positioning on mobile — CSS bottom sheet handles it
+    if (this.isMobileTouch()) return;
 
     const stub = this.shadowRoot.querySelector('.date-picker-stub') as HTMLElement;
     const dialog = this.shadowRoot.querySelector('.calendar-dialog') as HTMLElement;
@@ -1462,6 +1562,22 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
 
     ensureStyles(this.shadowRoot, { css: datePickerStyles, id: 'ty-date-picker' });
 
+    // Mobile: native input, no dialog/event listeners/scroll lock
+    if (this.isMobileTouch()) {
+      const existingNativeInput = this.shadowRoot.querySelector('.native-date-input');
+      if (existingNativeInput) {
+        // PARTIAL UPDATE: don't destroy DOM while native picker may be open
+        this.updateDisplay();
+        return;
+      }
+      // FIRST RENDER: build from scratch
+      this.shadowRoot.innerHTML = '';
+      const container = this.renderContainer();
+      container.appendChild(this.renderNativeInput());
+      this.shadowRoot.appendChild(container);
+      return;
+    }
+
     // Check if dialog is currently open
     const existingDialog = this.shadowRoot.querySelector('.calendar-dialog') as HTMLDialogElement;
     const isDialogOpen = existingDialog && existingDialog.open;
@@ -1497,6 +1613,51 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
    */
   private updateDisplay(): void {
     if (!this.shadowRoot) return;
+
+    // Mobile: update native input, stub text, and clear button
+    if (this.isMobileTouch()) {
+      const components: DateComponents = {
+        year: this._state.year,
+        month: this._state.month,
+        day: this._state.day,
+        hour: this._state.hour,
+        minute: this._state.minute,
+      };
+      const localValue = componentsToLocalValue(components, this._state.withTime);
+      const hasValue = this._state.year && this._state.month && this._state.day;
+      const placeholder = this.getAttribute('placeholder') || 'Select date...';
+
+      const nativeInput = this.shadowRoot.querySelector('.native-date-input') as HTMLInputElement;
+      if (nativeInput) {
+        nativeInput.value = localValue || '';
+      }
+
+      const stubText = this.shadowRoot.querySelector('.stub-text');
+      if (stubText) {
+        const formattedValue = hasValue
+          ? formatDisplayValue(
+              components,
+              (this.getAttribute('format') as DateFormatType) || 'long',
+              getEffectiveLocale(this, this.getAttribute('locale')),
+              this._state.withTime
+            )
+          : null;
+        stubText.textContent = formattedValue || placeholder;
+        if (formattedValue) {
+          stubText.classList.remove('placeholder');
+        } else {
+          stubText.classList.add('placeholder');
+        }
+      }
+
+      const clearButton = this.shadowRoot.querySelector('.stub-clear') as HTMLElement;
+      if (clearButton) {
+        const clearable = this.getAttribute('clearable') !== 'false';
+        const disabled = this.getAttribute('disabled') === 'true';
+        clearButton.style.display = (clearable && hasValue && !disabled) ? '' : 'none';
+      }
+      return;
+    }
 
     const stubText = this.shadowRoot.querySelector('.stub-text');
     const clearButton = this.shadowRoot.querySelector('.stub-clear') as HTMLElement;
@@ -1592,7 +1753,11 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private handleStubClick(event: Event): void {
     event.preventDefault();
     const disabled = this.getAttribute('disabled') === 'true';
-    if (!disabled) {
+    // FIXME: Timestamp guard is a workaround. Calendar day cells use pointerdown,
+    // which closes the dialog before the click event fires — the click then hits the
+    // stub and reopens. Proper fix: switch calendar-month day cells from pointerdown
+    // to click so the event is consumed before the dialog closes.
+    if (!disabled && Date.now() - this._closeTimestamp > 300) {
       this.openDropdown();
     }
   }
@@ -1714,11 +1879,12 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
 
   /**
    * Open calendar dropdown
-   * 
+   *
    * PORTED FROM: open-dropdown! in date_picker.cljs
    */
   private openDropdown(): void {
     if (this._state.open) return;
+    if (this.isMobileTouch()) return;
 
     this.updateState({ open: true });
 
@@ -1759,6 +1925,7 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private closeDropdown(): void {
     if (!this._state.open) return;
 
+    this._closeTimestamp = Date.now();
     const pickerId = `date-picker-${this.id || this.toString()}`;
 
     // Force sync any staged updates when closing

@@ -76,8 +76,8 @@ If the automated setup doesn't work, follow these steps:
 3. **Components load from CDN automatically:**
    ```html
    <!-- Already configured in base.html -->
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.css">
-   <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/index.js"></script>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+   <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
    ```
 
 4. **Build Tailwind CSS:**
@@ -97,8 +97,8 @@ Components load automatically from `@gersak/ty` NPM package via jsDelivr CDN:
 
 ```html
 <!-- In templates/base.html -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.css">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/index.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
 ```
 
 **Benefits:**

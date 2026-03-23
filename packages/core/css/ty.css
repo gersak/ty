@@ -253,6 +253,16 @@ BORDER COLORS
   --ty-border-accent-soft: var(--ty-color-accent-soft);
 
   /* =================================================================
+SCROLLBAR
+================================================================= */
+
+  --ty-scrollbar-thumb: rgba(0, 0, 0, 0.35);
+  --ty-scrollbar-thumb-hover: rgba(0, 0, 0, 0.50);
+  --ty-scrollbar-thumb-active: rgba(0, 0, 0, 0.60);
+  --ty-scrollbar-track: transparent;
+  --ty-scrollbar-track-hover: rgba(0, 0, 0, 0.06);
+
+  /* =================================================================
 SURFACE SYSTEM
 ================================================================= */
 
@@ -558,6 +568,13 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-border: #535353;
   --ty-border-soft: #1f2937;
   --ty-border-faint: #030712;
+
+  /* Scrollbar - dark mode */
+  --ty-scrollbar-thumb: rgba(255, 255, 255, 0.22);
+  --ty-scrollbar-thumb-hover: rgba(255, 255, 255, 0.38);
+  --ty-scrollbar-thumb-active: rgba(255, 255, 255, 0.48);
+  --ty-scrollbar-track: transparent;
+  --ty-scrollbar-track-hover: rgba(255, 255, 255, 0.06);
 
   --ty-surface-canvas: black;
   --ty-surface-content: #1a1a1a;
@@ -1583,5 +1600,17 @@ RESPONSIVE VARIANTS
 
   .lg\:ty-text-primary {
     color: var(--ty-color-primary);
+  }
+}
+
+/* =================================================================
+   MOBILE FONT SIZE
+   Prevents iOS Safari auto-zoom on input focus (requires >= 16px)
+   and improves readability on small screens.
+================================================================= */
+
+@media (max-width: 768px) {
+  :root {
+    --ty-font-sm: 1rem;
   }
 }

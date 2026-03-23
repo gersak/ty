@@ -9,7 +9,7 @@ export const multiselectStyles = `
 /* Multiselect-specific styles extending dropdown base styles */
 
 :host {
-  --mobile-border-color: #5858587d;
+  --mobile-border-color: var(--ty-border, #5858587d);
 }
 
 /* ===== DIALOG POSITIONING SUPPORT ===== */
@@ -448,12 +448,11 @@ export const multiselectStyles = `
   border-color: var(--ty-border);
 }
 
-/* Mobile search header - floating row with search and close */
+/* Mobile search header - label floats above, search + close below */
 .dropdown-mode-mobile .mobile-search-header {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
   margin-bottom: 16px;
   padding: 0;
   background: transparent;
@@ -467,16 +466,28 @@ export const multiselectStyles = `
   width: 100%;
 }
 
-/* Header for non-searchable (close button only) */
+/* Header for non-searchable (label + close button) */
 .dropdown-mode-mobile .mobile-header-nosearch {
   flex-shrink: 0;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   margin-bottom: 16px;
   padding: 0;
   background: transparent;
   position: relative;
   min-height: 40px;
+}
+
+.dropdown-mode-mobile .mobile-header-label {
+  position: absolute;
+  bottom: 100%;
+  left: 6px;
+  margin-bottom: 4px;
+  font-size: var(--ty-font-lg);
+  font-weight: 700;
+  color: var(--ty-color-neutral);
+  pointer-events: none;
 }
 
 /* Close button - circular with border (matches dropdown.ts) */
@@ -488,10 +499,9 @@ export const multiselectStyles = `
   align-items: center;
   justify-content: center;
   background: var(--ty-surface-floating);
-  border: 3px solid;
-  border-color: var(--mobile-border-color);
+  border: 2px solid var(--mobile-border-color);
   border-radius: 50%;
-  color: var(--ty-text-);
+  color: var(--ty-text-strong);
   cursor: pointer;
   transition: var(--ty-transition-all);
   padding: 0;
@@ -500,7 +510,7 @@ export const multiselectStyles = `
 .dropdown-mode-mobile .mobile-close-button:hover {
   background: var(--ty-bg-neutral);
   border-color: var(--ty-border);
-  color: var(--ty-text);
+  color: var(--ty-text-strong);
 }
 
 .dropdown-mode-mobile .mobile-close-button:active {
@@ -533,7 +543,7 @@ export const multiselectStyles = `
 }
 
 .dropdown-mode-mobile .mobile-search-input::placeholder {
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
 }
 
 .dropdown-mode-mobile .mobile-search-input:focus {
@@ -574,12 +584,21 @@ export const multiselectStyles = `
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ty-text-);
-  background: var(--ty-bg-neutral-);
-  border-bottom: 1px solid var(--ty-border--);
+  color: var(--ty-text);
+  background: var(--ty-bg-neutral-soft);
+  border-bottom: 1px solid var(--ty-border-faint);
   cursor: pointer;
   user-select: none;
   transition: all 0.3s ease;
+}
+
+/* Expanded section is mild (already viewing it), collapsed is normal (draws attention) */
+.dropdown-mode-mobile [data-expanded="false"] .section-header {
+  color: var(--ty-text);
+}
+
+.dropdown-mode-mobile [data-expanded="true"] .section-header {
+  color: var(--ty-text-mild);
 }
 
 .dropdown-mode-mobile .section-header:hover {
@@ -587,7 +606,7 @@ export const multiselectStyles = `
 }
 
 .dropdown-mode-mobile .section-header:active {
-  background: var(--ty-bg-neutral+);
+  background: var(--ty-bg-neutral-mild);
 }
 
 .dropdown-mode-mobile .section-header .section-title {
@@ -604,7 +623,7 @@ export const multiselectStyles = `
 .dropdown-mode-mobile .section-header .section-chevron {
   width: 16px;
   height: 16px;
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -627,7 +646,7 @@ export const multiselectStyles = `
 }
 
 .dropdown-mode-mobile .mobile-available-section .section-header:hover {
-  background: var(--ty-bg-neutral-);
+  background: var(--ty-bg-neutral-soft);
 }
 
 /* ===== SELECTED SECTION - Expandable with smooth transition ===== */
@@ -702,7 +721,7 @@ export const multiselectStyles = `
   width: 100%;
   padding: 2rem 1rem;
   text-align: center;
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
   font-size: 0.875rem;
   font-style: italic;
 }

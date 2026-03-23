@@ -119,7 +119,7 @@
         [:td.px-4.py-2.ty-text-.text-sm
          description
          (when required
-           [:span.ml-2.ty-bg-danger.ty-text-danger++.px-2.py-0.5.rounded.text-xs "required"])]])]]])
+           [:span.ml-2.ty-bg-danger.ty-text-danger++.px-2.py-1.rounded.text-xs "required"])]])]]])
 
 (defn event-table
   "Display component events in a table format"

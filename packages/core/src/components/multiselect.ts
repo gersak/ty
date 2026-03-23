@@ -45,25 +45,10 @@ import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { multiselectStyles } from '../styles/multiselect.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
+import { isMobileTouch } from '../utils/mobile.js'
 import { TyComponent } from '../base/ty-component.js'
 import type { PropertyChange } from '../utils/property-manager.js'
 import { CustomScrollbar, isCustomScrollbarEnabled } from '../utils/custom-scrollbar.js'
-
-// ============================================================================
-// DEVICE DETECTION
-// ============================================================================
-
-/**
- * Detect if we're on a mobile device
- * - Screen width <= 768px (mobile phones)
- * - Screen width <= 1024px + touch capability (tablets)
- */
-function isMobileDevice(): boolean {
-  const width = window.innerWidth
-  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-
-  return width <= 768 || (width <= 1024 && hasTouch)
-}
 
 // ============================================================================
 // Element Hash Utility (for consistent scroll lock IDs)
@@ -294,7 +279,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     highlightedIndex: -1,
     filteredTags: [],
     selectedValues: [],
-    mode: isMobileDevice() ? 'mobile' : 'desktop',
+    mode: 'desktop', // Updated dynamically on render via syncMode()
     expandedSection: 'selected'  // Will be corrected by toggleSection call
   }
 
@@ -919,7 +904,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
     if (!dialog) return
 
-    // Close dialog using native API
+    // Close immediately — ::backdrop doesn't support transitions
     dialog.classList.remove('open')
     dialog.close()
 
@@ -932,13 +917,16 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     this._state.open = false
     this._state.highlightedIndex = -1
 
-    // Reset search if searchable
+    // Reset search and restore all tags
     if (this._searchable) {
       this._state.search = ''
       const searchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
       if (searchInput) {
         searchInput.value = ''
       }
+      // Unhide all tags
+      const allTags = this.getTagElements()
+      allTags.forEach(el => el.removeAttribute('hidden'))
     }
   }
 
@@ -1278,6 +1266,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
    * Delegates to mode-specific renderer
    */
   protected render(): void {
+    // Sync mode on every render so rotation/resize is picked up
+    this._state.mode = isMobileTouch() ? 'mobile' : 'desktop'
+
     if (this._state.mode === 'mobile') {
       this.renderMobile()
     } else {
@@ -1434,14 +1425,18 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>`
 
+      // Search placeholder: "Search <label>..." or just "Search..."
+      const searchPlaceholder = this._label ? `Search ${this._label}...` : 'Search...'
+
       // Conditional search header - match dropdown.ts pattern
       const searchHeaderHtml = this._searchable ? `
         <div class="mobile-search-header">
+          ${this._label ? `<span class="mobile-header-label">${this._label}</span>` : ''}
           <div class="mobile-header-content">
-            <input 
-              class="mobile-search-input ${this._size}" 
+            <input
+              class="mobile-search-input ${this._size}"
               type="text"
-              placeholder="Search..."
+              placeholder="${searchPlaceholder}"
               ${this._disabled ? 'disabled' : ''}
             />
             <button class="mobile-close-button" type="button" aria-label="Close">
@@ -1451,6 +1446,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         </div>
       ` : `
         <div class="mobile-header-nosearch">
+          ${this._label ? `<span class="mobile-header-label">${this._label}</span>` : ''}
           <button class="mobile-close-button" type="button" aria-label="Close">
             ${closeButtonSvg}
           </button>

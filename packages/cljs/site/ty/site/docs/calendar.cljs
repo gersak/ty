@@ -136,17 +136,17 @@
     [:div.ty-bg-info-.rounded-lg.p-4
      [:ul.space-y-2.text-sm.ty-text
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "arrow-right"
+       [:ty-icon.ty-text.mt-1 {:name "arrow-right"
                                       :size "xs"}]
        [:span [:code.ty-elevated.px-1 "dayContentFn"] " - Your custom day rendering function"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "arrow-right"
+       [:ty-icon.ty-text.mt-1 {:name "arrow-right"
                                       :size "xs"}]
        [:span [:code.ty-elevated.px-1 "customCSS"] " - Your custom stylesheet for shadow DOM"]]]]]])
 
 (defn stateful-vs-stateless-section []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
-   [:h2.text-xl.font-semibold.ty-text.mb-4 "🎯 Component Comparison"]
+   [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon.ty-text-primary {:name "target" :size "sm"}] "Component Comparison"]
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
     [:div
      [:h3.font-medium.ty-text+.mb-2.flex.items-center.gap-2
@@ -155,27 +155,27 @@
       "ty-calendar (This Component)"]
      [:ul.space-y-2.text-sm.ty-text-
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "xs"}]
        [:span [:strong "Two Modes:"] " Stateful (default) or Stateless (via attribute)"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "xs"}]
        [:span [:strong "Navigation:"] " Built-in month/year controls"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "xs"}]
        [:span [:strong "Complete:"] " Full calendar experience out of the box"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "xs"}]
        [:span [:strong "Pass-through:"] " Forwards customization to ty-calendar-month"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "info"
+       [:ty-icon.ty-text.mt-1 {:name "info"
                                       :size "xs"}]
        [:span [:strong "Stateful mode:"] " Manages selection internally"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "info"
+       [:ty-icon.ty-text.mt-1 {:name "info"
                                       :size "xs"}]
        [:span [:strong "Stateless mode:"] " Parent controls all state"]]]]
     [:div
@@ -185,19 +185,19 @@
       "ty-calendar-month (Foundation)"]
      [:ul.space-y-2.text-sm.ty-text-
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-1 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "Always Stateless:"] " Parent controls all state"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-1 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "No Navigation:"] " Just renders a single month"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-1 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "Foundation:"] " Building block for calendar UIs"]]
       [:li.flex.items-start.gap-2
-       [:ty-icon.ty-text.mt-0.5 {:name "minus"
+       [:ty-icon.ty-text.mt-1 {:name "minus"
                                       :size "xs"}]
        [:span [:strong "Direct Control:"] " You manage everything"]]]]]])
 
@@ -222,28 +222,28 @@
 
 (defn key-features-section []
   [:div.mb-8
-   [:h2.text-xl.font-semibold.ty-text.mb-4 "✨ Key Features"]
+   [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon.ty-text-warning {:name "sparkles" :size "sm"}] "Key Features"]
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "navigation"
+     [:ty-icon.ty-text-primary.mt-1 {:name "navigation"
                                        :size "sm"}]
      [:div
       [:p.font-medium.ty-text "Built-in Navigation"]
       [:p.text-sm.ty-text- "Month and year controls with keyboard support."]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "calendar-check"
+     [:ty-icon.ty-text-primary.mt-1 {:name "calendar-check"
                                        :size "sm"}]
      [:div
       [:p.font-medium.ty-text "State Management"]
       [:p.text-sm.ty-text- "Manages selected date internally, emits change events."]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "layers"
+     [:ty-icon.ty-text-primary.mt-1 {:name "layers"
                                        :size "sm"}]
      [:div
       [:p.font-medium.ty-text "Customization Pass-through"]
       [:p.text-sm.ty-text- "dayContentFn and customCSS forwarded to month view."]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "form-input"
+     [:ty-icon.ty-text-primary.mt-1 {:name "form-input"
                                        :size "sm"}]
      [:div
       [:p.font-medium.ty-text "Form Integration"]
@@ -368,7 +368,7 @@
    [:h3.text-lg.font-medium.ty-text.mb-2.flex.items-center.gap-2
     [:ty-icon.ty-text-warning {:name "zap"
                                :size "sm"}]
-    "⚡ Property-Based Hotel Pricing Calendar"]
+    "Property-Based Hotel Pricing Calendar"]
    [:p.text-sm.ty-text-.mb-4
     "Complete example showing hotel room pricing with weekend rates and dynamic pricing - demonstrates the power of customCSS with dayContentFn."]
 
@@ -418,19 +418,19 @@
     [:h4.font-medium.ty-text.mb-2 "Key Implementation Points:"]
     [:ul.space-y-2.text-sm.ty-text-
      [:li.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+      [:ty-icon.ty-text-success.mt-1 {:name "check"
                                         :size "xs"}]
       [:span [:strong "Container Width:"] " Calendar fills the container (max-width: 600px)"]]
      [:li.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+      [:ty-icon.ty-text-success.mt-1 {:name "check"
                                         :size "xs"}]
       [:span [:strong "Custom CSS:"] " Injected via customCSS property using defstyles macro"]]
      [:li.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+      [:ty-icon.ty-text-success.mt-1 {:name "check"
                                         :size "xs"}]
       [:span [:strong "Dynamic Pricing:"] " Weekend rates (€210) vs. weekday rates (€150)"]]
      [:li.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+      [:ty-icon.ty-text-success.mt-1 {:name "check"
                                         :size "xs"}]
       [:span [:strong "Visual Hierarchy:"] " Clear day numbers with prominent price tags"]]]]
 

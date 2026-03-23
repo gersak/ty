@@ -188,7 +188,7 @@
      "Delete"
      [:ty-tooltip {:flavor "danger"}
       [:div
-       [:div.font-bold.mb-1 "⚠️ Permanent Action"]
+       [:div.font-bold.mb-1.flex.items-center.gap-1 [:ty-icon {:name "alert-triangle" :size "xs"}] "Permanent Action"]
        [:div.text-sm "This cannot be undone"]]]]]
 
    (code-block

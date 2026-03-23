@@ -506,8 +506,8 @@
                   :autocomplete "new-password"}]]]
 
     ;; Email Notifications - Using ty-input checkboxes
-    [:div.flex.wrap.gap-4
-     [:div
+    [:div.flex.flex-col.sm:flex-row.flex-wrap.gap-6
+     [:div.min-w-0
       [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
       [:div.space-y-4
        [:ty-checkbox {:name "notifications-updates"
@@ -523,7 +523,7 @@
         "Marketing promotions and offers"]]]
 
      ;; Privacy & Security Preferences
-     [:div
+     [:div.min-w-0
       [:h4.text-sm.font-medium.ty-text.mb-4 "Privacy & Security"]
       [:div.space-y-4
        [:ty-checkbox {:name "privacy-2fa"
@@ -539,7 +539,7 @@
         "Allow contact from other users"]]]
 
      ;; Account Preferences
-     [:div
+     [:div.min-w-0
       [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
       [:div.space-y-3
        [:ty-checkbox {:name "account-autosave"
@@ -571,18 +571,21 @@
        [:span.text-sm.ty-text-success "Form is valid and ready to save"]])]
 
    ;; Action buttons
-   [:div.flex.gap-3
+   [:div.flex.flex-col.sm:flex-row.gap-3
     [:ty-button {:type "button"
                  :flavor "neutral"
+                 :wide true
                  :on {:click on-cancel}}
      "Cancel Changes"]
     [:ty-button {:type "button"
                  :flavor "secondary"
+                 :wide true
                  :on {:click on-export}}
      [:ty-icon.mr-2 {:name "download"}]
      "Export Profile"]
     [:ty-button {:type "submit"
                  :flavor "primary"
+                 :wide true
                  :disabled (or is-submitting has-errors)}
      (if is-submitting
        [:div.flex.items-center.gap-2
@@ -602,7 +605,7 @@
 (defn avatar-upload-modal [{:keys [open on-close]}]
   [:ty-modal {:open open
               :on {:close on-close}}
-   [:div.p-8.max-w-lg.ty-elevated.rounded-lg.shadow-xl
+   [:div.p-4.sm:p-8.max-w-lg.ty-elevated.rounded-lg.shadow-xl
     [:h3.text-xl.font-semibold.ty-text.mb-6 "Upload Profile Photo"]
     [:p.ty-text-.text-sm.mb-6 "Choose a new profile photo. For best results, upload an image that's at least 400x400 pixels."]
 
@@ -649,7 +652,7 @@
 (defn success-modal [{:keys [open on-close saved-data]}]
   [:ty-modal {:open open
               :on {:close on-close}}
-   [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
+   [:div.p-4.sm:p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
     [:div.flex.items-center.gap-4.mb-6
      [:div.w-16.h-16.ty-bg-success.rounded-full.flex.items-center.justify-center
       [:ty-icon.ty-text++ {:name "check"
@@ -689,7 +692,7 @@
 (defn export-modal [{:keys [open on-close exported-data]}]
   [:ty-modal {:open open
               :on {:close on-close}}
-   [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
+   [:div.p-4.sm:p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
     [:div.flex.items-center.gap-4.mb-6
      [:div.w-16.h-16.ty-bg-info.rounded-full.flex.items-center.justify-center
       [:ty-icon.ty-text++ {:name "download"
@@ -760,7 +763,7 @@
      (hero-section)
 
      ;; Interactive Demo
-     [:div.ty-elevated.p-8.rounded-xl
+     [:div.ty-elevated.p-4.sm:p-8.rounded-xl
       (avatar-section {:on-avatar-click #(swap! state/state assoc-in [:user-profile :avatar-modal-open] true)})
 
       [:form.space-y-8

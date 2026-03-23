@@ -107,7 +107,7 @@
 
    ;; Auto-Resize Demo
    [:div.ty-content.rounded-lg.p-6.mb-6
-    [:h3.text-xl.font-semibold.ty-text+.mb-4 "✨ Auto-Resize Magic"]
+    [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "sparkles" :size "sm"}] "Auto-Resize Magic"]
     [:p.ty-text-.mb-4
      "The textarea automatically adjusts its height as you type. No scrollbars, no manual resizing needed."]
 
@@ -121,12 +121,13 @@
   placeholder=\"Start typing and watch me grow...\">
 </ty-textarea>")
 
-    [:p.ty-text-.text-sm.mt-4
-     "💡 The component uses a hidden measurement element to calculate the exact height needed for your content."]]
+    [:p.ty-text-.text-sm.mt-4.flex.items-start.gap-2
+     [:ty-icon.mt-1.flex-shrink-0 {:name "lightbulb" :size "sm"}]
+     [:span "The component uses a hidden measurement element to calculate the exact height needed for your content."]]]
 
    ;; Height Constraints
    [:div.ty-content.rounded-lg.p-6.mb-6
-    [:h3.text-xl.font-semibold.ty-text+.mb-4 "📏 Height Constraints"]
+    [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "ruler" :size "sm"}] "Height Constraints"]
     [:p.ty-text-.mb-4
      "Control the minimum and maximum height while maintaining auto-resize functionality."]
 
@@ -158,7 +159,7 @@
 
    ;; Form Integration
    [:div.ty-content.rounded-lg.p-6.mb-6
-    [:h3.text-xl.font-semibold.ty-text+.mb-4 "📝 Native Form Integration"]
+    [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "file-text" :size "sm"}] "Native Form Integration"]
     [:p.ty-text-.mb-4
      "Works seamlessly with HTML forms and FormData API - no special handling required."]
 
@@ -197,9 +198,10 @@
 </form>")
 
     [:div.ty-bg-info-.ty-border-info.border.rounded-lg.p-4.mt-4
-     [:p.ty-text.text-sm
-      [:strong "💡 Tip: "]
-      "The component is form-associated and participates in form validation and submission like native textarea elements."]]]
+     [:p.ty-text.text-sm.flex.items-start.gap-2
+      [:ty-icon.mt-1.flex-shrink-0 {:name "lightbulb" :size "sm"}]
+      [:span [:strong "Tip: "]
+       "The component is form-associated and participates in form validation and submission like native textarea elements."]]]]
 
    ;; Variants Section
    [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Variants & States"]
@@ -453,34 +455,34 @@ textarea.addEventListener('change', (e) => {
    [:div.ty-elevated.rounded-lg.p-6
     [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Best Practices"]
 
-    [:div.space-y-4
-     [:div.flex.gap-3
-      [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle"}]
+    [:div.space-y-5
+     [:div.flex.items-start.gap-3
+      [:ty-icon.ty-text-success.flex-shrink-0.mt-1 {:name "check-circle" :size "md"}]
       [:div
        [:strong.ty-text+ "Set appropriate height constraints"]
-       [:p.ty-text-.text-sm "Use min-height for better UX and max-height to prevent excessive growth."]]]
+       [:p.ty-text-.text-sm.mt-1 "Use min-height for better UX and max-height to prevent excessive growth."]]]
 
-     [:div.flex.gap-3
-      [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle"}]
+     [:div.flex.items-start.gap-3
+      [:ty-icon.ty-text-success.flex-shrink-0.mt-1 {:name "check-circle" :size "md"}]
       [:div
        [:strong.ty-text+ "Always include labels"]
-       [:p.ty-text-.text-sm "Use the label attribute for accessibility and better UX."]]]
+       [:p.ty-text-.text-sm.mt-1 "Use the label attribute for accessibility and better UX."]]]
 
-     [:div.flex.gap-3
-      [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle"}]
+     [:div.flex.items-start.gap-3
+      [:ty-icon.ty-text-success.flex-shrink-0.mt-1 {:name "check-circle" :size "md"}]
       [:div
        [:strong.ty-text+ "Use semantic sizing"]
-       [:p.ty-text-.text-sm "Choose size based on expected content: xs for tweets, xl for articles."]]]
+       [:p.ty-text-.text-sm.mt-1 "Choose size based on expected content: xs for tweets, xl for articles."]]]
 
-     [:div.flex.gap-3
-      [:ty-icon.ty-text-danger.flex-shrink-0 {:name "x-circle"}]
+     [:div.flex.items-start.gap-3
+      [:ty-icon.ty-text-danger.flex-shrink-0.mt-1 {:name "x-circle" :size "md"}]
       [:div
        [:strong.ty-text+ "Don't disable auto-resize without reason"]
-       [:p.ty-text-.text-sm "The auto-resize feature is the component's main value proposition."]]]
+       [:p.ty-text-.text-sm.mt-1 "The auto-resize feature is the component's main value proposition."]]]
 
-     [:div.flex.gap-3
-      [:ty-icon.ty-text-warning.flex-shrink-0 {:name "alert-triangle"}]
+     [:div.flex.items-start.gap-3
+      [:ty-icon.ty-text-warning.flex-shrink-0.mt-1 {:name "alert-triangle" :size "md"}]
       [:div
        [:strong.ty-text+ "Consider performance with huge content"]
-       [:p.ty-text-.text-sm "For 10,000+ character documents, set a reasonable max-height."]]]]]))
+       [:p.ty-text-.text-sm.mt-1 "For 10,000+ character documents, set a reasonable max-height."]]]]]))
 

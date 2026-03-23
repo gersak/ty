@@ -40,27 +40,10 @@ import type { Flavor, Size } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { dropdownStyles } from '../styles/dropdown.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
+import { isMobileTouch } from '../utils/mobile.js'
 import { TyComponent } from '../base/ty-component.js'
 import type { PropertyChange } from '../utils/property-manager.js'
 import { CustomScrollbar, isCustomScrollbarEnabled } from '../utils/custom-scrollbar.js'
-
-// ============================================================================
-// DEVICE DETECTION
-// ============================================================================
-
-/**
- * Detect if we're on a mobile device
- * - Screen width <= 768px (mobile phones)
- * - Screen width <= 1024px + touch capability (tablets)
- * 
- * This matches the ClojureScript is-mobile-device? logic
- */
-function isMobileDevice(): boolean {
-  const width = window.innerWidth
-  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-
-  return width <= 768 || (width <= 1024 && hasTouch)
-}
 
 // ============================================================================
 // Element Hash Utility (equivalent to ClojureScript's hash function)
@@ -254,7 +237,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
     highlightedIndex: -1,
     filteredOptions: [],
     currentValue: null,
-    mode: isMobileDevice() ? 'mobile' : 'desktop'
+    mode: 'desktop' // Updated dynamically on render via syncMode()
   }
 
   // Scroll lock ID (consistent across open/close cycles)
@@ -287,6 +270,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
   }
 
   render(): void {
+    // Sync mode on every render so rotation/resize is picked up
+    this._state.mode = isMobileTouch() ? 'mobile' : 'desktop'
+
     if (this._state.mode === 'mobile') {
       this.renderMobile()
     } else {
@@ -314,16 +300,10 @@ export class TyDropdown extends TyComponent<DropdownState> {
   protected onDisconnect(): void {
     // Clean up document-level listeners
     const outsideClickHandler = (this as any).tyOutsideClickHandler
-    const keyboardHandler = (this as any).tyKeyboardHandler
 
     if (outsideClickHandler) {
       document.removeEventListener('click', outsideClickHandler)
         ; (this as any).tyOutsideClickHandler = null
-    }
-
-    if (keyboardHandler) {
-      document.removeEventListener('keydown', keyboardHandler)
-        ; (this as any).tyKeyboardHandler = null
     }
 
     // Clear any pending debounce timer
@@ -1581,14 +1561,18 @@ export class TyDropdown extends TyComponent<DropdownState> {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>`
 
+      // Search placeholder: "Search <label>..." or just "Search..."
+      const searchPlaceholder = this._label ? `Search ${this._label}...` : 'Search...'
+
       // Conditional search header - only show when searchable
       const searchHeaderHtml = this._searchable ? `
         <div class="mobile-search-header">
+          ${this._label ? `<span class="mobile-header-label">${this._label}</span>` : ''}
           <div class="mobile-header-content">
-            <input 
-              class="mobile-search-input ${this._size}" 
+            <input
+              class="mobile-search-input ${this._size}"
               type="text"
-              placeholder="${this._placeholder}"
+              placeholder="${searchPlaceholder}"
               ${this._disabled ? 'disabled' : ''}
             />
             <button class="mobile-close-button" type="button" aria-label="Close">
@@ -1598,6 +1582,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
         </div>
       ` : `
         <div class="mobile-header-nosearch">
+          ${this._label ? `<span class="mobile-header-label">${this._label}</span>` : ''}
           <button class="mobile-close-button" type="button" aria-label="Close">
             ${closeButtonSvg}
           </button>
@@ -1608,23 +1593,22 @@ export class TyDropdown extends TyComponent<DropdownState> {
         <div class="dropdown-container dropdown-mode-mobile">
           ${labelHtml}
           <div class="dropdown-wrapper">
-            <div class="dropdown-stub ${stubClasses}" 
+            <div class="dropdown-stub ${stubClasses}"
                  ${this._disabled ? 'disabled' : ''}>
               <slot name="selected"></slot>
               <span class="dropdown-placeholder">${this._placeholder}</span>
-<div class="dropdown-chevron">
+              <div class="dropdown-chevron">
                 ${CHEVRON_DOWN_SVG}
               </div>
             </div>
-            <div class="mobile-modal" style="display: none;">
-              <div class="mobile-modal-backdrop"></div>
-              <div class="mobile-modal-content">
+            <dialog class="mobile-dialog">
+              <div class="mobile-dialog-content">
                 ${searchHeaderHtml}
                 <div class="mobile-options-container">
                   <slot id="options-slot"></slot>
                 </div>
               </div>
-            </div>
+            </dialog>
           </div>
         </div>
       `
@@ -1645,8 +1629,8 @@ export class TyDropdown extends TyComponent<DropdownState> {
     const stub = shadow.querySelector('.dropdown-stub')
     const optionsSlot = shadow.querySelector('#options-slot')
     const searchInput = shadow.querySelector('.mobile-search-input')
-    const backdrop = shadow.querySelector('.mobile-modal-backdrop')
     const closeButton = shadow.querySelector('.mobile-close-button')
+    const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
 
     if (stub) {
       stub.addEventListener('click', (e) => this.handleMobileStubClick(e))
@@ -1667,11 +1651,6 @@ export class TyDropdown extends TyComponent<DropdownState> {
       closeButton.addEventListener('click', () => this.closeMobileModal())
     }
 
-    // Backdrop click to close
-    if (backdrop) {
-      backdrop.addEventListener('click', () => this.closeMobileModal())
-    }
-
     // Listen for clear-selection events from ty-option
     if (optionsSlot) {
       optionsSlot.addEventListener('clear-selection', (e: Event) => {
@@ -1680,10 +1659,20 @@ export class TyDropdown extends TyComponent<DropdownState> {
         this.handleMobileClearClick(e)
       })
     }
-    // Document keyboard handler for Escape key
-    const keyboardHandler = (e: KeyboardEvent) => this.handleMobileKeyboard(e)
-    document.addEventListener('keydown', keyboardHandler)
-      ; (this as any).tyKeyboardHandler = keyboardHandler
+
+    // Native dialog: backdrop click and Escape key
+    if (dialog) {
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) {
+          this.closeMobileModal()
+        }
+      })
+
+      dialog.addEventListener('cancel', (e) => {
+        e.preventDefault()
+        this.closeMobileModal()
+      })
+    }
   }
 
   /**
@@ -1699,21 +1688,6 @@ export class TyDropdown extends TyComponent<DropdownState> {
   private handleMobileOptionClick(e: Event): void {
     this.handleOptionClickBase(e, () => this.closeMobileModal())
   }
-
-  /**
-   * Handle mobile keyboard navigation
-   */
-  private handleMobileKeyboard(e: KeyboardEvent): void {
-    if (!this._state.open) return
-
-    // Only handle Escape key on mobile (no arrow navigation needed for touch)
-    if (e.key === 'Escape') {
-      e.preventDefault()
-      e.stopPropagation()
-      this.closeMobileModal()
-    }
-  }
-
 
 
   /**
@@ -1731,16 +1705,16 @@ export class TyDropdown extends TyComponent<DropdownState> {
      */
   private openMobileModal(): void {
     const shadow = this.shadowRoot!
-    const modal = shadow.querySelector('.mobile-modal') as HTMLElement
-    if (!modal) return
+    const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
+    if (!dialog) return
 
     // Lock scroll
     this.lockDropdownScroll()
 
-    // Show modal with animation
-    modal.style.display = 'flex'
+    // Show dialog with animation
+    dialog.showModal()
     requestAnimationFrame(() => {
-      modal.classList.add('open')
+      dialog.classList.add('open')
     })
 
     // Update component state
@@ -1753,7 +1727,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
     if (this._searchable) {
       const searchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
       if (searchInput) {
-        // Small delay to ensure modal is visible and keyboard doesn't glitch
+        // Small delay to ensure dialog is visible and keyboard doesn't glitch
         setTimeout(() => searchInput.focus(), 300)
       }
     }
@@ -1766,29 +1740,31 @@ export class TyDropdown extends TyComponent<DropdownState> {
    */
   private closeMobileModal(): void {
     const shadow = this.shadowRoot!
-    const modal = shadow.querySelector('.mobile-modal') as HTMLElement
-    if (!modal) return
+    const dialog = shadow.querySelector('.mobile-dialog') as HTMLDialogElement
+    if (!dialog) return
 
     // Unlock scroll
     this.unlockDropdownScroll()
 
-    // Hide modal with animation
-    modal.classList.remove('open')
-    setTimeout(() => {
-      modal.style.display = 'none'
-    }, 300) // Match CSS transition duration
+    // Close immediately — ::backdrop doesn't support transitions
+    dialog.classList.remove('open')
+    dialog.close()
 
     // Update state
     this._state.open = false
     this._state.highlightedIndex = -1
 
-    // Reset search if searchable
+    // Reset search and restore all options
     if (this._searchable) {
       this._state.search = ''
+      this._state.filteredOptions = []
       const searchInput = shadow.querySelector('.mobile-search-input') as HTMLInputElement
       if (searchInput) {
         searchInput.value = ''
       }
+      // Unhide all options
+      const allOptions = this.getOptions().map(el => this.getOptionData(el))
+      allOptions.forEach(({ element }) => element.removeAttribute('hidden'))
     }
 
     // Show clear button when modal is closed (if applicable)

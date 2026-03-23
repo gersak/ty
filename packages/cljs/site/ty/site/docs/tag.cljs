@@ -120,21 +120,27 @@
     ;; Sizes
     [:div.ty-content.rounded-lg.p-6
      [:h3.text-xl.font-semibold.ty-text+.mb-4 "Tag Sizes"]
-     [:p.ty-text-.mb-4 "Three sizes available for different contexts:"]
+     [:p.ty-text-.mb-4 "Five sizes available for different contexts:"]
 
      [:div.mb-4.p-4.ty-bg-neutral-.rounded
       [:div.flex.flex-wrap.items-center.gap-3
+       [:ty-tag {:size "xs"
+                 :flavor "primary"} "Extra Small"]
        [:ty-tag {:size "sm"
                  :flavor "primary"} "Small"]
        [:ty-tag {:size "md"
                  :flavor "primary"} "Medium (default)"]
        [:ty-tag {:size "lg"
-                 :flavor "primary"} "Large"]]]
+                 :flavor "primary"} "Large"]
+       [:ty-tag {:size "xl"
+                 :flavor "primary"} "Extra Large"]]]
 
      (code-block
-       "<ty-tag size=\"sm\" flavor=\"primary\">Small</ty-tag>
+       "<ty-tag size=\"xs\" flavor=\"primary\">Extra Small</ty-tag>
+<ty-tag size=\"sm\" flavor=\"primary\">Small</ty-tag>
 <ty-tag size=\"md\" flavor=\"primary\">Medium (default)</ty-tag>
-<ty-tag size=\"lg\" flavor=\"primary\">Large</ty-tag>")]
+<ty-tag size=\"lg\" flavor=\"primary\">Large</ty-tag>
+<ty-tag size=\"xl\" flavor=\"primary\">Extra Large</ty-tag>")]
 
     ;; Pill vs Rectangular
     [:div.ty-content.rounded-lg.p-6
@@ -434,23 +440,23 @@ newTag.addEventListener('dismiss', (e) => {
        "Do's"]
       [:ul.space-y-2.ty-text
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Use semantic flavors to convey meaning (success for positive, danger for errors)"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Keep tag text concise and scannable"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Use dismissible tags for removable filters or selections"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Provide visual feedback with icons or emojis in slots"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Use consistent sizing within tag groups"]]]]
 
@@ -462,23 +468,23 @@ newTag.addEventListener('dismiss', (e) => {
        "Don'ts"]
       [:ul.space-y-2.ty-text
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't use tags for long text - they're meant for labels"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't mix pill and rectangular shapes in the same context"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't make all tags dismissible if they represent fixed categories"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't use clickable without providing clear visual feedback"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't overuse different flavors - maintain visual hierarchy"]]]]]]
 

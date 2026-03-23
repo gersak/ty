@@ -36,8 +36,8 @@ python-dotenv>=1.0.0"
                  "HTMX loads via CDN - no installation needed. Include it in your HTML template."]
 
                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-3.mt-4
-                 [:p.ty-text.text-sm.mb-2
-                  "📦 " [:strong "What you get:"]]
+                 [:p.ty-text.text-sm.mb-2.flex.items-center.gap-2
+                  [:ty-icon {:name "package" :size "sm"}] [:strong "What you get:"]]
                  [:ul.ty-text.text-sm.space-y-1.ml-4
                   [:li "• Server-side rendering with dynamic updates"]
                   [:li "• No complex JavaScript framework needed"]
@@ -86,8 +86,9 @@ python-dotenv>=1.0.0"
                   "html")
 
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-4.mt-4
-                 [:p.ty-text-warning.text-sm.font-semibold.mb-2
-                  "⚠️ Load order matters"]
+                 [:p.ty-text-warning.text-sm.font-semibold.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-warning.flex-shrink-0 {:name "alert-triangle" :size "sm"}]
+                  [:span "Load order matters"]]
                  [:ol.ty-text-warning.text-sm.space-y-1.ml-4.list-decimal
                   [:li "Ty CSS (styling)"]
                   [:li "Tailwind CSS (optional utilities)"]
@@ -124,26 +125,28 @@ window.tyIcons.register({
   search, save, settings
 })
 
-console.log('✓ Icons registered:', Object.keys(window.tyIcons.registry))"
+console.log('Icons registered:', Object.keys(window.tyIcons.registry))"
                   "javascript")
 
                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mt-4
-                 [:p.ty-text-success.text-sm.mb-2
-                  "✅ " [:strong "Tree-shaking saves bandwidth"]]
+                 [:p.ty-text-success.text-sm.mb-2.flex.items-center.gap-1
+                  [:ty-icon.ty-text-success {:name "check-circle" :size "xs"}]
+                  [:strong "Tree-shaking saves bandwidth"]]
                  [:ul.ty-text-success.text-sm.space-y-1.ml-4
                   [:li "• 8 icons ≈ 1KB (bundled)"]
                   [:li "• Full Lucide library (1,636 icons) ≈ 897KB"]
                   [:li "• You only bundle what you import"]]]
 
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-4.mt-4
-                 [:p.ty-text-warning.text-sm.font-semibold.mb-2
-                  "⚠️ Don't import entire icon sets"]
+                 [:p.ty-text-warning.text-sm.font-semibold.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-warning.flex-shrink-0 {:name "alert-triangle" :size "sm"}]
+                  [:span "Don't import entire icon sets"]]
                  (code-block
-                   "// ❌ BAD - imports all 1,636 icons (~897KB)
+                   "// BAD - imports all 1,636 icons (~897KB)
 import * as lucide from '@gersak/ty/icons/lucide'
 window.tyIcons.register(lucide)
 
-// ✅ GOOD - only what you need
+// GOOD - only what you need
 import { check, heart } from '@gersak/ty/icons/lucide'
 window.tyIcons.register({ check, heart })"
                    "javascript")]]))
@@ -246,8 +249,9 @@ npm run build:icons
                   "bash")
 
                 [:div.ty-bg-success-.border.ty-border-success.rounded.p-4.mt-4
-                 [:p.ty-text-success.text-sm.mb-2
-                  "✅ " [:strong "Benefits of build-time bundling"]]
+                 [:p.ty-text-success.text-sm.mb-2.flex.items-center.gap-1
+                  [:ty-icon.ty-text-success {:name "check-circle" :size "xs"}]
+                  [:strong "Benefits of build-time bundling"]]
                  [:ul.ty-text-success.text-sm.space-y-1.ml-4
                   [:li "• Much smaller bundle (~1-2KB vs loading from CDN)"]
                   [:li "• Single HTTP request instead of separate icon imports"]

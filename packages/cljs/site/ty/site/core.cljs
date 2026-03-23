@@ -198,7 +198,7 @@
   "Render a single navigation item (can be parent or child)"
   [{:keys [route-id label icon indented? section-key]}]
   (let [active? (router/rendered? route-id true)]
-    [:button.w-full.text-left.px-3.py-2.transition-all.duration-150.cursor-pointer.flex.items-center.gap-2.5
+    [:button.w-full.text-left.px-3.py-2.transition-all.duration-150.cursor-pointer.flex.items-center.gap-3
      {:class (concat
                (if active?
                  ["ty-text++" "font-semibold"]
@@ -636,7 +636,7 @@
   "Render a single search result item"
   [result idx selected-index query]
   [:li
-   [:button.w-full.text-left.px-4.py-2.5.flex.items-center.gap-3.transition-colors
+   [:button.w-full.text-left.px-4.py-3.flex.items-center.gap-3.transition-colors
     {:class (if (= idx selected-index)
               ["ty-bg-accent-"]
               ["hover:ty-bg-accent-"])
@@ -739,14 +739,14 @@
         ;; Footer with keyboard hints
       [:div.px-4.py-3.border-t.ty-border-.flex.items-center.gap-4.text-xs.ty-text--
        [:span.flex.items-center.gap-1
-        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↑"]
-        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↓"]
+        [:kbd.ty-bg-neutral-.px-2.py-1.rounded "↑"]
+        [:kbd.ty-bg-neutral-.px-2.py-1.rounded "↓"]
         " Navigate"]
        [:span.flex.items-center.gap-1
-        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "↵"]
+        [:kbd.ty-bg-neutral-.px-2.py-1.rounded "↵"]
         " Select"]
        [:span.flex.items-center.gap-1
-        [:kbd.ty-bg-neutral-.px-1.5.py-0.5.rounded "esc"]
+        [:kbd.ty-bg-neutral-.px-2.py-1.rounded "esc"]
         " Close"]]]]))
 
 (defonce keyboard-shortcuts-initialized (atom false))
@@ -773,26 +773,25 @@
                                (open-search!))))))))
 
 (defn mobile-menu []
-  (when (:mobile-menu-open @state)
-    [:div.lg:hidden
-     [:ty-modal {:open true
-                 :on {:close close-mobile-menu!}}
-      [:div.p-5.mx-auto.rounded-xl.ty-floating.box-border.flex.flex-col
-       {:style {:width "300px"
-                :max-height "85vh"}}
-       ;; Logo header
-       [:div.flex.items-center.gap-3.pb-4.border-b.ty-border-.flex-shrink-0
-        [:ty-icon {:name "ty-logo"
-                   :style {:width 40
-                           :height 20
-                           :margin-top 3}
-                   :class "ty-text-accent"}]
-        [:span.text-xs.ty-text-- "web components"]]
+  [:div.lg:hidden
+   [:ty-modal {:open (:mobile-menu-open @state)
+               :on {:close close-mobile-menu!}}
+    [:div.p-5.mx-auto.rounded-xl.ty-floating.box-border.flex.flex-col
+     {:style {:width "300px"
+              :max-height "85vh"}}
+     ;; Logo header
+     [:div.flex.items-center.gap-3.pb-4.border-b.ty-border-.flex-shrink-0
+      [:ty-icon {:name "ty-logo"
+                 :style {:width 40
+                         :height 20
+                         :margin-top 3}
+                 :class "ty-text-accent"}]
+      [:span.text-xs.ty-text-- "web components"]]
 
-       ;; Navigation content (scrollable)
-       [:div.flex-1.overflow-y-auto.pt-4.min-h-0
-        [:div.space-y-2
-         (nav-items)]]]]]))
+     ;; Navigation content (scrollable)
+     [:div.flex-1.overflow-y-auto.pt-4.min-h-0
+      [:div.space-y-2
+       (nav-items)]]]]])
 
 (defn header []
   (let [show-sidebar? (layout/breakpoint>= :lg)]
@@ -831,7 +830,7 @@
           ;; Actions
           [:div.flex.items-center.gap-2
            ;; Search button
-           [:button.flex.items-center.gap-2.px-3.py-1.5.rounded-md.border.ty-border+.hover:ty-border-accent.transition-all.duration-150
+           [:button.flex.items-center.gap-2.px-3.py-2.rounded-md.border.ty-border+.hover:ty-border-accent.transition-all.duration-150
             {:on {:click open-search!}}
             [:ty-icon {:name "search"
                        :size "sm"
@@ -927,7 +926,7 @@
                   :gap (if show-sidebar? "40px" "0px")
                   :padding (if show-sidebar?
                              "32px 32px"
-                             "16px 12px")}}
+                             "8px 4px")}}
          ;; Left sidebar (navigation)
          (when show-sidebar?
            [:div.sticky.top-0.self-start.h-fit

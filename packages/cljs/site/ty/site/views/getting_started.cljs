@@ -69,8 +69,9 @@
 </body>
 </html>"
        "html")
-     [:p.ty-text-success.text-sm.mt-3
-      "💡 " [:strong "Note: "] "This is the fastest way to get started. For production apps with build tools, check the integration guides below."]]]])
+     [:p.ty-text-success.text-sm.mt-3.flex.items-start.gap-2
+      [:ty-icon.mt-1.flex-shrink-0.ty-text-success {:name "lightbulb" :size "sm"}]
+      [:span [:strong "Note: "] "This is the fastest way to get started. For production apps with build tools, check the integration guides below."]]]]])
 
 ;; =============================================================================
 ;; Path Selection Cards
@@ -138,7 +139,7 @@
   "Single advantage item with icon and description"
   [{:keys [icon title description]}]
   [:div.flex.items-start.gap-3
-   [:ty-icon.ty-text-primary++.flex-shrink-0.mt-0.5 {:name icon
+   [:ty-icon.ty-text-primary++.flex-shrink-0.mt-1 {:name icon
                                                      :size "sm"}]
    [:div
     [:h4.font-semibold.ty-text-primary++ title]

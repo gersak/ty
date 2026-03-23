@@ -158,6 +158,20 @@
    :inputs lucide/notebook-pen
    :scroll-text lucide/scroll-text
 
+     ;; Additional content icons
+   :target lucide/target
+   :video lucide/video
+   :utensils lucide/utensils
+   :satellite-dish lucide/satellite-dish
+   :car lucide/car
+   :thumbs-up lucide/thumbs-up
+   :coins lucide/coins
+   :smartphone lucide/smartphone
+   :link lucide/link
+   :ruler lucide/ruler
+   :monitor lucide/monitor
+   :laptop lucide/laptop
+
      ;; Development and WIP icons
    :hammer lucide/hammer
    :wrench lucide/wrench

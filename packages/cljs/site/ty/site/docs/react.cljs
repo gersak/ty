@@ -26,8 +26,8 @@
                   "json")
 
                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mt-4.mb-4
-                 [:p.ty-text-info.text-sm.mb-2
-                  "💡 " [:strong "Optional: Tree-shakeable Icons"]]
+                 [:p.ty-text-info.text-sm.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-info {:name "lightbulb" :size "sm"}] [:strong "Optional: Tree-shakeable Icons"]]
                  [:p.ty-text-info.text-sm
                   "Add the " [:code.ty-bg-info.px-1.rounded "ty-icons"] " artifact to your "
                   [:code.ty-bg-info.px-1.rounded "deps.edn"] " file if you want to minimize icon footprint using Google Closure Compiler:"]]
@@ -43,9 +43,10 @@
                  "The " [:code.ty-bg-neutral-.px-1.rounded "@gersak/ty-react"] " package provides React components with proper TypeScript definitions and React-optimized behavior. "
                  "The " [:code.ty-bg-neutral-.px-1.rounded "ty-icons"] " ClojureScript artifact is only needed if you want Google Closure Compiler to tree-shake unused icons from your bundle."]
 
-                [:p.ty-text-.mt-4.text-sm
-                 "💡 " [:strong "Note:"] " The ClojureScript artifact "
-                 [:code.ty-bg-neutral-.px-1.rounded "dev.gersak/ty"] " is only needed for advanced features like Router, i18n, or Layout (see Advanced Features below)."]]))
+                [:div.ty-text-.mt-4.text-sm.flex.items-start.gap-2
+                 [:ty-icon.mt-0.5.flex-shrink-0 {:name "lightbulb" :size "sm"}]
+                 [:span [:strong "Note:"] " The ClojureScript artifact "
+                  [:code.ty-bg-neutral-.px-1.rounded "dev.gersak/ty"] " is only needed for advanced features like Router, i18n, or Layout (see Advanced Features below)."]]]))
 
 (defn html-setup-section
   "HTML setup section - CDN or bundler approach"
@@ -83,8 +84,9 @@
                  "The script automatically registers all 18+ Ty web components. They're immediately available via the React wrappers."]
 
                 [:div.ty-bg-danger-.border.ty-border-danger.rounded.p-4.mt-4
-                 [:p.ty-text-danger.font-semibold.mb-2
-                  "⚠️ IMPORTANT: Use " [:code.ty-bg-danger.px-1.rounded "defer"] " for your compiled ClojureScript!"]
+                 [:p.ty-text-danger.font-semibold.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-danger.flex-shrink-0 {:name "alert-triangle" :size "sm"}]
+                  [:span "IMPORTANT: Use " [:code.ty-bg-danger.px-1.rounded "defer"] " for your compiled ClojureScript!"]]
                  [:p.ty-text-danger.text-sm
                   "Always add the " [:code.ty-bg-danger.px-1.rounded "defer"] " attribute to your compiled ClojureScript script tag. "
                   "This ensures that " [:code.ty-bg-danger.px-1.rounded "ty.js"] " loads first and properly registers the "
@@ -92,9 +94,10 @@
                   "Without " [:code.ty-bg-danger.px-1.rounded "defer"] ", icon registration may fail silently."]]
 
                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-3.mt-4
-                 [:p.ty-text-info.text-sm
-                  "💡 " [:strong "Note:"] " Any published " [:code.ty-bg-info.px-1.rounded "ty.js"] " file downloaded or distributed in any way will work out of the box. "
-                  "You can use CDN, copy files to your assets folder, or bundle with your build tool."]]]))
+                 [:p.ty-text-info.text-sm.flex.items-start.gap-2
+                  [:ty-icon.mt-1.flex-shrink-0.ty-text-info {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " Any published " [:code.ty-bg-info.px-1.rounded "ty.js"] " file downloaded or distributed in any way will work out of the box. "
+                  "You can use CDN, copy files to your assets folder, or bundle with your build tool."]]]]))
 
 (defn icon-registration-section
   "Icon registration section with tree-shakeable ClojureScript imports"
@@ -127,8 +130,8 @@
                   "clojure")
 
                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-4.mt-4
-                 [:p.ty-text-info.text-sm.mb-2
-                  "👍 " [:strong "Tree-shaking benefits:"]]
+                 [:p.ty-text-info.text-sm.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-info {:name "thumbs-up" :size "sm"}] [:strong "Tree-shaking benefits:"]]
                  [:ul.ty-text-info.text-sm.space-y-1.ml-4
                   [:li "• Only imported icons are included in your bundle"]
                   [:li "• Google Closure Compiler removes unused code"]
@@ -144,12 +147,12 @@
                  "The " [:code.ty-bg-neutral-.px-1.rounded "@gersak/ty-react"] " package provides React-optimized wrappers around Ty web components:"]
 
                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-4.mb-4
-                 [:h3.text-lg.font-semibold.ty-text+.mb-2 "🎯 Recommended Approach"]
+                 [:h3.text-lg.font-semibold.ty-text+.mb-2.flex.items-center.gap-2 [:ty-icon {:name "target" :size "sm"}] "Recommended Approach"]
                  [:p.ty-text.text-sm.mb-3
                   "Use the React wrapper for the best developer experience with full TypeScript support, proper React integration, and optimized performance."]
 
                  [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-3
-                  [:p.ty-text-warning.text-xs.font-medium.mb-2 "⚠️ Critical: React & CustomEvents"]
+                  [:p.ty-text-warning.text-xs.font-medium.mb-2.flex.items-center.gap-1 [:ty-icon.ty-text-warning {:name "alert-triangle" :size "xs"}] "Critical: React & CustomEvents"]
                   [:p.ty-text-warning.text-xs
                    "React cannot pick up CustomEvents from web components. The @gersak/ty-react wrapper listens for these CustomEvents and converts them to React SyntheticEvents, ensuring proper event handling and state updates."]]
 
@@ -162,7 +165,7 @@
                   [:li "• Still works with all Ty features (i18n, routing, etc.)"]]]
 
                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-4
-                 [:h3.text-lg.font-semibold.ty-text.mb-2 "⚡ Alternative: Direct Web Components"]
+                 [:h3.text-lg.font-semibold.ty-text.mb-2.flex.items-center.gap-2 [:ty-icon {:name "zap" :size "sm"}] "Alternative: Direct Web Components"]
                  [:p.ty-text-.text-sm.mb-3
                   "You can also use web components directly if you prefer minimal dependencies or need custom integration patterns:"]
 
@@ -315,19 +318,19 @@
 
                 ;; Technical explanation section  
                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-4.mt-6
-                 [:h3.text-lg.font-semibold.ty-text.mb-3 "🔧 Technical: Why the React Wrapper Matters"]
+                 [:h3.text-lg.font-semibold.ty-text.mb-3.flex.items-center.gap-2 [:ty-icon {:name "wrench" :size "sm"}] "Technical: Why the React Wrapper Matters"]
                  [:p.ty-text-.text-sm.mb-3
                   "Web components communicate through " [:code.ty-bg-neutral-.px-1.rounded "CustomEvents"] ", but React's event system only recognizes " [:code.ty-bg-neutral-.px-1.rounded "SyntheticEvents"] ". This creates a compatibility gap:"]
                  [:div.grid.grid-cols-1.md:grid-cols-2.gap-4.text-xs
                   [:div
-                   [:h4.font-medium.ty-text-.mb-2 "❌ Direct Web Components"]
+                   [:h4.font-medium.ty-text-.mb-2.flex.items-center.gap-1 [:ty-icon.ty-text-danger {:name "x-circle" :size "xs"}] "Direct Web Components"]
                    [:ul.space-y-1.ty-text--.text-xs
                     [:li "• CustomEvents don't trigger React re-renders"]
                     [:li "• Event handlers may not fire properly"]
                     [:li "• State updates can be missed"]
                     [:li "• Requires manual event listener setup"]]]
                   [:div
-                   [:h4.font-medium.ty-text-.mb-2 "✅ @gersak/ty-react Wrapper"]
+                   [:h4.font-medium.ty-text-.mb-2.flex.items-center.gap-1 [:ty-icon.ty-text-success {:name "check-circle" :size "xs"}] "@gersak/ty-react Wrapper"]
                    [:ul.space-y-1.ty-text--.text-xs
                     [:li "• Automatically converts CustomEvents → SyntheticEvents"]
                     [:li "• Perfect React integration and re-renders"]
@@ -341,11 +344,12 @@
 (defn routing-section
   "Complete routing section with ty.router and UIx"
   []
-  (doc-section "🎯 Router - Tree-based Routing with Authorization"
+  (doc-section "Router - Tree-based Routing with Authorization"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " The router requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]
+                 [:p.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.mt-1.flex-shrink-0.ty-text-warning {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " The router requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]]
 
                 (code-block
                   ";; deps.edn - Add ty artifact for router
@@ -511,8 +515,8 @@
                  "The same self-managing view pattern works identically with Reagent. Define route IDs in a shared namespace so both navigation and views can reference them:"]
 
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm.mb-2
-                  "⚠️ " [:strong "Important: Reagent Reactivity"]]
+                 [:p.ty-text-warning.text-sm.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-warning {:name "alert-triangle" :size "sm"}] [:strong "Important: Reagent Reactivity"]]
                  [:p.ty-text-warning.text-sm
                   "Unlike UIx hooks which automatically track dependencies, Reagent requires explicit atom dereferencing with "
                   [:code.ty-bg-warning.px-1.rounded "@"]
@@ -610,7 +614,7 @@
                   "clojure")
 
                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-4.mt-6.mb-6
-                 [:h4.font-medium.ty-text.mb-3 "📝 UIx vs Reagent: Reactivity Patterns"]
+                 [:h4.font-medium.ty-text.mb-3.flex.items-center.gap-2 [:ty-icon {:name "file-text" :size "sm"}] "UIx vs Reagent: Reactivity Patterns"]
                  [:div.grid.md:grid-cols-2.gap-4.text-sm
                   [:div
                    [:h5.font-medium.ty-text-.mb-2 "UIx"]
@@ -666,11 +670,12 @@
 (defn i18n-section
   "Complete i18n section for React components"
   []
-  (doc-section "🌍 i18n - Internationalization System"
+  (doc-section "i18n - Internationalization System"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " The i18n system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]
+                 [:p.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.mt-1.flex-shrink-0.ty-text-warning {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " The i18n system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]]
 
                 (code-block
                   ";; deps.edn - Add ty artifact for i18n
@@ -878,8 +883,9 @@
   (doc-section "Number/Currency/Date Formatting"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " Formatting requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact (same as i18n above)."]]
+                 [:p.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.mt-1.flex-shrink-0.ty-text-warning {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " Formatting requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact (same as i18n above)."]]]
 
                 [:p.ty-text-.mb-4.mt-6
                  "Ty's formatting system works identically in React components. The same "
@@ -957,11 +963,12 @@
 (defn layout-section
   "Layout system section for React"
   []
-  (doc-section "📐 Layout - Container-Aware Responsive Utilities"
+  (doc-section "Layout - Container-Aware Responsive Utilities"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " The layout system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]
+                 [:p.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.mt-1.flex-shrink-0.ty-text-warning {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " The layout system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]]
 
                 (code-block
                   ";; deps.edn - Add ty artifact for layout

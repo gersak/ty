@@ -361,7 +361,7 @@ See updated example in `examples/react-nextjs/`:
 
 Use the global `window.ty` API:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
 <script>
   window.ty.icons.register({ /* your icons */ })
 </script>

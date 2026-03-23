@@ -36,7 +36,7 @@ Same components. Zero framework lock-in.
 ## Load from CDN
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/css/ty.css">
 <script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
 ```
 

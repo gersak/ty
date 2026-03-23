@@ -1,13 +1,13 @@
 (ns build
   (:require
-    [clojure.data.json :as json]
-    [clojure.java.io :as io]
-    [clojure.string :as str]
-    [clojure.tools.build.api :as b]
-    [deps-deploy.deps-deploy :as deploy]
-    [ty.template :as template]))
+   [clojure.data.json :as json]
+   [clojure.java.io :as io]
+   [clojure.string :as str]
+   [clojure.tools.build.api :as b]
+   [deps-deploy.deps-deploy :as deploy]
+   [ty.template :as template]))
 
-(def ty-version "0.3.4")
+(def ty-version "0.4.0")
 (def ty-icons-version "0.1.2")
 (def class-dir "target/classes")
 

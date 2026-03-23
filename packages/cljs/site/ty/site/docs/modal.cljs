@@ -5,7 +5,6 @@
                      event-table
                      doc-section
                      example-section
-                     placeholder-view
                      docs-page]]
             [ty.site.state :as state]))
 

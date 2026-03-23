@@ -1138,6 +1138,12 @@ unlockScroll('modal-123');
 forceUnlockAll();
 ```
 
+```html
+<!-- CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+```
+
 ### Positioning
 
 Smart positioning for floating elements.

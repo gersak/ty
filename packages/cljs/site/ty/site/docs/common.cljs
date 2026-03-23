@@ -179,40 +179,32 @@
           children)))
 
 (defn placeholder-view
-  "Placeholder view for components not yet documented"
+  "Placeholder view for components with minimal documentation"
   [component-name]
   (docs-page
     [:h1.text-3xl.font-bold.ty-text.mb-4 (str "ty-" component-name)]
-    [:p.text-lg.ty-text-.mb-8 "Documentation coming soon..."]
+    [:p.text-lg.ty-text-.mb-8 "Documentation for this component is being expanded."]
     [:div.ty-elevated.rounded-lg.p-6
-     [:p.ty-text- "This component documentation is under construction. Check back soon for:"]
-     [:ul.mt-4.space-y-2.ml-4
-      [:li.ty-text- "• Complete API reference"]
-      [:li.ty-text- "• Live examples"]
-      [:li.ty-text- "• Best practices"]
-      [:li.ty-text- "• Framework integration guides"]]]))
+     [:p.ty-text- "In the meantime, try the component in the live examples or check the source on GitHub."]
+     [:div.mt-4.flex.gap-3
+      [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded.hover:opacity-90
+       {:on {:click #(js/window.open "https://github.com/gersak/ty" "_blank")}}
+       "View Source"]]]))
 
 (defn guide-placeholder-view
-  "Placeholder view for guide pages not yet documented"
+  "Placeholder view for guide pages with minimal documentation"
   [guide-name guide-description]
   (docs-page
     [:h1.text-3xl.font-bold.ty-text.mb-4 guide-name]
     [:p.text-lg.ty-text-.mb-8 guide-description]
-    [:div.ty-elevated.rounded-lg.p-6.text-center
-     [:div.mb-6
-      [:ty-icon.mx-auto.mb-4.w-12.h-12.ty-text- {:name "clock"}]
-      [:h2.text-xl.font-semibold.ty-text.mb-2 "Coming Soon"]
-      [:p.ty-text-.mb-6 "This guide is currently under development. We're working hard to bring you comprehensive documentation for integrating Ty components with this technology."]]
+    [:div.ty-elevated.rounded-lg.p-6
+     [:p.ty-text-.mb-4 "This guide is being expanded. In the meantime:"]
+     [:ul.text-left.space-y-2.ml-4
+      [:li.ty-text- "• Explore the component documentation for available features"]
+      [:li.ty-text- "• Check out the CSS System guide for styling best practices"]
+      [:li.ty-text- "• Review examples in the repository"]]
 
-     [:div.ty-bg-neutral-.rounded-lg.p-4.mb-6
-      [:p.ty-text-.mb-4 "In the meantime, you can:"]
-      [:ul.text-left.space-y-2.ml-4
-       [:li.ty-text- "• Explore the component documentation to understand available features"]
-       [:li.ty-text- "• Check out the CSS System guide for styling best practices"]
-       [:li.ty-text- "• Review existing examples in the repository"]
-       [:li.ty-text- "• Join our community discussions for early access to guides"]]]
-
-     [:div.flex.gap-4.justify-center
+     [:div.flex.gap-4.justify-center.mt-6
       [:button.ty-bg-primary.ty-text++.px-4.py-2.rounded.hover:opacity-90
        {:on {:click #(js/window.open "https://github.com/gersak/ty" "_blank")}}
        "View Repository"]

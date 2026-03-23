@@ -110,8 +110,8 @@ Update `index.html`:
   <title>Test Ty React</title>
   
   <!-- Load Ty Web Components via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/dist/index.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/css/ty.css">
+  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
 </head>
 <body>
   <div id="root"></div>
@@ -152,8 +152,8 @@ npm install @gersak/ty-react
 
 ### Setup (Add CDN to index.html)
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/dist/index.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/css/ty.css">
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
 ```
 
 ### Usage (TypeScript/TSX)

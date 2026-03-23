@@ -413,7 +413,7 @@ button {
 <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css\">
 
 <!-- Then JavaScript -->
-<script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/ty.js\"></script>"
+<script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js\"></script>"
       "html")]])
 
 (defn view []

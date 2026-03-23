@@ -10,7 +10,7 @@
   [:div.text-center.mb-12
    [:h1.text-4xl.font-bold.ty-text++.mb-4 "Getting Started"]
    [:p.text-xl.ty-text "TypeScript web components + ClojureScript infrastructure"]
-   [:p.text-lg.ty-text- "18+ components • 3000+ icons • Semantic design • Framework-agnostic"]])
+   [:p.text-lg.ty-text- "23 components • 3000+ icons • Semantic design • Framework-agnostic"]])
 
 ;; =============================================================================
 ;; Quick Setup Section
@@ -41,7 +41,7 @@
 <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js\"></script>"
        "html")
      [:p.ty-text-.text-sm.mt-3.italic
-      "Registers all 18+ Ty web components and makes them available as custom HTML elements."]]
+      "Registers all Ty web components and makes them available as custom HTML elements."]]
 
     ;; Complete example
     [:div.ty-bg-success-.border.ty-border-success.rounded.p-4
@@ -297,6 +297,6 @@ window.tyIcons.register({ check, heart, save, x, menu })
    (header)
    (quick-setup)
    (choose-your-path)
-   ;; (clojurescript-advantages)
+   (clojurescript-advantages)
    (icon-system)
    (next-steps)))

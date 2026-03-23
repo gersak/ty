@@ -48,7 +48,7 @@
   <title>My React App</title>
   
   <!-- Ty CSS and JS from CDN -->
-  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.css\">
+  <link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@gersak/ty/css/ty.css\">
   <script src=\"https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js\"></script>
 </head>
 <body>

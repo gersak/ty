@@ -7,12 +7,10 @@
 
 (defn view []
   [:div.max-w-7xl.mx-auto {:id "top"}
-   ;; HERO - Work in Progress First, Honest and Direct
+   ;; HERO
    [:div.text-center.mb-16.py-16
 
-    ;; WIP as the MAIN message
-
-;; Simple, direct title
+    ;; Logo and title
     [:div.flex.items-center.justify-center.gap-2.mb-4
      [:ty-icon {:name "ty-logo"
                 :class "ty-text-accent"
@@ -38,48 +36,47 @@
       [:p.text-2xl.font-bold.ty-text "1"]
       [:p.text-xs.ty-text-- "script tag"]]]
 
-    [:div.ty-content.border.ty-border--.rounded-xl.p-6.max-w-3xl.mx-auto.mb-8
-     [:div.flex.items-start.gap-4
-      [:div.ty-bg-warning.ty-border-warning.border.p-2.rounded-lg
-       [:ty-icon.ty-text-warning++.flex-shrink-0
-        {:name "hammer"
-         :size "lg"}]]
-      [:div.text-left.space-y-3
-       [:h2.text-xl.font-bold.ty-text
-        "Work in Progress"]
-       [:p.ty-text--
-        "ty is actively being developed. Components work, examples run, but expect rough edges. "
-        "This is a real project with a real vision - web components that work everywhere, "
-        "built on standards that won't break next year."]
-       [:p.text-sm.ty-text--
-        "If you're tired of framework churn and want to help build something different, "
-        "you're in the right place."]]]]
-
-    ;; What works now
+    ;; Component overview
     [:div.max-w-3xl.mx-auto.mb-8
-     [:p.text-sm.ty-text-.mb-3 "What's working today:"]
+     [:p.text-sm.ty-text-.mb-3 "23 production-ready components:"]
      [:div.flex.flex-wrap.gap-2.justify-center
-      [:ty-tag {:flavor "success"
+      [:ty-tag {:flavor "primary"
                 :size "sm"} "Calendar"]
-      [:ty-tag {:flavor "success"
+      [:ty-tag {:flavor "primary"
                 :size "sm"} "Dropdown"]
-      [:ty-tag {:flavor "success"
-                :size "sm"} "Modal"]
-      [:ty-tag {:flavor "success"
-                :size "sm"} "Input"]
-      [:ty-tag {:flavor "success"
-                :size "sm"} "Button"]
-      [:ty-tag {:flavor "success"
+      [:ty-tag {:flavor "primary"
                 :size "sm"} "Multiselect"]
-      [:ty-tag {:flavor "success"
+      [:ty-tag {:flavor "primary"
                 :size "sm"} "Date Picker"]
-      [:ty-tag {:flavor "neutral"
-                :size "sm"} "+ more"]]]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Modal"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Input"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Textarea"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Button"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Checkbox"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Tabs"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Wizard"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Tooltip"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Popup"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Icon"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Tag"]
+      [:ty-tag {:flavor "primary"
+                :size "sm"} "Copy"]]]
 
-    ;; Why bother with WIP?
-    [:div.ty-elevated.p-8.rounded-xl.max-w-4xl.mx-auto.mb-12
+    ;; Why ty?
+    [:div.ty-elevated.p-4.sm:p-8.rounded-xl.max-w-4xl.mx-auto.mb-12
      [:h3.text-lg.font-semibold.ty-text.mb-4
-      "Why use something that's still in progress?"]
+      "Built on standards. Works everywhere."]
      [:div.grid.md:grid-cols-2.gap-6
       [:div.space-y-3
        [:div.flex.items-center.gap-3
@@ -87,44 +84,44 @@
          [:ty-icon.ty-text++ {:name "check"
                               :size "xs"}]]
         [:div
-         [:p.text-left.ty-text.text-sm.font-medium "It already works"]
-         [:p.ty-text-.text-xs "Components are functional and used in production"]]]
-       [:div.flex.items-center.gap-3
-        [:div.ty-bg-success.ty-border-success.border.p-1.rounded-full.flex-shrink-0
-         [:ty-icon.ty-text++ {:name "check"
-                              :size "xs"}]]
-        [:div
-         [:p.text-left.ty-text.text-sm.font-medium "Built on web standards"]
-         [:p.ty-text-.text-xs "Not another abstraction layer that will break"]]]
+         [:p.text-left.ty-text.text-sm.font-medium "Web standards, not abstractions"]
+         [:p.ty-text-.text-xs "Custom elements and Shadow DOM — no runtime to outgrow"]]]
        [:div.flex.items-center.gap-3
         [:div.ty-bg-success.ty-border-success.border.p-1.rounded-full.flex-shrink-0
          [:ty-icon.ty-text++ {:name "check"
                               :size "xs"}]]
         [:div
          [:p.text-left.ty-text.text-sm.font-medium "Framework agnostic"]
-         [:p.ty-text-.text-xs "Use with React, Vue, HTMX, or vanilla HTML"]]]]
-      [:div.space-y-3
+         [:p.ty-text-.text-xs "React, Vue, HTMX, vanilla HTML — your choice"]]]
        [:div.flex.items-center.gap-3
         [:div.ty-bg-success.ty-border-success.border.p-1.rounded-full.flex-shrink-0
          [:ty-icon.ty-text++ {:name "check"
                               :size "xs"}]]
         [:div
          [:p.text-left.ty-text.text-sm.font-medium "No build step required"]
-         [:p.ty-text-.text-xs "CDN ready, just add script tag"]]]
+         [:p.ty-text-.text-xs "CDN ready — one script tag and you're running"]]]]
+      [:div.space-y-3
        [:div.flex.items-center.gap-3
         [:div.ty-bg-success.ty-border-success.border.p-1.rounded-full.flex-shrink-0
          [:ty-icon.ty-text++ {:name "check"
                               :size "xs"}]]
         [:div
-         [:p.text-left.ty-text.text-sm.font-medium "Your input matters"]
-         [:p.ty-text-.text-xs "Early adopters shape the direction"]]]
+         [:p.text-left.ty-text.text-sm.font-medium "Semantic design system"]
+         [:p.ty-text-.text-xs "Surfaces, text hierarchy, and semantic colors built in"]]]
        [:div.flex.items-center.gap-3
         [:div.ty-bg-success.ty-border-success.border.p-1.rounded-full.flex-shrink-0
          [:ty-icon.ty-text++ {:name "check"
                               :size "xs"}]]
         [:div
-         [:p.text-left.ty-text.text-sm.font-medium "ClojureScript powered"]
-         [:p.ty-text-.text-xs "Built with a language designed to last"]]]]]]
+         [:p.text-left.ty-text.text-sm.font-medium "Mobile-ready"]
+         [:p.ty-text-.text-xs "Responsive components with touch-optimized interactions"]]]
+       [:div.flex.items-center.gap-3
+        [:div.ty-bg-success.ty-border-success.border.p-1.rounded-full.flex-shrink-0
+         [:ty-icon.ty-text++ {:name "check"
+                              :size "xs"}]]
+        [:div
+         [:p.text-left.ty-text.text-sm.font-medium "ClojureScript infrastructure"]
+         [:p.ty-text-.text-xs "Router, i18n, layout utilities — when you need them"]]]]]]
 
     ;; The pragmatic pitch
     [:div.text-center.mb-12.max-w-3xl.mx-auto
@@ -133,7 +130,7 @@
      [:p.ty-text-.mb-2
       "React 19, Vue 4, the next big thing — your ty components keep working."]
      [:p.ty-text--
-      "Not anti-framework. Framework-optional. React wrappers included."]]
+      "Framework-optional, not anti-framework. React wrappers included."]]
 
     ;; Call to action
     [:div.flex.flex-col.gap-4.items-center
@@ -176,8 +173,8 @@
        [:div.flex.items-center.justify-between
         [:h3.text-lg.font-semibold.ty-text "User Profile Form"]
         [:div.flex.items-center.gap-2
-         [:ty-tag {:flavor "success"
-                   :size "xs"} "Working"]
+         [:ty-tag {:flavor "primary"
+                   :size "xs"} "Live"]
          [:a.text-sm.ty-text-primary.underline.hover:no-underline.flex.items-center.gap-1
           {:href "https://github.com/gersak/ty/blob/master/packages/cljs/site/ty/site/views/user_profile.cljs"
            :target "_blank"
@@ -195,8 +192,8 @@
        [:div.flex.items-center.justify-between
         [:h3.text-lg.font-semibold.ty-text "Event Booking System"]
         [:div.flex.items-center.gap-2
-         [:ty-tag {:flavor "success"
-                   :size "xs"} "Working"]
+         [:ty-tag {:flavor "primary"
+                   :size "xs"} "Live"]
          [:a.text-sm.ty-text-primary.underline.hover:no-underline.flex.items-center.gap-1
           {:href "https://github.com/gersak/ty/blob/master/packages/cljs/site/ty/site/views/event_booking.cljs"
            :target "_blank"
@@ -214,8 +211,8 @@
        [:div.flex.items-center.justify-between
         [:h3.text-lg.font-semibold.ty-text "Contact Form"]
         [:div.flex.items-center.gap-2
-         [:ty-tag {:flavor "success"
-                   :size "xs"} "Working"]
+         [:ty-tag {:flavor "primary"
+                   :size "xs"} "Live"]
          [:a.text-sm.ty-text-primary.underline.hover:no-underline.flex.items-center.gap-1
           {:href "https://github.com/gersak/ty/blob/master/packages/cljs/site/ty/site/views/contact_form.cljs"
            :target "_blank"
@@ -231,9 +228,9 @@
     [:div.ty-bg-neutral-.rounded-2xl.p-8.lg:p-12
      [:div.text-center.mb-8
       [:h2.text-2xl.font-bold.ty-text.mb-3
-       "Join the Effort"]
+       "Join the Community"]
       [:p.ty-text-.max-w-2xl.mx-auto
-       "This project grows with community input. Every issue, PR, and discussion helps."]]
+       "Ty grows with community input. Every issue, PR, and discussion helps."]]
 
      [:div.grid.md:grid-cols-3.gap-6.max-w-4xl.mx-auto
       [:a.ty-elevated.p-6.rounded-xl.hover:shadow-lg.transition-all.block
@@ -265,4 +262,4 @@
     [:p.text-sm.ty-text-
      "Built for developers who believe in web standards."]
     [:p.text-xs.ty-text-.mt-2
-     "Work in progress. Getting better every day."]]])
+     "MIT licensed. Production ready."]]])

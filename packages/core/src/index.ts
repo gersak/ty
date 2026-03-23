@@ -24,6 +24,8 @@ export { TyCalendar } from './components/calendar.js'
 export { TyDatePicker } from './components/date-picker.js'
 export { TyResizeObserver } from './components/resize-observer.js'
 export { TyScrollContainer } from './components/scroll-container.js'
+export { CustomScrollbar, isCustomScrollbarEnabled } from './utils/custom-scrollbar.js'
+export type { CustomScrollbarOptions } from './utils/custom-scrollbar.js'
 
 // Types
 export type {

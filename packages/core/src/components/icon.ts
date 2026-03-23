@@ -9,6 +9,8 @@ import { ensureStyles } from '../utils/styles.js'
 import { iconStyles } from '../styles/icon.js'
 import * as IconRegistry from '../utils/icon-registry.js'
 
+let _iconIdCounter = 0
+
 /** Fallback SVG for missing icons - More visible to prevent layout shift */
 const NOT_FOUND_ICON = `<svg xmlns="http://www.w3.org/2000/svg" 
       viewBox="0 0 512 512" 
@@ -53,7 +55,7 @@ export class TyIcon extends HTMLElement implements TyIconElement {
 
   connectedCallback(): void {
     // Generate unique watch ID
-    this._watchId = `ty-icon-${crypto.randomUUID()}`
+    this._watchId = `ty-icon-${++_iconIdCounter}`
 
     // Watch for registry changes that affect this icon
     if (this._name) {
@@ -92,7 +94,7 @@ export class TyIcon extends HTMLElement implements TyIconElement {
 
           // Re-add watcher for new name
           if (this._name && this.isConnected) {
-            this._watchId = `ty-icon-${crypto.randomUUID()}`
+            this._watchId = `ty-icon-${++_iconIdCounter}`
             IconRegistry.addWatcher(this._watchId, this._name, (changedIcons) => {
               if (this._name && changedIcons.has(this._name)) {
                 this.render()

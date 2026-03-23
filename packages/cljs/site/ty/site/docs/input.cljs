@@ -12,7 +12,7 @@
      [{:name "type"
        :type "string"
        :default "'text'"
-       :description "Input type: text, number, currency, percent, compact, password, date, email"}
+       :description "Input type: text, number, currency, percent, compact, password, email, tel, url"}
       {:name "value"
        :type "string | number"
        :default "null"
@@ -321,18 +321,12 @@ document.querySelector('ty-input').addEventListener('input', (e) => {
     [:div
      [:ty-input {:type "email"
                  :label "Email"
-                 :placeholder "email@example.com"}]]
-
-    [:div
-     [:ty-input {:type "date"
-                 :label "Date"
-                 :value "2024-09-15"}]]]
+                 :placeholder "email@example.com"}]]]
 
    (code-block "<!-- Different text input types -->
 <ty-input type=\"text\" label=\"Text Input\" placeholder=\"Enter text...\"></ty-input>
 <ty-input type=\"password\" label=\"Password\" placeholder=\"Enter password...\"></ty-input>
-<ty-input type=\"email\" label=\"Email\" placeholder=\"email@example.com\"></ty-input>
-<ty-input type=\"date\" label=\"Date\" value=\"2024-09-15\"></ty-input>")])
+<ty-input type=\"email\" label=\"Email\" placeholder=\"email@example.com\"></ty-input>")])
 
 (defn numeric-types-section []
   [:div.ty-content.rounded-lg.p-6.mb-6
@@ -617,6 +611,58 @@ usdInput.addEventListener('input', (e) => {
 });
 </script>" "javascript")])
 
+(defn mobile-keyboard-section []
+  [:div.mb-8
+   [:h2.text-2xl.font-bold.ty-text++.mb-4 "Mobile Keyboard Modes"]
+   [:div.ty-content.rounded-lg.p-6
+    [:p.ty-text-.mb-4 "ty-input automatically sets the correct inputmode for mobile devices. This controls which keyboard appears when the input is focused on touch devices."]
+
+    [:div.grid.gap-4
+     [:div
+      [:ty-input {:type "text"
+                  :label "Text (default keyboard)"
+                  :placeholder "Full keyboard..."}]]
+
+     [:div
+      [:ty-input {:type "number"
+                  :label "Number (decimal keypad)"
+                  :placeholder "0.00"}]]
+
+     [:div
+      [:ty-input {:type "currency"
+                  :label "Currency (decimal keypad)"
+                  :currency "USD"
+                  :placeholder "0.00"}]]
+
+     [:div
+      [:ty-input {:type "percent"
+                  :label "Percent (decimal keypad)"
+                  :placeholder "0"}]]
+
+     [:div
+      [:ty-input {:type "email"
+                  :label "Email (@ keyboard)"
+                  :placeholder "email@example.com"}]]
+
+     [:div
+      [:ty-input {:type "tel"
+                  :label "Telephone (phone dialer)"
+                  :placeholder "+1 555 000 0000"}]]
+
+     [:div
+      [:ty-input {:type "url"
+                  :label "URL (url keyboard)"
+                  :placeholder "https://example.com"}]]]
+
+    (code-block "<!-- Mobile keyboard modes are automatic based on type -->
+<ty-input type=\"text\" label=\"Text\"></ty-input>           <!-- default keyboard -->
+<ty-input type=\"number\" label=\"Number\"></ty-input>       <!-- decimal keypad -->
+<ty-input type=\"currency\" label=\"Price\"></ty-input>      <!-- decimal keypad -->
+<ty-input type=\"percent\" label=\"Rate\"></ty-input>        <!-- decimal keypad -->
+<ty-input type=\"email\" label=\"Email\"></ty-input>         <!-- @ keyboard -->
+<ty-input type=\"tel\" label=\"Phone\"></ty-input>           <!-- phone dialer -->
+<ty-input type=\"url\" label=\"Website\"></ty-input>         <!-- url keyboard -->")]])
+
 (defn advanced-examples-section []
   [:div.mb-8
    [:h2.text-2xl.font-bold.ty-text++.mb-4 "Advanced Examples"]
@@ -708,6 +754,7 @@ usdInput.addEventListener('input', (e) => {
    (sizes-section)
    (flavors-section)
    (form-integration-section)
+   (mobile-keyboard-section)
    (advanced-examples-section)
    (best-practices-section)
    (tips-section)

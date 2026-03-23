@@ -3,6 +3,8 @@
  * PORTED FROM: clj/ty/components/multiselect.css
  */
 
+import { customScrollbarStyles } from './custom-scrollbar.js'
+
 export const multiselectStyles = `
 /* Multiselect-specific styles extending dropdown base styles */
 
@@ -256,7 +258,6 @@ export const multiselectStyles = `
   background: var(--ty-input-bg);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-lg);
-  box-shadow: var(--ty-shadow-md);
   max-height: 16rem;
   width: 100%;
   max-width: 100%;
@@ -264,6 +265,7 @@ export const multiselectStyles = `
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;
+  position: relative;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -279,6 +281,27 @@ export const multiselectStyles = `
   flex-wrap: wrap;
   padding: 0.5rem;
   gap: 0.5rem;
+
+}
+
+/* Hide native scrollbar only when custom scrollbar is active */
+.dropdown-options.ty-custom-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dropdown-options.ty-custom-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Options wrapper - positioned container for scrollbar track */
+.dropdown-options-wrapper {
+  position: relative;
+}
+
+/* Show custom scrollbar on hover */
+.dropdown-options-wrapper:hover .ty-scrollbar-track-y.has-overflow {
+  opacity: 1;
 }
 
 /* Make ty-tags in dropdown clickable with pointer cursor */
@@ -718,23 +741,6 @@ export const multiselectStyles = `
   display: none !important;
 }
 
-/* ===== SCROLLBAR STYLING ===== */
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar-track {
-  background: var(--ty-bg-neutral-);
-  border-radius: 3px;
-}
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar-thumb {
-  background: var(--ty-border);
-  border-radius: 3px;
-}
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar-thumb:hover {
-  background: var(--ty-border+);
-}
+/* Custom scrollbar styles */
+${customScrollbarStyles}
 `

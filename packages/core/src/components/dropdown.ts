@@ -42,6 +42,7 @@ import { dropdownStyles } from '../styles/dropdown.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
 import { TyComponent } from '../base/ty-component.js'
 import type { PropertyChange } from '../utils/property-manager.js'
+import { CustomScrollbar, isCustomScrollbarEnabled } from '../utils/custom-scrollbar.js'
 
 // ============================================================================
 // DEVICE DETECTION
@@ -273,6 +274,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
   private _delay: number = 0
   private _searchDebounceTimer: number | null = null
 
+  // Custom scrollbar for options list
+  private _optionsScrollbar: CustomScrollbar | null = null
+
   constructor() {
     super() // TyComponent handles attachInternals() and attachShadow()
 
@@ -327,6 +331,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
       clearTimeout(this._searchDebounceTimer)
       this._searchDebounceTimer = null
     }
+
+    // Cleanup custom scrollbar
+    this._destroyOptionsScrollbar()
   }
 
   /**
@@ -1115,6 +1122,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
       }
     }
 
+    // Setup custom scrollbar on options
+    this._setupOptionsScrollbar()
+
     // Hide clear button when dropdown is open
     this.updateClearButton()
   }
@@ -1129,6 +1139,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
 
     // Unlock scroll
     this.unlockDropdownScroll()
+
+    // Destroy custom scrollbar
+    this._destroyOptionsScrollbar()
 
     // Close dialog
     dialog.classList.remove('open')
@@ -1390,6 +1403,37 @@ export class TyDropdown extends TyComponent<DropdownState> {
     // Desktop doesn't close on clear, just clears the selection
   }
 
+  // ============================================================================
+  // CUSTOM SCROLLBAR FOR OPTIONS
+  // ============================================================================
+
+  private _setupOptionsScrollbar(): void {
+    if (!isCustomScrollbarEnabled()) return
+
+    const shadow = this.shadowRoot!
+    const optionsDiv = shadow.querySelector('.dropdown-options') as HTMLElement
+    const optionsWrapper = shadow.querySelector('.dropdown-options-wrapper') as HTMLElement
+    if (!optionsDiv || !optionsWrapper) return
+
+    this._destroyOptionsScrollbar()
+
+    optionsDiv.classList.add('ty-custom-scroll')
+    this._optionsScrollbar = new CustomScrollbar(optionsDiv, { vertical: true })
+
+    // Append track to wrapper (outside scroll area)
+    if (this._optionsScrollbar.trackY) {
+      optionsWrapper.appendChild(this._optionsScrollbar.trackY)
+    }
+  }
+
+  private _destroyOptionsScrollbar(): void {
+    if (this._optionsScrollbar) {
+      this._optionsScrollbar.trackY?.remove()
+      this._optionsScrollbar.destroy()
+      this._optionsScrollbar = null
+    }
+  }
+
   /**
    * Build CSS class list for stub
    */
@@ -1445,8 +1489,10 @@ export class TyDropdown extends TyComponent<DropdownState> {
                   ${CHEVRON_DOWN_SVG}
                 </div>
               </div>
-              <div class="dropdown-options">
-                <slot id="options-slot"></slot>
+              <div class="dropdown-options-wrapper">
+                <div class="dropdown-options">
+                  <slot id="options-slot"></slot>
+                </div>
               </div>
             </dialog>
           </div>

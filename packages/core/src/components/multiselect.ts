@@ -47,6 +47,7 @@ import { multiselectStyles } from '../styles/multiselect.js'
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js'
 import { TyComponent } from '../base/ty-component.js'
 import type { PropertyChange } from '../utils/property-manager.js'
+import { CustomScrollbar, isCustomScrollbarEnabled } from '../utils/custom-scrollbar.js'
 
 // ============================================================================
 // DEVICE DETECTION
@@ -319,6 +320,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
   private _delay: number = 0
   private _searchDebounceTimer: number | null = null
 
+  // Custom scrollbar for options list
+  private _optionsScrollbar: CustomScrollbar | null = null
+
   constructor() {
     super() // TyComponent handles attachInternals() and attachShadow()
 
@@ -380,6 +384,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
       clearTimeout(this._searchDebounceTimer)
       this._searchDebounceTimer = null
     }
+
+    // Cleanup custom scrollbar
+    this._destroyOptionsScrollbar()
   }
 
   /**
@@ -729,6 +736,36 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     this.style.setProperty('--dropdown-direction', positionBelow ? 'below' : 'above')
   }
 
+  // ============================================================================
+  // CUSTOM SCROLLBAR FOR OPTIONS
+  // ============================================================================
+
+  private _setupOptionsScrollbar(): void {
+    if (!isCustomScrollbarEnabled()) return
+
+    const shadow = this.shadowRoot!
+    const optionsDiv = shadow.querySelector('.dropdown-options') as HTMLElement
+    const optionsWrapper = shadow.querySelector('.dropdown-options-wrapper') as HTMLElement
+    if (!optionsDiv || !optionsWrapper) return
+
+    this._destroyOptionsScrollbar()
+
+    optionsDiv.classList.add('ty-custom-scroll')
+    this._optionsScrollbar = new CustomScrollbar(optionsDiv, { vertical: true })
+
+    if (this._optionsScrollbar.trackY) {
+      optionsWrapper.appendChild(this._optionsScrollbar.trackY)
+    }
+  }
+
+  private _destroyOptionsScrollbar(): void {
+    if (this._optionsScrollbar) {
+      this._optionsScrollbar.trackY?.remove()
+      this._optionsScrollbar.destroy()
+      this._optionsScrollbar = null
+    }
+  }
+
   /**
    * Open dropdown dialog (desktop mode)
    * Using <dialog> element - scroll locking handled natively
@@ -764,6 +801,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
     // Ensure options area is visible (may have been hidden from previous search)
     this.updateOptionsVisibility(true)
 
+    // Setup custom scrollbar on options
+    this._setupOptionsScrollbar()
+
     // Focus search input if searchable
     if (this._searchable) {
       const searchInput = shadow.querySelector('.dropdown-search-input') as HTMLInputElement
@@ -783,6 +823,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
 
     if (!dialog) return
 
+
+    // Destroy custom scrollbar
+    this._destroyOptionsScrollbar()
 
     // Close dialog (browser handles scroll unlocking automatically)
     dialog.classList.remove('open')
@@ -1346,8 +1389,10 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
                   ${CHEVRON_DOWN_SVG}
                 </div>
               </div>
-              <div class="dropdown-options">
-                <slot id="options-slot"></slot>
+              <div class="dropdown-options-wrapper">
+                <div class="dropdown-options">
+                  <slot id="options-slot"></slot>
+                </div>
               </div>
             </dialog>
           </div>

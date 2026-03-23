@@ -19,6 +19,19 @@ export const textareaStyles = `
   /* For absolute positioned dummy element */
 }
 
+.textarea-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Custom scrollbar track positioning within textarea border */
+.textarea-wrapper .ty-scrollbar-track-y {
+  top: 2px;
+  right: 2px;
+  bottom: 2px;
+  border-radius: 0 4px 4px 0;
+}
+
 /* ===== LABEL STYLING ===== */
 
 .textarea-label {
@@ -93,6 +106,12 @@ textarea {
   /* Ensure consistent text wrapping */
   white-space: pre-wrap;
   word-wrap: break-word;
+}
+
+/* Hide native scrollbar for webkit when custom scrollbar is active
+   (scrollbar-width: none handles Firefox; this handles Chrome/Safari) */
+:host([data-custom-scroll]) textarea::-webkit-scrollbar {
+  display: none;
 }
 
 /* Focus state - elegant blue glow like input */

@@ -758,10 +758,17 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
     const existingError = shadow.querySelector('.error-message')
     const classes = this.buildClassList()
 
-    // Map input type (all numeric types use 'text' in DOM)
-    const inputType = ['password', 'date', 'time', 'datetime-local'].includes(this.type)
+    // Map input type (all numeric types use 'text' in DOM, others pass through)
+    const inputType = ['password', 'email', 'tel', 'url'].includes(this.type)
       ? this.type
       : 'text'
+
+    // Set inputmode for mobile keyboard hint
+    const inputMode = shouldFormatType(this.type) ? 'decimal'
+      : this.type === 'email' ? 'email'
+      : this.type === 'tel' ? 'tel'
+      : this.type === 'url' ? 'url'
+      : undefined
 
     // Get display value (formatted or raw based on focus)
     const displayValue = this.getDisplayValue()
@@ -773,6 +780,8 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
       existingInput.value = displayValue
       existingInput.placeholder = this.placeholder
       existingInput.name = this.name
+      if (inputMode) existingInput.inputMode = inputMode
+      else existingInput.removeAttribute('inputmode')
 
       // Update wrapper classes
       existingWrapper.className = `input-wrapper ${classes}`
@@ -854,6 +863,7 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
                 value="${displayValue}"
                 placeholder="${this.placeholder}"
                 name="${this.name}"
+                ${inputMode ? `inputmode="${inputMode}"` : ''}
               />
               <slot name="end"></slot>
             </div>

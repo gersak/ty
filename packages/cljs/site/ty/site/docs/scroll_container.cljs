@@ -6,7 +6,8 @@
   [:div.mb-8
    [:h1.text-3xl.font-bold.ty-text.mb-2 "ty-scroll-container"]
    [:p.text-lg.ty-text-
-    "A scroll container with visual shadow indicators at top and bottom edges when content is scrollable."]])
+    "A scroll container with shadow indicators and an optional custom-rendered scrollbar "
+    "that looks consistent across all operating systems."]])
 
 (defn api-reference-section []
   [:div.ty-elevated.rounded-lg.p-6.mb-8
@@ -22,11 +23,55 @@
        {:name "hide-scrollbar"
         :type "boolean"
         :default "false"
-        :description "Fully hides the native scrollbar while keeping scroll functionality"}
+        :description "Hides the native scrollbar (no replacement rendered)"}
+       {:name "custom-scrollbar"
+        :type "boolean"
+        :default "false"
+        :description "Hides native scrollbar and renders a custom overlay scrollbar"}
+       {:name "overflow-x"
+        :type "boolean"
+        :default "false"
+        :description "Enable horizontal scrolling (adds horizontal scrollbar when custom-scrollbar is enabled)"}
        {:name "shadow"
         :type "string"
         :default "true"
         :description "Set to \"false\" to disable scroll shadow indicators"}])]
+
+   [:div.mb-6
+    [:h3.text-lg.font-semibold.ty-text+.mb-3 "CSS Custom Properties (custom-scrollbar mode)"]
+    (attribute-table
+      [{:name "--ty-scrollbar-width"
+        :type "length"
+        :default "8px"
+        :description "Track width"}
+       {:name "--ty-scrollbar-radius"
+        :type "length"
+        :default "4px"
+        :description "Thumb and track border radius"}
+       {:name "--ty-scrollbar-thumb"
+        :type "color"
+        :default "var(--ty-border)"
+        :description "Thumb color"}
+       {:name "--ty-scrollbar-thumb-hover"
+        :type "color"
+        :default "var(--ty-border-strong)"
+        :description "Thumb color on hover"}
+       {:name "--ty-scrollbar-thumb-active"
+        :type "color"
+        :default "var(--ty-border-strong)"
+        :description "Thumb color while dragging"}
+       {:name "--ty-scrollbar-track"
+        :type "color"
+        :default "transparent"
+        :description "Track background"}
+       {:name "--ty-scrollbar-track-hover"
+        :type "color"
+        :default "var(--ty-surface-elevated)"
+        :description "Track background on hover"}
+       {:name "--ty-scrollbar-thumb-min-height"
+        :type "length"
+        :default "30px"
+        :description "Minimum thumb height"}])]
 
    [:div
     [:h3.text-lg.font-semibold.ty-text+.mb-3 "Methods"]
@@ -43,9 +88,15 @@
        [:tr.border-b.ty-border-
         [:td.p-2.font-mono.text-xs "scrollToBottom(smooth?)"]
         [:td.p-2.ty-text "Scroll to bottom, optionally with smooth animation"]]
+       [:tr.border-b.ty-border-
+        [:td.p-2.font-mono.text-xs "scrollToLeft(smooth?)"]
+        [:td.p-2.ty-text "Scroll to left edge"]]
+       [:tr.border-b.ty-border-
+        [:td.p-2.font-mono.text-xs "scrollToRight(smooth?)"]
+        [:td.p-2.ty-text "Scroll to right edge"]]
        [:tr
         [:td.p-2.font-mono.text-xs "updateShadows()"]
-        [:td.p-2.ty-text "Force-update shadow state after dynamic content changes"]]]]]]])
+        [:td.p-2.ty-text "Force-update shadow state and scrollbar after dynamic content changes"]]]]]]])
 
 (defn- sample-items
   "Generate sample list items for demos"
@@ -57,49 +108,109 @@
       [:span.ty-text (str "Item " i)]
       [:span.ty-text-.text-sm (str "Description for item " i)]]]))
 
-(defn basic-demo-section []
+(defn scrollbar-modes-section []
   [:div.ty-elevated.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "Basic Usage"]
-   [:p.ty-text-.mb-4 "A scroll container with shadow indicators that appear based on scroll position:"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4 "Scrollbar Modes"]
+   [:p.ty-text-.mb-4 "Three modes: native (default), hidden, or custom rendered:"]
 
-   [:ty-scroll-container {:max-height "200px"}
-    (sample-items 15)]
+   [:div.grid.grid-cols-1.md:grid-cols-3.gap-6
+    [:div
+     [:h4.font-semibold.ty-text.mb-2 "Native (default)"]
+     [:ty-scroll-container {:max-height "200px"}
+      (sample-items 15)]]
+
+    [:div
+     [:h4.font-semibold.ty-text.mb-2 "Hidden"]
+     [:ty-scroll-container {:max-height "200px"
+                            :hide-scrollbar true}
+      (sample-items 15)]]
+
+    [:div
+     [:h4.font-semibold.ty-text.mb-2 "Custom"]
+     [:ty-scroll-container {:max-height "200px"
+                            :custom-scrollbar true}
+      (sample-items 15)]]]
 
    [:div.mt-4
     (code-block
-      "<ty-scroll-container max-height=\"200px\">
-  <div>Item 1</div>
-  <div>Item 2</div>
-  <!-- ... more items ... -->
-</ty-scroll-container>")]])
+      "<!-- Native scrollbar (default) -->
+<ty-scroll-container max-height=\"200px\">...</ty-scroll-container>
 
-(defn scrollbar-comparison-section []
+<!-- Hidden scrollbar -->
+<ty-scroll-container max-height=\"200px\" hide-scrollbar>...</ty-scroll-container>
+
+<!-- Custom rendered scrollbar -->
+<ty-scroll-container max-height=\"200px\" custom-scrollbar>...</ty-scroll-container>")]])
+
+(defn themed-demo-section []
   [:div.ty-elevated.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "Scrollbar Visibility"]
-   [:p.ty-text-.mb-4 "Compare the default scrollbar with a hidden scrollbar side by side:"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4 "Themed Custom Scrollbar"]
+   [:p.ty-text-.mb-4 "Customize scrollbar colors and size via CSS custom properties:"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
     [:div
-     [:h4.font-semibold.ty-text.mb-2 "Default (with scrollbar)"]
-     [:ty-scroll-container {:max-height "200px"}
-      (sample-items 12)]]
+     [:h4.font-semibold.ty-text.mb-2 "Default theme"]
+     [:ty-scroll-container {:max-height "200px"
+                            :custom-scrollbar true}
+      (sample-items 20)]]
 
     [:div
-     [:h4.font-semibold.ty-text.mb-2 "Hidden scrollbar"]
+     [:h4.font-semibold.ty-text.mb-2 "Wide + colored"]
      [:ty-scroll-container {:max-height "200px"
-                            :hide-scrollbar true}
-      (sample-items 12)]]]
+                            :custom-scrollbar true
+                            :style {:--ty-scrollbar-width "12px"
+                                    :--ty-scrollbar-thumb "var(--ty-color-primary)"
+                                    :--ty-scrollbar-thumb-hover "var(--ty-color-primary-strong)"
+                                    :--ty-scrollbar-radius "6px"}}
+      (sample-items 20)]]]
 
    [:div.mt-4
     (code-block
-      "<!-- Default scrollbar -->
-<ty-scroll-container max-height=\"200px\">
+      "<ty-scroll-container max-height=\"200px\" custom-scrollbar
+  style=\"--ty-scrollbar-width: 12px;
+         --ty-scrollbar-thumb: var(--ty-color-primary);
+         --ty-scrollbar-radius: 6px;\">
   <!-- content -->
-</ty-scroll-container>
+</ty-scroll-container>")]])
 
-<!-- Hidden scrollbar -->
-<ty-scroll-container max-height=\"200px\" hide-scrollbar>
-  <!-- content is still scrollable, no scrollbar visible -->
+(defn horizontal-demo-section []
+  [:div.ty-elevated.rounded-lg.p-6
+   [:h3.text-xl.font-semibold.ty-text+.mb-4 "Horizontal Scrolling"]
+   [:p.ty-text-.mb-4 "Enable horizontal scrolling with the overflow-x attribute. Both axes work together:"]
+
+   [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
+    [:div
+     [:h4.font-semibold.ty-text.mb-2 "Horizontal only"]
+     [:ty-scroll-container {:max-height "150px"
+                            :overflow-x true
+                            :custom-scrollbar true}
+      [:div {:style {:width "1500px" :padding "1rem"}}
+       [:div.flex.gap-4
+        (for [i (range 1 21)]
+          [:div.ty-elevated.rounded-lg.p-4.flex-shrink-0
+           {:key i :style {:width "200px"}}
+           [:div.ty-text+.font-semibold (str "Card " i)]
+           [:div.ty-text-.text-sm "Horizontal scroll content"]])]]]]
+
+    [:div
+     [:h4.font-semibold.ty-text.mb-2 "Both axes"]
+     [:ty-scroll-container {:max-height "200px"
+                            :overflow-x true
+                            :custom-scrollbar true}
+      [:div {:style {:width "1500px"}}
+       (for [i (range 1 16)]
+         [:div.p-3.ty-border-.border-b
+          {:key i}
+          [:div.flex.items-center.justify-between
+           [:span.ty-text (str "Row " i " — this content is wide enough to require horizontal scrolling")]
+           [:span.ty-text-.text-sm {:style {:white-space "nowrap"}} (str "Extra detail for item " i)]]])]]]]
+
+   [:div.mt-4
+    (code-block
+      "<ty-scroll-container max-height=\"200px\" overflow-x custom-scrollbar>
+  <div style=\"width: 1500px\">
+    <!-- wide content that overflows horizontally -->
+  </div>
 </ty-scroll-container>")]])
 
 (defn no-shadow-section []
@@ -108,13 +219,14 @@
    [:p.ty-text-.mb-4 "Disable the scroll shadow indicators:"]
 
    [:ty-scroll-container {:max-height "200px"
-                          :shadow "false"}
+                          :shadow "false"
+                          :custom-scrollbar true}
     (sample-items 15)]
 
    [:div.mt-4
     (code-block
-      "<ty-scroll-container max-height=\"200px\" shadow=\"false\">
-  <!-- no shadow indicators at top/bottom -->
+      "<ty-scroll-container max-height=\"200px\" shadow=\"false\" custom-scrollbar>
+  <!-- custom scrollbar, no shadow indicators -->
 </ty-scroll-container>")]])
 
 (defn view []
@@ -125,6 +237,7 @@
     [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Examples"]
 
     [:div.space-y-8
-     (basic-demo-section)
-     (scrollbar-comparison-section)
+     (scrollbar-modes-section)
+     (horizontal-demo-section)
+     (themed-demo-section)
      (no-shadow-section)]))

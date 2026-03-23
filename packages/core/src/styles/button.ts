@@ -127,11 +127,11 @@ button.xs {
 
 /* Small */
 button.sm {
-  padding: 0px var(--ty-spacing-1);
+  padding: 0px var(--ty-spacing-2);
   font-size: var(--ty-font-sm);
   gap: var(--ty-spacing-1);
-  min-height: 1.6rem;
-  min-width: 1.6rem;
+  min-height: 1.5rem;
+  min-width: 1.5rem;
 }
 
 /* Medium (default) */
@@ -145,20 +145,20 @@ button.md {
 
 /* Large */
 button.lg {
-  padding: 0px var(--ty-spacing-4);
+  padding: 0px var(--ty-spacing-3);
   font-size: var(--ty-font-lg);
   gap: var(--ty-spacing-2);
-  min-height: 3rem;
-  min-width: 3rem;
+  min-height: 2.5rem;
+  min-width: 2.5rem;
 }
 
 /* Extra Large */
 button.xl {
-  padding: 0px var(--ty-spacing-6);
+  padding: 0px var(--ty-spacing-4);
   font-size: var(--ty-font-xl);
   gap: var(--ty-spacing-3);
-  min-height: 4rem;
-  min-width: 4rem;
+  min-height: 3.25rem;
+  min-width: 3.25rem;
 }
 
 /* ===== PILL MODIFIER ===== */

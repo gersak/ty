@@ -1,13 +1,15 @@
 /**
  * Dropdown Component Styles
- * 
+ *
  * ARCHITECTURE:
  * - Shared styles: Apply to both desktop and mobile
  * - Desktop styles: Scoped under .dropdown-mode-desktop
  * - Mobile styles: Scoped under .dropdown-mode-mobile
- * 
+ *
  * This prevents CSS conflicts between desktop dialog and mobile modal implementations.
  */
+
+import { customScrollbarStyles } from './custom-scrollbar.js'
 
 export const dropdownStyles = `
 /* ==================== SHARED STYLES ==================== */
@@ -417,7 +419,6 @@ export const dropdownStyles = `
   background: var(--ty-input-bg);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-lg);
-  box-shadow: var(--ty-shadow-md);
   max-height: 16rem;
   width: 100%;
   max-width: 100%;
@@ -425,6 +426,7 @@ export const dropdownStyles = `
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;
+  position: relative;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -432,6 +434,27 @@ export const dropdownStyles = `
   transition:
     opacity 100ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+}
+
+/* Hide native scrollbar only when custom scrollbar is active */
+.dropdown-mode-desktop .dropdown-options.ty-custom-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dropdown-mode-desktop .dropdown-options.ty-custom-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Options wrapper - positioned container for scrollbar track */
+.dropdown-mode-desktop .dropdown-options-wrapper {
+  position: relative;
+}
+
+/* Show custom scrollbar on hover over options */
+.dropdown-mode-desktop .dropdown-options-wrapper:hover .ty-scrollbar-track-y.has-overflow {
+  opacity: 1;
 }
 
 /* Option elements */
@@ -887,4 +910,7 @@ export const dropdownStyles = `
 :host([readonly]) .dropdown-stub slot[name="selected"] {
   cursor: initial;
 }
+
+/* Custom scrollbar styles */
+${customScrollbarStyles}
 `

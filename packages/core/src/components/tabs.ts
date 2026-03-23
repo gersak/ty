@@ -452,13 +452,9 @@ function updateActiveTabState(el: TyTabs, tabId: string): void {
   updateMarker(el, tabId);
   
   // Reset scroll position of new active panel
-  const newPanel = tabs[newIndex];
-  if (newPanel) {
-    const panelShadow = newPanel.shadowRoot;
-    const panelDiv = panelShadow?.querySelector<HTMLElement>('.tab-panel');
-    if (panelDiv) {
-      panelDiv.scrollTop = 0;
-    }
+  const newPanel = tabs[newIndex] as any;
+  if (newPanel?.resetScroll) {
+    newPanel.resetScroll();
   }
   
   // Dispatch change event

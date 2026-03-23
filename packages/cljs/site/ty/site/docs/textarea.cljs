@@ -272,6 +272,40 @@
   }
 });" "javascript")]]
 
+   ;; Custom Scrollbar
+   [:div.ty-content.rounded-lg.p-6.mb-6
+    [:h3.text-xl.font-semibold.ty-text+.mb-4 "Custom Scrollbar"]
+    [:p.ty-text-.mb-4
+     "When content exceeds max-height, a styled custom scrollbar appears automatically. "
+     "It fades in on scroll, supports drag, and disappears when idle — no native scrollbar clutter."]
+
+    [:div.grid.grid-cols-1.md:grid-cols-2.gap-6
+     [:div
+      [:p.text-sm.ty-text.font-medium.mb-2 "Type past the limit to see the scrollbar"]
+      [:ty-textarea
+       {:placeholder "Keep typing to fill this up..."
+        :max-height "150px"
+        :label "Custom scrollbar textarea"}]]
+
+     [:div
+      [:p.text-sm.ty-text.font-medium.mb-2 "Pre-filled with overflow"]
+      [:ty-textarea
+       {:max-height "150px"
+        :label "Scrollable content"
+        :value "Line 1: The custom scrollbar appears when content overflows.\nLine 2: It auto-hides after you stop scrolling.\nLine 3: Drag the thumb to scroll.\nLine 4: Click the track to jump.\nLine 5: The track is invisible to clicks when hidden.\nLine 6: So it never steals focus from your text.\nLine 7: Works on all browsers consistently.\nLine 8: Hidden on touch devices (native scroll is better there).\nLine 9: Respects prefers-reduced-motion.\nLine 10: Try resizing the browser window too."}]]]
+
+    (code-block
+     "<ty-textarea
+  max-height=\"150px\"
+  label=\"Custom scrollbar textarea\"
+  placeholder=\"Keep typing...\">
+</ty-textarea>
+
+<!-- The custom scrollbar activates automatically
+     when content exceeds max-height.
+     Set data-ty-scrollbar=\"native\" on <html>
+     to opt out globally. -->")]
+
    ;; Advanced Examples
    [:h2.text-2xl.font-semibold.ty-text++.mb-6 "Advanced Examples"]
 

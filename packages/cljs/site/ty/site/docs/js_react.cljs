@@ -20,8 +20,8 @@
                   "bash")
 
                 [:div.ty-bg-neutral-.border.ty-border.rounded.p-3.mt-4
-                 [:p.ty-text.text-sm.mb-2
-                  "📦 " [:strong "What's included:"]]
+                 [:p.ty-text.text-sm.mb-2.flex.items-center.gap-2
+                  [:ty-icon {:name "package" :size "sm"}] [:strong "What's included:"]]
                  [:ul.ty-text.text-sm.space-y-1.ml-4
                   [:li "• React wrappers for all Ty components"]
                   [:li "• Full TypeScript definitions"]
@@ -79,12 +79,12 @@ window.tyIcons.register({ check, heart, save })"
 
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-4.mt-4
                  [:p.ty-text-warning.text-sm.font-semibold.mb-2
-                  "⚠️ Import only what you need"]
+                  [:ty-icon.ty-text-warning {:name "alert-triangle" :size "sm"}] "Import only what you need"]
                  (code-block
-                   "// ❌ BAD - imports all 1,636 icons
+                   "// BAD - imports all 1,636 icons
 import * as lucide from '@gersak/ty/icons/lucide'
 
-// ✅ GOOD - only what you need
+// GOOD - only what you need
 import { check, heart } from '@gersak/ty/icons/lucide'"
                    "javascript")]]))
 

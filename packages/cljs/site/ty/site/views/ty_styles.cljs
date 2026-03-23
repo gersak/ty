@@ -6,12 +6,12 @@
 (defn theme-toggle []
   "Simple theme toggle section"
   [:div.flex.justify-center.gap-4.mb-8
-   [:button.px-6.py-3.ty-elevated.border.ty-border.rounded-lg.hover:ty-content.ty-text.transition-colors.cursor-pointer
+   [:button.px-6.py-3.ty-elevated.border.ty-border.rounded-lg.hover:ty-content.ty-text.transition-colors.cursor-pointer.flex.items-center.gap-2
     {:on {:click #(.. js/document -documentElement -classList (remove "dark"))}}
-    "☀️ Light Theme"]
-   [:button.px-6.py-3.ty-bg-neutral.ty-text++.border.ty-border.rounded-lg.hover:ty-bg-neutral+.transition-colors.cursor-pointer
+    [:ty-icon {:name "sun" :size "sm"}] "Light Theme"]
+   [:button.px-6.py-3.ty-bg-neutral.ty-text++.border.ty-border.rounded-lg.hover:ty-bg-neutral+.transition-colors.cursor-pointer.flex.items-center.gap-2
     {:on {:click #(.. js/document -documentElement -classList (add "dark"))}}
-    "🌙 Dark Theme"]])
+    [:ty-icon {:name "moon" :size "sm"}] "Dark Theme"]])
 
 (defn text-variants-demo []
   "Shows the 5-variant text system"
@@ -182,7 +182,7 @@
        [:div.ty-floating.p-6.rounded-lg.relative.mt-6.text-center
         [:div.absolute.top-2.left-3.text-xs.ty-text-.font-mono.opacity-75 "ty-floating"]
         [:div.mt-4
-         [:h4.ty-text++.font-medium.mb-2 "🪆 Surface Layers"]
+         [:h4.ty-text++.font-medium.mb-2.flex.items-center.gap-2 [:ty-icon {:name "layers" :size "sm"}] "Surface Layers"]
          [:p.ty-text-.text-sm "Each surface sits inside the previous one, creating depth and visual hierarchy like Russian nesting dolls."]]]]]]
 
     ;; Individual surface descriptions
@@ -366,10 +366,10 @@
       [:div.p-4.rounded-lg
        [:p.text-sm.ty-text-primary++.font-medium.mb-2 "What breaks without ty.css:"]
        [:ul.space-y-1.text-sm.ty-text-primary
-        [:li "❌ No colors (CSS variables undefined)"]
-        [:li "❌ No layout (surface hierarchy missing)"]
-        [:li "❌ No theme switching"]
-        [:li "❌ Utility classes (" [:code.font-mono "ty-bg-primary"] ") don't work"]]]]]]
+        [:li.flex.items-center.gap-1 [:ty-icon.ty-text-danger.flex-shrink-0 {:name "x-circle" :size "xs"}] "No colors (CSS variables undefined)"]
+        [:li.flex.items-center.gap-1 [:ty-icon.ty-text-danger.flex-shrink-0 {:name "x-circle" :size "xs"}] "No layout (surface hierarchy missing)"]
+        [:li.flex.items-center.gap-1 [:ty-icon.ty-text-danger.flex-shrink-0 {:name "x-circle" :size "xs"}] "No theme switching"]
+        [:li.flex.items-center.gap-1 [:ty-icon.ty-text-danger.flex-shrink-0 {:name "x-circle" :size "xs"}] [:span "Utility classes (" [:code.font-mono "ty-bg-primary"] ") don't work"]]]]]]]
 
    ;; Architecture Explanation
    [:div.ty-elevated.p-6.rounded-xl
@@ -445,7 +445,7 @@ button {
 
    ;; Footer summary
    [:div.ty-elevated.p-6.rounded-lg.text-center
-    [:h4.text-lg.font-semibold.ty-text.mb-2 "Ready to Use ✨"]
+    [:h4.text-lg.font-semibold.ty-text.mb-2.flex.items-center.gap-2 "Ready to Use" [:ty-icon {:name "sparkles" :size "sm"}]]
     [:p.ty-text-
      "The ty design system provides a complete set of semantic CSS classes for building consistent, "
      "accessible, and beautiful user interfaces. All classes automatically adapt between light and dark themes "

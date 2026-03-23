@@ -3,11 +3,13 @@
  * PORTED FROM: clj/ty/components/multiselect.css
  */
 
+import { customScrollbarStyles } from './custom-scrollbar.js'
+
 export const multiselectStyles = `
 /* Multiselect-specific styles extending dropdown base styles */
 
 :host {
-  --mobile-border-color: #5858587d;
+  --mobile-border-color: var(--ty-border, #5858587d);
 }
 
 /* ===== DIALOG POSITIONING SUPPORT ===== */
@@ -256,7 +258,6 @@ export const multiselectStyles = `
   background: var(--ty-input-bg);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-lg);
-  box-shadow: var(--ty-shadow-md);
   max-height: 16rem;
   width: 100%;
   max-width: 100%;
@@ -264,6 +265,7 @@ export const multiselectStyles = `
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;
+  position: relative;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -279,6 +281,27 @@ export const multiselectStyles = `
   flex-wrap: wrap;
   padding: 0.5rem;
   gap: 0.5rem;
+
+}
+
+/* Hide native scrollbar only when custom scrollbar is active */
+.dropdown-options.ty-custom-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dropdown-options.ty-custom-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Options wrapper - positioned container for scrollbar track */
+.dropdown-options-wrapper {
+  position: relative;
+}
+
+/* Show custom scrollbar on hover */
+.dropdown-options-wrapper:hover .ty-scrollbar-track-y.has-overflow {
+  opacity: 1;
 }
 
 /* Make ty-tags in dropdown clickable with pointer cursor */
@@ -425,12 +448,11 @@ export const multiselectStyles = `
   border-color: var(--ty-border);
 }
 
-/* Mobile search header - floating row with search and close */
+/* Mobile search header - label floats above, search + close below */
 .dropdown-mode-mobile .mobile-search-header {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
   margin-bottom: 16px;
   padding: 0;
   background: transparent;
@@ -444,16 +466,28 @@ export const multiselectStyles = `
   width: 100%;
 }
 
-/* Header for non-searchable (close button only) */
+/* Header for non-searchable (label + close button) */
 .dropdown-mode-mobile .mobile-header-nosearch {
   flex-shrink: 0;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   margin-bottom: 16px;
   padding: 0;
   background: transparent;
   position: relative;
   min-height: 40px;
+}
+
+.dropdown-mode-mobile .mobile-header-label {
+  position: absolute;
+  bottom: 100%;
+  left: 6px;
+  margin-bottom: 4px;
+  font-size: var(--ty-font-lg);
+  font-weight: 700;
+  color: var(--ty-color-neutral);
+  pointer-events: none;
 }
 
 /* Close button - circular with border (matches dropdown.ts) */
@@ -465,10 +499,9 @@ export const multiselectStyles = `
   align-items: center;
   justify-content: center;
   background: var(--ty-surface-floating);
-  border: 3px solid;
-  border-color: var(--mobile-border-color);
+  border: 2px solid var(--mobile-border-color);
   border-radius: 50%;
-  color: var(--ty-text-);
+  color: var(--ty-text-strong);
   cursor: pointer;
   transition: var(--ty-transition-all);
   padding: 0;
@@ -477,7 +510,7 @@ export const multiselectStyles = `
 .dropdown-mode-mobile .mobile-close-button:hover {
   background: var(--ty-bg-neutral);
   border-color: var(--ty-border);
-  color: var(--ty-text);
+  color: var(--ty-text-strong);
 }
 
 .dropdown-mode-mobile .mobile-close-button:active {
@@ -510,7 +543,7 @@ export const multiselectStyles = `
 }
 
 .dropdown-mode-mobile .mobile-search-input::placeholder {
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
 }
 
 .dropdown-mode-mobile .mobile-search-input:focus {
@@ -551,12 +584,21 @@ export const multiselectStyles = `
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--ty-text-);
-  background: var(--ty-bg-neutral-);
-  border-bottom: 1px solid var(--ty-border--);
+  color: var(--ty-text);
+  background: var(--ty-bg-neutral-soft);
+  border-bottom: 1px solid var(--ty-border-faint);
   cursor: pointer;
   user-select: none;
   transition: all 0.3s ease;
+}
+
+/* Expanded section is mild (already viewing it), collapsed is normal (draws attention) */
+.dropdown-mode-mobile [data-expanded="false"] .section-header {
+  color: var(--ty-text);
+}
+
+.dropdown-mode-mobile [data-expanded="true"] .section-header {
+  color: var(--ty-text-mild);
 }
 
 .dropdown-mode-mobile .section-header:hover {
@@ -564,7 +606,7 @@ export const multiselectStyles = `
 }
 
 .dropdown-mode-mobile .section-header:active {
-  background: var(--ty-bg-neutral+);
+  background: var(--ty-bg-neutral-mild);
 }
 
 .dropdown-mode-mobile .section-header .section-title {
@@ -581,7 +623,7 @@ export const multiselectStyles = `
 .dropdown-mode-mobile .section-header .section-chevron {
   width: 16px;
   height: 16px;
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
@@ -604,7 +646,7 @@ export const multiselectStyles = `
 }
 
 .dropdown-mode-mobile .mobile-available-section .section-header:hover {
-  background: var(--ty-bg-neutral-);
+  background: var(--ty-bg-neutral-soft);
 }
 
 /* ===== SELECTED SECTION - Expandable with smooth transition ===== */
@@ -679,7 +721,7 @@ export const multiselectStyles = `
   width: 100%;
   padding: 2rem 1rem;
   text-align: center;
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
   font-size: 0.875rem;
   font-style: italic;
 }
@@ -718,23 +760,6 @@ export const multiselectStyles = `
   display: none !important;
 }
 
-/* ===== SCROLLBAR STYLING ===== */
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar {
-  width: 6px;
-}
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar-track {
-  background: var(--ty-bg-neutral-);
-  border-radius: 3px;
-}
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar-thumb {
-  background: var(--ty-border);
-  border-radius: 3px;
-}
-
-.dropdown-mode-mobile .section-content::-webkit-scrollbar-thumb:hover {
-  background: var(--ty-border+);
-}
+/* Custom scrollbar styles */
+${customScrollbarStyles}
 `

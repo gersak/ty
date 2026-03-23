@@ -22,8 +22,8 @@ Add to your `index.html`:
 <html>
 <head>
   <!-- Ty Web Components & Styles via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/dist/index.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/css/ty.css">
+  <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
 </head>
 <body>
   <div id="root"></div>
@@ -231,7 +231,7 @@ Register icons via CDN before use:
 ```html
 <!-- In index.html -->
 <script type="module">
-  import { check, heart, star } from 'https://cdn.jsdelivr.net/npm/@gersak/ty@0.2.0/dist/icons/lucide.js';
+  import { check, heart, star } from 'https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/icons/lucide.js';
   
   window.ty.icons.register({ check, heart, star });
 </script>

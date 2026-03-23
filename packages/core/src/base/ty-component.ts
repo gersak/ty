@@ -130,15 +130,15 @@ export abstract class TyComponent<T = any> extends HTMLElement {
    */
   attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
     if (oldValue === newValue) return
-    
-    // Convert kebab-case to camelCase
-    const propName = this._toCamelCase(name)
-    
+
     // Check if this is an alias (e.g., not-searchable)
     let change = this.props.handleAlias(name, newValue)
-    
+
     if (!change) {
-      // Regular property update
+      // Properties may be registered with kebab-case (e.g., 'display-month')
+      // or camelCase. Try the attribute name as-is first, then camelCase.
+      const camelName = this._toCamelCase(name)
+      const propName = this.props.hasConfig(name) ? name : camelName
       change = this.props.updateProperty(propName, newValue, 'attribute')
     }
     

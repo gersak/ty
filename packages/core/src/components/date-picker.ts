@@ -51,6 +51,7 @@ import { ensureStyles } from '../utils/styles.js';
 import { datePickerStyles } from '../styles/date-picker.js';
 import { lockScroll, unlockScroll } from '../utils/scroll-lock.js';
 import { getEffectiveLocale, observeLocaleChanges } from '../utils/locale.js';
+import { isMobileTouch } from '../utils/mobile.js';
 import { TyComponent } from '../base/ty-component.js';
 import type { PropertyChange } from '../utils/property-manager.js';
 
@@ -86,18 +87,17 @@ interface TimeInputState {
   caretPosition: number; // 0-5 (internal positions: 0,1,3,4,5)
   displayValue: string;  // "HH:mm"
   rawDigits: string;     // "HHmm"
-  editingSegment: 'hour' | 'minute';
 }
 
 /**
  * Date picker sizes
  */
-type DatePickerSize = 'sm' | 'md' | 'lg';
+type DatePickerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 /**
  * Date picker flavors (visual styles)
  */
-type DatePickerFlavor = 'default' | 'success' | 'danger' | 'warning';
+type DatePickerFlavor = 'default' | 'primary' | 'secondary' | 'success' | 'danger' | 'warning';
 
 /**
  * Date format types
@@ -216,7 +216,7 @@ function componentsToDateObject(components: DateComponents): Date | null {
  * 
  * PORTED FROM: components->output-value in date_picker.cljs
  */
-function componentsToOutputValue(components: DateComponents, withTime: boolean): string | null {
+function componentsToOutputValue(components: DateComponents): string | null {
   if (!components.year || !components.month || !components.day) {
     return null;
   }
@@ -273,16 +273,8 @@ function formatDisplayValue(
   const dateObj = componentsToDateObject(components);
   if (!dateObj) return null;
 
-  // Map format types to Intl options
-  const dateStyleMap: Record<DateFormatType, 'short' | 'medium' | 'long' | 'full'> = {
-    short: 'short',
-    medium: 'medium',
-    long: 'long',
-    full: 'full',
-  };
-
   const options: Intl.DateTimeFormatOptions = {
-    dateStyle: dateStyleMap[formatType] || 'long',
+    dateStyle: formatType || 'long',
   };
 
   // Add time styling if with-time is enabled
@@ -431,7 +423,6 @@ class TimeInput {
       caretPosition: 0,
       displayValue: display,
       rawDigits,
-      editingSegment: 'hour',
     };
 
     // Set initial value
@@ -709,9 +700,9 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
       type: 'string' as const,
       visual: true,
       default: 'md',
-      validate: (v: any) => ['sm', 'md', 'lg'].includes(v),
+      validate: (v: any) => ['xs', 'sm', 'md', 'lg', 'xl'].includes(v),
       coerce: (v: any) => {
-        if (!['sm', 'md', 'lg'].includes(v)) {
+        if (!['xs', 'sm', 'md', 'lg', 'xl'].includes(v)) {
           console.warn(`[ty-date-picker] Invalid size '${v}'. Using 'md'.`);
           return 'md';
         }
@@ -813,6 +804,9 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private _clickListener?: (e: Event) => void;
   private _keydownListener?: (e: Event) => void;
   private _dialogClickListener?: (e: Event) => void;
+
+  // Reopen guard — prevents click event from reopening after pointerdown close
+  private _closeTimestamp = 0;
 
   // Time input element reference
   private _timeInput?: TimeInput;
@@ -971,15 +965,45 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
    * TyComponent calls this automatically when value property changes
    */
   protected getFormValue(): FormDataEntryValue | null {
-    const components: DateComponents = {
+    return componentsToOutputValue(this.getComponents());
+  }
+
+  // ==========================================================================
+  // Internal Helpers
+  // ==========================================================================
+
+  /**
+   * Extract current date components from internal state
+   */
+  private getComponents(): DateComponents {
+    return {
       year: this._state.year,
       month: this._state.month,
       day: this._state.day,
       hour: this._state.hour,
       minute: this._state.minute,
     };
+  }
 
-    return componentsToOutputValue(components, this._state.withTime);
+  /**
+   * Whether internal state has a complete date
+   */
+  private hasDate(): boolean {
+    return !!(this._state.year && this._state.month && this._state.day);
+  }
+
+  /**
+   * Format current components for display using Intl API
+   */
+  private getFormattedValue(components?: DateComponents): string | null {
+    const c = components || this.getComponents();
+    if (!c.year || !c.month || !c.day) return null;
+    return formatDisplayValue(
+      c,
+      (this.getProperty('format') as DateFormatType) || 'long',
+      getEffectiveLocale(this, this.getProperty('locale')),
+      this._state.withTime
+    );
   }
 
   // ==========================================================================
@@ -1066,22 +1090,11 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
    * PORTED FROM: handle-time-change! in date_picker.cljs
    */
   handleTimeInputChange(hour: number, minute: number): void {
-    const components: DateComponents = {
-      year: this._state.year,
-      month: this._state.month,
-      day: this._state.day,
-      hour,
-      minute,
-    };
+    if (!this.hasDate()) return;
 
-    // Only update if we have a valid date
-    if (this._state.year && this._state.month && this._state.day) {
-      // Force sync when time changes - user is actively editing
-      this.updateState(components, true);
-
-      // Emit change event
-      this.emitChangeEvent(components, 'time-change');
-    }
+    const components = { ...this.getComponents(), hour, minute };
+    this.updateState(components, true);
+    this.emitChangeEvent(components, 'time-change');
   }
 
   /**
@@ -1090,15 +1103,10 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
    * PORTED FROM: emit-change-event! in date_picker.cljs
    */
   private emitChangeEvent(components: DateComponents | null, source: 'selection' | 'time-change' | 'clear' | 'external'): void {
-    const utcValue = components ? componentsToOutputValue(components, this._state.withTime) : null;
+    const utcValue = components ? componentsToOutputValue(components) : null;
     const localValue = components ? componentsToLocalValue(components, this._state.withTime) : null;
     const milliseconds = components ? componentsToDateObject(components)?.getTime() ?? null : null;
-    const formatted = components ? formatDisplayValue(
-      components,
-      (this.getAttribute('format') as DateFormatType) || 'long',
-      getEffectiveLocale(this, this.getAttribute('locale')),
-      this._state.withTime
-    ) : null;
+    const formatted = components ? this.getFormattedValue(components) : null;
 
     const detail: DatePickerChangeDetail = {
       value: utcValue,
@@ -1192,16 +1200,14 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private buildStubClasses(): string {
     const classes = ['date-picker-stub'];
 
-    const size = this.getAttribute('size') || 'md';
-    const flavor = this.getAttribute('flavor');
-    const disabled = this.getAttribute('disabled') === 'true';
-    const required = this.getAttribute('required') === 'true';
+    const size = this.getProperty('size') || 'md';
+    const flavor = this.getProperty('flavor');
 
     classes.push(size);
 
-    if (flavor) classes.push(flavor);
-    if (disabled) classes.push('disabled');
-    if (required) classes.push('required');
+    if (flavor && flavor !== 'default') classes.push(flavor);
+    if (this.getProperty('disabled')) classes.push('disabled');
+    if (this.getProperty('required')) classes.push('required');
     if (this._state.open) classes.push('open');
 
     return classes.join(' ');
@@ -1216,8 +1222,8 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
     const stub = document.createElement('div');
     stub.className = this.buildStubClasses();
 
-    const disabled = this.getAttribute('disabled') === 'true';
-    if (disabled) {
+    const isDisabled = this.getProperty('disabled');
+    if (isDisabled) {
       stub.setAttribute('disabled', 'true');
     }
 
@@ -1225,24 +1231,8 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
     const displayText = document.createElement('span');
     displayText.className = 'stub-text';
 
-    const components: DateComponents = {
-      year: this._state.year,
-      month: this._state.month,
-      day: this._state.day,
-      hour: this._state.hour,
-      minute: this._state.minute,
-    };
-
-    const formattedValue = this._state.year && this._state.month && this._state.day
-      ? formatDisplayValue(
-        components,
-        (this.getAttribute('format') as DateFormatType) || 'long',
-        getEffectiveLocale(this, this.getAttribute('locale')),
-        this._state.withTime
-      )
-      : null;
-
-    const placeholder = this.getAttribute('placeholder') || 'Select date...';
+    const formattedValue = this.getFormattedValue();
+    const placeholder = this.getProperty('placeholder') || 'Select date...';
     displayText.textContent = formattedValue || placeholder;
 
     if (!formattedValue) {
@@ -1254,8 +1244,8 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
     iconContainer.className = 'stub-icons';
 
     // Clear button
-    const clearable = this.getAttribute('clearable') !== 'false';
-    if (clearable && formattedValue && !disabled) {
+    const clearable = this.getProperty('clearable');
+    if (clearable && formattedValue && !isDisabled) {
       const clearButton = document.createElement('button');
       clearButton.className = 'stub-clear';
       clearButton.type = 'button';
@@ -1346,7 +1336,7 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
       calendar.setAttribute('day', this._state.day.toString());
     }
 
-    const locale = getEffectiveLocale(this, this.getAttribute('locale'));
+    const locale = getEffectiveLocale(this, this.getProperty('locale'));
     if (locale) {
       calendar.setAttribute('locale', locale);
     }
@@ -1372,12 +1362,95 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   }
 
   /**
+   * Render native date input for mobile touch devices.
+   * Uses <input type="date"> or <input type="datetime-local"> when with-time.
+   * Reuses .date-picker-stub styling and existing event/state infrastructure.
+   */
+  private renderNativeInput(): HTMLElement {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'dropdown-wrapper';
+
+    const stub = document.createElement('div');
+    stub.className = this.buildStubClasses();
+
+    const isDisabled = this.getProperty('disabled');
+    if (isDisabled) {
+      stub.setAttribute('disabled', 'true');
+    }
+
+    // Native input (hidden, activated via picker indicator)
+    const input = document.createElement('input');
+    input.className = 'native-date-input';
+    input.type = this._state.withTime ? 'datetime-local' : 'date';
+    if (isDisabled) input.disabled = true;
+    if (this.getProperty('required')) input.required = true;
+
+    // Pre-fill value
+    const localValue = componentsToLocalValue(this.getComponents(), this._state.withTime);
+    if (localValue) {
+      input.value = localValue;
+    }
+
+    // Placeholder span (native date inputs ignore placeholder attr)
+    const placeholder = this.getProperty('placeholder') || 'Select date...';
+    const formattedValue = this.getFormattedValue();
+    const placeholderEl = document.createElement('span');
+    placeholderEl.className = 'stub-text' + (formattedValue ? '' : ' placeholder');
+    placeholderEl.textContent = formattedValue || placeholder;
+
+    // Change listener
+    input.addEventListener('change', () => {
+      if (!input.value) {
+        this.clearValue();
+        return;
+      }
+      const parsed = parseValue(input.value, this._state.withTime);
+      if (parsed) {
+        this.updateState(parsed, true);
+        this.emitChangeEvent(parsed, 'selection');
+      }
+    });
+
+    stub.appendChild(input);
+    stub.appendChild(placeholderEl);
+
+    // Icons container (clear + calendar icon)
+    const iconContainer = document.createElement('div');
+    iconContainer.className = 'stub-icons';
+
+    const clearable = this.getProperty('clearable');
+    if (clearable && localValue && !isDisabled) {
+      const clearButton = document.createElement('button');
+      clearButton.className = 'stub-clear';
+      clearButton.type = 'button';
+      clearButton.innerHTML = CLEAR_ICON_SVG;
+      clearButton.addEventListener('click', (e) => this.handleClearClick(e));
+      iconContainer.appendChild(clearButton);
+    }
+
+    const calendarIcon = document.createElement('span');
+    calendarIcon.className = 'stub-arrow';
+    calendarIcon.innerHTML = CALENDAR_ICON_SVG;
+    iconContainer.appendChild(calendarIcon);
+
+    stub.appendChild(iconContainer);
+
+    wrapper.appendChild(stub);
+
+    return wrapper;
+  }
+
+
+  /**
    * Calculate calendar position
-   * 
+   *
    * PORTED FROM: calculate-calendar-position! in date_picker.cljs
    */
   private calculateCalendarPosition(): void {
     if (!this.shadowRoot) return;
+
+    // Mobile uses native input, no positioning needed
+    if (isMobileTouch()) return;
 
     const stub = this.shadowRoot.querySelector('.date-picker-stub') as HTMLElement;
     const dialog = this.shadowRoot.querySelector('.calendar-dialog') as HTMLElement;
@@ -1439,13 +1512,12 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
     const container = document.createElement('div');
     container.className = 'dropdown-container';
 
-    const label = this.getAttribute('label');
-    const required = this.getAttribute('required') === 'true';
+    const label = this.getProperty('label');
 
     if (label) {
       const labelEl = document.createElement('label');
       labelEl.className = 'dropdown-label';
-      labelEl.innerHTML = label + (required ? '<span class="required-icon">*</span>' : '');
+      labelEl.innerHTML = label + (this.getProperty('required') ? '<span class="required-icon">*</span>' : '');
       container.appendChild(labelEl);
     }
 
@@ -1461,6 +1533,22 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
     if (!this.shadowRoot) return;
 
     ensureStyles(this.shadowRoot, { css: datePickerStyles, id: 'ty-date-picker' });
+
+    // Mobile: native input, no dialog/event listeners/scroll lock
+    if (isMobileTouch()) {
+      const existingNativeInput = this.shadowRoot.querySelector('.native-date-input');
+      if (existingNativeInput) {
+        // PARTIAL UPDATE: don't destroy DOM while native picker may be open
+        this.updateDisplay();
+        return;
+      }
+      // FIRST RENDER: build from scratch
+      this.shadowRoot.innerHTML = '';
+      const container = this.renderContainer();
+      container.appendChild(this.renderNativeInput());
+      this.shadowRoot.appendChild(container);
+      return;
+    }
 
     // Check if dialog is currently open
     const existingDialog = this.shadowRoot.querySelector('.calendar-dialog') as HTMLDialogElement;
@@ -1498,60 +1586,43 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private updateDisplay(): void {
     if (!this.shadowRoot) return;
 
+    const formattedValue = this.getFormattedValue();
+    const placeholder = this.getProperty('placeholder') || 'Select date...';
+    const hasValue = this.hasDate();
+    const clearable = this.getProperty('clearable');
+    const isDisabled = this.getProperty('disabled');
+
+    // Update stub text (shared between mobile and desktop)
     const stubText = this.shadowRoot.querySelector('.stub-text');
-    const clearButton = this.shadowRoot.querySelector('.stub-clear') as HTMLElement;
-
-    // Update stub text
     if (stubText) {
-      const components: DateComponents = {
-        year: this._state.year,
-        month: this._state.month,
-        day: this._state.day,
-        hour: this._state.hour,
-        minute: this._state.minute,
-      };
-
-      const formattedValue = this._state.year && this._state.month && this._state.day
-        ? formatDisplayValue(
-          components,
-          (this.getAttribute('format') as DateFormatType) || 'long',
-          getEffectiveLocale(this, this.getAttribute('locale')),
-          this._state.withTime
-        )
-        : null;
-
-      const placeholder = this.getAttribute('placeholder') || 'Select date...';
       stubText.textContent = formattedValue || placeholder;
-
-      if (formattedValue) {
-        stubText.classList.remove('placeholder');
-      } else {
-        stubText.classList.add('placeholder');
-      }
+      stubText.classList.toggle('placeholder', !formattedValue);
     }
 
     // Update clear button visibility
+    const clearButton = this.shadowRoot.querySelector('.stub-clear') as HTMLElement;
     if (clearButton) {
-      const clearable = this.getAttribute('clearable') === 'true';
-      const disabled = this.getAttribute('disabled') === 'true';
-      const hasValue = this._state.year && this._state.month && this._state.day;
+      clearButton.style.display = (clearable && hasValue && !isDisabled) ? '' : 'none';
+    }
 
-      if (clearable && hasValue && !disabled) {
-        clearButton.style.display = '';
-      } else {
-        clearButton.style.display = 'none';
+    // Mobile: also sync native input value
+    if (isMobileTouch()) {
+      const nativeInput = this.shadowRoot.querySelector('.native-date-input') as HTMLInputElement;
+      if (nativeInput) {
+        const localValue = componentsToLocalValue(this.getComponents(), this._state.withTime);
+        nativeInput.value = localValue || '';
       }
+      return;
     }
 
-    // Update calendar attributes
+    // Desktop: update calendar and time input
     const calendar = this.shadowRoot.querySelector('ty-calendar') as any;
-    if (calendar && this._state.year && this._state.month && this._state.day) {
-      calendar.setAttribute('year', this._state.year.toString());
-      calendar.setAttribute('month', this._state.month.toString());
-      calendar.setAttribute('day', this._state.day.toString());
+    if (calendar && hasValue) {
+      calendar.setAttribute('year', this._state.year!.toString());
+      calendar.setAttribute('month', this._state.month!.toString());
+      calendar.setAttribute('day', this._state.day!.toString());
     }
 
-    // Update time input if it exists and we have time values
     if (this._timeInput && this._state.hour !== undefined && this._state.minute !== undefined) {
       this._timeInput.setTime(this._state.hour, this._state.minute);
     }
@@ -1586,22 +1657,25 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   }
 
   // ==========================================================================
-  // Event Handlers (Stubs - will implement in Phase 4)
+  // Event Handlers
   // ==========================================================================
 
   private handleStubClick(event: Event): void {
     event.preventDefault();
-    const disabled = this.getAttribute('disabled') === 'true';
-    if (!disabled) {
+    const disabled = this.getProperty('disabled');
+    // FIXME: Timestamp guard is a workaround. Calendar day cells use pointerdown,
+    // which closes the dialog before the click event fires — the click then hits the
+    // stub and reopens. Proper fix: switch calendar-month day cells from pointerdown
+    // to click so the event is consumed before the dialog closes.
+    if (!disabled && Date.now() - this._closeTimestamp > 300) {
       this.openDropdown();
     }
   }
 
-  private handleClearClick(event: Event): void {
-    event.preventDefault();
-    event.stopPropagation();
-
-    // Clear state
+  /**
+   * Clear the date value, sync state, emit event, and re-render.
+   */
+  private clearValue(): void {
     this.updateState({
       year: undefined,
       month: undefined,
@@ -1610,13 +1684,15 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
       minute: undefined,
     }, true);
 
-    // Clear value using property setter (will remove attribute and update form)
     this.value = null;
-
-    // Emit change event
     this.emitChangeEvent(null, 'clear');
-
     this.render();
+  }
+
+  private handleClearClick(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.clearValue();
   }
 
   /**
@@ -1714,11 +1790,12 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
 
   /**
    * Open calendar dropdown
-   * 
+   *
    * PORTED FROM: open-dropdown! in date_picker.cljs
    */
   private openDropdown(): void {
     if (this._state.open) return;
+    if (isMobileTouch()) return;
 
     this.updateState({ open: true });
 
@@ -1759,6 +1836,7 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
   private closeDropdown(): void {
     if (!this._state.open) return;
 
+    this._closeTimestamp = Date.now();
     const pickerId = `date-picker-${this.id || this.toString()}`;
 
     // Force sync any staged updates when closing
@@ -1776,10 +1854,6 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
 
     this.render();
   }
-
-  // ==========================================================================
-  // Rendering (placeholder kept for reference)
-  // ==========================================================================
 
   // ==========================================================================
   // Cleanup

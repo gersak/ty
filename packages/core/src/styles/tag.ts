@@ -23,20 +23,17 @@ export const tagStyles = `
   border-radius: var(--ty-radius-full);
   font-family: var(--ty-font-sans);
   font-weight: var(--ty-font-medium);
-  line-height: var(--ty-line-height-none);
+  line-height: 1;
   text-align: center;
   white-space: nowrap;
   user-select: none;
   box-sizing: border-box;
 
   /* Default MD size - no need for [size="md"] */
-  padding: var(--ty-spacing-mini) var(--ty-spacing-1);
-  /* 8px 16px */
+  padding: 0 var(--ty-spacing-1);
   font-size: var(--ty-font-sm);
-  /* 14px */
-  line-height: var(--ty-line-height-tight);
+  min-height: 24px;
   min-width: var(--ty-spacing-16);
-  /* 64px */
 
   /* Transitions using centralized values */
   transition: var(--ty-transition-all);
@@ -45,7 +42,7 @@ export const tagStyles = `
   background: transparent;
   color: var(--ty-text);
   border: 1.5px solid;
-  border-color: var(--ty-text-);
+  border-color: var(--ty-text-soft);
 }
 
 /* Non-pill variant - rectangular with rounded corners */
@@ -65,7 +62,7 @@ export const tagStyles = `
 }
 
 .tag-container[tabindex]:not([aria-disabled="true"]):hover {
-  background: var(--ty-bg-neutral-);
+  background: var(--ty-bg-neutral-soft);
   transform: translateY(-1px);
   box-shadow: var(--ty-shadow-sm);
 }
@@ -133,27 +130,23 @@ export const tagStyles = `
 
 /* Size variants - override defaults */
 :host([size="xs"]) .tag-container {
-  padding: var(--ty-spacing-px) var(--ty-spacing-mini);
+  padding: 0 var(--ty-spacing-mini);
   font-size: var(--ty-font-xs);
-  line-height: var(--ty-line-height-tight);
+  min-height: 16px;
   min-width: var(--ty-spacing-10);
 }
 
 :host([size="xs"]) .tag-dismiss {
   width: var(--ty-spacing-3);
-  /* 12px */
   height: var(--ty-spacing-3);
   margin-left: var(--ty-spacing-2);
 }
 
 :host([size="sm"]) .tag-container {
-  padding: var(--ty-spacing-mini) var(--ty-spacing-1);
-  /* 4px 12px */
+  padding: 0 var(--ty-spacing-1);
   font-size: var(--ty-font-xs);
-  /* 12px */
-  line-height: var(--ty-line-height-tight);
+  min-height: 20px;
   min-width: var(--ty-spacing-12);
-  /* 48px */
 }
 
 :host([size="sm"]) .tag-dismiss {
@@ -163,12 +156,12 @@ export const tagStyles = `
 }
 
 /* MD is now the default - no need for explicit [size="md"] selector */
-/* All default styles above apply to MD size */
+/* All default styles above apply to MD size (min-height: 24px) */
 
 :host([size="lg"]) .tag-container {
-  padding: var(--ty-spacing-1) var(--ty-spacing-2);
+  padding: 0 var(--ty-spacing-2);
   font-size: var(--ty-font-lg);
-  line-height: var(--ty-line-height-tight);
+  min-height: 30px;
   min-width: var(--ty-spacing-20);
 }
 
@@ -179,15 +172,14 @@ export const tagStyles = `
 }
 
 :host([size="xl"]) .tag-container {
-  padding: var(--ty-spacing-2) var(--ty-spacing-2);
+  padding: 0 var(--ty-spacing-2);
   font-size: var(--ty-font-2xl);
-  line-height: var(--ty-line-height-tight);
+  min-height: 34px;
   min-width: var(--ty-spacing-24);
 }
 
 :host([size="xl"]) .tag-dismiss {
   width: var(--ty-spacing-5);
-  /* 20px */
   height: var(--ty-spacing-5);
   margin-left: var(--ty-spacing-4);
 }
@@ -299,15 +291,15 @@ export const tagStyles = `
 :host([flavor="neutral"]) .tag-container {
   background: transparent;
   color: var(--ty-text);
-  border-color: var(--ty-text-);
+  border-color: var(--ty-text-soft);
 }
 
 :host([flavor="neutral"]) .tag-container[tabindex]:hover {
-  background: var(--ty-bg-neutral-);
+  background: var(--ty-bg-neutral-soft);
 }
 
 :host([flavor="neutral"]) .tag-container[tabindex]:focus {
-  box-shadow: 0 0 0 3px var(--ty-border-);
+  box-shadow: 0 0 0 3px var(--ty-border-soft);
 }
 
 /* Slotted content styling */

@@ -68,7 +68,7 @@
       ;; Left Column - Calendar and Date Selection
       [:div.space-y-6
        [:div.ty-elevated.p-6.rounded-xl
-        [:h2.text-xl.font-semibold.ty-text.mb-4 "📅 Select Your Date"]
+        [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon {:name "calendar" :size "sm"}] "Select Your Date"]
         [:p.ty-text-.text-sm.mb-6 "Choose from available dates. Dates in green have full availability, yellow have limited slots, and unavailable dates are disabled."]
         ;; Calendar Component
         [:div.border.ty-border.rounded-lg
@@ -162,7 +162,7 @@
 
        ;; Time Slot Selection
        [:div.ty-elevated.p-6.rounded-xl
-        [:h2.text-xl.font-semibold.ty-text.mb-4 "⏰ Available Time Slots"]
+        [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon {:name "clock" :size "sm"}] "Available Time Slots"]
         [:p.ty-text-.text-sm.mb-6 "Select your preferred time slot. All times are shown in Pacific Time (PST)."]
 
         (let [selected-time (:selected-time booking-state)
@@ -206,7 +206,7 @@
                            (= status "available") "ty-text-success"
                            (= status "limited") "ty-text-warning")}
                  (cond
-                   (= selected-time time) "✓ Selected"
+                   (= selected-time time) "Selected"
                    (= status "available") "Available"
                    (= status "limited") note)]]))])]]
 
@@ -214,7 +214,7 @@
       [:div.space-y-6
        ;; Booking Details Form
        [:div.ty-elevated.p-6.rounded-xl
-        [:h2.text-xl.font-semibold.ty-text.mb-4 "📝 Booking Details"]
+        [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon {:name "file-text" :size "sm"}] "Booking Details"]
 
         [:div.space-y-4
          ;; Duration
@@ -289,7 +289,7 @@
 
        ;; Booking Summary
        [:div.ty-elevated.p-6.rounded-xl
-        [:h2.text-xl.font-semibold.ty-text.mb-4 "💰 Booking Summary"]
+        [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon {:name "coins" :size "sm"}] "Booking Summary"]
 
         (let [event-type (:event-type booking-data)
               duration-minutes (js/parseInt (:duration booking-data "60"))
@@ -381,7 +381,7 @@
         ;; Additional info
         [:div.mt-4.p-3.ty-bg-info-.rounded-lg
          [:div.flex.items-start.gap-2
-          [:ty-icon.ty-text-neutral.mt-0.5
+          [:ty-icon.ty-text-neutral.mt-1
            {:name "info"
             :size "sm"}]
           [:div.text-xs.ty-text
@@ -389,7 +389,7 @@
            [:p "Free cancellation up to 24 hours before your event. Full refund available for cancellations made 48 hours in advance."]]]]]
        ;; Service Selection
        [:div.ty-elevated.p-6.rounded-xl
-        [:h2.text-xl.font-semibold.ty-text.mb-4 "🎯 Services & Add-ons"]
+        [:h2.text-xl.font-semibold.ty-text.mb-4.flex.items-center.gap-2 [:ty-icon {:name "target" :size "sm"}] "Services & Add-ons"]
         [:p.ty-text-.text-sm.mb-6 "Customize your booking with additional services and amenities."]
 
         [:div.space-y-4
@@ -450,7 +450,7 @@
                        :flavor "primary"}
               [:div.flex.items-center.gap-2
                [:div
-                [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "🎥"]]
+                [:ty-icon.w-6.h-6.ty-bg-primary+.rounded {:name "video" :size "xs"}]]
                [:span "A/V Equipment"]
                [:span.text-xs.ty-text- "+$25"]]])
 
@@ -459,7 +459,7 @@
                        :flavor "success"}
               [:div.flex.items-center.gap-2
                [:div
-                [:span.text-xs.w-6.h-6.ty-bg-success+.rounded.flex.items-center.justify-center "🍽️"]]
+                [:ty-icon.w-6.h-6.ty-bg-success+.rounded {:name "utensils" :size "xs"}]]
                [:span "Light Catering"]
                [:span.text-xs.ty-text- "+$15/person"]]])
 
@@ -468,7 +468,7 @@
                      :flavor "warning"}
             [:div.flex.items-center.gap-3
              [:div
-              [:span.text-xs.w-6.h-6.ty-bg-primary+.rounded.flex.items-center.justify-center "📡"]]
+              [:ty-icon.w-6.h-6.ty-bg-primary+.rounded {:name "satellite-dish" :size "xs"}]]
              [:div.flex-1
               [:div.font-medium "Premium Wi-Fi"]
               [:div.text-xs.ty-text- "High-speed dedicated connection • +$10"]]]]
@@ -477,7 +477,7 @@
                      :flavor "warning"}
             [:div.flex.items-center.gap-3
              [:div
-              [:span.ty-elevated.w-6.h-6.text-xs.flex.items-center.justify-center.rounded "🚗"]]
+              [:ty-icon.ty-elevated.w-6.h-6.rounded {:name "car" :size "xs"}]]
              [:div.flex-1
               [:div.font-medium "Reserved Parking"]
               [:div.text-xs.ty-text- "Guaranteed parking spots • +$5/spot"]]]]
@@ -486,7 +486,7 @@
                      :flavor "danger"}
             [:div.flex.items-center.gap-3
              [:div
-              [:span.ty-floating.text-xs.w-6.h-6.ty-bg-danger+.rounded.flex.items-center.justify-center "🛡️"]]
+              [:ty-icon.ty-floating.w-6.h-6.ty-bg-danger+.rounded {:name "shield" :size "xs"}]]
              [:div.flex-1
               [:div.font-medium "Security Service"]
               [:div.text-xs.ty-text- "Professional security staff • +$50/hour"]]]]
@@ -495,7 +495,7 @@
                      :flavor "secondary"}
             [:div.flex.items-center.gap-3
              [:div
-              [:span.text-xs.w-6.h-6.ty-bg-secondary+.rounded.flex.items-center.justify-center "📹"]]
+              [:ty-icon.w-6.h-6.ty-bg-secondary+.rounded {:name "video" :size "xs"}]]
              [:div.flex-1
               [:div.font-medium "Video Recording"]
               [:div.text-xs.ty-text- "Professional recording setup • +$75"]]]]
@@ -504,7 +504,7 @@
                      :flavor "danger"}
             [:div.flex.items-center.gap-3
              [:div
-              [:span.text-xs.w-6.h-6.ty-bg-secondary-.rounded.flex.items-center.justify-center "🌐"]]
+              [:ty-icon.w-6.h-6.ty-bg-secondary-.rounded {:name "globe" :size "xs"}]]
              [:div.flex-1
               [:div.font-medium "Live Translation"]
               [:div.text-xs.ty-text- "Multi-language interpretation • +$100/language"]]]]]]]]]]
@@ -546,7 +546,7 @@
      ;; Booking Confirmation Modal
      [:ty-modal {:open (get-in @state [:event-booking :confirmation-modal-open] false)
                  :on {:close #(swap! state assoc-in [:event-booking :confirmation-modal-open] false)}}
-      [:div.p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
+      [:div.p-4.sm:p-8.max-w-2xl.ty-elevated.rounded-lg.shadow-xl
        ;; Success header
        [:div.text-center.mb-8
         [:div.w-16.h-16.ty-bg-success.rounded-full.flex.items-center.justify-center.mx-auto.mb-4

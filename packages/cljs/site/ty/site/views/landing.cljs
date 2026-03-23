@@ -1,9 +1,9 @@
 (ns ty.site.views.landing
   (:require
-    [ty.router :as router]
-    [ty.site.views.contact-form :as contact-form]
-    [ty.site.views.event-booking :as event-booking]
-    [ty.site.views.user-profile :as user-profile]))
+   [ty.router :as router]
+   [ty.site.views.contact-form :as contact-form]
+   [ty.site.views.event-booking :as event-booking]
+   [ty.site.views.user-profile :as user-profile]))
 
 (defn view []
   [:div.max-w-7xl.mx-auto {:id "top"}
@@ -134,11 +134,11 @@
 
     ;; Call to action
     [:div.flex.flex-col.gap-4.items-center
-     [:div.flex.gap-3
+     [:div.flex.flex-col.sm:flex-row.gap-3
       [:button.ty-bg-primary.ty-text++.px-6.py-3.rounded-lg.font-semibold.border.ty-border-primary.cursor-pointer
        {:on {:click #(.scrollIntoView
-                       (.getElementById js/document "user-profile")
-                       #js {:behavior "smooth"})}}
+                      (.getElementById js/document "user-profile")
+                      #js {:behavior "smooth"})}}
        "See Examples ↓"]
       [:button.ty-bg-success.ty-text++.px-6.py-3.rounded-lg.font-semibold.border.ty-border-success.cursor-pointer.flex.items-center
        {:on {:click #(do
@@ -182,10 +182,10 @@
           [:ty-icon {:name "external-link"
                      :size "xs"}]
           "View Source"]]]]
-      [:div.p-8
+      [:div.p-2.sm:p-8
        (user-profile/view)]]]
 
-    ;; Event Booking Example  
+    ;; Event Booking Example
     [:section.mb-16 {:id "event-booking"}
      [:div.ty-content.rounded-xl.overflow-hidden
       [:div.ty-bg-primary-.px-6.py-4.border-b.ty-border
@@ -201,7 +201,7 @@
           [:ty-icon {:name "external-link"
                      :size "xs"}]
           "View Source"]]]]
-      [:div.p-8
+      [:div.p-2.sm:p-8
        (event-booking/view)]]]
 
     ;; Contact Form Example
@@ -220,12 +220,12 @@
           [:ty-icon {:name "external-link"
                      :size "xs"}]
           "View Source"]]]]
-      [:div.p-8
+      [:div.p-2.sm:p-8
        (contact-form/view)]]]]
 
    ;; COMMUNITY & NEXT STEPS
    [:section.mb-20
-    [:div.ty-bg-neutral-.rounded-2xl.p-8.lg:p-12
+    [:div.rounded-2xl.p-4.sm:p-8.lg:p-12
      [:div.text-center.mb-8
       [:h2.text-2xl.font-bold.ty-text.mb-3
        "Join the Community"]

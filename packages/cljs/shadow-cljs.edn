@@ -1,6 +1,7 @@
 {:deps true
  :nrepl {:port 7888}
- :dev-http {8000 "public"}
+ :dev-http {8000 {:root "public"
+                  :host "0.0.0.0"}}
 
  :builds
  {;; Documentation site development build

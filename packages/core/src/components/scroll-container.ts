@@ -1,101 +1,89 @@
 /**
  * TyScrollContainer Web Component
  *
- * A scroll container that displays visual shadow indicators at the top/bottom
- * edges when content is scrollable. Shadows appear based on scroll position.
+ * A scroll container with shadow indicators and an optional custom-rendered scrollbar.
+ * Uses the CustomScrollbar utility internally.
  *
- * @example Basic usage
+ * @example Custom scrollbar
  * ```html
- * <ty-scroll-container max-height="300px">
+ * <ty-scroll-container max-height="300px" custom-scrollbar>
  *   <div>Long content...</div>
- * </ty-scroll-container>
- * ```
- *
- * @example Hidden scrollbar
- * ```html
- * <ty-scroll-container max-height="400px" hide-scrollbar>
- *   <ul>...</ul>
- * </ty-scroll-container>
- * ```
- *
- * @example No shadows
- * ```html
- * <ty-scroll-container max-height="200px" shadow="false">
- *   <p>Content</p>
  * </ty-scroll-container>
  * ```
  */
 
 import { ensureStyles } from '../utils/styles.js'
 import { scrollContainerStyles } from '../styles/scroll-container.js'
+import { CustomScrollbar } from '../utils/custom-scrollbar.js'
 
 export class TyScrollContainer extends HTMLElement {
   private _scrollWrapper: HTMLElement | null = null
   private _shadowTop: HTMLElement | null = null
   private _shadowBottom: HTMLElement | null = null
+  private _shadowLeft: HTMLElement | null = null
+  private _shadowRight: HTMLElement | null = null
+  private _scrollbar: CustomScrollbar | null = null
   private _resizeObserver: ResizeObserver | null = null
   private _rafId: number | null = null
 
   static get observedAttributes(): string[] {
-    return ['shadow', 'max-height', 'hide-scrollbar']
+    return ['shadow', 'max-height', 'hide-scrollbar', 'custom-scrollbar', 'overflow-x']
   }
 
-  /**
-   * Enable/disable scroll shadows (default: true)
-   */
+  // ============ Property Accessors ============
+
   get shadow(): boolean {
-    const attr = this.getAttribute('shadow')
-    return attr !== 'false'
+    return this.getAttribute('shadow') !== 'false'
   }
 
   set shadow(value: boolean) {
-    if (value) {
-      this.removeAttribute('shadow')
-    } else {
-      this.setAttribute('shadow', 'false')
-    }
+    if (value) this.removeAttribute('shadow')
+    else this.setAttribute('shadow', 'false')
   }
 
-  /**
-   * Maximum height of the scroll container
-   */
   get maxHeight(): string | null {
     return this.getAttribute('max-height')
   }
 
   set maxHeight(value: string | null) {
-    if (value) {
-      this.setAttribute('max-height', value)
-      this._updateMaxHeight()
-    } else {
-      this.removeAttribute('max-height')
-      this._updateMaxHeight()
-    }
+    if (value) this.setAttribute('max-height', value)
+    else this.removeAttribute('max-height')
+    this._updateMaxHeight()
   }
 
-  /**
-   * Hide native scrollbar
-   */
   get hideScrollbar(): boolean {
     return this.hasAttribute('hide-scrollbar')
   }
 
   set hideScrollbar(value: boolean) {
-    if (value) {
-      this.setAttribute('hide-scrollbar', '')
-    } else {
-      this.removeAttribute('hide-scrollbar')
-    }
+    if (value) this.setAttribute('hide-scrollbar', '')
+    else this.removeAttribute('hide-scrollbar')
+  }
+
+  get customScrollbar(): boolean {
+    return this.hasAttribute('custom-scrollbar')
+  }
+
+  set customScrollbar(value: boolean) {
+    if (value) this.setAttribute('custom-scrollbar', '')
+    else this.removeAttribute('custom-scrollbar')
+  }
+
+  get overflowX(): boolean {
+    return this.hasAttribute('overflow-x')
+  }
+
+  set overflowX(value: boolean) {
+    if (value) this.setAttribute('overflow-x', '')
+    else this.removeAttribute('overflow-x')
   }
 
   constructor() {
     super()
 
-    // Setup shadow DOM with styles
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: scrollContainerStyles, id: 'ty-scroll-container' })
 
-    // Create structure
     shadow.innerHTML = `
       <div class="scroll-wrapper">
         <slot></slot>
@@ -103,47 +91,49 @@ export class TyScrollContainer extends HTMLElement {
       <div class="shadow-overlay">
         <div class="shadow-top"></div>
         <div class="shadow-bottom"></div>
+        <div class="shadow-left"></div>
+        <div class="shadow-right"></div>
       </div>
     `
 
-    // Cache DOM references
     this._scrollWrapper = shadow.querySelector('.scroll-wrapper')
     this._shadowTop = shadow.querySelector('.shadow-top')
     this._shadowBottom = shadow.querySelector('.shadow-bottom')
+    this._shadowLeft = shadow.querySelector('.shadow-left')
+    this._shadowRight = shadow.querySelector('.shadow-right')
   }
 
   connectedCallback(): void {
-    // Setup scroll listener (passive for performance)
     this._scrollWrapper?.addEventListener('scroll', this._onScroll, { passive: true })
 
-    // Setup ResizeObserver for content changes
     this._resizeObserver = new ResizeObserver(() => {
+      this._scrollbar?.update()
       this._updateShadowState()
     })
 
-    // Observe the scroll wrapper for size changes
     if (this._scrollWrapper) {
       this._resizeObserver.observe(this._scrollWrapper)
+
+      const slot = this._scrollWrapper.querySelector('slot') as HTMLSlotElement | null
+      if (slot) {
+        slot.addEventListener('slotchange', this._onSlotChange)
+      }
     }
 
-    // Update max-height CSS variable
     this._updateMaxHeight()
-
-    // Initial shadow state check
     this._updateShadowState()
+    this._setupScrollbar()
   }
 
   disconnectedCallback(): void {
-    // Cleanup scroll listener
     this._scrollWrapper?.removeEventListener('scroll', this._onScroll)
+    this._destroyScrollbar()
 
-    // Cleanup ResizeObserver
     if (this._resizeObserver) {
       this._resizeObserver.disconnect()
       this._resizeObserver = null
     }
 
-    // Cancel any pending rAF
     if (this._rafId !== null) {
       cancelAnimationFrame(this._rafId)
       this._rafId = null
@@ -155,14 +145,45 @@ export class TyScrollContainer extends HTMLElement {
 
     if (name === 'max-height') {
       this._updateMaxHeight()
-      // Recheck shadows after max-height change
+      this._updateShadowState()
+      this._scrollbar?.update()
+    }
+
+    if (name === 'custom-scrollbar' || name === 'overflow-x') {
+      this._destroyScrollbar()
+      this._setupScrollbar()
       this._updateShadowState()
     }
   }
 
-  /**
-   * Update the CSS variable for max-height
-   */
+  // ============ Private: Scrollbar Setup ============
+
+  private _setupScrollbar(): void {
+    if (!this._scrollWrapper || !this.customScrollbar) return
+
+    this._scrollbar = new CustomScrollbar(this._scrollWrapper, {
+      vertical: true,
+      horizontal: this.overflowX
+    })
+
+    // Append track elements to shadow DOM
+    const shadowRoot = this.shadowRoot!
+    if (this._scrollbar.trackY) shadowRoot.appendChild(this._scrollbar.trackY)
+    if (this._scrollbar.trackX) shadowRoot.appendChild(this._scrollbar.trackX)
+  }
+
+  private _destroyScrollbar(): void {
+    if (this._scrollbar) {
+      // Remove track elements from DOM
+      this._scrollbar.trackY?.remove()
+      this._scrollbar.trackX?.remove()
+      this._scrollbar.destroy()
+      this._scrollbar = null
+    }
+  }
+
+  // ============ Private: Max Height ============
+
   private _updateMaxHeight(): void {
     if (this._scrollWrapper) {
       const maxHeight = this.maxHeight
@@ -176,9 +197,8 @@ export class TyScrollContainer extends HTMLElement {
     }
   }
 
-  /**
-   * Scroll event handler with rAF debounce
-   */
+  // ============ Private: Scroll Handling ============
+
   private _onScroll = (): void => {
     if (this._rafId !== null) return
 
@@ -188,58 +208,62 @@ export class TyScrollContainer extends HTMLElement {
     })
   }
 
-  /**
-   * Update shadow visibility based on scroll position
-   */
+  private _onSlotChange = (): void => {
+    this._scrollbar?.update()
+    this._updateShadowState()
+  }
+
+  // ============ Private: Shadow State ============
+
   private _updateShadowState(): void {
-    if (!this._scrollWrapper || !this._shadowTop || !this._shadowBottom) return
+    if (!this._scrollWrapper) return
+    const { scrollTop, scrollLeft, scrollHeight, scrollWidth, clientHeight, clientWidth } = this._scrollWrapper
+    const threshold = 2
 
-    const { scrollTop, scrollHeight, clientHeight } = this._scrollWrapper
-    const threshold = 2 // Small threshold to avoid floating point issues
+    if (this._shadowTop) {
+      this._shadowTop.classList.toggle('visible', scrollTop > threshold)
+    }
+    if (this._shadowBottom) {
+      this._shadowBottom.classList.toggle('visible', scrollTop + clientHeight < scrollHeight - threshold)
+    }
 
-    // Show top shadow if scrolled down
-    const showTop = scrollTop > threshold
-    this._shadowTop.classList.toggle('visible', showTop)
-
-    // Show bottom shadow if more content below
-    const showBottom = scrollTop + clientHeight < scrollHeight - threshold
-    this._shadowBottom.classList.toggle('visible', showBottom)
+    if (this.overflowX) {
+      if (this._shadowLeft) {
+        this._shadowLeft.classList.toggle('visible', scrollLeft > threshold)
+      }
+      if (this._shadowRight) {
+        this._shadowRight.classList.toggle('visible', scrollLeft + clientWidth < scrollWidth - threshold)
+      }
+    }
   }
 
   // ============ Public API ============
 
-  /**
-   * Force update shadows (useful after dynamic content changes)
-   */
   updateShadows(): void {
     this._updateShadowState()
+    this._scrollbar?.update()
   }
 
-  /**
-   * Scroll to top
-   */
   scrollToTop(smooth = true): void {
-    this._scrollWrapper?.scrollTo({
-      top: 0,
-      behavior: smooth ? 'smooth' : 'auto'
-    })
+    this._scrollWrapper?.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' })
   }
 
-  /**
-   * Scroll to bottom
-   */
   scrollToBottom(smooth = true): void {
     if (this._scrollWrapper) {
-      this._scrollWrapper.scrollTo({
-        top: this._scrollWrapper.scrollHeight,
-        behavior: smooth ? 'smooth' : 'auto'
-      })
+      this._scrollWrapper.scrollTo({ top: this._scrollWrapper.scrollHeight, behavior: smooth ? 'smooth' : 'auto' })
     }
   }
 
-  /**
-   * Get the scroll wrapper element (for advanced use cases)
-   */
+  scrollToLeft(smooth = true): void {
+    this._scrollWrapper?.scrollTo({ left: 0, behavior: smooth ? 'smooth' : 'auto' })
+  }
+
+  scrollToRight(smooth = true): void {
+    if (this._scrollWrapper) {
+      this._scrollWrapper.scrollTo({ left: this._scrollWrapper.scrollWidth, behavior: smooth ? 'smooth' : 'auto' })
+    }
+  }
+
   get scrollElement(): HTMLElement | null {
     return this._scrollWrapper
   }

@@ -9,10 +9,10 @@
 (defn warning-banner []
   [:div.ty-bg-warning-.ty-border-warning.border-2.rounded-lg.p-6.mb-8
    [:div.flex.items-start.gap-3
-    [:ty-icon.ty-text-warning++.mt-0.5.flex-shrink-0 {:name "alert-triangle"
+    [:ty-icon.ty-text-warning++.mt-1.flex-shrink-0 {:name "alert-triangle"
                                                       :size "lg"}]
     [:div.flex-1
-     [:h3.text-lg.font-bold.ty-text-warning++.mb-2 "⚠️ Tab Count Limitation"]
+     [:h3.text-lg.font-bold.ty-text-warning++.mb-2 "Tab Count Limitation"]
      [:p.ty-text-warning.mb-3
       "Tabs are designed for " [:strong "3-7 options maximum"] ". More than this creates poor user experience and causes visual overflow issues."]
      [:div.ty-bg-warning.rounded.p-4.mb-3
@@ -159,31 +159,31 @@
    [:h2.text-2xl.font-semibold.ty-text.mb-4 "Key Features"]
    [:div.space-y-3
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "zap"
+     [:ty-icon.ty-text-primary.mt-1 {:name "zap"
                                        :size "sm"}]
      [:div
       [:p.ty-text.font-medium "Carousel Animation"]
       [:p.ty-text-.text-sm "Smooth sliding transitions with automatic direction handling"]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "maximize"
+     [:ty-icon.ty-text-primary.mt-1 {:name "maximize"
                                        :size "sm"}]
      [:div
       [:p.ty-text.font-medium "Fixed Dimensions"]
       [:p.ty-text-.text-sm "Prevents layout shift when switching between tabs with different content heights"]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "layout"
+     [:ty-icon.ty-text-primary.mt-1 {:name "layout"
                                        :size "sm"}]
      [:div
       [:p.ty-text.font-medium "Independent Panel Scrolling"]
       [:p.ty-text-.text-sm "Each panel scrolls within fixed viewport, scroll position resets on tab change"]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "accessibility"
+     [:ty-icon.ty-text-primary.mt-1 {:name "accessibility"
                                        :size "sm"}]
      [:div
       [:p.ty-text.font-medium "Accessibility Built-in"]
       [:p.ty-text-.text-sm "ARIA roles, prefers-reduced-motion support, proper focus management"]]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-primary.mt-0.5 {:name "palette"
+     [:ty-icon.ty-text-primary.mt-1 {:name "palette"
                                        :size "sm"}]
      [:div
       [:p.ty-text.font-medium "CSS Parts & Slots"]
@@ -194,43 +194,43 @@
    [:h2.text-2xl.font-semibold.ty-text.mb-4 "Best Practices"]
    [:div.space-y-3
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+     [:ty-icon.ty-text-success.mt-1 {:name "check"
                                        :size "sm"}]
      [:p.ty-text- "Always specify both width and height attributes"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+     [:ty-icon.ty-text-success.mt-1 {:name "check"
                                        :size "sm"}]
      [:p.ty-text- "Use semantic IDs for tabs (e.g., 'settings', 'profile')"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+     [:ty-icon.ty-text-success.mt-1 {:name "check"
                                        :size "sm"}]
      [:p.ty-text- "Keep tab labels concise (1-3 words maximum)"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+     [:ty-icon.ty-text-success.mt-1 {:name "check"
                                        :size "sm"}]
      [:p.ty-text- "Limit tabs to 3-7 options - use alternative patterns for more"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+     [:ty-icon.ty-text-success.mt-1 {:name "check"
                                        :size "sm"}]
      [:p.ty-text- "Use CSS Parts for tray styling instead of wrapping divs"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+     [:ty-icon.ty-text-success.mt-1 {:name "check"
                                        :size "sm"}]
      [:p.ty-text- "Use marker slot for custom active tab indicators"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-danger.mt-0.5 {:name "x"
+     [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                       :size "sm"}]
      [:p.ty-text- "Don't use more than 7 tabs (causes overflow and poor UX)"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-danger.mt-0.5 {:name "x"
+     [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                       :size "sm"}]
      [:p.ty-text- "Don't use long, multi-word labels (keep it to 1-3 words)"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-danger.mt-0.5 {:name "x"
+     [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                       :size "sm"}]
      [:p.ty-text- "Avoid tabs with dramatically different content heights"]]
     [:div.flex.items-start.gap-2
-     [:ty-icon.ty-text-danger.mt-0.5 {:name "x"
+     [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                       :size "sm"}]
      [:p.ty-text- "Don't nest tabs within tabs (use different navigation pattern)"]]]])
 
@@ -356,7 +356,7 @@
       [:ty-icon {:name "bell"
                  :size "sm"}]
       "Notifications"
-      [:span.ty-bg-danger.ty-text-danger++.px-2.py-0.5.rounded-full.text-xs.font-bold "5"]]
+      [:span.ty-bg-danger.ty-text-danger++.px-2.py-1.rounded-full.text-xs.font-bold "5"]]
 
      [:span.flex.items-center.gap-2 {:slot "label-settings"}
       [:ty-icon {:name "settings"
@@ -659,7 +659,7 @@
    ;; Styling tips
    [:div.ty-bg-primary-.ty-border-primary.border.rounded-lg.p-4.mt-6
     [:div.flex.items-start.gap-3
-     [:ty-icon.ty-text-primary++.mt-0.5.flex-shrink-0 {:name "lightbulb"
+     [:ty-icon.ty-text-primary++.mt-1.flex-shrink-0 {:name "lightbulb"
                                                        :size "md"}]
      [:div
       [:h4.text-base.font-semibold.ty-text-primary++.mb-2 "Marker Slot Behavior"]
@@ -804,20 +804,20 @@
    ;; CSS Parts benefits
    [:div.ty-bg-success-.ty-border-success.border.rounded-lg.p-4.mt-6
     [:div.flex.items-start.gap-3
-     [:ty-icon.ty-text-success++.mt-0.5.flex-shrink-0 {:name "check-circle"
+     [:ty-icon.ty-text-success++.mt-1.flex-shrink-0 {:name "check-circle"
                                                        :size "md"}]
      [:div
       [:h4.text-base.font-semibold.ty-text-success++.mb-2 "Why CSS Parts?"]
       [:ul.list-disc.ml-4.space-y-1.ty-text-success.text-sm
-       [:li "✅ " [:strong "Maintains encapsulation"] " - Styling hooks without breaking shadow DOM"]
-       [:li "✅ " [:strong "No wrapper divs"] " - Clean semantic HTML structure"]
-       [:li "✅ " [:strong "Framework agnostic"] " - Works with any CSS approach"]
-       [:li "✅ " [:strong "Type-safe"] " - IDE autocomplete for part names"]
-       [:li "✅ " [:strong "Scoped styling"] " - Use classes to target specific tabs instances"]]]]]])
+       [:li.flex.items-center.gap-1 [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle" :size "xs"}] [:span [:strong "Maintains encapsulation"] " - Styling hooks without breaking shadow DOM"]]
+       [:li.flex.items-center.gap-1 [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle" :size "xs"}] [:span [:strong "No wrapper divs"] " - Clean semantic HTML structure"]]
+       [:li.flex.items-center.gap-1 [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle" :size "xs"}] [:span [:strong "Framework agnostic"] " - Works with any CSS approach"]]
+       [:li.flex.items-center.gap-1 [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle" :size "xs"}] [:span [:strong "Type-safe"] " - IDE autocomplete for part names"]]
+       [:li.flex.items-center.gap-1 [:ty-icon.ty-text-success.flex-shrink-0 {:name "check-circle" :size "xs"}] [:span [:strong "Scoped styling"] " - Use classes to target specific tabs instances"]]]]]]])
 
 (defn example-long-content []
   [:section.mb-8
-   [:h3.text-xl.font-medium.ty-text.mb-3 "✅ Panel Scrolling (Expected Behavior)"]
+   [:h3.text-xl.font-medium.ty-text.mb-3.flex.items-center.gap-2 [:ty-icon.ty-text-success {:name "check-circle" :size "sm"}] "Panel Scrolling (Expected Behavior)"]
    [:p.ty-text-.text-sm.mb-4
     "Panel content scrolling is normal and expected. Each panel scrolls independently within fixed viewport."]
    [:div.ty-elevated.rounded-lg.p-6
@@ -835,7 +835,7 @@
                :label "Long"}
       [:div.p-6
        [:h3.text-xl.font-bold.ty-text.mb-4 "Scrollable Content"]
-       [:p.ty-text-.mb-4 "✅ This is normal! Content exceeds viewport height and scrolls independently."]
+       [:p.ty-text-.mb-4 "This is normal! Content exceeds viewport height and scrolls independently."]
        (for [i (range 1 31)]
          [:div.mb-4 {:key i}
           [:div.ty-content.rounded.p-4
@@ -853,7 +853,7 @@
          [:div.mb-4 {:key i}
           [:div.ty-content.rounded.p-3
            [:p.ty-text (str "Paragraph " i ". Some medium-length content that demonstrates scrolling behavior.")]]])]]]]
-   (code-block "<!-- ✅ THIS IS GOOD - Panel scrolling is expected behavior -->
+   (code-block "<!-- THIS IS GOOD - Panel scrolling is expected behavior -->
 <ty-tabs width=\"100%\" height=\"500px\">
   <ty-tab id=\"long\" label=\"Long Content\">
     <div class=\"p-6\">

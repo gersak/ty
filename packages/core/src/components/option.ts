@@ -9,24 +9,7 @@
 import type { TyOptionElement } from '../types/common.js'
 import { ensureStyles } from '../utils/styles.js'
 import { optionStyles } from '../styles/option.js'
-
-// ============================================================================
-// DEVICE DETECTION
-// ============================================================================
-
-/**
- * Detect if we're on a mobile device
- * - Screen width <= 768px (mobile phones)
- * - Screen width <= 1024px + touch capability (tablets)
- * 
- * This matches the dropdown.ts isMobileDevice() logic
- */
-function isMobileDevice(): boolean {
-  const width = window.innerWidth
-  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0
-
-  return width <= 768 || (width <= 1024 && hasTouch)
-}
+import { isMobileTouch } from '../utils/mobile.js'
 
 /**
  * Ty Option Component
@@ -59,7 +42,7 @@ export class TyOption extends HTMLElement implements TyOptionElement {
     super()
 
     // Detect mobile device automatically
-    this._isMobile = isMobileDevice()
+    this._isMobile = isMobileTouch()
 
     const shadow = this.attachShadow({ mode: 'open' })
     ensureStyles(shadow, { css: optionStyles, id: 'ty-option' })

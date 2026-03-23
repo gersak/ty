@@ -534,26 +534,26 @@
     [:h2.text-2xl.font-semibold.ty-text.mb-4 "Best Practices"]
     [:div.space-y-3
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check" :size "sm"}]
+      [:ty-icon.ty-text-success.mt-1 {:name "check" :size "sm"}]
       [:p.ty-text- "Use semantic flavors (primary, danger) to convey meaning"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check" :size "sm"}]
+      [:ty-icon.ty-text-success.mt-1 {:name "check" :size "sm"}]
       [:p.ty-text- "Show loading states with spinning icons for async operations"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check" :size "sm"}]
+      [:ty-icon.ty-text-success.mt-1 {:name "check" :size "sm"}]
       [:p.ty-text- "Use action buttons for icon-only actions to save space"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check" :size "sm"}]
+      [:ty-icon.ty-text-success.mt-1 {:name "check" :size "sm"}]
       [:p.ty-text- "Disable buttons during loading to prevent multiple submissions"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-success.mt-0.5 {:name "check" :size "sm"}]
+      [:ty-icon.ty-text-success.mt-1 {:name "check" :size "sm"}]
       [:p.ty-text- "Use slots for icons to maintain proper spacing"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-danger.mt-0.5 {:name "x" :size "sm"}]
+      [:ty-icon.ty-text-danger.mt-1 {:name "x" :size "sm"}]
       [:p.ty-text- "Don't use multiple buttons with the same primary action"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-danger.mt-0.5 {:name "x" :size "sm"}]
+      [:ty-icon.ty-text-danger.mt-1 {:name "x" :size "sm"}]
       [:p.ty-text- "Avoid using more than one primary button per section"]]
      [:div.flex.items-start.gap-2
-      [:ty-icon.ty-text-danger.mt-0.5 {:name "x" :size "sm"}]
+      [:ty-icon.ty-text-danger.mt-1 {:name "x" :size "sm"}]
       [:p.ty-text- "Don't use action buttons for text-heavy actions"]]]]))

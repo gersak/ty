@@ -16,7 +16,7 @@
     "Uses a clean parent-child relationship and provides automatic positioning with viewport edge detection."]
 
    [:div.ty-bg-success-.ty-border-success.border.rounded-lg.p-4.mb-4
-    [:h3.ty-text-success++.font-semibold.mb-2 "✨ Shadow Infrastructure Built-in"]
+    [:h3.ty-text-success++.font-semibold.mb-2.flex.items-center.gap-2 [:ty-icon.ty-text-success++ {:name "sparkles" :size "sm"}] "Shadow Infrastructure Built-in"]
     [:p.ty-text-success.text-sm
      "ty-popup provides proper shadow space infrastructure - shadows from " [:code.ty-bg-success.ty-text-success++.px-1.rounded "ty-elevated"]
      " and custom shadow classes render without clipping, even near viewport edges."]]])

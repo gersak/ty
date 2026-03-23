@@ -143,7 +143,7 @@
 (defn success-modal-content [submitted-data close-success-modal reset-form]
   [:ty-modal {:open true
               :on {:close close-success-modal}}
-   [:div.p-6.ty-content.rounded-lg
+   [:div.p-2.sm:p-6.ty-content.rounded-none.sm:rounded-lg
     [:div.flex.items-center.gap-4.mb-6
      [:ty-icon {:name "check-circle"
                 :size "xl"}]
@@ -151,7 +151,7 @@
       [:h2.text-2xl.font-semibold.ty-text "Message Sent Successfully!"]
       [:p.ty-text- "Your message has been delivered and we'll respond within 24 hours."]]]
 
-    [:div.ty-bg-neutral-.p-6.rounded-lg.mb-6.ty-floating
+    [:div.ty-bg-neutral-.p-2.sm:p-6.rounded-none.sm:rounded-lg.mb-6.ty-floating
      [:h3.text-lg.font-medium.ty-text.mb-4 "Submission Report"]
 
      (when submitted-data
@@ -248,7 +248,7 @@
               "Try Again"]]])])
 
       ;; Main Form
-      [:div.p-8.rounded-xl
+      [:div.p-4.sm:p-8.rounded-xl
        [:div.flex.items-center.justify-between.mb-8
         [:div.flex.items-center.gap-4
          [:ty-icon {:name "mail"

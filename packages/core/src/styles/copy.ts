@@ -52,7 +52,7 @@ export const copyStyles = `
   cursor: pointer;
   border: none;
   background: transparent;
-  color: var(--ty-text-);
+  color: var(--ty-text-soft);
   transition: color 0.2s ease, transform 0.2s ease;
   padding: 0;
   margin: 0;

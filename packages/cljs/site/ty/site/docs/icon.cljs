@@ -423,56 +423,56 @@ window.tyIcons.list() // ['home', 'user', 'check']"
      [:h2.text-2xl.font-semibold.ty-text++.mb-4 "Best Practices"]
      [:div.space-y-4
       [:div.flex.gap-3
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Use ty.icons in ClojureScript"]
         [:p.ty-text-.text-sm "Use register-async! for automatic retry logic and idiomatic ClojureScript"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Use consistent API across platforms"]
         [:p.ty-text-.text-sm "window.tyIcons works the same in ClojureScript, React, HTMX, and vanilla JS"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Register icons early"]
         [:p.ty-text-.text-sm "Load icons before your components render to avoid flickering"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Use semantic colors for meaning"]
         [:p.ty-text-.text-sm "Apply ty-text-success, ty-text-danger, etc. to convey status"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Match icon size to context"]
         [:p.ty-text-.text-sm "Use sm/xs for inline text, md/lg for headers, xl for hero sections"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-success.mt-0.5 {:name "check"
+       [:ty-icon.ty-text-success.mt-1 {:name "check"
                                          :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Use animations purposefully"]
         [:p.ty-text-.text-sm "Spin for loading states, pulse for attention, avoid overuse"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-danger.mt-0.5 {:name "x"
+       [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                         :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Don't add margins to icons in buttons"]
         [:p.ty-text-.text-sm "Buttons handle icon spacing automatically with slots"]]]
 
       [:div.flex.gap-3
-       [:ty-icon.ty-text-danger.mt-0.5 {:name "x"
+       [:ty-icon.ty-text-danger.mt-1 {:name "x"
                                         :size "sm"}]
        [:div
         [:p.ty-text+.font-medium "Avoid mixing animation types"]

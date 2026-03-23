@@ -1,1147 +1,611 @@
-# AI Agent Guide for Ty Component Library
+# Ty Component Library — AI Agent Guide
 
-This document provides comprehensive guidance for AI agents working with the Ty component library.
-
-## Overview
-
-**Ty** is a dual-language component library:
-- **TypeScript Core** (`@gersak/ty`) - Web components published to NPM
-- **ClojureScript Infrastructure** - Routing, i18n, published to Clojars
+**Ty** is a framework-agnostic web component library. TypeScript core (`@gersak/ty`), React wrappers (`@gersak/ty-react`), ClojureScript infra (`dev.gersak/ty`).
 
 ---
 
-## CRITICAL: Use Ty Components - Do Not Improvise HTML!
+## Rule 1: Always Use Ty Components
 
-> **When a Ty component exists for a UI pattern, YOU MUST USE IT.**
-> Do not create custom HTML implementations unless explicitly requested.
-
-### Why This Matters
-
-Ty components provide:
-- Consistent styling that respects the design system
-- Built-in accessibility (ARIA, keyboard navigation)
-- Form integration (works with native form submission)
-- Event handling with proper detail objects
-- Dark mode support automatically
-- Responsive behavior
-
-Custom HTML lacks all of these features and creates inconsistency.
-
-### Component Selection Guide
+> **When a Ty component exists, USE IT. Do not improvise HTML.**
 
 | Need | USE THIS | NOT THIS |
 |------|----------|----------|
 | Button | `<ty-button>` | `<button>`, `<div onclick>` |
 | Text input | `<ty-input>` | `<input>` |
+| Money/currency | `<ty-input type="currency">` | `<input type="number">` + manual formatting |
+| Percentage | `<ty-input type="percent">` | `<input type="number">` + `%` suffix |
+| Large numbers | `<ty-input type="compact">` | `<input type="number">` + abbreviation |
 | Checkbox | `<ty-checkbox>` | `<input type="checkbox">` |
 | Textarea | `<ty-textarea>` | `<textarea>` |
-| Dropdown/Select | `<ty-dropdown>` | `<select>`, custom div menus |
-| Multi-select | `<ty-multiselect>` | Multiple checkboxes, custom lists |
-| Modal/Dialog | `<ty-modal>` | `<dialog>`, custom overlay divs |
-| Tooltip | `<ty-tooltip>` | `title` attribute, custom divs |
-| Popup/Popover | `<ty-popup>` | Custom positioned divs |
+| Dropdown | `<ty-dropdown>` | `<select>`, custom menus |
+| Multi-select | `<ty-multiselect>` | Multiple checkboxes |
+| Modal | `<ty-modal>` | `<dialog>`, custom overlays |
+| Tooltip | `<ty-tooltip>` | `title` attr, custom divs |
+| Popup | `<ty-popup>` | Custom positioned divs |
 | Tabs | `<ty-tabs>` + `<ty-tab>` | Custom tab implementations |
-| Wizard/Stepper | `<ty-wizard>` + `<ty-step>` | Custom step indicators |
-| Date picker | `<ty-date-picker>` | `<input type="date">`, custom calendars |
+| Wizard | `<ty-wizard>` + `<ty-step>` | Custom step indicators |
+| Date picker | `<ty-date-picker>` | `<input type="date">` |
 | Calendar | `<ty-calendar>` | Custom calendar grids |
 | Tags/Chips | `<ty-tag>` | `<span>` with classes |
 | Icons | `<ty-icon>` | `<svg>`, `<img>`, icon fonts |
-| Copy to clipboard | `<ty-copy>` | Custom copy buttons |
+| Copy button | `<ty-copy>` | Custom copy buttons |
+| Scrollable area | `<ty-scroll-container>` | `overflow-auto` + manual indicators |
+| Field label | `label` attribute on component | `<label>` element |
+| Error message | `error` attribute on component | `<span class="text-red-500">` |
+| Debounced input | `delay` attribute | Manual `setTimeout`/debounce |
 
-### Examples
+**Plain HTML is OK for:** layout (`<div>`, `<section>`), text (`<h1>`-`<h6>`, `<p>`, `<span>` with Ty classes), lists, links, images.
 
-**WRONG - Improvised HTML:**
+---
+
+## Rule 2: Use Built-in Attributes
+
+Form components have built-in `label`, `error`, `placeholder`, `required`, `disabled`, `flavor`, and `size`. Use them.
+
 ```html
-<!-- DO NOT DO THIS when Ty components exist -->
-<button class="bg-blue-500 text-white px-4 py-2 rounded">
-  Click Me
-</button>
+<!-- WRONG -->
+<label class="block text-sm font-medium mb-1">Email</label>
+<ty-input type="email" placeholder="you@example.com"></ty-input>
+<span class="text-red-500 text-sm">Invalid email</span>
 
-<div class="relative">
-  <button onclick="toggleDropdown()">Select...</button>
-  <div class="absolute hidden" id="dropdown-menu">
-    <div onclick="select('opt1')">Option 1</div>
-    <div onclick="select('opt2')">Option 2</div>
-  </div>
-</div>
-
-<input type="checkbox" id="terms">
-<label for="terms">I agree</label>
+<!-- CORRECT -->
+<ty-input type="email" label="Email" placeholder="you@example.com" error="Invalid email"></ty-input>
 ```
-
-**CORRECT - Using Ty Components:**
-```html
-<!-- ALWAYS use Ty components -->
-<ty-button flavor="primary">Click Me</ty-button>
-
-<ty-dropdown placeholder="Select...">
-  <option value="opt1">Option 1</option>
-  <option value="opt2">Option 2</option>
-</ty-dropdown>
-
-<ty-checkbox name="terms">I agree</ty-checkbox>
-```
-
-### When Custom HTML IS Acceptable
-
-Only use plain HTML elements when:
-1. **Layout containers** - `<div>`, `<section>`, `<main>`, `<article>` for structure
-2. **Text content** - `<h1>`-`<h6>`, `<p>`, `<span>` for text (with Ty classes)
-3. **Lists** - `<ul>`, `<ol>`, `<li>` for list content
-4. **Links** - `<a>` for navigation (though consider `<ty-button>` for actions)
-5. **Images** - `<img>` for images
-6. **No Ty equivalent exists** - AND user explicitly requests custom implementation
-
-### ClojureScript/Hiccup
-
-The same rules apply in ClojureScript:
 
 ```clojure
 ;; WRONG
-[:button.bg-blue-500.text-white.px-4.py-2 "Click"]
-[:input {:type "checkbox"}]
+[:div
+ [:label.block.text-sm.font-medium.mb-1 "Email"]
+ [:ty-input {:type "email" :placeholder "you@example.com"}]
+ [:span.text-red-500.text-sm "Invalid email"]]
 
 ;; CORRECT
-[:ty-button {:flavor "primary"} "Click"]
-[:ty-checkbox {:name "agree"} "I agree"]
+[:ty-input {:type "email" :label "Email" :placeholder "you@example.com" :error "Invalid email"}]
 ```
 
 ---
 
-## Quick Start
+## Rule 3: Use Slots for Icons
 
-### Installation
+Components with `start`/`end` slots handle spacing automatically. Do not use flex/gap wrappers.
 
-**NPM (for bundlers):**
-```bash
-npm install @gersak/ty
-```
-
-**CDN (recommended for quick start):**
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/index.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+<ty-button flavor="primary">
+  <ty-icon slot="start" name="save" size="sm"></ty-icon>
+  Save
+</ty-button>
+
+<ty-input type="currency" currency="EUR" label="Price">
+  <ty-icon slot="start" name="euro"></ty-icon>
+</ty-input>
 ```
 
-**React:**
-```bash
-npm install @gersak/ty-react
-# Also load web components via CDN in index.html
-```
-
-**ClojureScript (Clojars):**
 ```clojure
-[dev.gersak/ty "0.2.0"]
+[:ty-button {:flavor "primary"}
+ [:ty-icon {:slot "start" :name "save" :size "sm"}]
+ "Save"]
 ```
 
-### Basic Usage
+### All Slots
+
+```
+ty-button       slot="start" | (default text) | slot="end"
+ty-input        slot="start" | (input field)  | slot="end"
+ty-tag          slot="start" | (tag text)     | slot="end"
+ty-dropdown     slot="selected"  (custom selected display)
+ty-multiselect  slot="selected"  (custom selected display)
+ty-tabs         slot="label-{id}" (rich tab label)  |  slot="marker" (active indicator)
+ty-wizard       slot="indicator-{id}" (custom step indicator)
+```
+
+---
+
+## Rule 4: Use the Right Input Type
+
+> **For money, use `type="currency"`. For percentages, use `type="percent"`. Never use `type="number"` with manual formatting.**
+
+| Type | When | Display (on blur) | Value |
+|------|------|-------------------|-------|
+| `"currency"` | Money (prices, budgets, transactions) | `$1,234.56` / `€1.234,56` | `1234.56` |
+| `"percent"` | Rates, discounts | `15.00%` | `15` |
+| `"compact"` | Large numbers, stats | `1.2M` / `1.2K` | `1234567` |
+| `"number"` | Plain numeric, no formatting | `1234.56` | `1234.56` |
+
+**Behavior:** Raw number while editing, formatted on blur. Uses `Intl.NumberFormat`.
+
+**Attributes:** `currency` (ISO 4217 code, default `"USD"`), `locale` (default `"en-US"`), `precision` (decimal places).
+
+**Events:** `detail: { value, formattedValue, rawValue, originalEvent }` — `formattedValue` is the display string, `rawValue` is the number.
+
+**FormData:** Submits raw number, not formatted string.
 
 ```html
-<ty-button flavor="primary" size="md">Click Me</ty-button>
-<ty-input placeholder="Enter text..." name="email"></ty-input>
-<ty-dropdown placeholder="Select option">
-  <option value="1">Option 1</option>
-  <option value="2">Option 2</option>
-</ty-dropdown>
+<ty-input type="currency" currency="EUR" locale="de-DE" label="Price" placeholder="0.00">
+  <ty-icon slot="start" name="euro"></ty-icon>
+</ty-input>
+
+<ty-input type="percent" label="Discount" precision="1"></ty-input>
+<ty-input type="compact" label="Revenue"></ty-input>
 ```
+
+---
+
+## Rule 5: Ty for Colors, Tailwind for Layout
+
+```html
+<!-- GOOD -->
+<div class="ty-elevated p-6 rounded-lg flex items-center">
+  <h2 class="ty-text++ text-xl font-bold">Title</h2>
+</div>
+
+<!-- BAD — never use Tailwind for colors -->
+<div class="bg-blue-500 text-white">...</div>
+```
+
+**Surfaces vs Backgrounds — know the difference:**
+
+- **Surfaces** (`ty-canvas`, `ty-content`, `ty-elevated`, `ty-floating`, `ty-input`) are for **layout areas**: cards, panels, sidebars, modals, page background, form fields.
+- **Backgrounds** (`ty-bg-primary`, `ty-bg-success-`, `ty-bg-danger`, etc.) are for **small UI elements**: buttons, tags, badges, toasts, alerts, status indicators.
+
+```html
+<!-- WRONG — using bg color for a card surface -->
+<div class="ty-bg-primary- p-6 rounded-lg">Card content</div>
+
+<!-- CORRECT — surface for cards, bg for small elements -->
+<div class="ty-elevated p-6 rounded-lg">
+  <ty-tag flavor="success">Active</ty-tag>
+  <div class="ty-bg-danger- p-2 rounded text-sm">Error toast</div>
+</div>
+```
+
+---
+
+## Rule 6: Use Flavors Semantically
+
+| Flavor | Intent | Examples |
+|--------|--------|---------|
+| `primary` | Main action | Submit, Save, Confirm |
+| `secondary` | Alternative action | Export, Import |
+| `success` | Positive | Income, completed, "Added!" |
+| `danger` | Destructive/negative | Delete, expenses, errors |
+| `warning` | Caution | Unsaved changes, limits |
+| `neutral` | Default, no weight | Cancel, Close |
+| `accent` | Brand/highlight | Featured items, active states |
+
+---
+
+## Rule 7: Correct Child Elements
+
+| Parent | Children | Example |
+|--------|----------|---------|
+| `ty-dropdown` | `<option>` (simple) or `<ty-option>` (rich HTML) | `<option value="us">US</option>` |
+| `ty-multiselect` | `<ty-tag>` only | `<ty-tag value="js">JavaScript</ty-tag>` |
 
 ---
 
 ## CSS Design System
 
-### Golden Rule
+### Surfaces
+| Class | Use |
+|-------|-----|
+| `ty-canvas` | App background |
+| `ty-content` | Main content area |
+| `ty-elevated` | Cards, panels (with shadow) |
+| `ty-floating` | Modals, dropdowns, tooltips |
+| `ty-input` | Form controls |
 
-> **Use Ty for colors, Tailwind for everything else.**
+### Text Hierarchy
+`ty-text++` (max) > `ty-text+` (high) > `ty-text` (normal) > `ty-text-` (reduced) > `ty-text--` (minimal)
 
-```html
-<!-- GOOD: Ty for colors, Tailwind for layout -->
-<div class="ty-elevated p-6 rounded-lg flex items-center">
-  <h2 class="ty-text++ text-xl font-bold">Title</h2>
-  <p class="ty-text- text-sm">Description</p>
-</div>
-
-<!-- BAD: Don't mix color systems -->
-<div class="bg-blue-500 ty-elevated">...</div>
-```
-
-### Surface System (5 Levels)
-
-Surfaces handle background color + optional shadow:
-
-| Class | Use Case | Description |
-|-------|----------|-------------|
-| `.ty-canvas` | App background | Lowest elevation |
-| `.ty-content` | Main content areas | Base content |
-| `.ty-elevated` | Cards, panels, sidebars | With shadow |
-| `.ty-floating` | Modals, dropdowns, tooltips | Highest elevation |
-| `.ty-input` | Form controls | Special for inputs |
-
-```html
-<div class="ty-canvas">           <!-- App background -->
-  <div class="ty-content">        <!-- Main content area -->
-    <div class="ty-elevated">     <!-- Card with shadow -->
-      <input class="ty-input">    <!-- Form input -->
-    </div>
-  </div>
-</div>
-```
-
-### Text Hierarchy (5 Variants)
-
-| Class | Emphasis | Use Case |
-|-------|----------|----------|
-| `.ty-text++` | Maximum | Headers, primary actions |
-| `.ty-text+` | High | Subheaders |
-| `.ty-text` | Normal | Body text |
-| `.ty-text-` | Reduced | Captions, secondary |
-| `.ty-text--` | Minimal | Hints, timestamps |
-
-### Semantic Text Colors
-
-Each semantic color has 5 variants:
+### Semantic Colors
+Available for text, backgrounds, borders: `primary`, `secondary`, `success`, `danger`, `warning`, `neutral`, `accent`
 
 ```
-.ty-text-{color}++    Strong emphasis
-.ty-text-{color}+     Mild emphasis
-.ty-text-{color}      Base
-.ty-text-{color}-     Soft
-.ty-text-{color}--    Faint
+Text:    ty-text-{color}++  ty-text-{color}+  ty-text-{color}  ty-text-{color}-  ty-text-{color}--
+Bg:      ty-bg-{color}+     ty-bg-{color}     ty-bg-{color}-
+Border:  ty-border-{color}
+Base:    ty-border++  ty-border+  ty-border  ty-border-  ty-border--
 ```
 
-**Available colors:** `primary`, `secondary`, `success`, `danger`, `warning`, `neutral`
+Hover/focus: `hover:ty-bg-primary`, `focus:ty-border-primary`, etc.
 
-**Accent colors** (3 variants only): `.ty-text-accent+`, `.ty-text-accent`, `.ty-text-accent-`
-
-### Background Colors
-
-```
-.ty-bg-{color}+       Stronger background
-.ty-bg-{color}        Base background
-.ty-bg-{color}-       Softer background
-```
-
-**Available colors:** `primary`, `secondary`, `success`, `danger`, `warning`, `neutral`, `accent`
-
-### Border Colors
-
-**Base borders (emphasis levels):**
-```
-.ty-border++    Maximum
-.ty-border+     Strong
-.ty-border      Normal
-.ty-border-     Soft
-.ty-border--    Minimal
-```
-
-**Semantic borders:**
-```
-.ty-border-primary
-.ty-border-secondary
-.ty-border-success
-.ty-border-danger
-.ty-border-warning
-.ty-border-neutral
-```
-
-**Accent borders:**
-```
-.ty-border-accent+
-.ty-border-accent
-.ty-border-accent-
-```
-
-### Interactive States
-
-All classes support hover and focus variants:
-```
-.hover:ty-bg-primary
-.hover:ty-text-accent
-.hover:ty-border++
-.focus:ty-border-primary
-```
-
-### Dark Mode
-
-All classes automatically adapt to dark mode via:
-- `html.dark` class
-- `html[data-theme="dark"]` attribute
+Dark mode: automatic via `html.dark` or `html[data-theme="dark"]`.
 
 ### Color Customization
 
-Ty uses CSS custom properties (variables) for all colors, making customization straightforward.
-
-#### Color Token Structure
-
-Each semantic color has 5 variants:
-
-```css
-/* Color tokens (used for text) */
---ty-color-{name}-strong   /* Maximum emphasis */
---ty-color-{name}-mild     /* High emphasis */
---ty-color-{name}          /* Base */
---ty-color-{name}-soft     /* Reduced emphasis */
---ty-color-{name}-faint    /* Minimal emphasis */
-
-/* Background tokens */
---ty-bg-{name}-mild        /* Stronger background */
---ty-bg-{name}             /* Base background */
---ty-bg-{name}-soft        /* Softer background */
-
-/* Border tokens */
---ty-border-{name}         /* Base border */
-```
-
-**Available color names:** `primary`, `secondary`, `success`, `danger`, `warning`, `neutral`, `accent`
-
-#### Overriding Colors
-
-**Method 1: Override in :root (global)**
+Override via CSS custom properties:
 ```css
 :root {
-  /* Override primary color family */
   --ty-color-primary-strong: #0034c7;
   --ty-color-primary-mild: #1c40a8;
   --ty-color-primary: #4367cd;
   --ty-color-primary-soft: #60a5fa;
   --ty-color-primary-faint: #93c5fd;
-
-  /* Override primary backgrounds */
-  --ty-bg-primary: #dbeafe;
   --ty-bg-primary-mild: #bfdbfe;
+  --ty-bg-primary: #dbeafe;
   --ty-bg-primary-soft: #eff6ff;
 }
 ```
 
-**Method 2: Override for dark mode only**
-```css
-html.dark, html[data-theme="dark"] {
-  --ty-color-primary-strong: #93c5fd;
-  --ty-color-primary-mild: #60a5fa;
-  --ty-color-primary: #3b82f6;
-  --ty-color-primary-soft: #2563eb;
-  --ty-color-primary-faint: #1d4ed8;
+Pattern: `--ty-color-{name}-{strong|mild|soft|faint}`, `--ty-bg-{name}-{mild|soft}`, `--ty-border-{name}`.
 
-  --ty-bg-primary: #1e3a5f;
-  --ty-bg-primary-mild: #1e40af;
-  --ty-bg-primary-soft: #172554;
-}
-```
-
-**Method 3: Scoped overrides**
-```css
-.my-custom-theme {
-  --ty-color-accent-mild: #cc6d00;
-  --ty-color-accent: #e67b00;
-  --ty-color-accent-soft: #f59e42;
-
-  --ty-bg-accent: #ffedd5;
-  --ty-bg-accent-mild: #fed7aa;
-  --ty-bg-accent-soft: #fff7ed;
-}
-```
-
-#### Complete Variable Reference
-
-**Text Colors:**
-```css
---ty-text-strong    /* Maximum emphasis text */
---ty-text-mild      /* High emphasis text */
---ty-text           /* Base text */
---ty-text-soft      /* Reduced emphasis text */
---ty-text-faint     /* Minimal emphasis text */
-```
-
-**Surface Backgrounds:**
-```css
---ty-bg-strong      /* Highest surface */
---ty-bg-mild        /* Elevated surface */
---ty-bg             /* Base surface */
---ty-bg-soft        /* Softer surface */
---ty-bg-faint       /* Faintest surface */
-```
-
-**Base Borders:**
-```css
---ty-border-strong  /* Maximum border */
---ty-border-mild    /* Strong border */
---ty-border         /* Normal border */
---ty-border-soft    /* Soft border */
---ty-border-faint   /* Minimal border */
-```
-
-**Input-Specific:**
-```css
---ty-input-border-focus    /* Focus ring color */
---ty-input-success-border  /* Success state border */
-```
-
-#### Creating a Custom Theme
-
-```css
-/* custom-theme.css */
-:root {
-  /* Brand colors */
-  --ty-color-accent-mild: #7c3aed;
-  --ty-color-accent: #8b5cf6;
-  --ty-color-accent-soft: #a78bfa;
-
-  --ty-bg-accent: #ede9fe;
-  --ty-bg-accent-mild: #ddd6fe;
-  --ty-bg-accent-soft: #f5f3ff;
-
-  --ty-border-accent-mild: #7c3aed;
-  --ty-border-accent: #8b5cf6;
-  --ty-border-accent-soft: #a78bfa;
-}
-
-html.dark, html[data-theme="dark"] {
-  --ty-color-accent-mild: #c4b5fd;
-  --ty-color-accent: #a78bfa;
-  --ty-color-accent-soft: #8b5cf6;
-
-  --ty-bg-accent: #2e1065;
-  --ty-bg-accent-mild: #4c1d95;
-  --ty-bg-accent-soft: #1e1b4b;
-
-  --ty-border-accent-mild: #c4b5fd;
-  --ty-border-accent: #a78bfa;
-  --ty-border-accent-soft: #8b5cf6;
-}
-```
-
-#### JavaScript Theme Switching
-
-```javascript
-// Set dark mode
-document.documentElement.classList.add('dark');
-// or
-document.documentElement.setAttribute('data-theme', 'dark');
-
-// Set light mode
-document.documentElement.classList.remove('dark');
-// or
-document.documentElement.setAttribute('data-theme', 'light');
-
-// Toggle
-document.documentElement.classList.toggle('dark');
-```
+Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 
 ---
 
 ## Components Reference
 
-### Form Inputs
+### ty-button
 
-#### ty-button
-
-Interactive button component with multiple variants.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `flavor` | string | `'neutral'` | `'primary'` \| `'secondary'` \| `'success'` \| `'danger'` \| `'warning'` \| `'neutral'` |
-| `size` | string | `'md'` | `'xs'` \| `'sm'` \| `'md'` \| `'lg'` \| `'xl'` |
-| `type` | string | `'submit'` | `'button'` \| `'submit'` \| `'reset'` |
-| `disabled` | boolean | `false` | Disables the button |
-| `pill` | boolean | `false` | Pill/rounded shape |
-| `outlined` | boolean | `false` | Outlined variant |
-| `filled` | boolean | `false` | Filled/solid variant |
-| `accent` | boolean | `false` | Accent color variant |
-| `plain` | boolean | `false` | Plain/minimal variant |
-| `action` | boolean | `false` | Action button style |
-| `wide` | boolean | `false` | Full-width button |
-| `name` | string | - | Form field name |
-| `value` | string | - | Form value |
+| `flavor` | string | `'neutral'` | `primary` \| `secondary` \| `success` \| `danger` \| `warning` \| `neutral` |
+| `size` | string | `'md'` | `xs` \| `sm` \| `md` \| `lg` \| `xl` |
+| `type` | string | `'submit'` | `button` \| `submit` \| `reset` |
+| `disabled` | boolean | `false` | |
+| `pill` | boolean | `false` | Rounded shape |
+| `outlined` | boolean | `false` | |
+| `filled` | boolean | `false` | Solid variant |
+| `plain` | boolean | `false` | Minimal variant |
+| `action` | boolean | `false` | Action style |
+| `accent` | boolean | `false` | Accent color |
+| `wide` | boolean | `false` | Full width |
 
-**Slots:**
-- `start` - Content before text
-- (default) - Button text
-- `end` - Content after text
+**Slots:** `start`, (default), `end` | **Events:** `click` → `{ originalEvent }`
 
-**Events:**
-- `click` - `detail: { originalEvent: Event }`
+**Mobile/responsive tips:**
+- Use `wide` for primary actions on mobile — full-width buttons are easier to tap
+- For responsive layouts, apply `wide` conditionally or use `class="w-full sm:w-auto"` on the host
+- Use `size="lg"` on mobile for comfortable touch targets (44px+)
+- Action bars on mobile: stack buttons vertically with `wide`, on desktop use inline with gap
 
-**Example:**
 ```html
-<ty-button flavor="primary" size="lg">
-  <ty-icon slot="start" name="save"></ty-icon>
+<!-- Mobile-friendly submit -->
+<ty-button flavor="primary" wide>
+  <ty-icon slot="start" name="check"></ty-icon>
   Save Changes
 </ty-button>
+
+<!-- Responsive: full-width on mobile, auto on desktop -->
+<ty-button flavor="primary" class="w-full sm:w-auto" size="lg">Submit</ty-button>
 ```
 
 ---
 
-#### ty-input
+### ty-input
 
-Text input with support for various formats including currency and percentage.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `type` | string | `'text'` | `'text'` \| `'email'` \| `'password'` \| `'number'` \| `'tel'` \| `'url'` \| `'currency'` \| `'percent'` \| `'compact'` |
-| `value` | string | `''` | Current value |
-| `name` | string | - | Form field name |
-| `placeholder` | string | - | Placeholder text |
-| `label` | string | - | Field label |
-| `disabled` | boolean | `false` | Disables input |
-| `required` | boolean | `false` | Required field |
-| `error` | string | - | Error message |
-| `size` | string | `'md'` | `'xs'` \| `'sm'` \| `'md'` \| `'lg'` \| `'xl'` |
-| `flavor` | string | `'neutral'` | Color variant |
-| `currency` | string | `'USD'` | Currency code (for currency type) |
-| `locale` | string | `'en-US'` | Locale for formatting |
+| `type` | string | `'text'` | `text` \| `email` \| `password` \| `number` \| `tel` \| `url` \| `currency` \| `percent` \| `compact` |
+| `value` | string | `''` | |
+| `name` | string | - | Form name |
+| `placeholder` | string | - | |
+| `label` | string | - | Built-in label |
+| `error` | string | - | Built-in error message |
+| `disabled` | boolean | `false` | |
+| `required` | boolean | `false` | |
+| `size` | string | `'md'` | `xs` \| `sm` \| `md` \| `lg` \| `xl` |
+| `flavor` | string | `'neutral'` | |
+| `currency` | string | `'USD'` | ISO 4217 code (for `type="currency"`) |
+| `locale` | string | `'en-US'` | Locale for numeric formatting |
 | `precision` | number | - | Decimal places |
-| `delay` | number | `0` | Debounce delay (0-5000ms) |
+| `delay` | number | `0` | Debounce ms (0-5000) |
 
-**Slots:**
-- `start` - Icon/content before input
-- `end` - Icon/content after input
-
-**Events:**
-- `input` - `detail: { value, formattedValue, rawValue, originalEvent }`
-- `change` - Same detail (fires on blur)
-- `focus` - Focus event
-- `blur` - Blur event
-
-**Example:**
-```html
-<ty-input type="currency" currency="EUR" placeholder="Enter amount">
-  <ty-icon slot="start" name="euro"></ty-icon>
-</ty-input>
-```
+**Slots:** `start`, `end` | **Events:** `input`, `change` → `{ value, formattedValue, rawValue, originalEvent }` | `focus`, `blur`
 
 ---
 
-#### ty-checkbox
+### ty-checkbox
 
-Checkbox input with label support.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `checked` | boolean | `false` | Checked state |
+| `checked` | boolean | `false` | |
 | `value` | string | `'on'` | Form value when checked |
-| `name` | string | - | Form field name |
-| `disabled` | boolean | `false` | Disables checkbox |
-| `required` | boolean | `false` | Required field |
-| `error` | string | - | Error message |
-| `size` | string | `'md'` | Size variant |
-| `flavor` | string | `'neutral'` | Color variant |
+| `name` | string | - | |
+| `disabled` | boolean | `false` | |
+| `required` | boolean | `false` | |
+| `error` | string | - | |
+| `size` | string | `'md'` | |
+| `flavor` | string | `'neutral'` | |
 
-**Slots:**
-- (default) - Checkbox label content
-
-**Events:**
-- `input` - `detail: { value, checked, formValue, originalEvent }`
-- `change` - Same detail
-
-**Example:**
-```html
-<ty-checkbox name="terms" required>
-  I agree to the terms and conditions
-</ty-checkbox>
-```
+**Slots:** (default) = label | **Events:** `input`, `change` → `{ value, checked, formValue, originalEvent }`
 
 ---
 
-#### ty-textarea
+### ty-textarea
 
-Multi-line text input with auto-resize.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `value` | string | `''` | Current value |
-| `name` | string | - | Form field name |
-| `placeholder` | string | - | Placeholder text |
-| `label` | string | - | Field label |
-| `disabled` | boolean | `false` | Disables textarea |
-| `required` | boolean | `false` | Required field |
-| `error` | string | - | Error message |
-| `size` | string | `'md'` | Size variant |
-| `rows` | string | `'3'` | Initial row count |
-| `resize` | string | `'none'` | `'none'` \| `'both'` \| `'horizontal'` \| `'vertical'` |
-| `min-height` | string | - | Minimum height |
-| `max-height` | string | - | Maximum height |
+| `value` | string | `''` | |
+| `name` | string | - | |
+| `placeholder` | string | - | |
+| `label` | string | - | |
+| `error` | string | - | |
+| `disabled` | boolean | `false` | |
+| `required` | boolean | `false` | |
+| `size` | string | `'md'` | |
+| `rows` | string | `'3'` | |
+| `resize` | string | `'none'` | `none` \| `both` \| `horizontal` \| `vertical` |
+| `min-height` | string | - | |
+| `max-height` | string | - | |
 
-**Events:**
-- `input` - `detail: { value, originalEvent }`
-- `change` - Same detail
+**Events:** `input`, `change` → `{ value, originalEvent }`
 
 ---
 
-#### ty-copy
+### ty-copy
 
-Read-only field with copy-to-clipboard functionality.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `value` | string | - | Text to copy |
-| `label` | string | - | Field label |
-| `size` | string | `'md'` | Size variant |
-| `flavor` | string | `'neutral'` | Color variant |
-| `format` | string | `'text'` | `'text'` \| `'code'` |
-| `disabled` | boolean | `false` | Disables copy |
-
-**Example:**
-```html
-<ty-copy value="npm install @gersak/ty" format="code"></ty-copy>
-```
+| `label` | string | - | |
+| `format` | string | `'text'` | `text` \| `code` |
+| `disabled` | boolean | `false` | |
 
 ---
 
-### Selection Components
+### ty-dropdown
 
-#### ty-dropdown
-
-Single-select dropdown with search support.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `value` | string | `''` | Selected value |
-| `name` | string | - | Form field name |
-| `placeholder` | string | `'Select an option...'` | Placeholder text |
-| `label` | string | - | Field label |
-| `disabled` | boolean | `false` | Disables dropdown |
-| `readonly` | boolean | `false` | Read-only mode |
-| `required` | boolean | `false` | Required field |
-| `searchable` | boolean | `true` | Enable search |
-| `not-searchable` | boolean | - | Alias to disable search |
-| `clearable` | boolean | `true` | Show clear button |
-| `not-clearable` | boolean | - | Alias to disable clear |
-| `size` | string | `'md'` | `'sm'` \| `'md'` \| `'lg'` |
-| `flavor` | string | `'neutral'` | Color variant |
-| `delay` | number | `0` | Search debounce (0-5000ms) |
-
-**Child Elements:** `<option>`, `<ty-option>`, or `<ty-tag>`
-
-**Events:**
-- `change` - `detail: { value, text, option, originalEvent }`
-- `search` - `detail: { query, originalEvent }` (only when not-searchable)
-
-**Example:**
-```html
-<ty-dropdown placeholder="Select country" searchable>
-  <option value="us">United States</option>
-  <option value="ca">Canada</option>
-  <option value="uk">United Kingdom</option>
-</ty-dropdown>
-```
-
----
-
-#### ty-multiselect
-
-Multi-select component with tag-based selection.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `value` | string | `''` | Comma-separated selected values |
-| `name` | string | - | Form field name |
-| `placeholder` | string | `'Select options...'` | Placeholder text |
-| `label` | string | - | Field label |
-| `disabled` | boolean | `false` | Disables component |
-| `readonly` | boolean | `false` | Read-only mode |
-| `required` | boolean | `false` | Required field |
-| `searchable` | boolean | `true` | Enable search |
-| `size` | string | `'md'` | Size variant |
-| `flavor` | string | `'neutral'` | Color variant |
+| `value` | string | `''` | |
+| `name` | string | - | |
+| `placeholder` | string | `'Select an option...'` | |
+| `label` | string | - | |
+| `disabled` | boolean | `false` | |
+| `readonly` | boolean | `false` | |
+| `required` | boolean | `false` | |
+| `searchable` | boolean | `true` | |
+| `not-searchable` | boolean | - | Disable search |
+| `clearable` | boolean | `true` | |
+| `not-clearable` | boolean | - | Disable clear |
+| `size` | string | `'md'` | |
+| `flavor` | string | `'neutral'` | |
 | `delay` | number | `0` | Search debounce |
-| `selected-label` | string | `'Selected'` | Label for selected section |
-| `available-label` | string | `'Available'` | Label for available section |
-| `no-selection-message` | string | `'No items selected'` | Empty selection message |
-| `no-options-message` | string | `'No options available'` | No options message |
 
-**Child Elements:** `<ty-tag>` elements only
+**Children:** `<option>` or `<ty-option>` (for rich HTML) | **Slots:** `selected`
 
-**Events:**
-- `change` - `detail: { values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null }`
-- `search` - `detail: { query, element }`
-
-**Example:**
-```html
-<ty-multiselect placeholder="Select skills" value="js,ts">
-  <ty-tag value="js">JavaScript</ty-tag>
-  <ty-tag value="ts">TypeScript</ty-tag>
-  <ty-tag value="py">Python</ty-tag>
-</ty-multiselect>
-```
+**Events:** `change` → `{ value, text, option, originalEvent }` | `search` → `{ query, originalEvent }`
 
 ---
 
-#### ty-option
+### ty-multiselect
 
-Rich HTML option for use in dropdowns.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `value` | string | - | Option value |
-| `selected` | boolean | `false` | Selected state |
-| `disabled` | boolean | `false` | Disabled state |
-| `highlighted` | boolean | `false` | Highlighted state |
-| `hidden` | boolean | `false` | Hidden state |
+| `value` | string | `''` | Comma-separated values |
+| `name` | string | - | |
+| `placeholder` | string | `'Select options...'` | |
+| `label` | string | - | |
+| `disabled` | boolean | `false` | |
+| `readonly` | boolean | `false` | |
+| `required` | boolean | `false` | |
+| `searchable` | boolean | `true` | |
+| `size` | string | `'md'` | |
+| `flavor` | string | `'neutral'` | |
+| `delay` | number | `0` | |
+| `selected-label` | string | `'Selected'` | |
+| `available-label` | string | `'Available'` | |
 
-**Slots:**
-- (default) - Rich HTML content
+**Children:** `<ty-tag>` only | **Slots:** `selected`
+
+**Events:** `change` → `{ values: string[], action: 'add'|'remove'|'clear'|'set', item }` | `search` → `{ query, element }`
 
 ---
 
-#### ty-tag
+### ty-option
 
-Tag/chip component for labels and selections.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `flavor` | string | `'neutral'` | Color variant |
-| `size` | string | `'md'` | Size variant |
-| `value` | string | - | Tag value |
-| `selected` | boolean | `false` | Selected state |
-| `pill` | boolean | `true` | Pill shape |
-| `clickable` | boolean | `false` | Enable click events |
-| `dismissible` | boolean | `false` | Show dismiss button |
-| `disabled` | boolean | `false` | Disabled state |
-
-**Events:**
-- `click` - When clickable
-- `dismiss` - When dismiss button clicked
+Rich HTML option for `<ty-dropdown>`. Attrs: `value`, `selected`, `disabled`, `highlighted`, `hidden`. Default slot for content.
 
 ---
 
-### Navigation Components
+### ty-tag
 
-#### ty-tabs / ty-tab
-
-Tab navigation with carousel animation.
-
-**ty-tabs Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `width` | string | `'100%'` | Content width |
-| `height` | string | (required) | Total container height |
-| `active` | string | - | Active tab ID |
-| `placement` | string | `'top'` | `'top'` \| `'bottom'` |
+| `flavor` | string | `'neutral'` | |
+| `size` | string | `'md'` | |
+| `value` | string | - | |
+| `selected` | boolean | `false` | |
+| `pill` | boolean | `true` | |
+| `clickable` | boolean | `false` | |
+| `dismissible` | boolean | `false` | |
+| `disabled` | boolean | `false` | |
 
-**ty-tab Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `id` | string | (required) | Tab identifier |
-| `label` | string | (required) | Tab label text |
+**Slots:** `start`, (default), `end` | **Events:** `click`, `dismiss`
 
-**Slots:**
-- `label-{id}` - Custom rich label for tab
-- `marker` - Custom active indicator
+---
 
-**Events:**
-- `change` - `detail: { activeId, activeIndex, previousId, previousIndex }`
+### ty-tabs / ty-tab
 
-**Example:**
+**ty-tabs:** `width` (default `'100%'`), `height` (required), `active` (tab id), `placement` (`top` | `bottom`)
+
+**ty-tab:** `id` (required), `label` (required)
+
+**Slots:** `label-{id}` (rich label), `marker` (active indicator)
+
+**Events:** `change` → `{ activeId, activeIndex, previousId, previousIndex }`
+
 ```html
 <ty-tabs height="400px" active="overview">
-  <ty-tab id="overview" label="Overview">
-    <h2>Overview Content</h2>
-  </ty-tab>
-  <ty-tab id="details" label="Details">
-    <h2>Details Content</h2>
-  </ty-tab>
+  <span slot="label-overview" class="flex items-center gap-2">
+    <ty-icon name="layout-dashboard" size="sm"></ty-icon>
+    Overview
+  </span>
+  <ty-tab id="overview" label="Overview">Content here</ty-tab>
+  <ty-tab id="details" label="Details">Details here</ty-tab>
 </ty-tabs>
 ```
 
 ---
 
-#### ty-wizard / ty-step
+### ty-wizard / ty-step
 
-Step-by-step wizard navigation.
+**ty-wizard:** `width`, `height` (required), `active` (step id), `completed` (comma-separated ids), `orientation` (`horizontal` | default)
 
-**ty-wizard Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `width` | string | `'100%'` | Content width |
-| `height` | string | (required) | Container height |
-| `active` | string | - | Active step ID |
-| `completed` | string | - | Comma-separated completed step IDs |
-| `orientation` | string | `'horizontal'` | Wizard orientation |
+**ty-step:** `id` (required), `label` (required)
 
-**ty-step Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `id` | string | (required) | Step identifier |
-| `label` | string | (required) | Step label |
+**Slots:** `indicator-{id}` (custom step indicator)
 
-**Slots:**
-- `indicator-{id}` - Custom indicator for step
-
-**Events:**
-- `change` - `detail: { activeId, activeIndex, previousId, previousIndex, direction }`
+**Events:** `change` → `{ activeId, activeIndex, previousId, previousIndex, direction }`
 
 ---
 
-### Date/Time Components
+### ty-calendar
 
-#### ty-calendar
+Attrs: `year`, `month`, `day`, `name`, `required`. Property: `dayContentFn`.
 
-Full calendar component.
+**Events:** `change` → `{ year, month, day, action, source, dayContext }` | `navigate` → `{ month, year, action, source }`
 
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `year` | number/string | - | Display year (YYYY) |
-| `month` | number/string | - | Display month (1-12) |
-| `day` | number/string | - | Selected day (1-31) |
-| `name` | string | - | Form field name |
-| `required` | boolean | - | Required field |
-
-**Properties:**
-- `dayContentFn` - Custom render function for day cells
-
-**Events:**
-- `change` - `detail: { year, month, day, action: 'select', source: 'day-click', dayContext }`
-- `navigate` - `detail: { month, year, action: 'navigate', source: 'navigation' }`
-
-**Form Value:** ISO date string (YYYY-MM-DD)
+**Form value:** ISO date `YYYY-MM-DD`
 
 ---
 
-#### ty-date-picker
+### ty-date-picker
 
-Date picker with optional time selection.
-
-**Attributes:**
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `value` | string | - | UTC ISO datetime string |
-| `name` | string | - | Form field name |
-| `label` | string | - | Field label |
-| `placeholder` | string | - | Placeholder text |
+| `value` | string | - | UTC ISO datetime |
+| `name` | string | - | |
+| `label` | string | - | |
+| `placeholder` | string | - | |
 | `with-time` | boolean | `false` | Include time picker |
-| `disabled` | boolean | `false` | Disables picker |
-| `required` | boolean | `false` | Required field |
-| `locale` | string | `'en-US'` | Locale for formatting |
-| `size` | string | `'md'` | Size variant |
+| `disabled` | boolean | `false` | |
+| `required` | boolean | `false` | |
+| `locale` | string | `'en-US'` | |
+| `size` | string | `'md'` | |
 
-**Events:**
-- `change` - Date/time selection events
-
-**Form Value:** UTC ISO datetime string (2024-09-21T08:30:00.000Z)
+**Events:** `change` | **Form value:** UTC ISO `2024-09-21T08:30:00.000Z`
 
 ---
 
-#### ty-calendar-month
+### ty-modal
 
-Visual calendar grid component (used internally).
+Attrs: `open`, `backdrop` (default true), `close-on-outside-click` (true), `close-on-escape` (true), `protected`.
 
-#### ty-calendar-navigation
+**Methods:** `show()`, `hide()` | **Events:** `close` → `{ reason, returnValue? }`
 
-Month/year navigation controls (used internally).
+Always render modals in DOM. Control with `open` attribute or `show()`/`hide()`.
 
 ---
 
-### Overlay Components
+### ty-tooltip
 
-#### ty-modal
+Attrs: `placement` (default `'top'`), `offset` (8), `delay` (200ms), `disabled`, `flavor` (default `'dark'`).
 
-Modal dialog component.
+Nest as child of target: `<ty-button>Hover<ty-tooltip>Help text</ty-tooltip></ty-button>`
 
-**Attributes:**
+---
+
+### ty-popup
+
+Attrs: `manual`, `disable-close`, `placement` (default `'bottom'`), `offset` (8).
+
+**Methods:** `show()`, `hide()`
+
+---
+
+### ty-icon
+
+Attrs: `name`, `size` (`xs` | `sm` | `md` | `lg` | `xl`), `spin`, `pulse`, `tempo`.
+
+---
+
+### ty-scroll-container
+
+Scrollable container with shadow indicators showing there's more content above/below.
+
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `open` | boolean | `false` | Controls visibility |
-| `backdrop` | boolean | `true` | Show backdrop |
-| `close-on-outside-click` | boolean | `true` | Close on outside click |
-| `close-on-escape` | boolean | `true` | Close on Escape key |
-| `protected` | boolean | `false` | Require confirmation to close |
-
-**Methods:**
-- `show()` - Open modal
-- `hide()` - Close modal
-
-**Events:**
-- `close` - `detail: { reason: 'programmatic'|'native', returnValue?: string }`
-
-**Example:**
-```html
-<ty-modal id="confirm-modal">
-  <h2>Confirm Action</h2>
-  <p>Are you sure you want to proceed?</p>
-  <ty-button onclick="document.getElementById('confirm-modal').hide()">Cancel</ty-button>
-  <ty-button flavor="primary">Confirm</ty-button>
-</ty-modal>
-```
-
----
-
-#### ty-tooltip
-
-Hover tooltip component.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `placement` | string | `'top'` | Tooltip position |
-| `offset` | number | `8` | Distance from anchor |
-| `delay` | number | `200` | Show delay (ms) |
-| `disabled` | boolean | `false` | Disables tooltip |
-| `flavor` | string | `'dark'` | Color variant |
-
-**Usage:** Attach as child of target element.
-
-**Example:**
-```html
-<ty-button>
-  Hover me
-  <ty-tooltip>This is helpful information</ty-tooltip>
-</ty-button>
-```
-
----
-
-#### ty-popup
-
-Interactive popup with dropdown behavior.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `manual` | boolean | `false` | Manual control mode |
-| `disable-close` | boolean | `false` | Prevent auto-close |
-| `placement` | string | `'bottom'` | Popup position |
-| `offset` | number | `8` | Distance from anchor |
-
-**Methods:**
-- `show()` - Open popup
-- `hide()` - Close popup
-
----
-
-### Utility Components
-
-#### ty-icon
-
-SVG icon component.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `name` | string | - | Icon name |
-| `size` | string | - | `'xs'` \| `'sm'` \| `'md'` \| `'lg'` \| `'xl'` |
-| `spin` | boolean | `false` | Spinning animation |
-| `pulse` | boolean | `false` | Pulsing animation |
-| `tempo` | string | - | Animation speed |
-
-**Example:**
-```html
-<ty-icon name="check" size="md"></ty-icon>
-<ty-icon name="loader" spin></ty-icon>
-```
-
----
-
-#### ty-resize-observer
-
-Container that tracks and reports its dimensions.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `id` | string | (required) | Element identifier for registry |
-| `debounce` | number | `0` | Debounce delay (ms) |
-
-**Usage:** Query dimensions via `window.tyResizeObserver.getSize(id)`
-
----
-
-#### ty-scroll-container
-
-Scrollable container with visual indicators.
-
-**Attributes:**
-| Attribute | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `shadow` | boolean | `true` | Show scroll shadows |
-| `max-height` | string | - | Maximum height |
+| `shadow` | boolean | `true` | Show top/bottom shadow indicators |
+| `max-height` | string | - | Constrain height (e.g. `"400px"`, `"50vh"`) |
 | `hide-scrollbar` | boolean | `false` | Hide native scrollbar |
+| `custom-scrollbar` | boolean | `false` | Render custom styled scrollbar |
+| `overflow-x` | boolean | `false` | Enable horizontal scrolling |
+
+> **Use `ty-scroll-container` instead of `overflow-auto`** for any scrollable content area.
+> It gives you scroll shadow indicators for free — users immediately see there's more content.
+
+```html
+<!-- Transaction list with max height -->
+<ty-scroll-container max-height="400px">
+  <div>Item 1</div>
+  <div>Item 2</div>
+  <!-- ...many items... -->
+</ty-scroll-container>
+
+<!-- Clean scrollbar for sidebars -->
+<ty-scroll-container max-height="100vh" custom-scrollbar hide-scrollbar>
+  <nav>...</nav>
+</ty-scroll-container>
+```
+
+```clojure
+[:ty-scroll-container {:max-height "400px"}
+ (for [item items]
+   [:div.p-3.ty-elevated.rounded-lg (:name item)])]
+```
+
+---
+
+### ty-resize-observer
+
+Attrs: `id` (required), `debounce`. Query: `window.tyResizeObserver.getSize(id)`
 
 ---
 
 ## Icon System
 
-### Registering Icons
+Register icons before components render:
 
-**JavaScript:**
 ```javascript
-// Register single icon
-window.tyIcons.register({ 'heart': '<svg>...</svg>' });
+// JavaScript
+window.tyIcons.register({ 'heart': '<svg>...</svg>', 'star': '<svg>...</svg>' });
 
-// Register multiple icons
-window.tyIcons.register({
-  'heart': '<svg>...</svg>',
-  'star': '<svg>...</svg>',
-  'check': '<svg>...</svg>'
-});
-```
-
-**ES Modules:**
-```javascript
+// ES Modules
 import { registerIcons } from '@gersak/ty';
-
-registerIcons({
-  'heart': '<svg>...</svg>',
-  'star': '<svg>...</svg>'
-});
+registerIcons({ 'heart': '<svg>...</svg>' });
 ```
-
-**ClojureScript (Recommended):**
-```clojure
-(ns my.app.icons
-  (:require [ty.icons :as icons]
-            [ty.lucide :as lucide]))
-
-;; Recommended: Automatic retry if ty.js hasn't loaded yet
-(icons/register-async!
-  {:check lucide/check
-   :heart lucide/heart
-   :star lucide/star})
-
-;; With options
-(icons/register-async!
-  {:check lucide/check}
-  {:max-retries 20
-   :delay-ms 100
-   :on-success #(println "Icons loaded!")})
-
-;; Synchronous (only if ty.js is already loaded)
-(icons/register! {:check lucide/check})
-
-;; Check if icon is registered
-(icons/registered? :check) ;; => true
-
-;; Advanced: Direct JavaScript interop
-(js/window.tyIcons.register
-  (clj->js {:check lucide/check}))
-```
-
-### Icon Sets
-
-**ClojureScript (Tree-shakeable):**
-
-Add to `deps.edn`:
-```clojure
-{:deps {dev.gersak/ty-icons {:mvn/version "x.y.z"}}}
-```
-
-Available icon sets (only icons you use are included in the build):
-- **Lucide** - `ty.lucide`
-- **Heroicons** (outline/solid) - `ty.heroicons.outline` / `ty.heroicons.solid`
-- **Material Icons** - `ty.material.*`
-- **FontAwesome 6** (brands/regular/solid) - `ty.fav6.brands` / `ty.fav6.regular` / `ty.fav6.solid`
 
 ```clojure
-(ns my.app
-  (:require [ty.lucide :as lucide]
-            [ty.heroicons.outline :as hero]
-            [ty.fav6.brands :as brands]))
-
-(icons/register-async!
-  {:check lucide/check
-   :arrow-left hero/arrow-left
-   :github brands/github})
+;; ClojureScript (recommended — auto-retries until ty.js loads)
+(require '[ty.icons :as icons] '[ty.lucide :as lucide])
+(icons/register-async! {:check lucide/check :heart lucide/heart})
 ```
 
-**JavaScript/TypeScript:**
+**Icon sets (ClojureScript, tree-shakeable):** `ty.lucide`, `ty.heroicons.outline`, `ty.heroicons.solid`, `ty.material.*`, `ty.fav6.brands`, `ty.fav6.regular`, `ty.fav6.solid`
 
-Compatible with popular icon libraries:
-- **Lucide** - `lucide-static`
-- **FontAwesome** - `@fortawesome/free-solid-svg-icons`
-- **Heroicons** - `heroicons`
-- **Material Icons** - `@mdi/svg`
+**JS libraries:** `lucide-static`, `@fortawesome/free-solid-svg-icons`, `heroicons`, `@mdi/svg`
 
-**Example with Lucide:**
-```javascript
-import { icons } from 'lucide-static';
-window.tyIcons.register(icons);
-```
-
-### Using Icons
-
-```html
-<ty-icon name="check" size="md"></ty-icon>
-<ty-icon name="loader" spin></ty-icon>
-<ty-icon name="heart" size="lg" pulse></ty-icon>
-```
-
-### Icon API
-
-```javascript
-// Check if icon exists
-window.tyIcons.has('heart')  // boolean
-
-// Get icon SVG
-window.tyIcons.get('heart')  // string | undefined
-
-// List all registered icons
-window.tyIcons.list()  // string[]
-
-// Get cache info
-await window.tyIcons.cacheInfo()
-
-// Clear cache
-await window.tyIcons.clearCache()
-```
+**API:** `window.tyIcons.has(name)`, `.get(name)`, `.list()`, `.cacheInfo()`, `.clearCache()`
 
 ---
 
-## Utility Functions
+## Installation
 
-### Resize Observer
+```bash
+# NPM
+npm install @gersak/ty
 
-Track element dimensions across the application.
-
-```javascript
-// Get current size
-const size = window.tyResizeObserver.getSize('my-element');
-// { width: 300, height: 200 }
-
-// Subscribe to size changes
-const unsubscribe = window.tyResizeObserver.onResize('my-element', ({ width, height }) => {
-  console.log(`Resized to ${width}x${height}`);
-});
-
-// Get all tracked sizes
-window.tyResizeObserver.sizes;
-// { 'element-1': { width, height }, 'element-2': { width, height } }
-
-// Cleanup subscription
-unsubscribe();
+# React
+npm install @gersak/ty-react
 ```
 
-### Scroll Lock
-
-Prevent body scrolling (used by modals).
-
-```javascript
-import { lockScroll, unlockScroll, isLocked, forceUnlockAll } from '@gersak/ty';
-
-// Lock scrolling for a component
-lockScroll('modal-123');
-
-// Check if locked
-isLocked();  // true
-
-// Unlock (ref-counted, unlocks when all locks released)
-unlockScroll('modal-123');
-
-// Force unlock all
-forceUnlockAll();
+```html
+<!-- CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/index.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
 ```
 
 ```html
 <!-- CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+```
+
+```clojure
+;; ClojureScript (Clojars)
+[dev.gersak/ty "0.4.0"]
 ```
 
 ### Positioning
@@ -1184,389 +648,101 @@ cleanup();
 
 ### React
 
-**Installation:**
-```bash
-npm install @gersak/ty-react
-```
-
-**Import Patterns:**
 ```typescript
-// Ty-prefixed (explicit)
 import { TyButton, TyInput, TyModal } from '@gersak/ty-react';
-
-// Short names (clean)
+// or short names:
 import { Button, Input, Modal } from '@gersak/ty-react';
 ```
 
-**Event Mapping:**
-| React Prop | Web Component Event | When Fires |
-|------------|---------------------|------------|
+| React Prop | Web Component Event | When |
+|------------|---------------------|------|
 | `onChange` | `input` | Every keystroke |
 | `onChangeCommit` | `change` | On blur |
 | `onFocus` | `focus` | Focus |
 | `onBlur` | `blur` | Blur |
 
-**Event Detail Access:**
-```typescript
-<TyInput
-  onChange={(e: CustomEvent<TyInputEventDetail>) => {
-    const value = e.detail.value;
-    const formatted = e.detail.formattedValue;
-    const raw = e.detail.rawValue;
-  }}
-/>
-```
+Imperative methods via refs: `useRef<TyModalRef>()` → `.current?.show()` / `.hide()`
 
-**Ref Usage for Imperative Methods:**
-```typescript
-import { useRef } from 'react';
-import { TyModal, TyModalRef, TyButton } from '@gersak/ty-react';
+### ClojureScript
 
-function App() {
-  const modalRef = useRef<TyModalRef>(null);
-
-  return (
-    <>
-      <TyButton onClick={() => modalRef.current?.show()}>Open</TyButton>
-      <TyModal ref={modalRef}>
-        <h2>Modal Content</h2>
-        <TyButton onClick={() => modalRef.current?.hide()}>Close</TyButton>
-      </TyModal>
-    </>
-  );
-}
-```
-
-**TypeScript Types:**
-```typescript
-import type {
-  TyButtonProps,
-  TyInputProps,
-  TyInputEventDetail,
-  TyDropdownEventDetail,
-  TyModalRef
-} from '@gersak/ty-react';
-```
-
----
-
-### ClojureScript / Replicant
-
-**Event Handling:**
 ```clojure
-;; Use :on map for event listeners
-[:ty-input {:placeholder "Enter name"
-            :on {:input (fn [e]
-                          (let [value (-> e .-detail .-value)]
-                            (swap! state assoc :name value)))
-                 :change (fn [e]
-                           (println "Final value:" (-> e .-detail .-value)))}}]
-```
+;; Event handling
+[:ty-input {:on {:input (fn [e] (-> e .-detail .-value))
+                 :change (fn [e] (-> e .-detail .-value))}}]
 
-**Accessing Event Detail:**
-```clojure
-(defn handle-dropdown-change [e]
-  (let [detail (.-detail e)
-        value (.-value detail)
-        text (.-text detail)]
-    (swap! state assoc :selection {:value value :text text})))
-
-[:ty-dropdown {:on {:change handle-dropdown-change}}
- [:option {:value "opt1"} "Option 1"]
- [:option {:value "opt2"} "Option 2"]]
-```
-
-**Icon Registration:**
-```clojure
-(defn init-icons []
-  (let [icons (clj->js {"check" "<svg>...</svg>"
-                        "x" "<svg>...</svg>"})]
-    (.register js/window.tyIcons icons)))
-```
-
-**Dynamic Classes:**
-```clojure
-;; GOOD: Vector of classes
+;; Dynamic classes — use vectors, not string concatenation
 [:div {:class ["ty-elevated" "p-4" (when active? "ty-bg-accent-")]}]
-
-;; BAD: String concatenation
-[:div {:class (str "ty-elevated p-4 " (when active? "ty-bg-accent-"))}]
 ```
 
 ---
 
 ## Common Patterns
 
-### Card Component
+### Card
 ```html
 <div class="ty-elevated p-6 rounded-lg border ty-border-">
-  <h2 class="ty-text++ text-xl font-bold mb-4">Card Title</h2>
-  <p class="ty-text- text-sm mb-6">Description text goes here.</p>
+  <h2 class="ty-text++ text-xl font-bold mb-4">Title</h2>
+  <p class="ty-text- text-sm mb-6">Description</p>
   <ty-button flavor="primary">Action</ty-button>
 </div>
 ```
 
-### Alert Components
+### Alert
 ```html
-<!-- Success Alert -->
 <div class="ty-bg-success- ty-border-success border rounded-lg p-4">
   <h3 class="ty-text-success++ font-semibold">Success!</h3>
-  <p class="ty-text-success text-sm">Operation completed successfully.</p>
-</div>
-
-<!-- Error Alert -->
-<div class="ty-bg-danger- ty-border-danger border rounded-lg p-4">
-  <h3 class="ty-text-danger++ font-semibold">Error!</h3>
-  <p class="ty-text-danger text-sm">Something went wrong.</p>
+  <p class="ty-text-success text-sm">Done.</p>
 </div>
 ```
 
-### Button with Icon
-```html
-<!-- GOOD: Use gap, no margin on icon -->
-<ty-button flavor="primary" class="flex items-center gap-2">
-  <ty-icon name="save" size="sm"></ty-icon>
-  Save
-</ty-button>
-
-<!-- Or use slots -->
-<ty-button flavor="primary">
-  <ty-icon slot="start" name="save" size="sm"></ty-icon>
-  Save
-</ty-button>
-```
-
-### Form Integration
+### Form
 ```html
 <form id="myForm">
   <ty-input name="email" type="email" required label="Email"></ty-input>
-  <ty-input name="password" type="password" required label="Password"></ty-input>
+  <ty-input name="price" type="currency" currency="USD" label="Price"></ty-input>
   <ty-checkbox name="remember">Remember me</ty-checkbox>
-  <ty-dropdown name="role" required>
+  <ty-dropdown name="role" required label="Role">
     <option value="user">User</option>
     <option value="admin">Admin</option>
   </ty-dropdown>
   <ty-button type="submit" flavor="primary">Submit</ty-button>
 </form>
-
-<script>
-document.getElementById('myForm').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const data = new FormData(e.target);
-  console.log(Object.fromEntries(data));
-});
-</script>
 ```
 
-### Modal Pattern
-```html
-<!-- Always render modals, control with 'open' attribute -->
-<ty-modal id="my-modal">
-  <h2 class="ty-text++ text-xl mb-4">Modal Title</h2>
-  <p class="ty-text mb-6">Modal content goes here.</p>
-  <div class="flex gap-2 justify-end">
-    <ty-button onclick="document.getElementById('my-modal').hide()">Cancel</ty-button>
-    <ty-button flavor="primary" onclick="handleConfirm()">Confirm</ty-button>
-  </div>
-</ty-modal>
+FormData from numeric types contains the raw number, not the formatted string.
 
-<ty-button onclick="document.getElementById('my-modal').show()">Open Modal</ty-button>
+---
+
+## Utility Functions
+
+```javascript
+// Resize observer
+window.tyResizeObserver.getSize('element-id')  // { width, height }
+window.tyResizeObserver.onResize('id', ({ width, height }) => { ... })
+
+// Scroll lock (used by modals)
+import { lockScroll, unlockScroll, isLocked, forceUnlockAll } from '@gersak/ty';
+
+// Positioning for floating elements
+import { findBestPosition, autoUpdate, placementPreferences } from '@gersak/ty';
 ```
 
 ---
 
-## Quick Reference
+## All Events Reference
 
-### All Components
-
-| Component | Category | Primary Attributes |
-|-----------|----------|-------------------|
-| `ty-button` | Form | `flavor`, `size`, `type`, `disabled` |
-| `ty-input` | Form | `type`, `value`, `placeholder`, `size` |
-| `ty-checkbox` | Form | `checked`, `value`, `disabled` |
-| `ty-textarea` | Form | `value`, `rows`, `resize` |
-| `ty-copy` | Form | `value`, `format` |
-| `ty-dropdown` | Selection | `value`, `placeholder`, `searchable` |
-| `ty-multiselect` | Selection | `value`, `placeholder` |
-| `ty-option` | Selection | `value`, `selected`, `disabled` |
-| `ty-tag` | Selection | `flavor`, `value`, `dismissible` |
-| `ty-tabs` | Navigation | `active`, `height`, `placement` |
-| `ty-tab` | Navigation | `id`, `label` |
-| `ty-wizard` | Navigation | `active`, `completed`, `height` |
-| `ty-step` | Navigation | `id`, `label` |
-| `ty-calendar` | Date/Time | `year`, `month`, `day` |
-| `ty-date-picker` | Date/Time | `value`, `with-time`, `locale` |
-| `ty-modal` | Overlay | `open`, `backdrop`, `close-on-escape` |
-| `ty-tooltip` | Overlay | `placement`, `delay`, `flavor` |
-| `ty-popup` | Overlay | `placement`, `manual` |
-| `ty-icon` | Utility | `name`, `size`, `spin` |
-| `ty-resize-observer` | Utility | `id`, `debounce` |
-| `ty-scroll-container` | Utility | `shadow`, `max-height` |
-
-### All Events
-
-| Component | Event | Detail Structure |
-|-----------|-------|-----------------|
-| `ty-input` | `input` | `{ value, formattedValue, rawValue, originalEvent }` |
-| `ty-input` | `change` | `{ value, formattedValue, rawValue, originalEvent }` |
-| `ty-checkbox` | `input` | `{ value, checked, formValue, originalEvent }` |
+| Component | Event | Detail |
+|-----------|-------|--------|
+| `ty-input` | `input`, `change` | `{ value, formattedValue, rawValue, originalEvent }` |
+| `ty-checkbox` | `input`, `change` | `{ value, checked, formValue, originalEvent }` |
 | `ty-dropdown` | `change` | `{ value, text, option, originalEvent }` |
 | `ty-dropdown` | `search` | `{ query, originalEvent }` |
 | `ty-multiselect` | `change` | `{ values, action, item }` |
 | `ty-calendar` | `change` | `{ year, month, day, action, source, dayContext }` |
-| `ty-calendar` | `navigate` | `{ month, year, action, source }` |
 | `ty-tabs` | `change` | `{ activeId, activeIndex, previousId, previousIndex }` |
 | `ty-wizard` | `change` | `{ activeId, activeIndex, previousId, previousIndex, direction }` |
 | `ty-modal` | `close` | `{ reason, returnValue? }` |
-| `ty-tag` | `dismiss` | - |
+| `ty-tag` | `dismiss` | — |
 | `ty-button` | `click` | `{ originalEvent }` |
 
-### CSS Classes by Category
-
-**Surfaces:**
-`ty-canvas`, `ty-content`, `ty-elevated`, `ty-floating`, `ty-input`
-
-**Text:**
-`ty-text--`, `ty-text-`, `ty-text`, `ty-text+`, `ty-text++`
-`ty-text-{color}--`, `ty-text-{color}-`, `ty-text-{color}`, `ty-text-{color}+`, `ty-text-{color}++`
-
-**Backgrounds:**
-`ty-bg-{color}-`, `ty-bg-{color}`, `ty-bg-{color}+`
-
-**Borders:**
-`ty-border--`, `ty-border-`, `ty-border`, `ty-border+`, `ty-border++`
-`ty-border-{color}`
-
-**Colors:** `primary`, `secondary`, `success`, `danger`, `warning`, `neutral`, `accent`
-
----
-
-## Component Slots Reference
-
-Many Ty components support named slots for customization. Use these to add icons, rich content, or custom elements.
-
-### Slot Quick Reference
-
-```
-<ty-button>
-  ├── slot="start"     Left side (icons, badges)
-  └── slot="end"       Right side (icons, arrows)
-
-<ty-input>
-  ├── slot="start"     Inside input, left (search icons, prefixes)
-  └── slot="end"       Inside input, right (clear buttons, icons)
-
-<ty-tag>
-  ├── slot="start"     Before tag text (icons, avatars)
-  └── slot="end"       After tag text (badges, counts)
-
-<ty-dropdown>
-  └── slot="selected"  Custom selected value display
-
-<ty-multiselect>
-  └── slot="selected"  Custom selected values display
-
-<ty-tabs>
-  ├── slot="label-{id}"   Custom label for tab (use tab's id)
-  └── slot="marker"       Custom active tab indicator
-
-<ty-wizard>
-  └── slot="indicator-{id}"  Custom step indicator (use step's id)
-```
-
-### Slot Usage Examples
-
-**Button with icons:**
-```html
-<ty-button flavor="primary">
-  <ty-icon slot="start" name="save"></ty-icon>
-  Save Changes
-  <ty-icon slot="end" name="arrow-right"></ty-icon>
-</ty-button>
-```
-
-**Input with search icon and clear button:**
-```html
-<ty-input placeholder="Search...">
-  <ty-icon slot="start" name="search"></ty-icon>
-  <ty-icon slot="end" name="x"></ty-icon>
-</ty-input>
-```
-
-**Tag with icon and badge:**
-```html
-<ty-tag flavor="primary">
-  <ty-icon slot="start" name="user"></ty-icon>
-  John Doe
-  <span slot="end" class="ty-bg-primary px-1 rounded text-xs">Admin</span>
-</ty-tag>
-```
-
-**Tabs with custom labels:**
-```html
-<ty-tabs height="400px" active="profile">
-  <!-- Custom rich labels -->
-  <span slot="label-profile" class="flex items-center gap-2">
-    <ty-icon name="user" size="sm"></ty-icon>
-    Profile
-  </span>
-  <span slot="label-settings" class="flex items-center gap-2">
-    <ty-icon name="settings" size="sm"></ty-icon>
-    Settings
-  </span>
-
-  <!-- Optional custom marker -->
-  <div slot="marker" class="h-1 bg-blue-500 rounded-full"></div>
-
-  <!-- Tab panels -->
-  <ty-tab id="profile" label="Profile">Profile content</ty-tab>
-  <ty-tab id="settings" label="Settings">Settings content</ty-tab>
-</ty-tabs>
-```
-
-**Wizard with custom step indicators:**
-```html
-<ty-wizard height="500px" active="welcome">
-  <!-- Custom indicators -->
-  <div slot="indicator-welcome">
-    <ty-icon name="home" size="sm"></ty-icon>
-  </div>
-  <div slot="indicator-account">
-    <ty-icon name="user" size="sm"></ty-icon>
-  </div>
-  <div slot="indicator-complete">
-    <ty-icon name="check" size="sm"></ty-icon>
-  </div>
-
-  <!-- Step panels -->
-  <ty-step id="welcome" label="Welcome">Welcome content</ty-step>
-  <ty-step id="account" label="Account">Account content</ty-step>
-  <ty-step id="complete" label="Complete">Complete content</ty-step>
-</ty-wizard>
-```
-
-**Dropdown with custom selected display:**
-```html
-<ty-dropdown placeholder="Select user">
-  <div slot="selected" class="flex items-center gap-2">
-    <img src="avatar.jpg" class="w-6 h-6 rounded-full">
-    <span>John Doe</span>
-  </div>
-  <ty-option value="john">John Doe</ty-option>
-  <ty-option value="jane">Jane Smith</ty-option>
-</ty-dropdown>
-```
-
----
-
-## Best Practices
-
-1. **ALWAYS use Ty components** - Never improvise HTML when a Ty component exists (see Component Selection Guide above)
-2. **Always use Ty for colors** - Never mix with Tailwind color utilities
-3. **Use Tailwind for layout** - Padding, margin, flex, grid
-4. **Access event.detail** - Not event.target.value
-5. **Always render modals** - Control with `open` attribute
-6. **Use vectors for dynamic classes** - Not string concatenation
-7. **Register icons at startup** - Before components render
-8. **Use gap for icon spacing** - Not margins on icons
-9. **Prevent form defaults** - `e.preventDefault()` on submit
+Always access via `event.detail.value`, never `event.target.value`.

@@ -23,9 +23,10 @@
                 [:p.ty-text-.mt-4
                  "The " [:code.ty-bg-neutral-.px-1.rounded "ty-icons"] " artifact provides tree-shakeable icon namespaces that work with Google Closure Compiler."]
 
-                [:p.ty-text-.mt-4.text-sm
-                 "💡 " [:strong "Note:"] " Ty components themselves are loaded via CDN (see Setup section below). The ClojureScript artifact "
-                 [:code.ty-bg-neutral-.px-1.rounded "dev.gersak/ty"] " is only needed for advanced features like Router, i18n, or Layout (see Advanced Features below)."]]))
+                [:div.ty-text-.mt-4.text-sm.flex.items-start.gap-2
+                 [:ty-icon.ty-text-info.flex-shrink-0.mt-0.5 {:name "lightbulb" :size "sm"}]
+                 [:span [:strong "Note:"] " Ty components themselves are loaded via CDN (see Setup section below). The ClojureScript artifact "
+                  [:code.ty-bg-neutral-.px-1.rounded "dev.gersak/ty"] " is only needed for advanced features like Router, i18n, or Layout (see Advanced Features below)."]]]))
 
 (defn html-setup-section
   "HTML setup section - CDN approach"
@@ -59,8 +60,9 @@
                  "The CDN script automatically registers all 18+ Ty web components. They're immediately available in your Replicant views."]
 
                 [:div.ty-bg-danger-.border.ty-border-danger.rounded.p-4.mt-4
-                 [:p.ty-text-danger.font-semibold.mb-2
-                  "⚠️ IMPORTANT: Use " [:code.ty-bg-danger.px-1.rounded "defer"] " for your compiled ClojureScript!"]
+                 [:p.ty-text-danger.font-semibold.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-danger.flex-shrink-0 {:name "alert-triangle" :size "sm"}]
+                  [:span "IMPORTANT: Use " [:code.ty-bg-danger.px-1.rounded "defer"] " for your compiled ClojureScript!"]]
                  [:p.ty-text-danger.text-sm
                   "Always add the " [:code.ty-bg-danger.px-1.rounded "defer"] " attribute to your compiled ClojureScript script tag. "
                   "This ensures that " [:code.ty-bg-danger.px-1.rounded "ty.js"] " loads first and properly registers the "
@@ -96,8 +98,9 @@
                  "clojure")
 
                 [:div.ty-bg-info-.border.ty-border-info.rounded.p-4.mt-4
-                 [:p.ty-text-info.text-sm.mb-2
-                  "👍 " [:strong "Tree-shaking benefits:"]]
+                 [:div.ty-text-info.text-sm.mb-2.flex.items-center.gap-2
+                  [:ty-icon.ty-text-success.flex-shrink-0 {:name "thumbs-up" :size "sm"}]
+                  [:strong "Tree-shaking benefits:"]]
                  [:ul.ty-text-info.text-sm.space-y-1.ml-4
                   [:li "• Only imported icons are included in your bundle"]
                   [:li "• Google Closure Compiler removes unused code"]
@@ -166,11 +169,12 @@
 (defn routing-section
   "Complete routing section with ty.router"
   []
-  (doc-section "🎯 Router - Tree-based Routing"
+  (doc-section "Router - Tree-based Routing"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " The router requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]
+                 [:div.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.ty-text-warning.flex-shrink-0.mt-0.5 {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " The router requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]]
 
                 (code-block
                  ";; deps.edn - Add ty artifact for router
@@ -369,11 +373,12 @@
 (defn i18n-section
   "Complete i18n section for translations"
   []
-  (doc-section "🌍 i18n - Internationalization System"
+  (doc-section "i18n - Internationalization System"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " The i18n system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]
+                 [:div.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.ty-text-warning.flex-shrink-0.mt-0.5 {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " The i18n system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]]
 
                 (code-block
                  ";; deps.edn - Add ty artifact for i18n
@@ -758,11 +763,12 @@
 (defn layout-section
   "Layout system section"
   []
-  (doc-section "📐 Layout - Container-Aware Responsive Utilities"
+  (doc-section "Layout - Container-Aware Responsive Utilities"
                [:div.p-4.ty-content.rounded-lg
                 [:div.ty-bg-warning-.border.ty-border-warning.rounded.p-3.mb-4
-                 [:p.ty-text-warning.text-sm
-                  "💡 " [:strong "Note:"] " The layout system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]
+                 [:div.ty-text-warning.text-sm.flex.items-start.gap-2
+                  [:ty-icon.ty-text-warning.flex-shrink-0.mt-0.5 {:name "lightbulb" :size "sm"}]
+                  [:span [:strong "Note:"] " The layout system requires the " [:code.ty-bg-warning.px-1.rounded "dev.gersak/ty"] " artifact:"]]]
 
                 (code-block
                  ";; deps.edn - Add ty artifact for layout

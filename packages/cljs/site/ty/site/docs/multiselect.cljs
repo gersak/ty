@@ -457,52 +457,46 @@
                        :on {:change multiselect-event-handler}}
       [:ty-tag {:value "javascript"
                 :pill true
-                :size "sm"
                 :flavor "warning"}
-       [:div.flex.items-center.gap-1.5
-        [:div.w-5.h-5.rounded.bg-yellow-400.flex.items-center.justify-center.rounded-full
-         [:span.text-xs.font-bold.text-black "JS"]]
-        "JavaScript"]]
+       [:div.w-4.h-4.rounded-full.bg-yellow-400.flex.items-center.justify-center
+        {:slot "start"}
+        [:span {:style {:font-size "9px" :font-weight "700" :color "black"}} "JS"]]
+       "JavaScript"]
       [:ty-tag {:value "python"
                 :pill true
-                :size "sm"
                 :flavor "primary"}
-       [:div.flex.items-center.gap-1.5
-        [:div.w-5.h-5.rounded.bg-blue-500.flex.items-center.justify-center.rounded-full
-         [:span.text-xs.font-bold.text-white "🐍"]]
-        "Python"]]
+       [:div.w-4.h-4.rounded-full.bg-blue-500.flex.items-center.justify-center
+        {:slot "start"}
+        [:span {:style {:font-size "10px"}} "🐍"]]
+       "Python"]
       [:ty-tag {:value "java"
                 :pill true
-                :size "sm"
                 :flavor "danger"}
-       [:div.flex.items-center.gap-1.5
-        [:div.w-5.h-5.rounded.bg-red-600.flex.items-center.justify-center.rounded-full
-         [:span.text-xs.font-bold.text-white "☕"]]
-        "Java"]]
+       [:div.w-4.h-4.rounded-full.bg-red-600.flex.items-center.justify-center
+        {:slot "start"}
+        [:span {:style {:font-size "10px"}} "☕"]]
+       "Java"]
       [:ty-tag {:value "clojure"
                 :pill true
-                :size "sm"
                 :flavor "success"}
-       [:div.flex.items-center.gap-1.5
-        [:div.w-5.h-5.rounded.bg-green-600.flex.items-center.justify-center.rounded-full
-         [:span.text-xs.font-bold.text-white "λ"]]
-        "Clojure"]]
+       [:div.w-4.h-4.rounded-full.bg-green-600.flex.items-center.justify-center
+        {:slot "start"}
+        [:span {:style {:font-size "9px" :font-weight "700" :color "white"}} "λ"]]
+       "Clojure"]
       [:ty-tag {:value "rust"
                 :pill true
-                :size "sm"
                 :flavor "warning"}
-       [:div.flex.items-center.gap-1.5
-        [:div.w-5.h-5.rounded.bg-orange-500.flex.items-center.justify-center.rounded-full
-         [:span.text-xs.font-bold.text-white "🦀"]]
-        "Rust"]]
+       [:div.w-4.h-4.rounded-full.bg-orange-500.flex.items-center.justify-center
+        {:slot "start"}
+        [:span {:style {:font-size "10px"}} "🦀"]]
+       "Rust"]
       [:ty-tag {:value "go"
                 :pill true
-                :size "sm"
                 :flavor "info"}
-       [:div.flex.items-center.gap-1.5
-        [:div.w-5.h-5.rounded.bg-cyan-500.flex.items-center.justify-center.rounded-full
-         [:span.text-xs.font-bold.text-white "Go"]]
-        "Go"]]]]
+       [:div.w-4.h-4.rounded-full.bg-cyan-500.flex.items-center.justify-center
+        {:slot "start"}
+        [:span {:style {:font-size "9px" :font-weight "700" :color "white"}} "Go"]]
+       "Go"]]]
     (code-block "<ty-multiselect value=\"javascript,python\" label=\"Programming Languages\" placeholder=\"Select languages...\">
   <ty-tag value=\"javascript\" pill size=\"sm\">JavaScript</ty-tag>
   <ty-tag value=\"python\" pill size=\"sm\">Python</ty-tag>
@@ -530,38 +524,26 @@
                  :pill true
                  :size "sm"
                  :flavor "success"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "check-circle"
-                    :size "12"
-                    :class "ty-text-success++"}]
-         "Approved"]]
+        [:ty-icon {:slot "start" :name "check-circle" :size "12"}]
+        "Approved"]
        [:ty-tag {:value "verified"
                  :pill true
                  :size "sm"
                  :flavor "success"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "shield"
-                    :size "12"
-                    :class "ty-text-success++"}]
-         "Verified"]]
+        [:ty-icon {:slot "start" :name "shield" :size "12"}]
+        "Verified"]
        [:ty-tag {:value "confirmed"
                  :pill true
                  :size "sm"
                  :flavor "success"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "check"
-                    :size "12"
-                    :class "ty-text-success++"}]
-         "Confirmed"]]
+        [:ty-icon {:slot "start" :name "check" :size "12"}]
+        "Confirmed"]
        [:ty-tag {:value "validated"
                  :pill true
                  :size "sm"
                  :flavor "success"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "star"
-                    :size "12"
-                    :class "ty-text-success++"}]
-         "Validated"]]]]
+        [:ty-icon {:slot "start" :name "star" :size "12"}]
+        "Validated"]]]
      (code-block "<ty-multiselect flavor=\"success\" value=\"approved,verified\" placeholder=\"Select approved items...\">
   <ty-tag value=\"approved\" pill size=\"sm\" flavor=\"success\">✓ Approved</ty-tag>
   <ty-tag value=\"verified\" pill size=\"sm\" flavor=\"success\">✓ Verified</ty-tag>
@@ -581,56 +563,38 @@
                  :pill true
                  :size "sm"
                  :flavor "danger"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "x-circle"
-                    :size "12"
-                    :class "ty-text-danger++"}]
-         "Critical Error"]]
+        [:ty-icon {:slot "start" :name "x-circle" :size "12"}]
+        "Critical Error"]
        [:ty-tag {:value "failed"
                  :pill true
                  :size "sm"
                  :flavor "danger"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "alert-triangle"
-                    :size "12"
-                    :class "ty-text-danger++"}]
-         "Process Failed"]]
+        [:ty-icon {:slot "start" :name "alert-triangle" :size "12"}]
+        "Process Failed"]
        [:ty-tag {:value "rejected"
                  :pill true
                  :size "sm"
                  :flavor "danger"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "shield"
-                    :size "12"
-                    :class "ty-text-danger++"}]
-         "Access Rejected"]]
+        [:ty-icon {:slot "start" :name "shield" :size "12"}]
+        "Access Rejected"]
        [:ty-tag {:value "invalid"
                  :pill true
                  :size "sm"
                  :flavor "danger"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "alert-circle"
-                    :size "12"
-                    :class "ty-text-danger++"}]
-         "Invalid Data"]]
+        [:ty-icon {:slot "start" :name "alert-circle" :size "12"}]
+        "Invalid Data"]
        [:ty-tag {:value "timeout"
                  :pill true
                  :size "sm"
                  :flavor "danger"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "clock"
-                    :size "12"
-                    :class "ty-text-danger++"}]
-         "Timeout"]]
+        [:ty-icon {:slot "start" :name "clock" :size "12"}]
+        "Timeout"]
        [:ty-tag {:value "offline"
                  :pill true
                  :size "sm"
                  :flavor "danger"}
-        [:div.flex.items-center.gap-1.5
-         [:ty-icon {:name "wifi-off"
-                    :size "12"
-                    :class "ty-text-danger++"}]
-         "Connection Lost"]]]]
+        [:ty-icon {:slot "start" :name "wifi-off" :size "12"}]
+        "Connection Lost"]]]
      (code-block "<ty-multiselect flavor=\"danger\" value=\"error,failed\" placeholder=\"Select problem areas...\">
   <ty-tag value=\"error\" pill size=\"sm\" flavor=\"danger\">✗ Error</ty-tag>
   <ty-tag value=\"failed\" pill size=\"sm\" flavor=\"danger\">✗ Failed</ty-tag>
@@ -806,7 +770,7 @@
      [:li "• " [:strong "Tag flavors"] " should match the multiselect flavor for visual consistency"]]]
    [:div.mb-6
     [:h3.text-xl.font-semibold.ty-text++.mb-2 "Tag Size Recommendations"]
-    [:div.flex.gap-4.items-start.mb-3
+    [:div.grid.grid-cols-1.sm:grid-cols-2.gap-4.items-start.mb-3
      [:div.flex.flex-col.gap-2
       [:ty-multiselect {:placeholder "Small tags (recommended)"
                         :value "small1,small2"
@@ -831,7 +795,7 @@
     [:p.ty-text-.text-sm "Small tags (" [:code.ty-bg-neutral-.px-1.rounded "size=\"sm\""] ") are recommended for better space efficiency."]]
    [:div
     [:h3.text-xl.font-semibold.ty-text++.mb-2 "Pill vs. Rectangular Tags"]
-    [:div.flex.gap-4.items-start.mb-3
+    [:div.grid.grid-cols-1.sm:grid-cols-2.gap-4.items-start.mb-3
      [:div.flex.flex-col.gap-2
       [:ty-multiselect {:placeholder "Pill tags (recommended)"
                         :value "pill1,pill2"

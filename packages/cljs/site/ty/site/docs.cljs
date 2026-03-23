@@ -21,6 +21,7 @@
    [ty.site.docs.react :as react-docs]
    [ty.site.docs.replicant :as replicant-docs]
    [ty.site.docs.resize-observer :as resize-observer-docs]
+   [ty.site.docs.scroll-container :as scroll-container-docs]
    [ty.site.docs.tabs :as tabs-docs]
    [ty.site.docs.tag :as tag-docs]
    [ty.site.docs.textarea :as textarea-docs]
@@ -136,6 +137,13 @@
     :name "Resize Observer"
     :description "Track element size changes"
     :tags ["responsive" "size" "layout" "observer"]}
+   {:id :ty.site.docs/scroll-container
+    :segment "scroll-container"
+    :icon "scroll-text"
+    :view scroll-container-docs/view
+    :name "Scroll Container"
+    :description "Scrollable container with shadow indicators"
+    :tags ["scroll" "overflow" "container" "shadow"]}
    {:id :ty.site.docs/tabs
     :segment "tabs"
     :icon "layout"

@@ -82,7 +82,7 @@
   "Interactive demo with visual size display"
   []
   [:div.ty-elevated.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "🎯 Interactive Demo"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "target" :size "sm"}] "Interactive Demo"]
    [:p.ty-text-.mb-4 "Resize the container below and watch the dimensions update in real-time:"]
 
    [:ty-resize-observer#interactive-demo.ty-border-primary.rounded-lg.border-2
@@ -117,7 +117,8 @@
     (let [size (get-in @state/state [:element-sizes "interactive-demo"])]
       [:div
        [:div.flex.items-center.gap-2.mb-4
-        [:span.text-lg.font-semibold.ty-text "👆 Drag corner to resize"]]
+        [:span.text-lg.font-semibold.ty-text "Drag corner to resize"]
+        [:ty-icon {:name "hand" :size "sm"}]]
 
        (if size
          [:div.space-y-3
@@ -134,7 +135,7 @@
   "Example showing layout changes based on container width"
   []
   [:div.ty-elevated.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "📱 Responsive Layout"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "smartphone" :size "sm"}] "Responsive Layout"]
    [:p.ty-text-.mb-4 "Automatically switch between mobile/desktop layouts based on container width (not window width):"]
 
    [:ty-resize-observer#responsive-layout.border-2.ty-border-primary.rounded-lg
@@ -206,7 +207,7 @@
   "Example showing debounce benefit for expensive operations"
   []
   [:div.ty-content.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "⚡ Debounced Performance"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "zap" :size "sm"}] "Debounced Performance"]
    [:p.ty-text-.mb-4 "Reduce update frequency for expensive operations like API calls or complex calculations:"]
 
    [:div.grid.grid-cols-1.md:grid-cols-2.gap-4
@@ -307,7 +308,7 @@
   "Example showing multiple nested resize observers"
   []
   [:div.ty-elevated.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "🔗 Nested Observers"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "link" :size "sm"}] "Nested Observers"]
    [:p.ty-text-.mb-4 "Track multiple container sizes independently - useful for complex layouts:"]
 
    [:ty-resize-observer#outer-container.ty-border-primary.border-2.rounded-lg
@@ -404,7 +405,7 @@
   "Flexbox layout with two independent resize observers"
   []
   [:div.ty-elevated.rounded-lg.p-6
-   [:h3.text-xl.font-semibold.ty-text+.mb-4 "📐 Flexbox Layout with Dual Observers"]
+   [:h3.text-xl.font-semibold.ty-text+.mb-4.flex.items-center.gap-2 [:ty-icon {:name "ruler" :size "sm"}] "Flexbox Layout with Dual Observers"]
    [:p.ty-text-.mb-4 "Both panels use independent resize observers for their own layout context. Perfect for split-pane layouts:"]
 
    [:div.flex.gap-4 {:style {:height "320px"}}
@@ -450,8 +451,8 @@
 
         [:div.text-center.text-sm
          (if is-compact
-           [:div.ty-text-warning "📱 Compact"]
-           [:div.ty-text-success "🎯 Full content"])]])]
+           [:div.ty-text-warning.flex.items-center.gap-1 [:ty-icon {:name "smartphone" :size "xs"}] "Compact"]
+           [:div.ty-text-success.flex.items-center.gap-1 [:ty-icon {:name "target" :size "xs"}] "Full content"])]])]
 
     ;; Main content with resize observer
     [:ty-resize-observer#flex-main.ty-bg-success-.ty-border-success.rounded-lg.border-2.p-4.flex-1
@@ -496,9 +497,9 @@
 
         [:div.text-center
          (cond
-           (>= width 768) [:div.ty-text-success "🖥️ Desktop Layout"]
-           (>= width 480) [:div.ty-text-primary "💻 Tablet Layout"]
-           :else [:div.ty-text-secondary "📱 Mobile Layout"])]])]]
+           (>= width 768) [:div.ty-text-success.flex.items-center.gap-1 [:ty-icon {:name "monitor" :size "xs"}] "Desktop Layout"]
+           (>= width 480) [:div.ty-text-primary.flex.items-center.gap-1 [:ty-icon {:name "laptop" :size "xs"}] "Tablet Layout"]
+           :else [:div.ty-text-secondary.flex.items-center.gap-1 [:ty-icon {:name "smartphone" :size "xs"}] "Mobile Layout"])]])]]
 
    [:div.mt-4.ty-bg-neutral-.rounded.p-3
     [:p.ty-text-.text-sm
@@ -687,19 +688,19 @@ function ChildComponent() {
        "Do's"]
       [:ul.space-y-2.ty-text
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Always provide a unique ID attribute"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Use debounce for expensive operations (layout recalculations, API calls)"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Unsubscribe from callbacks when component unmounts"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-success {:name "check"
+        [:ty-icon.mr-2.mt-1.ty-text-success {:name "check"
                                                :size "16"}]
         [:span "Use CSS Container Queries for pure layout changes when possible"]]]]
 
@@ -711,19 +712,19 @@ function ChildComponent() {
        "Don'ts"]
       [:ul.space-y-2.ty-text
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't forget to unsubscribe - memory leaks!"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't use without an ID - it won't register"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't poll getSize() in a tight loop - use callbacks"]]
        [:li.flex.items-start
-        [:ty-icon.mr-2.mt-0.5.ty-text-danger {:name "x"
+        [:ty-icon.mr-2.mt-1.ty-text-danger {:name "x"
                                               :size "16"}]
         [:span "Don't use for simple responsive design - prefer CSS media queries"]]]]]]))
 

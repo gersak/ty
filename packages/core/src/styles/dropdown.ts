@@ -1,13 +1,15 @@
 /**
  * Dropdown Component Styles
- * 
+ *
  * ARCHITECTURE:
  * - Shared styles: Apply to both desktop and mobile
  * - Desktop styles: Scoped under .dropdown-mode-desktop
  * - Mobile styles: Scoped under .dropdown-mode-mobile
- * 
+ *
  * This prevents CSS conflicts between desktop dialog and mobile modal implementations.
  */
+
+import { customScrollbarStyles } from './custom-scrollbar.js'
 
 export const dropdownStyles = `
 /* ==================== SHARED STYLES ==================== */
@@ -20,7 +22,7 @@ export const dropdownStyles = `
 }
 
 :host {
-  --mobile-border-color: #5858587d; 
+  --mobile-border-color: var(--ty-border, #5858587d);
 }
 
 .dropdown-container {
@@ -417,7 +419,6 @@ export const dropdownStyles = `
   background: var(--ty-input-bg);
   border: 1px solid var(--ty-input-border);
   border-radius: var(--ty-radius-lg);
-  box-shadow: var(--ty-shadow-md);
   max-height: 16rem;
   width: 100%;
   max-width: 100%;
@@ -425,6 +426,7 @@ export const dropdownStyles = `
   overflow-y: auto;
   scroll-behavior: smooth;
   box-sizing: border-box;
+  position: relative;
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -432,6 +434,27 @@ export const dropdownStyles = `
   transition:
     opacity 100ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 200ms cubic-bezier(0.16, 1, 0.3, 1);
+
+}
+
+/* Hide native scrollbar only when custom scrollbar is active */
+.dropdown-mode-desktop .dropdown-options.ty-custom-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.dropdown-mode-desktop .dropdown-options.ty-custom-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Options wrapper - positioned container for scrollbar track */
+.dropdown-mode-desktop .dropdown-options-wrapper {
+  position: relative;
+}
+
+/* Show custom scrollbar on hover over options */
+.dropdown-mode-desktop .dropdown-options-wrapper:hover .ty-scrollbar-track-y.has-overflow {
+  opacity: 1;
 }
 
 /* Option elements */
@@ -600,8 +623,8 @@ export const dropdownStyles = `
   height: 100%;
 }
 
-/* Mobile modal - full screen overlay with centered floating card */
-.dropdown-mode-mobile .mobile-modal {
+/* Mobile dialog - full screen overlay with centered floating card */
+.dropdown-mode-mobile .mobile-dialog {
   position: fixed;
   top: 0;
   left: 0;
@@ -609,62 +632,61 @@ export const dropdownStyles = `
   bottom: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
-  display: flex;
-  align-items: flex-start; /* Align to top */
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: 0;
+  padding: 0;
+  padding-top: 10vh;
+  border: none;
+  background: transparent;
+  align-items: flex-start;
   justify-content: center;
-  padding-top: 10vh; /* Fixed position from top */
   opacity: 0;
   transition: opacity 300ms ease;
-  pointer-events: none;
 }
 
-.dropdown-mode-mobile .mobile-modal.open {
+/* When opened via showModal(), add flex layout */
+.dropdown-mode-mobile .mobile-dialog[open] {
+  display: flex;
+}
+
+.dropdown-mode-mobile .mobile-dialog.open {
   opacity: 1;
-  pointer-events: auto;
 }
 
-/* Mobile backdrop - full viewport with blur */
-.dropdown-mode-mobile .mobile-modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+/* Native dialog backdrop with blur */
+.dropdown-mode-mobile .mobile-dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
-  z-index: 1;
 }
 
-/* Mobile content container - floating card (transparent background) */
-.dropdown-mode-mobile .mobile-modal-content {
+/* Mobile content container - floating card */
+.dropdown-mode-mobile .mobile-dialog-content {
   position: relative;
-  z-index: 2;
   display: flex;
   flex-direction: column;
-  width: calc(100% - 32px); /* Side margins */
-  max-width: 400px; /* Constrained width */
+  width: calc(100% - 32px);
+  max-width: 400px;
   min-height: 200px;
-  max-height: calc(90vh - 10vh); /* Account for top padding */
+  max-height: calc(90vh - 10vh);
   opacity: 0;
   transform: scale(0.95);
-  transition: 
+  transition:
     opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
     transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.dropdown-mode-mobile .mobile-modal.open .mobile-modal-content {
+.dropdown-mode-mobile .mobile-dialog.open .mobile-dialog-content {
   opacity: 1;
   transform: scale(1);
 }
 
-/* Mobile search header - floating row with search and close */
+/* Mobile search header - label floats above, search + close below */
 .dropdown-mode-mobile .mobile-search-header {
   flex-shrink: 0;
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
   margin-bottom: 16px;
   padding: 0;
   background: transparent;
@@ -678,16 +700,28 @@ export const dropdownStyles = `
   width: 100%;
 }
 
-/* Header for non-searchable (close button only) */
+/* Header for non-searchable (label + close button) */
 .dropdown-mode-mobile .mobile-header-nosearch {
   flex-shrink: 0;
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   margin-bottom: 16px;
   padding: 0;
   background: transparent;
   position: relative;
   min-height: 40px;
+}
+
+.dropdown-mode-mobile .mobile-header-label {
+  position: absolute;
+  bottom: 100%;
+  left: 6px;
+  margin-bottom: 4px;
+  font-size: var(--ty-font-lg);
+  font-weight: 700;
+  color: var(--ty-color-neutral);
+  pointer-events: none;
 }
 
 /* Close button - circular with border */
@@ -699,20 +733,18 @@ export const dropdownStyles = `
   align-items: center;
   justify-content: center;
   background: var(--ty-surface-floating);
-  border: 1px solid var(--ty-border-);
-  border-radius: 50%; /* Circular */
-  color: var(--ty-text-);
+  border: 2px solid var(--mobile-border-color);
+  border-radius: 50%;
+  color: var(--ty-text-strong);
   cursor: pointer;
   transition: var(--ty-transition-all);
   padding: 0;
-  border: 3px solid;
-  border-color: var(--mobile-border-color);
 }
 
 .dropdown-mode-mobile .mobile-close-button:hover {
   background: var(--ty-bg-neutral);
   border-color: var(--ty-border);
-  color: var(--ty-text);
+  color: var(--ty-text-strong);
 }
 
 .dropdown-mode-mobile .mobile-close-button:active {
@@ -731,7 +763,7 @@ export const dropdownStyles = `
   box-sizing: border-box;
   background: var(--ty-surface-floating);
   color: var(--ty-text);
-  border: 1px solid var(--ty-border-);
+  border: 1px solid var(--ty-border-soft);
   border-radius: var(--ty-radius-md);
   font-family: var(--ty-font-sans);
   font-size: var(--ty-font-sm);
@@ -746,7 +778,7 @@ export const dropdownStyles = `
 }
 
 .dropdown-mode-mobile .mobile-search-input::placeholder {
-  color: var(--ty-text--);
+  color: var(--ty-text-faint);
 }
 
 /* Mobile options container - floating card with elevation */
@@ -758,7 +790,7 @@ export const dropdownStyles = `
   -webkit-overflow-scrolling: touch;
   background: var(--ty-surface-floating); /* Floating card background */
   border-radius: var(--ty-radius-lg);
-  border: 1px solid var(--ty-border-);
+  border: 1px solid var(--ty-border-soft);
   box-shadow: 
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
@@ -887,4 +919,7 @@ export const dropdownStyles = `
 :host([readonly]) .dropdown-stub slot[name="selected"] {
   cursor: initial;
 }
+
+/* Custom scrollbar styles */
+${customScrollbarStyles}
 `

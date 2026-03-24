@@ -274,7 +274,7 @@ button.filled-outlined.primary:hover:not(:disabled) {
 }
 
 button.filled-outlined.primary:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-primary);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-primary);
 }
 
 /* Accent */
@@ -283,7 +283,7 @@ button.accent.primary {
 }
 
 button.accent.primary:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-primary);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-primary);
 }
 
 /* Filled */
@@ -329,7 +329,7 @@ button.filled-outlined.secondary:hover:not(:disabled) {
 }
 
 button.filled-outlined.secondary:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-secondary);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-secondary);
 }
 
 /* Accent */
@@ -338,7 +338,7 @@ button.accent.secondary {
 }
 
 button.accent.secondary:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-secondary);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-secondary);
 }
 
 /* Filled */
@@ -384,7 +384,7 @@ button.filled-outlined.success:hover:not(:disabled) {
 }
 
 button.filled-outlined.success:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-success);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-success);
 }
 
 /* Accent */
@@ -393,7 +393,7 @@ button.accent.success {
 }
 
 button.accent.success:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-success);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-success);
 }
 
 /* Filled */
@@ -439,7 +439,7 @@ button.filled-outlined.danger:hover:not(:disabled) {
 }
 
 button.filled-outlined.danger:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-danger);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-danger);
 }
 
 /* Accent */
@@ -448,7 +448,7 @@ button.accent.danger {
 }
 
 button.accent.danger:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-danger);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-danger);
 }
 
 /* Filled */
@@ -494,7 +494,7 @@ button.filled-outlined.warning:hover:not(:disabled) {
 }
 
 button.filled-outlined.warning:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-warning);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-warning);
 }
 
 /* Accent */
@@ -503,7 +503,7 @@ button.accent.warning {
 }
 
 button.accent.warning:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-warning);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-warning);
 }
 
 /* Filled */
@@ -549,7 +549,7 @@ button.filled-outlined.neutral:hover:not(:disabled) {
 }
 
 button.filled-outlined.neutral:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-neutral);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-neutral);
 }
 
 /* Accent */
@@ -558,7 +558,7 @@ button.accent.neutral {
 }
 
 button.accent.neutral:focus-visible {
-  box-shadow: 0 0 0 2px var(--ty-bg), 0 0 0 4px var(--ty-color-neutral);
+  box-shadow: 0 0 0 2px var(--ty-focus-ring-gap), 0 0 0 4px var(--ty-color-neutral);
 }
 
 /* Filled */

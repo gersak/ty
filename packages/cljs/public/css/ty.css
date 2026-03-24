@@ -196,6 +196,9 @@ BACKGROUND COLORS
   --ty-bg-strong: #e2e8f0;
   /* Maximum elevation - clear distinction */
 
+  /* Focus ring gap - matches page background for button focus ring effect */
+  --ty-focus-ring-gap: #ffffff;
+
   /* Primary backgrounds */
   --ty-bg-primary: #dbeafe;
   --ty-bg-primary-mild: #bfdbfe;
@@ -251,6 +254,16 @@ BORDER COLORS
   --ty-border-accent-mild: var(--ty-color-accent-mild);
   --ty-border-accent: var(--ty-color-accent);
   --ty-border-accent-soft: var(--ty-color-accent-soft);
+
+  /* =================================================================
+SCROLLBAR
+================================================================= */
+
+  --ty-scrollbar-thumb: rgba(0, 0, 0, 0.35);
+  --ty-scrollbar-thumb-hover: rgba(0, 0, 0, 0.5);
+  --ty-scrollbar-thumb-active: rgba(0, 0, 0, 0.6);
+  --ty-scrollbar-track: transparent;
+  --ty-scrollbar-track-hover: rgba(0, 0, 0, 0.06);
 
   /* =================================================================
 SURFACE SYSTEM
@@ -513,7 +526,7 @@ Emphasis logic inverts: lighter = more emphasis
   /* Accent - dark mode (emphasis inverted) */
   --ty-color-accent-mild: #ffb366; /* lighter = more emphasis */
   --ty-color-accent: #e67b00; /* base */
-  --ty-color-accent-soft: #8b4d00; /* darker = less emphasis */
+  --ty-color-accent-soft: #ac5f00; /* darker = less emphasis */
 
   /* Backgrounds for dark mode */
   --ty-bg-faint: #0f1419;
@@ -521,6 +534,9 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-bg: #1f2937;
   --ty-bg-mild: #374151;
   --ty-bg-strong: #6b7280;
+
+  /* Focus ring gap */
+  --ty-focus-ring-gap: #1f2937;
 
   /* Semantic backgrounds - much darker in dark mode */
   --ty-bg-primary-mild: #43517a;
@@ -558,6 +574,13 @@ Emphasis logic inverts: lighter = more emphasis
   --ty-border: #535353;
   --ty-border-soft: #1f2937;
   --ty-border-faint: #030712;
+
+  /* Scrollbar - dark mode */
+  --ty-scrollbar-thumb: rgba(255, 255, 255, 0.22);
+  --ty-scrollbar-thumb-hover: rgba(255, 255, 255, 0.38);
+  --ty-scrollbar-thumb-active: rgba(255, 255, 255, 0.48);
+  --ty-scrollbar-track: transparent;
+  --ty-scrollbar-track-hover: rgba(255, 255, 255, 0.06);
 
   --ty-surface-canvas: black;
   --ty-surface-content: #1a1a1a;
@@ -908,19 +931,6 @@ SEMANTIC BACKGROUND UTILITIES
   background-color: var(--ty-bg-accent-soft);
 }
 
-/* Legacy background utilities */
-.ty-bg {
-  background-color: var(--ty-bg);
-}
-
-.ty-bg\+ {
-  background-color: var(--ty-bg-mild);
-}
-
-.ty-bg\- {
-  background-color: var(--ty-bg-soft);
-}
-
 /* =================================================================
 TEXT HIERARCHY UTILITIES
 ================================================================= */
@@ -1157,12 +1167,12 @@ COMPONENT UTILITIES
 
 /* Card/Panel utilities */
 .ty-card {
-  background-color: var(--ty-bg);
+  background-color: var(--ty-surface-elevated);
   color: var(--ty-color-neutral-mild);
 }
 
 .ty-card-elevated {
-  background-color: var(--ty-bg-mild);
+  background-color: var(--ty-surface-floating);
   box-shadow: var(--ty-shadow-md);
 }
 
@@ -1543,10 +1553,6 @@ RESPONSIVE VARIANTS
 
 /* Small screens and up */
 @media (min-width: 640px) {
-  .sm\:ty-bg {
-    background-color: var(--ty-bg);
-  }
-
   .sm\:ty-bg-primary {
     background-color: var(--ty-bg-primary);
   }
@@ -1558,10 +1564,6 @@ RESPONSIVE VARIANTS
 
 /* Medium screens and up */
 @media (min-width: 768px) {
-  .md\:ty-bg {
-    background-color: var(--ty-bg);
-  }
-
   .md\:ty-bg-primary {
     background-color: var(--ty-bg-primary);
   }
@@ -1573,15 +1575,23 @@ RESPONSIVE VARIANTS
 
 /* Large screens and up */
 @media (min-width: 1024px) {
-  .lg\:ty-bg {
-    background-color: var(--ty-bg);
-  }
-
   .lg\:ty-bg-primary {
     background-color: var(--ty-bg-primary);
   }
 
   .lg\:ty-text-primary {
     color: var(--ty-color-primary);
+  }
+}
+
+/* =================================================================
+   MOBILE FONT SIZE
+   Prevents iOS Safari auto-zoom on input focus (requires >= 16px)
+   and improves readability on small screens.
+================================================================= */
+
+@media (max-width: 768px) {
+  :root {
+    --ty-font-sm: 1rem;
   }
 }

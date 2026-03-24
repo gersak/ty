@@ -165,6 +165,45 @@
       [:div.ty-text-neutral++.font-medium "ty-bg-neutral-"]
       [:div.ty-text-neutral.text-sm "Softer background"]]]]])
 
+(defn accent-demo []
+  "Shows the accent color system"
+  [:div.ty-elevated.p-6.rounded-lg
+   [:h3.text-lg.font-semibold.ty-text.mb-4 "Accent Color"]
+   [:p.ty-text-.mb-6 "A distinct color for highlights, active states, and branding that sits outside the semantic palette."]
+
+   [:div.grid.gap-6.md:grid-cols-2.lg:grid-cols-3
+    ;; Accent backgrounds
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Accent Backgrounds"]
+     [:div.ty-bg-accent+.p-4.rounded-lg.text-center
+      [:div.ty-text-accent++.font-medium "ty-bg-accent+"]
+      [:div.ty-text-accent.text-sm "Stronger"]]
+     [:div.ty-bg-accent.p-4.rounded-lg.text-center
+      [:div.ty-text-accent++.font-medium "ty-bg-accent"]
+      [:div.ty-text-accent.text-sm "Base"]]
+     [:div.ty-bg-accent-.p-4.rounded-lg.text-center
+      [:div.ty-text-accent++.font-medium "ty-bg-accent-"]
+      [:div.ty-text-accent.text-sm "Softer"]]]
+
+    ;; Accent text
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Accent Text Variants"]
+     [:div.ty-bg-accent-.p-4.rounded-lg.space-y-2
+      [:div.ty-text-accent+ "ty-text-accent+"]
+      [:div.ty-text-accent "ty-text-accent"]
+      [:div.ty-text-accent- "ty-text-accent-"]]]
+
+    ;; Accent borders
+    [:div.space-y-3
+     [:h4.text-sm.font-medium.ty-text "Accent Borders"]
+     [:div.space-y-3
+      [:div.p-4.rounded-lg.border-2.ty-border-accent+.text-center
+       [:div.ty-text.text-sm "ty-border-accent+"]]
+      [:div.p-4.rounded-lg.border-2.ty-border-accent.text-center
+       [:div.ty-text.text-sm "ty-border-accent"]]
+      [:div.p-4.rounded-lg.border-2.ty-border-accent-.text-center
+       [:div.ty-text.text-sm "ty-border-accent-"]]]]]])
+
 (defn surface-classes-demo []
   "Shows surface classes nested to demonstrate layering hierarchy"
   [:div.ty-elevated.p-6.rounded-lg
@@ -437,6 +476,7 @@ button {
    ;; Main content sections
    (text-variants-demo)
    (background-variants-demo)
+   (accent-demo)
    (surface-classes-demo)
    (practical-examples)
    (code-examples)

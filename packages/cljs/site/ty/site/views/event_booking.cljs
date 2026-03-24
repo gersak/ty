@@ -466,48 +466,43 @@
            ;; Available options
            [:ty-tag {:value "wifi-upgrade"
                      :flavor "warning"}
-            [:div.flex.items-center.gap-3
+            [:div.flex.items-center.gap-2.py-1
+             [:ty-icon {:name "satellite-dish" :size "xs"}]
              [:div
-              [:ty-icon.w-6.h-6.ty-bg-primary+.rounded {:name "satellite-dish" :size "xs"}]]
-             [:div.flex-1
-              [:div.font-medium "Premium Wi-Fi"]
-              [:div.text-xs.ty-text- "High-speed dedicated connection • +$10"]]]]
+              [:div.font-medium.text-sm "Premium Wi-Fi"]
+              [:div.text-xs.opacity-70 "+$10"]]]]
 
            [:ty-tag {:value "parking"
                      :flavor "warning"}
-            [:div.flex.items-center.gap-3
+            [:div.flex.items-center.gap-2.py-1
+             [:ty-icon {:name "car" :size "xs"}]
              [:div
-              [:ty-icon.ty-elevated.w-6.h-6.rounded {:name "car" :size "xs"}]]
-             [:div.flex-1
-              [:div.font-medium "Reserved Parking"]
-              [:div.text-xs.ty-text- "Guaranteed parking spots • +$5/spot"]]]]
+              [:div.font-medium.text-sm "Reserved Parking"]
+              [:div.text-xs.opacity-70 "+$5/spot"]]]]
 
            [:ty-tag {:value "security"
                      :flavor "danger"}
-            [:div.flex.items-center.gap-3
+            [:div.flex.items-center.gap-2.py-1
+             [:ty-icon {:name "shield" :size "xs"}]
              [:div
-              [:ty-icon.ty-floating.w-6.h-6.ty-bg-danger+.rounded {:name "shield" :size "xs"}]]
-             [:div.flex-1
-              [:div.font-medium "Security Service"]
-              [:div.text-xs.ty-text- "Professional security staff • +$50/hour"]]]]
+              [:div.font-medium.text-sm "Security Service"]
+              [:div.text-xs.opacity-70 "+$50/hour"]]]]
 
            [:ty-tag {:value "recording"
                      :flavor "secondary"}
-            [:div.flex.items-center.gap-3
+            [:div.flex.items-center.gap-2.py-1
+             [:ty-icon {:name "video" :size "xs"}]
              [:div
-              [:ty-icon.w-6.h-6.ty-bg-secondary+.rounded {:name "video" :size "xs"}]]
-             [:div.flex-1
-              [:div.font-medium "Video Recording"]
-              [:div.text-xs.ty-text- "Professional recording setup • +$75"]]]]
+              [:div.font-medium.text-sm "Video Recording"]
+              [:div.text-xs.opacity-70 "+$75"]]]]
 
            [:ty-tag {:value "translation"
                      :flavor "danger"}
-            [:div.flex.items-center.gap-3
+            [:div.flex.items-center.gap-2.py-1
+             [:ty-icon {:name "globe" :size "xs"}]
              [:div
-              [:ty-icon.w-6.h-6.ty-bg-secondary-.rounded {:name "globe" :size "xs"}]]
-             [:div.flex-1
-              [:div.font-medium "Live Translation"]
-              [:div.text-xs.ty-text- "Multi-language interpretation • +$100/language"]]]]]]]]]]
+              [:div.font-medium.text-sm "Live Translation"]
+              [:div.text-xs.opacity-70 "+$100/language"]]]]]]]]]]
 
      ;; Feature Showcase
      [:div.grid.grid-cols-1.md:grid-cols-2.lg:grid-cols-4.gap-6.mt-12

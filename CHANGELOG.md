@@ -5,13 +5,76 @@ All notable changes to the Ty web components library will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.3.1] - 2026-02-XX (Current Release)
+## [0.4.x] - 2026-03-25
 
-### ✨ Added
+### New Components
+
+4 new web components added (19 → 23 total):
+
+- **`ty-wizard`** + **`ty-step`** — Multi-step stepper with progress line, step indicators, completion tracking, and horizontal/vertical orientation. Carousel-based navigation between steps.
+- **`ty-scroll-container`** — Scroll wrapper with edge shadow indicators showing there's more content above/below. Custom scrollbar styling, configurable max-height, horizontal overflow support.
+- **`ty-resize-observer`** — Self-observing utility element that tracks its own dimensions in a global registry (`window.tyResizeObserver`). Used by `ty.layout` for container-aware responsive layouts.
+
+All 4 components include React wrappers in `@gersak/ty-react`.
+
+### Mobile Enhancements
+
+- **Calendar** — Fullscreen mobile calendar with touch-optimized scrolling, merged from `feature/mobile-calendar` branch
+- **Dropdown** — Mobile fullscreen mode with improved touch interactions
+- **Multiselect** — Mobile fullscreen mode matching dropdown behavior
+- **Numeric inputs** — Mobile support for currency, percent, and compact input types
+- **Buttons** — `wide` attribute for full-width mobile-friendly buttons, responsive size guidelines
+
+### Documentation Overhaul
+
+Complete restructuring of all documentation into `guides/` folder.
+
+#### Added
+- **`guides/clj/ROUTING_GUIDE.md`** - Standalone ty.router guide (extracted from Replicant guide)
+  - Full API: `link`, `navigate!`, `rendered?`, `init!`, query params
+  - Authorization with roles/permissions, automatic landing redirects
+  - Framework-agnostic — works with any ClojureScript library
+- **`guides/clj/I18N_GUIDE.md`** - Internationalization guide for ty.i18n
+  - Keyword-based and string-based translations
+  - Number formatting (currency, percent, compact) via Intl.NumberFormat
+  - Date/time formatting (presets, relative time) via Intl.DateTimeFormat
+  - Async loading from URLs (EDN/JSON), Locale protocol
+- **`guides/clj/LAYOUT_GUIDE.md`** - Responsive layout guide for ty.layout
+  - Container-aware breakpoints (vs CSS media queries)
+  - `with-window`, `with-container`, `with-resize-observer` macros
+  - Breakpoint queries, responsive values, grid helpers, aspect ratio
+- **`guides/DATASTAR_TY_GUIDE.md`** - Datastar + Ty guide (moved from root)
+
+#### Changed
+- **All guides moved to `guides/`** with subdirectories:
+  - `guides/` — general (TY_GUIDE, CSS_GUIDE, DATASTAR_TY_GUIDE)
+  - `guides/js/` — JavaScript/React (REACT_TY_GUIDE)
+  - `guides/clj/` — ClojureScript (REPLICANT_TY, ROUTING, I18N, LAYOUT, COMPONENT, CODE_SPLITTING)
+- **CSS_GUIDE.md** rewritten — pure class reference, surfaces vs backgrounds distinction, dark mode toggle examples, color customization with `:root.dark`
+- **REPLICANT_TY_GUIDE.md** rewritten
+  - Removed: state management, folder structure, philosophy sections, routing (moved to own guide), performance tips, testing patterns
+  - Added: `^js` type hints on all event handlers, event detail table for every component, per-component event examples, slot examples (start/end)
+- **REACT_TY_GUIDE.md** cleaned — removed philosophy sections, added slot examples
+- **DATASTAR_TY_GUIDE.md** cleaned — removed philosophy sections, added slot examples
+- **TY_GUIDE.md** cleaned — removed "Rules" philosophy framing, kept component reference
+- **CLAUDE.md** updated with grouped guide references
+
+#### Removed
+- **`packages/cljs/CLJS_GUIDE.cljs`** (2223 lines) — superseded by individual guides in `guides/clj/`
+- State management sections from all guides
+- Folder structure sections from all guides
+- "Golden Rule" / philosophy sections from all guides
+- Performance tips, testing patterns, common pitfalls sections
+
+---
+
+## [0.3.1] - 2026-02-XX
+
+### Added
 
 #### Documentation
 
-- **COMPONENT_GUIDE.md** - Comprehensive guide for building Web Components with `ty.shim`
+- **COMPONENT_GUIDE.md** - Guide for building Web Components with `ty.shim`
   - Replicant, UIx, and Reagent integration examples
   - Shadow DOM styling with `defstyles` macro
   - Form participation patterns
@@ -24,14 +87,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Preloading strategies
   - Bundle analysis tips
 
-- **CLJS_GUIDE.cljs** - Interactive ClojureScript examples for REPL exploration
-
 #### ClojureScript Package
 
 - **`ty.context` namespace** - Restored for calendar component locale support
   - `*locale*` dynamic var for locale binding
 
-### 🔄 Changed
+### Changed
 
 #### README Improvements
 
@@ -48,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added component building examples with `ty.shim`
   - Updated event handling syntax to use `(.. % -detail -value)`
 
-### 🐛 Fixed
+### Fixed
 
 #### cljdoc Analysis
 

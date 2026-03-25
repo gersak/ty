@@ -15,11 +15,9 @@ Use Ty web components with Datastar for reactive server-driven UIs. No JavaScrip
 <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@v1.0.0-RC.8/bundles/datastar.js"></script>
 ```
 
-Three script tags. No build tools. No bundler.
+## Two-Way Binding
 
-## Core Pattern: Signals + Ty Components
-
-Datastar signals are reactive state. Ty components bind to them with `data-bind`:
+Use `data-bind` for form inputs — it handles wiring automatically:
 
 ```html
 <div data-signals="{name: '', email: '', country: ''}">
@@ -40,7 +38,34 @@ Datastar signals are reactive state. Ty components bind to them with `data-bind`
 </div>
 ```
 
-When the user clicks Submit, Datastar sends all signals as JSON to your backend via POST.
+## Slots
+
+Use `slot="start"` and `slot="end"` for icons inside buttons, inputs, and tags:
+
+```html
+<!-- Button with start icon -->
+<ty-button flavor="primary">
+  <ty-icon slot="start" name="save" size="sm"></ty-icon>
+  Save
+</ty-button>
+
+<!-- Button with end icon -->
+<ty-button flavor="neutral">
+  Next
+  <ty-icon slot="end" name="chevron-right" size="sm"></ty-icon>
+</ty-button>
+
+<!-- Input with icon -->
+<ty-input type="currency" currency="EUR" label="Price" data-bind="amount">
+  <ty-icon slot="start" name="euro"></ty-icon>
+</ty-input>
+
+<!-- Tag with icon -->
+<ty-tag flavor="primary">
+  <ty-icon slot="start" name="star" size="sm"></ty-icon>
+  Featured
+</ty-tag>
+```
 
 ## Event Binding
 
@@ -53,33 +78,19 @@ When the user clicks Submit, Datastar sends all signals as JSON to your backend 
 <!-- Update signal on change -->
 <ty-dropdown data-on:change="$currency = evt.detail.value">
   <ty-option value="USD">$ USD</ty-option>
-  <ty-option value="EUR">€ EUR</ty-option>
+  <ty-option value="EUR">EUR</ty-option>
 </ty-dropdown>
 ```
 
-### The Golden Rule
+### Manual Event Binding
 
-Always access Ty component values through `evt.detail.value`:
-
-```html
-<!-- ✅ Correct -->
-<ty-dropdown data-on:change="$country = evt.detail.value">
-
-<!-- ❌ Wrong -->
-<ty-dropdown data-on:change="$country = evt.value">
-```
-
-### Two-Way Binding vs Event Binding
-
-Use `data-bind` for simple form inputs — it handles the wiring automatically:
+When you need custom logic beyond simple binding:
 
 ```html
-<!-- Two-way binding (preferred for form inputs) -->
-<ty-input data-bind="username"></ty-input>
-
-<!-- Manual event binding (when you need custom logic) -->
 <ty-input data-on:change="$username = evt.detail.value; $dirty = true"></ty-input>
 ```
+
+Always access Ty values through `evt.detail.value`.
 
 ## Dynamic Attributes
 
@@ -111,13 +122,11 @@ Bind Ty component attributes to signal values:
 ## Conditional Visibility
 
 ```html
-<!-- Show setup form until complete -->
 <div data-show="!$setupComplete">
   <ty-input data-bind="userName" label="Your name"></ty-input>
   <ty-button data-on:click="$setupComplete = true">Continue</ty-button>
 </div>
 
-<!-- Show app after setup -->
 <div data-show="$setupComplete">
   <p data-text="'Welcome, ' + $userName"></p>
 </div>
@@ -125,7 +134,7 @@ Bind Ty component attributes to signal values:
 
 ## Server-Side: SSE Responses
 
-Datastar communicates with your backend through Server-Sent Events. Your backend sends three types of events:
+Datastar communicates with your backend through Server-Sent Events.
 
 ### Patch Elements (Update DOM)
 
@@ -145,8 +154,6 @@ data: signals {"txDesc":"","txAmount":"","txDate":""}
 
 ### Combined Response
 
-A typical form submission response updates the UI and resets the form:
-
 ```
 event: datastar-patch-elements
 data: selector #transaction-list
@@ -164,7 +171,7 @@ data: signals {"txDesc":"","txAmount":"","txCategory":"","txDate":""}
 ```clojure
 (defn parse-signals
   "Extract Datastar signals from request.
-   GET → query param, POST → body."
+   GET -> query param, POST -> body."
   [request]
   (let [raw (or (get-in request [:params :datastar])
                 (when-let [body (:body request)]
@@ -198,12 +205,10 @@ data: signals {"txDesc":"","txAmount":"","txCategory":"","txDate":""}
 (defn add-transaction [request]
   (let [{:keys [txDesc txAmount txType]} (parse-signals request)]
     (if (or (empty? txDesc) (nil? txAmount))
-      ;; Validation error → update result div
       (sse-response
         (patch-elements
           [:div#result.ty-bg-danger-.p-3.rounded-lg.border.ty-border-danger
            [:p.ty-text-danger "Please fill in all fields."]]))
-      ;; Success → update list + reset form
       (do
         (save-transaction! {:desc txDesc :amount txAmount :type txType})
         (sse-response
@@ -238,8 +243,6 @@ Pre-read the body before Ring's `wrap-params` consumes it:
 ## Icon Registration
 
 ### Server-Side (Clojure)
-
-Generate a registration script on the server:
 
 ```clojure
 (ns myapp.icons
@@ -282,7 +285,6 @@ window.tyIcons.register({ wallet, plus, settings, check, calendar })
 esbuild icons.js --bundle --minify --format=iife --outfile=static/icons.js
 ```
 
-Then load in your template:
 ```html
 <script defer src="/static/icons.js"></script>
 ```
@@ -311,9 +313,7 @@ Then load in your template:
 
   <!-- Form fields -->
   <ty-input data-bind="txDesc" label="Description" placeholder="What was it for?"></ty-input>
-
   <ty-input data-bind="txAmount" label="Amount" type="currency" currency="EUR"></ty-input>
-
   <ty-date-picker data-bind="txDate" label="Date" placeholder="Pick a date"></ty-date-picker>
 
   <ty-dropdown data-bind="txCategory" label="Category" placeholder="Select category">
@@ -335,8 +335,6 @@ Then load in your template:
 
 ## Wizard Pattern
 
-Multi-step flows with signals controlling the active step:
-
 ```html
 <div data-signals="{wizardStep: 'welcome', wizardCompleted: ''}">
 
@@ -353,7 +351,7 @@ Multi-step flows with signals controlling the active step:
 
     <ty-step id="preferences" label="Preferences">
       <ty-dropdown data-bind="currency" label="Currency">
-        <ty-option value="EUR">€ EUR</ty-option>
+        <ty-option value="EUR">EUR</ty-option>
         <ty-option value="USD">$ USD</ty-option>
       </ty-dropdown>
       <ty-button flavor="primary"
@@ -369,42 +367,3 @@ Multi-step flows with signals controlling the active step:
   </ty-wizard>
 </div>
 ```
-
-## Tauri / Mobile
-
-Ty + Datastar works in Tauri apps, including Android. One caveat:
-
-**Android WebView strips POST bodies** from `tauri.localhost` requests (a [known Android bug](https://issues.chromium.org/issues/40502017) since 2018).
-
-**Development workaround:** Use ngrok to tunnel your local server:
-
-```bash
-# Terminal 1: Start your server
-clj -M:dev
-
-# Terminal 2: Tunnel
-ngrok http 3000
-
-# Terminal 3: Point Tauri at the tunnel
-# Update src-tauri/tauri.android.conf.json devUrl to ngrok URL
-cargo tauri android dev --config src-tauri/tauri.android.conf.json
-```
-
-**Production:** Point the Tauri app at your real HTTPS server. POST bodies work natively over HTTPS.
-
-## Styling
-
-Same rule as everywhere: **Ty for colors, Tailwind/CSS for everything else.**
-
-```html
-<!-- ✅ Good -->
-<div class="ty-elevated p-6 rounded-lg">
-  <h2 class="ty-text++ text-xl font-bold">Title</h2>
-  <p class="ty-text-">Subtitle</p>
-</div>
-
-<!-- ❌ Bad — mixing color systems -->
-<div class="bg-blue-500 ty-elevated">Don't</div>
-```
-
-See `CSS_GUIDE.md` for the complete design system reference.

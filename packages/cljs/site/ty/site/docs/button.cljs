@@ -89,7 +89,7 @@
     [:h2.text-2xl.font-semibold.ty-text.mb-4 "Basic Usage"]
     (code-block "<ty-button>Click me</ty-button>")
     [:div.mt-4
-     [:ty-button "Try it out"]]]
+     [:ty-button {:on {:click #(js/alert "It works!")}} "Try it out"]]]
 
    ;; Examples Section
    [:h2.text-2xl.font-semibold.ty-text.mb-6 "Examples"]
@@ -319,11 +319,11 @@
       [:div
        [:h4.text-sm.font-medium.ty-text.mb-2 "Basic Form with Submit"]
        [:form.ty-elevated.rounded-lg.p-4.mb-3
-        {:on-submit (fn [e]
-                      (.preventDefault e)
-                      (let [form-data (js/FormData. (.-target e))
-                            data (js/Object.fromEntries form-data)]
-                        (js/alert (str "Form submitted!\n" (js/JSON.stringify data nil 2)))))}
+        {:on {:submit (fn [e]
+                        (.preventDefault e)
+                        (let [form-data (js/FormData. (.-target e))
+                              data (js/Object.fromEntries form-data)]
+                          (js/alert (str "Form submitted!\n" (js/JSON.stringify data nil 2)))))}}
         [:div.space-y-3
          [:div
           [:label.block.ty-text+.text-sm.mb-1 {:for "username"} "Username"]
@@ -360,11 +360,11 @@
       [:div
        [:h4.text-sm.font-medium.ty-text.mb-2 "Multiple Submit Buttons with Name/Value"]
        [:form.ty-elevated.rounded-lg.p-4.mb-3
-        {:on-submit (fn [e]
-                      (.preventDefault e)
-                      (let [form-data (js/FormData. (.-target e))
-                            data (js/Object.fromEntries form-data)]
-                        (js/alert (str "Form submitted with action: " (or (.-action data) "none") "\n\nData:\n" (js/JSON.stringify data nil 2)))))}
+        {:on {:submit (fn [e]
+                        (.preventDefault e)
+                        (let [form-data (js/FormData. (.-target e))
+                              data (js/Object.fromEntries form-data)]
+                          (js/alert (str "Form submitted with action: " (or (.-action data) "none") "\n\nData:\n" (js/JSON.stringify data nil 2)))))}}
         [:div.space-y-3
          [:div
           [:label.block.ty-text+.text-sm.mb-1 {:for "comment"} "Your Comment"]

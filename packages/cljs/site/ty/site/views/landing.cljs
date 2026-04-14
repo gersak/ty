@@ -242,7 +242,7 @@
        [:p.text-sm.ty-text- "Found a bug? Let us know. Every report helps improve the components."]]
 
       [:a.ty-elevated.p-6.rounded-xl.hover:shadow-lg.transition-all.block
-       {:href "https://clojurians.slack.com/archives/C09JZTUFD4G"}
+       {:href "https://github.com/gersak/ty/discussions"}
        [:div.flex.items-center.gap-3.mb-3
         [:ty-icon.ty-text-primary {:name "message-square"
                                    :size "md"}]

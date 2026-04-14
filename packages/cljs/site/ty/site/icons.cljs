@@ -81,6 +81,7 @@
    :minus-circle lucide/minus-circle
    :info lucide/info
    :info-circle lucide/circle-alert
+   :heart lucide/heart
    :star lucide/star
    :lightbulb lucide/lightbulb
 

@@ -808,8 +808,10 @@
                   :gap "40px"
                   :align-items "center"}}
          ;; Logo area (aligns with sidebar)
-         [:a.flex.items-center.gap-3.py-4
-          {:href "#/welcome"}
+         [:a.flex.items-center.gap-3.py-4.cursor-pointer
+          {:on {:click (fn [e]
+                         (.preventDefault e)
+                         (router/navigate! ::landing))}}
           [:div.flex.justify-center.align-center.h-8.pl-4
            [:ty-icon {:name "ty-logo"
                       :class "ty-text-accent"
@@ -864,8 +866,11 @@
                      :size "sm"
                      :class "ty-text-"}]]
          ;; Logo
-         [:a.flex.items-center.flex-shrink-0 {:href "#/welcome"
-                                              :style {:margin-top "0.18rem"}}
+         [:a.flex.items-center.flex-shrink-0.cursor-pointer
+          {:on {:click (fn [e]
+                         (.preventDefault e)
+                         (router/navigate! ::landing))}
+           :style {:margin-top "0.18rem"}}
           [:ty-icon {:name "ty-logo"
                      :class "ty-text-accent"
                      :style {:height "20px"

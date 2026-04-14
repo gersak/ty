@@ -147,26 +147,26 @@
    [:p.ty-text-.mb-4 "Tooltips are essential for icon-only buttons to provide context."]
 
    [:div.flex.gap-3.mb-4
-    [:ty-button {:flavor "primary"}
+    [:ty-button {:flavor "primary" :action true}
      [:ty-icon {:name "save"}]
      [:ty-tooltip "Save document"]]
-    [:ty-button {:flavor "danger"}
+    [:ty-button {:flavor "danger" :action true}
      [:ty-icon {:name "trash"}]
      [:ty-tooltip {:flavor "danger"} "Delete item"]]
-    [:ty-button
+    [:ty-button {:action true}
      [:ty-icon {:name "settings"}]
      [:ty-tooltip "Open settings"]]
-    [:ty-button
-     [:ty-icon {:name "share"}]
+    [:ty-button {:action true}
+     [:ty-icon {:name "share-2"}]
      [:ty-tooltip "Share this page"]]]
 
    (code-block
-    "<ty-button flavor=\"primary\">
+    "<ty-button flavor=\"primary\" action>
   <ty-icon name=\"save\"></ty-icon>
   <ty-tooltip>Save document</ty-tooltip>
 </ty-button>
 
-<ty-button flavor=\"danger\">
+<ty-button flavor=\"danger\" action>
   <ty-icon name=\"trash\"></ty-icon>
   <ty-tooltip flavor=\"danger\">Delete item</ty-tooltip>
 </ty-button>")])

@@ -348,9 +348,9 @@
    [:p.text-sm.ty-text-.mb-4 "Use the name attribute for form submission."]
    [:div.flex.flex-col.lg:flex-row.gap-6.mb-4
     [:div.flex-1
-     [:form {:on-submit (fn [e]
-                          (.preventDefault e)
-                          (js/alert "Form would submit with selected date"))}
+     [:form {:on {:submit (fn [e]
+                            (.preventDefault e)
+                            (js/alert "Form would submit with selected date"))}}
       [:label.block.text-sm.font-medium.ty-text.mb-2 "Select Event Date"]
       [:ty-calendar {:name "event-date"
                      :id "form-calendar"}]

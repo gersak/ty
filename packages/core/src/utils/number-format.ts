@@ -81,30 +81,49 @@ export function formatNumber(
 
 /**
  * Parse a numeric string to a number
- * Handles various formats and returns null if invalid
- * 
+ *
+ * Simple rule: the last occurring . or , is the decimal separator.
+ * Everything else is stripped. This works for both US (1,234.56) and
+ * European (1.234,56) input, and for mobile keyboards that use , as decimal.
+ *
  * @example
  * ```typescript
- * parseNumericValue("1,234.56")  // Returns: 1234.56
- * parseNumericValue("$1,234.56") // Returns: 1234.56
- * parseNumericValue("15%")       // Returns: 15
- * parseNumericValue("abc")       // Returns: null
- * parseNumericValue("")          // Returns: null
+ * parseNumericValue("1,234.56") // 1234.56 (last separator is .)
+ * parseNumericValue("1.234,56") // 1234.56 (last separator is ,)
+ * parseNumericValue("12,50")    // 12.5    (last separator is ,)
+ * parseNumericValue("12.50")    // 12.5    (last separator is .)
+ * parseNumericValue("1234")     // 1234
+ * parseNumericValue("$1,234")   // 1234
+ * parseNumericValue("15%")      // 15
+ * parseNumericValue("")         // null
  * ```
  */
 export function parseNumericValue(value: string): number | null {
   if (!value || value.trim() === '') return null
-  
-  // Remove common formatting characters
-  const cleaned = value
-    .replace(/,/g, '')           // Remove thousands separators
-    .replace(/\s/g, '')          // Remove spaces
-    .replace(/[^\d.-]/g, '')     // Keep only digits, minus, and decimal
+
+  // Strip everything except digits, dots, commas, and minus
+  let stripped = value
+    .replace(/[^\d.,-]/g, '')
     .trim()
-  
-  if (cleaned === '' || cleaned === '-') return null
-  
-  const parsed = parseFloat(cleaned)
+
+  if (stripped === '' || stripped === '-') return null
+
+  // Find the last occurring . or , — that's the decimal separator
+  const lastComma = stripped.lastIndexOf(',')
+  const lastDot = stripped.lastIndexOf('.')
+  const lastSep = Math.max(lastComma, lastDot)
+
+  if (lastSep === -1) {
+    // No separators — pure integer
+    const parsed = parseFloat(stripped)
+    return isNaN(parsed) ? null : parsed
+  }
+
+  // Split at the last separator
+  const intPart = stripped.slice(0, lastSep).replace(/[.,]/g, '')
+  const decPart = stripped.slice(lastSep + 1)
+
+  const parsed = parseFloat(intPart + '.' + decPart)
   return isNaN(parsed) ? null : parsed
 }
 

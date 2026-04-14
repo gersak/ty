@@ -23,7 +23,7 @@ export const tagStyles = `
   border-radius: var(--ty-radius-full);
   font-family: var(--ty-font-sans);
   font-weight: var(--ty-font-medium);
-  line-height: 1;
+  line-height: 1.2;
   text-align: center;
   white-space: nowrap;
   user-select: none;
@@ -47,7 +47,7 @@ export const tagStyles = `
 
 /* Non-pill variant - rectangular with rounded corners */
 :host([pill="false"]) .tag-container,
-:host([not-pill="true"]) .tag-container {
+:host([not-pill]) .tag-container {
   border-radius: var(--ty-radius-md);
   /* 6px instead of full pill */
 }
@@ -349,4 +349,4 @@ export const tagStyles = `
 }
 
 /* Dark mode is handled automatically by the centralized variables */
-`
+`;

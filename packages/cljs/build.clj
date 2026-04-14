@@ -7,8 +7,9 @@
    [deps-deploy.deps-deploy :as deploy]
    [ty.template :as template]))
 
-(def ty-version "1.0.0-RC1")
-(def ty-icons-version "1.0.0-RC1")
+;; Clojars versions — kept in sync with NPM @gersak/ty version
+(def ty-version "1.0.0-RC4")
+(def ty-icons-version "1.0.0-RC4")
 (def class-dir "target/classes")
 
 ;; Library configurations

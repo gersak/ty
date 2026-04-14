@@ -9,7 +9,7 @@
  * This prevents CSS conflicts between desktop dialog and mobile modal implementations.
  */
 
-import { customScrollbarStyles } from './custom-scrollbar.js'
+import { customScrollbarStyles } from "./custom-scrollbar.js";
 
 export const dropdownStyles = `
 /* ==================== SHARED STYLES ==================== */
@@ -773,7 +773,7 @@ export const dropdownStyles = `
   height: 40px;
   transition: var(--ty-transition-all);
   outline: none;
-  border: 3px solid;
+  border: 2px solid;
   border-color: var(--mobile-border-color);
 }
 
@@ -794,7 +794,7 @@ export const dropdownStyles = `
   box-shadow: 
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: 3px solid;
+  border: 2px solid;
   border-color: var(--mobile-border-color);
 }
 
@@ -922,4 +922,4 @@ export const dropdownStyles = `
 
 /* Custom scrollbar styles */
 ${customScrollbarStyles}
-`
+`;

@@ -3,7 +3,7 @@
  * PORTED FROM: clj/ty/components/multiselect.css
  */
 
-import { customScrollbarStyles } from './custom-scrollbar.js'
+import { customScrollbarStyles } from "./custom-scrollbar.js";
 
 export const multiselectStyles = `
 /* Multiselect-specific styles extending dropdown base styles */
@@ -529,7 +529,7 @@ export const multiselectStyles = `
   box-sizing: border-box;
   background: var(--ty-surface-floating);
   color: var(--ty-text);
-  border: 3px solid;
+  border: 2px solid;
   border-color: var(--mobile-border-color);
   border-radius: var(--ty-radius-md);
   font-family: var(--ty-font-sans);
@@ -567,7 +567,7 @@ export const multiselectStyles = `
   box-shadow: 
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  border: 3px solid;
+  border: 2px solid;
   border-color: var(--mobile-border-color);
 }
 
@@ -762,4 +762,5 @@ export const multiselectStyles = `
 
 /* Custom scrollbar styles */
 ${customScrollbarStyles}
-`
+`;
+

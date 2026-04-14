@@ -35,10 +35,21 @@ Same components. Zero framework lock-in.
 
 ## Load from CDN
 
+Always loads the latest version:
+
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/css/ty.css">
 <script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
 ```
+
+Pin to a specific version (recommended for production):
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@1.0.0-rc.4/css/ty.css">
+<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@1.0.0-rc.4/dist/ty.js"></script>
+```
+
+Browse all available versions on [NPM](https://www.npmjs.com/package/@gersak/ty?activeTab=versions) or [jsdelivr](https://www.jsdelivr.com/package/npm/@gersak/ty).
 
 Then use components anywhere:
 
@@ -57,8 +68,8 @@ Then use components anywhere:
 Add to `deps.edn`:
 
 ```clojure
-{:deps {dev.gersak/ty {:mvn/version "0.3.0"}        ;; Router, i18n, layout
-        dev.gersak/ty-icons {:mvn/version "0.1.1"}}} ;; Tree-shakeable icons
+{:deps {dev.gersak/ty {:mvn/version "1.0.0-RC4"}        ;; Router, i18n, layout
+        dev.gersak/ty-icons {:mvn/version "1.0.0-RC4"}}} ;; Tree-shakeable icons
 ```
 
 ### UIx

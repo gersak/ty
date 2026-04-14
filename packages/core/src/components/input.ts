@@ -402,7 +402,11 @@ export class TyInput extends TyComponent<InputState> implements TyInputElement {
 
     // For numeric types, parse to number
     if (shouldFormatType(this.type)) {
-      return parseNumericValue(value)
+      const parsed = parseNumericValue(value)
+      if (parsed !== null && this.precision === 0) {
+        return Math.round(parsed)
+      }
+      return parsed
     }
 
     // For other types, keep as string

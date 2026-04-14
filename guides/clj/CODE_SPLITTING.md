@@ -1,6 +1,6 @@
 # Code Splitting & Lazy Loading
 
-Keep your initial bundle small by loading components on demand.
+> **Note:** This guide describes patterns and strategies, not exact code to copy. File names, module names, and folder structures are illustrative examples — adapt them to your project's conventions.
 
 ## Overview
 
@@ -276,5 +276,4 @@ src/
 ## See Also
 
 - [shadow-cljs Code Splitting](https://shadow-cljs.github.io/docs/UsersGuide.html#CodeSplitting)
-- [Ty Lazy Components](components/ty/lazy/) - Reference implementations
-- [Component Building Guide](COMPONENT_GUIDE.md)
+- [Component Building Guide](COMPONENT_GUIDE.md) - ty.shim API for defining web components

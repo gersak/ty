@@ -42,7 +42,7 @@ function App() {
 
 ## Import Styles
 
-Two naming conventions — use whichever you prefer:
+Two naming conventions:
 
 ```tsx
 // Ty-prefixed (explicit)
@@ -54,21 +54,18 @@ import { Button, Input, Dropdown } from '@gersak/ty-react'
 
 ## Event Handling
 
-### The Golden Rule
-
-Always access values through `event.detail.value`, never `event.value`:
+Always access values through `event.detail.value`:
 
 ```tsx
-// ✅ Correct
+// Correct
 <TyInput onChange={(e) => setValue(e.detail.value)} />
 
-// ❌ Wrong
+// Wrong — event.value does not exist
 <TyInput onChange={(e) => setValue(e.value)} />
 ```
 
 ### Input Components
 
-`TyInput` and `TyTextarea` map to React conventions:
 - `onChange` fires on every keystroke (mapped from `input` event)
 - `onChangeCommit` fires on blur (mapped from `change` event)
 
@@ -83,16 +80,14 @@ Always access values through `event.detail.value`, never `event.value`:
 Event detail structure:
 ```ts
 interface TyInputEventDetail {
-  value: any              // Parsed value
-  formattedValue: string  // Display format
-  rawValue: string        // Raw input
+  value: any
+  formattedValue: string
+  rawValue: string
   originalEvent: Event
 }
 ```
 
 ### Selection Components
-
-`TyDropdown`, `TyMultiselect`, `TyCalendar`, `TyDatePicker` use standard `onChange`:
 
 ```tsx
 <TyDropdown onChange={(e) => setCountry(e.detail.value)}>
@@ -142,8 +137,6 @@ interface TyInputEventDetail {
 
 ## Controlled Components
 
-All form components support controlled patterns:
-
 ```tsx
 function ContactForm() {
   const [form, setForm] = useState({
@@ -191,8 +184,6 @@ const [selected, setSelected] = useState<string[]>([])
 ```
 
 ## Dropdown with Data
-
-Pass options as props instead of children:
 
 ```tsx
 <TyDropdown
@@ -246,8 +237,6 @@ const scrollRef = useRef<TyScrollContainerRef>(null)
 ```
 
 ## Calendar with Custom Rendering
-
-Function properties are set directly on the element, not as attributes:
 
 ```tsx
 <TyCalendar
@@ -320,9 +309,49 @@ Then use in components:
 ```tsx
 <TyIcon name="check" size="sm" />
 <TyIcon name="heart" size="lg" spin />
+```
+
+## Slots
+
+Use `slot="start"` and `slot="end"` for icons inside buttons, inputs, and tags. The component handles spacing automatically.
+
+```tsx
+{/* Button with start icon */}
 <TyButton flavor="primary">
-  <TyIcon name="star" size="sm" /> Favorite
+  <TyIcon slot="start" name="save" size="sm" />
+  Save
 </TyButton>
+
+{/* Button with end icon */}
+<TyButton flavor="neutral">
+  Next
+  <TyIcon slot="end" name="chevron-right" size="sm" />
+</TyButton>
+
+{/* Input with icon slots */}
+<TyInput type="currency" currency="EUR" label="Price">
+  <TyIcon slot="start" name="euro" />
+</TyInput>
+
+<TyInput type="email" label="Email">
+  <TyIcon slot="start" name="mail" size="sm" />
+  <TyIcon slot="end" name="check" size="sm" />
+</TyInput>
+
+{/* Tag with icon */}
+<TyTag flavor="primary" dismissible>
+  <TyIcon slot="start" name="star" size="sm" />
+  Featured
+</TyTag>
+
+{/* Rich tab labels via slot="label-{id}" */}
+<TyTabs height="400px">
+  <span slot="label-settings" className="flex items-center gap-2">
+    <TyIcon name="settings" size="sm" />
+    Settings
+  </span>
+  <TyTab id="settings" label="Settings">Content</TyTab>
+</TyTabs>
 ```
 
 ## Form Integration
@@ -412,41 +441,24 @@ export function TyLoader({ children }: { children: React.ReactNode }) {
 }
 ```
 
-## Styling Rules
-
-**Ty for colors, Tailwind/CSS for everything else:**
-
-```tsx
-// ✅ Good — Ty handles colors, CSS handles layout
-<div className="ty-elevated p-6 rounded-lg flex items-center gap-4">
-  <h2 className="ty-text++ text-xl font-bold">Title</h2>
-  <p className="ty-text-">Subtitle</p>
-</div>
-
-// ❌ Bad — mixing color systems
-<div className="bg-blue-500 ty-elevated">Don't do this</div>
-```
-
-See `CSS_GUIDE.md` for the complete design system reference.
-
 ## Component Reference
 
 | Component | Value Prop | Event | Ref Methods |
 |-----------|-----------|-------|-------------|
-| `TyButton` | — | `onClick` | — |
-| `TyInput` | `value` | `onChange` / `onChangeCommit` | — |
-| `TyTextarea` | `value` | `onChange` / `onChangeCommit` | — |
-| `TyCheckbox` | `checked` | `onChange` | — |
-| `TyDropdown` | `value` | `onChange` | — |
-| `TyMultiselect` | `value` (array) | `onChange` | — |
-| `TyDatePicker` | `value` (ISO) | `onChange` / `onOpen` / `onClose` | — |
-| `TyCalendar` | `value` (ISO) | `onChange` / `onNavigate` | — |
-| `TyTabs` | `active` | `onChange` | — |
+| `TyButton` | -- | `onClick` | -- |
+| `TyInput` | `value` | `onChange` / `onChangeCommit` | -- |
+| `TyTextarea` | `value` | `onChange` / `onChangeCommit` | -- |
+| `TyCheckbox` | `checked` | `onChange` | -- |
+| `TyDropdown` | `value` | `onChange` | -- |
+| `TyMultiselect` | `value` (array) | `onChange` | -- |
+| `TyDatePicker` | `value` (ISO) | `onChange` / `onOpen` / `onClose` | -- |
+| `TyCalendar` | `value` (ISO) | `onChange` / `onNavigate` | -- |
+| `TyTabs` | `active` | `onChange` | -- |
 | `TyModal` | `open` | `onOpen` / `onClose` | `show()` / `hide()` |
-| `TyPopup` | `manual` | — | `openPopup()` / `closePopup()` / `togglePopup()` |
-| `TyTag` | `value` | `onTagClick` / `onTagDismiss` | — |
-| `TyIcon` | `name` | — | — |
-| `TyCopy` | `value` | — | — |
-| `TyTooltip` | — | — | — |
-| `TyScrollContainer` | — | — | `scrollToTop()` / `scrollToBottom()` / `updateShadows()` |
-| `TyWizard` | `active` | — | — |
+| `TyPopup` | `manual` | -- | `openPopup()` / `closePopup()` / `togglePopup()` |
+| `TyTag` | `value` | `onTagClick` / `onTagDismiss` | -- |
+| `TyIcon` | `name` | -- | -- |
+| `TyCopy` | `value` | -- | -- |
+| `TyTooltip` | -- | -- | -- |
+| `TyScrollContainer` | -- | -- | `scrollToTop()` / `scrollToBottom()` / `updateShadows()` |
+| `TyWizard` | `active` | -- | -- |

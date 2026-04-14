@@ -35,5 +35,6 @@ target/
 .git.new/
 
 .env*
+.npmrc
 
 examples/pocketledger

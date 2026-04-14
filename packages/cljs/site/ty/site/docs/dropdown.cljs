@@ -682,11 +682,11 @@ dropdown.addEventListener('search', async (e) => {
      " and " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "<ty-option>"] " elements."]
 
     [:form.p-4.ty-bg-neutral-.rounded {:id "native-form-demo"
-            :on-submit (fn [e]
-                         (.preventDefault e)
-                         (let [form-data (js/FormData. (.-target e))
-                               data (js/Object.fromEntries form-data)]
-                           (js/alert (str "Form submitted!\nPriority: " (.-priority data) "\nCategory: " (.-category data)))))}
+            :on {:submit (fn [e]
+                           (.preventDefault e)
+                           (let [form-data (js/FormData. (.-target e))
+                                 data (js/Object.fromEntries form-data)]
+                             (js/alert (str "Form submitted!\nPriority: " (.-priority data) "\nCategory: " (.-category data)))))}}
      [:div.space-y-4
       [:ty-dropdown {:name "priority"
                      :label "Priority Level"

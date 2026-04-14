@@ -385,7 +385,7 @@ For one-time initialization attributes that shouldn't override user state:
 
 ## See Also
 
-- [Code Splitting Guide](CODE_SPLITTING.md) - Lazy loading and bundle optimization
+- [Code Splitting Guide](CODE_SPLITTING.md) - Lazy loading and bundle optimization (in guides/)
 - [Ty Components Source](components/ty/components/) - Reference implementations
 - [ty.shim Source](src/ty/shim.cljs) - Full API
 - [ty.css](src/ty/css.cljs) - Style injection utilities

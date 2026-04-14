@@ -37,9 +37,11 @@ export function ensureStyles(
     }
   }
   
-  // Append to existing stylesheets instead of replacing
+  // Append only if not already adopted
   const existing = shadowRoot.adoptedStyleSheets || []
-  shadowRoot.adoptedStyleSheets = [...existing, sheet]
+  if (!existing.includes(sheet)) {
+    shadowRoot.adoptedStyleSheets = [...existing, sheet]
+  }
 }
 
 /**

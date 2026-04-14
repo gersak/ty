@@ -1,15 +1,15 @@
-# Ty Component Library — AI Agent Guide
+# Ty Component Library — Guide
 
 **Ty** is a framework-agnostic web component library. TypeScript core (`@gersak/ty`), React wrappers (`@gersak/ty-react`), ClojureScript infra (`dev.gersak/ty`).
 
 ---
 
-## Rule 1: Always Use Ty Components
+## Use Ty Components
 
-> **When a Ty component exists, USE IT. Do not improvise HTML.**
+When a Ty component exists, use it. Do not improvise HTML.
 
-| Need | USE THIS | NOT THIS |
-|------|----------|----------|
+| Need | Use | Not |
+|------|-----|-----|
 | Button | `<ty-button>` | `<button>`, `<div onclick>` |
 | Text input | `<ty-input>` | `<input>` |
 | Money/currency | `<ty-input type="currency">` | `<input type="number">` + manual formatting |
@@ -34,40 +34,28 @@
 | Error message | `error` attribute on component | `<span class="text-red-500">` |
 | Debounced input | `delay` attribute | Manual `setTimeout`/debounce |
 
-**Plain HTML is OK for:** layout (`<div>`, `<section>`), text (`<h1>`-`<h6>`, `<p>`, `<span>` with Ty classes), lists, links, images.
+Plain HTML is OK for: layout (`<div>`, `<section>`), text (`<h1>`-`<h6>`, `<p>`, `<span>` with Ty classes), lists, links, images.
 
 ---
 
-## Rule 2: Use Built-in Attributes
+## Built-in Attributes
 
-Form components have built-in `label`, `error`, `placeholder`, `required`, `disabled`, `flavor`, and `size`. Use them.
+Form components have built-in `label`, `error`, `placeholder`, `required`, `disabled`, `flavor`, and `size`.
 
 ```html
-<!-- WRONG -->
-<label class="block text-sm font-medium mb-1">Email</label>
-<ty-input type="email" placeholder="you@example.com"></ty-input>
-<span class="text-red-500 text-sm">Invalid email</span>
-
-<!-- CORRECT -->
+<!-- Use built-in label and error -->
 <ty-input type="email" label="Email" placeholder="you@example.com" error="Invalid email"></ty-input>
 ```
 
 ```clojure
-;; WRONG
-[:div
- [:label.block.text-sm.font-medium.mb-1 "Email"]
- [:ty-input {:type "email" :placeholder "you@example.com"}]
- [:span.text-red-500.text-sm "Invalid email"]]
-
-;; CORRECT
 [:ty-input {:type "email" :label "Email" :placeholder "you@example.com" :error "Invalid email"}]
 ```
 
 ---
 
-## Rule 3: Use Slots for Icons
+## Slots for Icons
 
-Components with `start`/`end` slots handle spacing automatically. Do not use flex/gap wrappers.
+Components with `start`/`end` slots handle spacing automatically.
 
 ```html
 <ty-button flavor="primary">
@@ -100,9 +88,7 @@ ty-wizard       slot="indicator-{id}" (custom step indicator)
 
 ---
 
-## Rule 4: Use the Right Input Type
-
-> **For money, use `type="currency"`. For percentages, use `type="percent"`. Never use `type="number"` with manual formatting.**
+## Input Types
 
 | Type | When | Display (on blur) | Value |
 |------|------|-------------------|-------|
@@ -111,13 +97,13 @@ ty-wizard       slot="indicator-{id}" (custom step indicator)
 | `"compact"` | Large numbers, stats | `1.2M` / `1.2K` | `1234567` |
 | `"number"` | Plain numeric, no formatting | `1234.56` | `1234.56` |
 
-**Behavior:** Raw number while editing, formatted on blur. Uses `Intl.NumberFormat`.
+Raw number while editing, formatted on blur. Uses `Intl.NumberFormat`.
 
-**Attributes:** `currency` (ISO 4217 code, default `"USD"`), `locale` (default `"en-US"`), `precision` (decimal places).
+Attributes: `currency` (ISO 4217 code, default `"USD"`), `locale` (default `"en-US"`), `precision` (decimal places).
 
-**Events:** `detail: { value, formattedValue, rawValue, originalEvent }` — `formattedValue` is the display string, `rawValue` is the number.
+Events: `detail: { value, formattedValue, rawValue, originalEvent }`.
 
-**FormData:** Submits raw number, not formatted string.
+FormData: submits raw number, not formatted string.
 
 ```html
 <ty-input type="currency" currency="EUR" locale="de-DE" label="Price" placeholder="0.00">
@@ -130,37 +116,7 @@ ty-wizard       slot="indicator-{id}" (custom step indicator)
 
 ---
 
-## Rule 5: Ty for Colors, Tailwind for Layout
-
-```html
-<!-- GOOD -->
-<div class="ty-elevated p-6 rounded-lg flex items-center">
-  <h2 class="ty-text++ text-xl font-bold">Title</h2>
-</div>
-
-<!-- BAD — never use Tailwind for colors -->
-<div class="bg-blue-500 text-white">...</div>
-```
-
-**Surfaces vs Backgrounds — know the difference:**
-
-- **Surfaces** (`ty-canvas`, `ty-content`, `ty-elevated`, `ty-floating`, `ty-input`) are for **layout areas**: cards, panels, sidebars, modals, page background, form fields.
-- **Backgrounds** (`ty-bg-primary`, `ty-bg-success-`, `ty-bg-danger`, etc.) are for **small UI elements**: buttons, tags, badges, toasts, alerts, status indicators.
-
-```html
-<!-- WRONG — using bg color for a card surface -->
-<div class="ty-bg-primary- p-6 rounded-lg">Card content</div>
-
-<!-- CORRECT — surface for cards, bg for small elements -->
-<div class="ty-elevated p-6 rounded-lg">
-  <ty-tag flavor="success">Active</ty-tag>
-  <div class="ty-bg-danger- p-2 rounded text-sm">Error toast</div>
-</div>
-```
-
----
-
-## Rule 6: Use Flavors Semantically
+## Flavors
 
 | Flavor | Intent | Examples |
 |--------|--------|---------|
@@ -174,62 +130,12 @@ ty-wizard       slot="indicator-{id}" (custom step indicator)
 
 ---
 
-## Rule 7: Correct Child Elements
+## Child Elements
 
 | Parent | Children | Example |
 |--------|----------|---------|
 | `ty-dropdown` | `<option>` (simple) or `<ty-option>` (rich HTML) | `<option value="us">US</option>` |
 | `ty-multiselect` | `<ty-tag>` only | `<ty-tag value="js">JavaScript</ty-tag>` |
-
----
-
-## CSS Design System
-
-### Surfaces
-| Class | Use |
-|-------|-----|
-| `ty-canvas` | App background |
-| `ty-content` | Main content area |
-| `ty-elevated` | Cards, panels (with shadow) |
-| `ty-floating` | Modals, dropdowns, tooltips |
-| `ty-input` | Form controls |
-
-### Text Hierarchy
-`ty-text++` (max) > `ty-text+` (high) > `ty-text` (normal) > `ty-text-` (reduced) > `ty-text--` (minimal)
-
-### Semantic Colors
-Available for text, backgrounds, borders: `primary`, `secondary`, `success`, `danger`, `warning`, `neutral`, `accent`
-
-```
-Text:    ty-text-{color}++  ty-text-{color}+  ty-text-{color}  ty-text-{color}-  ty-text-{color}--
-Bg:      ty-bg-{color}+     ty-bg-{color}     ty-bg-{color}-
-Border:  ty-border-{color}
-Base:    ty-border++  ty-border+  ty-border  ty-border-  ty-border--
-```
-
-Hover/focus: `hover:ty-bg-primary`, `focus:ty-border-primary`, etc.
-
-Dark mode: automatic via `html.dark` or `html[data-theme="dark"]`.
-
-### Color Customization
-
-Override via CSS custom properties:
-```css
-:root {
-  --ty-color-primary-strong: #0034c7;
-  --ty-color-primary-mild: #1c40a8;
-  --ty-color-primary: #4367cd;
-  --ty-color-primary-soft: #60a5fa;
-  --ty-color-primary-faint: #93c5fd;
-  --ty-bg-primary-mild: #bfdbfe;
-  --ty-bg-primary: #dbeafe;
-  --ty-bg-primary-soft: #eff6ff;
-}
-```
-
-Pattern: `--ty-color-{name}-{strong|mild|soft|faint}`, `--ty-bg-{name}-{mild|soft}`, `--ty-border-{name}`.
-
-Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 
 ---
 
@@ -251,24 +157,7 @@ Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 | `accent` | boolean | `false` | Accent color |
 | `wide` | boolean | `false` | Full width |
 
-**Slots:** `start`, (default), `end` | **Events:** `click` → `{ originalEvent }`
-
-**Mobile/responsive tips:**
-- Use `wide` for primary actions on mobile — full-width buttons are easier to tap
-- For responsive layouts, apply `wide` conditionally or use `class="w-full sm:w-auto"` on the host
-- Use `size="lg"` on mobile for comfortable touch targets (44px+)
-- Action bars on mobile: stack buttons vertically with `wide`, on desktop use inline with gap
-
-```html
-<!-- Mobile-friendly submit -->
-<ty-button flavor="primary" wide>
-  <ty-icon slot="start" name="check"></ty-icon>
-  Save Changes
-</ty-button>
-
-<!-- Responsive: full-width on mobile, auto on desktop -->
-<ty-button flavor="primary" class="w-full sm:w-auto" size="lg">Submit</ty-button>
-```
+**Slots:** `start`, (default), `end` | **Events:** `click` -> `{ originalEvent }`
 
 ---
 
@@ -291,7 +180,7 @@ Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 | `precision` | number | - | Decimal places |
 | `delay` | number | `0` | Debounce ms (0-5000) |
 
-**Slots:** `start`, `end` | **Events:** `input`, `change` → `{ value, formattedValue, rawValue, originalEvent }` | `focus`, `blur`
+**Slots:** `start`, `end` | **Events:** `input`, `change` -> `{ value, formattedValue, rawValue, originalEvent }` | `focus`, `blur`
 
 ---
 
@@ -308,7 +197,7 @@ Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 | `size` | string | `'md'` | |
 | `flavor` | string | `'neutral'` | |
 
-**Slots:** (default) = label | **Events:** `input`, `change` → `{ value, checked, formValue, originalEvent }`
+**Slots:** (default) = label | **Events:** `input`, `change` -> `{ value, checked, formValue, originalEvent }`
 
 ---
 
@@ -329,7 +218,7 @@ Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 | `min-height` | string | - | |
 | `max-height` | string | - | |
 
-**Events:** `input`, `change` → `{ value, originalEvent }`
+**Events:** `input`, `change` -> `{ value, originalEvent }`
 
 ---
 
@@ -365,7 +254,7 @@ Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 
 **Children:** `<option>` or `<ty-option>` (for rich HTML) | **Slots:** `selected`
 
-**Events:** `change` → `{ value, text, option, originalEvent }` | `search` → `{ query, originalEvent }`
+**Events:** `change` -> `{ value, text, option, originalEvent }` | `search` -> `{ query, originalEvent }`
 
 ---
 
@@ -389,7 +278,7 @@ Dark mode overrides: scope under `html.dark, html[data-theme="dark"]`.
 
 **Children:** `<ty-tag>` only | **Slots:** `selected`
 
-**Events:** `change` → `{ values: string[], action: 'add'|'remove'|'clear'|'set', item }` | `search` → `{ query, element }`
+**Events:** `change` -> `{ values: string[], action: 'add'|'remove'|'clear'|'set', item }` | `search` -> `{ query, element }`
 
 ---
 
@@ -424,7 +313,7 @@ Rich HTML option for `<ty-dropdown>`. Attrs: `value`, `selected`, `disabled`, `h
 
 **Slots:** `label-{id}` (rich label), `marker` (active indicator)
 
-**Events:** `change` → `{ activeId, activeIndex, previousId, previousIndex }`
+**Events:** `change` -> `{ activeId, activeIndex, previousId, previousIndex }`
 
 ```html
 <ty-tabs height="400px" active="overview">
@@ -437,6 +326,17 @@ Rich HTML option for `<ty-dropdown>`. Attrs: `value`, `selected`, `disabled`, `h
 </ty-tabs>
 ```
 
+**CSS Variables:**
+
+```css
+--ty-tabs-bg
+--ty-tabs-border-width
+--ty-tabs-button-padding
+--ty-tabs-button-gap
+--ty-tabs-button-hover-bg
+--transition-duration
+```
+
 ---
 
 ### ty-wizard / ty-step
@@ -447,7 +347,7 @@ Rich HTML option for `<ty-dropdown>`. Attrs: `value`, `selected`, `disabled`, `h
 
 **Slots:** `indicator-{id}` (custom step indicator)
 
-**Events:** `change` → `{ activeId, activeIndex, previousId, previousIndex, direction }`
+**Events:** `change` -> `{ activeId, activeIndex, previousId, previousIndex, direction }`
 
 ---
 
@@ -455,7 +355,7 @@ Rich HTML option for `<ty-dropdown>`. Attrs: `value`, `selected`, `disabled`, `h
 
 Attrs: `year`, `month`, `day`, `name`, `required`. Property: `dayContentFn`.
 
-**Events:** `change` → `{ year, month, day, action, source, dayContext }` | `navigate` → `{ month, year, action, source }`
+**Events:** `change` -> `{ year, month, day, action, source, dayContext }` | `navigate` -> `{ month, year, action, source }`
 
 **Form value:** ISO date `YYYY-MM-DD`
 
@@ -483,7 +383,7 @@ Attrs: `year`, `month`, `day`, `name`, `required`. Property: `dayContentFn`.
 
 Attrs: `open`, `backdrop` (default true), `close-on-outside-click` (true), `close-on-escape` (true), `protected`.
 
-**Methods:** `show()`, `hide()` | **Events:** `close` → `{ reason, returnValue? }`
+**Methods:** `show()`, `hide()` | **Events:** `close` -> `{ reason, returnValue? }`
 
 Always render modals in DOM. Control with `open` attribute or `show()`/`hide()`.
 
@@ -513,8 +413,6 @@ Attrs: `name`, `size` (`xs` | `sm` | `md` | `lg` | `xl`), `spin`, `pulse`, `temp
 
 ### ty-scroll-container
 
-Scrollable container with shadow indicators showing there's more content above/below.
-
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `shadow` | boolean | `true` | Show top/bottom shadow indicators |
@@ -523,27 +421,11 @@ Scrollable container with shadow indicators showing there's more content above/b
 | `custom-scrollbar` | boolean | `false` | Render custom styled scrollbar |
 | `overflow-x` | boolean | `false` | Enable horizontal scrolling |
 
-> **Use `ty-scroll-container` instead of `overflow-auto`** for any scrollable content area.
-> It gives you scroll shadow indicators for free — users immediately see there's more content.
-
 ```html
-<!-- Transaction list with max height -->
 <ty-scroll-container max-height="400px">
   <div>Item 1</div>
   <div>Item 2</div>
-  <!-- ...many items... -->
 </ty-scroll-container>
-
-<!-- Clean scrollbar for sidebars -->
-<ty-scroll-container max-height="100vh" custom-scrollbar hide-scrollbar>
-  <nav>...</nav>
-</ty-scroll-container>
-```
-
-```clojure
-[:ty-scroll-container {:max-height "400px"}
- (for [item items]
-   [:div.p-3.ty-elevated.rounded-lg (:name item)])]
 ```
 
 ---
@@ -593,12 +475,6 @@ npm install @gersak/ty-react
 
 ```html
 <!-- CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/index.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
-```
-
-```html
-<!-- CDN -->
 <script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
 ```
@@ -608,14 +484,15 @@ npm install @gersak/ty-react
 [dev.gersak/ty "0.4.0"]
 ```
 
-### Positioning
+---
+
+## Positioning
 
 Smart positioning for floating elements.
 
 ```javascript
 import { findBestPosition, autoUpdate, placementPreferences } from '@gersak/ty';
 
-// One-time positioning
 const result = findBestPosition({
   targetEl: button,
   floatingEl: tooltip,
@@ -628,18 +505,14 @@ tooltip.style.left = result.x + 'px';
 tooltip.style.top = result.y + 'px';
 
 // Continuous positioning (updates on scroll/resize)
-const cleanup = autoUpdate(
-  targetEl,
-  floatingEl,
+const cleanup = autoUpdate(targetEl, floatingEl,
   (position) => {
     floatingEl.style.left = position.x + 'px';
     floatingEl.style.top = position.y + 'px';
   },
   { preferences: placementPreferences.dropdown }
 );
-
-// Stop auto-updating
-cleanup();
+cleanup(); // Stop auto-updating
 ```
 
 ---
@@ -661,7 +534,7 @@ import { Button, Input, Modal } from '@gersak/ty-react';
 | `onFocus` | `focus` | Focus |
 | `onBlur` | `blur` | Blur |
 
-Imperative methods via refs: `useRef<TyModalRef>()` → `.current?.show()` / `.hide()`
+Imperative methods via refs: `useRef<TyModalRef>()` -> `.current?.show()` / `.hide()`
 
 ### ClojureScript
 
@@ -673,43 +546,6 @@ Imperative methods via refs: `useRef<TyModalRef>()` → `.current?.show()` / `.h
 ;; Dynamic classes — use vectors, not string concatenation
 [:div {:class ["ty-elevated" "p-4" (when active? "ty-bg-accent-")]}]
 ```
-
----
-
-## Common Patterns
-
-### Card
-```html
-<div class="ty-elevated p-6 rounded-lg border ty-border-">
-  <h2 class="ty-text++ text-xl font-bold mb-4">Title</h2>
-  <p class="ty-text- text-sm mb-6">Description</p>
-  <ty-button flavor="primary">Action</ty-button>
-</div>
-```
-
-### Alert
-```html
-<div class="ty-bg-success- ty-border-success border rounded-lg p-4">
-  <h3 class="ty-text-success++ font-semibold">Success!</h3>
-  <p class="ty-text-success text-sm">Done.</p>
-</div>
-```
-
-### Form
-```html
-<form id="myForm">
-  <ty-input name="email" type="email" required label="Email"></ty-input>
-  <ty-input name="price" type="currency" currency="USD" label="Price"></ty-input>
-  <ty-checkbox name="remember">Remember me</ty-checkbox>
-  <ty-dropdown name="role" required label="Role">
-    <option value="user">User</option>
-    <option value="admin">Admin</option>
-  </ty-dropdown>
-  <ty-button type="submit" flavor="primary">Submit</ty-button>
-</form>
-```
-
-FormData from numeric types contains the raw number, not the formatted string.
 
 ---
 
@@ -742,7 +578,7 @@ import { findBestPosition, autoUpdate, placementPreferences } from '@gersak/ty';
 | `ty-tabs` | `change` | `{ activeId, activeIndex, previousId, previousIndex }` |
 | `ty-wizard` | `change` | `{ activeId, activeIndex, previousId, previousIndex, direction }` |
 | `ty-modal` | `close` | `{ reason, returnValue? }` |
-| `ty-tag` | `dismiss` | — |
+| `ty-tag` | `dismiss` | -- |
 | `ty-button` | `click` | `{ originalEvent }` |
 
 Always access via `event.detail.value`, never `event.target.value`.

@@ -54,9 +54,17 @@ export abstract class TyComponent<T = any> extends HTMLElement {
    * Returns kebab-case attribute names (e.g., 'minHeight' -> 'min-height')
    */
   static get observedAttributes(): string[] {
-    return Object.keys(this.properties).map(name => 
-      name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
-    )
+    const attrs: string[] = []
+    for (const [name, config] of Object.entries(this.properties)) {
+      attrs.push(name.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase())
+      // Include alias names so attributeChangedCallback fires for them
+      if (config.aliases) {
+        for (const alias of Object.keys(config.aliases)) {
+          attrs.push(alias)
+        }
+      }
+    }
+    return attrs
   }
   
   /**

@@ -65,10 +65,15 @@ export const copyStyles = `
 
 .copy-button.success {
   color: var(--ty-color-success);
-  animation: copy-success 0.3s ease;
+  animation: copy-feedback 0.3s ease;
 }
 
-@keyframes copy-success {
+.copy-button.error {
+  color: var(--ty-color-danger);
+  animation: copy-feedback 0.3s ease;
+}
+
+@keyframes copy-feedback {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.2); }
 }

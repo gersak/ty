@@ -78,7 +78,7 @@ Complete restructuring of all documentation into `guides/` folder.
 
 #### Documentation
 
-- **COMPONENT_GUIDE.md** - Comprehensive guide for building Web Components with `ty.shim`
+- **COMPONENT_GUIDE.md** - Guide for building Web Components with `ty.shim`
   - Replicant, UIx, and Reagent integration examples
   - Shadow DOM styling with `defstyles` macro
   - Form participation patterns
@@ -91,14 +91,12 @@ Complete restructuring of all documentation into `guides/` folder.
   - Preloading strategies
   - Bundle analysis tips
 
-- **CLJS_GUIDE.cljs** - Interactive ClojureScript examples for REPL exploration
-
 #### ClojureScript Package
 
 - **`ty.context` namespace** - Restored for calendar component locale support
   - `*locale*` dynamic var for locale binding
 
-### 🔄 Changed
+### Changed
 
 #### README Improvements
 
@@ -115,7 +113,7 @@ Complete restructuring of all documentation into `guides/` folder.
   - Added component building examples with `ty.shim`
   - Updated event handling syntax to use `(.. % -detail -value)`
 
-### 🐛 Fixed
+### Fixed
 
 #### cljdoc Analysis
 

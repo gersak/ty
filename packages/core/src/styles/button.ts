@@ -10,7 +10,7 @@ export const buttonStyles = `
   font-family: var(--ty-font-sans);
 }
 
-:host([wide="true"]) {
+:host([wide]) {
   display: flex;
   flex-grow: 1;
 }
@@ -110,7 +110,7 @@ button:disabled {
   opacity: 0.6;
 }
 
-:host([wide="true"]) button {
+:host([wide]) button {
   flex-grow: 1;
 }
 

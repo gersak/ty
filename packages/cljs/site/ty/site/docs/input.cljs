@@ -60,7 +60,7 @@
       {:name "precision"
        :type "number"
        :default "null"
-       :description "Number of decimal places for numeric types"}
+       :description "Number of decimal places for numeric types. Use precision=\"0\" for integer-only input (rounds to whole number)."}
       {:name "delay"
        :type "number"
        :default "0"
@@ -362,7 +362,21 @@ document.querySelector('ty-input').addEventListener('input', (e) => {
     [:div
      [:ty-input {:type "compact"
                  :label "Compact Number"
-                 :value "1234567"}]]]
+                 :value "1234567"}]]
+
+    [:div
+     [:ty-input {:type "number"
+                 :label "Integer (precision=0)"
+                 :value "42"
+                 :precision "0"
+                 :placeholder "Whole numbers only"}]]]
+
+   [:div.ty-bg-info-.ty-border-info.border.rounded-lg.p-4.mt-4.mb-4
+    [:h4.ty-text-info.font-semibold.mb-1 "Decimal Separator"]
+    [:p.ty-text.text-sm
+     "Both " [:code.ty-bg-neutral-.px-1.rounded "."] " and " [:code.ty-bg-neutral-.px-1.rounded ","]
+     " are accepted as decimal separators. The last occurring separator is treated as the decimal point. "
+     "This works on mobile keyboards that use " [:code.ty-bg-neutral-.px-1.rounded ","] " for decimals."]]
 
    (code-block "<!-- Numeric formatting examples -->
 <ty-input type=\"number\" label=\"Number\" value=\"1234567.89\" precision=\"2\"></ty-input>
@@ -371,8 +385,11 @@ document.querySelector('ty-input').addEventListener('input', (e) => {
 <ty-input type=\"percent\" label=\"Percentage\" value=\"85.5\" precision=\"1\"></ty-input>
 <ty-input type=\"compact\" label=\"Compact Number\" value=\"1234567\"></ty-input>
 
-<!-- Note: Numeric inputs maintain a 'shadow value' for accurate calculations -->
-<!-- The display value is formatted when not focused, raw value when focused -->")])
+<!-- Integer input - rounds to whole number -->
+<ty-input type=\"number\" label=\"Quantity\" precision=\"0\"></ty-input>
+
+<!-- Both . and , work as decimal separator -->
+<!-- 12,50 and 12.50 both parse to 12.5 -->")])
 
 (defn input-types-section []
   [:div.mb-8

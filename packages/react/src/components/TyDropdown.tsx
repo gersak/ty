@@ -48,8 +48,8 @@ export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>,
   /** Disable clear button (alias for clearable={false}) */
   notClearable?: boolean;
   
-  /** Debounce delay in milliseconds (0-5000) */
-  delay?: number;
+  /** Debounce in milliseconds (0-5000) */
+  debounce?: number;
   
   /** Disable search functionality (ClojureScript: not-searchable) */
   notSearchable?: boolean;
@@ -83,7 +83,7 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
     externalSearch,
     clearable,
     notClearable,
-    delay,
+    debounce,
     name,
     ...props
   }, ref) => {
@@ -186,9 +186,9 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
       webComponentProps['not-clearable'] = '';
     }
     
-    // Add delay attribute
-    if (delay !== undefined) {
-      webComponentProps.delay = delay;
+    // Add debounce attribute
+    if (debounce !== undefined) {
+      webComponentProps.debounce = debounce;
     }
     
     // Add string attributes

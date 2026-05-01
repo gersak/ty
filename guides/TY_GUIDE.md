@@ -32,7 +32,7 @@ When a Ty component exists, use it. Do not improvise HTML.
 | Scrollable area | `<ty-scroll-container>` | `overflow-auto` + manual indicators |
 | Field label | `label` attribute on component | `<label>` element |
 | Error message | `error` attribute on component | `<span class="text-red-500">` |
-| Debounced input | `delay` attribute | Manual `setTimeout`/debounce |
+| Debounced input | `debounce` attribute | Manual `setTimeout`/debounce |
 
 Plain HTML is OK for: layout (`<div>`, `<section>`), text (`<h1>`-`<h6>`, `<p>`, `<span>` with Ty classes), lists, links, images.
 
@@ -177,7 +177,7 @@ FormData: submits raw number, not formatted string.
 | `currency` | string | `'USD'` | ISO 4217 code (for `type="currency"`) |
 | `locale` | string | `'en-US'` | Locale for numeric formatting |
 | `precision` | number | - | Decimal places |
-| `delay` | number | `0` | Debounce ms (0-5000) |
+| `debounce` | number | `0` | Debounce ms (0-5000) |
 
 **Slots:** `start`, `end` | **Events:** `input`, `change` -> `{ value, formattedValue, rawValue, originalEvent }` | `focus`, `blur`
 
@@ -251,7 +251,7 @@ FormData: submits raw number, not formatted string.
 | `not-clearable` | boolean | - | Disable clear |
 | `size` | string | `'md'` | |
 | `flavor` | string | `'neutral'` | |
-| `delay` | number | `0` | Search debounce |
+| `debounce` | number | `0` | Search debounce |
 
 **Children:** `<option>` or `<ty-option>` (for rich HTML) | **Slots:** `selected`
 
@@ -275,7 +275,7 @@ FormData: submits raw number, not formatted string.
 | `searchable` | boolean | `true` | |
 | `size` | string | `'md'` | |
 | `flavor` | string | `'neutral'` | |
-| `delay` | number | `0` | |
+| `debounce` | number | `0` | Search debounce |
 | `selected-label` | string | `'Selected'` | |
 | `available-label` | string | `'Available'` | |
 

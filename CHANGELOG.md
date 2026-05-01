@@ -5,6 +5,53 @@ All notable changes to the Ty web components library will be documented in this 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0-TC6] - 2026-05-01
+
+### 💥 Breaking Changes
+
+#### `delay` attribute renamed to `debounce`
+
+The `delay` attribute on input-style components has been renamed to `debounce` to align with industry-standard terminology (lodash, RxJS, Material UI, etc.) and to clearly distinguish it from single-shot hover delays.
+
+Affected components:
+- `ty-input` — `delay` → `debounce`
+- `ty-dropdown` — `delay` → `debounce`
+- `ty-multiselect` — `delay` → `debounce`
+
+React props renamed accordingly (`TyInput`, `TyDropdown`, `TyMultiselect`).
+
+**Not affected:**
+- `ty-tooltip` — keeps its `delay` attribute (semantically a single-shot show-delay, not a debounce of rapid events)
+- `ty-resize-observer` — already used `debounce`
+
+**Migration:**
+
+```html
+<!-- Before -->
+<ty-input delay="300" placeholder="Search..."></ty-input>
+<ty-dropdown delay="500" not-searchable></ty-dropdown>
+<ty-multiselect delay="150" external-search></ty-multiselect>
+
+<!-- After -->
+<ty-input debounce="300" placeholder="Search..."></ty-input>
+<ty-dropdown debounce="500" not-searchable></ty-dropdown>
+<ty-multiselect debounce="150" external-search></ty-multiselect>
+```
+
+```tsx
+// React — before
+<TyInput delay={300} />
+<TyDropdown delay={500} notSearchable />
+<TyMultiselect delay={150} externalSearch />
+
+// React — after
+<TyInput debounce={300} />
+<TyDropdown debounce={500} notSearchable />
+<TyMultiselect debounce={150} externalSearch />
+```
+
+---
+
 ## [1.0.0-RC4] - 2026-03-25
 
 ### New Components

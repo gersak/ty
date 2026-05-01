@@ -68,10 +68,10 @@
       :type "boolean"
       :default "false"
       :description "Whether the dropdown is required (shows asterisk)"}
-     {:name "delay"
+     {:name "debounce"
       :type "number"
       :default "0"
-      :description "Debounce delay for search events in milliseconds (0-5000ms). Only applies when searchable=\"false\" for external search."}
+      :description "Debounce for search events in milliseconds (0-5000ms). Only applies when searchable=\"false\" for external search."}
      {:name "size"
       :type "string"
       :default "'md'"
@@ -246,7 +246,7 @@
       [:li "• Set appropriate min-width for content"]
       [:li "• Use semantic flavors for meaning"]
       [:li "• Enable search for long lists (default behavior)"]
-      [:li "• Use delay attribute to debounce external search (300-500ms recommended)"]
+      [:li "• Use debounce attribute to throttle external search (300-500ms recommended)"]
       [:li "• Keep default clearable behavior for better UX"]]]
 
     ;; Don'ts
@@ -278,7 +278,7 @@
      [:li "• Set explicit min-width styles to prevent layout shifts"]
      [:li "• Rich content works great for teams, files, languages, and complex data"]
      [:li "• Read-only dropdowns hide the chevron but still allow selection"]
-     [:li "• Use delay=\"300\" or delay=\"500\" to debounce API search calls"]]]])
+     [:li "• Use debounce=\"300\" or debounce=\"500\" to throttle API search calls"]]]])
 
 (defn basic-usage-section
   "Basic usage examples"
@@ -486,12 +486,12 @@ document.getElementById('lang-dropdown').addEventListener('search', function(eve
    [:div.mb-6
     [:h3.text-lg.font-semibold.ty-text+.mb-2 "Debouncing Search Events"]
     [:p.ty-text-.mb-3
-     "Use the " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "delay"]
+     "Use the " [:code.ty-bg-neutral-.px-2.py-1.rounded.text-sm "debounce"]
      " attribute to debounce search events. Useful for API calls to reduce server load."]
 
     [:div.mb-4
      [:ty-dropdown {:searchable false
-                    :delay 500
+                    :debounce 500
                     :placeholder "Search (500ms debounce)..."
                     :style {:min-width "280px"}}
       [:ty-option {:value "opt1"} "Option 1"]
@@ -499,7 +499,7 @@ document.getElementById('lang-dropdown').addEventListener('search', function(eve
       [:ty-option {:value "opt3"} "Option 3"]]]
 
     (code-block "<!-- Debounce search events by 500ms -->
-<ty-dropdown searchable=\"false\" delay=\"500\" placeholder=\"Search...\">
+<ty-dropdown searchable=\"false\" debounce=\"500\" placeholder=\"Search...\">
   <ty-option value=\"opt1\">Option 1</ty-option>
   <ty-option value=\"opt2\">Option 2</ty-option>
 </ty-dropdown>

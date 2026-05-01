@@ -53,10 +53,10 @@
        :type "boolean"
        :default "false"
        :description "Whether the multiselect is required (shows asterisk)"}
-      {:name "searchable"
+      {:name "external-search"
        :type "boolean"
-       :default "true"
-       :description "Enable built-in search filtering. Use 'not-searchable' attribute to disable. When disabled, fires 'search' events for external search."}
+       :default "false"
+       :description "Switch to remote-search mode. Default (off): the multiselect filters its own children client-side. When on: filtering is delegated to the parent — each keystroke fires a 'search' event with {query, element}, and the consumer is expected to update the children in response."}
       {:name "size"
        :type "string"
        :default "'md'"
@@ -65,10 +65,10 @@
        :type "string"
        :default "'neutral'"
        :description "Semantic flavor: primary, secondary, success, danger, warning, neutral"}
-      {:name "delay"
+      {:name "debounce"
        :type "number"
        :default "0"
-       :description "Debounce delay in milliseconds for search events (0-5000ms). Only applies when searchable=false."}
+       :description "Debounce in milliseconds for search events (0-5000ms). Only meaningful when external-search is on."}
       {:name "clearable"
        :type "boolean"
        :default "false"
@@ -100,7 +100,7 @@
         :when-fired "Fired when selections change"
         :payload "{values: string[], action: 'add'|'remove'|'clear'|'set', item: string|null}"}
        {:name "search"
-        :when-fired "Fired when user types in search (only when searchable=false for external search)"
+        :when-fired "Fired on each keystroke while typing in the search input — only when external-search is set. Debounced by `debounce`."
         :payload "{query: string, element: HTMLElement}"}
        {:name "focus"
         :when-fired "Fired when multiselect gains focus"

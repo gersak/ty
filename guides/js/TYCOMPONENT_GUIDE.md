@@ -186,7 +186,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
     },
     
     // Number property with bounds
-    delay: {
+    debounce: {
       type: 'number' as const,
       default: 0,
       validate: (v: any) => v >= 0 && v <= 5000,
@@ -260,11 +260,11 @@ export class TyDropdown extends TyComponent<DropdownState> {
     this.setProperty('size', v) 
   }
   
-  get delay(): number { 
-    return this.getProperty('delay') 
+  get debounce(): number {
+    return this.getProperty('debounce')
   }
-  set delay(v: number) { 
-    this.setProperty('delay', v) 
+  set debounce(v: number) {
+    this.setProperty('debounce', v)
   }
 }
 ```
@@ -517,7 +517,7 @@ protected static properties = {
 
 ```typescript
 protected static properties = {
-  delay: {
+  debounce: {
     type: 'number' as const,
     default: 0,
     validate: (v: any) => v >= 0 && v <= 5000,
@@ -577,7 +577,7 @@ protected getFormValue(): FormDataEntryValue | null {
 
 ### Pattern 6: Non-Visual Properties
 
-Some properties don't require re-rendering (like `name` or `delay`):
+Some properties don't require re-rendering (like `name` or `debounce`):
 
 ```typescript
 protected static properties = {
@@ -586,7 +586,7 @@ protected static properties = {
     // No 'visual: true' - changing this doesn't trigger render
     default: ''
   },
-  delay: {
+  debounce: {
     type: 'number' as const,
     // No 'visual: true' - only affects event emission timing
     default: 0

@@ -1,6 +1,33 @@
 (ns ty.site.docs.tabs
   "Documentation for ty-tabs and ty-tab components"
-  (:require [ty.site.docs.common :refer [code-block attribute-table event-table docs-page]]))
+  (:require [cljs-bean.core :refer [->clj]]
+            [ty.site.docs.common :refer [code-block attribute-table event-table docs-page]]
+            [ty.site.state :as state]))
+
+;; -----------------------------------------------------------------------------
+;; Interactive event-handler demo
+;; -----------------------------------------------------------------------------
+;;
+;; This section verifies — outside of any framework wrapper — that <ty-tabs>
+;; actually dispatches `ty-tab-change` events with detail
+;; {activeId, activeIndex, previousId, previousIndex}.
+;;
+;; State lives in `ty.site.state/state` under :docs.tabs/* keys.
+
+(defn- ty-tab-change-handler [^js event]
+  (let [detail (->clj (.-detail event))
+        {:strs [activeId previousId activeIndex previousIndex]} detail
+        entry {:active-id activeId
+               :previous-id previousId
+               :active-index activeIndex
+               :previous-index previousIndex
+               :ts (.now js/Date)}]
+    (js/console.log "ty-tab-change fired:" (clj->js detail))
+    (swap! state/state
+           (fn [s]
+             (-> s
+                 (assoc :docs.tabs/active activeId)
+                 (update :docs.tabs/log (fn [log] (->> (cons entry log) (take 20) vec))))))))
 
 ;; =====================================================
 ;; Section Components - Split for Maintainability
@@ -869,6 +896,90 @@
   [:div.mb-8
    [:h2.text-2xl.font-semibold.ty-text.mb-6 "Examples"]])
 
+(defn example-event-handler []
+  (let [active (or (:docs.tabs/active @state/state) "overview")
+        log (:docs.tabs/log @state/state)]
+    [:section.mb-8
+     [:h3.text-xl.font-medium.ty-text.mb-3 "Interactive: ty-tab-change event"]
+     [:p.ty-text-.text-sm.mb-4
+      "Click a tab — the badge below updates from a "
+      [:code.ty-bg-neutral-.px-1.rounded "ty-tab-change"]
+      " listener and each event is logged. Open DevTools and you'll also see "
+      [:code.ty-bg-neutral-.px-1.rounded "ty-tab-change fired:"]
+      " in the console for every click."]
+
+     [:div.flex.items-center.gap-3.mb-3
+      [:span.ty-text- "Active tab from state:"]
+      [:code.ty-bg-primary-.ty-text-primary++.px-3.py-1.rounded.font-mono active]
+      [:span.ty-text-- "·"]
+      [:span.ty-text- "Events captured: " [:strong (str (count log))]]]
+
+     [:div.ty-elevated.rounded-lg.p-6.mb-4
+      [:ty-tabs {:width "100%"
+                 :height "240px"
+                 :active active
+                 :on {:ty-tab-change ty-tab-change-handler}}
+       [:ty-tab {:id "overview" :label "Overview"}
+        [:div.p-6
+         [:h4.ty-text+.text-lg.font-medium.mb-2 "Overview panel"]
+         [:p.ty-text- "First tab. Click around and watch the badge + log update."]]]
+       [:ty-tab {:id "settings" :label "Settings"}
+        [:div.p-6
+         [:h4.ty-text+.text-lg.font-medium.mb-2 "Settings panel"]
+         [:p.ty-text- "Second tab."]]]
+       [:ty-tab {:id "activity" :label "Activity"}
+        [:div.p-6
+         [:h4.ty-text+.text-lg.font-medium.mb-2 "Activity panel"]
+         [:p.ty-text- "Third tab — programmatic switch:"]
+         [:ty-button {:flavor "primary"
+                      :class "mt-3"
+                      :on {:click (fn [_]
+                                    (swap! state/state assoc :docs.tabs/active "overview"))}}
+          [:ty-icon {:slot "start" :name "home" :size "sm"}]
+          "Jump back to Overview"]]]
+       [:ty-tab {:id "advanced" :label "Advanced" :disabled true}
+        [:div.p-6
+         [:p.ty-text- "Disabled — should be unreachable."]]]]]
+
+     ;; Log
+     [:div.ty-content.rounded-lg.p-4
+      [:div.flex.items-center.justify-between.mb-3
+       [:h4.ty-text+.font-medium "Change log (newest first)"]
+       [:ty-button {:appearance "outlined"
+                    :size "sm"
+                    :on {:click (fn [_]
+                                  (swap! state/state assoc :docs.tabs/log []))}}
+        [:ty-icon {:slot "start" :name "trash-2" :size "xs"}]
+        "Clear"]]
+      (if (empty? log)
+        [:p.ty-text-.italic.text-sm
+         "(No events yet — switch tabs above. If this stays empty after clicking a tab, "
+         [:code.ty-bg-neutral-.px-1.rounded "ty-tab-change"]
+         " isn't being dispatched by the web component.)"]
+        [:ul.space-y-2
+         (for [{:keys [active-id previous-id active-index previous-index ts]} log]
+           [:li.font-mono.text-xs.flex.items-center.justify-between.gap-3.ty-elevated.rounded.px-3.py-2
+            {:key (str ts "-" active-id)}
+            [:span.ty-text-success
+             (or previous-id "∅")
+             " (" (or previous-index "-") ")"
+             [:span.ty-text-- " → "]
+             active-id
+             " (" active-index ")"]
+            [:span.ty-text--
+             (.toLocaleTimeString (js/Date. ts))]])])]
+
+     (code-block ";; Replicant — listen for ty-tab-change
+[:ty-tabs {:active \"overview\"
+           :on {:ty-tab-change
+                (fn [^js e]
+                  (let [{:strs [activeId activeIndex previousId previousIndex]}
+                        (->clj (.-detail e))]
+                    (println activeId)))}}
+ [:ty-tab {:id \"overview\" :label \"Overview\"} \"...\"]
+ [:ty-tab {:id \"settings\" :label \"Settings\"} \"...\"]]"
+                 "clojure")]))
+
 (defn view []
   (docs-page
    ;; Title and Description
@@ -881,6 +992,7 @@
    (api-reference)
    (basic-usage)
    (examples-section)
+   (example-event-handler)
    (example-basic-text-labels)
    (example-rich-labels)
    (example-marker-styling)

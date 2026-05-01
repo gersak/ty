@@ -203,7 +203,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
         return v
       }
     },
-    delay: {
+    debounce: {
       type: 'number' as const,
       default: 0,
       validate: (v: any) => v >= 0 && v <= 5000,
@@ -253,8 +253,8 @@ export class TyDropdown extends TyComponent<DropdownState> {
   private _keyboardHandler: ((e: KeyboardEvent) => void) | null = null
   private _clearClickHandler: ((e: Event) => void) | null = null
 
-  // Delay/debounce properties for search event
-  private _delay: number = 0
+  // Debounce properties for search event
+  private _debounce: number = 0
   private _searchDebounceTimer: number | null = null
 
   // Custom scrollbar for options list
@@ -373,8 +373,8 @@ export class TyDropdown extends TyComponent<DropdownState> {
           this._flavor = newValue
           break
 
-        case 'delay':
-          this._delay = newValue
+        case 'debounce':
+          this._debounce = newValue
           break
       }
     }
@@ -1222,7 +1222,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
 
   /**
    * Dispatch search event for external search handling
-   * With optional delay/debounce support
+   * With optional debounce support
    */
   private dispatchSearchEvent(query: string, originalEvent?: Event): void {
     // Clear existing timer
@@ -1231,14 +1231,14 @@ export class TyDropdown extends TyComponent<DropdownState> {
       this._searchDebounceTimer = null
     }
 
-    // If delay is set, debounce the event
-    if (this._delay > 0) {
+    // If debounce is set, debounce the event
+    if (this._debounce > 0) {
       this._searchDebounceTimer = window.setTimeout(() => {
         this.fireSearchEvent(query, originalEvent)
         this._searchDebounceTimer = null
-      }, this._delay)
+      }, this._debounce)
     } else {
-      // Fire immediately if no delay
+      // Fire immediately if no debounce
       this.fireSearchEvent(query, originalEvent)
     }
   }
@@ -1812,8 +1812,8 @@ export class TyDropdown extends TyComponent<DropdownState> {
   get flavor(): Flavor { return this.getProperty('flavor') as Flavor }
   set flavor(v: Flavor) { this.setProperty('flavor', v) }
 
-  get delay(): number { return this.getProperty('delay') }
-  set delay(v: number) { this.setProperty('delay', v) }
+  get debounce(): number { return this.getProperty('debounce') }
+  set debounce(v: number) { this.setProperty('debounce', v) }
 
   get form(): HTMLFormElement | null {
     return this._internals.form

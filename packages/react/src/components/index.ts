@@ -48,7 +48,7 @@ export { TyDatePicker } from './TyDatePicker';
 export type { TyDatePickerProps, TyDatePickerEventDetail } from './TyDatePicker';
 
 export { TyPopup } from './TyPopup';
-export type { TyPopupProps, TyPopupElement, TyPopupOpenEvent, TyPopupCloseEvent } from './TyPopup';
+export type { TyPopupProps, TyPopupElement } from './TyPopup';
 
 export { TyCheckbox } from './TyCheckbox';
 export type { TyCheckboxProps, TyCheckboxEventDetail } from './TyCheckbox';
@@ -150,7 +150,7 @@ export type { TyCalendarProps as CalendarProps, TyCalendarChangeEventDetail as C
 export type { TyDatePickerProps as DatePickerProps, TyDatePickerEventDetail as DatePickerEventDetail } from './TyDatePicker';
 
 // Popup types
-export type { TyPopupProps as PopupProps, TyPopupElement as PopupElement, TyPopupOpenEvent as PopupOpenEvent, TyPopupCloseEvent as PopupCloseEvent } from './TyPopup';
+export type { TyPopupProps as PopupProps, TyPopupElement as PopupElement } from './TyPopup';
 
 // Checkbox types
 export type { TyCheckboxProps as CheckboxProps, TyCheckboxEventDetail as CheckboxEventDetail } from './TyCheckbox';

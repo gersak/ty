@@ -30,7 +30,7 @@
        {:name "debounce"
         :type "number"
         :default "0"
-        :description "Debounce delay in milliseconds. When > 0, only updates after the specified time of no resize activity"}])]
+        :description "Debounce in milliseconds. When > 0, only updates after the specified time of no resize activity"}])]
 
    ;; JavaScript API
    [:div

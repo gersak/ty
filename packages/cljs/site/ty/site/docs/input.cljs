@@ -61,10 +61,10 @@
        :type "number"
        :default "null"
        :description "Number of decimal places for numeric types. Use precision=\"0\" for integer-only input (rounds to whole number)."}
-      {:name "delay"
+      {:name "debounce"
        :type "number"
        :default "0"
-       :description "Debounce delay in milliseconds (0-5000ms) for input/change events. Useful for search inputs and API calls."}
+       :description "Debounce in milliseconds (0-5000ms) for input/change events. Useful for search inputs and API calls."}
       {:name "class"
        :type "string"
        :default "null"
@@ -90,10 +90,10 @@
     [:h3.text-lg.font-semibold.ty-text++.mb-2 "ty-input Events"]
     (event-table
       [{:name "input"
-        :when-fired "Fired on each input change (respects delay attribute)"
+        :when-fired "Fired on each input change (respects debounce attribute)"
         :payload "{value, formattedValue?, rawValue, originalEvent}"}
        {:name "change"
-        :when-fired "Fired when input loses focus after change (respects delay attribute)"
+        :when-fired "Fired when input loses focus after change (respects debounce attribute)"
         :payload "{value, formattedValue?, rawValue, originalEvent}"}
        {:name "focus"
         :when-fired "Fired when input gains focus"
@@ -215,19 +215,19 @@
   <ty-icon slot=\"end\" name=\"external-link\" size=\"sm\"></ty-icon>
 </ty-input>")]])
 
-(defn delay-section []
+(defn debounce-section []
   [:div.mb-8
-   [:h2.text-2xl.font-bold.ty-text++.mb-4 "Debounce with Delay"]
+   [:h2.text-2xl.font-bold.ty-text++.mb-4 "Debounce"]
    [:div.ty-content.rounded-lg.p-6
-    [:h3.text-xl.font-semibold.ty-text++.mb-4 "Delay Attribute"]
-    [:p.ty-text-.mb-4 "The delay attribute (0-5000ms) debounces input and change events. Perfect for search inputs, API calls, and expensive operations. Events fire immediately on blur."]
+    [:h3.text-xl.font-semibold.ty-text++.mb-4 "Debounce Attribute"]
+    [:p.ty-text-.mb-4 "The debounce attribute (0-5000ms) debounces input and change events. Perfect for search inputs, API calls, and expensive operations. Events fire immediately on blur."]
 
     [:div.grid.gap-4
      [:div
       [:ty-input {:id "search-instant"
-                  :label "Instant (no delay)"
+                  :label "Instant (no debounce)"
                   :placeholder "Type to search..."
-                  :delay "0"}
+                  :debounce "0"}
        [:ty-icon {:slot "start"
                   :name "search"
                   :size "sm"}]]
@@ -235,28 +235,28 @@
 
      [:div
       [:ty-input {:id "search-300"
-                  :label "300ms delay"
+                  :label "300ms debounce"
                   :placeholder "Type to search..."
-                  :delay "300"}
+                  :debounce "300"}
        [:ty-icon {:slot "start"
                   :name "search"
                   :size "sm"}]]
-      [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#delay-300-count "0"]]]
+      [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#debounce-300-count "0"]]]
 
      [:div
       [:ty-input {:id "search-1000"
-                  :label "1000ms delay (1 second)"
+                  :label "1000ms debounce (1 second)"
                   :placeholder "Type to search..."
-                  :delay "1000"}
+                  :debounce "1000"}
        [:ty-icon {:slot "start"
                   :name "search"
                   :size "sm"}]]
-      [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#delay-1000-count "0"]]]]
+      [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#debounce-1000-count "0"]]]]
 
     [:script "
 let instantCount = 0;
-let delay300Count = 0;
-let delay1000Count = 0;
+let debounce300Count = 0;
+let debounce1000Count = 0;
 
 document.getElementById('search-instant')?.addEventListener('input', () => {
   instantCount++;
@@ -264,25 +264,25 @@ document.getElementById('search-instant')?.addEventListener('input', () => {
 });
 
 document.getElementById('search-300')?.addEventListener('input', () => {
-  delay300Count++;
-  document.getElementById('delay-300-count').textContent = delay300Count;
+  debounce300Count++;
+  document.getElementById('debounce-300-count').textContent = debounce300Count;
 });
 
 document.getElementById('search-1000')?.addEventListener('input', () => {
-  delay1000Count++;
-  document.getElementById('delay-1000-count').textContent = delay1000Count;
+  debounce1000Count++;
+  document.getElementById('debounce-1000-count').textContent = debounce1000Count;
 });"]
 
     (code-block "<!-- Debounce examples -->
-<ty-input label=\"Instant (no delay)\" delay=\"0\" placeholder=\"Type to search...\">
+<ty-input label=\"Instant (no debounce)\" debounce=\"0\" placeholder=\"Type to search...\">
   <ty-icon slot=\"start\" name=\"search\" size=\"sm\"></ty-icon>
 </ty-input>
 
-<ty-input label=\"300ms delay\" delay=\"300\" placeholder=\"Type to search...\">
+<ty-input label=\"300ms debounce\" debounce=\"300\" placeholder=\"Type to search...\">
   <ty-icon slot=\"start\" name=\"search\" size=\"sm\"></ty-icon>
 </ty-input>
 
-<ty-input label=\"1000ms delay\" delay=\"1000\" placeholder=\"Type to search...\">
+<ty-input label=\"1000ms debounce\" debounce=\"1000\" placeholder=\"Type to search...\">
   <ty-icon slot=\"start\" name=\"search\" size=\"sm\"></ty-icon>
 </ty-input>
 
@@ -766,7 +766,7 @@ usdInput.addEventListener('input', (e) => {
    (api-reference)
    (basic-usage-section)
    (icon-slots-section)
-   (delay-section)
+   (debounce-section)
    (input-types-section)
    (sizes-section)
    (flavors-section)

@@ -63,7 +63,6 @@ export interface TyButtonProps extends Omit<React.HTMLAttributes<HTMLElement>, '
 export const TyButton = React.forwardRef<HTMLElement, TyButtonProps>(
   ({
     children,
-    onClick,
     type,
     appearance,
     disabled,

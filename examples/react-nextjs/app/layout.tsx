@@ -1,6 +1,10 @@
 import './globals.css'
+// Bundler-only setup (TC6 sideEffects fix) — no script tag, no public/ty/ copy.
+// @gersak/ty CSS imported here in the Server Component (safe on the server).
+import '@gersak/ty/css/ty.css'
 import type { Metadata } from 'next'
 import { ThemeProvider } from '../lib/theme-provider'
+import { TyRegistry } from '../components/TyRegistry'
 
 
 export const metadata: Metadata = {
@@ -15,12 +19,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* Load Ty components and CSS from CDN build */}
-        <link rel="stylesheet" href="/ty/ty.css" />
-        <script type="module" src="/ty/ty.js"></script>
-      </head>
       <body>
+        <TyRegistry />
         <ThemeProvider>
           {children}
         </ThemeProvider>

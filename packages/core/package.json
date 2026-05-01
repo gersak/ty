@@ -1,9 +1,13 @@
 {
   "name": "@gersak/ty",
-  "version": "1.0.0-TC5",
+  "version": "1.0.0-TC6",
   "description": "Ty Web Components - Framework-agnostic UI components with semantic design system",
   "type": "module",
-  "sideEffects": false,
+  "sideEffects": [
+    "./lib/index.js",
+    "./lib/components/**/*.js",
+    "./dist/*.js"
+  ],
   "main": "./lib/index.js",
   "module": "./lib/index.js",
   "types": "./lib/index.d.ts",

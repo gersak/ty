@@ -63,8 +63,8 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
   locale?: string;
   precision?: string | number;
 
-  /** Debounce delay in milliseconds (0-5000) */
-  delay?: number;
+  /** Debounce in milliseconds (0-5000) */
+  debounce?: number;
 
   // React event handlers - override with our custom types
   /**
@@ -88,7 +88,7 @@ export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'o
 
 // React wrapper for ty-input web component
 export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
-  ({ onChange, onChangeCommit, onFocus, onBlur, disabled, name, checked, delay, ...props }, ref) => {
+  ({ onChange, onChangeCommit, onFocus, onBlur, disabled, name, checked, debounce, ...props }, ref) => {
     const elementRef = useRef<HTMLElement>(null);
 
     // Map onChange to input event (React convention)
@@ -181,8 +181,8 @@ export const TyInput = React.forwardRef<HTMLElement, TyInputProps>(
     // Add string attributes
     if (name) webComponentProps.name = name;
 
-    // Add delay attribute
-    if (delay !== undefined) webComponentProps.delay = delay;
+    // Add debounce attribute
+    if (debounce !== undefined) webComponentProps.debounce = debounce;
 
     return React.createElement(
       'ty-input',

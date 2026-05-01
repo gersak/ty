@@ -275,17 +275,19 @@ document.querySelector('form').addEventListener('submit', (e) => {
      "Completed: " [:span#task-count.font-bold "0"] " / 3"]]
 
    [:script "
-const checkboxes = document.querySelectorAll('#task-1, #task-2, #task-3');
-const countEl = document.getElementById('task-count');
+(function () {
+  const checkboxes = document.querySelectorAll('#task-1, #task-2, #task-3');
+  const countEl = document.getElementById('task-count');
 
-function updateCount() {
-  const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
-  countEl.textContent = checked;
-}
+  function updateCount() {
+    const checked = Array.from(checkboxes).filter(cb => cb.checked).length;
+    countEl.textContent = checked;
+  }
 
-checkboxes.forEach(cb => {
-  cb.addEventListener('change', updateCount);
-});"]
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', updateCount);
+  });
+})();"]
 
    (code-block "<!-- Task list example -->
 <ty-checkbox id=\"task-1\" flavor=\"success\">Complete documentation</ty-checkbox>

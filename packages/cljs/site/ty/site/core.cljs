@@ -7,6 +7,7 @@
     [ty.site.docs :as docs]
     [ty.site.icons :as icons]
     [ty.site.state :refer [state]]
+    [ty.site.views.components-index :as components-index]
     [ty.site.views.landing :as landing]))
 
 ;; Configuration for GitHub Pages deployment
@@ -45,7 +46,14 @@
     :hash "contact-form"
     :name "Contact Form"
     :icon "mail"
-    :view landing/view}])
+    :view landing/view}
+
+   ;; Components browse page (contact sheet of all components)
+   {:id ::components
+    :segment "components"
+    :name "Components"
+    :icon "grid"
+    :view components-index/view}])
 
 ;; Import docs components that are already configured
 (def component-routes docs/docs-components)
@@ -381,12 +389,14 @@
             :debounce 150}
            (resize-observer-hooks "ty.sidebar.nav-items" [:sidebar-sizes :fixed-content-height]))
     [:div.space-y-6
-     ;; Main Navigation
+     ;; Main Navigation — Welcome + Components index
      (nav-section
-       {:items [(let [route (first (filter #(= (:id %) ::landing) site-routes))]
-                  {:route-id (:id route)
-                   :label (:name route)
-                   :icon (:icon route)})]})
+       {:items [{:route-id ::landing
+                 :label "Welcome"
+                 :icon "home"}
+                {:route-id ::components
+                 :label "Components"
+                 :icon "grid"}]})
 
      ;; Examples Section (unified router navigation) - Always visible
      (nav-section
@@ -401,42 +411,13 @@
                  :label "Contact Form"
                  :icon "mail"}]})]]
 
-   ;; Quickstart (route navigation) - Collapsible
-   [:ty-resize-observer
-    (merge {:id "ty.sidebar.quickstart"
-            :debounce 150}
-           (resize-observer-hooks "ty.sidebar.quickstart" [:sidebar-sizes :quickstart]))
-    (nav-section
-      {:title "Quickstart"
-       :collapsible? true
-       :section-key :quickstart
-       :items (for [route guide-routes]
-                {:route-id (:id route)
-                 :label (:name route)
-                 :icon (:icon route)})})]
-
-   ;; Components Section (route navigation to component docs) - Collapsible
-   [:ty-resize-observer
-    (merge {:id "ty.sidebar.components"
-            :debounce 150}
-           (resize-observer-hooks "ty.sidebar.components" [:sidebar-sizes :components]))
-    (nav-section
-      {:title "Components"
-       :collapsible? true
-       :section-key :components
-       :items (keep
-                (fn [route]
-                  (when-not (= (:id route) :ty.site/docs)
-                    {:route-id (:id route)
-                     :label (:name route)
-                     :icon (:icon route)
-                     :children (when-let [children (:children route)]
-                                 (map (fn [child]
-                                        {:route-id (:id child)
-                                         :label (:name child)
-                                         :icon (:icon child)})
-                                      children))}))
-                component-routes)})]])
+   ;; Quickstart (route navigation) - Always visible
+   (nav-section
+     {:title "Quickstart"
+      :items (for [route guide-routes]
+               {:route-id (:id route)
+                :label (:name route)
+                :icon (:icon route)})})])
 
 (defn render
   "Render the appropriate view based on current route (like docs/render)"
@@ -749,6 +730,17 @@
         [:kbd.ty-bg-neutral-.px-2.py-1.rounded "esc"]
         " Close"]]]]))
 
+;; ============================================================================
+;; Active component lookup (used by header to display the component name)
+;; ============================================================================
+
+(defn current-component-route
+  "Return the docs-components entry matching the active route, including
+   children. Returns nil when not on a component page."
+  []
+  (let [all (mapcat #(cons % (:children %)) docs/docs-components)]
+    (some #(when (router/rendered? (:id %) true) %) all)))
+
 (defonce keyboard-shortcuts-initialized (atom false))
 
 (defn setup-keyboard-shortcuts!
@@ -793,8 +785,22 @@
       [:div.space-y-2
        (nav-items)]]]]])
 
+(defn page-title-text
+  "Plain page title used when not viewing a component."
+  []
+  (cond
+    (router/rendered? ::user-profile true) "User Profile"
+    (router/rendered? ::event-booking true) "Event Booking"
+    (router/rendered? ::contact-form true) "Contact Form"
+    (router/rendered? ::components true) "Components"
+    (router/rendered? ::landing) "Welcome"
+    (router/rendered? ::ty-styles true) "Design System"
+    (router/rendered? ::getting-started true) "Getting Started"
+    :else "Documentation"))
+
 (defn header []
-  (let [show-sidebar? (layout/breakpoint>= :lg)]
+  (let [show-sidebar? (layout/breakpoint>= :lg)
+        current-comp (current-component-route)]
     [:ty-resize-observer
      (merge {:id "ty.header"}
             (resize-observer-hooks "ty.header" [:sidebar-sizes :header]))
@@ -818,19 +824,14 @@
                       :style {:height "40px"
                               :width "80px"}}]]]
          ;; Content header area (aligns with main content)
-         [:div.flex.items-center.justify-between.py-4
-          ;; Page title
+         [:div.flex.items-center.justify-between.gap-3.py-4
+          ;; Page title — plain text (component name when on a component page)
           [:h2.text-sm.font-medium.ty-text-.truncate
-           (cond
-             (router/rendered? ::user-profile true) "User Profile"
-             (router/rendered? ::event-booking true) "Event Booking"
-             (router/rendered? ::contact-form true) "Contact Form"
-             (router/rendered? ::landing) "Welcome"
-             (router/rendered? ::ty-styles true) "Design System"
-             (router/rendered? ::getting-started true) "Getting Started"
-             :else "Documentation")]
+           (if current-comp
+             (:name current-comp)
+             (page-title-text))]
           ;; Actions
-          [:div.flex.items-center.gap-2
+          [:div.flex.items-center.gap-2.flex-shrink-0
            ;; Search button
            [:button.flex.items-center.gap-2.px-3.py-2.rounded-md.border.ty-border+.hover:ty-border-accent.transition-all.duration-150
             {:on {:click open-search!}}
@@ -875,16 +876,11 @@
                      :class "ty-text-accent"
                      :style {:height "20px"
                              :width "36px"}}]]
-         ;; Page title (grows to fill, truncates)
+         ;; Page title (grows to fill, truncates) — plain text
          [:h2.flex-1.text-sm.font-medium.ty-text-.truncate.min-w-0
-          (cond
-            (router/rendered? ::user-profile true) "User Profile"
-            (router/rendered? ::event-booking true) "Event Booking"
-            (router/rendered? ::contact-form true) "Contact Form"
-            (router/rendered? ::landing) "Welcome"
-            (router/rendered? ::ty-styles true) "Design System"
-            (router/rendered? ::getting-started true) "Getting Started"
-            :else "Documentation")]
+          (if current-comp
+            (:name current-comp)
+            (page-title-text))]
          ;; Search button (icon only)
          [:button.p-2.rounded-md.hover:ty-bg-accent-.transition-colors.flex-shrink-0
           {:on {:click open-search!}}

@@ -173,6 +173,23 @@ export const dropdownStyles = `
   padding-right: calc(var(--ty-spacing-5) + 2rem + var(--ty-spacing-5));
 }
 
+/* Start-slot icon (leading content inside the stub trigger) */
+.dropdown-mode-desktop .dropdown-stub ::slotted([slot="start"]),
+.dropdown-mode-mobile .dropdown-stub ::slotted([slot="start"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  color: var(--ty-color-text-soft);
+}
+
+.dropdown-mode-desktop .dropdown-stub ::slotted(ty-icon[slot="start"]),
+.dropdown-mode-mobile .dropdown-stub ::slotted(ty-icon[slot="start"]) {
+  width: 1em;
+  height: 1em;
+}
+
 /* Placeholder */
 .dropdown-mode-desktop .dropdown-placeholder {
   color: var(--input-placeholder, var(--ty-input-placeholder));

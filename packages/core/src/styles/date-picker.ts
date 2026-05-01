@@ -44,6 +44,21 @@ export const datePickerStyles = `
   width: 100%;
 }
 
+/* Start-slot icon (leading content inside the date-picker stub) */
+.date-picker-stub ::slotted([slot="start"]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 0.5rem;
+  color: var(--ty-color-text-soft);
+}
+
+.date-picker-stub ::slotted(ty-icon[slot="start"]) {
+  width: 1em;
+  height: 1em;
+}
+
 /* Date picker stub (styled like dropdown) */
 .date-picker-stub {
   width: 100%;

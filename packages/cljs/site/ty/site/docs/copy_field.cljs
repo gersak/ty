@@ -238,20 +238,22 @@
      [:p.text-sm.ty-text- "Copy count: " [:span#copy-count.font-bold "0"]]]]
 
    [:script "
-let copyCount = 0;
-const copyField = document.getElementById('event-copy');
-const statusEl = document.getElementById('copy-status');
-const countEl = document.getElementById('copy-count');
+(function () {
+  let copyCount = 0;
+  const copyField = document.getElementById('event-copy');
+  const statusEl = document.getElementById('copy-status');
+  const countEl = document.getElementById('copy-count');
 
-copyField?.addEventListener('copy-success', (e) => {
-  copyCount++;
-  statusEl.textContent = `Copied: ${e.detail.value}`;
-  countEl.textContent = copyCount;
-});
+  copyField?.addEventListener('copy-success', (e) => {
+    copyCount++;
+    statusEl.textContent = `Copied: ${e.detail.value}`;
+    countEl.textContent = copyCount;
+  });
 
-copyField?.addEventListener('copy-error', (e) => {
-  statusEl.textContent = `Error: ${e.detail.error.message}`;
-});"]
+  copyField?.addEventListener('copy-error', (e) => {
+    statusEl.textContent = `Error: ${e.detail.error.message}`;
+  });
+})();"]
 
    (code-block "<!-- Event handling example -->
 <ty-copy id=\"event-copy\" label=\"API Key\" value=\"sk_live_event_example_123\"></ty-copy>

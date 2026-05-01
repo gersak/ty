@@ -1401,8 +1401,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         <div class="multiselect-container dropdown-mode-mobile">
           ${labelHtml}
           <div class="dropdown-wrapper">
-            <div class="dropdown-stub multiselect-stub ${stubClasses}" 
+            <div class="dropdown-stub multiselect-stub ${stubClasses}"
                  ${this._disabled ? 'disabled' : ''}>
+              <slot name="start"></slot>
               <div class="multiselect-chips">
                 <slot name="selected"></slot>
               </div>
@@ -1493,8 +1494,9 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
         <div class="multiselect-container dropdown-mode-mobile">
           ${labelHtml}
           <div class="dropdown-wrapper">
-            <div class="dropdown-stub multiselect-stub ${stubClasses}" 
+            <div class="dropdown-stub multiselect-stub ${stubClasses}"
                  ${this._disabled ? 'disabled' : ''}>
+              <slot name="start"></slot>
               <div class="multiselect-chips">
                 <slot id="stub-slot" name="selected"></slot>
               </div>
@@ -1503,7 +1505,7 @@ export class TyMultiselect extends TyComponent<MultiselectState> {
                 ${CHEVRON_DOWN_SVG}
               </div>
             </div>
-            
+
             <dialog class="mobile-dialog">
               <div class="mobile-dialog-content">
                 

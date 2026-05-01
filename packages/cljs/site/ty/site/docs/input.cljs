@@ -254,24 +254,26 @@
       [:div.ty-text-.text-xs.mt-1 "Event count: " [:span#debounce-1000-count "0"]]]]
 
     [:script "
-let instantCount = 0;
-let debounce300Count = 0;
-let debounce1000Count = 0;
+(function () {
+  let instantCount = 0;
+  let debounce300Count = 0;
+  let debounce1000Count = 0;
 
-document.getElementById('search-instant')?.addEventListener('input', () => {
-  instantCount++;
-  document.getElementById('instant-count').textContent = instantCount;
-});
+  document.getElementById('search-instant')?.addEventListener('input', () => {
+    instantCount++;
+    document.getElementById('instant-count').textContent = instantCount;
+  });
 
-document.getElementById('search-300')?.addEventListener('input', () => {
-  debounce300Count++;
-  document.getElementById('debounce-300-count').textContent = debounce300Count;
-});
+  document.getElementById('search-300')?.addEventListener('input', () => {
+    debounce300Count++;
+    document.getElementById('debounce-300-count').textContent = debounce300Count;
+  });
 
-document.getElementById('search-1000')?.addEventListener('input', () => {
-  debounce1000Count++;
-  document.getElementById('debounce-1000-count').textContent = debounce1000Count;
-});"]
+  document.getElementById('search-1000')?.addEventListener('input', () => {
+    debounce1000Count++;
+    document.getElementById('debounce-1000-count').textContent = debounce1000Count;
+  });
+})();"]
 
     (code-block "<!-- Debounce examples -->
 <ty-input label=\"Instant (no debounce)\" debounce=\"0\" placeholder=\"Type to search...\">
@@ -599,16 +601,18 @@ document.getElementById('username-input').addEventListener('input', (e) => {
 
    [:script {:dangerouslySetInnerHTML
              {:__html "
-const usdInput = document.getElementById('usd-amount');
-const eurInput = document.getElementById('eur-amount');
-const rate = 0.9259; // Example rate
+(function () {
+  const usdInput = document.getElementById('usd-amount');
+  const eurInput = document.getElementById('eur-amount');
+  const rate = 0.9259; // Example rate
 
-usdInput?.addEventListener('input', (e) => {
-  const usdValue = e.detail.value; // This is the numeric shadow value
-  if (usdValue) {
-    eurInput.value = (usdValue * rate).toFixed(2);
-  }
-});"}}]
+  usdInput?.addEventListener('input', (e) => {
+    const usdValue = e.detail.value; // This is the numeric shadow value
+    if (usdValue) {
+      eurInput.value = (usdValue * rate).toFixed(2);
+    }
+  });
+})();"}}]
 
    (code-block "<!-- Currency converter with shadow values -->
 <ty-input id=\"usd-amount\" type=\"currency\" label=\"USD Amount\" currency=\"USD\" value=\"100\"></ty-input>

@@ -98,6 +98,7 @@
    :database lucide/database
    :server lucide/server
    :layout lucide/layout
+   :grid lucide/layout-grid
    :maximize lucide/maximize
    :accessibility lucide/accessibility
 

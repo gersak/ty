@@ -1446,8 +1446,9 @@ export class TyDropdown extends TyComponent<DropdownState> {
         <div class="dropdown-container dropdown-mode-desktop">
           ${labelHtml}
           <div class="dropdown-wrapper">
-            <div class="dropdown-stub ${stubClasses}" 
+            <div class="dropdown-stub ${stubClasses}"
                  ${this._disabled ? 'disabled' : ''}>
+              <slot name="start"></slot>
               <slot name="selected"></slot>
               <span class="dropdown-placeholder">${this._placeholder}</span>
               <button class="dropdown-clear-btn" type="button" aria-label="Clear selection">
@@ -1595,6 +1596,7 @@ export class TyDropdown extends TyComponent<DropdownState> {
           <div class="dropdown-wrapper">
             <div class="dropdown-stub ${stubClasses}"
                  ${this._disabled ? 'disabled' : ''}>
+              <slot name="start"></slot>
               <slot name="selected"></slot>
               <span class="dropdown-placeholder">${this._placeholder}</span>
               <div class="dropdown-chevron">

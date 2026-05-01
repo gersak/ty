@@ -169,3 +169,124 @@ Override via CSS custom properties:
 ```
 
 Pattern: `--ty-color-{name}-{strong|mild|soft|faint}`, `--ty-bg-{name}-{mild|soft}`, `--ty-border-{name}`.
+
+---
+
+## Per-Component Color Overrides
+
+The customization above retunes the *whole palette*. To recolor a single instance instead — a one-off brand button, a highlighted input, a green dropdown — set the component's CSS variables on the host element. Custom properties inherit through the shadow DOM, so a value on the host wins over the global default inside that component only.
+
+Three places you can set them:
+
+```html
+<!-- inline on one element -->
+<ty-button style="--ty-button-bg: #ff6600;">…</ty-button>
+
+<!-- in a stylesheet, scoped by attribute -->
+<style>
+  ty-button[flavor="brand"] {
+    --ty-button-bg: #7c3aed;
+    --ty-button-color: white;
+  }
+</style>
+
+<!-- on a wrapping container — inherits down to all descendants -->
+<div style="--ty-input-border: #16a34a;">
+  <ty-input></ty-input>
+  <ty-dropdown>…</ty-dropdown>
+</div>
+```
+
+### `<ty-button>`
+
+Four hooks. The button reads `var(--ty-button-X, …flavor default…)`, so unset values fall back to the chosen flavor.
+
+| Variable | Purpose |
+|---|---|
+| `--ty-button-bg` | Background color (used by `solid`) |
+| `--ty-button-bg-hover` | Hover background (optional — flavor's hover shade is used otherwise) |
+| `--ty-button-color` | Text color |
+| `--ty-button-border` | Border color (used by `outlined`) |
+
+```html
+<!-- One-off brand button (solid is default, no border) -->
+<ty-button style="--ty-button-bg: #ff6600;
+                  --ty-button-color: white;
+                  --ty-button-bg-hover: #e65c00;">
+  Brand orange
+</ty-button>
+
+<!-- Gradients work too — solid has no border to interfere -->
+<ty-button style="--ty-button-bg: linear-gradient(135deg, #667eea, #764ba2);">
+  Gradient
+</ty-button>
+
+<!-- Define a reusable custom flavor in CSS -->
+<style>
+  ty-button[flavor="brand"] {
+    --ty-button-bg: #7c3aed;
+    --ty-button-color: white;
+    --ty-button-bg-hover: #6d28d9;
+    --ty-button-border: #5b21b6;
+  }
+</style>
+<ty-button flavor="brand">Brand</ty-button>
+<ty-button flavor="brand" appearance="outlined">Brand outlined</ty-button>
+```
+
+### `<ty-input>`, `<ty-dropdown>`, `<ty-multiselect>`
+
+All form controls read the same `--ty-input-*` tokens. They're defined globally in `:root` but inherit into each component's shadow DOM, so setting one on a host overrides only that element.
+
+| Variable | Purpose |
+|---|---|
+| `--ty-input-bg` | Background |
+| `--ty-input-color` | Text color |
+| `--ty-input-border` | Border (default state) |
+| `--ty-input-border-hover` | Border on hover |
+| `--ty-input-border-focus` | Border when focused |
+| `--ty-input-shadow-focus` | Focus ring color (3px outer glow) |
+| `--ty-input-placeholder` | Placeholder text color |
+| `--ty-input-disabled-bg` | Disabled background |
+| `--ty-input-disabled-border` | Disabled border |
+| `--ty-input-disabled-color` | Disabled text |
+
+Per-flavor border overrides (apply when the `flavor` attribute is set):
+
+| Variable | Used by |
+|---|---|
+| `--ty-input-primary-border` | `flavor="primary"` |
+| `--ty-input-secondary-border` | `flavor="secondary"` |
+| `--ty-input-success-border` | `flavor="success"` |
+| `--ty-input-danger-border` | `flavor="danger"` |
+| `--ty-input-warning-border` | `flavor="warning"` |
+
+```html
+<!-- Highlighted input -->
+<ty-input style="--ty-input-bg: #fffbeb;
+                 --ty-input-border: #f59e0b;
+                 --ty-input-border-focus: #d97706;
+                 --ty-input-shadow-focus: rgba(245, 158, 11, 0.15);"
+          placeholder="Highlighted field"></ty-input>
+
+<!-- Green-tinted dropdown -->
+<ty-dropdown style="--ty-input-bg: #f0fdf4;
+                    --ty-input-border: #16a34a;
+                    --ty-input-border-focus: #15803d;">
+  <ty-option value="a">Apple</ty-option>
+  <ty-option value="b">Banana</ty-option>
+</ty-dropdown>
+
+<!-- Multiselect with a brand tone -->
+<ty-multiselect style="--ty-input-border-focus: #7c3aed;
+                       --ty-input-shadow-focus: rgba(124, 58, 237, 0.2);">
+  <ty-option value="x">X</ty-option>
+  <ty-option value="y">Y</ty-option>
+</ty-multiselect>
+```
+
+### How it works
+
+CSS custom properties inherit through shadow DOM boundaries. When you set `--ty-button-bg` on a `<ty-button>` host, the inner `<button>` inside the shadow root resolves `var(--ty-button-bg, …flavor default…)` — finds the host's value, uses it. Unset → falls back to the flavor's design token. The same mechanism applies to inputs/dropdowns/multiselects, just via the shared `--ty-input-*` token family.
+
+**Tip — scoping by container**: setting an override on a wrapping `<div>` cascades to every descendant component, so you can theme a whole section (e.g. a settings panel) without touching individual elements.

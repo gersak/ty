@@ -10,7 +10,8 @@ export interface TyMultiselectEventDetail {
   item: string;
 }
 
-export interface TyMultiselectProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
+export interface TyMultiselectProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'style'> {
+  style?: import('./TyInput').TyInputCSSProperties;
   /** Current selected values as comma-separated string or array */
   value?: string | string[];
   

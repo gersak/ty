@@ -13,7 +13,8 @@ export interface TyDropdownEventDetail {
 }
 
 // Type definitions for Ty Dropdown component
-export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange'> {
+export interface TyDropdownProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'style'> {
+  style?: import('./TyInput').TyInputCSSProperties;
   /** Semantic styling variant */
   flavor?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'neutral';
   
@@ -110,7 +111,7 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
       }
       
       if (onSearch) {
-        element.addEventListener('ty-search', handleSearch as EventListener);
+        element.addEventListener('search', handleSearch as EventListener);
       }
 
       return () => {
@@ -118,7 +119,7 @@ export const TyDropdown = React.forwardRef<HTMLElement, TyDropdownProps>(
           element.removeEventListener('change', handleChange as EventListener);
         }
         if (onSearch) {
-          element.removeEventListener('ty-search', handleSearch as EventListener);
+          element.removeEventListener('search', handleSearch as EventListener);
         }
       };
     }, [handleChange, handleSearch, onChange, onSearch]);

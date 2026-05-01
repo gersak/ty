@@ -8,8 +8,22 @@ export interface TyInputEventDetail {
   originalEvent: Event; // original DOM event
 }
 
+export interface TyInputCSSProperties extends React.CSSProperties {
+  '--input-bg'?: string;
+  '--input-color'?: string;
+  '--input-border'?: string;
+  '--input-border-hover'?: string;
+  '--input-border-focus'?: string;
+  '--input-shadow-focus'?: string;
+  '--input-placeholder'?: string;
+  '--input-disabled-bg'?: string;
+  '--input-disabled-border'?: string;
+  '--input-disabled-color'?: string;
+}
+
 // Type definitions for Ty Input component
-export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onFocus' | 'onBlur'> {
+export interface TyInputProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onFocus' | 'onBlur' | 'style'> {
+  style?: TyInputCSSProperties;
   /** Input type */
   type?: 'text' | 'email' | 'password' | 'number' | 'tel' | 'url' | 'search'
   | 'currency' | 'percent' | 'compact';

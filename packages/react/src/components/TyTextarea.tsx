@@ -7,7 +7,8 @@ export interface TyTextareaEventDetail {
 }
 
 // Type definitions for Ty Textarea component
-export interface TyTextareaProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput' | 'onFocus' | 'onBlur'> {
+export interface TyTextareaProps extends Omit<React.HTMLAttributes<HTMLElement>, 'onChange' | 'onInput' | 'onFocus' | 'onBlur' | 'style'> {
+  style?: import('./TyInput').TyInputCSSProperties;
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   value?: string;
   placeholder?: string;

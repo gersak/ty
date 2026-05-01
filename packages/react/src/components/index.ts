@@ -12,13 +12,13 @@
 // ===================================================================
 
 export { TyButton } from './TyButton';
-export type { TyButtonProps } from './TyButton';
+export type { TyButtonProps, TyButtonCSSProperties } from './TyButton';
 
 export { TyTag } from './TyTag';
-export type { TyTagProps } from './TyTag';
+export type { TyTagProps, TyTagCSSProperties } from './TyTag';
 
 export { TyInput } from './TyInput';
-export type { TyInputProps, TyInputEventDetail } from './TyInput';
+export type { TyInputProps, TyInputEventDetail, TyInputCSSProperties } from './TyInput';
 
 export { TyTextarea } from './TyTextarea';
 export type { TyTextareaProps, TyTextareaEventDetail } from './TyTextarea';
@@ -79,6 +79,7 @@ export type { TyResizeObserverProps } from './TyResizeObserver';
 
 export { TyScrollContainer } from './TyScrollContainer';
 export type { TyScrollContainerProps, TyScrollContainerRef } from './TyScrollContainer';
+
 
 // ===================================================================
 // SHORT NAME EXPORTS (Clean Style - Developer Choice)

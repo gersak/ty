@@ -88,6 +88,8 @@ All 18 components wrapped:
 | `TyDatePicker` | Date picker with calendar |
 | `TyTabs` | Tab container |
 | `TyTab` | Individual tab |
+| `TySurface` | Surface wrapper (`elevated` / `floating` / `canvas` / `content` / `input`) |
+| `TyElevated` / `TyFloating` / `TyCanvas` / `TyContent` | Named surface aliases |
 
 ## ⚡ Event Handling (React Convention)
 
@@ -223,6 +225,40 @@ function CalendarExample() {
   );
 }
 ```
+
+## 🪟 Surfaces
+
+The Ty design system has five surface levels (background + shadow). They ship as CSS
+utility classes (`ty-elevated`, `ty-floating`, …) and as React wrappers so you don't have
+to remember the class names:
+
+```tsx
+import { TyElevated, TyFloating, TySurface } from '@gersak/ty-react';
+
+function Dashboard() {
+  return (
+    <TyElevated as="section" className="p-6 rounded-lg">
+      <h2>Card title</h2>
+      <p>Sits above the page background.</p>
+    </TyElevated>
+  );
+}
+
+// Equivalent — pick the API that fits your code:
+<TySurface variant="floating" className="p-4">…</TySurface>
+<div className="ty-floating p-4">…</div>
+```
+
+| Variant     | Use for                              |
+|-------------|--------------------------------------|
+| `floating`  | modals, dropdowns, tooltips          |
+| `elevated`  | cards, panels, sidebars              |
+| `content`   | main content areas                   |
+| `canvas`    | app/page background                  |
+| `input`     | form control surface                 |
+
+**Golden rule:** use Ty surface/colour classes for colour, Tailwind (or your own utilities)
+for everything else (spacing, layout, typography). Don't mix `bg-blue-500` with surfaces.
 
 ## 🎨 Icons (3000+ Available)
 

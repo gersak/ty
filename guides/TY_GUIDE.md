@@ -145,19 +145,18 @@ FormData: submits raw number, not formatted string.
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `flavor` | string | `'neutral'` | `primary` \| `secondary` \| `success` \| `danger` \| `warning` \| `neutral` |
+| `flavor` | string | `'neutral'` | Built-in: `primary` \| `secondary` \| `success` \| `danger` \| `warning` \| `neutral`. Append `+` for stronger or `-` for softer shade (e.g. `"primary+"`, `"danger-"`). Any other string is accepted — theme custom flavors via `--ty-button-*` variables. |
+| `appearance` | string | `'solid'` | `solid` (saturated brand fill) \| `outlined` (transparent bg, text === border) \| `ghost` (text only with hover bg) |
 | `size` | string | `'md'` | `xs` \| `sm` \| `md` \| `lg` \| `xl` |
 | `type` | string | `'submit'` | `button` \| `submit` \| `reset` |
 | `disabled` | boolean | `false` | |
 | `pill` | boolean | `false` | Rounded shape |
-| `outlined` | boolean | `false` | |
-| `filled` | boolean | `false` | Solid variant |
-| `plain` | boolean | `false` | Minimal variant |
-| `action` | boolean | `false` | Action style |
-| `accent` | boolean | `false` | Accent color |
+| `action` | boolean | `false` | Square icon-only button |
 | `wide` | boolean | `false` | Full width |
 
 **Slots:** `start`, (default), `end` | **Events:** `click` -> `{ originalEvent }`
+
+**Custom colors:** override per button with `--ty-button-bg`, `--ty-button-bg-hover`, `--ty-button-color`, `--ty-button-border`. See [CSS_GUIDE.md → Per-Component Color Overrides](./CSS_GUIDE.md#per-component-color-overrides).
 
 ---
 
@@ -181,6 +180,8 @@ FormData: submits raw number, not formatted string.
 | `delay` | number | `0` | Debounce ms (0-5000) |
 
 **Slots:** `start`, `end` | **Events:** `input`, `change` -> `{ value, formattedValue, rawValue, originalEvent }` | `focus`, `blur`
+
+**Custom colors:** override per input with `--ty-input-bg`, `--ty-input-color`, `--ty-input-border`, `--ty-input-border-hover`, `--ty-input-border-focus`, `--ty-input-shadow-focus`. See [CSS_GUIDE.md → Per-Component Color Overrides](./CSS_GUIDE.md#per-component-color-overrides).
 
 ---
 
@@ -256,6 +257,8 @@ FormData: submits raw number, not formatted string.
 
 **Events:** `change` -> `{ value, text, option, originalEvent }` | `search` -> `{ query, originalEvent }`
 
+**Custom colors:** uses the shared `--ty-input-*` variable family — override per dropdown with `--ty-input-bg`, `--ty-input-border`, `--ty-input-border-focus`, `--ty-input-shadow-focus`, etc. See [CSS_GUIDE.md → Per-Component Color Overrides](./CSS_GUIDE.md#per-component-color-overrides).
+
 ---
 
 ### ty-multiselect
@@ -279,6 +282,8 @@ FormData: submits raw number, not formatted string.
 **Children:** `<ty-tag>` only | **Slots:** `selected`
 
 **Events:** `change` -> `{ values: string[], action: 'add'|'remove'|'clear'|'set', item }` | `search` -> `{ query, element }`
+
+**Custom colors:** uses the shared `--ty-input-*` variable family — override per multiselect with `--ty-input-bg`, `--ty-input-border`, `--ty-input-border-focus`, `--ty-input-shadow-focus`, etc. See [CSS_GUIDE.md → Per-Component Color Overrides](./CSS_GUIDE.md#per-component-color-overrides).
 
 ---
 

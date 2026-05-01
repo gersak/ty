@@ -19,8 +19,12 @@
      (attribute-table
       [{:name "flavor"
         :type "string"
-        :default "\"default\""
-        :description "Visual style of the button (default, primary, secondary, danger, success, warning, neutral)"}
+        :default "\"neutral\""
+        :description "Semantic color. Built-in: primary, secondary, success, danger, warning, neutral. Append '+' for a stronger shade or '-' for a softer one (e.g. \"primary+\", \"danger-\"). Any other string is also accepted — theme custom flavors via --ty-button-* CSS variables."}
+       {:name "appearance"
+        :type "string"
+        :default "\"solid\""
+        :description "Visual variant: \"solid\" (saturated brand fill, default), \"outlined\" (transparent bg with matching text + border), or \"ghost\" (text only with hover background)."}
        {:name "size"
         :type "string"
         :default "\"md\""
@@ -113,6 +117,146 @@
 <ty-button flavor=\"success\">Success</ty-button>
 <ty-button flavor=\"warning\">Warning</ty-button>
 <ty-button flavor=\"neutral\">Neutral</ty-button>")]
+
+    ;; Complete Matrix: every appearance × flavor × tone
+    [:div.ty-content.rounded-lg.p-6
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Complete Matrix"]
+     [:p.ty-text-.text-sm.mb-4
+      "Every appearance × flavor × tone combination. Three appearance variants — "
+      [:code.font-mono "solid"] ", " [:code.font-mono "outlined"] ", " [:code.font-mono "ghost"]
+      " — each with three tones via the flavor suffix: "
+      [:code.font-mono "-"] " (soft), base, "
+      [:code.font-mono "+"] " (strong). Useful for inspecting contrast in light vs dark mode."]
+     [:div.space-y-8
+      ;; Solid
+      [:div
+       [:h4.text-sm.font-medium.ty-text+.mb-3 "Solid"]
+       [:div.grid.gap-3.items-center
+        {:style "grid-template-columns: 6rem repeat(3, max-content);"}
+        [:div]
+        [:div.text-xs.ty-text-.font-medium "Soft (–)"]
+        [:div.text-xs.ty-text-.font-medium "Base"]
+        [:div.text-xs.ty-text-.font-medium "Strong (+)"]
+        (for [flavor ["primary" "secondary" "success" "danger" "warning" "neutral"]]
+          (list
+           [:div.text-sm.font-mono.ty-text {:key (str "solid-" flavor "-label")} flavor]
+           [:ty-button {:key (str "solid-" flavor "-soft") :flavor (str flavor "-")} flavor]
+           [:ty-button {:key (str "solid-" flavor "-base") :flavor flavor} flavor]
+           [:ty-button {:key (str "solid-" flavor "-strong") :flavor (str flavor "+")} flavor]))]]
+
+      ;; Outlined
+      [:div
+       [:h4.text-sm.font-medium.ty-text+.mb-3 "Outlined"]
+       [:div.grid.gap-3.items-center
+        {:style "grid-template-columns: 6rem repeat(3, max-content);"}
+        [:div]
+        [:div.text-xs.ty-text-.font-medium "Soft (–)"]
+        [:div.text-xs.ty-text-.font-medium "Base"]
+        [:div.text-xs.ty-text-.font-medium "Strong (+)"]
+        (for [flavor ["primary" "secondary" "success" "danger" "warning" "neutral"]]
+          (list
+           [:div.text-sm.font-mono.ty-text {:key (str "outlined-" flavor "-label")} flavor]
+           [:ty-button {:key (str "outlined-" flavor "-soft") :flavor (str flavor "-") :appearance "outlined"} flavor]
+           [:ty-button {:key (str "outlined-" flavor "-base") :flavor flavor :appearance "outlined"} flavor]
+           [:ty-button {:key (str "outlined-" flavor "-strong") :flavor (str flavor "+") :appearance "outlined"} flavor]))]]
+
+      ;; Ghost
+      [:div
+       [:h4.text-sm.font-medium.ty-text+.mb-3 "Ghost"]
+       [:div.grid.gap-3.items-center
+        {:style "grid-template-columns: 6rem repeat(3, max-content);"}
+        [:div]
+        [:div.text-xs.ty-text-.font-medium "Soft (–)"]
+        [:div.text-xs.ty-text-.font-medium "Base"]
+        [:div.text-xs.ty-text-.font-medium "Strong (+)"]
+        (for [flavor ["primary" "secondary" "success" "danger" "warning" "neutral"]]
+          (list
+           [:div.text-sm.font-mono.ty-text {:key (str "ghost-" flavor "-label")} flavor]
+           [:ty-button {:key (str "ghost-" flavor "-soft") :flavor (str flavor "-") :appearance "ghost"} flavor]
+           [:ty-button {:key (str "ghost-" flavor "-base") :flavor flavor :appearance "ghost"} flavor]
+           [:ty-button {:key (str "ghost-" flavor "-strong") :flavor (str flavor "+") :appearance "ghost"} flavor]))]]]
+
+     (code-block "<!-- Solid is the default appearance -->
+<ty-button flavor=\"primary\">Primary</ty-button>
+<ty-button flavor=\"primary+\">Stronger</ty-button>
+<ty-button flavor=\"primary-\">Softer</ty-button>
+
+<!-- Outlined and ghost via the appearance attribute -->
+<ty-button appearance=\"outlined\" flavor=\"success+\">Success outlined</ty-button>
+<ty-button appearance=\"ghost\" flavor=\"danger\">Danger ghost</ty-button>")]
+
+    ;; Custom Colors via CSS Variables
+    [:div.ty-content.rounded-lg.p-6
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Custom Colors via CSS Variables"]
+     [:p.ty-text-.text-sm.mb-4
+      "Override colors per button by setting any of these CSS variables on the host. Useful for one-off brand colors, A/B tests, or theming a button outside the semantic palette."]
+     [:ul.list-disc.list-inside.text-sm.ty-text-.mb-4.space-y-1
+      [:li [:code.font-mono "--ty-button-bg"] " — background color (solid)"]
+      [:li [:code.font-mono "--ty-button-bg-hover"] " — hover background"]
+      [:li [:code.font-mono "--ty-button-color"] " — text color"]
+      [:li [:code.font-mono "--ty-button-border"] " — border color (outlined)"]]
+     [:div.flex.flex-wrap.gap-3.mb-4
+      [:ty-button {:style "--ty-button-bg: #ff6600; --ty-button-color: white; --ty-button-bg-hover: #e65c00;"}
+       "Brand orange"]
+      [:ty-button {:flavor "primary" :appearance "outlined"
+                   :style "--ty-button-color: #6366f1; --ty-button-border: #6366f1;"}
+       "Indigo outlined"]
+      [:ty-button {:style "--ty-button-bg: #ec4899; --ty-button-color: white; --ty-button-bg-hover: #db2777;"}
+       "Pink solid"]
+      [:ty-button {:style "--ty-button-bg: linear-gradient(135deg, #667eea, #764ba2);"}
+       "Gradient"]]
+     (code-block "<!-- One-off brand color -->
+<ty-button style=\"--ty-button-bg: #ff6600;
+                  --ty-button-color: white;
+                  --ty-button-bg-hover: #e65c00;\">
+  Brand orange
+</ty-button>
+
+<!-- Even gradients work -->
+<ty-button style=\"--ty-button-bg: linear-gradient(135deg, #667eea, #764ba2);\">
+  Gradient
+</ty-button>")]
+
+    ;; Custom Flavors
+    [:div.ty-content.rounded-lg.p-6
+     [:h3.text-lg.font-medium.ty-text.mb-4 "Custom Flavors"]
+     [:p.ty-text-.text-sm.mb-4
+      "Pass any string as " [:code.font-mono "flavor"] " — even if it's not built-in. The button picks up the class so you can theme all buttons of a flavor in a single CSS rule. Combine with the CSS variables above for global brand flavors."]
+     [:div.flex.flex-wrap.gap-3.mb-4
+      [:style "ty-button[flavor=\"brand\"] {
+   --ty-button-bg: #7c3aed;
+   --ty-button-color: white;
+   --ty-button-bg-hover: #6d28d9;
+   --ty-button-border: #5b21b6;
+ }
+ ty-button[flavor=\"teal\"] {
+   --ty-button-bg: #0d9488;
+   --ty-button-color: white;
+   --ty-button-bg-hover: #0f766e;
+   --ty-button-border: #115e59;
+ }
+ ty-button[flavor=\"sunset\"] {
+   --ty-button-bg: #f97316;
+   --ty-button-color: white;
+   --ty-button-bg-hover: #ea580c;
+   --ty-button-border: #c2410c;
+ }"]
+      [:ty-button {:flavor "brand"} "Brand"]
+      [:ty-button {:flavor "teal"} "Teal"]
+      [:ty-button {:flavor "sunset"} "Sunset"]
+      [:ty-button {:flavor "brand" :appearance "outlined"} "Brand outlined"]
+      [:ty-button {:flavor "teal" :pill true} "Teal pill"]]
+     (code-block "<style>
+  ty-button[flavor=\"brand\"] {
+    --ty-button-bg: #7c3aed;
+    --ty-button-color: white;
+    --ty-button-bg-hover: #6d28d9;
+    --ty-button-border: #5b21b6;
+  }
+</style>
+
+<ty-button flavor=\"brand\">Brand</ty-button>
+<ty-button flavor=\"brand\" appearance=\"outlined\">Brand outlined</ty-button>")]
 
     ;; Button Sizes
     [:div.ty-content.rounded-lg.p-6

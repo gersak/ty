@@ -46,21 +46,10 @@ export class TyTag extends TyComponent<TagState> implements TyTagElement {
       type: 'string' as const,
       visual: true,
       default: 'neutral',
-      validate: (v: any) => {
-        const valid: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
-        return valid.includes(v)
-      },
-      coerce: (v: any) => {
-        const valid: Flavor[] = ['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']
-        if (!valid.includes(v)) {
-          console.warn(
-            `[ty-tag] Invalid flavor '${v}'. Using 'neutral'. ` +
-            `Valid flavors: ${valid.join(', ')}`
-          )
-          return 'neutral'
-        }
-        return v
-      }
+      // Built-in: primary | secondary | success | danger | warning | neutral.
+      // Append `+` for stronger or `-` for softer shade (e.g. "primary+",
+      // "danger-"). Any other string is passed through — theme custom flavors
+      // via :host([flavor="X"]) { --tag-bg: ...; --tag-color: ...; --tag-border-color: ...; }
     },
     size: {
       type: 'string' as const,
@@ -295,7 +284,7 @@ export class TyTag extends TyComponent<TagState> implements TyTagElement {
     ` : ''
 
     shadow.innerHTML = `
-      <div class="tag-container"${tabindex}${ariaDisabled}${dataValue}>
+      <div class="tag-container" part="container"${tabindex}${ariaDisabled}${dataValue}>
         <div class="tag-start">
           <slot name="start" class="tag-start"></slot>
         </div>

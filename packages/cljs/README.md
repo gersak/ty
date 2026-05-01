@@ -25,14 +25,14 @@ Semantic buttons with multiple flavors and styles.
 
 ```html
 <ty-button flavor="primary">Primary Action</ty-button>
-<ty-button flavor="danger" outlined>Delete</ty-button>
+<ty-button flavor="danger" appearance="outlined">Delete</ty-button>
 <ty-button flavor="success" pill>
   <ty-icon name="check" slot="start"></ty-icon>
   Confirm
 </ty-button>
 ```
 
-**Attributes:** `flavor` (primary|secondary|success|danger|warning|info|neutral), `size` (sm|md|lg), `disabled`, `outlined`, `filled`, `pill`, `plain`, `action`, `wide`
+**Attributes:** `flavor` (primary|secondary|success|danger|warning|neutral, with optional `+`/`-` suffix), `appearance` (solid|outlined|ghost), `size` (xs|sm|md|lg|xl), `disabled`, `pill`, `action`, `wide`
 
 ---
 

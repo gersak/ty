@@ -138,6 +138,8 @@
    :unlock lucide/unlock
    :shield lucide/shield
    :key lucide/key
+   :log-in lucide/log-in
+   :log-out lucide/log-out
 
      ;; Miscellaneous
    :brush lucide/brush

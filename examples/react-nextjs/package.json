@@ -16,7 +16,7 @@
   "dependencies": {
     "@gersak/ty": "^0.1.905",
     "@gersak/ty-react": "^0.1.904",
-    "next": "^14.0.0",
+    "next": "^16.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

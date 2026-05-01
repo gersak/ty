@@ -1852,6 +1852,11 @@ export class TyDatePicker extends TyComponent<DatePickerState> {
       }
     }
 
+    this.dispatchEvent(new CustomEvent('close', {
+      bubbles: true,
+      composed: true
+    }));
+
     this.render();
   }
 

@@ -18,9 +18,6 @@ export const iconStyles = `
   /* Enforce square aspect ratio */
   aspect-ratio: 1 / 1;
   
-  /* Ensure minimum size when in slots */
-  min-width: 1em;
-  min-height: 1em;
   
   /* Color & Transitions */
   color: inherit;
@@ -231,4 +228,5 @@ export const iconStyles = `
 :host(.icon-block) {
   display: block;
 }
-`
+`;
+

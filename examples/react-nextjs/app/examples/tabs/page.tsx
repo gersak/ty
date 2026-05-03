@@ -9,7 +9,7 @@ import {
   TyIcon,
   TyInput,
   type TabChangeDetail,
-} from '@gersak/ty-react'
+} from 'tyrell-react'
 
 interface ChangeLogEntry {
   ts: number

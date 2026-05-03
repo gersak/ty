@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-// @gersak/ty's component modules extend HTMLElement at top level, which
+// tyrell-components's component modules extend HTMLElement at top level, which
 // doesn't exist on the server. Even 'use client' isn't enough — Next.js
 // still evaluates client components on the server for initial HTML.
 //
@@ -11,7 +11,7 @@ import { useEffect } from 'react'
 // browser upgrades any already-rendered elements.
 export function TyRegistry() {
   useEffect(() => {
-    import('@gersak/ty')
+    import('tyrell-components')
   }, [])
   return null
 }

@@ -24,6 +24,41 @@ Ty classes handle colors. Use Tailwind for everything else (spacing, layout, typ
 
 Do not use `ty-bg-*` for cards or panels. Do not use `ty-elevated` for a badge.
 
+### Surface Borders & Dividers
+
+Each surface exposes three border knobs (color, width, style) via CSS vars. Defaults are `transparent` color, `var(--ty-border-width)` (1px) width, `solid` style — so surfaces ship with no visible border until you opt in.
+
+```css
+:root {
+  --ty-elevated-border: var(--ty-border);   /* show a 1px ty-border on cards */
+  --ty-floating-border: var(--ty-border-mild);
+  /* Width and style use --ty-border-width and `solid` unless overridden */
+}
+```
+
+Pattern: `--ty-{surface}-border` (color), `--ty-{surface}-border-width`, `--ty-{surface}-border-style`. Surfaces: `elevated`, `floating`, `canvas`, `content`, `input`.
+
+For dividers between siblings inside a surface, use `ty-divide-y` / `ty-divide-x`:
+
+```html
+<div class="ty-elevated">
+  <ul class="ty-divide-y">
+    <li>row 1</li>
+    <li>row 2</li>
+    <li>row 3</li>
+  </ul>
+</div>
+```
+
+The divider color is **contextual** — each surface points `--ty-divide-color` at its own `--ty-{surface}-border` token. So tuning a surface's border once also changes any dividers placed inside it.
+
+```html
+<!-- Per-instance override -->
+<ul class="ty-divide-y" style="--ty-divide-color: var(--ty-border-strong);">
+```
+
+**Prefer `ty-divide-y`/`ty-divide-x` over Tailwind's `divide-y`/`divide-x` when working with Ty surfaces** — Tailwind's defaults are baked at build time and don't follow your theme in dark mode. The Ty utilities use CSS vars that auto-switch.
+
 ## Background Colors (Semantic)
 
 3 variants per color: stronger (+), base, softer (-).

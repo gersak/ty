@@ -9,7 +9,7 @@ For installation, subpath imports, and the side-effects model, see [JAVASCRIPT_G
 ### 1. Install
 
 ```bash
-npm install @gersak/ty
+npm install tyrell-components
 ```
 
 ### 2. Tell Vue's compiler that `ty-*` are custom elements
@@ -63,8 +63,8 @@ In your app entry (`src/main.js` or `src/main.ts`):
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'   // or specific subpaths: '@gersak/ty/button', etc.
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'   // or specific subpaths: 'tyrell-components/button', etc.
 
 createApp(App).mount('#app')
 ```
@@ -205,12 +205,12 @@ Register at app startup, alongside component imports:
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'
 
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, x, plus, search } from '@gersak/ty/icons/lucide'
-import { userCircle } from '@gersak/ty/icons/heroicons/outline'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, x, plus, search } from 'tyrell-components/icons/lucide'
+import { userCircle } from 'tyrell-components/icons/heroicons/outline'
 
 registerIcons({
   check, x, plus, search,
@@ -302,10 +302,10 @@ declare module 'vue' {
 }
 ```
 
-Or import the underlying class types from `@gersak/ty`:
+Or import the underlying class types from `tyrell-components`:
 
 ```ts
-import type { TyButton } from '@gersak/ty/button'
+import type { TyButton } from 'tyrell-components/button'
 const btn = ref<TyButton>()
 ```
 
@@ -316,11 +316,11 @@ const btn = ref<TyButton>()
 ### Option A — Client-only plugin
 
 ```ts
-// plugins/ty.client.ts
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, x } from '@gersak/ty/icons/lucide'
+// plugins/tyrell.client.ts
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, x } from 'tyrell-components/icons/lucide'
 
 export default defineNuxtPlugin(() => {
   registerIcons({ check, x })
@@ -362,7 +362,7 @@ export default defineNuxtConfig({
 1. **Forgetting `isCustomElement`** — Vue warns "Failed to resolve component: ty-button". Add the compiler option.
 2. **Using `prop="value"` instead of `:prop="value"`** for booleans — `disabled="false"` becomes a truthy string `"false"`. Always use `:disabled="false"`.
 3. **Reading `$event.value` instead of `$event.detail.value`** — Ty events follow the standard CustomEvent pattern.
-4. **Importing `@gersak/ty` outside a client boundary in Nuxt** — `customElements is not defined` errors during SSR. Use `.client.ts` suffix or move the import.
+4. **Importing `tyrell-components` outside a client boundary in Nuxt** — `customElements is not defined` errors during SSR. Use `.client.ts` suffix or move the import.
 5. **Two-way binding with `v-model` on ty-input** — Vue's default `v-model` doesn't read `event.detail.value`. Use explicit `:value` + `@change`, or write a custom directive.
 
 ## See also

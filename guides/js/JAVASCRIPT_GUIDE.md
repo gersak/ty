@@ -11,21 +11,21 @@ Ty ships through two channels — pick one based on your build setup, not both a
 ### CDN — zero build
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tyrell-components@latest/css/tyrell.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/tyrell-components@latest/dist/tyrell.js"></script>
 ```
 
-The CDN bundle (`dist/ty.js`) registers all 23 components and exposes the icon registry on `window.tyIcons`. Use this for HTMX, server-rendered apps, prototypes, multi-app domains where browser cache wins, or strict no-bundler workflows.
+The CDN bundle (`dist/tyrell.js`) registers all 23 components and exposes the icon registry on `window.tyIcons`. Use this for HTMX, server-rendered apps, prototypes, multi-app domains where browser cache wins, or strict no-bundler workflows.
 
 ### NPM — tree-shakeable
 
 ```bash
-npm install @gersak/ty
+npm install tyrell-components
 ```
 
 ```js
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'   // registers everything
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'   // registers everything
 ```
 
 Use this when you have a bundler (Vite, Webpack, Rollup, esbuild, Parcel, Bun). Subpath imports let you ship only the components you use.
@@ -62,11 +62,11 @@ Translation: "These files do real work just by being imported — keep them in t
 Import only the components you use:
 
 ```js
-import '@gersak/ty/button'
-import '@gersak/ty/input'
-import '@gersak/ty/dropdown'
-import '@gersak/ty/option'      // dropdown children
-import '@gersak/ty/modal'
+import 'tyrell-components/button'
+import 'tyrell-components/input'
+import 'tyrell-components/dropdown'
+import 'tyrell-components/option'      // dropdown children
+import 'tyrell-components/modal'
 ```
 
 Available subpaths (each registers exactly one custom element):
@@ -85,7 +85,7 @@ Subpath imports compose with `import('...')` for code splitting:
 ```js
 // Calendar/date-picker is the heaviest component — defer until needed
 async function openDatePicker() {
-  await import('@gersak/ty/date-picker')
+  await import('tyrell-components/date-picker')
   document.getElementById('picker').showModal()
 }
 ```
@@ -94,16 +94,16 @@ Webpack, Rollup, Vite, esbuild, and Parcel all honor subpath exports. Bun and De
 
 ## CSS distribution
 
-A single file: `css/ty.css`. Two consumption modes — pick whichever fits your build:
+A single file: `css/tyrell.css`. Two consumption modes — pick whichever fits your build:
 
 ```js
 // Bundler picks it up (Vite, Webpack, Next.js, etc.)
-import '@gersak/ty/css/ty.css'
+import 'tyrell-components/css/tyrell.css'
 ```
 
 ```html
 <!-- Or load directly -->
-<link rel="stylesheet" href="/node_modules/@gersak/ty/css/ty.css">
+<link rel="stylesheet" href="/node_modules/tyrell-components/css/tyrell.css">
 ```
 
 The CSS is intentionally **not** split per-component. The file is small enough that splitting would cost more in HTTP overhead than it saves, and the design tokens (colors, surfaces, text classes) need to be globally available regardless of which components are loaded.
@@ -117,8 +117,8 @@ Icons are the largest size variable in the project — get them right and bundle
 `<ty-icon name="check">` looks up `"check"` in a runtime registry. Bundlers cannot statically connect a string `"check"` to the `check` export — that link is dynamic. Tree-shaking icons therefore requires you to **explicitly register** the ones you use:
 
 ```js
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, heart, star } from '@gersak/ty/icons/lucide'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, heart, star } from 'tyrell-components/icons/lucide'
 
 registerIcons({ check, heart, star })
 ```
@@ -128,28 +128,28 @@ The bundler sees three named imports from a pure module and ships only those thr
 ### Available icon families
 
 ```
-@gersak/ty/icons/lucide                   1,636 icons
-@gersak/ty/icons/heroicons/outline         324 icons
-@gersak/ty/icons/heroicons/solid           324 icons
-@gersak/ty/icons/heroicons/mini            230 icons
-@gersak/ty/icons/heroicons/micro           230 icons
-@gersak/ty/icons/material/filled         2,400+ icons
-@gersak/ty/icons/material/outlined       2,400+ icons
-@gersak/ty/icons/material/round          2,400+ icons
-@gersak/ty/icons/material/sharp          2,400+ icons
-@gersak/ty/icons/material/two-tone       2,400+ icons
-@gersak/ty/icons/fontawesome/solid       1,400+ icons
-@gersak/ty/icons/fontawesome/regular       163 icons
-@gersak/ty/icons/fontawesome/brands         500+ icons
+tyrell-components/icons/lucide                   1,636 icons
+tyrell-components/icons/heroicons/outline         324 icons
+tyrell-components/icons/heroicons/solid           324 icons
+tyrell-components/icons/heroicons/mini            230 icons
+tyrell-components/icons/heroicons/micro           230 icons
+tyrell-components/icons/material/filled         2,400+ icons
+tyrell-components/icons/material/outlined       2,400+ icons
+tyrell-components/icons/material/round          2,400+ icons
+tyrell-components/icons/material/sharp          2,400+ icons
+tyrell-components/icons/material/two-tone       2,400+ icons
+tyrell-components/icons/fontawesome/solid       1,400+ icons
+tyrell-components/icons/fontawesome/regular       163 icons
+tyrell-components/icons/fontawesome/brands         500+ icons
 ```
 
 Each file is a flat list of `export const name = '<svg>...</svg>'`. Mix freely across families:
 
 ```js
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, x, plus } from '@gersak/ty/icons/lucide'
-import { userCircle } from '@gersak/ty/icons/heroicons/outline'
-import { github, slack } from '@gersak/ty/icons/fontawesome/brands'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, x, plus } from 'tyrell-components/icons/lucide'
+import { userCircle } from 'tyrell-components/icons/heroicons/outline'
+import { github, slack } from 'tyrell-components/icons/fontawesome/brands'
 
 registerIcons({
   check, x, plus,
@@ -162,7 +162,7 @@ registerIcons({
 
 ```js
 // ❌ DO NOT DO THIS — ships all 1,636 icons
-import * as L from '@gersak/ty/icons/lucide'
+import * as L from 'tyrell-components/icons/lucide'
 registerIcons(L)
 ```
 
@@ -173,7 +173,7 @@ Namespace imports defeat tree-shaking. Always use named imports for icons.
 The registry takes any string of SVG markup:
 
 ```js
-import { registerIcons } from '@gersak/ty/icons/registry'
+import { registerIcons } from 'tyrell-components/icons/registry'
 
 registerIcons({
   'company-logo': '<svg viewBox="0 0 24 24">...</svg>',
@@ -186,7 +186,7 @@ registerIcons({
 When loading from CDN, the registry is exposed on `window.tyIcons`:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/tyrell-components@latest/dist/tyrell.js"></script>
 <script type="module">
   await customElements.whenDefined('ty-icon')
   window.tyIcons.register({
@@ -262,8 +262,8 @@ module.exports = {
   module: {
     rules: [{
       test: /\.js$/,
-      // do NOT mark @gersak/ty as side-effect-free
-      sideEffects: (resourcePath) => !resourcePath.includes('@gersak/ty'),
+      // do NOT mark tyrell-components as side-effect-free
+      sideEffects: (resourcePath) => !resourcePath.includes('tyrell-components'),
     }]
   }
 }
@@ -290,10 +290,10 @@ Works automatically. Parcel respects `sideEffects` and resolves subpath exports.
 
 Most frameworks already handle this correctly when you import inside a client-only context. Specifics:
 
-- **Next.js (App Router)** — Add `'use client'` to any file that imports `@gersak/ty/...`, or perform the import inside a `useEffect` for purely client-side registration. See REACT_TY_GUIDE.md § Next.js Integration.
+- **Next.js (App Router)** — Add `'use client'` to any file that imports `tyrell-components/...`, or perform the import inside a `useEffect` for purely client-side registration. See REACT_TY_GUIDE.md § Next.js Integration.
 - **Nuxt 3** — Wrap registration in `if (process.client)` or place imports inside `<ClientOnly>` boundaries / `onMounted` hooks.
 - **SvelteKit** — Use `import { browser } from '$app/environment'` and guard with `if (browser)`, or place imports inside `onMount`.
-- **Astro** — Use `client:load` / `client:idle` directives on islands that contain `<ty-*>` elements; do not import `@gersak/ty` from `.astro` files.
+- **Astro** — Use `client:load` / `client:idle` directives on islands that contain `<ty-*>` elements; do not import `tyrell-components` from `.astro` files.
 - **Remix** — Import inside `useEffect` or wrap with `ClientOnly` from `remix-utils`.
 
 What you should **not** do is render `<ty-*>` tags on the server expecting them to "work" — they'll render as inert HTML until registration runs on the client. That's usually fine (graceful upgrade), but means initial paint shows unstyled content. Either:
@@ -338,7 +338,7 @@ The dynamic `import()` triggers the route's components to register on demand.
 async function showModal() {
   // Modal not registered yet
   if (!customElements.get('ty-modal')) {
-    await import('@gersak/ty/modal')
+    await import('tyrell-components/modal')
   }
   document.querySelector('ty-modal').show()
 }
@@ -350,8 +350,8 @@ For very icon-heavy apps, split icon registration by feature:
 
 ```js
 // chart-icons.js
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { trendingUp, trendingDown, barChart } from '@gersak/ty/icons/lucide'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { trendingUp, trendingDown, barChart } from 'tyrell-components/icons/lucide'
 export function registerChartIcons() {
   registerIcons({ trendingUp, trendingDown, barChart })
 }
@@ -369,11 +369,11 @@ If you load Ty via NPM and have hundreds of `<ty-*>` elements in initial HTML:
 
 ```js
 // main.js — register first, paint second
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'
 
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, x } from '@gersak/ty/icons/lucide'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, x } from 'tyrell-components/icons/lucide'
 registerIcons({ check, x })
 
 // Then mount your app
@@ -387,7 +387,7 @@ Registering before mounting avoids a flash of unregistered elements. With code s
 The package ships `.d.ts` files for the component classes:
 
 ```ts
-import type { TyButton } from '@gersak/ty/button'
+import type { TyButton } from 'tyrell-components/button'
 
 const btn = document.querySelector('ty-button') as TyButton
 btn.disabled = true
@@ -399,19 +399,19 @@ For framework-specific JSX types, see the framework guides. Plain TypeScript wit
 
 | Goal | Import |
 |---|---|
-| Register everything | `import '@gersak/ty'` |
-| Register one component | `import '@gersak/ty/button'` |
+| Register everything | `import 'tyrell-components'` |
+| Register one component | `import 'tyrell-components/button'` |
 | Multiple components | One import line per component |
-| Stylesheet (bundler) | `import '@gersak/ty/css/ty.css'` |
-| Icon registry function | `import { registerIcons } from '@gersak/ty/icons/registry'` |
-| Specific icons | `import { check, heart } from '@gersak/ty/icons/lucide'` |
-| Component class (typing) | `import type { TyButton } from '@gersak/ty/button'` |
+| Stylesheet (bundler) | `import 'tyrell-components/css/tyrell.css'` |
+| Icon registry function | `import { registerIcons } from 'tyrell-components/icons/registry'` |
+| Specific icons | `import { check, heart } from 'tyrell-components/icons/lucide'` |
+| Component class (typing) | `import type { TyButton } from 'tyrell-components/button'` |
 
 ## See also
 
 - [TY_GUIDE.md](../TY_GUIDE.md) — universal HTML/JS API reference
 - [CSS_GUIDE.md](../CSS_GUIDE.md) — design system (colors, surfaces, text)
-- [REACT_TY_GUIDE.md](./REACT_TY_GUIDE.md) — React + `@gersak/ty-react`
+- [REACT_TY_GUIDE.md](./REACT_TY_GUIDE.md) — React + `tyrell-react`
 - [VUE_TY_GUIDE.md](./VUE_TY_GUIDE.md) — Vue 3 / Nuxt
 - [SVELTE_TY_GUIDE.md](./SVELTE_TY_GUIDE.md) — Svelte 5 / SvelteKit
 - [TYCOMPONENT_GUIDE.md](./TYCOMPONENT_GUIDE.md) — building custom components on `TyComponent`

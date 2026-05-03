@@ -1,6 +1,6 @@
 # Ty Component Library — Guide
 
-**Ty** is a framework-agnostic web component library. TypeScript core (`@gersak/ty`), React wrappers (`@gersak/ty-react`), ClojureScript infra (`dev.gersak/ty`).
+**Ty** is a framework-agnostic web component library. TypeScript core (`tyrell-components`), React wrappers (`tyrell-react`), ClojureScript infra (`dev.gersak/tyrell`).
 
 ---
 
@@ -450,17 +450,17 @@ Register icons before components render:
 window.tyIcons.register({ 'heart': '<svg>...</svg>', 'star': '<svg>...</svg>' });
 
 // ES Modules
-import { registerIcons } from '@gersak/ty';
+import { registerIcons } from 'tyrell-components';
 registerIcons({ 'heart': '<svg>...</svg>' });
 ```
 
 ```clojure
-;; ClojureScript (recommended — auto-retries until ty.js loads)
-(require '[ty.icons :as icons] '[ty.lucide :as lucide])
+;; ClojureScript (recommended — auto-retries until tyrell.js loads)
+(require '[tyrell.icons :as icons] '[tyrell.lucide :as lucide])
 (icons/register-async! {:check lucide/check :heart lucide/heart})
 ```
 
-**Icon sets (ClojureScript, tree-shakeable):** `ty.lucide`, `ty.heroicons.outline`, `ty.heroicons.solid`, `ty.material.*`, `ty.fav6.brands`, `ty.fav6.regular`, `ty.fav6.solid`
+**Icon sets (ClojureScript, tree-shakeable):** `tyrell.lucide`, `tyrell.heroicons.outline`, `tyrell.heroicons.solid`, `tyrell.material.*`, `tyrell.fav6.brands`, `tyrell.fav6.regular`, `tyrell.fav6.solid`
 
 **JS libraries:** `lucide-static`, `@fortawesome/free-solid-svg-icons`, `heroicons`, `@mdi/svg`
 
@@ -472,21 +472,21 @@ registerIcons({ 'heart': '<svg>...</svg>' });
 
 ```bash
 # NPM
-npm install @gersak/ty
+npm install tyrell-components
 
 # React
-npm install @gersak/ty-react
+npm install tyrell-react
 ```
 
 ```html
 <!-- CDN -->
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
+<script src="https://cdn.jsdelivr.net/npm/tyrell-components@latest/dist/tyrell.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tyrell-components@latest/css/tyrell.css">
 ```
 
 ```clojure
 ;; ClojureScript (Clojars)
-[dev.gersak/ty "0.4.0"]
+[dev.gersak/tyrell "0.4.0"]
 ```
 
 ---
@@ -496,7 +496,7 @@ npm install @gersak/ty-react
 Smart positioning for floating elements.
 
 ```javascript
-import { findBestPosition, autoUpdate, placementPreferences } from '@gersak/ty';
+import { findBestPosition, autoUpdate, placementPreferences } from 'tyrell-components';
 
 const result = findBestPosition({
   targetEl: button,
@@ -527,9 +527,9 @@ cleanup(); // Stop auto-updating
 ### React
 
 ```typescript
-import { TyButton, TyInput, TyModal } from '@gersak/ty-react';
+import { TyButton, TyInput, TyModal } from 'tyrell-react';
 // or short names:
-import { Button, Input, Modal } from '@gersak/ty-react';
+import { Button, Input, Modal } from 'tyrell-react';
 ```
 
 | React Prop | Web Component Event | When |
@@ -562,10 +562,10 @@ window.tyResizeObserver.getSize('element-id')  // { width, height }
 window.tyResizeObserver.onResize('id', ({ width, height }) => { ... })
 
 // Scroll lock (used by modals)
-import { lockScroll, unlockScroll, isLocked, forceUnlockAll } from '@gersak/ty';
+import { lockScroll, unlockScroll, isLocked, forceUnlockAll } from 'tyrell-components';
 
 // Positioning for floating elements
-import { findBestPosition, autoUpdate, placementPreferences } from '@gersak/ty';
+import { findBestPosition, autoUpdate, placementPreferences } from 'tyrell-components';
 ```
 
 ---

@@ -22,7 +22,7 @@ For the full CSS class reference, see [`CSS_GUIDE.md`](../CSS_GUIDE.md). In Repl
 
 ```clojure
 (ns my-app.views.user-profile
-  (:require [ty.router :as router]))
+  (:require [tyrell.router :as router]))
 
 (defn view []
   (when (router/rendered? ::user-profile)
@@ -147,7 +147,7 @@ For the full CSS class reference, see [`CSS_GUIDE.md`](../CSS_GUIDE.md). In Repl
    [:div.p-3.ty-elevated.rounded-lg (:name item)])]
 
 ;; Copy
-[:ty-copy {:value "npm install @gersak/ty" :format "code"}]
+[:ty-copy {:value "npm install tyrell-components" :format "code"}]
 ```
 
 ---
@@ -300,9 +300,9 @@ Every Ty component emits standard DOM `CustomEvent`s. The payload is always in `
 
 ```clojure
 (ns my-app.icons
-  (:require [ty.icons :as icons]
-            [ty.lucide :as lucide]
-            [ty.fav6.brands :as fav6-brands]))
+  (:require [tyrell.icons :as icons]
+            [tyrell.lucide :as lucide]
+            [tyrell.fav6.brands :as fav6-brands]))
 
 (icons/register!
   {:home           lucide/home
@@ -313,7 +313,7 @@ Every Ty component emits standard DOM `CustomEvent`s. The payload is always in `
    :alert-circle   lucide/alert-circle
    :github         fav6-brands/github})
 
-;; Or use register-async! if icons.cljs loads before ty.js
+;; Or use register-async! if icons.cljs loads before tyrell.js
 (icons/register-async!
   {:check lucide/check
    :home  lucide/home}

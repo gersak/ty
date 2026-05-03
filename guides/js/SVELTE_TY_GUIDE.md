@@ -9,7 +9,7 @@ For installation, subpath imports, and the side-effects model, see [JAVASCRIPT_G
 ### 1. Install
 
 ```bash
-npm install @gersak/ty
+npm install tyrell-components
 ```
 
 ### 2. Register components and CSS
@@ -17,8 +17,8 @@ npm install @gersak/ty
 In your app entry (`src/app.js`, `src/main.ts`, or a layout):
 
 ```js
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'   // or specific subpaths
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'   // or specific subpaths
 ```
 
 That's it — Svelte's compiler does not need configuration to recognize custom elements. Any tag with a hyphen is treated as a custom element automatically.
@@ -148,12 +148,12 @@ Register at app startup:
 
 ```js
 // src/app.js or src/main.ts
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'
 
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, x, plus, search } from '@gersak/ty/icons/lucide'
-import { userCircle } from '@gersak/ty/icons/heroicons/outline'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, x, plus, search } from 'tyrell-components/icons/lucide'
+import { userCircle } from 'tyrell-components/icons/heroicons/outline'
 
 registerIcons({
   check, x, plus, search,
@@ -244,7 +244,7 @@ declare namespace svelteHTML {
 For underlying class types:
 
 ```ts
-import type { TyButton } from '@gersak/ty/button'
+import type { TyButton } from 'tyrell-components/button'
 let btn: TyButton
 ```
 
@@ -262,10 +262,10 @@ let btn: TyButton
 
   onMount(async () => {
     if (browser) {
-      await import('@gersak/ty/css/ty.css')
-      await import('@gersak/ty')
-      const { registerIcons } = await import('@gersak/ty/icons/registry')
-      const { check, x } = await import('@gersak/ty/icons/lucide')
+      await import('tyrell-components/css/tyrell.css')
+      await import('tyrell-components')
+      const { registerIcons } = await import('tyrell-components/icons/registry')
+      const { check, x } = await import('tyrell-components/icons/lucide')
       registerIcons({ check, x })
     }
   })
@@ -276,13 +276,13 @@ let btn: TyButton
 
 ### Pattern B — Client-only module
 
-Create `src/lib/ty.client.ts`:
+Create `src/lib/tyrell.client.ts`:
 
 ```ts
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, x } from '@gersak/ty/icons/lucide'
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, x } from 'tyrell-components/icons/lucide'
 
 registerIcons({ check, x })
 ```
@@ -292,7 +292,7 @@ Import it from a layout's `onMount`:
 ```svelte
 <script>
   import { onMount } from 'svelte'
-  onMount(() => import('$lib/ty.client'))
+  onMount(() => import('$lib/tyrell.client'))
 </script>
 ```
 
@@ -325,7 +325,7 @@ The `:not(:defined)` selector matches elements whose custom element class hasn't
 
 1. **Setting array values via attribute** — `value={[1,2,3]}` becomes the string `"1,2,3"`. Use `prop:value={[1,2,3]}`.
 2. **Reading `e.value` instead of `e.detail.value`** — Ty events follow the standard CustomEvent pattern.
-3. **Importing `@gersak/ty` at module top-level in SvelteKit** — `customElements is not defined` during SSR. Move imports inside `onMount` or use `if (browser)`.
+3. **Importing `tyrell-components` at module top-level in SvelteKit** — `customElements is not defined` during SSR. Move imports inside `onMount` or use `if (browser)`.
 4. **Forgetting `bind:this` is async** — the binding fires after mount, not synchronously. Call methods inside `onMount` or in event handlers.
 5. **Svelte 4 `on:click` vs Svelte 5 `onclick`** — Svelte 5 uses standard event handler attributes; Svelte 4 uses the `on:` directive. Either works on custom elements; just match your Svelte version.
 

@@ -1,18 +1,18 @@
 # React + Ty Guide
 
-Use Ty web components in React with `@gersak/ty-react` — typed wrappers with React-idiomatic event handling, ref forwarding, and controlled component patterns.
+Use Ty web components in React with `tyrell-react` — typed wrappers with React-idiomatic event handling, ref forwarding, and controlled component patterns.
 
 ## Setup
 
 ### 1. Install packages
 
 ```bash
-npm install @gersak/ty @gersak/ty-react
+npm install tyrell-components tyrell-react
 ```
 
 Two packages, two roles:
-- **`@gersak/ty`** — the web components, CSS, and 1,600+ tree-shakeable icons.
-- **`@gersak/ty-react`** — typed React wrappers that render `<ty-*>` elements with React-idiomatic props and event handlers.
+- **`tyrell-components`** — the web components, CSS, and 1,600+ tree-shakeable icons.
+- **`tyrell-react`** — typed React wrappers that render `<ty-*>` elements with React-idiomatic props and event handlers.
 
 ### 2. Load Ty's web components
 
@@ -20,22 +20,22 @@ You have two options. Pick one — they're mutually exclusive.
 
 #### Option A — Bundler imports (recommended)
 
-Import `@gersak/ty` once at your app's entry point. Each component file runs `customElements.define(...)` as a side effect when imported, registering all `<ty-*>` elements:
+Import `tyrell-components` once at your app's entry point. Each component file runs `customElements.define(...)` as a side effect when imported, registering all `<ty-*>` elements:
 
 ```tsx
 // app/layout.tsx (Next.js) or src/main.tsx (Vite)
-import '@gersak/ty/css/ty.css'   // CSS via your bundler
-import '@gersak/ty'               // registers all <ty-*> components
+import 'tyrell-components/css/tyrell.css'   // CSS via your bundler
+import 'tyrell-components'               // registers all <ty-*> components
 ```
 
 For smaller bundles, register only the components you use:
 
 ```tsx
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty/button'
-import '@gersak/ty/input'
-import '@gersak/ty/dropdown'
-import '@gersak/ty/modal'
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components/button'
+import 'tyrell-components/input'
+import 'tyrell-components/dropdown'
+import 'tyrell-components/modal'
 ```
 
 Available subpaths match the component names — `button`, `input`, `dropdown`, `multiselect`, `modal`, `popup`, `tooltip`, `tag`, `option`, `icon`, `checkbox`, `textarea`, `copy`, `tabs`, `tab`, `calendar`, `calendar-month`, `calendar-navigation`, `date-picker`.
@@ -45,11 +45,11 @@ Available subpaths match the component names — `button`, `input`, `dropdown`, 
 Skip the bundler — load Ty from a `<script>` tag in your HTML head:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css">
-<script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tyrell-components@latest/css/tyrell.css">
+<script type="module" src="https://cdn.jsdelivr.net/npm/tyrell-components@latest/dist/tyrell.js"></script>
 ```
 
-Or self-host by copying `node_modules/@gersak/ty/dist/ty.js` and `node_modules/@gersak/ty/css/ty.css` into your `public/` directory and pointing the tags there.
+Or self-host by copying `node_modules/tyrell-components/dist/tyrell.js` and `node_modules/tyrell-components/css/tyrell.css` into your `public/` directory and pointing the tags there.
 
 #### Which should I pick?
 
@@ -65,7 +65,7 @@ Bundler imports are the better default for SPAs and SSR apps (Next.js, Remix, Vi
 ### 3. Import and use
 
 ```tsx
-import { TyButton, TyInput, TyDropdown } from '@gersak/ty-react'
+import { TyButton, TyInput, TyDropdown } from 'tyrell-react'
 
 function App() {
   const [name, setName] = useState('')
@@ -91,10 +91,10 @@ Two naming conventions:
 
 ```tsx
 // Ty-prefixed (explicit)
-import { TyButton, TyInput, TyDropdown } from '@gersak/ty-react'
+import { TyButton, TyInput, TyDropdown } from 'tyrell-react'
 
 // Short names (clean)
-import { Button, Input, Dropdown } from '@gersak/ty-react'
+import { Button, Input, Dropdown } from 'tyrell-react'
 ```
 
 ## Event Handling
@@ -609,7 +609,7 @@ This retunes every component that uses that color. To override a single instance
 `TyTabs` dispatches its change event with detail `{ activeId, activeIndex, previousId, previousIndex }` — read `event.detail.activeId` (not `value`):
 
 ```tsx
-import { TyTabs, TyTab, type TabChangeDetail } from '@gersak/ty-react'
+import { TyTabs, TyTab, type TabChangeDetail } from 'tyrell-react'
 
 const [activeTab, setActiveTab] = useState('overview')
 
@@ -636,14 +636,14 @@ const [activeTab, setActiveTab] = useState('overview')
 
 ## Icons
 
-`@gersak/ty` ships icon libraries as tree-shakeable individual exports — only the icons you import end up in your bundle:
+`tyrell-components` ships icon libraries as tree-shakeable individual exports — only the icons you import end up in your bundle:
 
 | Library | Import path | Variants |
 |---------|------------|----------|
-| Lucide (1,600+) | `@gersak/ty/icons/lucide` | single file |
-| Heroicons | `@gersak/ty/icons/heroicons/{outline,solid,mini,micro}` | 4 styles |
-| Material | `@gersak/ty/icons/material/{filled,outlined,round,sharp,two-tone}` | 5 styles |
-| FontAwesome | `@gersak/ty/icons/fontawesome/{brands,regular,solid}` | 3 styles |
+| Lucide (1,600+) | `tyrell-components/icons/lucide` | single file |
+| Heroicons | `tyrell-components/icons/heroicons/{outline,solid,mini,micro}` | 4 styles |
+| Material | `tyrell-components/icons/material/{filled,outlined,round,sharp,two-tone}` | 5 styles |
+| FontAwesome | `tyrell-components/icons/fontawesome/{brands,regular,solid}` | 3 styles |
 
 ### Register at app startup
 
@@ -655,8 +655,8 @@ How you register depends on which setup option you picked above.
 
 ```tsx
 // lib/icons.ts
-import { registerIcons } from '@gersak/ty/icons/registry'
-import { check, heart, star, chevronRight, chevronLeft, alertCircle } from '@gersak/ty/icons/lucide'
+import { registerIcons } from 'tyrell-components/icons/registry'
+import { check, heart, star, chevronRight, chevronLeft, alertCircle } from 'tyrell-components/icons/lucide'
 
 registerIcons({
   check,
@@ -672,8 +672,8 @@ Import this file once from your app entry to execute the registration:
 
 ```tsx
 // app/layout.tsx (Next.js)
-import '@gersak/ty/css/ty.css'
-import '@gersak/ty'
+import 'tyrell-components/css/tyrell.css'
+import 'tyrell-components'
 import '@/lib/icons'   // runs registerIcons at module-eval time
 ```
 
@@ -681,11 +681,11 @@ Import names follow camelCase from Lucide; rename to kebab-case in the registrat
 
 #### With CDN script tag
 
-The CDN bundle owns the registry the components read from. Use `window.tyIcons.register` so writes land in that registry — *not* `registerIcons` imported from `@gersak/ty/icons/registry`, which would create a separate module instance with its own registry that `<ty-icon>` can't see.
+The CDN bundle owns the registry the components read from. Use `window.tyIcons.register` so writes land in that registry — *not* `registerIcons` imported from `tyrell-components/icons/registry`, which would create a separate module instance with its own registry that `<ty-icon>` can't see.
 
 ```tsx
 // lib/icons.ts
-import { check, heart, star, chevronRight } from '@gersak/ty/icons/lucide'
+import { check, heart, star, chevronRight } from 'tyrell-components/icons/lucide'
 
 export function registerAppIcons() {
   window.tyIcons.register({
@@ -816,8 +816,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/css/ty.css" />
-        <script type="module" src="https://cdn.jsdelivr.net/npm/@gersak/ty@latest/dist/ty.js" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tyrell-components@latest/css/tyrell.css" />
+        <script type="module" src="https://cdn.jsdelivr.net/npm/tyrell-components@latest/dist/tyrell.js" />
       </head>
       <body className="ty-canvas">{children}</body>
     </html>
@@ -833,7 +833,7 @@ Ty components require the browser — use `'use client'` directive:
 'use client'
 
 import { useState } from 'react'
-import { TyInput, TyButton } from '@gersak/ty-react'
+import { TyInput, TyButton } from 'tyrell-react'
 
 export default function SearchForm() {
   const [query, setQuery] = useState('')

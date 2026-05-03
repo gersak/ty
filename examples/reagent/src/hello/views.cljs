@@ -1,8 +1,8 @@
 (ns hello.views
-  (:require ["@gersak/ty-react" :as ty]
+  (:require ["tyrell-react" :as ty]
             [hello.state :as state]
             [reagent.core :as r]
-            [ty.router :as router]))
+            [tyrell.router :as router]))
 
 (defn home-view []
   (let [_ @router/*router*]  ; Deref to trigger Reagent reactivity
@@ -22,7 +22,7 @@
         [:li "• Responsive sidebar navigation"]
         [:li "• Mobile overlay menu"]
         [:li "• Theme toggle (light/dark)"]
-        [:li "• ty.router with browser history"]]]
+        [:li "• tyrell.router with browser history"]]]
 
       [:section.ty-elevated.p-6.rounded-lg
        [:h2.text-xl.font-semibold.mb-4.ty-text++
@@ -105,7 +105,7 @@
                            :placeholder "Enter your full name"
                            :className (str "w-full " (when (:name errors) "error"))
                            :value (:name form-data)
-                           :onInput #(do
+                           :onChange #(do
                                        (swap! state/app-state assoc-in [:form :name] (.. % -detail -value))
                                        (swap! state/app-state assoc-in [:form-errors :name]
                                               (validate-field :name (.. % -detail -value))))}]
@@ -121,7 +121,7 @@
                            :placeholder "you@company.com"
                            :className (str "w-full " (when (:email errors) "error"))
                            :value (:email form-data)
-                           :onInput #(do
+                           :onChange #(do
                                        (swap! state/app-state assoc-in [:form :email] (.. % -detail -value))
                                        (swap! state/app-state assoc-in [:form-errors :email]
                                               (validate-field :email (.. % -detail -value))))}]
@@ -137,7 +137,7 @@
                            :placeholder "+1 (555) 123-4567"
                            :className (str "w-full " (when (:phone errors) "error"))
                            :value (:phone form-data)
-                           :onInput #(do
+                           :onChange #(do
                                        (swap! state/app-state assoc-in [:form :phone] (.. % -detail -value))
                                        (swap! state/app-state assoc-in [:form-errors :phone]
                                               (validate-field :phone (.. % -detail -value))))}]
@@ -176,6 +176,7 @@
            [:label.block.text-sm.font-medium.ty-text+.mb-2 "Professional Role"]
            [:> ty/TyDropdown {:className "w-full"
                               :placeholder "Select your role"
+                              :value (:role form-data)
                               :onChange #(swap! state/app-state assoc-in [:form :role]
                                                 (.. ^js % -detail -option -value))}
             [:> ty/TyOption {:value "developer"}
@@ -230,7 +231,7 @@
                               :placeholder "Tell us about yourself..."
                               :className (str "w-full resize-none " (when (:bio errors) "error"))
                               :value (:bio form-data)
-                              :onInput #(do
+                              :onChange #(do
                                           (swap! state/app-state assoc-in [:form :bio] (.. % -detail -value))
                                           (swap! state/app-state assoc-in [:form-errors :bio]
                                                  (validate-field :bio (.. % -detail -value))))}]
@@ -259,16 +260,19 @@
          [:div.flex.gap-3.w-full.sm:w-auto
           [:> ty/TyButton {:flavor "secondary"
                            :className "flex-1 sm:flex-none"
-                           :onClick #(do
-                                       (swap! state/app-state assoc :form {:name ""
-                                                                           :email ""
-                                                                           :phone ""
-                                                                           :role ""
-                                                                           :skills []
-                                                                           :bio ""
-                                                                           :birthdate ""
-                                                                           :newsletter false})
-                                       (swap! state/app-state assoc :form-errors {}))}
+                           :onClick (fn [e]
+                                      (js/console.log "[RESET] onClick fired" e)
+                                      (swap! state/app-state assoc :form {:name ""
+                                                                          :email ""
+                                                                          :phone ""
+                                                                          :role ""
+                                                                          :skills []
+                                                                          :bio ""
+                                                                          :birthdate ""
+                                                                          :newsletter false})
+                                      (swap! state/app-state assoc :form-errors {})
+                                      (js/console.log "[RESET] state after swap:"
+                                                      (clj->js @state/app-state)))}
            [:> ty/TyIcon {:name "refresh-cw" :size "xs"}]
            "Reset Form"]
 
@@ -343,7 +347,7 @@
      [:section.ty-elevated.p-6.rounded-lg
       [:h2.text-xl.font-semibold.mb-4.ty-text++ "Implementation Notes"]
       [:div.space-y-4.ty-text
-       [:p "All components use React wrappers from " [:code "@gersak/ty-react"] " for proper event handling."]
+       [:p "All components use React wrappers from " [:code "tyrell-react"] " for proper event handling."]
        [:pre.ty-bg-neutral-.p-4.rounded.text-sm.overflow-auto
         "[:> ty/TyButton {:onClick #(js/alert \"Clicked!\")} \"Click Me\"]"]
        [:p "Web components are automatically registered via " [:code "ty.js"] " loaded in index.html."]]]])))

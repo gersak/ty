@@ -24,13 +24,13 @@
 
 # Tyrell
 
-[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gersak/ty/badge)](https://www.jsdelivr.com/package/npm/@gersak/ty)
-[![NPM Version](https://img.shields.io/npm/v/@gersak/ty.svg)](https://www.npmjs.com/package/@gersak/ty)
-[![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty.svg)](https://clojars.org/dev.gersak/ty)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/npm/tyrell-components/badge)](https://www.jsdelivr.com/package/npm/tyrell-components)
+[![NPM Version](https://img.shields.io/npm/v/tyrell-components.svg)](https://www.npmjs.com/package/tyrell-components)
+[![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/tyrell.svg)](https://clojars.org/dev.gersak/tyrell)
 
 **More framework than framework.** Tyrell ships Web Components that work everywhere — React, Vue, HTMX, vanilla JS, ClojureScript.
 
-**[Live Demo & Docs →](https://gersak.github.io/ty)**
+**[Live Demo & Docs →](https://gersak.github.io/tyrell)**
 
 | [Vanilla JS Guide](packages/core/src/README.md) | [React Guide](packages/react/README.md) |
 |---|---|
@@ -50,18 +50,18 @@ Same components. Zero framework lock-in.
 Always loads the latest version:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty/css/ty.css">
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty/dist/ty.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tyrell-components/css/tyrell.css">
+<script src="https://cdn.jsdelivr.net/npm/tyrell-components/dist/tyrell.js"></script>
 ```
 
 Pin to a specific version (recommended for production):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gersak/ty@1.0.0-rc.4/css/ty.css">
-<script src="https://cdn.jsdelivr.net/npm/@gersak/ty@1.0.0-rc.4/dist/ty.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tyrell-components@1.0.0-rc.4/css/tyrell.css">
+<script src="https://cdn.jsdelivr.net/npm/tyrell-components@1.0.0-rc.4/dist/tyrell.js"></script>
 ```
 
-Browse all available versions on [NPM](https://www.npmjs.com/package/@gersak/ty?activeTab=versions) or [jsdelivr](https://www.jsdelivr.com/package/npm/@gersak/ty).
+Browse all available versions on [NPM](https://www.npmjs.com/package/tyrell-components?activeTab=versions) or [jsdelivr](https://www.jsdelivr.com/package/npm/tyrell-components).
 
 Then use components anywhere:
 
@@ -80,8 +80,8 @@ Then use components anywhere:
 Add to `deps.edn`:
 
 ```clojure
-{:deps {dev.gersak/ty {:mvn/version "1.0.0-RC4"}        ;; Router, i18n, layout
-        dev.gersak/ty-icons {:mvn/version "1.0.0-RC4"}}} ;; Tree-shakeable icons
+{:deps {dev.gersak/tyrell {:mvn/version "1.0.0-RC4"}        ;; Router, i18n, layout
+        dev.gersak/tyrell-icons {:mvn/version "1.0.0-RC4"}}} ;; Tree-shakeable icons
 ```
 
 ### UIx
@@ -89,7 +89,7 @@ Add to `deps.edn`:
 ```clojure
 (ns app.core
   (:require [uix.core :refer [defui $]]
-            [ty.lucide :as lucide]))
+            [tyrell.lucide :as lucide]))
 
 ;; Register only icons you use - Closure Compiler removes the rest
 (defonce _ (js/window.tyIcons.register
@@ -129,7 +129,7 @@ Add to `deps.edn`:
 ```clojure
 (ns app.core
   (:require [replicant.dom :as d]
-            [ty.lucide :as lucide]))
+            [tyrell.lucide :as lucide]))
 
 (defonce _ (js/window.tyIcons.register
              #js {:user lucide/user
@@ -182,7 +182,7 @@ Component-based routing with segments and authorization:
 
 ```clojure
 (ns app.routes
-  (:require [ty.router :as router]))
+  (:require [tyrell.router :as router]))
 
 ;; Initialize router with base path
 (router/init! "")  ;; or "my-app" for /my-app/... URLs
@@ -222,9 +222,9 @@ Protocol-based formatting with Intl API:
 
 ```clojure
 (ns app.i18n
-  (:require [ty.i18n :as i18n]
-            [ty.i18n.number :as num]
-            [ty.i18n.time :as time]))
+  (:require [tyrell.i18n :as i18n]
+            [tyrell.i18n.number :as num]
+            [tyrell.i18n.time :as time]))
 
 ;; Current locale (auto-detected from browser)
 i18n/*locale*  ;; => :en_US
@@ -254,12 +254,12 @@ i18n/*locale*  ;; => :en_US
 
 ### Build Your Own Components
 
-Use `ty.shim` to turn any ClojureScript render function into a Web Component:
+Use `tyrell.shim` to turn any ClojureScript render function into a Web Component:
 
 ```clojure
 (ns app.components
   (:require [replicant.dom :as d]
-            [ty.shim :as shim]))
+            [tyrell.shim :as shim]))
 
 (defn greeting [name]
   [:div.ty-elevated.p-4.rounded-lg
@@ -306,7 +306,7 @@ Use `ty.shim` to turn any ClojureScript render function into a Web Component:
 | `ty-copy` | Click-to-copy with visual feedback |
 | `ty-scroll-container` | Scrollable area with fade indicators |
 
-**[See all components in action →](https://gersak.github.io/ty)**
+**[See all components in action →](https://gersak.github.io/tyrell)**
 
 ---
 
@@ -339,12 +339,12 @@ Semantic CSS classes that flip correctly for dark mode:
 
 ## Links
 
-- [Documentation & Examples](https://gersak.github.io/ty)
-- [GitHub](https://github.com/gersak/ty)
-- [NPM @gersak/ty](https://www.npmjs.com/package/@gersak/ty)
-- [NPM @gersak/ty-react](https://www.npmjs.com/package/@gersak/ty-react)
-- [Clojars dev.gersak/ty](https://clojars.org/dev.gersak/ty)
-- [Clojars dev.gersak/ty-icons](https://clojars.org/dev.gersak/ty-icons)
+- [Documentation & Examples](https://gersak.github.io/tyrell)
+- [GitHub](https://github.com/gersak/tyrell)
+- [NPM tyrell-components](https://www.npmjs.com/package/tyrell-components)
+- [NPM tyrell-react](https://www.npmjs.com/package/tyrell-components-react)
+- [Clojars dev.gersak/tyrell](https://clojars.org/dev.gersak/tyrell)
+- [Clojars dev.gersak/tyrell-icons](https://clojars.org/dev.gersak/tyrell-icons)
 
 ---
 

@@ -12,7 +12,7 @@ import {
   TyTextarea,
   TyOption,
   type TyModalRef,
-} from '@gersak/ty-react'
+} from 'tyrell-react'
 
 // ─── Tag state for dismissible test ───────────────────────────────────────────
 const INITIAL_TAGS = [

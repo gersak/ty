@@ -8,7 +8,7 @@ import {
   TyButton,
   TyIcon,
   type TyMultiselectEventDetail,
-} from '@gersak/ty-react'
+} from 'tyrell-react'
 
 interface ChangeEntry {
   ts: number

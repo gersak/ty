@@ -7,7 +7,7 @@ import { useTheme } from './theme-provider'
 import {
   TyButton,
   TyIcon,
-} from '@gersak/ty-react'
+} from 'tyrell-react'
 
 interface NavigationItem {
   name: string

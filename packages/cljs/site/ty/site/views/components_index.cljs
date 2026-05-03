@@ -15,8 +15,11 @@
    {:title "Text input"
     :ids [:ty.site.docs/input-field
           :ty.site.docs/textarea
-          :ty.site.docs/checkbox
           :ty.site.docs/copy-field]}
+   {:title "Toggles"
+    :ids [:ty.site.docs/checkbox
+          :ty.site.docs/switch
+          :ty.site.docs/radio]}
    {:title "Selection"
     :ids [:ty.site.docs/dropdown
           :ty.site.docs/multiselect]}
@@ -98,7 +101,7 @@
      [:div.mb-10.md:mb-12
       [:h1.text-3xl.md:text-4xl.font-bold.ty-text++ "Components"]
       [:p.mt-3.text-base.ty-text-.max-w-2xl.leading-relaxed
-       "19 interaction primitives — buttons, inputs, dates, selection, overlays. "
+       "21 interaction primitives — buttons, inputs, toggles, dates, selection, overlays. "
        "Ty handles the interaction so you don't have to. Drop them into any framework, "
        "style them with any design system. Bring your own cards, layouts, and tables."]]
      ;; Sections by interaction job — each on its own elevated panel,

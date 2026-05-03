@@ -18,10 +18,12 @@
    [ty.site.docs.modal :as modal-docs]
    [ty.site.docs.multiselect :as multiselect-docs]
    [ty.site.docs.popup :as popup-docs]
+   [ty.site.docs.radio :as radio-docs]
    [ty.site.docs.react :as react-docs]
    [ty.site.docs.replicant :as replicant-docs]
    [ty.site.docs.resize-observer :as resize-observer-docs]
    [ty.site.docs.scroll-container :as scroll-container-docs]
+   [ty.site.docs.switch :as switch-docs]
    [ty.site.docs.tabs :as tabs-docs]
    [ty.site.docs.tag :as tag-docs]
    [ty.site.docs.textarea :as textarea-docs]
@@ -133,11 +135,45 @@
                          :min-height "92px"}}])
 
 (def ^:private checkbox-preview
-  [:div.flex.flex-col.gap-1
-   [:ty-checkbox {:checked ""
-                  :flavor "success"} "Done"]
-   [:ty-checkbox {:flavor "primary"} "In progress"]
-   [:ty-checkbox {:disabled ""} "Disabled"]])
+  [:div.flex.flex-col.gap-2
+   [:label.flex.items-center.gap-2.cursor-pointer.text-sm
+    [:ty-checkbox {:checked ""
+                   :flavor "success"}]
+    "Done"]
+   [:label.flex.items-center.gap-2.cursor-pointer.text-sm
+    [:ty-checkbox {:flavor "primary"}]
+    "In progress"]
+   [:label.flex.items-center.gap-2.cursor-pointer.text-sm.opacity-60
+    [:ty-checkbox {:disabled ""}]
+    "Disabled"]])
+
+(def ^:private switch-preview
+  [:div.flex.flex-col.gap-2
+   {:style {:width "260px"}}
+   [:label.flex.items-center.gap-3.cursor-pointer.text-sm
+    [:ty-switch {:checked ""
+                 :flavor "primary"}]
+    "Email notifications"]
+   [:label.flex.items-center.gap-3.cursor-pointer.text-sm
+    [:ty-switch {:checked ""
+                 :flavor "success"}]
+    "Auto-save"]
+   [:label.flex.items-center.gap-3.cursor-pointer.text-sm
+    [:ty-switch {:flavor "danger"}]
+    "Delete on inactive"]])
+
+(def ^:private radio-preview
+  [:div {:style {:width "260px"}}
+   [:ty-radio-group {:label "Plan"
+                     :name "plan"
+                     :value "pro"
+                     :flavor "primary"}
+    [:label.flex.items-center.gap-2.cursor-pointer.text-sm
+     [:ty-radio {:value "free"}] "Free"]
+    [:label.flex.items-center.gap-2.cursor-pointer.text-sm
+     [:ty-radio {:value "pro"}] "Pro"]
+    [:label.flex.items-center.gap-2.cursor-pointer.text-sm
+     [:ty-radio {:value "team"}] "Team"]]])
 
 (def ^:private copy-field-preview
   [:div.flex.flex-col.gap-2
@@ -153,39 +189,87 @@
 ;; --- Selection ---
 
 (def ^:private dropdown-preview
-  [:ty-dropdown {:placeholder "Choose…"
+  [:ty-dropdown {:placeholder "Pick a stack…"
                  :value "react"
                  :label "Framework"
                  :style {:width "260px"}}
-   [:ty-icon {:slot "start"
-              :name "filter"
-              :size "sm"}]
-   [:ty-option {:value "react"} "React"]
-   [:ty-option {:value "vue"} "Vue"]
-   [:ty-option {:value "htmx"} "HTMX"]
-   [:ty-option {:value "vanilla"} "Vanilla JS"]])
+   [:ty-option {:value "react"}
+    [:span.flex.items-center.gap-2
+     [:ty-icon {:name "react"
+                :size "sm"
+                :class "ty-text-info"}]
+     "React"]]
+   [:ty-option {:value "clojure"}
+    [:span.flex.items-center.gap-2
+     [:ty-icon {:name "clojure"
+                :size "sm"
+                :class "ty-text-success"}]
+     "Clojure"]]
+   [:ty-option {:value "node-js"}
+    [:span.flex.items-center.gap-2
+     [:ty-icon {:name "node-js"
+                :size "sm"
+                :class "ty-text-success"}]
+     "Node.js"]]
+   [:ty-option {:value "python"}
+    [:span.flex.items-center.gap-2
+     [:ty-icon {:name "python"
+                :size "sm"
+                :class "ty-text-warning"}]
+     "Python"]]])
 
 (def ^:private multiselect-preview
-  [:ty-multiselect {:placeholder "Pick tags…"
-                    :label "Tags"
+  [:ty-multiselect {:placeholder "Pick your stack…"
+                    :label "Tech stack"
                     :value "react,clojure"
                     :style {:width "260px"}}
    [:ty-icon {:slot "start"
               :name "tag"
               :size "sm"}]
-   [:ty-option {:value "react"} "React"]
-   [:ty-option {:value "vue"} "Vue"]
-   [:ty-option {:value "clojure"} "Clojure"]
-   [:ty-option {:value "htmx"} "HTMX"]])
+   [:ty-tag {:value "react"
+             :flavor "info"
+             :pill ""}
+    [:ty-icon {:slot "start"
+               :name "react"
+               :size "xs"}]
+    "React"]
+   [:ty-tag {:value "clojure"
+             :flavor "primary"
+             :pill ""}
+    [:ty-icon {:slot "start"
+               :name "clojure"
+               :size "xs"}]
+    "Clojure"]
+   [:ty-tag {:value "node-js"
+             :flavor "success"
+             :pill ""}
+    [:ty-icon {:slot "start"
+               :name "node-js"
+               :size "xs"}]
+    "Node.js"]
+   [:ty-tag {:value "python"
+             :flavor "warning"
+             :pill ""}
+    [:ty-icon {:slot "start"
+               :name "python"
+               :size "xs"}]
+    "Python"]
+   [:ty-tag {:value "github"
+             :flavor "neutral"
+             :pill ""}
+    [:ty-icon {:slot "start"
+               :name "github"
+               :size "xs"}]
+    "GitHub"]])
 
 ;; --- Date & time ---
 
 (def ^:private date-picker-preview
-  [:ty-date-picker {:label "Pick a date"
+  [:ty-date-picker {:label "Meeting date"
                     :value "2026-05-15"
                     :style {:width "260px"}}
    [:ty-icon {:slot "start"
-              :name "calendar"
+              :name "briefcase"
               :size "sm"}]])
 
 (def ^:private calendar-preview
@@ -395,7 +479,7 @@
     :icon "calendar"
     :view calendar-docs/view
     :name "Calendar"
-    :description "Selectable calendar with month/year navigation. ISO date API, form integration, can be controlled externally."
+    :description "Selectable calendar composing internal `ty-calendar-navigation` and `ty-calendar-month`. ISO date API, form integration, can be controlled externally."
     :tags ["date" "picker" "schedule" "month"]
     :span [2 2]
     :preview calendar-preview}
@@ -422,7 +506,7 @@
     :icon "chevron-down"
     :view dropdown-docs/view
     :name "Dropdown"
-    :description "Searchable single-select. Internal filter or external search via event, keyboard navigation, smart popup positioning, mobile fullscreen mode."
+    :description "Searchable single-select. Uses `ty-option` children. Internal filter or external search via event, keyboard navigation, smart popup positioning, mobile fullscreen mode."
     :tags ["select" "options" "form" "menu" "choice"]
     :span [2 1]
     :preview dropdown-preview}
@@ -455,9 +539,27 @@
                 :icon "check-square"
                 :view checkbox-docs/view
                 :name "Checkbox"
-                :description "Boolean toggle with semantic flavors, required indicator, error messages, and custom labels."
+                :description "Just the box — boolean state primitive. Wrap in a `<label>` for click-on-text behavior. Semantic flavors, sizes, form-associated, ARIA."
                 :tags ["toggle" "boolean" "form" "check"]
                 :preview checkbox-preview}
+               {:id :ty.site.docs/switch
+                :segment "switch"
+                :icon "toggle-right"
+                :view switch-docs/view
+                :name "Switch"
+                :description "Just the toggle — track + thumb visual with `role=\"switch\"` ARIA. Same primitive model as `ty-checkbox`; wrap in a `<label>` for the text. Use for immediate-effect settings."
+                :tags ["toggle" "switch" "boolean" "form" "settings"]
+                :span [2 1]
+                :preview switch-preview}
+               {:id :ty.site.docs/radio
+                :segment "radio"
+                :icon "circle-dot"
+                :view radio-docs/view
+                :name "Radio Group"
+                :description "Exclusive single-choice. `ty-radio-group` manages value, label, error, and form participation. Each `ty-radio` is just the circle — wrap in a `<label>` for the text. Arrow keys navigate AND change selection."
+                :tags ["radio" "select" "exclusive" "single" "form" "choice"]
+                :span [2 2]
+                :preview radio-preview}
                {:id :ty.site.docs/copy-field
                 :segment "copy-field"
                 :icon "copy"
@@ -490,7 +592,7 @@
     :icon "filter"
     :view multiselect-docs/view
     :name "Multiselect"
-    :description "Multi-value with tag display. Internal filter or external search via event, keyboard navigation, smart positioning, mobile fullscreen mode."
+    :description "Multi-value picker using `ty-tag` children — each tag is both an option and its own selected-chip with flavor. Internal filter or external search via event, keyboard navigation, smart positioning, mobile fullscreen mode."
     :tags ["select" "multiple" "tags" "form" "filter"]
     :span [2 1]
     :preview multiselect-preview}
@@ -524,7 +626,7 @@
     :icon "layout"
     :view tabs-docs/view
     :name "Tabs"
-    :description "Carousel-based tabs with smooth slide animations, animated active marker, and top or bottom placement."
+    :description "Carousel-based tabs with smooth slide animations, animated active marker, and top or bottom placement. Uses `ty-tab` children."
     :tags ["navigation" "panels" "switch" "views"]
     :span [2 1]
     :preview tabs-preview}
@@ -533,7 +635,7 @@
     :icon "list-ordered"
     :view wizard-docs/view
     :name "Wizard"
-    :description "Multi-step stepper with progress line, completion tracking, status per step (active/completed/error/disabled), horizontal or vertical."
+    :description "Multi-step stepper with progress line, completion tracking, status per step (active/completed/error/disabled), horizontal or vertical. Uses `ty-step` children."
     :tags ["steps" "stepper" "form" "workflow" "carousel"]
     :span [2 2]
     :preview wizard-preview}

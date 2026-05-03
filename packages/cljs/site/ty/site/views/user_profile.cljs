@@ -509,50 +509,59 @@
     [:div.flex.flex-col.sm:flex-row.flex-wrap.gap-6
      [:div.min-w-0
       [:h4.text-sm.font-medium.ty-text.mb-4 "Email Notifications"]
-      [:div.space-y-4
-       [:ty-checkbox {:name "notifications-updates"
-                      :value "enabled"
-                      :checked ""}
-        "Product updates and announcements"]
-       [:ty-checkbox {:name "notifications-newsletter"
-                      :value "enabled"
-                      :checked ""}
-        "Weekly newsletter"]
-       [:ty-checkbox {:name "notifications-marketing"
-                      :value "enabled"}
-        "Marketing promotions and offers"]]]
+      [:div.space-y-3
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "notifications-updates"
+                       :value "enabled"
+                       :checked ""}]
+        [:span "Product updates and announcements"]]
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "notifications-newsletter"
+                       :value "enabled"
+                       :checked ""}]
+        [:span "Weekly newsletter"]]
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "notifications-marketing"
+                       :value "enabled"}]
+        [:span "Marketing promotions and offers"]]]]
 
      ;; Privacy & Security Preferences
      [:div.min-w-0
       [:h4.text-sm.font-medium.ty-text.mb-4 "Privacy & Security"]
-      [:div.space-y-4
-       [:ty-checkbox {:name "privacy-2fa"
-                      :value "enabled"}
-        "Enable two-factor authentication"]
-       [:ty-checkbox {:name "privacy-profile-public"
-                      :value "enabled"
-                      :checked ""}
-        "Make profile public"]
-       [:ty-checkbox {:name "privacy-allow-contact"
-                      :value "enabled"
-                      :checked ""}
-        "Allow contact from other users"]]]
+      [:div.space-y-3
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "privacy-2fa"
+                       :value "enabled"}]
+        [:span "Enable two-factor authentication"]]
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "privacy-profile-public"
+                       :value "enabled"
+                       :checked ""}]
+        [:span "Make profile public"]]
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "privacy-allow-contact"
+                       :value "enabled"
+                       :checked ""}]
+        [:span "Allow contact from other users"]]]]
 
      ;; Account Preferences
      [:div.min-w-0
       [:h4.text-sm.font-medium.ty-text.mb-4 "Account Preferences"]
       [:div.space-y-3
-       [:ty-checkbox {:name "account-autosave"
-                      :value "enabled"
-                      :checked ""}
-        "Auto-save drafts"]
-       [:ty-checkbox {:name "account-online-status"
-                      :value "enabled"
-                      :checked ""}
-        "Show online status"]
-       [:ty-checkbox {:name "account-remember-login"
-                      :value "enabled"}
-        "Remember login for 30 days"]]]]]])
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "account-autosave"
+                       :value "enabled"
+                       :checked ""}]
+        [:span "Auto-save drafts"]]
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "account-online-status"
+                       :value "enabled"
+                       :checked ""}]
+        [:span "Show online status"]]
+       [:label.flex.items-center.gap-2.cursor-pointer
+        [:ty-checkbox {:name "account-remember-login"
+                       :value "enabled"}]
+        [:span "Remember login for 30 days"]]]]]]])
 
 ;; ============================================================================
 ;; Form Actions

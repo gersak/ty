@@ -78,6 +78,9 @@
    :alert-triangle lucide/alert-triangle
    :alert-circle lucide/alert-circle
    :circle lucide/circle
+   :circle-dot lucide/circle-dot
+   :toggle-left lucide/toggle-left
+   :toggle-right lucide/toggle-right
    :minus-circle lucide/minus-circle
    :info lucide/info
    :info-circle lucide/circle-alert

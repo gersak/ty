@@ -167,6 +167,12 @@
                    :target-dir "../../docs/images"})
       (println "  ✓ Copied images directory"))
 
+    ;; Copy llms.txt for AI agent discoverability
+    (when (.exists (io/file "../../llms.txt"))
+      (io/copy (io/file "../../llms.txt")
+               (io/file "../../docs/llms.txt"))
+      (println "  ✓ Copied llms.txt"))
+
     ;; 5. Create .nojekyll file (tells GitHub not to process with Jekyll)
     (spit "../../docs/.nojekyll" "")
     (println "  ✓ Created .nojekyll file")

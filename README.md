@@ -10,24 +10,36 @@
 <p><strong><em>Yes! Let's call it ty."</em></strong></p>
 </blockquote>
 
-# ty
+<blockquote style="color: #414863">
+<p><em>Six months later…</em></p>
+
+<p><em>"Right. So everyone keeps reading <strong>ty</strong> as <strong>'thank you'</strong>. Naming is hard."</em></p>
+
+<p><em>"The library was always <strong>Tyrell</strong> — Blade Runner, the replicant builders. I shortened it to <code>ty-button</code> for ergonomics and accidentally shortened the whole name with it. That was the wrong call."</em></p>
+
+<p><em>"So: the library is <strong>Tyrell</strong>. Components stay <code>ty-*</code> — short for Tyrell, not for gratitude. CSS classes stay <code>ty-*</code>. CLJS namespaces stay <code>ty.*</code>. The prefix earned its keep; the brand didn't."</em></p>
+
+<p><strong><em>"No thanks involved. Just replicants."</em></strong></p>
+</blockquote>
+
+# Tyrell
 
 [![jsDelivr](https://data.jsdelivr.com/v1/package/npm/@gersak/ty/badge)](https://www.jsdelivr.com/package/npm/@gersak/ty)
 [![NPM Version](https://img.shields.io/npm/v/@gersak/ty.svg)](https://www.npmjs.com/package/@gersak/ty)
 [![Clojars Project](https://img.shields.io/clojars/v/dev.gersak/ty.svg)](https://clojars.org/dev.gersak/ty)
 
-**Web components that work everywhere.** React, Vue, HTMX, vanilla JS, ClojureScript — use what you like.
+**More framework than framework.** Tyrell ships Web Components that work everywhere — React, Vue, HTMX, vanilla JS, ClojureScript.
 
 **[Live Demo & Docs →](https://gersak.github.io/ty)**
 
 | [Vanilla JS Guide](packages/core/src/README.md) | [React Guide](packages/react/README.md) |
 |---|---|
 
-## Why Ty?
+## Why Tyrell?
 
-Ty is a **framework-agnostic evolution of [Toddler](https://github.com/gersak/toddler)**, a ClojureScript UI library built on Helix (React).
+Tyrell is a **framework-agnostic evolution of [Toddler](https://github.com/gersak/toddler)**, a ClojureScript UI library built on Helix (React).
 
-Toddler provided great components (calendar, dropdown, routing, icons) but was locked to React/Helix. Ty takes that component library and rebuilds it with **Web Components**, making the same functionality available everywhere — React, Vue, HTMX, vanilla JS, and all ClojureScript frameworks (Replicant, UIx, Reagent).
+Toddler provided great components (calendar, dropdown, routing, icons) but was locked to React/Helix. Tyrell takes that component library and rebuilds it with **Web Components**, making the same functionality available everywhere — React, Vue, HTMX, vanilla JS, and all ClojureScript frameworks (Replicant, UIx, Reagent).
 
 Same components. Zero framework lock-in.
 

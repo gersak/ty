@@ -38,7 +38,7 @@
 
     ;; Component overview
     [:div.max-w-3xl.mx-auto.mb-8
-     [:p.text-sm.ty-text-.mb-3 "23 production-ready components:"]
+     [:p.text-sm.ty-text-.mb-3 "21 production-ready components:"]
      [:div.flex.flex-wrap.gap-2.justify-center
       [:ty-tag {:flavor "primary"
                 :size "sm"} "Calendar"]

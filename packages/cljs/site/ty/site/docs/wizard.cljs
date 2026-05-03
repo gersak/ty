@@ -154,13 +154,18 @@
          ;; Card sections use ty-floating for elevation above content background
          [:div.ty-floating.p-4.rounded-lg.space-y-3
           [:h3.ty-text+.font-semibold "Notifications"]
-          [:ty-checkbox "Email notifications"]
-          [:ty-checkbox "Push notifications"]
-          [:ty-checkbox "Weekly summary email"]]
+          [:label.flex.items-center.gap-2.cursor-pointer
+           [:ty-checkbox] [:span "Email notifications"]]
+          [:label.flex.items-center.gap-2.cursor-pointer
+           [:ty-checkbox] [:span "Push notifications"]]
+          [:label.flex.items-center.gap-2.cursor-pointer
+           [:ty-checkbox] [:span "Weekly summary email"]]]
          [:div.ty-floating.p-4.rounded-lg.space-y-3
           [:h3.ty-text+.font-semibold "Privacy"]
-          [:ty-checkbox {:checked true} "Make profile public"]
-          [:ty-checkbox "Allow others to message me"]]]]
+          [:label.flex.items-center.gap-2.cursor-pointer
+           [:ty-checkbox {:checked true}] [:span "Make profile public"]]
+          [:label.flex.items-center.gap-2.cursor-pointer
+           [:ty-checkbox] [:span "Allow others to message me"]]]]]
        ;; Navigation footer - uses ty-content to match header background
        [:div.flex.justify-end.gap-2.p-4.border-t.ty-border.ty-content
         [:ty-button

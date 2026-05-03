@@ -10,7 +10,7 @@
   [:div.text-center.mb-12
    [:h1.text-4xl.font-bold.ty-text++.mb-4 "Getting Started"]
    [:p.text-xl.ty-text "TypeScript web components + ClojureScript infrastructure"]
-   [:p.text-lg.ty-text- "23 components • 3000+ icons • Semantic design • Framework-agnostic"]])
+   [:p.text-lg.ty-text- "21 components • 3000+ icons • Semantic design • Framework-agnostic"]])
 
 ;; =============================================================================
 ;; Quick Setup Section
